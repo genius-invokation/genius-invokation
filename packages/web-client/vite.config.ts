@@ -30,7 +30,7 @@ export default defineConfig({
   base: WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1"),
   plugins: [
     unoCss(),
-    solid(),
+    solid({ ssr: true }),
     babel({
       babelHelpers: "bundled",
     }),

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { render } from "solid-js/web";
+import { hydrate } from "solid-js/web";
 
 import "./style.css";
 import "virtual:uno.css";
@@ -44,7 +44,7 @@ async function main() {
 
   const app = document.getElementById("app")!;
   const { default: App } = await import("./App");
-  render(() => <App />, app);
+  hydrate(() => <App />, app);
 }
 
 main();
