@@ -104,7 +104,7 @@ export function Home() {
 
   return (
     <Layout>
-      <div class="container mx-auto">
+      <div class="container mx-auto h-full">
         <Switch>
           <Match when={user.loading}>
             <div class="text-gray-500">Loading now, please wait...</div>
@@ -116,14 +116,14 @@ export function Home() {
           </Match>
           <Match when={user()}>
             {(user) => (
-              <div class="flex flex-col">
+              <div class="flex flex-col  h-full min-h-0">
                 <div class="flex-shrink-0 mb-8">
                   <h2 class="text-3xl font-light">
                     {user().isGuest ? "游客 " : ""}
                     {user().name}，欢迎你！
                   </h2>
                 </div>
-                <div class="flex flex-row h-120 gap-8">
+                <div class="flex flex-grow flex-row gap-8 min-h-0">
                   <div class="h-full w-60 flex flex-col items-start bottom-opacity-gradient">
                     <A
                       href="/decks"

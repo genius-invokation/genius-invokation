@@ -17,7 +17,10 @@ export type GuestDeck = readonly [
   Accessor<DeckInfo[]>,
   {
     addGuestDeck: (deck: DeckWithName) => Promise<DeckInfo>;
-    updateGuestDeck: (id: number, deck: Partial<DeckWithName>) => Promise<DeckInfo>;
+    updateGuestDeck: (
+      id: number,
+      deck: Partial<DeckWithName>,
+    ) => Promise<DeckInfo>;
     removeGuestDeck: (id: number) => Promise<void>;
   },
 ];
@@ -48,27 +51,28 @@ export const useGuestDecks = (): GuestDeck => [
   {
     addGuestDeck: async (deck) => {
       const decks = getGuestDecks();
-      const id = Date.now() + Math.random();
+      const id = Date.now();
       const { data } = await axios.post<VersionResponse>("decks/version", deck);
-      const deckInfo: DeckInfo = { ...data, id };
+      const deckInfo: DeckInfo = { ...data, ...deck, id };
       decks.push(deckInfo);
       localStorage.setItem("guestDecks", JSON.stringify(decks));
       return deckInfo;
     },
     updateGuestDeck: async (id, newDeck) => {
       const decks = getGuestDecks();
-      const oldDeckIdx = decks.findIndex((deck) => deck.id === id);
-      if (oldDeckIdx === -1) {
+      const index = decks.findIndex((deck) => deck.id === id);
+      if (index === -1) {
         throw new Error("Deck not found");
       }
-      const oldDeck = decks[oldDeckIdx];
+      const oldDeck = decks[index];
       const { data } = await axios.post<VersionResponse>("decks/version", {
         ...oldDeck,
         ...newDeck,
       });
-      decks[id] = { ...data, id };
+      decks[index] = { ...data, ...newDeck, id };
+      console.log(decks);
       localStorage.setItem("guestDecks", JSON.stringify(decks));
-      return decks[id];
+      return decks[index];
     },
     removeGuestDeck: async (id) => {
       const decks = getGuestDecks();

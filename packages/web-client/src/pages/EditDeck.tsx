@@ -21,11 +21,12 @@ import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { DeckBuilder } from "@gi-tcg/deck-builder";
 import "@gi-tcg/deck-builder/style.css";
 import { useGuestDecks, useGuestInfo } from "../guest";
+import { DeckInfo } from "./Decks";
 
 export function EditDeck() {
   const params = useParams();
   const guestInfo = useGuestInfo();
-  const [, { addGuestDeck, updateGuestDeck, removeGuestDeck }] =
+  const [guestDecks, { addGuestDeck, updateGuestDeck, removeGuestDeck }] =
     useGuestDecks();
   const [searchParams, setSearchParams] = useSearchParams();
   const isNew = params.id === "new";
@@ -46,11 +47,22 @@ export function EditDeck() {
     if (isNew) {
       return true;
     }
-    const { data } = await axios.get(`decks/${deckId}`);
-    setDeckValue(data);
-    setDeckName(data.name);
+    let deckInfo: DeckInfo;
+    if (guestInfo()) {
+      const found = guestDecks().find((d) => d.id === deckId);
+      if (!found) {
+        throw new Error("未找到该牌组");
+      }
+      deckInfo = found;
+    } else {
+      const { data } = await axios.get(`decks/${deckId}`);
+      deckInfo = data;
+    }
+    console.log("deckInfo", deckInfo);
+    setDeckValue(deckInfo);
+    setDeckName(deckInfo.name);
     setSearchParams({ name: null }, { replace: true });
-    return data;
+    return deckInfo;
   });
   const [dirty, setDirty] = createSignal(false);
 
@@ -125,7 +137,11 @@ export function EditDeck() {
     if (!isNew) {
       try {
         setUploading(true);
-        await axios.patch(`decks/${deckId}`, { name: newName });
+        if (guestInfo()) {
+          await updateGuestDeck(deckId, { name: newName });
+        } else {
+          await axios.patch(`decks/${deckId}`, { name: newName });
+        }
         setDeckName(newName);
         setEditingName(false);
       } catch (e) {
@@ -180,7 +196,7 @@ export function EditDeck() {
   };
 
   return (
-    <Layout>
+    <Layout mainFlex>
       <div class="container mx-auto h-full flex flex-col min-h-0">
         <div class="flex-shrink-0 flex flex-row gap-3 mb-5 min-h-0">
           <Show
