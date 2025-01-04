@@ -13,16 +13,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { type PipeTransform, Injectable, type ArgumentMetadata } from '@nestjs/common';
+import { type PipeTransform, Injectable, type ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { isGuestId } from '../utils';
 
 @Injectable()
-export class IntOrStringPipe implements PipeTransform {
+export class ParsePlayerIdPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
+    if (typeof value !== "string") {
+      throw new BadRequestException(`Expect string on playerId, but got ${typeof value}`);
+    }
+    if (value.trim() === "") {
+      throw new BadRequestException("PlayerId can't be empty");
+    }
     const number = Number(value);
-    if (Number.isNaN(number)) {
+    if (Number.isInteger(number)) {
+      return number;
+    } else if (isGuestId(value)) {
       return value;
     } else {
-      return number;
+      throw new BadRequestException(`Invalid playerId: ${value}`);
     }
   }
 }

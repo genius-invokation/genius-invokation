@@ -20,11 +20,11 @@ import { DecksModule } from "../decks/decks.module";
 import { UsersModule } from "../users/users.module";
 import { GamesModule } from "../games/games.module";
 import { AuthModule } from "../auth/auth.module";
-import { IntOrStringPipe } from "./rooms.pipe";
+import { ParsePlayerIdPipe } from "./rooms.pipe";
 
 @Module({
   imports: [DecksModule, UsersModule, GamesModule, AuthModule],
-  providers: [RoomsService, IntOrStringPipe],
+  providers: [RoomsService, ParsePlayerIdPipe],
   controllers: [RoomsController],
 })
 export class RoomsModule {}

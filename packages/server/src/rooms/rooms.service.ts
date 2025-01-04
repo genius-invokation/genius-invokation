@@ -543,8 +543,8 @@ export class RoomsService {
     return { room };
   }
 
-  async createRoomFromGuest(playerId: string | null, params: GuestCreateRoomDto) {
-    playerId ??= createGuestId();
+  async createRoomFromGuest(params: GuestCreateRoomDto) {
+    const playerId = createGuestId();
     const playerInfo: PlayerInfo = {
       isGuest: true,
       id: playerId,
@@ -664,8 +664,8 @@ export class RoomsService {
     return this.joinRoom(playerInfo, roomId);
   }
 
-  async joinRoomFromGuest(playerId: string | null, roomId: number, params: GuestJoinRoomDto) {
-    playerId ??= createGuestId();
+  async joinRoomFromGuest(roomId: number, params: GuestJoinRoomDto) {
+    const playerId = createGuestId();
     const playerInfo: PlayerInfo = {
       isGuest: true,
       id: playerId,

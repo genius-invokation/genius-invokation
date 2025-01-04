@@ -44,7 +44,7 @@ import { DeckDto } from "../decks/decks.controller";
 import { Public } from "../auth/auth.guard";
 import { validateDto } from "../utils";
 import { AuthService } from "../auth/auth.service";
-import { IntOrStringPipe } from "./rooms.pipe";
+import { ParsePlayerIdPipe } from "./rooms.pipe";
 
 export class CreateRoomDto {
   @IsBoolean()
@@ -129,7 +129,10 @@ export class PlayerActionResponseDto {
 @Controller("rooms")
 @Public()
 export class RoomsController {
-  constructor(private rooms: RoomsService, private authService: AuthService) {}
+  constructor(
+    private rooms: RoomsService,
+    private authService: AuthService,
+  ) {}
 
   @Get()
   getRooms() {
@@ -137,22 +140,18 @@ export class RoomsController {
   }
 
   @Post()
-  async createRoom(
-    @User() userId: number | null,
-    @Guest() guestId: string | null,
-    @Body() params: unknown,
-  ) {
+  async createRoom(@User() userId: number | null, @Body() params: unknown) {
     if (userId !== null) {
       const dto = await validateDto(params, UserCreateRoomDto);
       return this.rooms.createRoomFromUser(userId, dto);
     } else {
       const dto = await validateDto(params, GuestCreateRoomDto);
-      const { playerId, room } = await this.rooms.createRoomFromGuest(guestId, dto);
+      const { playerId, room } = await this.rooms.createRoomFromGuest(dto);
       return {
         accessToken: await this.authService.signGuest(playerId),
         playerId,
         room,
-      }
+      };
     }
   }
 
@@ -184,7 +183,6 @@ export class RoomsController {
   @Post(":roomId/players")
   async joinRoom(
     @User() userId: number | null,
-    @Guest() guestId: string | null,
     @Param("roomId", ParseIntPipe) roomId: number,
     @Body() params: object,
   ) {
@@ -193,11 +191,11 @@ export class RoomsController {
       return this.rooms.joinRoomFromUser(userId, roomId, dto.deckId);
     } else {
       const dto = await validateDto(params, GuestJoinRoomDto);
-      const { playerId } = await  this.rooms.joinRoomFromGuest(guestId, roomId, dto);
+      const { playerId } = await this.rooms.joinRoomFromGuest(roomId, dto);
       return {
         accessToken: await this.authService.signGuest(playerId),
         playerId,
-      }
+      };
     }
   }
 
@@ -205,7 +203,7 @@ export class RoomsController {
   getNotification(
     @UserOrGuest() playerId: number | string | null,
     @Param("roomId", ParseIntPipe) roomId: number,
-    @Param("targetPlayerId", IntOrStringPipe) targetPlayerId: string | number,
+    @Param("targetPlayerId", ParsePlayerIdPipe) targetPlayerId: string | number,
   ) {
     return this.rooms.playerNotification(roomId, playerId, targetPlayerId);
   }
@@ -214,7 +212,7 @@ export class RoomsController {
   getAction(
     @UserOrGuest() playerId: number | string | null,
     @Param("roomId", ParseIntPipe) roomId: number,
-    @Param("targetPlayerId", IntOrStringPipe) targetPlayerId: number | string,
+    @Param("targetPlayerId", ParsePlayerIdPipe) targetPlayerId: number | string,
   ) {
     if (playerId !== targetPlayerId) {
       throw new UnauthorizedException(
@@ -228,7 +226,7 @@ export class RoomsController {
   postAction(
     @UserOrGuest() playerId: number | string | null,
     @Param("roomId", ParseIntPipe) roomId: number,
-    @Param("targetPlayerId", IntOrStringPipe) targetPlayerId: number | string,
+    @Param("targetPlayerId", ParsePlayerIdPipe) targetPlayerId: number | string,
     @Body() action: PlayerActionResponseDto,
   ) {
     if (playerId !== targetPlayerId) {
@@ -244,7 +242,7 @@ export class RoomsController {
   postGiveUp(
     @UserOrGuest() playerId: number | string | null,
     @Param("roomId", ParseIntPipe) roomId: number,
-    @Param("targetPlayerId", IntOrStringPipe) targetPlayerId: number | string,
+    @Param("targetPlayerId", ParsePlayerIdPipe) targetPlayerId: number | string,
   ) {
     if (playerId !== targetPlayerId) {
       throw new UnauthorizedException(`You can only give up your own game`);
