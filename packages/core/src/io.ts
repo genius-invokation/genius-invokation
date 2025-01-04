@@ -180,6 +180,16 @@ export function exposeMutation(
     case "setPlayerFlag":
     case "switchActive": // We will manually handle this
       return null;
+    case "swapCharacterPosition":
+      return {
+        swapCharacterPosition: {
+          who: m.who,
+          character0Id: m.characters[0].id,
+          character0DefinitionId: m.characters[0].definition.id,
+          character1Id: m.characters[1].id,
+          character1DefinitionId: m.characters[1].definition.id,
+        }
+      }
     case "changePhase":
       const newPhase = exposePhaseType(m.newPhase);
       return {

@@ -76,6 +76,12 @@ export interface SwitchActiveM {
   readonly value: CharacterState;
 }
 
+export interface SwapCharacterPositionM {
+  readonly type: "swapCharacterPosition";
+  readonly who: 0 | 1;
+  readonly characters: readonly [CharacterState, CharacterState];
+}
+
 export interface RemoveCardM {
   readonly type: "removeCard";
   readonly who: 0 | 1;
@@ -172,6 +178,7 @@ export type Mutation =
   | SetWinnerM
   | TransferCardM
   | SwitchActiveM
+  | SwapCharacterPositionM
   | RemoveCardM
   | CreateCardM
   | CreateCharacterM
@@ -272,6 +279,23 @@ function doMutation(state: GameState, m: Mutation): GameState {
       return produce(state, (draft) => {
         const player = draft.players[m.who];
         player.activeCharacterId = m.value.id;
+      });
+    }
+    case "swapCharacterPosition": {
+      return produce(state, (draft) => {
+        const player = draft.players[m.who];
+        const [c1, c2] = m.characters;
+        const idx1 = player.characters.findIndex((c) => c.id === c1.id);
+        const idx2 = player.characters.findIndex((c) => c.id === c2.id);
+        if (idx1 === -1 || idx2 === -1) {
+          throw new GiTcgCoreInternalError(
+            `Character not found in player ${m.who}`,
+          );
+        }
+        [player.characters[idx1], player.characters[idx2]] = [
+          player.characters[idx2],
+          player.characters[idx1],
+        ];
       });
     }
     case "removeCard": {
@@ -453,6 +477,11 @@ export function stringifyMutation(m: Mutation): string | null {
     }
     case "switchActive": {
       return `Switch active of player ${m.who} to ${stringifyState(m.value)}`;
+    }
+    case "swapCharacterPosition": {
+      return `Swap character position of player ${m.who}: ${stringifyState(
+        m.characters[0],
+      )} and ${stringifyState(m.characters[1])}`;
     }
     case "removeCard": {
       return `Dispose card ${stringifyState(m.oldState)} of player ${m.who}'s ${

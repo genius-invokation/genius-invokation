@@ -530,7 +530,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const targetInjury =
       targetState.variables.maxHealth - targetState.variables.health;
     const finalValue = Math.min(value, targetInjury);
-    
+
     let healInfo: HealInfo = {
       type: damageType,
       cancelled: false,
@@ -1050,6 +1050,24 @@ export class SkillContext<Meta extends ContextMetaBase> {
       newDefinition: def,
     });
     this.emitEvent("onTransformDefinition", this.state, target, def);
+  }
+
+  swapCharacterPosition(a: CharacterTargetArg, b: CharacterTargetArg) {
+    const character0 = this.queryCoerceToCharacters(a);
+    const character1 = this.queryCoerceToCharacters(b);
+    if (character0.length !== 1 || character1.length !== 1) {
+      throw new GiTcgDataError(
+        "Expected exactly one target for swapping character",
+      );
+    }
+    if (character0[0].who !== character1[0].who) {
+      throw new GiTcgDataError("Cannot swap characters of different players");
+    }
+    this.mutate({
+      type: "swapCharacterPosition",
+      who: character0[0].who,
+      characters: [character0[0].state, character1[0].state],
+    });
   }
 
   absorbDice(strategy: "seq" | "diff", count: number): DiceType[] {

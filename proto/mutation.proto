@@ -39,6 +39,7 @@ message ExposedMutation {
     ActionDoneEM action_done = 17;
     TriggeredEM triggered = 18;
     PlayerStatusChangeEM player_status_change = 19;
+    SwapCharacterPositionEM swap_character_position = 20;
   }
 }
 
@@ -208,4 +209,12 @@ enum PlayerStatus {
 message PlayerStatusChangeEM {
   int32 who = 1;
   PlayerStatus status = 2;
+}
+
+message SwapCharacterPositionEM {
+  int32 who = 1;
+  sint32 character_0_id = 2;
+  int32 character_0_definition_id = 3;
+  sint32 character_1_id = 4;
+  int32 character_1_definition_id = 5;
 }
