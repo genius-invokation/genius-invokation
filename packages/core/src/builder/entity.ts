@@ -497,7 +497,7 @@ export class EntityBuilder<
           // 扣除持续回合数
           if (hasDuration) {
             self.addVariable("duration", -1);
-            if (self.getVariable("duration")! <= 0) {
+            if (self.getVariable("duration") <= 0) {
               self.dispose();
             }
           }

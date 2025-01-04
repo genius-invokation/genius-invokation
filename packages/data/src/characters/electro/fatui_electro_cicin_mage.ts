@@ -96,7 +96,7 @@ export const ElectroCicinShield = combatStatus(124042)
   .do((c) => {
     const cicin = c.$(`my summon with definition id ${ElectroCicin}`);
     if (cicin) {
-      const usage = cicin.getVariable("usage")!;
+      const usage = cicin.getVariable("usage");
       c.addVariable("shield", Math.min(usage, 3));
     }
   })

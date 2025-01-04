@@ -13,9 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { EntityState, EntityVariables,  } from "../../base/state";
+import { EntityState, EntityVariables } from "../../base/state";
 import { GiTcgDataError } from "../../error";
-import { EntityArea, EntityDefinition, USAGE_PER_ROUND_VARIABLE_NAMES } from "../../base/entity";
+import {
+  EntityArea,
+  EntityDefinition,
+  USAGE_PER_ROUND_VARIABLE_NAMES,
+} from "../../base/entity";
 import { getEntityArea, getEntityById } from "../../utils";
 import { Character } from "./character";
 import { ContextMetaBase, SkillContext } from "./skill";
@@ -44,7 +48,9 @@ export class Entity<Meta extends ContextMetaBase> {
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
   }
-  getVariable<Name extends string>(name: Name): EntityVariables[Name] {
+  getVariable<Name extends string>(
+    name: Name,
+  ): NonNullable<EntityVariables[Name]> {
     return this.state.variables[name];
   }
 

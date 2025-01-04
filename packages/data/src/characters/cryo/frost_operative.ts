@@ -92,7 +92,7 @@ export const BloodbondedShadow = skill(21044)
       const bondSt = c.$(`status with definition id ${BondOfLife} at opp active`);
       if (bondSt) {
         const bondValue = Math.min((1 << 32) - 1, bondSt.getVariable("usage") * 2);
-        bondSt.setVariable("usage", bondValue);
+        bondSt.addVariable("usage", bondValue);
       }
     }
   })

@@ -110,7 +110,7 @@ export const ReignitedHeartOfOasis = status(127027)
   .do((c) => {
     const nourishment = c.$(`my combat status with definition id ${OasisNourishment}`);
     if (nourishment) {
-      const usage = nourishment.getVariable("usage")!;
+      const usage = nourishment.getVariable("usage");
       nourishment.dispose();
       c.heal(usage, "@master");
     }

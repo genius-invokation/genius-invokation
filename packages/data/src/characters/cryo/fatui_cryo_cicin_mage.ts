@@ -46,7 +46,7 @@ export const FlowingCicinShield = combatStatus(121012)
   .do((c) => {
     const cicins = c.$(`my summons with definition id ${CryoCicins}`);
     if (cicins) {
-      const extraShield = Math.min(cicins.getVariable("usage")!, 3);
+      const extraShield = Math.min(cicins.getVariable("usage"), 3);
       c.addVariable("shield", extraShield);
     }
   })
@@ -134,7 +134,7 @@ export const CicinsColdGlare = card(221011)
   .on("useSkill")
   .do((c) => {
     const cicins = c.$(`my summons with definition id ${CryoCicins}`);
-    if (cicins && cicins?.getVariable("usage")! > 3) {
+    if (cicins && cicins?.getVariable("usage") > 3) {
       c.damage(DamageType.Cryo, 2);
     }
   })
