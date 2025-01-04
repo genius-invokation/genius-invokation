@@ -1,11 +1,11 @@
 import { createSignal } from "solid-js";
 import { GITHUB_AUTH_REDIRECT_URL } from "../config";
-import { useUserContext } from "../App";
+import { useAuth } from "../auth";
 
 export function Login() {
   const CLIENT_ID = "Iv23liMGX6EkkrfUax8B";
   const REDIRECT_URL = encodeURIComponent(GITHUB_AUTH_REDIRECT_URL);
-  const {refresh} = useUserContext();
+  const { loginGuest } = useAuth();
 
   const showGuestHint = () => {
     window.alert(`在游客模式下：
@@ -17,12 +17,11 @@ export function Login() {
 
   const [guestNameValid, setGuestNameValid] = createSignal(false);
 
-  const guestLogin = (e: SubmitEvent) => {
+  const guestLogin = async (e: SubmitEvent) => {
     e.preventDefault();
     const form = new FormData(e.target as HTMLFormElement);
-    const guestName = form.get("guestName") as string;
-    window.localStorage.setItem("guestName", guestName.trim());
-    refresh();
+    const name = form.get("guestName") as string;
+    loginGuest(name);
   };
 
   return (

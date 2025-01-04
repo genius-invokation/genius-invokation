@@ -26,7 +26,8 @@ import { ToggleSwitch } from "./ToggleSwitch";
 import { DeckInfoProps } from "./DeckBriefInfo";
 import { roomIdToCode } from "../utils";
 import { useNavigate } from "@solidjs/router";
-import { useUserContext, useVersionContext } from "../App";
+import { useAuth } from "../auth";
+import { useVersionContext } from "../App";
 import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { useGuestDecks, useGuestInfo } from "../guest";
 
@@ -110,8 +111,8 @@ const TIME_CONFIGS: TimeConfig[] = [
 ];
 
 export function RoomDialog(props: RoomDialogProps) {
-  const { user, refresh } = useUserContext();
-  const guestInfo = useGuestInfo();
+  const { status } = useAuth();
+  const [guestInfo, setGuestInfo] = useGuestInfo();
   const [guestDecks] = useGuestDecks();
   const navigate = useNavigate();
   const editable = () => !props.joiningRoomInfo;
@@ -134,7 +135,6 @@ export function RoomDialog(props: RoomDialogProps) {
     const versions = versionInfo()?.supportedGameVersions ?? [];
     if (props.joiningRoomInfo?.config.gameVersion) {
       const ver = versions.indexOf(props.joiningRoomInfo.config.gameVersion);
-      console.log(ver);
       setVersion(ver);
     } else {
       setVersion(versions.length - 1);
@@ -143,14 +143,15 @@ export function RoomDialog(props: RoomDialogProps) {
 
   const updateAvailableDecks = async (version: number) => {
     setLoadingDecks(true);
+    const { type } = status();
     try {
-      if (guestInfo()) {
+      if (type === "user") {
+        const { data } = await axios.get(`decks?requiredVersion=${version}`);
+        setAvailableDecks(data.data);
+      } else if (type === "guest") {
         setAvailableDecks(
           guestDecks().filter((deck) => deck.requiredVersion <= version),
         );
-      } else {
-        const { data } = await axios.get(`decks?requiredVersion=${version}`);
-        setAvailableDecks(data.data);
       }
     } catch (e) {
       setAvailableDecks([]);
@@ -175,10 +176,10 @@ export function RoomDialog(props: RoomDialogProps) {
 
   const enterRoom = async () => {
     setEntering(true);
-    const guest = guestInfo();
+    const { type, name, id } = status();
     try {
       let roomId = props.joiningRoomInfo?.id;
-      let playerId = user()?.id ?? null;
+      let playerId = id ?? null;
       let response;
       if (typeof roomId === "undefined") {
         const payload: any = {
@@ -188,12 +189,12 @@ export function RoomDialog(props: RoomDialogProps) {
           watchable: watchable(),
           allowGuest: allowGuest(),
         };
-        if (guest) {
-          payload.name = guest.name;
+        if (type === "guest") {
+          payload.name = name;
           payload.deck = guestDecks().find(
             (deck) => deck.id === selectedDeck(),
           );
-        } else {
+        } else if (type === "user") {
           payload.hostDeckId = selectedDeck();
         }
         const { data } = await axios.post("rooms", payload);
@@ -201,12 +202,12 @@ export function RoomDialog(props: RoomDialogProps) {
         roomId = response.room.id as number;
       } else {
         let payload;
-        if (guest) {
+        if (type === "guest") {
           payload = {
             deck: guestDecks().find((deck) => deck.id === selectedDeck()),
-            name: guest.name,
+            name,
           };
-        } else {
+        } else if (type === "user") {
           payload = {
             deckId: selectedDeck(),
           };
@@ -219,8 +220,7 @@ export function RoomDialog(props: RoomDialogProps) {
       }
       if (response.playerId) {
         playerId = response.playerId;
-        localStorage.setItem("guestId", response.playerId);
-        refresh();
+        setGuestInfo((info) => info && { ...info, id: response.playerId });
       }
       const roomCode = roomIdToCode(roomId);
       navigate(`/rooms/${roomCode}?player=${playerId}&action=1`);

@@ -18,7 +18,8 @@ import axios, { AxiosError } from "axios";
 import { For, Show } from "solid-js";
 import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { DeckInfo } from "../pages/Decks";
-import { useGuestDecks, useGuestInfo } from "../guest";
+import { useGuestDecks } from "../guest";
+import { useAuth } from "../auth";
 
 export interface DeckInfoProps extends DeckInfo {
   editable?: boolean;
@@ -27,7 +28,7 @@ export interface DeckInfoProps extends DeckInfo {
 
 export function DeckBriefInfo(props: DeckInfoProps) {
   const navigate = useNavigate();
-  const guestInfo = useGuestInfo();
+  const { status } = useAuth();
   const [, { removeGuestDeck }] = useGuestDecks();
 
   const viewDeck = (e: MouseEvent) => {
@@ -43,11 +44,12 @@ export function DeckBriefInfo(props: DeckInfoProps) {
 
   const deleteDeck = async (e: MouseEvent) => {
     e.stopPropagation();
+    const { type } = status();
     if (confirm(`确定要删除牌组 ${props.name} 吗？`)) {
       try {
-        if (guestInfo()) {
+        if (type === "guest") {
           await removeGuestDeck(props.id);
-        } else {
+        } else if (type === "user") {
           await axios.delete(`decks/${props.id}`);
         }
         props.onDelete?.();

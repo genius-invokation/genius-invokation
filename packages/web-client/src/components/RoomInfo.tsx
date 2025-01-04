@@ -1,6 +1,6 @@
 import { For, Show, createResource } from "solid-js";
 import { A } from "@solidjs/router";
-import { useUserContext } from "../App";
+import { useAuth } from "../auth";
 import { getPlayerAvatarUrl, roomIdToCode } from "../utils";
 import type { PlayerInfo } from "../utils";
 
@@ -12,12 +12,12 @@ export interface RoomInfoProps {
 }
 
 export function RoomInfo(props: RoomInfoProps) {
-  const { user } = useUserContext();
-  const insideRoom = () => props.players.some((p) => p.id === user()?.id);
+  const { status } = useAuth();
+  const insideRoom = () => props.players.some((p) => p.id === status()?.id);
   const code = () => roomIdToCode(props.id);
   const url = (playerId: string | number) => {
     if (insideRoom()) {
-      return `/rooms/${code()}?player=${user()!.id}&action=1`;
+      return `/rooms/${code()}?player=${status()!.id}&action=1`;
     } else {
       return `/rooms/${code()}?player=${playerId}`;
     }

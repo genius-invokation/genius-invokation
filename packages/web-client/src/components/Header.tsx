@@ -14,20 +14,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { A, useNavigate } from "@solidjs/router";
-import { useUserContext } from "../App";
 import { Show } from "solid-js";
 import { IS_BETA } from "@gi-tcg/config";
 import { getAvatarUrl } from "../utils";
+import { useGuestInfo } from "../guest";
+import { useAuth } from "../auth";
 
 export function Header() {
   const navigate = useNavigate();
-  const { user, refresh } = useUserContext();
-  const logout = async () => {
-    localStorage.removeItem("guestName");
-    localStorage.removeItem("accessToken");
-    await refresh();
-    navigate("/");
-  };
+  const { status, logout } = useAuth();
   return (
     <header class="fixed top-0 left-0 w-full flex flex-row h-16 bg-white z-200 px-4 shadow-md items-center gap-4">
       <div class="flex-grow flex items-end gap-2">
@@ -41,27 +36,26 @@ export function Header() {
           </span>
         </Show>
       </div>
-      <Show when={user()}>
-        {(info) => (
-          <>
-            <Show when={!info().isGuest}>
-              <A href={`/user/${info().id}`}>
-                <div class="rounded-full w-12 h-12 b-solid b-1 b-gray-200 flex items-center justify-center">
-                  <img
-                    src={getAvatarUrl(info().id as number)}
-                    class="w-10 h-10 [clip-path:circle()]"
-                  />
-                </div>
-              </A>
-            </Show>
-            <button
-              class="btn btn-outline-red text-1em gap-0.5em"
-              onClick={logout}
-            >
-              退出登录
-            </button>
-          </>
-        )}
+      <Show when={status().type !== "notLogin"}>
+        <Show when={status().type === "user"}>
+          <A href={`/user/${status().id}`}>
+            <div class="rounded-full w-12 h-12 b-solid b-1 b-gray-200 flex items-center justify-center">
+              <img
+                src={getAvatarUrl(status().id as number)}
+                class="w-10 h-10 [clip-path:circle()]"
+              />
+            </div>
+          </A>
+        </Show>
+        <button
+          class="btn btn-outline-red text-1em gap-0.5em"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
+          退出登录
+        </button>
       </Show>
     </header>
   );

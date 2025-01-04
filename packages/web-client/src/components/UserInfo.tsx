@@ -14,10 +14,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { createResource, For, Match, Show, Switch } from "solid-js";
-import { UserInfo as UserInfoT } from "../App";
+import { UserInfo as UserInfoT } from "../auth";
 import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { GameInfo } from "./GameInfo";
 
 export interface UserInfoProps extends UserInfoT {}
@@ -52,7 +52,12 @@ export function UserInfo(props: UserInfoProps) {
           <dd class="flex flex-col gap-1">
             <Switch>
               <Match when={games.loading}>加载中...</Match>
-              <Match when={games.error}>加载失败</Match>
+              <Match when={games.error}>
+                加载失败：{" "}
+                {games.error instanceof AxiosError
+                  ? games.error.response?.data.message
+                  : games.error}
+              </Match>
               <Match when={games()}>
                 {(games) => (
                   <For each={games().data}>

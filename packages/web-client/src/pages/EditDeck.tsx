@@ -13,24 +13,31 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { createSignal, createResource, Switch, Match, Show } from "solid-js";
+import {
+  createSignal,
+  createResource,
+  Switch,
+  Match,
+  Show,
+  createEffect,
+} from "solid-js";
 import { Layout } from "../layouts/Layout";
 import axios, { AxiosError } from "axios";
 import { decode, encode, type Deck } from "@gi-tcg/utils";
-import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
+import { useParams, useSearchParams } from "@solidjs/router";
 import { DeckBuilder } from "@gi-tcg/deck-builder";
 import "@gi-tcg/deck-builder/style.css";
-import { useGuestDecks, useGuestInfo } from "../guest";
+import { useGuestDecks } from "../guest";
 import { DeckInfo } from "./Decks";
+import { useAuth } from "../auth";
 
 export function EditDeck() {
   const params = useParams();
-  const guestInfo = useGuestInfo();
+  const { status } = useAuth();
   const [guestDecks, { addGuestDeck, updateGuestDeck }] = useGuestDecks();
   const [searchParams, setSearchParams] = useSearchParams();
   const isNew = params.id === "new";
   const deckId = Number(params.id);
-  const navigate = useNavigate();
   const [deckName, setDeckName] = createSignal<string>(
     searchParams.name ?? "新建牌组",
   );
@@ -42,27 +49,30 @@ export function EditDeck() {
     characters: [],
     cards: [],
   });
-  const [deckData] = createResource(async () => {
+  const [userDeckData] = createResource(() =>
+    axios.get(`decks/${deckId}`).then((r) => r.data),
+  );
+
+  createEffect(() => {
     if (isNew) {
-      return true;
+      return;
     }
-    let deckInfo: DeckInfo;
-    if (guestInfo()) {
+    let deckInfo: DeckInfo = userDeckData();
+    const { type } = status();
+    if (type === "guest") {
       const found = guestDecks().find((d) => d.id === deckId);
       if (!found) {
         throw new Error("未找到该牌组");
       }
       deckInfo = found;
-    } else {
-      const { data } = await axios.get(`decks/${deckId}`);
-      deckInfo = data;
     }
-    console.log("deckInfo", deckInfo);
-    setDeckValue(deckInfo);
-    setDeckName(deckInfo.name);
-    setSearchParams({ name: null }, { replace: true });
-    return deckInfo;
+    if (deckInfo) {
+      setDeckValue(deckInfo);
+      setDeckName(deckInfo.name);
+      setSearchParams({ name: null }, { replace: true });
+    }
   });
+
   const [dirty, setDirty] = createSignal(false);
 
   // useBeforeLeave(async (e) => {
@@ -133,12 +143,13 @@ export function EditDeck() {
     const data = new FormData(e.target as HTMLFormElement);
     const newName = data.get("name") as string;
     const oldName = deckName();
+    const { type } = status();
     if (!isNew) {
       try {
         setUploading(true);
-        if (guestInfo()) {
+        if (type === "guest") {
           await updateGuestDeck(deckId, { name: newName });
-        } else {
+        } else if (type === "user") {
           await axios.patch(`decks/${deckId}`, { name: newName });
         }
         setDeckName(newName);
@@ -160,20 +171,21 @@ export function EditDeck() {
 
   const saveDeck = async () => {
     const deck = deckValue();
+    const { type } = status();
     try {
       setUploading(true);
       if (isNew) {
         const deckInfo = { ...deck, name: deckName() };
-        if (guestInfo()) {
+        if (type === "guest") {
           await addGuestDeck(deckInfo);
-        } else {
+        } else if (type === "user") {
           await axios.post("decks", deckInfo);
         }
         setDirty(false);
       } else {
-        if (guestInfo()) {
+        if (type === "guest") {
           await updateGuestDeck(deckId, { ...deck });
-        } else {
+        } else if (type === "user") {
           await axios.patch(`decks/${deckId}`, { ...deck });
         }
         setDirty(false);
@@ -276,8 +288,13 @@ export function EditDeck() {
           </button>
         </div>
         <Switch>
-          <Match when={deckData.loading}>正在加载中...</Match>
-          <Match when={deckData.error}>加载失败，请刷新页面重试</Match>
+          <Match when={userDeckData.loading}>正在加载中...</Match>
+          <Match when={status().type === "user" && userDeckData.error}>
+            加载失败：{" "}
+            {userDeckData.error instanceof AxiosError
+              ? userDeckData.error.response?.data.message
+              : userDeckData.error}
+          </Match>
           <Match when={true}>
             <DeckBuilder
               class="min-h-0 h-full w-full"

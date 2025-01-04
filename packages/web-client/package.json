@@ -16,6 +16,7 @@
     "@gi-tcg/deck-builder": "workspace:*",
     "@gi-tcg/webui-core": "workspace:*",
     "@server-sent-stream/web": "^1.0.3",
+    "@solid-primitives/storage": "^4.2.1",
     "@solidjs/router": "^0.13.5",
     "@una-ui/preset": "^0.4.0-beta.5",
     "@unocss/reset": "^0.58.3",

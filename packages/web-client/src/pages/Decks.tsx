@@ -18,14 +18,15 @@ import {
   Match,
   Switch,
   createResource,
-  ResourceReturn,
+  Accessor,
 } from "solid-js";
 import { Layout } from "../layouts/Layout";
 import axios from "axios";
 import { A } from "@solidjs/router";
 import { DeckBriefInfo } from "../components/DeckBriefInfo";
 import { Deck } from "@gi-tcg/utils";
-import { useGuestDecks, useGuestInfo } from "../guest";
+import { useGuestDecks } from "../guest";
+import { useAuth } from "../auth";
 
 export interface DeckInfo extends Deck {
   id: number;
@@ -39,24 +40,46 @@ interface DecksResponse {
   data: DeckInfo[];
 }
 
-export function useDecks(): ResourceReturn<DecksResponse> {
-  const guestInfo = useGuestInfo();
-  const [guestDeck] = useGuestDecks();
-  return createResource(() => {
-    if (guestInfo()) {
-      const data = guestDeck();
-      return {
-        data,
-        count: data.length,
-      };
-    } else {
-      return axios.get<DecksResponse>("decks").then((res) => res.data);
-    }
-  });
+export interface UseDecksResult {
+  readonly decks: Accessor<DecksResponse>;
+  readonly loading: Accessor<boolean>;
+  readonly error: Accessor<boolean>;
+  readonly refetch: () => void;
+}
+
+export function useDecks(): UseDecksResult {
+  const { status } = useAuth();
+  const EMPTY = { count: 0, data: [] };
+  const [userDecks, { refetch }] = createResource(
+    () => axios.get<DecksResponse>("decks").then((res) => res.data),
+    {
+      initialValue: EMPTY,
+    },
+  );
+  const [guestDecks] = useGuestDecks();
+  return {
+    decks: () => {
+      const { type } = status();
+      if (type === "guest") {
+        const data = guestDecks();
+        return {
+          data,
+          count: data.length,
+        };
+      } else if (type === "user") {
+        return userDecks();
+      } else {
+        return EMPTY;
+      }
+    },
+    loading: () => status().type === "user" && userDecks.loading,
+    error: () => status().type === "user" && userDecks.error,
+    refetch,
+  };
 }
 
 export function Decks() {
-  const [decks, { refetch }] = useDecks();
+  const { decks, loading, error, refetch } = useDecks();
   return (
     <Layout>
       <div class="container mx-auto">
@@ -67,27 +90,25 @@ export function Decks() {
           </A>
         </div>
         <Switch>
-          <Match when={decks.loading}>正在加载中...</Match>
-          <Match when={decks.error}>加载失败，请刷新页面重试</Match>
-          <Match when={decks()}>
-            {(decks) => (
-              <ul class="flex flex-row flex-wrap gap-3">
-                <For
-                  each={decks().data}
-                  fallback={
-                    <li class="p-4 text-gray-5">暂无牌组，可点击 + 添加</li>
-                  }
-                >
-                  {(deckData) => (
-                    <DeckBriefInfo
-                      editable
-                      onDelete={() => refetch()}
-                      {...deckData}
-                    />
-                  )}
-                </For>
-              </ul>
-            )}
+          <Match when={loading()}>正在加载中...</Match>
+          <Match when={error()}>加载失败，请刷新页面重试</Match>
+          <Match when={true}>
+            <ul class="flex flex-row flex-wrap gap-3">
+              <For
+                each={decks().data}
+                fallback={
+                  <li class="p-4 text-gray-5">暂无牌组，可点击 + 添加</li>
+                }
+              >
+                {(deckData) => (
+                  <DeckBriefInfo
+                    editable
+                    onDelete={() => refetch()}
+                    {...deckData}
+                  />
+                )}
+              </For>
+            </ul>
           </Match>
         </Switch>
       </div>

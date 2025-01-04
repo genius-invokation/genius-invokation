@@ -21,7 +21,6 @@ import "./index.css";
 import "@una-ui/preset/una.css";
 import "@unocss/reset/tailwind-compat.css";
 
-import App from "./App";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "./config";
 
@@ -43,6 +42,7 @@ async function main() {
   });
   
   const app = document.getElementById("app")!;
+  const { default: App } = await import ("./App");
   render(() => <App />, app);
 }
 

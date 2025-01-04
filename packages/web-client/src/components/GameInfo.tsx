@@ -15,9 +15,9 @@
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useUserContext } from "../App";
 import { Show } from "solid-js";
 import axios from "axios";
+import { useAuth } from "../auth";
 
 dayjs.extend(relativeTime);
 
@@ -28,7 +28,7 @@ export interface GameInfoProps {
 }
 
 export function GameInfo(props: GameInfoProps) {
-  const { user } = useUserContext();
+  const { status } = useAuth();
 
   const downloadLog = async () => {
     try {
@@ -50,7 +50,7 @@ export function GameInfo(props: GameInfoProps) {
       <div class="w-24" title={props.createdAt}>{dayjs(props.createdAt).fromNow()}</div>
       <div class="text-lg">
         <Show
-          when={user()?.id === props.winnerId}
+          when={status()?.id === props.winnerId}
           fallback={<div class="text-red-400">失败</div>}
         >
           <div class="text-green-400">胜利</div>
