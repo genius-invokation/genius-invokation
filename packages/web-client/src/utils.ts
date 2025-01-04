@@ -13,7 +13,7 @@ export function getAvatarUrl(userId: number) {
 
 export function getPlayerAvatarUrl(player: PlayerInfo) {
   if (player.isGuest) {
-    return `https://placehold.jp/70x120.png?text=${encodeURIComponent(
+    return `https://placehold.jp/50x50.png?text=${encodeURIComponent(
       String.fromCodePoint(player.name.codePointAt(0)!),
     )}`;
   } else {

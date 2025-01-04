@@ -119,6 +119,7 @@ export function Home() {
               <div class="flex flex-col">
                 <div class="flex-shrink-0 mb-8">
                   <h2 class="text-3xl font-light">
+                    {user().isGuest ? "游客 " : ""}
                     {user().name}，欢迎你！
                   </h2>
                 </div>

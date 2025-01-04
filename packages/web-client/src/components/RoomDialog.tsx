@@ -122,7 +122,7 @@ export function RoomDialog(props: RoomDialogProps) {
   const { versionInfo } = useVersionContext();
   const [version, setVersion] = createSignal(-1);
   const [timeConfig, setTimeConfig] = createSignal(TIME_CONFIGS[1]);
-  const [isPublic, setIsPublic] = createSignal(false);
+  const [isPublic, setIsPublic] = createSignal(true);
   const [watchable, setWatchable] = createSignal(true);
   const [availableDecks, setAvailableDecks] = createSignal<DeckInfoProps[]>([]);
   const [loadingDecks, setLoadingDecks] = createSignal(true);
