@@ -686,7 +686,7 @@ export class RoomsService {
   }
 
   private async joinRoom(playerInfo: PlayerInfo, roomId: number) {
-    const allRooms = this.getAllRooms();
+    const allRooms = this.getAllRooms(true);
     const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room ${roomId} not found`);
@@ -695,7 +695,7 @@ export class RoomsService {
       throw new ConflictException(`Room ${roomId} already started`);
     }
     if (playerInfo.isGuest && !room.config.allowGuest) {
-      throw new UnauthorizedException(`Room ${roomId} not allow guest`);
+      throw new UnauthorizedException(`Room ${roomId} does not allow guest`);
     }
     if (
       allRooms.some((room) => room.players.some((p) => p.id === playerInfo.id))
