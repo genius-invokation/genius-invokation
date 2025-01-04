@@ -50,7 +50,9 @@ export function Home() {
     axios.get("rooms/current").then((r) => r.data),
   );
   const [allRooms, { refetch }] = createResource(() =>
-    axios.get("rooms").then((e) => e.data),
+    axios
+      .get("rooms")
+      .then((e) => e.data.filter((r: any) => r.id !== currentRoom()?.id)),
   );
 
   const createRoom = () => {

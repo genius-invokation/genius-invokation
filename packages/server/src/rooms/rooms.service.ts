@@ -81,6 +81,7 @@ interface RoomConfig extends Partial<GameConfig> {
   actionTime: number; // defaults 25
   watchable: boolean; // defaults false
   private: boolean; // defaults false
+  allowGuest: boolean; // defaults true
   gameVersion: Version; // defaults latest
 }
 
@@ -593,6 +594,7 @@ export class RoomsService {
       actionTime: params.actionTime ?? 25,
       watchable: params.watchable ?? false,
       private: params.private ?? false,
+      allowGuest: params.allowGuest ?? true,
     };
 
     try {
@@ -692,6 +694,9 @@ export class RoomsService {
     if (room.started) {
       throw new ConflictException(`Room ${roomId} already started`);
     }
+    if (playerInfo.isGuest && !room.config.allowGuest) {
+      throw new UnauthorizedException(`Room ${roomId} not allow guest`);
+    }
     if (
       allRooms.some((room) => room.players.some((p) => p.id === playerInfo.id))
     ) {
@@ -749,12 +754,16 @@ export class RoomsService {
     return room.getRoomInfo();
   }
 
-  getAllRooms(): RoomInfo[] {
+  getAllRooms(guest: boolean): RoomInfo[] {
     const result: RoomInfo[] = [];
     for (const room of this.rooms.values()) {
-      if (!room.config.private) {
-        result.push(room.getRoomInfo());
+      if (room.config.private) {
+        continue;
       }
+      if (guest && !room.config.allowGuest) {
+        continue;
+      }
+      result.push(room.getRoomInfo());
     }
     return result;
   }

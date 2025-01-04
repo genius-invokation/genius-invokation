@@ -124,6 +124,7 @@ export function RoomDialog(props: RoomDialogProps) {
   const [timeConfig, setTimeConfig] = createSignal(TIME_CONFIGS[1]);
   const [isPublic, setIsPublic] = createSignal(true);
   const [watchable, setWatchable] = createSignal(true);
+  const [allowGuest, setAllowGuest] = createSignal(true);
   const [availableDecks, setAvailableDecks] = createSignal<DeckInfoProps[]>([]);
   const [loadingDecks, setLoadingDecks] = createSignal(true);
   const [selectedDeck, setSelectedDeck] = createSignal<number | null>(null);
@@ -185,6 +186,7 @@ export function RoomDialog(props: RoomDialogProps) {
           ...timeConfig(),
           private: !isPublic(),
           watchable: watchable(),
+          allowGuest: allowGuest(),
         };
         if (guest) {
           payload.name = guest.name;
@@ -237,7 +239,7 @@ export function RoomDialog(props: RoomDialogProps) {
   return (
     <dialog
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
-      class="h-[calc(100vh-6rem)] rounded-xl shadow-xl p-6"
+      class="h-[calc(100vh-6rem)] max-h-180 rounded-xl shadow-xl p-6"
     >
       <div class="flex flex-col h-full w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
@@ -245,7 +247,10 @@ export function RoomDialog(props: RoomDialogProps) {
           class="flex-grow min-h-0 flex flex-row gap-4 data-[disabled=true]:cursor-not-allowed"
           data-disabled={!editable()}
         >
-          <div>
+          <div
+            class="flex flex-col w-80 data-[editable=true]:w-130"
+            data-editable={editable()}
+          >
             <Show when={versionInfo()}>
               <div class="mb-3 flex flex-row gap-4 items-center">
                 <h4 class="text-lg">游戏版本</h4>
@@ -315,6 +320,26 @@ export function RoomDialog(props: RoomDialogProps) {
                   disabled={!editable()}
                 />
               </div>
+              <Show when={editable() && !guestInfo()}>
+                <div class="mb-3 flex flex-row gap-4 items-center">
+                  <h4 class="text-lg">允许游客加入</h4>
+                  <ToggleSwitch
+                    checked={allowGuest()}
+                    onChange={(e) => setAllowGuest(e.target.checked)}
+                  />
+                </div>
+              </Show>
+              <Show when={editable() ? allowGuest() : guestInfo()}>
+                <div class="mb-3 alert alert-border-warning">
+                  <p class="alert-description break-all">
+                    有游客参与的对局记录将不会保存。如果您希望将对局中遇到的问题反馈给开发者，建议您
+                    {editable() && !guestInfo()
+                      ? "关闭“允许游客加入”"
+                      : "使用 GitHub 登录"}
+                    。
+                  </p>
+                </div>
+              </Show>
             </Show>
           </div>
           <div class="b-r-gray-200 b-1" />

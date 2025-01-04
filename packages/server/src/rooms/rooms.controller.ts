@@ -90,6 +90,10 @@ export class CreateRoomDto {
   @IsBoolean()
   @IsOptional()
   private?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  allowGuest?: boolean;
 }
 
 export class UserCreateRoomDto extends CreateRoomDto {
@@ -135,8 +139,8 @@ export class RoomsController {
   ) {}
 
   @Get()
-  getRooms() {
-    return this.rooms.getAllRooms();
+  getRooms(@User() userId: number | null) {
+    return this.rooms.getAllRooms(userId === null);
   }
 
   @Post()
@@ -165,8 +169,15 @@ export class RoomsController {
   }
 
   @Get(":roomId")
-  getRoom(@Param("roomId", ParseIntPipe) roomId: number) {
-    return this.rooms.getRoom(roomId);
+  getRoom(
+    @User() userId: number | null,
+    @Param("roomId", ParseIntPipe) roomId: number,
+  ) {
+    const room = this.rooms.getRoom(roomId);
+    if (userId === null && !room.config.allowGuest) {
+      throw new UnauthorizedException(`This room does not allow guests`);
+    }
+    return room;
   }
 
   @Delete(":roomId")

@@ -64,7 +64,7 @@ export function RoomInfo(props: RoomInfoProps) {
             when={props.players.length > 1}
             fallback={
               <div class="flex flex-row items-center gap-2">
-                ???
+                <span class="text-yellow-600 italic">虚位以待</span>
                 <Show when={!insideRoom()}>
                   <button
                     class="h-30px w-30px rounded-full bg-yellow-800 flex items-center justify-center text-lg text-yellow-100 font-bold select-none hover:bg-yellow-700 transition-colors"
