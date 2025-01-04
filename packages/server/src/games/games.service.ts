@@ -112,6 +112,11 @@ export class GamesService {
           },
         },
       },
+      orderBy: {
+        game: {
+          createdAt: "desc",
+        },
+      },
     });
     return { data, count };
   }
