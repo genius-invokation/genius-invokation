@@ -187,7 +187,7 @@ export function Home() {
                             name="roomCode"
                             placeholder="输入房间号"
                             inputmode="numeric"
-                            pattern="\d{6}"
+                            pattern="\d{4}"
                             onInput={(e) =>
                               setRoomCodeValid(e.target.checkValidity())
                             }

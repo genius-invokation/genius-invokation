@@ -353,7 +353,10 @@ class Room {
   private terminated = false;
   private onStopHandlers: GameStopHandler[] = [];
 
-  constructor(createRoomConfig: CreateRoomConfig) {
+  constructor(
+    public readonly id: number,
+    createRoomConfig: CreateRoomConfig,
+  ) {
     const { hostWho, ...config } = createRoomConfig;
     this.hostWho = hostWho;
     this.config = config;
@@ -468,9 +471,9 @@ class Room {
     return serializeGameStateLog(this.stateLog);
   }
 
-  getRoomInfo(id: number): RoomInfo {
+  getRoomInfo(): RoomInfo {
     return {
-      id,
+      id: this.id,
       config: this.config,
       started: this.started,
       watchable: this.config.watchable,
@@ -479,15 +482,21 @@ class Room {
   }
 }
 
+function toShuffled<T>(array: readonly T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i]!, result[j]!] = [result[j]!, result[i]!];
+  }
+  return result;
+}
+
 @Injectable()
 export class RoomsService {
   private logger = new Logger(RoomsService.name);
 
-  private rooms: (Room | null)[] = Array.from(
-    { length: 1_000_000 },
-    () => null,
-  );
-  private roomsCount = 0;
+  private roomIdPool = toShuffled(Array.from({ length: 10000 }, (_, i) => i));
+  private rooms = new Map<number, Room>();
   private shutdownResolvers: PromiseWithResolvers<void> | null = null;
 
   constructor(
@@ -496,8 +505,8 @@ export class RoomsService {
     private games: GamesService,
   ) {
     const onShutdown = async () => {
-      console.log(`Waiting for ${this.roomsCount} rooms to stop...`);
-      if (!this.shutdownResolvers && this.roomsCount !== 0) {
+      console.log(`Waiting for ${this.rooms.size} rooms to stop...`);
+      if (!this.shutdownResolvers && this.rooms.size !== 0) {
         this.shutdownResolvers = Promise.withResolvers();
       }
       await this.shutdownResolvers?.promise;
@@ -509,13 +518,11 @@ export class RoomsService {
   }
 
   currentRoom(playerId: PlayerId) {
-    for (let i = 0; i < this.rooms.length; i++) {
-      const room = this.rooms[i];
+    for (const room of this.rooms.values()) {
       if (
-        room &&
         room.getPlayers().some((player) => player.playerInfo.id === playerId)
       ) {
-        return room.getRoomInfo(i);
+        return room.getRoomInfo();
       }
     }
     return null;
@@ -603,18 +610,18 @@ export class RoomsService {
       }
     }
 
-    const roomId = this.rooms.indexOf(null);
-    if (roomId === -1) {
+    const roomId = this.roomIdPool[0];
+    if (typeof roomId === "undefined") {
       throw new InternalServerErrorException("no room available");
     }
-    const room = new Room(roomConfig);
-    this.rooms[roomId] = room;
-    this.roomsCount++;
+    const room = new Room(roomId, roomConfig);
+    this.rooms.set(roomId, room);
+    this.roomIdPool.shift();
 
     room.onStop(() => {
-      this.rooms[roomId] = null;
-      this.roomsCount--;
-      if (this.roomsCount === 0) {
+      this.rooms.delete(room.id);
+      this.roomIdPool.push(room.id);
+      if (this.rooms.size === 0) {
         this.shutdownResolvers?.resolve();
       }
     });
@@ -623,17 +630,17 @@ export class RoomsService {
     // 闲置五分钟后删除房间
     setTimeout(
       () => {
-        if (this.rooms[roomId] === room && !room.started) {
+        if (!room.started) {
           room.stop();
         }
       },
       5 * 60 * 1000,
     );
-    return room.getRoomInfo(roomId);
+    return room.getRoomInfo();
   }
 
   deleteRoom(playerId: PlayerId, roomId: number) {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room ${roomId} not found`);
     }
@@ -678,7 +685,7 @@ export class RoomsService {
 
   private async joinRoom(playerInfo: PlayerInfo, roomId: number) {
     const allRooms = this.getAllRooms();
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room ${roomId} not found`);
     }
@@ -735,19 +742,18 @@ export class RoomsService {
   }
 
   getRoom(roomId: number): RoomInfo {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room not found`);
     }
-    return room.getRoomInfo(roomId);
+    return room.getRoomInfo();
   }
 
   getAllRooms(): RoomInfo[] {
     const result: RoomInfo[] = [];
-    for (let i = 0; i < this.rooms.length; i++) {
-      const room = this.rooms[i];
-      if (room && !room.config.private) {
-        result.push(room.getRoomInfo(i));
+    for (const room of this.rooms.values()) {
+      if (!room.config.private) {
+        result.push(room.getRoomInfo());
       }
     }
     return result;
@@ -758,7 +764,7 @@ export class RoomsService {
     visitorPlayerId: PlayerId | null,
     watchingPlayerId: PlayerId,
   ): Observable<{ data: SSEPayload }> {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room not found`);
     }
@@ -793,7 +799,7 @@ export class RoomsService {
     roomId: number,
     playerId: PlayerId,
   ): Observable<{ data: SSEPayload }> {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room not found`);
     }
@@ -811,7 +817,7 @@ export class RoomsService {
     playerId: PlayerId,
     response: PlayerActionResponseDto,
   ) {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room not found`);
     }
@@ -826,7 +832,7 @@ export class RoomsService {
   }
 
   receivePlayerGiveUp(roomId: number, playerId: PlayerId) {
-    const room = this.rooms[roomId];
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new NotFoundException(`Room not found`);
     }

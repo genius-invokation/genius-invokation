@@ -1,4 +1,4 @@
-import { Deck } from "@gi-tcg/utils";
+import { Deck, idToShareId } from "@gi-tcg/utils";
 
 export interface PlayerInfo {
   isGuest: boolean;
@@ -40,9 +40,9 @@ export async function copyToClipboard(content: string) {
 }
 
 export function roomIdToCode(id: number) {
-  return String(((id + 1) * 48271) % 1_000_000).padStart(6, "0");
+  return String(id).padStart(4, "0");
 }
 
 export function roomCodeToId(code: string) {
-  return (Number(code) * 371631 - 1) % 1_000_000;
+  return Number.parseInt(code, 10);
 }
