@@ -26,11 +26,17 @@ export function getAvatarUrl(userId: number) {
   return `https://avatars.githubusercontent.com/u/${userId}?v=4`;
 }
 
+function hashCode(s: string) {
+  let h = 0;
+  for(let i = 0; i < s.length; i++)
+      h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  return h;
+}
+
 export function getPlayerAvatarUrl(player: PlayerInfo) {
   if (player.isGuest) {
-    return `https://placehold.jp/50x50.png?text=${encodeURIComponent(
-      String.fromCodePoint(player.name.codePointAt(0)!),
-    )}`;
+    const hash = Math.abs(hashCode(player.name));
+    return `/avatars/${AVATARS[hash % AVATARS.length]}`;
   } else {
     return getAvatarUrl(player.id as number);
   }
