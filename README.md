@@ -12,7 +12,7 @@
 
 - 完全开源（主体使用 AGPLv3.0 or later）
 - 核心实现了目前最接近官方的结算规则
-- 截止 5.2 版本为止的全部卡牌定义
+- 截止 5.3 版本为止的全部卡牌定义
   - 定义格式简介明了、清晰易读
   - 易于维护
 - 全部旧版本卡牌（平衡性调整前）的定义
@@ -22,11 +22,13 @@
   - 历史回溯（复盘）和中途继续
   - 对局导入导出
   - 查看结算细节日志
-- [对战平台](https://7shengzhaohuan.online/gi-tcg)（Beta 公开测试版，感谢 @RadiumLS 提供服务器支持）
+- [对战平台](https://gi.xqm32.org)（公开测试中，感谢 [@xqm32](https://github.com/xqm32) 提供服务器支持）
 - 跨编程语言支持
   - [C/C++](./packages/cbinding/)
   - [Python](./packages/pybinding/)
+  - [C#](./packages/csbinding/)
   - 更多编程语言敬请期待……
+- ~测试服卡牌抢先看~
 - 目前**仍有很多 bug**，需要更多测试
 
 ## [关于开发](./docs/development/README.md)
