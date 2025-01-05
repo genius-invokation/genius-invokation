@@ -23,6 +23,7 @@ import { character, skill, summon, status, card, DamageType, Reaction } from "@g
  */
 export const CrystalShrapnel = card(116081)
   .since("v4.8.0")
+  .unobtainable()
   .costSame(1)
   .damage(DamageType.Physical, 1, "opp active")
   .drawCards(1)

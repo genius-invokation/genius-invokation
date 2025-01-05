@@ -964,7 +964,7 @@ export const SunyataFlower = card(332029)
   .addTarget("my supports")
   .dispose("@targets.0")
   .do((c) => {
-    const candidates = c.state.data.cards.values().filter((card) => card.cardType === "support").toArray();
+    const candidates = c.allCardDefinitions("support");
     const card0 = c.random(candidates);
     const card1 = c.random(candidates);
     c.createHandCard(card0.id as CardHandle);
@@ -1227,7 +1227,7 @@ const CrystalShrapnel = void 0; // move to navia
 export const SerenesSupport = card(302206)
   .since("v4.8.0")
   .do((c) => {
-    const candidates = c.state.data.cards.values().filter((c) => c.tags.includes("food")).toArray();
+    const candidates = c.allCardDefinitions("food");
     // 似乎是“有放回抽样”，两张牌可重
     const card0 = c.random(candidates);
     const card1 = c.random(candidates);
@@ -1245,7 +1245,7 @@ export const SerenesSupport = card(302206)
 export const LaumesSupport = card(302207)
   .since("v4.8.0")
   .do((c) => {
-    const candidates = c.state.data.cards.values().filter((c) => c.tags.includes("artifact")).toArray();
+    const candidates = c.allCardDefinitions("artifact");
     const card0 = c.random(candidates);
     const card1 = c.random(candidates);
     c.createHandCard(card0.id as CardHandle);
@@ -1262,7 +1262,7 @@ export const LaumesSupport = card(302207)
 export const CosanzeanasSupport = card(302208)
   .since("v4.8.0")
   .do((c) => {
-    const candidates = c.state.data.cards.values().filter((c) => c.tags.includes("weapon")).toArray();
+    const candidates = c.allCardDefinitions("weapon");
     // 似乎是“有放回抽样”，两张牌可重
     const card0 = c.random(candidates);
     const card1 = c.random(candidates);
@@ -1358,7 +1358,7 @@ export const VirdasSupport = card(302212)
   .since("v4.8.0")
   .costVoid(2)
   .do((c) => {
-    const candidates = c.state.data.cards.values().filter((c) => c.tags.includes("legend")).toArray();
+    const candidates = c.allCardDefinitions("legend");
     const card0 = c.random(candidates);
     const card1 = c.random(candidates);
     c.createHandCard(card0.id as CardHandle);
@@ -1387,7 +1387,7 @@ export const VirdasSupport = card(302212)
 export const PucasSupport = card(302213)
   .since("v4.8.0")
   .do((c) => {
-    const allies = c.state.data.cards.values().filter((card) => card.tags.includes("ally")).toArray();
+    const allies = c.allCardDefinitions("ally");
     const myCount = c.remainingSupportCount("my");
     for (let i = 0; i < myCount; i++) {
       const ally = c.random(allies);
@@ -1614,17 +1614,17 @@ export const EremiteTeatime = card(332040)
     const weapons = characters.map((ch) => ch.weaponTag());
     const nations = characters.flatMap((ch) => ch.nationTags());
     if (new Set(elements).size < characters.length) {
-      const cards = c.state.data.cards.values().filter((card) => card.tags.includes("place")).toArray();
+      const cards = c.allCardDefinitions("place");
       const candidates = c.randomSubset(cards, 3);
       c.selectAndCreateHandCard(candidates);
     }
     if (new Set(weapons).size < characters.length) {
-      const cards = c.state.data.cards.values().filter((card) => card.tags.includes("item")).toArray();
+      const cards = c.allCardDefinitions("item");
       const candidates = c.randomSubset(cards, 3);
       c.selectAndCreateHandCard(candidates);
     }
     if (new Set(nations).size < characters.length) {
-      const cards = c.state.data.cards.values().filter((card) => card.tags.includes("food")).toArray();
+      const cards = c.allCardDefinitions("food");
       const candidates = c.randomSubset(cards, 3);
       c.selectAndCreateHandCard(candidates);
     }

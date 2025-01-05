@@ -123,6 +123,7 @@ export const Keqing = character(1403)
  */
 export const LightningStiletto = card(114031)
   .since("v3.3.0")
+  .unobtainable()
   .costElectro(3)
   .tags("action")
   .addTarget(`my character with definition id ${Keqing} and not has status with tag (disableSkill)`)

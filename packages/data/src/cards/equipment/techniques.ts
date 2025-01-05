@@ -189,7 +189,7 @@ export const Iktomisaurus = card(313005)
     const tags = ["place", "item", "food"] as const;
     const candidates: CardDefinition[] = [];
     for (const tag of tags) {
-      const def = c.random(c.state.data.cards.values().filter((card) => card.tags.includes(tag)).toArray());
+      const def = c.random(c.allCardDefinitions(tag));
       candidates.push(def);
     }
     c.selectAndCreateHandCard(candidates);

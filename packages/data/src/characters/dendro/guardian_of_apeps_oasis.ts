@@ -71,6 +71,7 @@ export const ProliferatedOrganism04 = summon(127025)
  */
 export const AwakenMyKindred = card(127021)
   .since("v4.7.0")
+  .unobtainable()
   .costDendro(2)
   .do((c) => {
     if (!c.$(`my summon with definition id ${ProliferatedOrganism01}`)) {

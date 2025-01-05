@@ -77,7 +77,7 @@ import {
   SummonHandle,
   TypedExEntity,
 } from "../type";
-import { CardDefinition, CardTag } from "../../base/card";
+import { CardDefinition, CardTag, CardType } from "../../base/card";
 import { GuessedTypeOfQuery } from "../../query/types";
 import { NontrivialDamageType, REACTION_MAP } from "../../base/reaction";
 import {
@@ -103,6 +103,8 @@ import { Card } from "./card";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
+
+type CardDefinitionFilterFn = (card: CardDefinition) => boolean;
 
 interface DrawCardsOpt {
   who?: "my" | "opp";
@@ -379,14 +381,41 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     return player.hands.filter((c) => diceCostOfCard(c.definition) === maxCost);
   }
+
   isInInitialPile(card: CardState): boolean {
     const defId = card.definition.id;
     return this.player.initialPile.some((c) => c.id === defId);
   }
+
   /** 我方或对方支援区剩余空位 */
   remainingSupportCount(who: "my" | "opp" = "my"): number {
     const player = who === "my" ? this.player : this.oppPlayer;
     return this.state.config.maxSupportsCount - player.supports.length;
+  }
+
+  /**
+   * 返回所有行动牌（指定类别/标签或自定义 filter）；通常用于随机选取其中一张。
+   */
+  allCardDefinitions(
+    filterArg?: CardType | CardTag | CardDefinitionFilterFn,
+  ): CardDefinition[] {
+    const filterFn: CardDefinitionFilterFn =
+      typeof filterArg === "undefined"
+        ? (c) => true
+        : typeof filterArg === "function"
+          ? filterArg
+          : ["event", "support", "equipment"].includes(filterArg)
+            ? (c) => c.cardType === filterArg
+            : (c) => c.tags.includes(filterArg as CardTag);
+    return this.state.data.cards
+      .values()
+      .filter((c) => {
+        if (!c.obtainable) {
+          return false;
+        }
+        return filterFn(c);
+      })
+      .toArray();
   }
 
   // MUTATIONS

@@ -57,6 +57,7 @@ export const SpiritserpentsBlessing = combatStatus(127033)
  */
 export const SpiritOfOmenDendroSpiritserpent = card(127032)
   .since("v5.1.0")
+  .unobtainable()
   .technique()
   .provideSkill(1270321)
   .costVoid(1)

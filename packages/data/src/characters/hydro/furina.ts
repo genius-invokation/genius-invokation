@@ -24,6 +24,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, Chara
  */
 export const SeatsSacredAndSecular = card(112113)
   .since("v4.7.0")
+  .unobtainable()
   .do((c) => {
     const furina = c.player.characters.find((char) => [FurinaPneuma, FurinaOusia].includes(char.definition.id as CharacterHandle));
     if (!furina) {

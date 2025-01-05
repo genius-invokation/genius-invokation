@@ -64,6 +64,7 @@ export const MistBubbleLockdownPreparing = status(122053)
  */
 export const MistBubbleSlime = card(122051)
   .since("v5.0.0")
+  .unobtainable()
   .technique()
   .provideSkill(1220511)
   .costSame(1)

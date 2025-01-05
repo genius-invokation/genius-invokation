@@ -52,6 +52,7 @@ export interface CardDefinition {
   readonly id: number;
   readonly version: VersionInfo;
   readonly cardType: CardType;
+  readonly obtainable: boolean;
   readonly tags: readonly CardTag[];
   readonly skills: readonly SkillDefinition[];
   readonly descriptionDictionary: DescriptionDictionary;

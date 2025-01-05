@@ -100,6 +100,7 @@ class CardBuilder<
   associatedExtension: AssociatedExt;
 }> {
   private _type: CardType = "event";
+  private _obtainable = true;
   private _tags: CardTag[] = [];
   /**
    * 在料理卡牌的行动结尾添加“设置饱腹状态”操作的目标；
@@ -164,6 +165,11 @@ class CardBuilder<
   }
   type(type: CardType): this {
     this._type = type;
+    return this;
+  }
+
+  unobtainable(): this {
+    this._obtainable = false;
     return this;
   }
 
@@ -502,8 +508,9 @@ class CardBuilder<
     const cardDef: CardDefinition = {
       __definition: "cards",
       type: "card",
-      cardType: this._type,
       id: this.cardId,
+      cardType: this._type,
+      obtainable: this._obtainable,
       tags: this._tags,
       version: this._versionInfo,
       skills,
