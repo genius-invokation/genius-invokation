@@ -1343,7 +1343,7 @@ export const SluasisSupport = card(302211)
   .costSame(1)
   .do((c) => {
     for (const card of c.oppPlayer.pile.slice(0, 3)) {
-      c.createHandCard(card.id as CardHandle);
+      c.createHandCard(card.definition.id as CardHandle);
     };
   })
   .done();
