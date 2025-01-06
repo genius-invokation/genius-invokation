@@ -22,6 +22,7 @@ import {
   sanitizeName,
   xskill,
   getDescriptionReplaced,
+  xchoose,
 } from "./utils";
 import { getSkillIcon } from "./skill_icon";
 
@@ -110,8 +111,18 @@ export interface SkillRawData {
   rawDescription: string;
   description: string;
   playCost: PlayCost[];
+  targetList: ChooseTarget[];
   keyMap: Record<string, any>;
   icon?: string;
+}
+
+export interface ChooseTarget {
+  id: number;
+  type: string;
+  camp: string;
+  tags: string[];
+  rawHintText: string;
+  hintText: string;
 }
 
 export async function collateSkill(
@@ -151,6 +162,24 @@ export async function collateSkill(
   const icon = await getSkillIcon(id, iconHash);
   // const icon = iconHash;
 
+    const targetList: ChooseTarget[] = [];
+    for (const target of skillObj.chooseTargetList ?? []) {
+      const chooseObj = xchoose.find((c) => c.id === target);
+      if (!chooseObj) {
+        continue;
+      }
+      const rawHintText = locale[chooseObj.targetHintTextMapHash] ?? "";
+      const hintText = sanitizeDescription(rawHintText, true);
+      targetList.push({
+        id: chooseObj.id,
+        type: chooseObj.cardType,
+        camp: chooseObj.targetCamp,
+        tags: chooseObj.tagList.filter((e: string) => e !== "GCG_TAG_NONE"),
+        rawHintText,
+        hintText,
+      });
+    }
+
   return {
     id,
     name,
@@ -159,6 +188,7 @@ export async function collateSkill(
     rawDescription,
     description,
     playCost,
+    targetList,
     keyMap,
     icon,
   };

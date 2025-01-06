@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PlayCost } from "./skills";
+import type { ChooseTarget, PlayCost } from "./skills";
 import {
   getDescriptionReplaced,
   getLanguage,
@@ -22,14 +22,12 @@ import {
   xcardview,
   xdeckcard,
   xcard,
-  getPropNameWithMatch,
   propShareId,
-  getExcel,
   propPlayingDescription2,
+  xchoose,
 } from "./utils";
 import { getVersion } from "./version";
 
-const xchoose = getExcel("GCGChooseExcelConfigData");
 
 export interface ActionCardRawData {
   id: number;
@@ -51,15 +49,6 @@ export interface ActionCardRawData {
   playingDescription?: string;
   playCost: PlayCost[];
   cardFace: string;
-}
-
-export interface ChooseTarget {
-  id: number;
-  type: string;
-  camp: string;
-  tags: string[];
-  rawHintText: string;
-  hintText: string;
 }
 
 export function collateActionCards(langCode: string) {

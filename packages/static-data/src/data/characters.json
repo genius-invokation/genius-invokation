@@ -31,6 +31,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -49,6 +50,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -68,6 +70,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -91,6 +94,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -135,6 +139,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -153,6 +158,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -176,6 +182,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -220,6 +227,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -238,6 +246,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -261,6 +270,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -305,6 +315,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -323,6 +334,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -346,6 +358,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 7
@@ -390,6 +403,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -408,6 +422,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -431,6 +446,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 4
@@ -445,6 +461,7 @@
         "rawDescription": "【被动】此角色被切换为「出战角色」时，附属<color=#FFFFFFFF>$[C111052]</color>。",
         "description": "【被动】此角色被切换为「出战角色」时，附属冰元素附魔。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Ayaka_02"
       }
@@ -486,6 +503,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -504,6 +522,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -527,6 +546,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -571,6 +591,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -589,6 +610,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -612,6 +634,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -656,6 +679,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -674,6 +698,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Qiqi_01"
       },
@@ -694,6 +719,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -738,6 +764,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -756,6 +783,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Layla_01"
       },
@@ -776,6 +804,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -821,6 +850,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -840,6 +870,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -863,6 +894,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -908,6 +940,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -927,6 +960,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -950,6 +984,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -964,6 +999,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {}
       },
       {
@@ -974,6 +1010,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {}
       },
       {
@@ -984,6 +1021,7 @@
         "rawDescription": "<color=#FFFFFFFF>本角色在本回合中受到伤害或治疗每累计到2次时：</color>元素爆发少花费1个元素骰（最多少花费2个）。",
         "description": "本角色在本回合中受到伤害或治疗每累计到2次时：元素爆发少花费1个元素骰（最多少花费2个）。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_E_Wriothesley_01_HD"
       }
@@ -1027,6 +1065,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1045,6 +1084,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -1068,6 +1108,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 4
@@ -1112,6 +1153,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1130,6 +1172,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -1153,6 +1196,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -1197,6 +1241,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1216,6 +1261,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1239,6 +1285,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_E_Barbara_01_HD"
       }
@@ -1280,6 +1327,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1298,6 +1346,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1321,6 +1370,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1365,6 +1415,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1384,6 +1435,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1407,6 +1459,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 4
@@ -1421,6 +1474,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>此角色为出战角色，我方执行「切换角色」行动时：</color>将此次切换视为「$[K2]」而非「$[K1]」。（每回合1次）",
         "description": "【被动】此角色为出战角色，我方执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。（每回合1次）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Mona_02"
       }
@@ -1462,6 +1516,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1480,6 +1535,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1503,6 +1559,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE_5": 5,
@@ -1518,6 +1575,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C112041]</color>。\\n角色所附属的<color=#FFFFFFFF>$[C112042]</color>效果结束时，重新附属<color=#FFFFFFFF>$[C112041]</color>。",
         "description": "【被动】战斗开始时，初始附属远程状态。\n角色所附属的近战状态效果结束时，重新附属远程状态。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
@@ -1529,6 +1587,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
@@ -1540,6 +1599,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       }
@@ -1581,6 +1641,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1600,6 +1661,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO"
         },
@@ -1622,6 +1684,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1666,6 +1729,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1684,6 +1748,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1707,6 +1772,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -1751,6 +1817,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1769,6 +1836,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Candace_01"
       },
@@ -1789,6 +1857,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1803,6 +1872,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "（需准备1个行动轮）\n造成3点水元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -1847,6 +1917,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1865,6 +1936,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -1888,6 +1960,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -1932,6 +2005,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -1950,6 +2024,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -1973,6 +2048,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -1987,6 +2063,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C112091]</color>。",
         "description": "【被动】战斗开始时，初始附属破局。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Yelan_03"
       }
@@ -2029,6 +2106,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -2048,6 +2126,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2071,6 +2150,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2085,6 +2165,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，如果本角色生命值至少为6，则此伤害+1并对自身造成1点$[K5]。",
         "description": "（需准备1个行动轮）\n造成2点水元素伤害，如果本角色生命值至少为6，则此伤害+1并对自身造成1点穿透伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2099,6 +2180,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_A_Catalyst_MD"
       }
@@ -2141,6 +2223,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2159,6 +2242,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Furina_01"
       },
@@ -2179,6 +2263,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2193,6 +2278,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_A_01"
       },
@@ -2204,6 +2290,7 @@
         "rawDescription": "【被动】战斗开始时，生成手牌<color=#FFFFFFFF>$[C112113]</color>。",
         "description": "【被动】战斗开始时，生成手牌圣俗杂座。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Furina_03"
       }
@@ -2242,6 +2329,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2260,6 +2348,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Furina_02"
       },
@@ -2280,6 +2369,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2294,6 +2384,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_A_01"
       },
@@ -2305,6 +2396,7 @@
         "rawDescription": "【被动】战斗开始时，生成手牌<color=#FFFFFFFF>$[C112113]</color>。",
         "description": "【被动】战斗开始时，生成手牌圣俗杂座。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Furina_03"
       }
@@ -2347,6 +2439,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2363,6 +2456,16 @@
           {
             "type": "GCG_COST_DICE_HYDRO",
             "count": 3
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
           }
         ],
         "keyMap": {},
@@ -2385,6 +2488,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2399,6 +2503,7 @@
         "rawDescription": "【被动】我方角色所附属的<color=#FFFFFFFF>$[C122]</color>被完全移除后，该角色获得1点额外最大生命值。（对每名角色最多生效3次）\\n<color=#FFFFFFFF>我方切换到本角色时：</color>如果我方场上存在<color=#FFFFFFFF>$[C112101]</color>，则使其$[K3]-1，本角色获得1点$[K310]。",
         "description": "【被动】我方角色所附属的生命之契被完全移除后，该角色获得1点额外最大生命值。（对每名角色最多生效3次）\n我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Sigewinne_02"
       },
@@ -2410,6 +2515,7 @@
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "造成2点水元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2424,6 +2530,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_E_Sigewinne_01"
       },
@@ -2435,6 +2542,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>我方切换到本角色时：</color>如果我方场上存在<color=#FFFFFFFF>$[C112101]</color>，则使其$[K3]-1，本角色获得1点$[K310]。",
         "description": "【被动】我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Sigewinne_02"
       }
@@ -2476,6 +2584,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -2493,6 +2602,16 @@
           {
             "type": "GCG_COST_DICE_HYDRO",
             "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
           }
         ],
         "keyMap": {},
@@ -2515,6 +2634,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 2
@@ -2559,6 +2679,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2577,6 +2698,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -2600,6 +2722,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 8
@@ -2644,6 +2767,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2662,6 +2786,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -2685,6 +2810,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -2729,6 +2855,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2747,6 +2874,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -2770,6 +2898,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -2814,6 +2943,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2832,6 +2962,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Ambor_01"
       },
@@ -2852,6 +2983,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -2896,6 +3028,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -2914,6 +3047,7 @@
             "count": 1
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Yoimiya_01"
       },
@@ -2934,6 +3068,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -2978,6 +3113,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -2997,6 +3133,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3020,6 +3157,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3064,6 +3202,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3082,6 +3221,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Hutao_01"
       },
@@ -3102,6 +3242,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 4
@@ -3146,6 +3287,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -3165,6 +3307,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3188,6 +3331,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3233,6 +3377,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3251,6 +3396,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -3274,6 +3420,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3288,6 +3435,7 @@
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "造成3点火元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3302,6 +3450,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Dehya_01"
       }
@@ -3345,6 +3494,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3363,6 +3513,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3382,6 +3533,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3405,6 +3557,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3449,6 +3602,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3467,6 +3621,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3490,6 +3645,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3534,6 +3690,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3552,6 +3709,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3575,6 +3733,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 3
         },
@@ -3619,6 +3778,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3637,6 +3797,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3660,6 +3821,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -3674,6 +3836,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>敌方角色受到超载反应伤害后：</color>生成手牌<color=#FFFFFFFF>$[C113131]</color>（每回合1次）",
         "description": "【被动】敌方角色受到超载反应伤害后：生成手牌超量装药弹头（每回合1次）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Chevreuse_02"
       },
@@ -3685,6 +3848,7 @@
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。\\n<color=#FFFFFFFF>此技能结算后：</color>如果我方手牌中含有<color=#FFFFFFFF>$[C113131]</color>，则$[K56]1张并治疗我方受伤最多的角色1点。",
         "description": "造成3点火元素伤害。\n此技能结算后：如果我方手牌中含有超量装药弹头，则舍弃1张并治疗我方受伤最多的角色1点。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -3729,6 +3893,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3747,6 +3912,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -3770,6 +3936,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 4
@@ -3814,6 +3981,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3832,6 +4000,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -3855,6 +4024,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -3899,6 +4069,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -3917,6 +4088,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -3940,6 +4112,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 4
@@ -3984,6 +4157,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4002,6 +4176,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -4025,6 +4200,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 4
@@ -4039,6 +4215,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C114041]</color>。",
         "description": "【被动】战斗开始时，初始附属启途誓使。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Cyno_03"
       }
@@ -4080,6 +4257,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4098,6 +4276,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4120,6 +4299,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -4134,6 +4314,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "（需准备1个行动轮）\n造成3点雷元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -4178,6 +4359,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4196,6 +4378,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -4219,6 +4402,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -4263,6 +4447,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4281,6 +4466,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Shougun_01"
       },
@@ -4301,6 +4487,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -4315,6 +4502,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C114072]</color>。",
         "description": "【被动】战斗开始时，初始附属诸愿百眼之轮。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Shougun_02"
       }
@@ -4356,6 +4544,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -4375,6 +4564,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Yae_01"
       },
@@ -4395,6 +4585,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 4
@@ -4439,6 +4630,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -4458,6 +4650,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -4481,6 +4674,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -4525,6 +4719,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4543,6 +4738,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -4566,6 +4762,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -4610,6 +4807,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4628,6 +4826,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Shinobu_01"
       },
@@ -4648,6 +4847,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 4
@@ -4693,6 +4893,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 1
         },
@@ -4709,6 +4910,16 @@
           {
             "type": "GCG_COST_DICE_ELECTRO",
             "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
           }
         ],
         "keyMap": {
@@ -4733,6 +4944,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -4777,6 +4989,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -4796,6 +5009,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -4819,6 +5033,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -4863,6 +5078,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4881,6 +5097,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -4904,6 +5121,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_E_Qin_01_HD"
       }
@@ -4945,6 +5163,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -4963,6 +5182,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -4986,6 +5206,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -5030,6 +5251,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5048,6 +5270,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -5071,6 +5294,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 4
@@ -5115,6 +5339,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5133,6 +5358,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5156,6 +5382,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5170,6 +5397,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Kazuha_01"
       }
@@ -5210,6 +5438,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5229,6 +5458,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -5252,6 +5482,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 7
@@ -5296,6 +5527,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5314,6 +5546,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5337,6 +5570,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5351,6 +5585,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]（或被扩散元素的伤害）。",
         "description": "（需准备1个行动轮）\n造成2点风元素伤害（或被扩散元素的伤害）。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -5397,6 +5632,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5415,6 +5651,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -5438,6 +5675,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -5482,6 +5720,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5500,6 +5739,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -5523,6 +5763,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5567,6 +5808,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5586,6 +5828,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -5609,6 +5852,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -5653,6 +5897,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -5672,6 +5917,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
@@ -5695,6 +5941,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 6
@@ -5739,6 +5986,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5757,6 +6005,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -5780,6 +6029,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -5824,6 +6074,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5842,6 +6093,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -5861,6 +6113,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -5884,6 +6137,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -5928,6 +6182,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -5946,6 +6201,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Albedo_01"
       },
@@ -5966,6 +6222,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -6010,6 +6267,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6028,6 +6286,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -6051,6 +6310,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -6095,6 +6355,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6113,6 +6374,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
@@ -6136,6 +6398,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
@@ -6180,6 +6443,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6198,6 +6462,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -6221,6 +6486,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -6235,6 +6501,7 @@
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]；如果本回合中我方$[K56]或$[K57]过至少1张牌，则此伤害+1。",
         "description": "造成2点岩元素伤害；如果本回合中我方舍弃或调和过至少1张牌，则此伤害+1。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
@@ -6249,6 +6516,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Yunjin_01"
       }
@@ -6291,6 +6559,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6309,6 +6578,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -6332,6 +6602,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -6346,6 +6617,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>敌方角色受到结晶反应伤害后：</color>生成3张<color=#FFFFFFFF>$[C116081]</color>，随机置入我方牌库中。",
         "description": "【被动】敌方角色受到结晶反应伤害后：生成3张裂晶弹片，随机置入我方牌库中。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Navia_02"
       }
@@ -6387,6 +6659,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6405,6 +6678,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 1
         },
@@ -6427,6 +6701,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 5
@@ -6471,6 +6746,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6489,6 +6765,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 3
@@ -6512,6 +6789,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -6556,6 +6834,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6574,6 +6853,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -6597,6 +6877,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -6641,6 +6922,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 1
@@ -6660,6 +6942,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -6679,6 +6962,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 3
@@ -6702,6 +6986,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -6746,6 +7031,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6764,6 +7050,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Yaoyao_01"
       },
@@ -6784,6 +7071,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 1
@@ -6828,6 +7116,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 1
@@ -6847,6 +7136,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 1
@@ -6870,6 +7160,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_E_Baizhuer_01_HD"
       }
@@ -6911,6 +7202,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -6929,6 +7221,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -6952,6 +7245,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -6996,6 +7290,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -7014,6 +7309,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "Skill_S_Momoka_01"
       },
@@ -7034,6 +7330,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -7078,6 +7375,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -7096,6 +7394,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -7119,6 +7418,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 3
@@ -7163,6 +7463,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -7182,6 +7483,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -7205,6 +7507,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 5
@@ -7249,6 +7552,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -7268,6 +7572,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -7291,6 +7596,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 4
@@ -7305,6 +7611,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C121021]</color>。",
         "description": "【被动】战斗开始时，初始附属冰封的炽炎魔女。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_LaSignora_02"
       },
@@ -7316,6 +7623,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_LaSignora_02"
       }
@@ -7357,6 +7665,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 1
@@ -7376,6 +7685,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -7399,6 +7709,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
@@ -7413,6 +7724,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C121034]</color>。",
         "description": "【被动】战斗开始时，初始附属冰晶核心。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_EffigyIce_02"
       }
@@ -7454,6 +7766,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -7472,6 +7785,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -7495,6 +7809,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 4
@@ -7509,6 +7824,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>本角色使用技能后：</color>对敌方出战角色附属$[K3]为（本技能最终伤害值-2）的<color=#FFFFFFFF>$[C122]</color>。（最多5层）",
         "description": "【被动】本角色使用技能后：对敌方出战角色附属可用次数为（本技能最终伤害值-2）的生命之契。（最多5层）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_EscadronIce_02"
       }
@@ -7546,6 +7862,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -7565,6 +7882,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -7588,6 +7906,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 6
@@ -7602,6 +7921,7 @@
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "造成3点火元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -7646,6 +7966,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -7665,6 +7986,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Oceanid_02"
       },
@@ -7681,6 +8003,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Oceanid_01"
       },
@@ -7701,6 +8024,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE_2": 6,
@@ -7747,6 +8071,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -7766,6 +8091,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -7789,6 +8115,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 5
@@ -7833,6 +8160,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -7851,6 +8179,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -7874,6 +8203,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -7888,6 +8218,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C122031]</color>。",
         "description": "【被动】战斗开始时，初始附属水之新生。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_InvokerHeraldWater_02"
       },
@@ -7904,6 +8235,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -7918,6 +8250,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_AbyssWater_02"
       },
@@ -7929,6 +8262,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_InvokerHeraldWater_02"
       }
@@ -7970,6 +8304,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -7988,6 +8323,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE_2": 1,
@@ -8013,6 +8349,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -8027,6 +8364,7 @@
         "rawDescription": "【被动】战斗开始时，生成<color=#FFFFFFFF>$[C122041]</color>。",
         "description": "【被动】战斗开始时，生成深噬之域。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Ptahur_02"
       }
@@ -8069,6 +8407,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -8087,6 +8426,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -8110,6 +8450,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -8124,6 +8465,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {}
       }
     ],
@@ -8164,6 +8506,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -8182,6 +8525,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -8205,6 +8549,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 5
@@ -8219,6 +8564,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C123011]</color>。",
         "description": "【被动】战斗开始时，初始附属潜行。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_FatuusFire_02"
       }
@@ -8260,6 +8606,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -8279,6 +8626,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -8302,6 +8650,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -8316,6 +8665,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C123022]</color>。",
         "description": "【被动】战斗开始时，初始附属火之新生。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       },
@@ -8327,6 +8677,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       }
@@ -8368,6 +8719,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -8387,6 +8739,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -8410,6 +8763,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -8424,6 +8778,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>此角色受到伤害后：</color>如果此角色生命值不多于7，则获得1点$[K310]。（每回合1次）",
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }
@@ -8465,6 +8820,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -8483,6 +8839,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -8506,6 +8863,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_E_HermitCrabPrimo_01_HD"
       },
@@ -8517,6 +8875,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>战斗开始时：</color>初始附属5层<color=#FFFFFFFF>$[C123041]</color>。\\n<color=#FFFFFFFF>我方执行任意行动后：</color>如果我方场上存在$[C123041]以外的$[K6]状态或$[K6]出战状态，则将其全部移除；每移除1个，就使角色附属2层<color=#FFFFFFFF>$[C123041]</color>。",
         "description": "【被动】战斗开始时：初始附属5层重甲蟹壳。\n我方执行任意行动后：如果我方场上存在重甲蟹壳以外的护盾状态或护盾出战状态，则将其全部移除；每移除1个，就使角色附属2层重甲蟹壳。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_HermitCrabPrimo_02"
       },
@@ -8528,6 +8887,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，对敌方所有后台角色造成2点$[K5]。本角色每附属有2层<color=#FFFFFFFF>$[C123041]</color>，就使此技能造成的$[K103]+1。",
         "description": "（需准备1个行动轮）\n造成1点火元素伤害，对敌方所有后台角色造成2点穿透伤害。本角色每附属有2层重甲蟹壳，就使此技能造成的火元素伤害+1。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 1
@@ -8542,6 +8902,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8586,6 +8947,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8605,6 +8967,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -8628,6 +8991,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -8642,6 +9006,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C124014]</color>。",
         "description": "【被动】战斗开始时，初始附属雷晶核心。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_EffigyElectric_04"
       },
@@ -8653,6 +9018,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，然后$[K53]：<color=#FFFFFFFF>$[S24016]</color>。",
         "description": "（需准备1个行动轮）\n造成2点雷元素伤害，然后准备技能：猜拳三连击·布。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -8667,6 +9033,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "（需准备1个行动轮）\n造成3点雷元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -8711,6 +9078,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8730,6 +9098,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -8753,6 +9122,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -8767,6 +9137,7 @@
         "rawDescription": "【被动】战斗开始时，在敌方场上生成<color=#FFFFFFFF>$[C124021]</color>。",
         "description": "【被动】战斗开始时，在敌方场上生成雷霆探针。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Raijin_01"
       }
@@ -8808,6 +9179,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -8826,6 +9198,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -8849,6 +9222,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8863,6 +9237,7 @@
         "rawDescription": "【被动】战斗开始时，本角色附属<color=#FFFFFFFF>$[C124032]</color>。",
         "description": "【被动】战斗开始时，本角色附属原海明珠。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_02"
       },
@@ -8874,6 +9249,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_01"
       }
@@ -8915,6 +9291,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8934,6 +9311,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_FatuusSummoner_01"
       },
@@ -8954,6 +9332,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -8968,6 +9347,7 @@
         "rawDescription": "（需准备1个行动轮）\\n造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
         "description": "（需准备1个行动轮）\n造成2点雷元素伤害。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 2
@@ -9013,6 +9393,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9031,6 +9412,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -9054,6 +9436,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -9068,6 +9451,7 @@
         "rawDescription": "【被动】回合结束时，生成2张<color=#FFFFFFFF>$[C124051]</color>，随机置入我方牌库顶部10张牌之中。",
         "description": "【被动】回合结束时，生成2张噬骸能量块，随机置入我方牌库顶部10张牌之中。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_ScorpionSacred_02"
       }
@@ -9109,6 +9493,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 1
@@ -9128,6 +9513,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -9151,6 +9537,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -9165,6 +9552,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C124061]</color>。",
         "description": "【被动】战斗开始时，初始附属雷之新生。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_InvokerElectric_02"
       },
@@ -9176,6 +9564,7 @@
         "rawDescription": "战斗开始时，初始附属<color=#FFFFFFFF>$[C124061]</color>。",
         "description": "战斗开始时，初始附属雷之新生。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {}
       }
     ],
@@ -9216,6 +9605,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9234,6 +9624,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Ningyo_01"
       },
@@ -9250,6 +9641,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Ningyo_02"
       },
@@ -9270,6 +9662,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 4
@@ -9314,6 +9707,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9332,6 +9726,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -9351,6 +9746,7 @@
             "count": 5
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -9374,6 +9770,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 5
@@ -9388,6 +9785,7 @@
         "rawDescription": "（需准备1个行动轮）\\n对下一个敌方后台角色造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，然后$[K53]：<color=#FFFFFFFF>$[S25026]</color>。（敌方没有后台角色时，改为对出战角色造成伤害）",
         "description": "（需准备1个行动轮）\n对下一个敌方后台角色造成1点风元素伤害，然后准备技能：终幕涤流。（敌方没有后台角色时，改为对出战角色造成伤害）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
@@ -9402,6 +9800,7 @@
         "rawDescription": "（需准备1个行动轮）\\n对上一个敌方后台角色造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。（敌方没有后台角色时，改为对出战角色造成伤害）",
         "description": "（需准备1个行动轮）\n对上一个敌方后台角色造成2点风元素伤害。（敌方没有后台角色时，改为对出战角色造成伤害）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -9447,6 +9846,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9465,6 +9865,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 3
@@ -9488,6 +9889,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 2
@@ -9502,6 +9904,7 @@
         "rawDescription": "【被动】战斗开始时，生成6张<color=#FFFFFFFF>$[C124051]</color>，均匀放入牌库。",
         "description": "【被动】战斗开始时，生成6张噬骸能量块，均匀放入牌库。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_ChrysopeleaSacred_02"
       }
@@ -9544,6 +9947,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9562,6 +9966,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 3
         },
@@ -9584,6 +9989,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 5
         },
@@ -9597,6 +10003,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126011]</color>和<color=#FFFFFFFF>$[C126012]</color>。",
         "description": "【被动】战斗开始时，初始附属岩盔和坚岩之力。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_BruteRock_02"
       }
@@ -9638,6 +10045,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9656,6 +10064,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -9679,6 +10088,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -9693,6 +10103,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126021]</color>。",
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
@@ -9730,6 +10141,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9748,6 +10160,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -9767,6 +10180,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 3
@@ -9790,6 +10204,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -9804,6 +10219,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126021]</color>。",
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
@@ -9841,6 +10257,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9859,6 +10276,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -9878,6 +10296,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 3
@@ -9901,6 +10320,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -9915,6 +10335,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126021]</color>。",
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
@@ -9952,6 +10373,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -9970,6 +10392,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -9989,6 +10412,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 3
@@ -10012,6 +10436,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -10026,6 +10451,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126021]</color>。",
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
@@ -10063,6 +10489,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -10081,6 +10508,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -10100,6 +10528,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
@@ -10123,6 +10552,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 4
@@ -10137,6 +10567,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C126021]</color>。",
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
@@ -10178,6 +10609,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -10196,6 +10628,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
@@ -10219,6 +10652,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
@@ -10263,6 +10697,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -10281,6 +10716,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 3
@@ -10304,6 +10740,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -10318,6 +10755,7 @@
         "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C127011]</color>。",
         "description": "【被动】战斗开始时，初始附属活化激能。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_FungusRaptor_02"
       }
@@ -10359,6 +10797,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -10377,6 +10816,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE_2": 2
@@ -10400,6 +10840,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE_2": 4
@@ -10414,6 +10855,7 @@
         "rawDescription": "【被动】战斗开始时，生成5张<color=#FFFFFFFF>$[C127021]</color>，随机放入牌库。我方召唤4个<color=#FFFFFFFF>$[C127022]</color>后，此角色附属<color=#FFFFFFFF>$[C127027]</color>，并获得1点<color=#FFFFFFFF>$[K6]</color>。",
         "description": "【被动】战斗开始时，生成5张唤醒眷属，随机放入牌库。我方召唤4个增殖生命体后，此角色附属重燃的绿洲之心，并获得1点护盾。",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_Apep_02"
       }
@@ -10455,6 +10897,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__DAMAGE": 2
         },
@@ -10473,6 +10916,7 @@
             "count": 3
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE_3": 3
@@ -10496,6 +10940,7 @@
             "count": 2
           }
         ],
+        "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 4
@@ -10510,6 +10955,7 @@
         "rawDescription": "【被动】<color=#FFFFFFFF>此角色受到伤害后：</color>如果此角色生命值不多于7，则获得1点$[K310]。（每回合1次）",
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
+        "targetList": [],
         "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }

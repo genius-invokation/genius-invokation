@@ -155,6 +155,7 @@ const collateSkill = (id: string | number, rawJson: any): SkillRawData => {
         count,
       })),
     ),
+    targetList: [], // no idea
     keyMap,
   };
 };

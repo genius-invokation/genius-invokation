@@ -62,6 +62,7 @@ export const xkeyword = getExcel("GCGKeywordExcelConfigData");
 export const xavatar = getExcel("AvatarExcelConfigData");
 export const xdeckcard = getExcel("GCGDeckCardExcelConfigData");
 export const xcardview = getExcel("GCGCardViewExcelConfigData");
+export const xchoose = getExcel("GCGChooseExcelConfigData");
 
 export const wandererNameTextMapHash = xavatar.find(
   (ele) => ele.id === 10000075,
