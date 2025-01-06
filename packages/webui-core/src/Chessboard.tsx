@@ -65,6 +65,7 @@ import { cached } from "./fetch";
 import { AsyncQueue } from "./async_queue";
 import { SelectCardView } from "./SelectCardView";
 import { MutationAnnouncer } from "./MutationAnnouncer";
+import { hintTexts } from "./CardDescription";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -98,10 +99,11 @@ type ClickableActionWithIndex = (PlayCardAction | UseSkillAction) & {
 };
 type PartialDiceSelectProp = Omit<DiceSelectProps, "value">;
 type DiceAndSelectionState = PartialDiceSelectProp & {
-  /** 是否可以进行骰子选择并确认（若置空需设置 DiceSelectProp.disableConfirm） */
   actionIndex?: number;
   clickable?: Map<number, DiceAndSelectionState>;
   selected: number[];
+  depth: number;
+  hintText?: string;
 };
 
 /**
@@ -113,31 +115,54 @@ type DiceAndSelectionState = PartialDiceSelectProp & {
 function buildClickableTransferIter(
   selected: number[],
   actions: ClickableActionWithIndex[],
+  depth: number,
+  hintTexts: string[],
 ): DiceAndSelectionState {
   switch (actions[0].targetIds.length) {
     case 0: {
+      // 不再需要选择，进入选骰界面
       return {
         actionIndex: actions[0].index,
         required: actions[0].requiredCost,
+        depth,
+        hintText: hintTexts?.[depth],
         selected,
       };
     }
     case 1: {
-      const clickable = new Map<number, DiceAndSelectionState>();
-      const root: DiceAndSelectionState = {
-        disableConfirm: true,
-        clickable,
-        selected,
-      };
-      for (const a of actions) {
-        clickable.set(a.targetIds[0], {
+      // 还差一层选择
+      if (actions.length === 1) {
+        // 如果只有一种可选行动，直接选中它
+        return {
+          actionIndex: actions[0].index,
+          required: actions[0].requiredCost,
+          depth,
+          hintText: hintTexts?.[depth],
+          selected: [...selected, actions[0].targetIds[0]],
+        };
+      } else {
+        // 否则将所有可选行动加入 clickable
+        // 只差一层选择的时候，点击这一层之后还可以切换到同层的其他目标
+        const clickable = new Map<number, DiceAndSelectionState>();
+        const root: DiceAndSelectionState = {
+          disableConfirm: true,
           clickable,
-          actionIndex: a.index,
-          required: a.requiredCost,
-          selected: [...selected, a.targetIds[0]],
-        });
+          selected,
+          depth,
+          hintText: hintTexts?.[depth] ?? `请选择第 ${depth + 1} 个目标`,
+        };
+        for (const a of actions) {
+          clickable.set(a.targetIds[0], {
+            clickable,
+            actionIndex: a.index,
+            required: a.requiredCost,
+            depth: depth + 1,
+            hintText: hintTexts?.[depth] ?? `请选择第 ${depth + 1} 个目标`,
+            selected: [...selected, a.targetIds[0]],
+          });
+        }
+        return root;
       }
-      return root;
     }
     default: {
       const groupByFirst = groupBy(actions, (a) => a.targetIds[0]);
@@ -147,12 +172,22 @@ function buildClickableTransferIter(
           ...v,
           targets: v.targetIds.toSpliced(0, 1),
         }));
-        clickable.set(k, buildClickableTransferIter([...selected, k], newV));
+        clickable.set(
+          k,
+          buildClickableTransferIter(
+            [...selected, k],
+            newV,
+            depth + 1,
+            hintTexts,
+          ),
+        );
       }
       return {
         disableConfirm: true,
         clickable,
         selected,
+        depth,
+        hintText: hintTexts?.[depth] ?? `请选择第 ${depth + 1} 个目标`,
       };
     }
   }
@@ -171,7 +206,9 @@ function buildClickableTransferState(
   );
   const result = new Map<number, DiceAndSelectionState>();
   for (const [k, v] of grouped) {
-    result.set(k, buildClickableTransferIter([k], v));
+    const hintText = hintTexts.get(k) ?? [];
+    console.log(hintTexts, hintText);
+    result.set(k, buildClickableTransferIter([k], v, 0, hintText));
   }
   return result;
 }
@@ -245,6 +282,7 @@ export function createPlayer(
   const [cardSelecting, waitCardSelect, notifyCardSelected] =
     createWaitNotify<number>();
   const [cardToSelect, setCardToSelect] = createSignal<readonly number[]>([]);
+  const [hintText, setHintText] = createSignal("");
   const [, waitDiceSelect, notifyDiceSelected] = createWaitNotify<
     DiceType[] | undefined
   >();
@@ -265,6 +303,7 @@ export function createPlayer(
   const clearIo = () => {
     setClickable([]);
     setSelected([]);
+    setHintText("");
     setAllCosts({});
     setDiceSelectProp();
     notifyHandSwitched([]);
@@ -293,6 +332,7 @@ export function createPlayer(
     onChooseActive: async ({ candidateIds }): Promise<ChooseActiveResponse> => {
       let activeCharacterId = candidateIds[0];
       setClickable([...candidateIds]);
+      setHintText("请选择出战角色");
       setDiceSelectProp({
         confirmOnly: true,
         disableConfirm: true,
@@ -319,6 +359,7 @@ export function createPlayer(
       setDiceSelectProp();
       setClickable([]);
       setSelected([]);
+      setHintText("");
       return { activeCharacterId };
     },
     onAction: async ({ action: actions }): Promise<ActionResponse> => {
@@ -364,6 +405,8 @@ export function createPlayer(
             actionIndex: i,
             required: actionObj.requiredCost,
             selected: [action.characterId],
+            hintText: "切换出战角色",
+            depth: 0,
           });
           newAllCosts[action.characterId] = actionObj.requiredCost;
         } else if (actionObj.elementalTuning) {
@@ -373,12 +416,15 @@ export function createPlayer(
             disabledDice: [8 /* omni */, action.targetDice],
             required: [{ type: 0 /* void */, count: 1 }],
             selected: [action.removedCardId],
+            hintText: "元素调和",
+            depth: 0,
           });
         } else if (actionObj.declareEnd) {
           initialClickable.set(0, {
             actionIndex: i,
             required: [],
             selected: [],
+            depth: 0,
           });
         }
       }
@@ -391,11 +437,13 @@ export function createPlayer(
       let state: DiceAndSelectionState = {
         clickable: initialClickable,
         selected: [],
+        depth: 0,
       };
       for (;;) {
         while (!("actionIndex" in state)) {
           setClickable([...(state.clickable?.keys() ?? [])]);
           setSelected([...state.selected]);
+          setHintText(state.hintText ?? "");
           const val = await Promise.race([
             waitElementClick(),
             waitChessboardClick(),
@@ -404,6 +452,7 @@ export function createPlayer(
             state = {
               clickable: initialClickable,
               selected: [],
+              depth: 0,
             };
           } else {
             if (!state.clickable?.has(val)) {
@@ -413,6 +462,7 @@ export function createPlayer(
           }
         }
         setClickable([...(state.clickable?.keys() ?? [])]);
+        setHintText(state.hintText ?? "");
         setSelected([...state.selected]);
         const chosenActionIndex = state.actionIndex!;
         setPreviewData(actions[chosenActionIndex].preview);
@@ -420,6 +470,7 @@ export function createPlayer(
         if (actions[chosenActionIndex].declareEnd) {
           setClickable([]);
           setSelected([]);
+          setHintText("");
           result = {
             chosenActionIndex,
             usedDice: [],
@@ -445,6 +496,7 @@ export function createPlayer(
           state = {
             clickable: initialClickable,
             selected: [],
+            depth: 0,
           };
         } else {
           state = state.clickable!.get(r)!;
@@ -452,6 +504,7 @@ export function createPlayer(
       }
       setClickable([]);
       setSelected([]);
+      setHintText("");
       setAllCosts({});
       setPreviewData([]);
       return result;
@@ -576,6 +629,11 @@ export function createPlayer(
             结束回合
           </button>
         </Show>
+        <Show when={hintText()}>
+          <div class="absolute top-50% translate-y--50% left-50% translate-x--50% bg-yellow-100 p-2 text-yellow-800">
+            {hintText()}
+          </div>
+        </Show>
         <div class="absolute right-0 top-0 z-15 h-full min-w-8 flex flex-col items-center bg-yellow-800">
           <Show
             when={diceSelectProp()}
@@ -658,7 +716,7 @@ interface ChessboardProps extends ComponentProps<"div"> {
 }
 
 function Chessboard(props: ChessboardProps) {
-  const { assetApiEndpoint, assetAltText } = usePlayerContext();
+  const { assetApiEndpoint } = usePlayerContext();
   const [local, restProps] = splitProps(props, [
     "class",
     "state",
@@ -682,15 +740,6 @@ function Chessboard(props: ChessboardProps) {
       if (event.triggered) {
         currentFocusing = event.triggered.entityId;
       }
-      if (event.actionDone) {
-        const text = `${
-          event.actionDone.who === local.who ? "我方" : "对方"
-        } 使用 ${
-          assetAltText(event.actionDone.skillOrCardDefinitionId!) ??
-          event.actionDone.skillOrCardDefinitionId
-        }`;
-        setMutationHintTexts((txts) => [text, ...txts]);
-      }
     }
     setAllDamages(currentDamages);
     setFocusing(currentFocusing);
@@ -702,8 +751,6 @@ function Chessboard(props: ChessboardProps) {
       cached(`${assetApiEndpoint()}/images/${id}?thumb=1`),
     );
   });
-
-  const [mutationHintTexts, setMutationHintTexts] = createStore<string[]>([]);
 
   return (
     <EventContext.Provider value={{ allDamages, previewData, focusing }}>

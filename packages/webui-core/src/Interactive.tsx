@@ -56,8 +56,8 @@ export function Interactive(props: InteractiveProps) {
         focused: focused(),
       }}
       onClick={(e) => {
+        e.stopPropagation(); 
         if (clickable()) {
-          e.stopPropagation(); 
           onClick(props.id);
         }
       }}
