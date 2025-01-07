@@ -18,6 +18,6 @@ test("wangshu inn", async () => {
   );
   await c.me.end();
   await c.stepToNextAction();
-  c.expect(`with id ${wangshuInn.id}`).toHaveVariable("usage", 1);
-  c.expect(`with id ${target.id}`).toHaveVariable("health", 8);
+  c.expect(wangshuInn).toHaveVariable("usage", 1);
+  c.expect(target).toHaveVariable("health", 8);
 });

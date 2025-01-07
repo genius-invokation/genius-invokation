@@ -15,5 +15,5 @@ test("kusava", async () => {
   );
   await c.stepToNextAction();
   c.expect("my hand cards").toBeArrayOfSize(0);
-  c.expect(`with id ${kusava.id}`).toHaveVariable("memory", 2);
+  c.expect(kusava).toHaveVariable("memory", 2);
 });

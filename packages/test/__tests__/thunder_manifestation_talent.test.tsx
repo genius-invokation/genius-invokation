@@ -23,9 +23,9 @@ test("thunder manifestation: talent works on 'disposed' status", async () => {
   await c.stepToNextAction();
   // 雷鸣探知弃置，伤害 +1
   c.expect(`status with definition id ${LightningRod}`).toBeArrayOfSize(0);
-  c.expect(`with id ${target.id}`).toHaveVariable("health", 6);
+  c.expect(target).toHaveVariable("health", 6);
   // 我方抽牌
   c.expect("my hand cards").toBeArrayOfSize(1);
   // 我方天赋每回合使用次数归零
-  c.expect(`with id ${talent.id}`).toHaveVariable("usagePerRound", 0);
+  c.expect(talent).toHaveVariable("usagePerRound", 0);
 });

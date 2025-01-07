@@ -340,7 +340,7 @@ export class TestController {
   expect(ref: Ref): Matchers;
   expect(what: string | Ref): Matchers {
     if (what instanceof Ref) {
-      what = `any with id ${what.id}`;
+      what = `with id ${what.id}`;
     }
     return expect(this.query(what));
   }
