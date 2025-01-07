@@ -83,6 +83,11 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
     - if: matrix.language == 'c-cpp'
+      uses: actions/cache@v4
+      with:
+        path: packages/cbinding/build
+        key: Linux-x86_64-build
+    - if: matrix.language == 'c-cpp'
       shell: bash
       run: |
         cd packages/cbinding
