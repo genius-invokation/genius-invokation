@@ -67,11 +67,9 @@ export const SubnauticalHunterMode = status(111122)
   .setVariable("drawnCard", 0)
   .on("useSkill", (c, e) => e.isSkillType("normal") || e.isSkillType("elemental"))
   .do((c) => {
-    const cards = c.getMaxCostHands();
-    // const selected = c.randomCard(cards, 2);
-    const selected = cards.slice(0, 2);
-    c.undrawCards(selected, "bottom");
-    c.drawCards(selected.length);
+    const cards = c.maxCostHands(2);
+    c.undrawCards(cards, "bottom");
+    c.drawCards(cards.length);
   })
   .done();
 

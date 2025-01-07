@@ -435,14 +435,21 @@ export function nationOfCharacter(ch: CharacterDefinition): NationTag[] {
   return ch.tags.filter((tag): tag is NationTag => nationTags.includes(tag));
 }
 
-function toSortedBy<T, K extends number[]>(
+function toSortedBy<T, K extends number[] | number>(
   this: readonly T[],
   projection: (element: T) => K,
 ): T[] {
   return this.toSorted((a, b) => {
-    const projectionA = projection(a);
-    const projectionB = projection(b);
-    for (let i = 0; i < projectionA.length; i++) {
+    let projectionA: number[] | number = projection(a);
+    let projectionB: number[] | number = projection(b);
+    if (!Array.isArray(projectionA)) {
+      projectionA = [projectionA];
+    }
+    if (!Array.isArray(projectionB)) {
+      projectionB = [projectionB];
+    }
+    const size = Math.min(projectionA.length, projectionB.length);
+    for (let i = 0; i < size; i++) {
       if (projectionA[i] < projectionB[i]) {
         return -1;
       }
@@ -450,7 +457,7 @@ function toSortedBy<T, K extends number[]>(
         return 1;
       }
     }
-    return 0;
+    return projectionA.length - projectionB.length;
   });
 }
 

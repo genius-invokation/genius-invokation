@@ -81,9 +81,10 @@ export const Yumkasaurus = card(313002)
   .usage(2)
   .damage(DamageType.Physical, 1)
   .do((c) => {
-    const hands = c.getMaxCostHands("opp");
-    // const [selected] = c.randomCard(hands);
-    c.stealHandCard(hands[0]);
+    const [handCard] = c.maxCostHands(1, "opp");
+    if (handCard) {
+      c.stealHandCard(handCard);
+    }
   })
   .done();
 
@@ -258,7 +259,7 @@ export const Qucusaurus = card(313006)
   .deductOmniCost(1)
   .setFastAction()
   .do((c) => {
-    c.disposeRandomCard(c.getMaxCostHands());
+    c.disposeMaxCostHands(1);
     for (const st of c.$$(`opp status with definition id ${Target}`)) {
       st.dispose();
     }

@@ -21,8 +21,7 @@ const BonecrunchersEnergyBlock = card(124051)
   .until("v4.7.0")
   .filter((c) => !c.$(`my combat status with definition id ${BonecrunchersEnergyBlockCombatStatus}`))
   .do((c) => {
-    const hands = c.getMaxCostHands();
-    c.disposeRandomCard(hands);
+    c.disposeMaxCostHands(1);
     const activeCh = c.$("my active")!;
     c.generateDice(activeCh.element(), 1);
     if (activeCh.definition.tags.includes("sacread")) {
@@ -123,10 +122,11 @@ const StarfallShower = skill(22042)
     const st = c.self.hasStatus(AnomalousAnatomy);
     const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 5) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
-    const cards = c.getMaxCostHands();
-    const [card] = c.disposeRandomCard(cards);
-    if (c.self.hasEquipment(LightlessFeeding)) {
-      c.heal(diceCostOfCard(card.definition), "@self");
+    const [card] = c.disposeMaxCostHands(1);
+    if (card) {
+      if (c.self.hasEquipment(LightlessFeeding)) {
+        c.heal(diceCostOfCard(card.definition), "@self");
+      }
     }
   })
   .done();
@@ -553,7 +553,7 @@ const Kusava = card(323008)
   .variable("cardPlayed", 0, { visible: false })
   .on("actionPhase")
   .do((c) => {
-    const disposed = c.disposeRandomCard(c.getMaxCostHands(), 2);
+    const disposed = c.disposeMaxCostHands(2);
     const count = disposed.length;
     c.addVariableWithMax("memory", count, 2);
     c.setVariable("cardPlayed", 0)

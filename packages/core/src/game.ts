@@ -140,7 +140,7 @@ function initPlayerState(
       return 1;
     }
   };
-  initialPile = initialPile.toSorted((a, b) => compFn(a) - compFn(b));
+  initialPile = initialPile.toSortedBy(compFn);
   const characters: CharacterState[] = [];
   const pile: CardState[] = [];
   for (const definition of characterDefs) {

@@ -946,11 +946,9 @@ export const ConductorsTopHat = card(312030)
   .artifact()
   .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master().id && c.player.hands.length > 0)
   .usagePerRound(1)
-  .do((c) => {
-    c.disposeRandomCard(c.getMaxCostHands());
-    c.convertDice(DiceType.Omni, 2)
-    c.characterStatus(ConductorsTopHatInEffect, "@master");
-  })
+  .disposeMaxCostHands(1)
+  .convertDice(DiceType.Omni, 2)
+  .characterStatus(ConductorsTopHatInEffect, "@master")
   .done();
 
 /**

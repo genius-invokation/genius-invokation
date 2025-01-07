@@ -45,6 +45,7 @@ import {
 } from "../base/state";
 import {
   ContextMetaBase,
+  ENABLE_SHORTCUT,
   SkillContext,
   TypedSkillContext,
 } from "./context/skill";
@@ -619,7 +620,7 @@ type AvailablePropImpl<
   Obj extends object,
   K extends keyof Obj,
 > = Obj[K] extends (...args: any[]) => void
-  ? ReturnType<Obj[K]> extends void
+  ? ReturnType<Obj[K]> extends void | { [ENABLE_SHORTCUT]: true }
     ? K
     : never
   : never;

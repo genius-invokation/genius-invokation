@@ -380,9 +380,7 @@ const EmblemOfSeveredFate = card(312008)
 const ThunderAndEternity = card(331803)
   .until("v3.8.0")
   .do((c) => {
-    const count = c.player.dice.length;
-    c.absorbDice("seq", count);
-    c.generateDice(c.$("my active")!.element(), count);
+    c.convertDice(c.$("my active")!.element(), "all");
   })
   .done();
 

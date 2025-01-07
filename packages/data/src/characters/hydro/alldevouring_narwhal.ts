@@ -189,10 +189,11 @@ export const StarfallShower = skill(22042)
     const st = c.self.hasStatus(AnomalousAnatomy);
     const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 3) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
-    const cards = c.getMaxCostHands();
-    const [card] = c.disposeRandomCard(cards);
-    if (c.self.hasEquipment(LightlessFeeding)) {
-      c.heal(diceCostOfCard(card.definition), "@self");
+    const [card] = c.disposeMaxCostHands(1);
+    if (card) {
+      if (c.self.hasEquipment(LightlessFeeding)) {
+        c.heal(diceCostOfCard(card.definition), "@self");
+      }
     }
   })
   .done();

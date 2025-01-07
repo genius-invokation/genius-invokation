@@ -147,26 +147,12 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
     const orderByExprs = orderBy.children.flatMap(
       (node) => node.children[1].asIteration().children,
     );
-    const rawWithVal = raw.map((st) => ({
-      ...st,
-      values: orderByExprs.map((expr) => expr.evalExpr(st)),
-    }));
-    const compareFn = (
-      a: { values: number[] },
-      b: { values: number[] },
-    ): number => {
-      for (let i = 0; i < a.values.length; i++) {
-        const lhs = a.values[i];
-        const rhs = b.values[i];
-        if (lhs < rhs) {
-          return -1;
-        } else if (lhs > rhs) {
-          return 1;
-        }
-      }
-      return 0;
-    };
-    rawWithVal.sort(compareFn);
+    const rawWithVal = raw
+      .map((st) => ({
+        ...st,
+        values: orderByExprs.map((expr) => expr.evalExpr(st)),
+      }))
+      .toSortedBy((a) => a.values);
     const limitCount =
       limit.numChildren > 0
         ? limit.children[0].children[1].evalExpr(this.args.state)
@@ -351,7 +337,7 @@ const typeSpecifierDict: QueryLangActionDict<TypeSpecifierResult> = {
       type: "character",
       position: "all",
       defeated: "no",
-    }
+    };
   },
   CharacterSpecifier_position(posSpec, _) {
     return {

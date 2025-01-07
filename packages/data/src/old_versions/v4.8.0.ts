@@ -92,10 +92,11 @@ const StarfallShower = skill(22042)
     const st = c.self.hasStatus(AnomalousAnatomy);
     const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 4) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
-    const cards = c.getMaxCostHands();
-    const [card] = c.disposeRandomCard(cards);
-    if (c.self.hasEquipment(LightlessFeeding)) {
-      c.heal(diceCostOfCard(card.definition), "@self");
+    const [card] = c.disposeMaxCostHands(1);
+    if (card) {
+      if (c.self.hasEquipment(LightlessFeeding)) {
+        c.heal(diceCostOfCard(card.definition), "@self");
+      }
     }
   })
   .done();
@@ -113,14 +114,10 @@ const ProspectorsDrill = card(311409)
   .costSame(2)
   .weapon("pole")
   .variable("unity", 0)
-  .on("decreaseDamaged", (c, e) => c.player.hands.length !== 0)
+  .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
   .usagePerRound(2)
-  .do((c, e) => {
-    const cards = c.getMaxCostHands();
-    if (c.disposeRandomCard(cards).length > 0) {
-      c.addVariable("unity", 1);
-    }
-  })
+  .disposeMaxCostHands(1)
+  .addVariable("unity", 1)
   .on("increaseSkillDamage")
   .do((c, e) => {
     e.increaseDamage(1);

@@ -114,6 +114,17 @@ interface DrawCardsOpt {
   withDefinition?: CardHandle | null;
 }
 
+export const ENABLE_SHORTCUT = Symbol("enableShortcut");
+
+function returnWithEnableShortcut<T>(value: T): T & { [ENABLE_SHORTCUT]: true } {
+  Object.defineProperty(value, ENABLE_SHORTCUT, {
+    value: true,
+    writable: false,
+    enumerable: false,
+  });
+  return value as any;
+}
+
 export interface HealOption {
   kind?: HealKind;
 }
@@ -373,13 +384,23 @@ export class SkillContext<Meta extends ContextMetaBase> {
         .length ?? 0
     );
   }
-  /** 我方或对方原本元素骰费用最多的手牌列表 */
-  getMaxCostHands(who: "my" | "opp" = "my"): CardState[] {
+
+  /** 某方玩家手牌，并按照原本元素骰费用+“破平值”降序排序 */
+  private costSortedHands(who: "my" | "opp"): CardState[] {
     const player = who === "my" ? this.player : this.oppPlayer;
-    const maxCost = Math.max(
-      ...player.hands.map((c) => diceCostOfCard(c.definition)),
-    );
-    return player.hands.filter((c) => diceCostOfCard(c.definition) === maxCost);
+    const tb = (card: CardState) => {
+      return nextRandom(card.id) ^ this.state.iterators.random;
+    };
+    const sortData = new Map(player.hands.map((c) => [c.id, { cost: diceCostOfCard(c.definition), tb: tb(c)}] as const));
+    return player.hands.toSortedBy((card) => [
+      sortData.get(card.id)!.cost,
+      sortData.get(card.id)!.tb,
+    ]).toReversed();
+  }
+
+  /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
+  maxCostHands(count: number, who: "my" | "opp" = "my"): CardState[] {
+    return this.costSortedHands(who).slice(0, count);
   }
 
   isInInitialPile(card: CardState): boolean {
@@ -1487,6 +1508,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
   }
 
+  /** 弃置我方原本元素骰费用最多的 `count` 张牌 */
+  disposeMaxCostHands(count: number) {
+    const disposed = this.maxCostHands(count);
+    this.disposeCard(...disposed);
+    return returnWithEnableShortcut(disposed);
+  }
+
   /**
    * 消耗 `count` 点夜魂值
    * @param count
@@ -1509,27 +1537,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         // 不在此处弃置夜魂加持；在相应特技的 onConsumeNightsoul1 事件中处理
       }
     }
-  }
-
-  /**
-   * 在 `cards` 中随机选择 `count` 张行动牌。**不会**步进随机迭代器。
-   * @param cards
-   * @param count 默认为 1
-   */
-  randomCard(cards: CardState[], count = 1) {
-    const tb = (card: CardState) => {
-      return nextRandom(card.id) ^ this.state.iterators.random;
-    };
-    return cards.toSorted((a, b) => tb(a) - tb(b)).slice(0, count);
-  }
-
-  /**
-   * 等价于 `disposeCard(...randomCards(cards, count))`。
-   */
-  disposeRandomCard(cards: CardState[], count = 1) {
-    const disposed = this.randomCard(cards, count);
-    this.disposeCard(...disposed);
-    return disposed;
   }
 
   setExtensionState(setter: Setter<Meta["associatedExtension"]["type"]>) {
@@ -1651,7 +1658,7 @@ type SkillContextMutativeProps =
   | "createHandCard"
   | "createPileCards"
   | "disposeCard"
-  | "disposeRandomCard"
+  | "disposeMaxCostHands"
   | "drawCards"
   | "undrawCards"
   | "stealHandCard"
