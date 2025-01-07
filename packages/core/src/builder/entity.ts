@@ -164,7 +164,7 @@ export class EntityBuilder<
       );
     }
     this._associatedExtensionId = ext;
-    return this as unknown as EntityBuilder<
+    return this as unknown as EntityBuilderPublic<
       CallerType,
       Vars,
       ExtensionHandle<NewExtT>
@@ -175,8 +175,14 @@ export class EntityBuilder<
     if (this._type !== "equipment") {
       throw new GiTcgDataError("Only equipment can have technique skill");
     }
-    const self = this as unknown as EntityBuilder<"equipment", Vars, AssociatedExt>;
-    return enableShortcut(new TechniqueBuilder<Vars, readonly [], AssociatedExt>(id, self));
+    const self = this as unknown as EntityBuilder<
+      "equipment",
+      Vars,
+      AssociatedExt
+    >;
+    return enableShortcut(
+      new TechniqueBuilder<Vars, readonly [], AssociatedExt>(id, self),
+    );
   }
 
   conflictWith(id: number) {
@@ -240,7 +246,7 @@ export class EntityBuilder<
     name: Name,
     value: number,
     opt?: VariableOptions,
-  ): EntityBuilder<CallerType, Vars | Name, AssociatedExt> {
+  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt> {
     if (Reflect.has(this._varConfigs, name)) {
       throw new GiTcgDataError(`Variable name ${name} already exists`);
     }
@@ -276,14 +282,14 @@ export class EntityBuilder<
     value: number,
     max?: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilder<CallerType, Vars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt>;
   variableCanAppend<const Name extends string>(
     name: Name,
     value: number,
     max: number,
     appendValue: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilder<CallerType, Vars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt>;
   variableCanAppend(
     name: string,
     value: number,
@@ -306,8 +312,8 @@ export class EntityBuilder<
 
   /**
    * 当 skill builder 指定 .usage 时，上层 entity builder 的操作
-   * @param count 
-   * @param opt 
+   * @param count
+   * @param opt
    * @returns usage 变量名
    */
   _setUsage(count: number, opt?: UsageOptions<string>): string {
@@ -322,10 +328,7 @@ export class EntityBuilder<
         );
       }
       if (perRound) {
-        if (
-          this._usagePerRoundIndex >=
-          USAGE_PER_ROUND_VARIABLE_NAMES.length
-        ) {
+        if (this._usagePerRoundIndex >= USAGE_PER_ROUND_VARIABLE_NAMES.length) {
           throw new GiTcgCoreInternalError(
             `Cannot specify more than ${USAGE_PER_ROUND_VARIABLE_NAMES.length} usagePerRound.`,
           );
@@ -376,8 +379,12 @@ export class EntityBuilder<
   }
 
   nightsoulBlessing(maxCount: number, varOpt?: VariableOptions) {
-    return this.tags("nightsoulBlessing")
-      .variableCanAppend("nightsoul", 0, maxCount, varOpt)
+    return this.tags("nightsoulBlessing").variableCanAppend(
+      "nightsoul",
+      0,
+      maxCount,
+      varOpt,
+    );
   }
 
   prepare(skill: SkillHandle, hintCount?: number) {
@@ -387,7 +394,9 @@ export class EntityBuilder<
     if (hintCount) {
       this.variable("preparingSkillHintCount", hintCount);
     }
-    return (this as unknown as EntityBuilder<"status", Vars, AssociatedExt>)
+    return (
+      this as unknown as EntityBuilderPublic<"status", Vars, AssociatedExt>
+    )
       .on("replaceAction")
       .useSkill(skill)
       .dispose()
@@ -467,7 +476,7 @@ export class EntityBuilder<
   usage(
     count: number,
     opt: GlobalUsageOptions = {},
-  ): EntityBuilder<CallerType, Vars | "usage", AssociatedExt> {
+  ): EntityBuilderPublic<CallerType, Vars | "usage", AssociatedExt> {
     if (opt.autoDispose !== false) {
       this.variable("disposeWhenUsageIsZero", 1);
     }
@@ -534,22 +543,20 @@ export class EntityBuilder<
   reserve(): void {}
 }
 
-export function summon(id: number) {
+export type EntityBuilderPublic<
+  CallerType extends EntityType | "character",
+  Vars extends string = never,
+  AssociatedExt extends ExtensionHandle = never,
+> = Omit<EntityBuilder<CallerType, Vars, AssociatedExt>, `_${string}`>;
+
+export function summon(id: number): EntityBuilderPublic<"summon"> {
   return new EntityBuilder("summon", id);
 }
 
-export function status(id: number) {
+export function status(id: number): EntityBuilderPublic<"status"> {
   return new EntityBuilder("status", id);
 }
 
-export function combatStatus(id: number) {
+export function combatStatus(id: number): EntityBuilderPublic<"combatStatus"> {
   return new EntityBuilder("combatStatus", id);
-}
-
-export function equipment(id: number) {
-  return new EntityBuilder("equipment", id);
-}
-
-export function support(id: number) {
-  return new EntityBuilder("support", id);
 }

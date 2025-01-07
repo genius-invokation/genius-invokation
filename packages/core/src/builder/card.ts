@@ -56,7 +56,7 @@ import {
   StatusHandle,
   SupportHandle,
 } from "./type";
-import { combatStatus, status, equipment, support } from "./entity";
+import { EntityBuilder } from "./entity";
 import { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
 import { costSize, diceCostSize, normalizeCost, Writable } from "../utils";
@@ -183,7 +183,7 @@ class CardBuilder<
         });
       })
       .done();
-    const builder = equipment(this.cardId);
+    const builder = new EntityBuilder("equipment", this.cardId);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -231,7 +231,7 @@ class CardBuilder<
         withId: c.skillInfo.caller.id,
       });
     }).done();
-    const builder = support(this.cardId);
+    const builder = new EntityBuilder("support", this.cardId);
     if (type !== null) {
       builder.tags(type);
     }
@@ -252,7 +252,7 @@ class CardBuilder<
     this.do((c) => {
       c.combatStatus(id as CombatStatusHandle, where);
     }).done();
-    const builder = combatStatus(id);
+    const builder = new EntityBuilder("combatStatus", id);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -270,7 +270,7 @@ class CardBuilder<
     this.do((c) => {
       c.characterStatus(id as StatusHandle, target);
     }).done();
-    const builder = status(id);
+    const builder = new EntityBuilder("status", id);
     builder._versionInfo = this._versionInfo;
     return builder;
   }

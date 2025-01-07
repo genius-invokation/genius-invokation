@@ -62,7 +62,7 @@ import {
   USAGE_PER_ROUND_VARIABLE_NAMES,
   UsagePerRoundVariableNames,
 } from "../base/entity";
-import { EntityBuilder, EntityBuilderResultT, VariableOptions } from "./entity";
+import { EntityBuilder, EntityBuilderPublic, EntityBuilderResultT, VariableOptions } from "./entity";
 import {
   costSize,
   diceCostSize,
@@ -1018,7 +1018,7 @@ class InitiativeSkillBuilder<
     return this;
   }
 
-  type(type: "passive"): EntityBuilder<"character">;
+  type(type: "passive"): EntityBuilderPublic<"character">;
   type(type: CommonSkillType): this;
   type(type: CommonSkillType | "passive"): any {
     if (type === "passive") {
