@@ -1,4 +1,4 @@
-import { ref, setup, Character, State, Status, Card, Equipment, Support } from "#test";
+import { ref, setup, State, Card, Support } from "#test";
 import { TheBestestTravelCompanion } from "@gi-tcg/data/internal/cards/event/other";
 import { Paimon } from "@gi-tcg/data/internal/cards/support/ally";
 import { Kusava } from "@gi-tcg/data/internal/cards/support/item";
