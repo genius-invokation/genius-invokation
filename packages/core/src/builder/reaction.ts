@@ -19,6 +19,7 @@ import { SkillBuilder, enableShortcut } from "./skill";
 import { TypedSkillContext } from "./context/skill";
 import { CombatStatusHandle, StatusHandle, SummonHandle } from "./type";
 import { SwirlableElement } from "../base/reaction";
+import { builderWeakRefs } from "./registry";
 
 export const CALLED_FROM_REACTION: unique symbol = Symbol();
 
@@ -83,6 +84,7 @@ function initialize() {
   class ReactionBuilder extends SkillBuilder<ReactionContextMeta> {
     constructor(private reaction: Reaction) {
       super(reaction);
+      builderWeakRefs.add(new WeakRef(this));
     }
     done() {
       REACTION_DESCRIPTION[this.reaction] = this.buildAction();

@@ -138,10 +138,9 @@ class CardBuilder<
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
-    const entry: DescriptionDictionaryEntry = (st, id) => {
-      const ext = st.extensions.find(
-        (ext) => ext.definition.id === this.associatedExtensionId,
-      );
+    const extId = this.associatedExtensionId;
+    const entry: DescriptionDictionaryEntry = function (st, id) {
+      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       const who = st.players[0].hands.find((c) => c.id === id) ? 0 : 1;
       return String(getter(st, { area: { who } }, ext?.state));
     };
@@ -174,16 +173,17 @@ class CardBuilder<
   }
 
   equipment<Q extends TargetQuery>(target: Q) {
+    const cardId = this.cardId as EquipmentHandle;
     this.type("equipment")
       .addTarget(target)
       .do((c) => {
         const ch = c.$("character and @targets.0");
-        ch?.equip(this.cardId as EquipmentHandle, {
+        ch?.equip(cardId, {
           withId: c.skillInfo.caller.id,
         });
       })
       .done();
-    const builder = new EntityBuilder("equipment", this.cardId);
+    const builder = new EntityBuilder("equipment", cardId);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -221,17 +221,18 @@ class CardBuilder<
     if (type !== null) {
       this.tags(type);
     }
+    const cardId = this.cardId as SupportHandle;
     this.do((c, e) => {
       // 支援牌的目标是要弃置的支援区卡牌
       const targets = e.targets as readonly EntityState[];
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      c.createEntity("support", this.cardId as SupportHandle, void 0, {
+      c.createEntity("support", cardId, void 0, {
         withId: c.skillInfo.caller.id,
       });
     }).done();
-    const builder = new EntityBuilder("support", this.cardId);
+    const builder = new EntityBuilder("support", cardId);
     if (type !== null) {
       builder.tags(type);
     }

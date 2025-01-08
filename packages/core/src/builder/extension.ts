@@ -7,7 +7,7 @@ import {
   TriggeredSkillDefinition,
 } from "../base/skill";
 import { SkillContext } from "./context/skill";
-import { registerExtension } from "./registry";
+import { registerExtension, builderWeakRefs } from "./registry";
 import { wrapSkillInfoWithExt, WritableMetaOf } from "./skill";
 import { ExtensionHandle } from "./type";
 import { DEFAULT_VERSION_INFO } from "../base/version";
@@ -33,6 +33,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
     private readonly initialState: ExtStateType,
   ) {
     this.id = idHint + 50_000_000;
+    builderWeakRefs.add(new WeakRef(this));
   }
 
   description(description: string) {
@@ -57,11 +58,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
     const action: SkillDescription<any> = (state, skillInfo, arg) => {
       const ctx = new SkillContext<
         WritableMetaOf<ExtensionBuilderMeta<ExtStateType, E>>
-      >(
-        state,
-        wrapSkillInfoWithExt(skillInfo, extId),
-        arg,
-      );
+      >(state, wrapSkillInfoWithExt(skillInfo, extId), arg);
       ctx.setExtensionState((st) => operation(st, arg, state));
       return [ctx.state, ctx.events] as const;
     };

@@ -17,10 +17,7 @@ import { CardDefinition } from "../base/card";
 import { CharacterDefinition } from "../base/character";
 import { EntityDefinition, VariableConfig } from "../base/entity";
 import { ExtensionDefinition } from "../base/extension";
-import {
-  InitiativeSkillDefinition,
-  SkillDefinition,
-} from "../base/skill";
+import { InitiativeSkillDefinition, SkillDefinition } from "../base/skill";
 import { GiTcgDataError } from "../error";
 import {
   CURRENT_VERSION,
@@ -30,6 +27,12 @@ import {
   getCorrectVersion,
 } from "../base/version";
 import { freeze } from "immer";
+
+/**
+ * @internal
+ * 用于检查构造完数据后是否存在泄漏的（被引用的）builder
+ */
+export const builderWeakRefs = new Set<WeakRef<any>>();
 
 let currentStore: DataStore | null = null;
 

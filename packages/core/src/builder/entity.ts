@@ -26,7 +26,7 @@ import {
   VariableConfig,
 } from "../base/entity";
 import { SkillDefinition } from "../base/skill";
-import { registerEntity, registerPassiveSkill } from "./registry";
+import { registerEntity, registerPassiveSkill, builderWeakRefs } from "./registry";
 import {
   BuilderWithShortcut,
   DetailedEventNames,
@@ -115,7 +115,9 @@ export class EntityBuilder<
   constructor(
     public _type: CallerType,
     private id: number,
-  ) {}
+  ) {
+    builderWeakRefs.add(new WeakRef(this));
+  }
 
   since(version: Version) {
     this._versionInfo = { predicate: "since", version };
@@ -484,11 +486,12 @@ export class EntityBuilder<
     if (this._type === "status" || this._type === "equipment") {
       this.on("defeated").dispose().endOn();
     }
+    const varConfigs = this._varConfigs;
     // on each round begin clean up
     const usagePerRoundNames = USAGE_PER_ROUND_VARIABLE_NAMES.filter((name) =>
-      Reflect.has(this._varConfigs, name),
+      Reflect.has(varConfigs, name),
     );
-    const hasDuration = Reflect.has(this._varConfigs, "duration");
+    const hasDuration = Reflect.has(varConfigs, "duration");
     if (usagePerRoundNames.length > 0 || hasDuration) {
       this.on("roundEnd")
         .do(function (c, e) {

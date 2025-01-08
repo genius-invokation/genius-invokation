@@ -23,6 +23,7 @@ export {
   endRegistration,
   type GameData,
   type GameDataGetter,
+  builderWeakRefs,
 } from "./registry";
 export type {
   CardHandle,

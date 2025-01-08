@@ -77,7 +77,7 @@ import {
 } from "../utils";
 import { GiTcgDataError } from "../error";
 import { DEFAULT_VERSION_INFO, Version, VersionInfo } from "../base/version";
-import { registerInitiativeSkill } from "./registry";
+import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import { InitiativeSkillTargetKind } from "../base/card";
 import { TargetKindOfQuery, TargetQuery } from "./card";
 
@@ -562,9 +562,12 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   protected operations: SkillOperation<Meta>[] = [];
   protected filters: SkillOperationFilter<Meta>[] = [];
   protected associatedExtensionId: number | null = null;
-  constructor(protected readonly id: number) {}
   private applyIfFilter = false;
   private _ifFilter: SkillOperationFilter<Meta> = () => true;
+
+  constructor(protected readonly id: number) {
+    builderWeakRefs.add(new WeakRef(this));
+  }
 
   if(filter: SkillOperationFilter<Meta>): this {
     this._ifFilter = filter;
@@ -575,7 +578,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   do(op: SkillOperation<Meta>): this {
     if (this.applyIfFilter) {
       const ifFilter = this._ifFilter;
-      this.operations.push((c, e) => {
+      this.operations.push(function (c, e) {
         if (!ifFilter(c as any, e)) return;
         return op(c, e);
       });
@@ -617,13 +620,14 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
 
   protected buildFilter<Arg = Meta["eventArgType"]>(): SkillActionFilter<Arg> {
     const extId = this.associatedExtensionId;
-    return (state: GameState, skillInfo: SkillInfo, arg: Arg) => {
+    const filters = this.filters;
+    return function (state: GameState, skillInfo: SkillInfo, arg: Arg) {
       const ctx = new SkillContext<ReadonlyMetaOf<Meta>>(
         state,
         wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
-      for (const filter of this.filters) {
+      for (const filter of filters) {
         if (!filter(ctx as any, ctx.eventArg)) {
           return false;
         }
@@ -745,7 +749,7 @@ export class TriggeredSkillBuilder<
       });
     }
     const listenTo = this._listenTo;
-    this.filters.push((c, e) => {
+    this.filters.push(function (c, e) {
       const { area, state } = c.self;
       return filterDescriptor(c as any, e as any, {
         callerArea: area,
