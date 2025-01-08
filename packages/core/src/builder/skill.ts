@@ -549,6 +549,13 @@ export type SkillInfoGetter = () => SkillInfo;
 
 const BUILDER_META_TYPE: unique symbol = Symbol();
 
+export function wrapSkillInfoWithExt(
+  skillInfo: SkillInfo,
+  associatedExtensionId: number | null,
+): SkillInfoOfContextConstruction {
+  return { ...skillInfo, associatedExtensionId };
+}
+
 export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   declare [BUILDER_META_TYPE]: Meta;
 
@@ -558,12 +565,6 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   constructor(protected readonly id: number) {}
   private applyIfFilter = false;
   private _ifFilter: SkillOperationFilter<Meta> = () => true;
-
-  protected _wrapSkillInfoWithExt(
-    skillInfo: SkillInfo,
-  ): SkillInfoOfContextConstruction {
-    return { ...skillInfo, associatedExtensionId: this.associatedExtensionId };
-  }
 
   if(filter: SkillOperationFilter<Meta>): this {
     this._ifFilter = filter;
@@ -597,15 +598,17 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
    *
    * @returns 即 `SkillDescription` 的返回值
    */
-  protected buildAction<Arg = Meta["eventArgType"]>(): SkillDescription<Arg> {
-    return (state: GameState, skillInfo: SkillInfo, arg: Arg): SkillResult => {
+  protected buildAction<Arg = Meta["eventArgType"]>(overrideOperation?: SkillOperation<any>): SkillDescription<Arg> {
+    const extId = this.associatedExtensionId;
+    const operation = overrideOperation ? [overrideOperation] : this.operations;
+    return function (state: GameState, skillInfo: SkillInfo, arg: Arg): SkillResult {
       const ctx = new SkillContext<WritableMetaOf<Meta>>(
         state,
-        this._wrapSkillInfoWithExt(skillInfo),
+        wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
-      for (const op of this.operations) {
-        op(ctx, ctx.eventArg);
+      for (const op of operation) {
+        op(ctx as any, ctx.eventArg);
       }
       ctx._terminate();
       return [ctx.state, ctx.events] as const;
@@ -613,10 +616,11 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   }
 
   protected buildFilter<Arg = Meta["eventArgType"]>(): SkillActionFilter<Arg> {
+    const extId = this.associatedExtensionId;
     return (state: GameState, skillInfo: SkillInfo, arg: Arg) => {
       const ctx = new SkillContext<ReadonlyMetaOf<Meta>>(
         state,
-        this._wrapSkillInfoWithExt(skillInfo),
+        wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
       for (const filter of this.filters) {
@@ -740,12 +744,13 @@ export class TriggeredSkillBuilder<
         return c.self.area.type !== "removedEntities";
       });
     }
+    const listenTo = this._listenTo;
     this.filters.push((c, e) => {
       const { area, state } = c.self;
       return filterDescriptor(c as any, e as any, {
         callerArea: area,
         callerId: state.id,
-        listenTo: this._listenTo,
+        listenTo,
       });
     });
     this.filters.push(triggerFilter);
@@ -903,6 +908,52 @@ export class TriggeredSkillBuilder<
   }
 }
 
+function generateTargetList(
+  state: GameState,
+  skillInfo: SkillInfo,
+  known: AnyState[],
+  targetQuery: string[],
+  associatedExtensionId: number | null,
+): AnyState[][] {
+  if (targetQuery.length === 0) {
+    return [[]];
+  }
+  const [first, ...rest] = targetQuery;
+  const ctx = new SkillContext<ReadonlyMetaOf<SkillBuilderMetaBase>>(
+    state,
+    wrapSkillInfoWithExt(skillInfo, associatedExtensionId),
+    {
+      targets: known,
+    },
+  );
+  const states = ctx.$$(first).map((c) => c.state);
+  return states.flatMap((st) =>
+    generateTargetList(
+      state,
+      skillInfo,
+      [...known, st],
+      rest,
+      associatedExtensionId,
+    ).map((l) => [st, ...l]),
+  );
+}
+
+export function buildTargetGetter(
+  targetQuery: string[],
+  associatedExtensionId: number | null,
+): InitiativeSkillTargetGetter {
+  return (state, skillInfo) => {
+    const targetIdsList = generateTargetList(
+      state,
+      skillInfo,
+      [],
+      targetQuery,
+      associatedExtensionId,
+    );
+    return targetIdsList.map((targets) => ({ targets }));
+  };
+}
+
 export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
@@ -912,41 +963,8 @@ export abstract class SkillBuilderWithCost<
     this._targetQueries = [...this._targetQueries, targetQuery];
   }
 
-  private generateTargetList(
-    state: GameState,
-    skillInfo: SkillInfo,
-    known: AnyState[],
-    targetQuery: string[],
-  ): AnyState[][] {
-    if (targetQuery.length === 0) {
-      return [[]];
-    }
-    const [first, ...rest] = targetQuery;
-    const ctx = new SkillContext<ReadonlyMetaOf<SkillBuilderMetaBase>>(
-      state,
-      this._wrapSkillInfoWithExt(skillInfo),
-      {
-        targets: known,
-      },
-    );
-    const states = ctx.$$(first).map((c) => c.state);
-    return states.flatMap((st) =>
-      this.generateTargetList(state, skillInfo, [...known, st], rest).map(
-        (l) => [st, ...l],
-      ),
-    );
-  }
-
-  protected buildTargetGetter(): InitiativeSkillTargetGetter {
-    return (state, skillInfo) => {
-      const targetIdsList = this.generateTargetList(
-        state,
-        skillInfo,
-        [],
-        this._targetQueries,
-      );
-      return targetIdsList.map((targets) => ({ targets }));
-    };
+  protected buildTargetGetter() {
+    return buildTargetGetter(this._targetQueries, this.associatedExtensionId);
   }
 
   constructor(skillId: number) {

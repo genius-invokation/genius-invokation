@@ -26,7 +26,6 @@ class CharacterBuilder {
   private _maxHealth = 10;
   private _maxEnergy = 3;
   private _varConfigs: Record<number, VariableConfig> = {};
-  private readonly _initiativeSkills: number[] = [];
   private readonly _skillIds: number[] = [];
   private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   constructor(private readonly id: number) {}

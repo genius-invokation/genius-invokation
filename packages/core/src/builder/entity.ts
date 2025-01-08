@@ -133,12 +133,11 @@ export class EntityBuilder<
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
-    const entry: DescriptionDictionaryEntry = (st, id) => {
+    const extId = this._associatedExtensionId;
+    const entry: DescriptionDictionaryEntry = function (st, id) {
       const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
-      const ext = st.extensions.find(
-        (ext) => ext.definition.id === this._associatedExtensionId,
-      );
+      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       return String(getter(st, { ...self, area }, ext?.state));
     };
     this._descriptionDictionary[key] = entry;
@@ -175,7 +174,7 @@ export class EntityBuilder<
 
   conflictWith(id: number) {
     return this.on("enter", (c) => c.$(`my any with definition id ${id}`))
-      .do((c) => {
+      .do(function (c) {
         // 将位于相同实体区域的目标实体移除
         for (const entity of c.$$(`my any with definition id ${id}`)) {
           if (
@@ -362,7 +361,7 @@ export class EntityBuilder<
           return true;
         }
       })
-      .do((c, e) => {
+      .do(function (c, e) {
         const shield = c.getVariable("shield");
         const currentValue = e.value;
         const decreased = Math.min(shield, currentValue);
@@ -492,7 +491,7 @@ export class EntityBuilder<
     const hasDuration = Reflect.has(this._varConfigs, "duration");
     if (usagePerRoundNames.length > 0 || hasDuration) {
       this.on("roundEnd")
-        .do((c, e) => {
+        .do(function (c, e) {
           const self = c.self;
           // 恢复每回合使用次数
           for (const prop of usagePerRoundNames) {

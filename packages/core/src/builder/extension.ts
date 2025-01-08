@@ -8,7 +8,7 @@ import {
 } from "../base/skill";
 import { SkillContext } from "./context/skill";
 import { registerExtension } from "./registry";
-import { WritableMetaOf } from "./skill";
+import { wrapSkillInfoWithExt, WritableMetaOf } from "./skill";
 import { ExtensionHandle } from "./type";
 import { DEFAULT_VERSION_INFO } from "../base/version";
 
@@ -53,15 +53,13 @@ export class ExtensionBuilder<ExtStateType extends object> {
       currentGameState: GameState,
     ) => void,
   ) {
+    const extId = this.id;
     const action: SkillDescription<any> = (state, skillInfo, arg) => {
       const ctx = new SkillContext<
         WritableMetaOf<ExtensionBuilderMeta<ExtStateType, E>>
       >(
         state,
-        {
-          ...skillInfo,
-          associatedExtensionId: this.id,
-        },
+        wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
       ctx.setExtensionState((st) => operation(st, arg, state));

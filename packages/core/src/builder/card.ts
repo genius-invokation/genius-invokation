@@ -410,24 +410,14 @@ class CardBuilder<
       const target = this._satiatedTarget;
       this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
     }
+    const extId = this.associatedExtensionId;
     const skills: SkillDefinition[] = [];
 
     const targetGetter = this.buildTargetGetter();
     if (this._doSameWhenDisposed || this._disposeOperation !== null) {
       const disposeOp = this._disposeOperation;
       const disposeAction = disposeOp
-        ? <SkillDescription<DisposeOrTuneCardEventArg>>((
-            state,
-            skillInfo,
-            arg,
-          ) => {
-            const ctx = new SkillContext<
-              WritableMetaOf<DisposeCardBuilderMeta<AssociatedExt>>
-            >(state, this._wrapSkillInfoWithExt(skillInfo), arg);
-            disposeOp(ctx, ctx.eventArg);
-            ctx._terminate();
-            return [ctx.state, ctx.events];
-          })
+        ? this.buildAction<DisposeOrTuneCardEventArg>(disposeOp)
         : this.buildAction<DisposeOrTuneCardEventArg>();
       const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
         type: "skill",
