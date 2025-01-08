@@ -62,7 +62,12 @@ import {
   USAGE_PER_ROUND_VARIABLE_NAMES,
   UsagePerRoundVariableNames,
 } from "../base/entity";
-import { EntityBuilder, EntityBuilderPublic, EntityBuilderResultT, VariableOptions } from "./entity";
+import {
+  EntityBuilder,
+  EntityBuilderPublic,
+  EntityBuilderResultT,
+  VariableOptions,
+} from "./entity";
 import {
   costSize,
   diceCostSize,
@@ -76,23 +81,20 @@ import { registerInitiativeSkill } from "./registry";
 import { InitiativeSkillTargetKind } from "../base/card";
 import { TargetKindOfQuery, TargetQuery } from "./card";
 
-export type TriggeredBuilderMetaBase = Omit<ContextMetaBase, "readonly"> & {
-  callerType: "character" | EntityType;
-};
-export type BuilderMetaBase = Omit<ContextMetaBase, "readonly">;
-export type ReadonlyMetaOf<BM extends BuilderMetaBase> = {
-  [K in keyof BuilderMetaBase]: BM[K];
+export type SkillBuilderMetaBase = Omit<ContextMetaBase, "readonly">;
+export type ReadonlyMetaOf<BM extends SkillBuilderMetaBase> = {
+  [K in keyof SkillBuilderMetaBase]: BM[K];
 } & { readonly: true };
-export type WritableMetaOf<BM extends BuilderMetaBase> = {
-  [K in keyof BuilderMetaBase]: BM[K];
+export type WritableMetaOf<BM extends SkillBuilderMetaBase> = {
+  [K in keyof SkillBuilderMetaBase]: BM[K];
 } & { readonly: false };
 
-export type SkillOperation<Meta extends BuilderMetaBase> = (
+export type SkillOperation<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<WritableMetaOf<Meta>>,
   e: Omit<Meta["eventArgType"], `_${string}`>,
 ) => void;
 
-export type SkillOperationFilter<Meta extends BuilderMetaBase> = (
+export type SkillOperationFilter<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
   e: Omit<Meta["eventArgType"], `_${string}`>,
 ) => unknown;
@@ -122,6 +124,18 @@ type InitiativeSkillBuilderMeta<
   callerType: CallerType;
   callerVars: never;
   eventArgType: StrictInitiativeSkillEventArg<KindTs>;
+  associatedExtension: AssociatedExt;
+};
+
+export type TriggeredSkillBuilderMeta<
+  EventName extends DetailedEventNames,
+  CallerType extends ExEntityType,
+  Vars extends string,
+  AssociatedExt extends ExtensionHandle,
+> = {
+  callerType: CallerType;
+  callerVars: Vars;
+  eventArgType: DetailedEventArgOf<EventName>;
   associatedExtension: AssociatedExt;
 };
 
@@ -535,7 +549,7 @@ export type SkillInfoGetter = () => SkillInfo;
 
 const BUILDER_META_TYPE: unique symbol = Symbol();
 
-export abstract class SkillBuilder<Meta extends BuilderMetaBase> {
+export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   declare [BUILDER_META_TYPE]: Meta;
 
   protected operations: SkillOperation<Meta>[] = [];
@@ -652,7 +666,7 @@ export type BuilderWithShortcut<Original> = Original & {
 };
 
 type ExtractBM<T> = T extends {
-  [BUILDER_META_TYPE]: infer Meta extends BuilderMetaBase;
+  [BUILDER_META_TYPE]: infer Meta extends SkillBuilderMetaBase;
 }
   ? Meta
   : never;
@@ -695,16 +709,25 @@ export interface UsageOptions<Name extends string> extends VariableOptions {
 }
 
 export class TriggeredSkillBuilder<
-  Meta extends TriggeredBuilderMetaBase,
   EventName extends DetailedEventNames,
+  CallerType extends "character" | EntityType,
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+  // helper types
+  Meta extends SkillBuilderMetaBase = TriggeredSkillBuilderMeta<
+    EventName,
+    CallerType,
+    CallerVars,
+    AssociatedExt
+  >,
 > extends SkillBuilder<Meta> {
   constructor(
     id: number,
     private readonly triggerOn: EventName,
     private readonly parent: EntityBuilder<
-      Meta["callerType"],
-      Meta["callerVars"],
-      Meta["associatedExtension"]
+      CallerType,
+      CallerVars,
+      AssociatedExt
     >,
     triggerFilter: SkillOperationFilter<Meta> = () => true,
   ) {
@@ -748,13 +771,10 @@ export class TriggeredSkillBuilder<
     opt?: UsageOptions<VarName>,
   ): BuilderWithShortcut<
     TriggeredSkillBuilder<
-      {
-        callerType: Meta["callerType"];
-        callerVars: Meta["callerVars"] | VarName;
-        eventArgType: Meta["eventArgType"];
-        associatedExtension: Meta["associatedExtension"];
-      },
-      EventName
+      EventName,
+      CallerType,
+      CallerVars | VarName,
+      AssociatedExt
     >
   > {
     const perRound = opt?.perRound ?? false;
@@ -884,7 +904,7 @@ export class TriggeredSkillBuilder<
 }
 
 export abstract class SkillBuilderWithCost<
-  Meta extends BuilderMetaBase,
+  Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
   protected _targetQueries: string[] = [];
 
@@ -902,7 +922,7 @@ export abstract class SkillBuilderWithCost<
       return [[]];
     }
     const [first, ...rest] = targetQuery;
-    const ctx = new SkillContext<ReadonlyMetaOf<BuilderMetaBase>>(
+    const ctx = new SkillContext<ReadonlyMetaOf<SkillBuilderMetaBase>>(
       state,
       this._wrapSkillInfoWithExt(skillInfo),
       {

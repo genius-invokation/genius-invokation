@@ -29,11 +29,11 @@ import { SkillDefinition } from "../base/skill";
 import { registerEntity, registerPassiveSkill } from "./registry";
 import {
   BuilderWithShortcut,
-  DetailedEventArgOf,
   DetailedEventNames,
   SkillOperationFilter,
   TechniqueBuilder,
   TriggeredSkillBuilder,
+  TriggeredSkillBuilderMeta,
   UsageOptions,
   enableShortcut,
 } from "./skill";
@@ -75,18 +75,6 @@ export type VariableOptionsWithoutAppend = Omit<VariableOptions, "append">;
 export type EntityBuilderResultT<CallerType extends ExEntityType> =
   CallerType extends "character" ? PassiveSkillHandle : HandleT<CallerType>;
 
-type BuilderMetaOfEntity<
-  Event extends DetailedEventNames,
-  CallerType extends ExEntityType,
-  Vars extends string,
-  AssociatedExt extends ExtensionHandle,
-> = {
-  callerType: CallerType;
-  callerVars: Vars;
-  eventArgType: DetailedEventArgOf<Event>;
-  associatedExtension: AssociatedExt;
-};
-
 interface GlobalUsageOptions extends VariableOptions {
   /**
    * 是否在 consumeUsage() 且变量到达 0 时时自动弃置实体。
@@ -106,7 +94,7 @@ type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
 
 export class EntityBuilder<
   CallerType extends "character" | EntityType,
-  Vars extends string = never,
+  CallerVars extends string = never,
   AssociatedExt extends ExtensionHandle = never,
 > {
   private _skillNo = 0;
@@ -166,7 +154,7 @@ export class EntityBuilder<
     this._associatedExtensionId = ext;
     return this as unknown as EntityBuilderPublic<
       CallerType,
-      Vars,
+      CallerVars,
       ExtensionHandle<NewExtT>
     >;
   }
@@ -177,11 +165,11 @@ export class EntityBuilder<
     }
     const self = this as unknown as EntityBuilder<
       "equipment",
-      Vars,
+      CallerVars,
       AssociatedExt
     >;
     return enableShortcut(
-      new TechniqueBuilder<Vars, readonly [], AssociatedExt>(id, self),
+      new TechniqueBuilder<CallerVars, readonly [], AssociatedExt>(id, self),
     );
   }
 
@@ -215,26 +203,35 @@ export class EntityBuilder<
     return this.on("enter").dispose(`(${targetQuery}) and not @self`).endOn();
   }
 
-  on<E extends DetailedEventNames>(
-    event: E,
+  on<EventName extends DetailedEventNames>(
+    event: EventName,
     filter?: SkillOperationFilter<
-      BuilderMetaOfEntity<E, CallerType, Vars, AssociatedExt>
+      TriggeredSkillBuilderMeta<
+        EventName,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
     >,
   ) {
-    // BuilderWithShortcut<
-    //   TriggeredSkillBuilder<BuilderMetaOfEntity<E, CallerType, Vars>, E>
-    // >
     return enableShortcut(
       new TriggeredSkillBuilder<
-        BuilderMetaOfEntity<E, CallerType, Vars, AssociatedExt>,
-        E
+        EventName,
+        CallerType,
+        CallerVars,
+        AssociatedExt
       >(this.generateSkillId(), event, this, filter),
     );
   }
-  once<E extends DetailedEventNames>(
-    event: E,
+  once<EventName extends DetailedEventNames>(
+    event: EventName,
     filter?: SkillOperationFilter<
-      BuilderMetaOfEntity<E, CallerType, Vars, AssociatedExt>
+      TriggeredSkillBuilderMeta<
+        EventName,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
     >,
   ) {
     return this.on(event, filter).usage<never>(1, {
@@ -246,7 +243,7 @@ export class EntityBuilder<
     name: Name,
     value: number,
     opt?: VariableOptions,
-  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt> {
+  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt> {
     if (Reflect.has(this._varConfigs, name)) {
       throw new GiTcgDataError(`Variable name ${name} already exists`);
     }
@@ -282,14 +279,14 @@ export class EntityBuilder<
     value: number,
     max?: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt>;
   variableCanAppend<const Name extends string>(
     name: Name,
     value: number,
     max: number,
     appendValue: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilderPublic<CallerType, Vars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt>;
   variableCanAppend(
     name: string,
     value: number,
@@ -395,7 +392,11 @@ export class EntityBuilder<
       this.variable("preparingSkillHintCount", hintCount);
     }
     return (
-      this as unknown as EntityBuilderPublic<"status", Vars, AssociatedExt>
+      this as unknown as EntityBuilderPublic<
+        "status",
+        CallerVars,
+        AssociatedExt
+      >
     )
       .on("replaceAction")
       .useSkill(skill)
@@ -438,13 +439,10 @@ export class EntityBuilder<
     target?: string,
   ): BuilderWithShortcut<
     TriggeredSkillBuilder<
-      BuilderMetaOfEntity<
-        "endPhase",
-        CallerType,
-        Vars | "hintIcon",
-        AssociatedExt
-      >,
-      "endPhase"
+      "endPhase",
+      CallerType,
+      CallerVars | "hintIcon",
+      AssociatedExt
     >
   > {
     if (type === "swirledAnemo") {
@@ -476,7 +474,7 @@ export class EntityBuilder<
   usage(
     count: number,
     opt: GlobalUsageOptions = {},
-  ): EntityBuilderPublic<CallerType, Vars | "usage", AssociatedExt> {
+  ): EntityBuilderPublic<CallerType, CallerVars | "usage", AssociatedExt> {
     if (opt.autoDispose !== false) {
       this.variable("disposeWhenUsageIsZero", 1);
     }

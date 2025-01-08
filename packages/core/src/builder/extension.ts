@@ -12,7 +12,7 @@ import { WritableMetaOf } from "./skill";
 import { ExtensionHandle } from "./type";
 import { DEFAULT_VERSION_INFO } from "../base/version";
 
-type BuilderMetaOfExtension<
+type ExtensionBuilderMeta<
   ExtStateType extends object,
   Event extends EventNames,
 > = {
@@ -55,7 +55,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
   ) {
     const action: SkillDescription<any> = (state, skillInfo, arg) => {
       const ctx = new SkillContext<
-        WritableMetaOf<BuilderMetaOfExtension<ExtStateType, E>>
+        WritableMetaOf<ExtensionBuilderMeta<ExtStateType, E>>
       >(
         state,
         {
