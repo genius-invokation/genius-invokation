@@ -315,7 +315,7 @@ const EmblemOfSeveredFate = card(312008)
  * 可用次数：1
  * （牌组包含至少2个「蒙德」角色，才能加入牌组）
  */
-export const WindAndFreedom = card(331801)
+const [WindAndFreedom] = card(331801)
   .until("v4.0.0")
   .toCombatStatus(303181)
   .oneDuration()

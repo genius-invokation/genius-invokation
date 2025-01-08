@@ -26,7 +26,11 @@ import {
   VariableConfig,
 } from "../base/entity";
 import { SkillDefinition } from "../base/skill";
-import { registerEntity, registerPassiveSkill, builderWeakRefs } from "./registry";
+import {
+  registerEntity,
+  registerPassiveSkill,
+  builderWeakRefs,
+} from "./registry";
 import {
   BuilderWithShortcut,
   DetailedEventNames,
@@ -38,6 +42,7 @@ import {
   enableShortcut,
 } from "./skill";
 import {
+  CardHandle,
   ExEntityType,
   ExtensionHandle,
   HandleT,
@@ -96,16 +101,17 @@ export class EntityBuilder<
   CallerType extends "character" | EntityType,
   CallerVars extends string = never,
   AssociatedExt extends ExtensionHandle = never,
+  FromCard extends boolean = false,
 > {
   private _skillNo = 0;
-  _skillList: SkillDefinition[] = [];
+  readonly _skillList: SkillDefinition[] = [];
   _usagePerRoundIndex = 0;
-  private _tags: EntityTag[] = [];
+  private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
   private _visibleVarName: string | null = null;
   _associatedExtensionId: number | null = null;
   private _hintText: string | null = null;
-  private _descriptionDictionary: Writable<DescriptionDictionary> = {};
+  private readonly _descriptionDictionary: Writable<DescriptionDictionary> = {};
   _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   private generateSkillId() {
     const thisSkillNo = ++this._skillNo;
@@ -113,8 +119,9 @@ export class EntityBuilder<
   }
 
   constructor(
-    public _type: CallerType,
-    private id: number,
+    public readonly _type: CallerType,
+    private readonly id: number,
+    private readonly fromCardId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
   }
@@ -156,7 +163,8 @@ export class EntityBuilder<
     return this as unknown as EntityBuilderPublic<
       CallerType,
       CallerVars,
-      ExtensionHandle<NewExtT>
+      ExtensionHandle<NewExtT>,
+      FromCard
     >;
   }
 
@@ -220,7 +228,8 @@ export class EntityBuilder<
         EventName,
         CallerType,
         CallerVars,
-        AssociatedExt
+        AssociatedExt,
+        FromCard
       >(this.generateSkillId(), event, this, filter),
     );
   }
@@ -244,7 +253,12 @@ export class EntityBuilder<
     name: Name,
     value: number,
     opt?: VariableOptions,
-  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt> {
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars | Name,
+    AssociatedExt,
+    FromCard
+  > {
     if (Reflect.has(this._varConfigs, name)) {
       throw new GiTcgDataError(`Variable name ${name} already exists`);
     }
@@ -280,14 +294,24 @@ export class EntityBuilder<
     value: number,
     max?: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars | Name,
+    AssociatedExt,
+    FromCard
+  >;
   variableCanAppend<const Name extends string>(
     name: Name,
     value: number,
     max: number,
     appendValue: number,
     opt?: VariableOptionsWithoutAppend,
-  ): EntityBuilderPublic<CallerType, CallerVars | Name, AssociatedExt>;
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars | Name,
+    AssociatedExt,
+    FromCard
+  >;
   variableCanAppend(
     name: string,
     value: number,
@@ -396,7 +420,8 @@ export class EntityBuilder<
       this as unknown as EntityBuilderPublic<
         "status",
         CallerVars,
-        AssociatedExt
+        AssociatedExt,
+        FromCard
       >
     )
       .on("replaceAction")
@@ -443,7 +468,8 @@ export class EntityBuilder<
       "endPhase",
       CallerType,
       CallerVars | "hintIcon",
-      AssociatedExt
+      AssociatedExt,
+      FromCard
     >
   > {
     if (type === "swirledAnemo") {
@@ -475,14 +501,22 @@ export class EntityBuilder<
   usage(
     count: number,
     opt: GlobalUsageOptions = {},
-  ): EntityBuilderPublic<CallerType, CallerVars | "usage", AssociatedExt> {
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars | "usage",
+    AssociatedExt,
+    FromCard
+  > {
     if (opt.autoDispose !== false) {
       this.variable("disposeWhenUsageIsZero", 1);
     }
     return this.variable("usage", count);
   }
 
-  done(): EntityBuilderResultT<CallerType> {
+  done() {
+    type Result = FromCard extends true
+      ? readonly [CardHandle, EntityBuilderResultT<CallerType>]
+      : EntityBuilderResultT<CallerType>;
     if (this._type === "status" || this._type === "equipment") {
       this.on("defeated").dispose().endOn();
     }
@@ -536,7 +570,11 @@ export class EntityBuilder<
         descriptionDictionary: this._descriptionDictionary,
       });
     }
-    return this.id as EntityBuilderResultT<CallerType>;
+    if (this.fromCardId === null) {
+      return this.id as Result;
+    } else {
+      return [this.fromCardId, this.id] as unknown as Result;
+    }
   }
 
   /** 此定义未被使用。 */
@@ -547,7 +585,11 @@ export type EntityBuilderPublic<
   CallerType extends EntityType | "character",
   Vars extends string = never,
   AssociatedExt extends ExtensionHandle = never,
-> = Omit<EntityBuilder<CallerType, Vars, AssociatedExt>, `_${string}`>;
+  FromCard extends boolean = false,
+> = Omit<
+  EntityBuilder<CallerType, Vars, AssociatedExt, FromCard>,
+  `_${string}`
+>;
 
 export function summon(id: number): EntityBuilderPublic<"summon"> {
   return new EntityBuilder("summon", id);

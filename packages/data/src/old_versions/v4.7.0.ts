@@ -456,7 +456,7 @@ const Refraction = status(122021)
  * @description
  * 我方至少剩余8个元素骰，且对方未宣布结束时，才能打出：本回合中，双方牌手进行「切换角色」行动时需要额外花费1个元素骰。
  */
-const FallsAndFortune = card(332026)
+const [FallsAndFortune] = card(332026)
   .until("v4.7.0")
   .costSame(1)
   .filter((c) => c.player.dice.length >= 8 && !c.oppPlayer.declaredEnd)
@@ -486,7 +486,7 @@ const UnderseaTreasure = card(303230)
  * 将一个我方角色所装备的「圣遗物」返回手牌。
  * 本回合中，我方下次打出「圣遗物」手牌时：少花费2个元素骰。
  */
-const Lyresong = card(332024)
+const [Lyresong] = card(332024)
   .until("v4.7.0")
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {

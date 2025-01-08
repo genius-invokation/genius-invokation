@@ -21,10 +21,10 @@ test("klee: dice deduction", async () => {
         <Equipment def={TulaytullahsRemembrance} />
         <Equipment def={VermillionHereafter} />
       </Character>
-      <Card my def={333008 as any} />
+      <Card my def={MintyMeatRolls} />
     </State>,
   );
-  await c.me.card(333008 as any, klee)
+  await c.me.card(MintyMeatRolls, klee)
   await c.stepToNextAction();
   expect(c.state.players[0].dice).toBeArrayOfSize(7);
 

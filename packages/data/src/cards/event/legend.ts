@@ -22,7 +22,7 @@ import { DiceType, card, extension, flip, pair, status } from "@gi-tcg/core/buil
  * 我方有角色已装备「武器」或「圣遗物」时，才能打出：本回合中，我方下次打出「武器」或「圣遗物」装备牌时少花费2个元素骰。
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const AncientCourtyard = card(330001)
+export const [AncientCourtyard] = card(330001)
   .since("v3.8.0")
   .legend()
   .filter((c) => c.$("my character has equipment with tag (weapon) or my character has equipment with tag (artifact)"))
@@ -74,7 +74,7 @@ export const JoyousCelebration = card(330003)
  * 可用次数：1
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const FreshWindOfFreedom = card(330004)
+export const [FreshWindOfFreedom] = card(330004)
   .since("v4.1.0")
   .legend()
   .toCombatStatus(300002)
@@ -127,7 +127,7 @@ export const InEveryHouseAStove = card(330005)
  * 本回合中，对方牌手打出的3张事件牌无效。
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const PassingOfJudgment = card(330006)
+export const [PassingOfJudgment] = card(330006)
   .since("v4.3.0")
   .costSame(1)
   .legend()
@@ -145,11 +145,11 @@ export const PassingOfJudgment = card(330006)
  * 本回合中，目标我方角色受到的伤害-1。（最多生效4次）
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const DayOfResistanceMomentOfShatteredDreams = card(330007)
+export const [DayOfResistanceMomentOfShatteredDreams] = card(330007)
   .since("v4.5.0")
   .legend()
   .addTarget("my character")
-  .toStatus("@targets.0", 300004)
+  .toStatus(300004, "@targets.0")
   .oneDuration()
   .on("decreaseDamaged")
   .usage(4)
@@ -172,28 +172,19 @@ export const ViciousAncientBattle = card(330008)
   .done();
 
 /**
- * @id 300005
- * @name 赦免宣告（生效中）
- * @description
- * 本回合中，所附属角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
- */
-export const EdictOfAbsolutionInEffect = status(300005)
-  .tags("immuneControl")
-  .oneDuration()
-  .done();
-
-/**
  * @id 330009
  * @name 赦免宣告
  * @description
  * 本回合中，目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const EdictOfAbsolution = card(330009)
+export const [EdictOfAbsolution] = card(330009)
   .since("v5.0.0")
   .legend()
   .addTarget("my characters")
-  .characterStatus(EdictOfAbsolutionInEffect, "@targets.0")
+  .toStatus(300005, "@targets.0")
+  .tags("immuneControl")
+  .oneDuration()
   .done();
 
   export const FlamesOfWarExtension = extension(300006, {

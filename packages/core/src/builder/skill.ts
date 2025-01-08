@@ -721,6 +721,7 @@ export class TriggeredSkillBuilder<
   CallerType extends "character" | EntityType,
   CallerVars extends string,
   AssociatedExt extends ExtensionHandle,
+  ParentFromCard extends boolean,
   // helper types
   Meta extends SkillBuilderMetaBase = TriggeredSkillBuilderMeta<
     EventName,
@@ -735,7 +736,8 @@ export class TriggeredSkillBuilder<
     private readonly parent: EntityBuilder<
       CallerType,
       CallerVars,
-      AssociatedExt
+      AssociatedExt,
+      ParentFromCard
     >,
     triggerFilter: SkillOperationFilter<Meta> = () => true,
   ) {
@@ -783,7 +785,8 @@ export class TriggeredSkillBuilder<
       EventName,
       CallerType,
       CallerVars | VarName,
-      AssociatedExt
+      AssociatedExt,
+      ParentFromCard
     >
   > {
     const perRound = opt?.perRound ?? false;
@@ -906,7 +909,7 @@ export class TriggeredSkillBuilder<
     return this.parent.once(event, filter);
   }
 
-  done(): EntityBuilderResultT<Meta["callerType"]> {
+  done() {
     this.buildSkill();
     return this.parent.done();
   }

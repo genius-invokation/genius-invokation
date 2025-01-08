@@ -71,11 +71,11 @@ const FrostyAssault: SkillHandle = skill(25013)
  * 目标角色在本回合结束前，所有普通攻击都少花费1无色元素。
 （每回合每个角色最多食用1次「料理」）
  */
-const MintyMeatRolls = card(333008)
+const [MintyMeatRolls] = card(333008)
   .until("v3.3.0")
   .costSame(1)
   .food()
-  .toStatus("@targets.0", 303306)
+  .toStatus(303306, "@targets.0")
   .oneDuration()
   .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
   .deductVoidCost(1)

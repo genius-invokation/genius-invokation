@@ -9,7 +9,7 @@ import { BladeAblaze, Prowl, Stealth, StealthMaster, Thrust } from "../character
  * 本回合中，我方角色使用技能后：将下一个我方后台角色切换到场上。
  * （牌组包含至少2个「蒙德」角色，才能加入牌组）
  */
-const WindAndFreedom = card(331801)
+const [WindAndFreedom] = card(331801)
   .until("v4.2.0")
   .costSame(1)
   .toCombatStatus(303181)
@@ -234,7 +234,7 @@ const Wagner = card(322004)
  * 下回合行动阶段开始时：生成3点万能元素。
  * （牌组包含至少2个「璃月」角色，才能加入牌组）
  */
-const StoneAndContracts = card(331802)
+const [StoneAndContracts] = card(331802)
   .until("v4.2.0")
   .costVoid(3)
   .toCombatStatus(303182)

@@ -124,11 +124,11 @@ export const FatuiAmbusherElectrohammerVanguard = combatStatus(303219)
  * 本回合中，我方当前出战角色下一次造成的伤害+2。
  * （牌组包含至少2个冰元素角色，才能加入牌组）
  */
-export const ElementalResonanceShatteringIce = card(331102)
+export const [ElementalResonanceShatteringIce] = card(331102)
   .since("v3.3.0")
   .costCryo(1)
   .tags("resonance")
-  .toStatus("my active", 303112)
+  .toStatus(303112, "my active")
   .oneDuration()
   .once("increaseSkillDamage")
   .increaseDamage(2)
@@ -157,11 +157,11 @@ export const ElementalResonanceSoothingWater = card(331202)
  * 本回合中，我方当前出战角色下一次引发火元素相关反应时，造成的伤害+3。
  * （牌组包含至少2个火元素角色，才能加入牌组）
  */
-export const ElementalResonanceFerventFlames = card(331302)
+export const [ElementalResonanceFerventFlames] = card(331302)
   .since("v3.3.0")
   .costPyro(1)
   .tags("resonance")
-  .toStatus("my active", 303132)
+  .toStatus(303132, "my active")
   .oneDuration()
   .once("increaseSkillDamage", (c, e) => e.isReactionRelatedTo(DamageType.Pyro))
   .increaseDamage(3)
@@ -205,7 +205,7 @@ export const ElementalResonanceImpetuousWinds = card(331502)
  * 本回合中，我方角色下一次造成岩元素伤害后：如果我方存在提供「护盾」的出战状态，则为一个此类出战状态补充3点「护盾」。
  * （牌组包含至少2个岩元素角色，才能加入牌组）
  */
-export const ElementalResonanceEnduringRock = card(331602)
+export const [ElementalResonanceEnduringRock] = card(331602)
   .since("v3.3.0")
   .costGeo(1)
   .tags("resonance")
@@ -225,7 +225,7 @@ export const ElementalResonanceEnduringRock = card(331602)
  * 使我方场上的燃烧烈焰、草原核和激化领域「可用次数」+1。
  * （牌组包含至少2个草元素角色，才能加入牌组）
  */
-export const ElementalResonanceSprawlingGreenery = card(331702)
+export const [ElementalResonanceSprawlingGreenery] = card(331702)
   .since("v3.3.0")
   .costDendro(1)
   .tags("resonance")
@@ -338,7 +338,7 @@ export const ElementalResonanceWovenWeeds = card(331701)
  * 本回合中，我方角色使用技能后：将下一个我方后台角色切换到场上。
  * （牌组包含至少2个「蒙德」角色，才能加入牌组）
  */
-export const WindAndFreedom = card(331801)
+export const [WindAndFreedom] = card(331801)
   .since("v3.7.0")
   .filter((c) => c.$(`my standby characters`))
   .toCombatStatus(303181)
@@ -354,7 +354,7 @@ export const WindAndFreedom = card(331801)
  * 下回合行动阶段开始时：生成3点万能元素，抓1张牌。
  * （牌组包含至少2个「璃月」角色，才能加入牌组）
  */
-export const StoneAndContracts = card(331802)
+export const [StoneAndContracts] = card(331802)
   .since("v3.7.0")
   .costVoid(3)
   .toCombatStatus(303182)
@@ -432,26 +432,17 @@ export const TheBestestTravelCompanion = card(332001)
   .done();
 
 /**
- * @id 303202
- * @name 换班时间（生效中）
- * @description
- * 我方下次执行「切换角色」行动时：少花费1个元素骰。
- */
-export const ChangingShiftsInEffect = combatStatus(303202)
-  .once("deductOmniDiceSwitch")
-  .deductOmniCost(1)
-  .done();
-
-/**
  * @id 332002
  * @name 换班时间
  * @description
  * 我方下次执行「切换角色」行动时：少花费1个元素骰。
  */
-export const ChangingShifts = card(332002)
+export const [ChangingShifts] = card(332002)
   .since("v3.3.0")
   .filter((c) => c.$(`my standby characters`))
-  .combatStatus(ChangingShiftsInEffect)
+  .toCombatStatus(303202)
+  .once("deductOmniDiceSwitch")
+  .deductOmniCost(1)
   .done();
 
 /**
@@ -507,7 +498,7 @@ export const IHaventLostYet = card(332005)
  * @description
  * 我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。
  */
-export const LeaveItToMe = card(332006)
+export const [LeaveItToMe] = card(332006)
   .since("v3.3.0")
   .filter((c) => c.$(`my standby characters`))
   .toCombatStatus(303206)
@@ -521,7 +512,7 @@ export const LeaveItToMe = card(332006)
  * @description
  * 我方下一次使用技能后：将下一个我方后台角色切换到场上。
  */
-export const WhenTheCraneReturned = card(332007)
+export const [WhenTheCraneReturned] = card(332007)
   .since("v3.3.0")
   .filter((c) => c.$(`my standby characters`))
   .costSame(1)
@@ -725,10 +716,10 @@ export const PlungingStrike = card(332017)
  * 本回合中，当前我方出战角色下次「普通攻击」造成的伤害+1。
  * 此次「普通攻击」为重击时：伤害额外+1。
  */
-export const HeavyStrike = card(332018)
+export const [HeavyStrike] = card(332018)
   .since("v3.7.0")
   .costSame(1)
-  .toStatus("my active", 303220)
+  .toStatus(303220, "my active")
   .oneDuration()
   .once("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .increaseDamage(1)
@@ -773,7 +764,7 @@ export const FriendshipEternal = card(332020)
  * @description
  * 我方下次打出「武器」或「圣遗物」手牌时：少花费1个元素骰。
  */
-export const RhythmOfTheGreatDream = card(332021)
+export const [RhythmOfTheGreatDream] = card(332021)
   .since("v3.8.0")
   .toCombatStatus(302021)
   .once("deductOmniDiceCard", (c, e) => e.hasOneOfCardTag("weapon", "artifact"))
@@ -787,7 +778,7 @@ export const RhythmOfTheGreatDream = card(332021)
  * 将一个我方角色所装备的「武器」返回手牌。
  * 本回合中，我方下次打出「武器」手牌时：少花费2个元素骰。
  */
-export const WhereIsTheUnseenRazor = card(332022)
+export const [WhereIsTheUnseenRazor] = card(332022)
   .since("v4.0.0")
   .addTarget("my character has equipment with tag (weapon)")
   .do((c, e) => {
@@ -806,7 +797,7 @@ export const WhereIsTheUnseenRazor = card(332022)
  * @description
  * 我方至少剩余8个元素骰，且对方未宣布结束时，才能打出：本回合中一位牌手先宣布结束时，未宣布结束的牌手抓2张牌。
  */
-export const Pankration = card(332023)
+export const [Pankration] = card(332023)
   .since("v4.1.0")
   .filter((c) => c.player.dice.length >= 8 && !c.oppPlayer.declaredEnd)
   .toCombatStatus(303223)
@@ -883,7 +874,7 @@ export const Lyresong = card(332024)
  * 本回合中，我方每有一张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
  * （角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）
  */
-export const TheBoarPrincess = card(332025)
+export const [TheBoarPrincess] = card(332025)
   .since("v4.3.0")
   .toCombatStatus(303225)
   .usage(2)
@@ -905,7 +896,7 @@ export const TheBoarPrincess = card(332025)
  * @description
  * 我方至少剩余8个元素骰，且对方未宣布结束时，才能打出：本回合中，双方牌手进行「切换角色」行动时需要额外花费1个元素骰。
  */
-export const FallsAndFortune = card(332026)
+export const [FallsAndFortune] = card(332026)
   .since("v4.3.0")
   .filter((c) => c.player.dice.length >= 8 && !c.oppPlayer.declaredEnd)
   .toCombatStatus(303226)
@@ -921,10 +912,10 @@ export const FallsAndFortune = card(332026)
  * @description
  * 目标角色附属四叶印：每个回合的结束阶段，我方都切换到此角色。
  */
-export const FlickeringFourleafSigil = card(332027)
+export const [FlickeringFourleafSigil] = card(332027)
   .since("v4.3.0")
   .addTarget("my characters")
-  .toStatus("@targets.0", 303227)
+  .toStatus(303227, "@targets.0")
   .on("endPhase")
   .switchActive("@master")
   .done();
@@ -936,10 +927,10 @@ export const FlickeringFourleafSigil = card(332027)
  * 目标我方角色每次受到伤害或治疗后：累积1点「备战度」（最多累积2点）。
  * 我方打出原本费用不多于「备战度」的「武器」或「圣遗物」时：移除所有「备战度」，以免费打出该牌。
  */
-export const MachineAssemblyLine = card(332028)
+export const [MachineAssemblyLine] = card(332028)
   .since("v4.4.0")
   .addTarget("my characters")
-  .toStatus("@targets.0", 303228)
+  .toStatus(303228, "@targets.0")
   .variable("readiness", 0)
   .on("damagedOrHealed")
   .addVariableWithMax("readiness", 1, 2)
@@ -959,7 +950,7 @@ export const MachineAssemblyLine = card(332028)
  * 选择一张我方支援区的牌，将其弃置。然后，在我方手牌中随机生成2张支援牌。
  * 本回合中，我方下次打出支援牌时：少花费1个元素骰。
  */
-export const SunyataFlower = card(332029)
+export const [SunyataFlower] = card(332029)
   .since("v4.4.0")
   .addTarget("my supports")
   .dispose("@targets.0")
@@ -1005,28 +996,19 @@ export const TaroumarusSavings = card(302202)
   .done();
 
 /**
- * @id 302204
- * @name 「清洁工作」（生效中）
- * @description
- * 我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）
- */
-export const CalledInForCleanupStatus = combatStatus(302204)
-  .variableCanAppend("damage", 1, 2)
-  .once("increaseSkillDamage")
-  .do((c, e) => {
-    e.increaseDamage(c.getVariable("damage"));
-  })
-  .done();
-
-/**
  * @id 302203
  * @name 「清洁工作」
  * @description
  * 我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）
  */
-export const CalledInForCleanup = card(302203)
+export const [CalledInForCleanup] = card(302203)
   .since("v4.6.0")
-  .combatStatus(CalledInForCleanupStatus)
+  .toCombatStatus(302204)
+  .variableCanAppend("damage", 1, 2)
+  .once("increaseSkillDamage")
+  .do((c, e) => {
+    e.increaseDamage(c.getVariable("damage"));
+  })
   .done();
 
 /**
@@ -1496,12 +1478,14 @@ export const MelusineSupport = card(302218)
   .reserve();
 
 /**
- * @id 303236
- * @name 「看到那小子挣钱…」（生效中）
+ * @id 332036
+ * @name 「看到那小子挣钱…」
  * @description
- * 本回合中，每当对方获得2个元素骰时：你获得1个万能元素。（此效果提供的元素骰除外）
+ * 本回合中，每当对方获得2个元素骰，你就获得1个万能元素。（此效果提供的元素骰除外）
  */
-export const IdRatherLoseMoneyMyselfInEffect = combatStatus(303236)
+export const [IdRatherLoseMoneyMyself] = card(332036)
+  .since("v4.8.0")
+  .toCombatStatus(303236)
   .oneDuration()
   .variable("count", 0)
   .on("generateDice", (c, e) => e.who !== c.self.who && e.via.caller.definition.id !== c.self.definition.id)
@@ -1513,31 +1497,6 @@ export const IdRatherLoseMoneyMyselfInEffect = combatStatus(303236)
       c.setVariable("count", 0);
     }
   })
-  .done()
-
-
-/**
- * @id 332036
- * @name 「看到那小子挣钱…」
- * @description
- * 本回合中，每当对方获得2个元素骰，你就获得1个万能元素。（此效果提供的元素骰除外）
- */
-export const IdRatherLoseMoneyMyself = card(332036)
-  .since("v4.8.0")
-  .combatStatus(IdRatherLoseMoneyMyselfInEffect)
-  .done();
-
-/**
- * @id 303237
- * @name 噔噔！（生效中）
- * @description
- * 结束阶段：抓1张牌。
- * 可用次数：1
- */
-export const TadaInEffect = combatStatus(303237)
-  .on("endPhase")
-  .usage(1)
-  .drawCards(1)
   .done();
 
 /**
@@ -1546,10 +1505,13 @@ export const TadaInEffect = combatStatus(303237)
  * @description
  * 对我方「出战角色」造成1点物理伤害。本回合的结束阶段时，抓1张牌。
  */
-export const Tada = card(332037)
+export const [Tada] = card(332037)
   .since("v4.8.0")
   .damage(DamageType.Physical, 1, "my active")
-  .combatStatus(TadaInEffect)
+  .toCombatStatus(303237)
+  .on("endPhase")
+  .usage(1)
+  .drawCards(1)
   .done();
 
 /**
@@ -1678,12 +1640,14 @@ export const UltimateSurfingBuddy = card(332041)
   .done();
 
 /**
- * @id 303238
- * @name 燃素充盈（生效中）
+ * @id 332042
+ * @name 燃素充盈
  * @description
- * 本回合我方角色下次消耗夜魂值后：该角色获得1点夜魂值。
+ * 本回合我方下次角色消耗「夜魂值」后：该角色获得1点「夜魂值」。
  */
-export const AbundantPhlogistonInEffect = combatStatus(303238)
+export const [AbundantPhlogiston] = card(332042)
+  .since("v5.3.0")
+  .toCombatStatus(303238)
   .oneDuration()
   .once("consumeNightsoul")
   .do((c, e) => {
@@ -1692,15 +1656,4 @@ export const AbundantPhlogistonInEffect = combatStatus(303238)
       c.addVariable("nightsoul", 1, st);
     }
   })
-  .done();
-
-/**
- * @id 332042
- * @name 燃素充盈
- * @description
- * 本回合我方下次角色消耗「夜魂值」后：该角色获得1点「夜魂值」。
- */
-export const AbundantPhlogiston = card(332042)
-  .since("v5.3.0")
-  .combatStatus(AbundantPhlogistonInEffect)
   .done();
