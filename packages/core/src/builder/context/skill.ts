@@ -106,6 +106,11 @@ type EntityTargetArg = EntityState | EntityState[] | string;
 
 type CardDefinitionFilterFn = (card: CardDefinition) => boolean;
 
+interface MaxCostHandsOpt {
+  who?: "my" | "opp";
+  useTieBreak?: boolean;
+}
+
 interface DrawCardsOpt {
   who?: "my" | "opp";
   /** 抽取带有特定标签的牌 */
@@ -116,7 +121,9 @@ interface DrawCardsOpt {
 
 export const ENABLE_SHORTCUT = Symbol("enableShortcut");
 
-function returnWithEnableShortcut<T>(value: T): T & { [ENABLE_SHORTCUT]: true } {
+function returnWithEnableShortcut<T>(
+  value: T,
+): T & { [ENABLE_SHORTCUT]: true } {
   Object.defineProperty(value, ENABLE_SHORTCUT, {
     value: true,
     writable: false,
@@ -385,22 +392,40 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
   }
 
-  /** 某方玩家手牌，并按照原本元素骰费用+“破平值”降序排序 */
-  private costSortedHands(who: "my" | "opp"): CardState[] {
+  /**
+   * 某方玩家手牌，并按照原本元素骰费用降序排序
+   * @param who 我方还是对方
+   * @param useTiebreak 是否使用“破平值”，若否，使用“手牌序”（即摸上来的顺序）
+   */
+  private costSortedHands(
+    who: "my" | "opp",
+    useTieBreak: boolean,
+  ): CardState[] {
     const player = who === "my" ? this.player : this.oppPlayer;
-    const tb = (card: CardState) => {
-      return nextRandom(card.id) ^ this.state.iterators.random;
-    };
-    const sortData = new Map(player.hands.map((c) => [c.id, { cost: diceCostOfCard(c.definition), tb: tb(c)}] as const));
-    return player.hands.toSortedBy((card) => [
-      sortData.get(card.id)!.cost,
-      sortData.get(card.id)!.tb,
-    ]).toReversed();
+    const tb = useTieBreak
+      ? (card: CardState) => {
+          return nextRandom(card.id) ^ this.state.iterators.random;
+        }
+      : (_: CardState) => 0;
+    const sortData = new Map(
+      player.hands.map(
+        (c) =>
+          [c.id, { cost: diceCostOfCard(c.definition), tb: tb(c) }] as const,
+      ),
+    );
+    return player.hands
+      .toSortedBy((card) => [
+        sortData.get(card.id)!.cost,
+        sortData.get(card.id)!.tb,
+      ])
+      .toReversed();
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
-  maxCostHands(count: number, who: "my" | "opp" = "my"): CardState[] {
-    return this.costSortedHands(who).slice(0, count);
+  maxCostHands(count: number, opt: MaxCostHandsOpt = {}): CardState[] {
+    const who = opt.who ?? "my";
+    const useTieBreak = opt.useTieBreak ?? false;
+    return this.costSortedHands(who, useTieBreak).slice(0, count);
   }
 
   isInInitialPile(card: CardState): boolean {
@@ -1510,7 +1535,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   /** 弃置我方原本元素骰费用最多的 `count` 张牌 */
   disposeMaxCostHands(count: number) {
-    const disposed = this.maxCostHands(count);
+    const disposed = this.maxCostHands(count, { useTieBreak: true });
     this.disposeCard(...disposed);
     return returnWithEnableShortcut(disposed);
   }

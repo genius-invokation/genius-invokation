@@ -81,7 +81,7 @@ export const Yumkasaurus = card(313002)
   .usage(2)
   .damage(DamageType.Physical, 1)
   .do((c) => {
-    const [handCard] = c.maxCostHands(1, "opp");
+    const [handCard] = c.maxCostHands(1, { who: "opp" });
     if (handCard) {
       c.stealHandCard(handCard);
     }
