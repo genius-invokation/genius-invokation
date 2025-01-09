@@ -1,0 +1,36 @@
+{
+  "name": "@gi-tcg/data-vscode-ext",
+  "displayName": "`@gi-tcg/data` Code Extension",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "type": "commonjs",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {},
+  "scripts": {
+    "vscode:prepublish": "bun run package",
+    "compile": "bun run check-types && bun esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "bun run check-types && bun esbuild.js --production",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "^5.6.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "esbuild": "^0.24.0",
+    "npm-run-all": "^4.1.5"
+  }
+}
