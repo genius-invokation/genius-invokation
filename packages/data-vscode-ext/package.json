@@ -1,6 +1,6 @@
 {
   "name": "@gi-tcg/data-vscode-ext",
-  "displayName": "`@gi-tcg/data` Code Extension",
+  "displayName": "Genius Invokation TCG Data Code Extension",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -9,6 +9,9 @@
   "type": "commonjs",
   "categories": [
     "Other"
+  ],
+  "extensionKind": [
+    "ui"
   ],
   "activationEvents": [
     "onStartupFinished"
