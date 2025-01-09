@@ -493,7 +493,7 @@ export const DisposedSupportCountExtension = extension(322022, { disposedSupport
  */
 export const Jeht = card(322022)
   .since("v4.4.0")
-  .costVoid(2)
+  .costSame(1)
   .associateExtension(DisposedSupportCountExtension)
   .replaceDescription("[GCG_TOKEN_COUNTER]", (_, { area }, ext) => ext.disposedSupportCount[area.who])
   .support("ally")
