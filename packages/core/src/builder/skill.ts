@@ -1014,7 +1014,7 @@ export abstract class SkillBuilderWithCost<
   }
 }
 
-class InitiativeSkillBuilder<
+export class InitiativeSkillBuilder<
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > extends SkillBuilderWithCost<{

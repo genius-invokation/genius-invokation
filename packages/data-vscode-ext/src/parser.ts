@@ -13,14 +13,14 @@ function parseChainCalls(node: ts.Expression): ChainCallEntry[] {
     if (node.kind !== ts.SyntaxKind.CallExpression) {
       break;
     }
-    const { expression: callee } = node as ts.CallExpression;
+    const { end, expression: callee } = node as ts.CallExpression;
     switch (callee.kind) {
       case ts.SyntaxKind.PropertyAccessExpression: {
         const { expression, name } = callee as ts.PropertyAccessExpression;
         const text = name.text;
         chainCalls.push({
           pos: name.end - text.length,
-          end: name.end,
+          end,
           text,
         });
         node = expression;
@@ -31,7 +31,7 @@ function parseChainCalls(node: ts.Expression): ChainCallEntry[] {
         const text = name.text;
         chainCalls.push({
           pos: name.end - text.length,
-          end: name.end,
+          end,
           text,
         });
         break outer;

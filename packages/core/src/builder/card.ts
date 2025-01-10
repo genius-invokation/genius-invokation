@@ -90,7 +90,7 @@ type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
   ext: AssociatedExt["type"],
 ) => string | number;
 
-class CardBuilder<
+export class CardBuilder<
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle = never,
 > extends SkillBuilderWithCost<{

@@ -20,16 +20,19 @@
   "contributes": {},
   "scripts": {
     "vscode:prepublish": "bun run package",
-    "compile": "bun run check-types && bun esbuild.js",
-    "watch": "node esbuild.js --watch",
-    "package": "bun run check-types && bun esbuild.js --production",
-    "check-types": "tsc --noEmit"
+    "build:method_names": "bun scripts/get_method_names.ts",
+    "build:esbuild": "bun esbuild.js",
+    "build": "bun run build:method_names && bun run build:esbuild",
+    "watch": "bun esbuild.js --watch",
+    "package": "bun run build",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "typescript": "^5.6.2",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@gi-tcg/core": "workspace:*",
     "@types/vscode": "^1.96.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",

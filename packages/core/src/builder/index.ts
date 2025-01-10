@@ -23,7 +23,6 @@ export {
   endRegistration,
   type GameData,
   type GameDataGetter,
-  builderWeakRefs,
 } from "./registry";
 export type {
   CardHandle,
@@ -43,3 +42,32 @@ export type { CharacterState, CardState, EntityState } from "../base/state";
 
 export { diceCostOfCard } from "../utils";
 export { flip, pair } from "@gi-tcg/utils";
+
+// INTERNAL exports
+// 为其他包提供一些内部接口，如 @gi-tcg/test, @gi-tcg/data-vscode-ext
+
+import { builderWeakRefs } from "./registry";
+import { CardBuilder } from "./card";
+import {
+  TriggeredSkillBuilder,
+  InitiativeSkillBuilder,
+  TechniqueBuilder,
+} from "./skill";
+import { EntityBuilder } from "./entity";
+import { CharacterBuilder } from "./character";
+import { ExtensionBuilder } from "./extension";
+import { SkillContext } from "./context/skill";
+import { EVENT_MAP } from "../base/skill";
+
+export const internal = {
+  builderWeakRefs,
+  CardBuilder,
+  EntityBuilder,
+  CharacterBuilder,
+  TriggeredSkillBuilder,
+  InitiativeSkillBuilder,
+  TechniqueBuilder,
+  ExtensionBuilder,
+  SkillContext,
+  EVENT_MAP,
+};

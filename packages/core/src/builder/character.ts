@@ -21,7 +21,7 @@ import { createVariable } from "./utils";
 import { VariableConfig } from "../base/entity";
 import { Version, VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
 
-class CharacterBuilder {
+export class CharacterBuilder {
   private readonly _tags: CharacterTag[] = [];
   private _maxHealth = 10;
   private _maxEnergy = 3;
