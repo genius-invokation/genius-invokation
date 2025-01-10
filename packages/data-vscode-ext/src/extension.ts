@@ -39,6 +39,12 @@ function registerHandlers(context: vscode.ExtensionContext) {
     updateTokenColors();
   });
 
+  // vscode.workspace.onDidOpenTextDocument((document) => {
+  //   if (document.languageId === "typescript") {
+  //     vscode.commands.executeCommand("editor.foldLevel1");
+  //   }
+  // });
+
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     activeEditor = editor;
     updateSubject.next();
@@ -49,6 +55,12 @@ function registerHandlers(context: vscode.ExtensionContext) {
       updateSubject.next();
     }
   }, context.subscriptions);
+
+  vscode.window.onDidChangeTextEditorSelection((event) => {
+    if (activeEditor && event.textEditor === activeEditor) {
+      updateSubject.next();
+    }
+  }, context.subscriptions)
 
   updateDecorations();
 

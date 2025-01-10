@@ -2,8 +2,9 @@ import * as ts from "typescript";
 import { log } from "./logger";
 
 export interface ChainCallEntry {
-  pos: number;
-  end: number;
+  idStart: number;
+  idEnd: number;
+  callEnd: number;
   text: string;
 }
 
@@ -19,8 +20,9 @@ function parseChainCalls(node: ts.Expression): ChainCallEntry[] {
         const { expression, name } = callee as ts.PropertyAccessExpression;
         const text = name.text;
         chainCalls.push({
-          pos: name.end - text.length,
-          end,
+          idStart: name.end - text.length,
+          idEnd: name.end,
+          callEnd: end,
           text,
         });
         node = expression;
@@ -30,8 +32,9 @@ function parseChainCalls(node: ts.Expression): ChainCallEntry[] {
         const name = callee as ts.Identifier;
         const text = name.text;
         chainCalls.push({
-          pos: name.end - text.length,
-          end,
+          idStart: name.end - text.length,
+          idEnd: name.end,
+          callEnd: end,
           text,
         });
         break outer;
