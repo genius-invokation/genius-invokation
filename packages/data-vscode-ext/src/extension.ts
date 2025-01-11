@@ -3,7 +3,7 @@ import { debounceTime, Subject } from "rxjs";
 import { parse } from "./parser";
 import { updateTokenColors } from "./theme_colors";
 import { log } from "./logger";
-import { updateBuilderChainDecorations, updateTokenBasedDecorationTypes } from "./decorations";
+import { applyDecorations, initDecorations, updateBuilderChainDecorations, updateEnumDecorations, updateTokenBasedDecorationTypes } from "./decorations";
 
 function registerHandlers(context: vscode.ExtensionContext) {
   let activeEditor = vscode.window.activeTextEditor;
@@ -22,7 +22,10 @@ function registerHandlers(context: vscode.ExtensionContext) {
       return;
     }
     const { chainCalls } = parse(document.fileName, document.getText());
+    initDecorations();
+    updateEnumDecorations(activeEditor);
     updateBuilderChainDecorations(activeEditor, chainCalls);
+    applyDecorations(activeEditor);
   };
 
   const updateSubscription = updateSubject
@@ -35,6 +38,7 @@ function registerHandlers(context: vscode.ExtensionContext) {
   updateTokenColors();
   vscode.window.onDidChangeActiveColorTheme(async (theme) => {
     log(theme); // no usage at all
+    // FIXME: when "previewing" theme, the settings won't update
     // let workspace.getConfiguration be able to get the latest theme name
     await new Promise((resolve) => setTimeout(resolve, 500));
     updateTokenColors();

@@ -17,7 +17,6 @@ enum ChainMethodCategory {
   Action,
   EventAction,
   Done,
-  Reversed,
   Other,
 }
 
@@ -34,7 +33,6 @@ const CHAIN_METHOD_TOKEN_COLOR_MAP: Record<ChainMethodCategory, string> = {
   [ChainMethodCategory.Action]: "support.function",
   [ChainMethodCategory.EventAction]: "support.function",
   [ChainMethodCategory.Done]: "keyword.control",
-  [ChainMethodCategory.Reversed]: "keyword.control",
   [ChainMethodCategory.Shorthand]: "support.variable",
   [ChainMethodCategory.Other]: "support.variable",
 };
@@ -58,6 +56,7 @@ const tokenBasedDecorationTypes = new Map<
 
 enum DecorationCategory {
   Void,
+  Physical = Void,
   Cryo,
   Hydro,
   Pyro,
@@ -66,14 +65,20 @@ enum DecorationCategory {
   Geo,
   Dendro,
   Omni,
+  Piercing = Omni,
+  Energy,
   // EventName, // italic
   ChainArguments, // opacity
+  Deleted, // .reserve
 }
 
 const otherDecorationTypes = new Map<
   DecorationCategory,
   vscode.TextEditorDecorationType
 >();
+
+const chainMethodRanges = new Map<ChainMethodCategory, vscode.Range[]>();
+const otherDecorationRanges = new Map<DecorationCategory, vscode.Range[]>();
 
 export const updateTokenBasedDecorationTypes = () => {
   for (const [, value] of tokenBasedDecorationTypes) {
@@ -100,23 +105,27 @@ export const updateTokenBasedDecorationTypes = () => {
 };
 
 const setOtherDecorationTypes = () => {
-  const ELEMENT_TYPE_COLORS: Record<number, string> = {
-    [DecorationCategory.Void]: "#4a4a4a",
-    [DecorationCategory.Cryo]: "#55ddff",
-    [DecorationCategory.Hydro]: "#3e99ff",
-    [DecorationCategory.Pyro]: "#ff9955",
-    [DecorationCategory.Electro]: "#b380ff",
-    [DecorationCategory.Anemo]: "#80ffe6",
-    [DecorationCategory.Geo]: "#ffcc00",
-    [DecorationCategory.Dendro]: "#a5c83b",
-    [DecorationCategory.Omni]: "#dcd4c2",
+  const ELEMENT_TYPE_COLORS: Record<number, { light: string; dark: string }> = {
+    [DecorationCategory.Void]: { light: "#000000", dark: "#4f4f4f" },
+    [DecorationCategory.Cryo]: { light: "#91d5ff", dark: "#55ddff" },
+    [DecorationCategory.Hydro]: { light: "#1890ff", dark: "#3e99ff" },
+    [DecorationCategory.Pyro]: { light: "#f5222d", dark: "#ff9955" },
+    [DecorationCategory.Electro]: { light: "#722ed1", dark: "#b380ff" },
+    [DecorationCategory.Anemo]: { light: "#36cfc9", dark: "#80ffe6" },
+    [DecorationCategory.Geo]: { light: "#d4b106", dark: "#ffcc00" },
+    [DecorationCategory.Dendro]: { light: "#52c41a", dark: "#a5c83b" },
+    [DecorationCategory.Omni]: { light: "#929292", dark: "#000000" },
+    [DecorationCategory.Energy]: { light: "#bd7611", dark: "#f8c901" },
   };
 
-  for (const [category, color] of Object.entries(ELEMENT_TYPE_COLORS)) {
+  for (const [category, { light, dark }] of Object.entries(
+    ELEMENT_TYPE_COLORS,
+  )) {
     otherDecorationTypes.set(
       Number(category) as DecorationCategory,
       vscode.window.createTextEditorDecorationType({
-        color,
+        light: { color: light },
+        dark: { color: dark },
         fontStyle: "italic",
       }),
     );
@@ -133,13 +142,57 @@ const setOtherDecorationTypes = () => {
       opacity: "0.6",
     }),
   );
+  otherDecorationTypes.set(
+    DecorationCategory.Deleted,
+    vscode.window.createTextEditorDecorationType({
+      textDecoration: "line-through",
+      fontStyle: "italic",
+      light: { color: "#929292" },
+      dark: { color: "#4f4f4f" },
+    }),
+  );
+};
+
+const addToMap = <K, V>(map: Map<K, V[]>, key: K, value: V) => {
+  if (!map.has(key)) {
+    map.set(key, []);
+  }
+  map.get(key)!.push(value);
+};
+
+export const initDecorations = () => {
+  chainMethodRanges.clear();
+  otherDecorationRanges.clear();
+};
+
+export const updateEnumDecorations = (editor: vscode.TextEditor) => {
+  if (otherDecorationTypes.size === 0) {
+    setOtherDecorationTypes();
+  }
+  const text = editor.document.getText();
+  const enumRegex = /(?:Aura|DamageType|DiceType)\.(\w+)/dg;
+  const enumMatches = text.matchAll(enumRegex);
+
+  for (const match of enumMatches) {
+    const enumType = match[1] as keyof typeof DecorationCategory;
+    if (enumType in DecorationCategory) {
+      const [start, end] = match.indices![1];
+      addToMap(
+        otherDecorationRanges,
+        DecorationCategory[enumType],
+        new vscode.Range(
+          editor.document.positionAt(start),
+          editor.document.positionAt(end),
+        ),
+      );
+    }
+  }
 };
 
 export const updateBuilderChainDecorations = (
   editor: vscode.TextEditor,
   chainCalls: ChainCallEntry[][],
 ) => {
-  // TODO: fix theme changing
   if (tokenBasedDecorationTypes.size === 0) {
     updateTokenBasedDecorationTypes();
   }
@@ -147,15 +200,6 @@ export const updateBuilderChainDecorations = (
     setOtherDecorationTypes();
   }
 
-  const chainMethodRanges = new Map<ChainMethodCategory, vscode.Range[]>();
-  const otherDecorationRanges = new Map<DecorationCategory, vscode.Range[]>();
-
-  const addToMap = <K, V>(map: Map<K, V[]>, key: K, value: V) => {
-    if (!map.has(key)) {
-      map.set(key, []);
-    }
-    map.get(key)!.push(value);
-  };
   const addChainMethodRange = (
     category: ChainMethodCategory,
     start: number,
@@ -186,10 +230,50 @@ export const updateBuilderChainDecorations = (
   };
 
   for (const chain of chainCalls) {
-    for (let i = 0; i < chain.length; i++) {
+    const last = chain[chain.length - 1];
+    if (last.text === "done") {
+      addChainMethodRange(ChainMethodCategory.Done, last.idStart, last.idEnd);
+    } else if (last.text === "reserve") {
+      for (const { idStart, idEnd } of chain) {
+        addOtherDecorationRange(DecorationCategory.Deleted, idStart, idEnd);
+      }
+      continue;
+    } else {
+      continue;
+    }
+    if (
+      [
+        "status",
+        "combatStatus",
+        "card",
+        "skill",
+        "extension",
+        "character",
+      ].includes(chain[0].text)
+    ) {
+      addChainMethodRange(
+        ChainMethodCategory.Factory,
+        chain[0].idStart,
+        chain[0].idEnd,
+      );
+    }
+    for (let i = 1; i < chain.length - 1; i++) {
       const { idStart, idEnd, callEnd, text } = chain[i];
-      if (["done"].includes(text)) {
-        addChainMethodRange(ChainMethodCategory.Done, idStart, idEnd);
+      const COST_METHODS: Record<string, DecorationCategory> = {
+        costVoid: DecorationCategory.Void,
+        costCryo: DecorationCategory.Cryo,
+        costHydro: DecorationCategory.Hydro,
+        costPyro: DecorationCategory.Pyro,
+        costElectro: DecorationCategory.Electro,
+        costAnemo: DecorationCategory.Anemo,
+        costGeo: DecorationCategory.Geo,
+        costDendro: DecorationCategory.Dendro,
+        costSame: DecorationCategory.Omni,
+        costEnergy: DecorationCategory.Energy,
+      };
+      if (text in COST_METHODS) {
+        addChainMethodRange(ChainMethodCategory.Property, idStart, idStart + 4);
+        addOtherDecorationRange(COST_METHODS[text], idStart + 4, idEnd);
       } else if (
         ["since", "description", "associateExtension"].includes(text)
       ) {
@@ -208,17 +292,6 @@ export const updateBuilderChainDecorations = (
         addChainMethodRange(ChainMethodCategory.Property, idStart, idEnd);
       } else if (["if", "else", "do"].includes(text)) {
         addChainMethodRange(ChainMethodCategory.ControlFlow, idStart, idEnd);
-      } else if (
-        [
-          "status",
-          "combatStatus",
-          "card",
-          "skill",
-          "extension",
-          "character",
-        ].includes(text)
-      ) {
-        addChainMethodRange(ChainMethodCategory.Factory, idStart, idEnd);
       } else if (
         [
           "support",
@@ -271,8 +344,8 @@ export const updateBuilderChainDecorations = (
       const argStart = editor.document.positionAt(idEnd);
       const argEnd = editor.document.positionAt(callEnd);
       if (
-        editor.selection.start.isAfterOrEqual(argEnd) ||
-        editor.selection.end.isBeforeOrEqual(argStart)
+        editor.selection.start.isAfter(argEnd) ||
+        editor.selection.end.isBefore(argStart)
       ) {
         // const args = editor.document.getText(
         //   new vscode.Range(argStart, argEnd),
@@ -308,6 +381,9 @@ export const updateBuilderChainDecorations = (
       }
     }
   }
+};
+
+export const applyDecorations = (editor: vscode.TextEditor) => {
   for (const [category, ranges] of chainMethodRanges) {
     editor.setDecorations(tokenBasedDecorationTypes.get(category)!, ranges);
   }
