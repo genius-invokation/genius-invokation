@@ -234,8 +234,13 @@ export const updateBuilderChainDecorations = (
     if (last.text === "done") {
       addChainMethodRange(ChainMethodCategory.Done, last.idStart, last.idEnd);
     } else if (last.text === "reserve") {
-      for (const { idStart, idEnd } of chain) {
+      for (const { idStart, idEnd, callEnd } of chain) {
         addOtherDecorationRange(DecorationCategory.Deleted, idStart, idEnd);
+        addOtherDecorationRange(
+          DecorationCategory.ChainArguments,
+          idEnd,
+          callEnd,
+        );
       }
       continue;
     } else {

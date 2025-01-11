@@ -11,7 +11,31 @@
         "kind": "build",
         "isDefault": true,
       },
-      "problemMatcher": "$esbuild-watch",
+      // https://github.com/luxass/tsup-problem-matchers/blob/main/package.json
+      "problemMatcher": {
+        "owner": "tsup",
+        "source": "tsup",
+        "severity": "error",
+        "pattern": [
+          {
+            "regexp": "^✘\\s+\\[ERROR\\]\\s+(.+)$",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s*$"
+          },
+          {
+            "regexp": "^\\s+(.+):(\\d+):(\\d+):$",
+            "file": 1,
+            "line": 2,
+            "column": 3
+          }
+        ],
+        "background": {
+          "beginsPattern": "^CJS Build start$",
+          "endsPattern": "^CJS .* Build success|^CJS Build failed"
+        }
+      },
       "isBackground": true,
       "presentation": {
         "group": "watch",
