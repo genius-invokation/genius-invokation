@@ -171,7 +171,7 @@ const collateCharacter = async (
 
   const cardFace: string = rawJson.Icon;
   const icon = cardFace.replace(
-    /CardFace_Char_([a-zA-Z]+)_([a-zA-z]+)$/,
+    /CardFace_Char_([a-zA-Z]+)_([a-zA-Z]+)$/,
     (match, p1, p2) => {
       return `Char_${p1}Icon_${p2}`;
     },
