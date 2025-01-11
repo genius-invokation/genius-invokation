@@ -136,7 +136,7 @@ export async function collateCharacters(
     )!.cardPrefabName;
     const cardFace = `UI_${cardPrefabName}`;
     const icon = cardFace.replace(
-      /CardFace_Char_([a-zA-Z]+)_([a-zA-z]+)$/,
+      /CardFace_Char_([a-zA-Z]+)_([a-zA-Z]+)$/,
       (match, p1, p2) => {
         return `Char_${p1}Icon_${CARDFACE_TO_AVATAR_MAP[p2] ?? p2}`;
       },
