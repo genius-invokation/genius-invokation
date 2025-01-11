@@ -21,6 +21,10 @@ function registerHandlers(context: vscode.ExtensionContext) {
     if (document.languageId !== "typescript") {
       return;
     }
+    if (!vscode.workspace.asRelativePath(document.fileName).startsWith("src")) {
+      return;
+    }
+    // log(document.fileName);
     const { chainCalls } = parse(document.fileName, document.getText());
     initDecorations();
     updateEnumDecorations(activeEditor);
