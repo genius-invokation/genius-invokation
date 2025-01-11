@@ -3,7 +3,7 @@ import { debounceTime, Subject } from "rxjs";
 import { parse } from "./parser";
 import { updateTokenColors } from "./theme_colors";
 import { log } from "./logger";
-import { updateBuilderChainDecorations } from "./builder_chain_coloring";
+import { updateBuilderChainDecorations, updateTokenBasedDecorationTypes } from "./decorations";
 
 function registerHandlers(context: vscode.ExtensionContext) {
   let activeEditor = vscode.window.activeTextEditor;
@@ -22,8 +22,6 @@ function registerHandlers(context: vscode.ExtensionContext) {
       return;
     }
     const { chainCalls } = parse(document.fileName, document.getText());
-    log(chainCalls.map((calls) => calls.map((call) => call.text)));
-
     updateBuilderChainDecorations(activeEditor, chainCalls);
   };
 
@@ -35,8 +33,13 @@ function registerHandlers(context: vscode.ExtensionContext) {
   });
 
   updateTokenColors();
-  vscode.window.onDidChangeActiveColorTheme(() => {
+  vscode.window.onDidChangeActiveColorTheme(async (theme) => {
+    log(theme); // no usage at all
+    // let workspace.getConfiguration be able to get the latest theme name
+    await new Promise((resolve) => setTimeout(resolve, 500));
     updateTokenColors();
+    updateTokenBasedDecorationTypes();
+    updateSubject.next();
   });
 
   // vscode.workspace.onDidOpenTextDocument((document) => {
