@@ -1,6 +1,4 @@
-import { internal } from "@gi-tcg/core/builder";
-
-const {
+import {
   SkillContext,
   CardBuilder,
   CharacterBuilder,
@@ -10,7 +8,7 @@ const {
   TechniqueBuilder,
   TriggeredSkillBuilder,
   EVENT_MAP,
-} = internal;
+} from "@gi-tcg/core/builder/internal";
 
 const OUTPUT_FILE = `${__dirname}/../src/names.json`;
 

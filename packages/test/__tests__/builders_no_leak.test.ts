@@ -1,8 +1,6 @@
 import getData from "@gi-tcg/data";
-import { internal } from "@gi-tcg/core/builder";
+import { builderWeakRefs } from "@gi-tcg/core/builder/internal";
 import { test, expect } from "bun:test";
-
-const { builderWeakRefs } = internal;
 
 test("builders should be gc'd after initialize", () => {
   const data = getData();
