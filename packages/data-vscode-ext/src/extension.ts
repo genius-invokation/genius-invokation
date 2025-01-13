@@ -18,7 +18,13 @@ import { debounceTime, Subject } from "rxjs";
 import { parse } from "./parser";
 import { updateTokenColors } from "./theme_colors";
 import { log } from "./logger";
-import { applyDecorations, initDecorations, updateBuilderChainDecorations, updateEnumDecorations, updateTokenBasedDecorationTypes } from "./decorations";
+import {
+  applyDecorations,
+  initDecorations,
+  updateBuilderChainDecorations,
+  updateEnumDecorations,
+  updateTokenBasedDecorationTypes,
+} from "./decorations";
 
 function registerHandlers(context: vscode.ExtensionContext) {
   let activeEditor = vscode.window.activeTextEditor;
@@ -36,7 +42,7 @@ function registerHandlers(context: vscode.ExtensionContext) {
     if (document.languageId !== "typescript") {
       return;
     }
-    if (!vscode.workspace.asRelativePath(document.fileName).startsWith("src")) {
+    if (!vscode.workspace.asRelativePath(document.uri).startsWith("src")) {
       return;
     }
     // log(document.fileName);
@@ -86,7 +92,7 @@ function registerHandlers(context: vscode.ExtensionContext) {
     if (activeEditor && event.textEditor === activeEditor) {
       updateSubject.next();
     }
-  }, context.subscriptions)
+  }, context.subscriptions);
 
   updateDecorations();
 
@@ -104,8 +110,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (workspaceFolders?.length === 1) {
-    const rootPath = workspaceFolders[0].uri.fsPath;
-    const packageJsonPath = vscode.Uri.file(`${rootPath}/package.json`);
+    const rootPath = workspaceFolders[0].uri;
+    const packageJsonPath = vscode.Uri.joinPath(rootPath, 'package.json');
 
     try {
       const fileContent = await vscode.workspace.fs.readFile(packageJsonPath);
@@ -113,7 +119,9 @@ export async function activate(context: vscode.ExtensionContext) {
       if (packageJson.name === "@gi-tcg/data") {
         registerHandlers(context);
       }
-    } catch {}
+    } catch (e) {
+      log(e);
+    }
   }
 }
 

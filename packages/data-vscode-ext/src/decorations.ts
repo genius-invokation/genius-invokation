@@ -277,6 +277,10 @@ export const updateBuilderChainDecorations = (
         chain[0].idEnd,
       );
     }
+    const totalRange = new vscode.Range(
+      editor.document.positionAt(chain[0].idStart),
+      editor.document.positionAt(chain[chain.length - 1].callEnd),
+    );
     for (let i = 1; i < chain.length - 1; i++) {
       const { idStart, idEnd, callEnd, text } = chain[i];
       const COST_METHODS: Record<string, DecorationCategory> = {
@@ -361,11 +365,9 @@ export const updateBuilderChainDecorations = (
       } else {
         addChainMethodRange(ChainMethodCategory.Other, idStart, idEnd);
       }
-      const argStart = editor.document.positionAt(idEnd);
-      const argEnd = editor.document.positionAt(callEnd);
       if (
-        editor.selection.start.isAfter(argEnd) ||
-        editor.selection.end.isBefore(argStart)
+        editor.selection.start.line < totalRange.start.line ||
+        editor.selection.end.line > totalRange.end.line
       ) {
         // const args = editor.document.getText(
         //   new vscode.Range(argStart, argEnd),
