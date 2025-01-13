@@ -252,11 +252,13 @@ export class CardBuilder<
     this.do((c) => {
       c.combatStatus(id as CombatStatusHandle, where);
     }).done();
-    const builder = new EntityBuilder<"combatStatus", never, never, true>(
+    const builder = new EntityBuilder<
       "combatStatus",
-      id,
-      this.id,
-    );
+      never,
+      never,
+      true,
+      never
+    >("combatStatus", id, this.id);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -273,7 +275,7 @@ export class CardBuilder<
     this.do((c) => {
       c.characterStatus(id as StatusHandle, target);
     }).done();
-    const builder = new EntityBuilder<"status", never, never, true>(
+    const builder = new EntityBuilder<"status", never, never, true, never>(
       "status",
       id,
       this.id,

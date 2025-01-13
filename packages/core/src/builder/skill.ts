@@ -63,6 +63,8 @@ import {
   UsagePerRoundVariableNames,
 } from "../base/entity";
 import {
+  DEFAULT_SNIPPET_NAME,
+  DefaultCustomEventArg,
   EntityBuilder,
   EntityBuilderPublic,
   EntityBuilderResultT,
@@ -98,6 +100,11 @@ export type SkillOperationFilter<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
   e: Omit<Meta["eventArgType"], `_${string}`>,
 ) => unknown;
+
+type SkillProjection<Projected, Meta extends SkillBuilderMetaBase> = (
+  c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
+  e: Omit<Meta["eventArgType"], `_${string}`>,
+) => Projected;
 
 type StateOf<TargetKindTs extends InitiativeSkillTargetKind> =
   TargetKindTs extends readonly [
@@ -728,6 +735,7 @@ export class TriggeredSkillBuilder<
   CallerVars extends string,
   AssociatedExt extends ExtensionHandle,
   ParentFromCard extends boolean,
+  ParentSnippets extends {},
 > extends SkillBuilder<
   TriggeredSkillBuilderMeta<EventName, CallerType, CallerVars, AssociatedExt>
 > {
@@ -738,7 +746,8 @@ export class TriggeredSkillBuilder<
       CallerType,
       CallerVars,
       AssociatedExt,
-      ParentFromCard
+      ParentFromCard,
+      ParentSnippets
     >,
     private readonly triggerFilter: SkillOperationFilter<
       TriggeredSkillBuilderMeta<
@@ -777,7 +786,8 @@ export class TriggeredSkillBuilder<
       CallerType,
       CallerVars | VarName,
       AssociatedExt,
-      ParentFromCard
+      ParentFromCard,
+      ParentSnippets
     >
   > {
     const perRound = opt?.perRound ?? false;
@@ -833,6 +843,17 @@ export class TriggeredSkillBuilder<
     this._listenTo = ListenTo.All;
     return this;
   }
+
+  /** 调用之前在 `EntityBuilder` 中定义的“小程序” */
+  declare callSnippet: CallSnippet<
+    ParentSnippets,
+    {
+      callerType: CallerType;
+      callerVars: CallerVars;
+      eventArgType: DetailedEventArgOf<EventName>;
+      associatedExtension: AssociatedExt;
+    }
+  >;
 
   private buildSkill() {
     // 【可用次数自动扣除】
@@ -933,6 +954,42 @@ export class TriggeredSkillBuilder<
     return this.parent.done();
   }
 }
+
+type CallSnippet<
+  Snippets extends {},
+  Meta extends SkillBuilderMetaBase,
+> = (Snippets extends { [DEFAULT_SNIPPET_NAME]: infer DefaultCustomT }
+  ? {
+      <This>(
+        this: This,
+        ...projection: DefaultCustomT extends DefaultCustomEventArg
+          ? []
+          : [SkillProjection<DefaultCustomT, Meta>]
+      ): This;
+    }
+  : {}) & {
+  <This, SnippetName extends keyof Snippets & string>(
+    this: This,
+    name: SnippetName,
+    ...projection: Snippets[SnippetName] extends DefaultCustomEventArg
+      ? []
+      : [SkillProjection<Snippets[SnippetName], Meta>]
+  ): This;
+};
+
+TriggeredSkillBuilder.prototype.callSnippet = function (...args) {
+  let name: string;
+  let projection: any;
+  if (args.length === 1) {
+    name = DEFAULT_SNIPPET_NAME;
+    [projection] = args;
+  } else {
+    [name, projection] = args;
+  }
+  const self: any = this;
+  const operation = self.parent._applySnippet(name, projection);
+  return self.do(operation);
+};
 
 function generateTargetList(
   state: GameState,
@@ -1151,6 +1208,7 @@ export class TechniqueBuilder<
   Vars extends string,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
+  ParentFromCard extends boolean,
 > extends SkillBuilderWithCost<{
   callerType: "equipment";
   callerVars: Vars;
@@ -1165,7 +1223,13 @@ export class TechniqueBuilder<
 
   constructor(
     id: number,
-    private readonly parent: EntityBuilder<"equipment", Vars, AssociatedExt>,
+    private readonly parent: EntityBuilder<
+      "equipment",
+      Vars,
+      AssociatedExt,
+      ParentFromCard,
+      any
+    >,
   ) {
     super(id);
     this.associatedExtensionId = this.parent._associatedExtensionId;
@@ -1177,7 +1241,8 @@ export class TechniqueBuilder<
     TechniqueBuilder<
       Vars,
       readonly [...KindTs, TargetKindOfQuery<Q>],
-      AssociatedExt
+      AssociatedExt,
+      ParentFromCard
     >
   > {
     this.addTargetImpl(targetQuery);
@@ -1188,7 +1253,7 @@ export class TechniqueBuilder<
     count: number,
     opt?: UsageOptions<VarName>,
   ): BuilderWithShortcut<
-    TechniqueBuilder<Vars | VarName, KindTs, AssociatedExt>
+    TechniqueBuilder<Vars | VarName, KindTs, AssociatedExt, ParentFromCard>
   > {
     const perRound = opt?.perRound ?? false;
     const autoDecrease = opt?.autoDecrease ?? true;

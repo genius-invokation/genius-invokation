@@ -34,11 +34,13 @@ import {
 import {
   BuilderWithShortcut,
   DetailedEventNames,
+  SkillOperation,
   SkillOperationFilter,
   TechniqueBuilder,
   TriggeredSkillBuilder,
   TriggeredSkillBuilderMeta,
   UsageOptions,
+  WritableMetaOf,
   enableShortcut,
 } from "./skill";
 import {
@@ -54,6 +56,7 @@ import { createVariable, createVariableCanAppend } from "./utils";
 import { Writable, getEntityArea, getEntityById } from "../utils";
 import { EntityState, GameState } from "../base/state";
 import { Version, VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
+import { TypedSkillContext } from "./context/skill";
 
 export interface AppendOptions {
   /** 重复创建时的累积值上限 */
@@ -97,11 +100,15 @@ type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
     ext: AssociatedExt["type"],
   ) => string | number;
 
+export const DEFAULT_SNIPPET_NAME = "default" as const;
+export type DefaultCustomEventArg = { readonly _default: unique symbol };
+
 export class EntityBuilder<
   CallerType extends "character" | EntityType,
-  CallerVars extends string = never,
-  AssociatedExt extends ExtensionHandle = never,
-  FromCard extends boolean = false,
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+  FromCard extends boolean,
+  Snippets extends {},
 > {
   private _skillNo = 0;
   readonly _skillList: SkillDefinition[] = [];
@@ -113,6 +120,8 @@ export class EntityBuilder<
   private _hintText: string | null = null;
   private readonly _descriptionDictionary: Writable<DescriptionDictionary> = {};
   _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
+  private _snippets = new Map<string, SkillOperation<any>>();
+
   private generateSkillId() {
     const thisSkillNo = ++this._skillNo;
     return this.id + thisSkillNo / 100;
@@ -175,10 +184,15 @@ export class EntityBuilder<
     const self = this as unknown as EntityBuilder<
       "equipment",
       CallerVars,
-      AssociatedExt
+      AssociatedExt,
+      FromCard,
+      Snippets
     >;
     return enableShortcut(
-      new TechniqueBuilder<CallerVars, readonly [], AssociatedExt>(id, self),
+      new TechniqueBuilder<CallerVars, readonly [], AssociatedExt, FromCard>(
+        id,
+        self,
+      ),
     );
   }
 
@@ -229,7 +243,8 @@ export class EntityBuilder<
         CallerType,
         CallerVars,
         AssociatedExt,
-        FromCard
+        FromCard,
+        Snippets
       >(this.generateSkillId(), event, this, filter),
     );
   }
@@ -257,7 +272,8 @@ export class EntityBuilder<
     CallerType,
     CallerVars | Name,
     AssociatedExt,
-    FromCard
+    FromCard,
+    Snippets
   > {
     if (Reflect.has(this._varConfigs, name)) {
       throw new GiTcgDataError(`Variable name ${name} already exists`);
@@ -298,7 +314,8 @@ export class EntityBuilder<
     CallerType,
     CallerVars | Name,
     AssociatedExt,
-    FromCard
+    FromCard,
+    Snippets
   >;
   variableCanAppend<const Name extends string>(
     name: Name,
@@ -310,7 +327,8 @@ export class EntityBuilder<
     CallerType,
     CallerVars | Name,
     AssociatedExt,
-    FromCard
+    FromCard,
+    Snippets
   >;
   variableCanAppend(
     name: string,
@@ -469,7 +487,8 @@ export class EntityBuilder<
       CallerType,
       CallerVars | "hintIcon",
       AssociatedExt,
-      FromCard
+      FromCard,
+      Snippets
     >
   > {
     if (type === "swirledAnemo") {
@@ -505,12 +524,84 @@ export class EntityBuilder<
     CallerType,
     CallerVars | "usage",
     AssociatedExt,
-    FromCard
+    FromCard,
+    Snippets
   > {
     if (opt.autoDispose !== false) {
       this.variable("disposeWhenUsageIsZero", 1);
     }
     return this.variable("usage", count);
+  }
+
+  /**
+   * 定义一组“小程序”，可在之后的 `on` 块内调用
+   */
+  defineSnippet<CustomEventArgT = DefaultCustomEventArg>(
+    snippet: (
+      c: TypedSkillContext<{
+        readonly: false;
+        callerType: CallerType;
+        callerVars: CallerVars;
+        associatedExtension: AssociatedExt;
+        eventArgType: NoInfer<CustomEventArgT>;
+      }>,
+      e: CustomEventArgT,
+    ) => void,
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars,
+    AssociatedExt,
+    FromCard,
+    Snippets & { [DEFAULT_SNIPPET_NAME]: CustomEventArgT }
+  >;
+  defineSnippet<SnippetName extends string, CustomEventArgT = never>(
+    name: SnippetName,
+    snippet: (
+      c: TypedSkillContext<{
+        readonly: false;
+        callerType: CallerType;
+        callerVars: CallerVars;
+        associatedExtension: AssociatedExt;
+        eventArgType: NoInfer<CustomEventArgT>;
+      }>,
+      e: CustomEventArgT,
+    ) => void,
+  ): EntityBuilderPublic<
+    CallerType,
+    CallerVars,
+    AssociatedExt,
+    FromCard,
+    Snippets & { [S in SnippetName]: CustomEventArgT }
+  >;
+  defineSnippet(...args: any[]): any {
+    let name: string;
+    let snippet: any;
+    if (args.length === 1) {
+      name = "default";
+      [snippet] = args;
+    } else {
+      [name, snippet] = args;
+    }
+    if (this._snippets.has(name)) {
+      throw new GiTcgDataError(`Snippet ${name} already exists`);
+    }
+    this._snippets.set(name, snippet);
+    return this;
+  }
+
+  _applySnippet(
+    name: string,
+    projection?: (c: any, e: any) => any,
+  ): SkillOperation<any> {
+    projection ??= (c, e) => e;
+    const snippet = this._snippets.get(name);
+    if (!snippet) {
+      throw new GiTcgDataError(`Snippet ${name} not found`);
+    }
+    return function (c, e) {
+      const projected = projection(c, e);
+      return snippet(c, projected);
+    };
   }
 
   done() {
@@ -586,8 +677,9 @@ export type EntityBuilderPublic<
   Vars extends string = never,
   AssociatedExt extends ExtensionHandle = never,
   FromCard extends boolean = false,
+  Snippets extends {} = {},
 > = Omit<
-  EntityBuilder<CallerType, Vars, AssociatedExt, FromCard>,
+  EntityBuilder<CallerType, Vars, AssociatedExt, FromCard, Snippets>,
   `_${string}`
 >;
 
@@ -602,3 +694,39 @@ export function status(id: number): EntityBuilderPublic<"status"> {
 export function combatStatus(id: number): EntityBuilderPublic<"combatStatus"> {
   return new EntityBuilder("combatStatus", id);
 }
+
+//// TEST
+
+
+// status(-1)
+//   .defineSnippet((c) => {
+//     c.damage(DamageType.Dendro, 1)
+//   })
+//   .defineSnippet("foo", (c) => {
+//     c.damage(DamageType.Dendro, 2)
+//   })
+//   .on("dispose")
+//   .callSnippet()
+//   .callSnippet("foo")
+//   // @ts-expect-error
+//   .callSnippet(() => 42)
+//   // @ts-expect-error
+//   .callSnippet("foo", () => 42)
+//   .done();
+
+// status(-2)
+//   .defineSnippet((c, e: number) => {
+//     c.damage(DamageType.Dendro, 1)
+//   })
+//   .defineSnippet("foo", (c, e: number) => {
+//     c.damage(DamageType.Dendro, 2)
+//   })
+//   .on("dispose")
+//   // @ts-expect-error
+//   .callSnippet()
+//   // @ts-expect-error
+//   .callSnippet("foo")
+//   .callSnippet(() => 42)
+//   .callSnippet("foo", () => 42)
+//   .done();
+
