@@ -733,14 +733,14 @@ export class TriggeredSkillBuilder<
 > {
   constructor(
     id: number,
-    private readonly triggerOn: EventName,
+    private readonly detailedEventName: EventName,
     private readonly parent: EntityBuilder<
       CallerType,
       CallerVars,
       AssociatedExt,
       ParentFromCard
     >,
-    triggerFilter: SkillOperationFilter<
+    private readonly triggerFilter: SkillOperationFilter<
       TriggeredSkillBuilderMeta<
         EventName,
         CallerType,
@@ -751,23 +751,6 @@ export class TriggeredSkillBuilder<
   ) {
     super(id);
     this.associatedExtensionId = this.parent._associatedExtensionId;
-    const [, filterDescriptor] = detailedEventDictionary[this.triggerOn];
-    // 对于并非响应自身弃置的技能，当实体已经被弃置时，不再响应
-    if (triggerOn !== "selfDispose") {
-      this.filters.push((c, e) => {
-        return c.self.area.type !== "removedEntities";
-      });
-    }
-    const listenTo = this._listenTo;
-    this.filters.push(function (c, e) {
-      const { area, state } = c.self;
-      return filterDescriptor(c as any, e as any, {
-        callerArea: area,
-        callerId: state.id,
-        listenTo,
-      });
-    });
-    this.filters.push(triggerFilter);
   }
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
@@ -852,9 +835,8 @@ export class TriggeredSkillBuilder<
   }
 
   private buildSkill() {
-    if (this.parent._type === "character") {
-      this.filters.push((c) => c.self.state.variables.alive);
-    }
+    // 【可用次数自动扣除】
+
     if (this._usagePerRoundOpt?.autoDecrease) {
       this.do((c) => {
         c.consumeUsagePerRound();
@@ -875,11 +857,40 @@ export class TriggeredSkillBuilder<
         });
       }
     }
-    const [eventName] = detailedEventDictionary[this.triggerOn];
+
+    // 【添加各种 filter】
+
+    // 0. 被动技能要求角色存活
+    if (this.parent._type === "character") {
+      this.filters.push((c) => c.self.state.variables.alive);
+    }
+    // 1. 对于并非响应自身弃置的技能，当实体已经被弃置时，不再响应
+    if (this.detailedEventName !== "selfDispose") {
+      this.filters.push((c, e) => {
+        return c.self.area.type !== "removedEntities";
+      });
+    }
+    // 2. 基于 listenTo 的 filter
+    const [triggerOn, filterDescriptor] =
+      detailedEventDictionary[this.detailedEventName];
+    const listenTo = this._listenTo;
+    this.filters.push(function (c, e) {
+      const { area, state } = c.self;
+      return filterDescriptor(c as any, e as any, {
+        callerArea: area,
+        callerId: state.id,
+        listenTo,
+      });
+    });
+    // 3. 定义技能时显式传入的 filter
+    this.filters.push(this.triggerFilter);
+
+    // 【构造技能定义并向父级实体添加】
+
     const def: TriggeredSkillDefinition = {
       type: "skill",
       id: this.id,
-      triggerOn: eventName,
+      triggerOn,
       initiativeSkillConfig: null,
       filter: this.buildFilter(),
       action: this.buildAction(),
