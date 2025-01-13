@@ -24,7 +24,7 @@ export type EntityTag =
   | "shield" // 护盾
   | "disableEvent" // 禁用事件牌效果（仅出战状态）
   | "normalAsPlunging" // 普通攻击视为下落攻击
-  | "nightsoulBlessing" // 夜魂加持（仅角色状态）
+  | "nightsoulsBlessing" // 夜魂加持（仅角色状态）
   | EquipmentTag
   | SupportTag;
 

@@ -23,7 +23,7 @@ import { character, skill, summon, status, card, DamageType, SkillHandle } from 
  */
 export const NightsoulsBlessing = status(112141)
   .since("v5.3.0")
-  .nightsoulBlessing(2)
+  .nightsoulsBlessing(2)
   .done();
 
 /**

@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { CardHandle, CharacterState, DamageType, DiceType, SkillHandle, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
-import { NightsoulsBlessing } from "../../characters/hydro/mualani";
 
 /**
  * @id 303211
@@ -1651,9 +1650,9 @@ export const [AbundantPhlogiston] = card(332042)
   .oneDuration()
   .once("consumeNightsoul")
   .do((c, e) => {
-    const st = c.of(e.character).hasStatus(NightsoulsBlessing);
+    const st = c.$(`status with tag (nightsoulsBlessing)`);
     if (st) {
-      c.addVariable("nightsoul", 1, st);
+      st.addVariable("nightsoul", 1);
     }
   })
   .done();

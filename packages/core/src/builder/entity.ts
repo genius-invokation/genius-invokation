@@ -400,8 +400,8 @@ export class EntityBuilder<
       .endOn();
   }
 
-  nightsoulBlessing(maxCount: number, varOpt?: VariableOptions) {
-    return this.tags("nightsoulBlessing").variableCanAppend(
+  nightsoulsBlessing(maxCount: number, varOpt?: VariableOptions) {
+    return this.tags("nightsoulsBlessing").variableCanAppend(
       "nightsoul",
       0,
       maxCount,

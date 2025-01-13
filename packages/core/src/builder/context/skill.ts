@@ -1547,7 +1547,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   consumeNightsoul(target: CharacterTargetArg, count = 1) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      const st = t.$$(`status with tag (nightsoulBlessing)`)[0];
+      const st = t.$$(`status with tag (nightsoulsBlessing)`)[0];
       if (st) {
         const oldValue = this.getVariable("nightsoul", st.state);
         const newValue = Math.max(0, oldValue - count);

@@ -207,7 +207,7 @@ export class CardBuilder<
     return this.technique()
       .on("consumeNightsoulFinal")
       .do((c) => {
-        const st = c.$(`status with tags (nightsoulBlessing) at @master`);
+        const st = c.$(`status with tags (nightsoulsBlessing) at @master`);
         if (st && st.getVariable("nightsoul") <= 0) {
           st.dispose();
           c.dispose();
