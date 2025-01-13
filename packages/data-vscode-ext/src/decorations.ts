@@ -366,8 +366,8 @@ export const updateBuilderChainDecorations = (
         addChainMethodRange(ChainMethodCategory.Other, idStart, idEnd);
       }
       if (
-        editor.selection.start.line < totalRange.start.line ||
-        editor.selection.end.line > totalRange.end.line
+        editor.selection.end.line < totalRange.start.line ||
+        editor.selection.start.line > totalRange.end.line
       ) {
         // const args = editor.document.getText(
         //   new vscode.Range(argStart, argEnd),
