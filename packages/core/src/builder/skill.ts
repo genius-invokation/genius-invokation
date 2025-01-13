@@ -601,10 +601,16 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
    *
    * @returns 即 `SkillDescription` 的返回值
    */
-  protected buildAction<Arg = Meta["eventArgType"]>(overrideOperation?: SkillOperation<any>): SkillDescription<Arg> {
+  protected buildAction<Arg = Meta["eventArgType"]>(
+    overrideOperation?: SkillOperation<any>,
+  ): SkillDescription<Arg> {
     const extId = this.associatedExtensionId;
     const operation = overrideOperation ? [overrideOperation] : this.operations;
-    return function (state: GameState, skillInfo: SkillInfo, arg: Arg): SkillResult {
+    return function (
+      state: GameState,
+      skillInfo: SkillInfo,
+      arg: Arg,
+    ): SkillResult {
       const ctx = new SkillContext<WritableMetaOf<Meta>>(
         state,
         wrapSkillInfoWithExt(skillInfo, extId),
@@ -722,14 +728,9 @@ export class TriggeredSkillBuilder<
   CallerVars extends string,
   AssociatedExt extends ExtensionHandle,
   ParentFromCard extends boolean,
-  // helper types
-  Meta extends SkillBuilderMetaBase = TriggeredSkillBuilderMeta<
-    EventName,
-    CallerType,
-    CallerVars,
-    AssociatedExt
-  >,
-> extends SkillBuilder<Meta> {
+> extends SkillBuilder<
+  TriggeredSkillBuilderMeta<EventName, CallerType, CallerVars, AssociatedExt>
+> {
   constructor(
     id: number,
     private readonly triggerOn: EventName,
@@ -739,7 +740,14 @@ export class TriggeredSkillBuilder<
       AssociatedExt,
       ParentFromCard
     >,
-    triggerFilter: SkillOperationFilter<Meta> = () => true,
+    triggerFilter: SkillOperationFilter<
+      TriggeredSkillBuilderMeta<
+        EventName,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    > = () => true,
   ) {
     super(id);
     this.associatedExtensionId = this.parent._associatedExtensionId;
@@ -863,7 +871,7 @@ export class TriggeredSkillBuilder<
         // 否则手动扣除使用次数
         const name = this._usageOpt.name;
         this.do((c) => {
-          c.addVariable(name, -1);
+          c.self.addVariable(name, -1);
         });
       }
     }
@@ -888,9 +896,9 @@ export class TriggeredSkillBuilder<
     event: E,
     filter?: SkillOperationFilter<{
       eventArgType: DetailedEventArgOf<E>;
-      callerType: Meta["callerType"];
-      callerVars: Meta["callerVars"];
-      associatedExtension: Meta["associatedExtension"];
+      callerType: CallerType;
+      callerVars: CallerVars;
+      associatedExtension: AssociatedExt;
     }>,
   ) {
     this.buildSkill();
@@ -900,9 +908,9 @@ export class TriggeredSkillBuilder<
     event: E,
     filter?: SkillOperationFilter<{
       eventArgType: DetailedEventArgOf<E>;
-      callerType: Meta["callerType"];
-      callerVars: Meta["callerVars"];
-      associatedExtension: Meta["associatedExtension"];
+      callerType: CallerType;
+      callerVars: CallerVars;
+      associatedExtension: AssociatedExt;
     }>,
   ) {
     this.buildSkill();
