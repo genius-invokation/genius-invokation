@@ -22,6 +22,7 @@ import {
   RpcResponse,
   DiceRequirement,
   PbActionType,
+  PbPlayerStatus,
 } from "@gi-tcg/typings";
 import {
   AnyState,
@@ -414,6 +415,39 @@ export class Game {
     }
   }
 
+  private setPlayerStatus(who: 0 | 1, method: RpcMethod | null) {
+    let status;
+    switch (method) {
+      case "action":
+        status = PbPlayerStatus.PLAYER_STATUS_ACTING;
+        break;
+      case "chooseActive":
+        status = PbPlayerStatus.PLAYER_STATUS_CHOOSING_ACTIVE;
+        break;
+      case "selectCard":
+        status = PbPlayerStatus.PLAYER_STATUS_SELECTING_CARDS;
+        break;
+      case "rerollDice":
+        status = PbPlayerStatus.PLAYER_STATUS_REROLLING;
+        break;
+      case "switchHands":
+        status = PbPlayerStatus.PLAYER_STATUS_SWITCHING_HANDS;
+        break;
+      default:
+        status = PbPlayerStatus.PLAYER_STATUS_UNSPECIFIED;
+    }
+    this.mutator.notify({
+      mutations: [
+        {
+          playerStatusChange: {
+            who,
+            status,
+          },
+        },
+      ],
+    });
+  }
+
   private async rpc<M extends RpcMethod>(
     who: 0 | 1,
     method: M,
@@ -423,6 +457,7 @@ export class Game {
       throw new GiTcgCoreInternalError(`Game has been terminated`);
     }
     try {
+      this.setPlayerStatus(who, method);
       const resp = await this.players[who].io.rpc({ [method]: request });
       if (!(method in resp)) {
         throw new GiTcgIoError(
@@ -438,6 +473,8 @@ export class Game {
       } else {
         throw new GiTcgIoError(who, String(e));
       }
+    } finally {
+      this.setPlayerStatus(who, null);
     }
   }
 

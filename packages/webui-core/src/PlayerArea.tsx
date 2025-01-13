@@ -19,7 +19,7 @@ import type {
   PbPlayerState,
   PbEntityState,
 } from "@gi-tcg/typings";
-import { For, Match, Switch } from "solid-js";
+import { For, Match, Show, Switch } from "solid-js";
 
 import { Summon, Support, Status } from "./Entity";
 import { CharacterArea } from "./CharacterArea";
@@ -30,6 +30,7 @@ export interface PlayerAreaProps {
   data: PbPlayerState;
   who: 0 | 1;
   opp: boolean;
+  playerStatus?: number;
 }
 
 export function PlayerArea(props: PlayerAreaProps) {
@@ -64,6 +65,13 @@ export function PlayerArea(props: PlayerAreaProps) {
           hasUsagePerRound: false,
         }),
       );
+
+  const statusText = (who: string) => {
+    if (props.data.declaredEnd) {
+      return `${who}已宣布结束`;
+    }
+    return props.playerStatus ? `${who}正在行动中` : "";
+  };
   return (
     <div class="w-full flex flex-row">
       <div class="bg-yellow-800 text-white flex flex-col justify-center items-center w-10 flex-shrink-0 gap-2">
@@ -124,11 +132,20 @@ export function PlayerArea(props: PlayerAreaProps) {
           </div>
         </div>
         <div
-          class={`relative h-30 flex flex-row mx-4 hands-area ${
-            props.opp ? "justify-end" : "justify-start"
+          class={`relative h-30 flex justify-between mx-4 ${
+            props.opp ? "flex-row-reverse" : "flex-row"
           }`}
         >
-          <For each={props.data.handCard}>{(card) => <Card data={card} />}</For>
+          <div class="hands-area flex flex-row">
+            <For each={props.data.handCard}>
+              {(card) => <Card data={card} />}
+            </For>
+          </div>
+          <div class="text-blue-500">
+            <Show when={props.opp}>
+              <p>{statusText('对方')}</p>
+            </Show>
+          </div>
         </div>
       </div>
     </div>

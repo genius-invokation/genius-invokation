@@ -55,7 +55,7 @@ import type {
 import { PlayerArea } from "./PlayerArea";
 import { DiceSelect, DiceSelectProps } from "./DiceSelect";
 import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import { groupBy, createWaitNotify } from "./utils";
 import { RerollView } from "./RerollView";
 import { Dice } from "./Dice";
@@ -693,7 +693,7 @@ export function createPlayer(
           </div>
         </Show>
         <button
-          class="absolute left-2 top-2 z-15 btn btn-red-500"
+          class="absolute right-10 top-2 z-15 btn btn-red-500"
           onClick={() => setGiveUp(true)}
           disabled={giveUp()}
         >
@@ -728,6 +728,7 @@ function Chessboard(props: ChessboardProps) {
 
   const [allDamages, setAllDamages] = createSignal<DamageEM[]>([]);
   const [focusing, setFocusing] = createSignal<number | null>(null);
+  const [playerStatus, setPlayerStatus] = createStore<[number, number]>([0, 0]);
   const previewData = () => local.previewData ?? [];
 
   createEffect(() => {
@@ -739,6 +740,14 @@ function Chessboard(props: ChessboardProps) {
       }
       if (event.triggered) {
         currentFocusing = event.triggered.entityId;
+      }
+      if (event.playerStatusChange) {
+        const { who, status } = event.playerStatusChange;
+        setPlayerStatus(
+          produce((st) => {
+            st[who] = status;
+          }),
+        );
       }
     }
     setAllDamages(currentDamages);
@@ -769,11 +778,13 @@ function Chessboard(props: ChessboardProps) {
             who={(1 - local.who) as 0 | 1}
             data={local.state.player[1 - local.who]}
             opp={true}
+            playerStatus={playerStatus[1 - local.who]}
           />
           <PlayerArea
             who={local.who}
             data={local.state.player[local.who]}
             opp={false}
+            playerStatus={playerStatus[local.who]}
           />
         </div>
         <div class="absolute left-0 top-[50%] translate-y-[-50%] z-10">
