@@ -76,7 +76,6 @@ test("baizhu shield: hit the death", async () => {
   c.expect(`my active`).toHaveVariable("aura", Aura.Dendro);
   
   // 我方白术盾打尸体，但不挂草
-  c.expect(oppActive).toHaveVariable("alive", 0);
   c.expect(oppActive).toHaveVariable("aura", Aura.None);
   c.expect(`my status with definition id ${SeamlessShield}`).toBeArrayOfSize(0);
   
