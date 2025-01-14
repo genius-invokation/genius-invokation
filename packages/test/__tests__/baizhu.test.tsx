@@ -16,6 +16,7 @@
 import { Character, CombatStatus, ref, setup, State } from "#test";
 import { Baizhu, HolisticRevivification, SeamlessShield } from "@gi-tcg/data/internal/characters/dendro/baizhu";
 import { Keqing, YunlaiSwordsmanship } from "@gi-tcg/data/internal/characters/electro/keqing";
+import { Aura } from "@gi-tcg/typings";
 import { test } from "bun:test";
 
 test("baizhu shield: onDispose", async () => {
@@ -52,3 +53,34 @@ test("baizhu shield: onEnter override", async () => {
   // 白术盾反
   c.expect(oppActive).toHaveVariable("health", 9);
 });
+
+test("baizhu shield: hit the death", async () => {
+  const oppActive = ref();
+  const oppNext = ref();
+  const c = setup(
+    <State>
+      <Character opp active def={Baizhu} ref={oppActive} health={1} aura={Aura.Hydro} />
+      <Character opp ref={oppNext} health={10} />
+      <CombatStatus opp def={SeamlessShield} />
+      <Character my active def={Keqing} health={10} />
+      <Character my def={Baizhu} />
+      <CombatStatus my def={SeamlessShield} />
+    </State>,
+  );
+  await c.me.skill(YunlaiSwordsmanship);
+  // 被刻晴普攻打死
+  c.expect(oppActive).toHaveVariable("alive", 0);
+
+  // 白术盾反，1点草伤；但被我方白术盾挡住
+  c.expect(`my active`).toHaveVariable("health", 10);
+  c.expect(`my active`).toHaveVariable("aura", Aura.Dendro);
+  
+  // 我方白术盾打尸体，但不挂草
+  c.expect(oppActive).toHaveVariable("alive", 0);
+  c.expect(oppActive).toHaveVariable("aura", Aura.None);
+  c.expect(`my status with definition id ${SeamlessShield}`).toBeArrayOfSize(0);
+  
+  // 对方选人后没受伤
+  await c.opp.chooseActive(oppNext);
+  c.expect(oppNext).toHaveVariable("health", 10);
+})

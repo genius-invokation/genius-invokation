@@ -18,6 +18,7 @@ import {
   DamageOrHealEventArg,
   defineSkillInfo,
   DisposeEventArg,
+  Event,
   EventAndRequest,
   EventArg,
   HealInfo,
@@ -63,12 +64,18 @@ export class SkillExecutor {
     this.mutator.mutate(mutation);
   }
 
-  async finalizeSkill(
+  /**
+   * 执行并应用技能效果，返回执行过程中触发的事件列表
+   * @param skillInfo
+   * @param arg
+   * @returns
+   */
+  private executeSkill(
     skillInfo: SkillInfo,
     arg: GeneralSkillArg,
-  ): Promise<void> {
+  ): EventAndRequest[] {
     if (this.state.phase === "gameEnd") {
-      return;
+      return [];
     }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
@@ -80,7 +87,6 @@ export class SkillExecutor {
       DetailLogType.Other,
       `skill caller: ${stringifyState(skillInfo.caller)}`,
     );
-    const callerArea = getEntityArea(this.state, skillInfo.caller.id);
     const skillDef = skillInfo.definition;
 
     const preExposedMutations: ExposedMutation[] = [];
@@ -108,71 +114,87 @@ export class SkillExecutor {
       arg as any,
     );
     this.mutator.resetState(newState);
+    return eventList;
+  }
 
+  async finalizeSkill(
+    skillInfo: SkillInfo,
+    arg: GeneralSkillArg,
+  ): Promise<void> {
+    if (this.state.phase === "gameEnd") {
+      return;
+    }
+    const eventList = this.executeSkill(skillInfo, arg);
     await this.mutator.notifyAndPause();
 
-    const damageEvents = eventList.filter((e) => e[0] === "onDamageOrHeal");
-    const nonDamageEvents = eventList.filter((e) => e[0] !== "onDamageOrHeal");
-
-    const damageEventArgs: DamageOrHealEventArg<DamageInfo | HealInfo>[] = [];
+    const nonDamageEvents: EventAndRequest[] = [];
+    const damageEventArgs: DamageOrHealEventArg<DamageInfo>[] = [];
     const zeroHealthEventArgs: ZeroHealthEventArg[] = [];
+
     const failedPlayers = new Set<0 | 1>();
-    for (const [, arg] of damageEvents) {
-      if (arg.damageInfo.causeDefeated) {
-        // Wrap original EventArg to ZeroHealthEventArg
-        const zeroHealthEventArg = new ZeroHealthEventArg(
-          arg.onTimeState,
-          arg.damageInfo,
-        );
-        if (checkImmune(this.state, zeroHealthEventArg)) {
-          zeroHealthEventArgs.push(zeroHealthEventArg);
-        } else {
-          const { id } = arg.target;
-          const ch = getEntityById(this.state, id) as CharacterState;
-          const { who } = getEntityArea(this.state, id);
-          if (ch.variables.alive) {
-            this.mutator.log(
-              DetailLogType.Primitive,
-              `${stringifyState(ch)} is defeated (and no immune available)`,
-            );
-            this.mutate({
-              type: "modifyEntityVar",
-              state: ch,
-              varName: "alive",
-              value: 0,
-            });
-            this.mutate({
-              type: "modifyEntityVar",
-              state: ch,
-              varName: "energy",
-              value: 0,
-            });
-            this.mutate({
-              type: "modifyEntityVar",
-              state: ch,
-              varName: "aura",
-              value: Aura.None,
-            });
-            this.mutate({
-              type: "setPlayerFlag",
-              who,
-              flagName: "hasDefeated",
-              value: true,
-            });
-            const player = this.state.players[who];
-            const aliveCharacters = player.characters.filter(
-              (ch) => ch.variables.alive,
-            );
-            if (aliveCharacters.length === 0) {
-              failedPlayers.add(who);
+
+    for (const event of eventList) {
+      const [name, arg] = event;
+      if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
+        if (arg.damageInfo.causeDefeated) {
+          // Wrap original EventArg to ZeroHealthEventArg
+          const zeroHealthEventArg = new ZeroHealthEventArg(
+            arg.onTimeState,
+            arg.damageInfo,
+          );
+          if (checkImmune(this.state, zeroHealthEventArg)) {
+            zeroHealthEventArgs.push(zeroHealthEventArg);
+          } else {
+            const { id } = arg.target;
+            const ch = getEntityById(this.state, id) as CharacterState;
+            const { who } = getEntityArea(this.state, id);
+            if (ch.variables.alive) {
+              this.mutator.log(
+                DetailLogType.Primitive,
+                `${stringifyState(ch)} is defeated (and no immune available)`,
+              );
+              this.mutate({
+                type: "modifyEntityVar",
+                state: ch,
+                varName: "alive",
+                value: 0,
+              });
+              this.mutate({
+                type: "modifyEntityVar",
+                state: ch,
+                varName: "energy",
+                value: 0,
+              });
+              this.mutate({
+                type: "modifyEntityVar",
+                state: ch,
+                varName: "aura",
+                value: Aura.None,
+              });
+              this.mutate({
+                type: "setPlayerFlag",
+                who,
+                flagName: "hasDefeated",
+                value: true,
+              });
+              const player = this.state.players[who];
+              const aliveCharacters = player.characters.filter(
+                (ch) => ch.variables.alive,
+              );
+              if (aliveCharacters.length === 0) {
+                failedPlayers.add(who);
+              }
             }
           }
+          damageEventArgs.push(zeroHealthEventArg);
+        } else {
+          damageEventArgs.push(arg);
         }
-        damageEventArgs.push(zeroHealthEventArg);
       } else {
-        damageEventArgs.push(arg);
+        nonDamageEvents.push(event);
       }
     }
+
     if (failedPlayers.size === 2) {
       this.mutator.log(
         DetailLogType.Other,
@@ -212,7 +234,9 @@ export class SkillExecutor {
     }
 
     for (const arg of zeroHealthEventArgs) {
-      await this.handleEvent(["modifyZeroHealth", arg]);
+      nonDamageEvents.push(
+        ...this.handleEventShallow(["modifyZeroHealth", arg]),
+      );
       if (arg._immuneInfo !== null) {
         this.mutator.log(
           DetailLogType.Primitive,
@@ -258,13 +282,15 @@ export class SkillExecutor {
           arg.onTimeState,
           healInfo,
         );
-        await this.handleEvent(["onDamageOrHeal", healEventArg]);
+        nonDamageEvents.push(
+          ...this.handleEventShallow(["onDamageOrHeal", healEventArg]),
+        );
       }
     }
 
     if (
       skillInfo.caller.definition.type === "character" &&
-      skillDef.triggerOn === "initiative"
+      skillInfo.definition.triggerOn === "initiative"
     ) {
       // 增加此回合技能计数
       const ch = getEntityById(
@@ -279,7 +305,7 @@ export class SkillExecutor {
         skillId: skillInfo.definition.id,
       });
       // 增加充能
-      if (skillDef.initiativeSkillConfig.gainEnergy) {
+      if (skillInfo.definition.initiativeSkillConfig.gainEnergy) {
         if (ch.variables.alive) {
           this.mutator.log(
             DetailLogType.Other,
@@ -373,8 +399,59 @@ export class SkillExecutor {
     }
   }
 
-  async handleEvent(...actions: EventAndRequest[]) {
-    for (const [name, arg] of actions) {
+  /**
+   * 将事件广播到当前棋盘，查找响应该事件的全部技能定义
+   * @param event
+   * @returns 响应该事件的技能定义及其 caller 的列表
+   */
+  private broadcastEvent(event: Event) {
+    const [name, arg] = event;
+    const callerAndSkills: CallerAndTriggeredSkill[] = [];
+    // 对于弃置事件，额外地使被弃置的实体本身也能响应
+    if (arg instanceof DisposeEventArg) {
+      const caller = arg.entity;
+      const onDisposeSkills = caller.definition.skills.filter(
+        (sk): sk is TriggeredSkillDefinition => sk.triggerOn === name,
+      );
+      callerAndSkills.push(
+        ...onDisposeSkills.map((skill) => ({ caller, skill })),
+      );
+    }
+    // 收集其它待响应技能
+    callerAndSkills.push(...allSkills(this.state, name));
+    return callerAndSkills;
+  }
+
+  /**
+   * 执行监听 `event` 事件的技能。此过程并不结算这些技能：技能中引发的级联事件将作为结果返回。
+   * @param event
+   * @returns
+   */
+  private handleEventShallow(event: Event) {
+    const [name, arg] = event;
+    const callerAndSkills = this.broadcastEvent(event);
+    const emittedEvents: EventAndRequest[] = [];
+    for (const { caller, skill } of callerAndSkills) {
+      const skillInfo = defineSkillInfo({
+        caller,
+        definition: skill,
+      });
+      if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+        continue;
+      }
+      arg._currentSkillInfo = skillInfo;
+      emittedEvents.push(...this.executeSkill(skillInfo, arg));
+    }
+    return emittedEvents;
+  }
+
+  /**
+   * 处理事件 `events`。监听它们的技能将会被递归结算。
+   * @param events
+   */
+  async handleEvent(...events: EventAndRequest[]) {
+    for (const event of events) {
+      const [name, arg] = event;
       if (name === "requestReroll") {
         using l = this.mutator.subLog(
           DetailLogType.Event,
@@ -477,21 +554,7 @@ export class SkillExecutor {
           DetailLogType.Event,
           `Handling event ${name} (${arg.toString()}):`,
         );
-
-        const callerAndSkills: CallerAndTriggeredSkill[] = [];
-        // 对于弃置事件，额外地使被弃置的实体本身也能响应
-        if (arg instanceof DisposeEventArg) {
-          const caller = arg.entity;
-          const onDisposeSkills = caller.definition.skills.filter(
-            (sk): sk is TriggeredSkillDefinition => sk.triggerOn === name,
-          );
-          callerAndSkills.push(
-            ...onDisposeSkills.map((skill) => ({ caller, skill })),
-          );
-        }
-        // 收集其它待响应技能
-        callerAndSkills.push(...allSkills(this.state, name));
-
+        const callerAndSkills = this.broadcastEvent(event);
         for (const { caller, skill } of callerAndSkills) {
           const skillInfo = defineSkillInfo({
             caller,

@@ -688,10 +688,10 @@ export class DamageOrHealEventArg<
   get damageInfo() {
     return this._damageInfo;
   }
-  isDamageTypeDamage() {
+  isDamageTypeDamage(): this is DamageOrHealEventArg<DamageInfo> {
     return !this.isDamageTypeHeal();
   }
-  isDamageTypeHeal() {
+  isDamageTypeHeal(): this is DamageOrHealEventArg<HealInfo> {
     return this._damageInfo.type === DamageType.Heal;
   }
 
@@ -1157,8 +1157,8 @@ export const EVENT_MAP = {
   modifyDamage1: ModifyDamage1EventArg, // 加
   modifyDamage2: ModifyDamage2EventArg, // 乘除
   modifyDamage3: ModifyDamage3EventArg, // 减
-  modifyHeal0: ModifyHeal0EventArg,     // 取消（克洛琳德）
-  modifyHeal1: ModifyHeal1EventArg,     // 减（生命之契）
+  modifyHeal0: ModifyHeal0EventArg, // 取消（克洛琳德）
+  modifyHeal1: ModifyHeal1EventArg, // 减（生命之契）
   onDamageOrHeal: DamageOrHealEventArg,
 
   onEnter: EnterEventArg,
@@ -1278,6 +1278,10 @@ export function constructEventAndRequestArg<E extends EventAndRequestNames>(
 export type EventAndRequest = {
   [E in EventAndRequestNames]: [E, EventAndRequestArgOf<E>];
 }[EventAndRequestNames];
+
+export type Event = {
+  [E in EventNames]: [E, EventArgOf<E>];
+}[EventNames];
 
 export type SkillActionFilter<Arg> = (
   state: GameState,

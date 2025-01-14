@@ -108,8 +108,8 @@ export const RingOfBurstingGrenades = skill(13133)
   .type("burst")
   .costPyro(3)
   .costEnergy(2)
-  .damage(DamageType.Pyro, 2)
   .combatStatus(SecondaryExplosiveShells, "opp")
+  .damage(DamageType.Pyro, 2)
   .done();
 
 /**

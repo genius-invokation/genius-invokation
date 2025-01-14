@@ -140,6 +140,8 @@ export const MightOfDelusion = skill(21024)
   .type("passive")
   .on("battleBegin")
   .characterStatus(IcesealedCrimsonWitchOfEmbers)
+  .on("revive") // 女士在转变形态前被击倒，复活后会重新附着复活甲
+  .characterStatus(IcesealedCrimsonWitchOfEmbers)
   .done();
 
 /**
