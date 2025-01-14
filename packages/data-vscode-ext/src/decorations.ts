@@ -28,7 +28,7 @@ enum ChainMethodCategory {
   Shorthand, // conflictWith, prepare, ...
   TriggerOnShorthand, // endPhaseDamage
   Modifier, // addTarget, filter, listenToXxx
-  ControlFlow, // if, do, else
+  Control, // if, do, else
   Action,
   EventAction,
   Done,
@@ -44,7 +44,7 @@ const CHAIN_METHOD_TOKEN_COLOR_MAP: Record<ChainMethodCategory, string> = {
   [ChainMethodCategory.TriggerOn]: "storage.type",
   [ChainMethodCategory.TriggerOnShorthand]: "storage.type",
   [ChainMethodCategory.Modifier]: "storage.modifier",
-  [ChainMethodCategory.ControlFlow]: "keyword.control",
+  [ChainMethodCategory.Control]: "keyword.control",
   [ChainMethodCategory.Action]: "support.function",
   [ChainMethodCategory.EventAction]: "support.function",
   [ChainMethodCategory.Done]: "keyword.control",
@@ -314,8 +314,10 @@ export const updateBuilderChainDecorations = (
         ].includes(text)
       ) {
         addChainMethodRange(ChainMethodCategory.Property, idStart, idEnd);
-      } else if (["if", "else", "do"].includes(text)) {
-        addChainMethodRange(ChainMethodCategory.ControlFlow, idStart, idEnd);
+      } else if (
+        ["if", "else", "do", "defineSnippet", "callSnippet"].includes(text)
+      ) {
+        addChainMethodRange(ChainMethodCategory.Control, idStart, idEnd);
       } else if (
         [
           "support",

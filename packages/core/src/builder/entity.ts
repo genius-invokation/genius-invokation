@@ -555,7 +555,10 @@ export class EntityBuilder<
     FromCard,
     Snippets & { [DEFAULT_SNIPPET_NAME]: CustomEventArgT }
   >;
-  defineSnippet<SnippetName extends string, CustomEventArgT = never>(
+  defineSnippet<
+    SnippetName extends string,
+    CustomEventArgT = DefaultCustomEventArg,
+  >(
     name: SnippetName,
     snippet: (
       c: TypedSkillContext<{
