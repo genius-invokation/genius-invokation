@@ -102,6 +102,58 @@ const Timmie = card(322007)
 
 > `.usage` 默认创建名为 `usage` 的变量；`.shield` 默认创建名为 `shield` 的变量。
 
+## 小片段（Snippets）
+
+诸如白术护盾、基尼奇状态等实体，经常在多个事件下执行同一套（比较复杂的）操作，为此提供了 Snippets 写法。在实体定义中用 `.defineSnippet` 引入一段小程序，可选地，起一个名字（默认为 `"default"`）：
+
+```ts
+const MyStatus = status(xxx)
+  .variable("a", 3)
+  .defineSnippet((c) => {
+    // 一段任意的可放在 .do 中的脚本域代码
+    c.damage(DamageType.Piercing, c.getVariable("a"));
+    c.setVariable("a", 0);
+  })
+  // 可以给 snippet 起一个名字
+  .defineSnippet("default", (c) => {
+    // 一段任意的可放在 .do 中的脚本域代码
+    // [...]
+  })
+  // [...]
+```
+
+然后在不同的 `.on` 下面使用 `.callSnippet` 调用：
+
+```ts
+const MyStatus = status(xxx)
+  .defineSnippet(...)               // 定义小片段 default（缺省片段名）
+  .defineSnippet("mySnippet", ...)  // 定义小片段 mySnippet
+  .on("actionPhase")
+  .callSnippet()                    // 调用小片段 default
+  .on("endPhase")
+  .callSnippet()                    // 调用小片段 default（缺省片段名）
+  .callSnippet("mySnippet")         // 调用小片段 mySnippet
+  .done();
+```
+
+### 小片段的入参
+
+若定义小片段时显示指定了第二个参数 `e` 的类型，则 `callSnippet` 需要通过一个额外的 getter 函数提供这个 `e` 的值。
+
+```ts
+const MyStatus = status(xxx)
+  .defineSnippet("default", (c, e: number) => { // <- e 具有 number 类型
+    if (e === 1) console.log("called on actionPhase");
+    if (e === 2) console.log("called on endPhase");
+  })
+  .on("actionPhase")
+  .callSnippet("default", () => 1) // 需要提供一个 () => number 类型的参数，
+                                   // 其返回值传递给小片段的第二形参
+  .on("endPhase")
+  .callSnippet(() => 2)            // 小片段 default 的名字仍然可以省略
+  .done();
+```
+
 ## 护盾
 
 使用 `.shield` 表明该实体是一个护盾状态，这会添加一个 `.variable("shield", ...)`，并自动添加合适的 `onDamage` 处理函数根据盾量免伤或弃置。
