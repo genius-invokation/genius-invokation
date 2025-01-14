@@ -36,14 +36,12 @@ test("abundant phlogiston: mualani", async () => {
   );
   await c.me.skill(SurfsharkWavebreaker);
   await c.opp.switch(secondOpp);
-  await c.stepToNextAction();
   c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable(
     "nightsoul",
     1,
   );
   await c.me.card(AbundantPhlogiston);
   await c.me.skill(CoolingTreatment);
-  await c.stepToNextAction();
   await c.opp.switch(firstOpp);
   c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable(
     "nightsoul",
@@ -51,6 +49,5 @@ test("abundant phlogiston: mualani", async () => {
   );
   await c.me.end();
   await c.opp.switch(secondOpp);
-  await c.stepToNextAction();
   expect(c.query(`my status with tag (nightsoulsBlessing)`)).toBeArrayOfSize(0);
 });

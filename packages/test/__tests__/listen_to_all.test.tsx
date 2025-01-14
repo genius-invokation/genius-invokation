@@ -29,7 +29,6 @@ test("listenToAll works (amethyst crown)", async () => {
     </State>,
   );
   await c.me.skill(Akara);
-  await c.stepToNextAction();
   c.expect(artifact).toHaveVariable("crystal", 1);
 });
 
@@ -44,6 +43,5 @@ test("listenToPlayer works (ornate kabuto)", async () => {
     </State>,
   );
   await c.me.skill(StarwardSword);
-  await c.stepToNextAction();
   c.expect(master).toHaveVariable("energy", 1);
 });

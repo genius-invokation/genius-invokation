@@ -41,6 +41,61 @@ import {
 import { Ref } from "./setup";
 import { expect, Matchers } from "bun:test";
 
+class IoResultPromise extends Promise<TestController> {
+  // #controller!: TestController;
+  // #ioHandler!: (controller: TestController) => void;
+
+  #manual = false;
+
+  #resolve: (controller: TestController) => void;
+  #reject: (reason: any) => void;
+
+  // The below magic #1 and #2 is required for extending Promise.
+  // That is, the subclass of Promise must have an executor function in its constructor, and use it in the `super`'s executor.
+  private constructor(
+    executor = void 0, // magic #1
+  ) {
+    let resolve, reject;
+    super(
+      executor ?? // magic #2
+        ((res, rej) => {
+          resolve = res;
+          reject = rej;
+        }),
+    );
+    this.#resolve = resolve!;
+    this.#reject = reject!;
+  }
+
+  static create(
+    controller: TestController,
+    ioHandler: (controller: TestController) => void,
+  ) {
+    const result = new IoResultPromise();
+    // result.#controller = controller;
+    // result.#ioHandler = ioHandler;
+    controller
+      .stepToNextAction()
+      .then(ioHandler)
+      .then(() => {
+        if (result.#manual) {
+          return controller;
+        } else {
+          return controller.stepToNextAction();
+        }
+      })
+      .then(result.#resolve)
+      .catch(result.#reject);
+    return result;
+  }
+
+  /** Do not automatically step to next action on this await */
+  manual() {
+    this.#manual = true;
+    return this;
+  }
+}
+
 class IoController {
   constructor(
     private controller: TestController,
@@ -68,123 +123,132 @@ class IoController {
     return Array.from({ length }, () => DiceType.Omni);
   }
 
-  async skill(id: SkillHandle, ...targets: Ref[]) {
-    await this.controller.stepToNextAction();
-    const actions = this.listAvailableActions();
-    const chosenActionIndex = actions.findIndex((a) => {
-      if (!a.useSkill) return false;
-      if (a.useSkill.skillId !== id) return false;
-      if (a.useSkill.targetIds.length !== targets.length) return false;
-      return a.useSkill.targetIds.every((t, i) => t === targets[i].id);
-    });
-    if (chosenActionIndex === -1) {
-      throw new Error(`You cannot use skill ${id} (with given targets)`);
-    }
-    const action = actions[chosenActionIndex];
-    const usedDice = this.generateCost(
-      action.requiredCost.reduce(
-        (a, { type, count }) => a + (type === DiceType.Energy ? 0 : count),
-        0,
-      ),
-    );
-    const response: ActionResponse = { chosenActionIndex, usedDice };
-    this.awaitingRpc!.resolve({ action: response });
-  }
-  async card(targetOrId: CardHandle | Ref, ...targets: Ref[]) {
-    await this.controller.stepToNextAction();
-    const actions = this.listAvailableActions();
-    let cardId: number;
-    if (targetOrId instanceof Ref) {
-      cardId = targetOrId.id;
-    } else {
-      const card = this.findHand(targetOrId);
-      if (!card) {
-        throw new Error(`Cannot find card ${targetOrId} in your hands`);
+  skill(id: SkillHandle, ...targets: Ref[]): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const actions = this.listAvailableActions();
+      const chosenActionIndex = actions.findIndex((a) => {
+        if (!a.useSkill) return false;
+        if (a.useSkill.skillId !== id) return false;
+        if (a.useSkill.targetIds.length !== targets.length) return false;
+        return a.useSkill.targetIds.every((t, i) => t === targets[i].id);
+      });
+      if (chosenActionIndex === -1) {
+        throw new Error(`You cannot use skill ${id} (with given targets)`);
       }
-      cardId = card.id;
-    }
-    const chosenActionIndex = actions.findIndex((a) => {
-      if (!a.playCard) return false;
-      if (a.playCard.cardId !== cardId) return false;
-      if (a.playCard.targetIds.length !== targets.length) return false;
-      return a.playCard.targetIds.every((t, i) => t === targets[i].id);
+      const action = actions[chosenActionIndex];
+      const usedDice = this.generateCost(
+        action.requiredCost.reduce(
+          (a, { type, count }) => a + (type === DiceType.Energy ? 0 : count),
+          0,
+        ),
+      );
+      const response: ActionResponse = { chosenActionIndex, usedDice };
+      this.awaitingRpc!.resolve({ action: response });
     });
-    if (chosenActionIndex === -1) {
-      throw new Error(`You cannot play card ${cardId} (with given targets)`);
-    }
-    const action = actions[chosenActionIndex];
-    const usedDice = this.generateCost(
-      action.requiredCost.reduce(
-        (a, { type, count }) => (a + type === DiceType.Energy ? 0 : count),
-        0,
-      ),
-    );
-    const response: ActionResponse = { chosenActionIndex, usedDice };
-    this.awaitingRpc!.resolve({ action: response });
   }
-  async tune(targetOrId: CardHandle | Ref) {
-    await this.controller.stepToNextAction();
-    const actions = this.listAvailableActions();
-    let cardId: number;
-    if (targetOrId instanceof Ref) {
-      cardId = targetOrId.id;
-    } else {
-      const card = this.findHand(targetOrId);
-      if (!card) {
-        throw new Error(`Cannot find card ${targetOrId} in your hands`);
+
+  card(targetOrId: CardHandle | Ref, ...targets: Ref[]): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const actions = this.listAvailableActions();
+      let cardId: number;
+      if (targetOrId instanceof Ref) {
+        cardId = targetOrId.id;
+      } else {
+        const card = this.findHand(targetOrId);
+        if (!card) {
+          throw new Error(`Cannot find card ${targetOrId} in your hands`);
+        }
+        cardId = card.id;
       }
-      cardId = card.id;
-    }
-    const chosenActionIndex = actions.findIndex((a) => {
-      if (!a.elementalTuning) return false;
-      return a.elementalTuning.removedCardId === cardId;
-    });
-    if (chosenActionIndex === -1) {
-      throw new Error(`You cannot tune card ${cardId}`);
-    }
-    const usedDice = this.generateCost(1);
-    const response: ActionResponse = { chosenActionIndex, usedDice };
-    this.awaitingRpc!.resolve({ action: response });
-  }
-  async switch(targetOrId: CharacterHandle | Ref) {
-    await this.controller.stepToNextAction();
-    const actions = this.listAvailableActions();
-    let characterId: number;
-    if (targetOrId instanceof Ref) {
-      characterId = targetOrId.id;
-    } else {
-      const character = this.findCharacter(targetOrId);
-      if (!character) {
-        throw new Error(`Cannot find character ${targetOrId}`);
+      const chosenActionIndex = actions.findIndex((a) => {
+        if (!a.playCard) return false;
+        if (a.playCard.cardId !== cardId) return false;
+        if (a.playCard.targetIds.length !== targets.length) return false;
+        return a.playCard.targetIds.every((t, i) => t === targets[i].id);
+      });
+      if (chosenActionIndex === -1) {
+        throw new Error(`You cannot play card ${cardId} (with given targets)`);
       }
-      characterId = character.id;
-    }
-    const chosenActionIndex = actions.findIndex((a) => {
-      if (!a.switchActive) return false;
-      return a.switchActive.characterId === characterId;
+      const action = actions[chosenActionIndex];
+      const usedDice = this.generateCost(
+        action.requiredCost.reduce(
+          (a, { type, count }) => (a + type === DiceType.Energy ? 0 : count),
+          0,
+        ),
+      );
+      const response: ActionResponse = { chosenActionIndex, usedDice };
+      this.awaitingRpc!.resolve({ action: response });
     });
-    if (chosenActionIndex === -1) {
-      throw new Error(`You cannot switch to character ${characterId}`);
-    }
-    const action = actions[chosenActionIndex];
-    const usedDice = this.generateCost(
-      action.requiredCost.reduce(
-        (a, { type, count }) => (a + type === DiceType.Energy ? 0 : count),
-        0,
-      ),
-    );
-    const response: ActionResponse = { chosenActionIndex, usedDice };
-    this.awaitingRpc!.resolve({ action: response });
   }
-  async end() {
-    await this.controller.stepToNextAction();
-    const actions = this.listAvailableActions();
-    const chosenActionIndex = actions.findIndex((a) => a.declareEnd);
-    if (chosenActionIndex === -1) {
-      throw new Error("You cannot declare end (wtf?)");
-    }
-    const response: ActionResponse = { chosenActionIndex, usedDice: [] };
-    this.awaitingRpc!.resolve({ action: response });
+
+  tune(targetOrId: CardHandle | Ref): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const actions = this.listAvailableActions();
+      let cardId: number;
+      if (targetOrId instanceof Ref) {
+        cardId = targetOrId.id;
+      } else {
+        const card = this.findHand(targetOrId);
+        if (!card) {
+          throw new Error(`Cannot find card ${targetOrId} in your hands`);
+        }
+        cardId = card.id;
+      }
+      const chosenActionIndex = actions.findIndex((a) => {
+        if (!a.elementalTuning) return false;
+        return a.elementalTuning.removedCardId === cardId;
+      });
+      if (chosenActionIndex === -1) {
+        throw new Error(`You cannot tune card ${cardId}`);
+      }
+      const usedDice = this.generateCost(1);
+      const response: ActionResponse = { chosenActionIndex, usedDice };
+      this.awaitingRpc!.resolve({ action: response });
+    });
+  }
+
+  switch(targetOrId: CharacterHandle | Ref): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const actions = this.listAvailableActions();
+      let characterId: number;
+      if (targetOrId instanceof Ref) {
+        characterId = targetOrId.id;
+      } else {
+        const character = this.findCharacter(targetOrId);
+        if (!character) {
+          throw new Error(`Cannot find character ${targetOrId}`);
+        }
+        characterId = character.id;
+      }
+      const chosenActionIndex = actions.findIndex((a) => {
+        if (!a.switchActive) return false;
+        return a.switchActive.characterId === characterId;
+      });
+      if (chosenActionIndex === -1) {
+        throw new Error(`You cannot switch to character ${characterId}`);
+      }
+      const action = actions[chosenActionIndex];
+      const usedDice = this.generateCost(
+        action.requiredCost.reduce(
+          (a, { type, count }) => (a + type === DiceType.Energy ? 0 : count),
+          0,
+        ),
+      );
+      const response: ActionResponse = { chosenActionIndex, usedDice };
+      this.awaitingRpc!.resolve({ action: response });
+    });
+  }
+
+  end(): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const actions = this.listAvailableActions();
+      const chosenActionIndex = actions.findIndex((a) => a.declareEnd);
+      if (chosenActionIndex === -1) {
+        throw new Error("You cannot declare end (wtf?)");
+      }
+      const response: ActionResponse = { chosenActionIndex, usedDice: [] };
+      this.awaitingRpc!.resolve({ action: response });
+    });
   }
 
   findCharacter(definitionId: number) {
@@ -196,75 +260,80 @@ class IoController {
     return player.hands.find((c) => c.definition.id === definitionId);
   }
 
-  async selectCard(id: number) {
-    await this.controller.stepToNextAction();
-    const rpc = this.awaitingRpc;
-    if (!rpc || rpc.method !== "selectCard") {
-      throw new Error("Not awaiting selectCard");
-    }
-    if (rpc.who !== this.who) {
-      throw new Error("Not your turn");
-    }
-    const candidates = rpc.request.selectCard!.candidateDefinitionIds;
-    if (!candidates.includes(id)) {
-      throw new Error(`Cannot select card ${id}`);
-    }
-    const response: SelectCardResponse = { selectedDefinitionId: id };
-    rpc.resolve({ selectCard: response });
-  }
-  async chooseActive(targetOrId: CharacterHandle | Ref) {
-    await this.controller.stepToNextAction();
-    const rpc = this.awaitingRpc;
-    if (!rpc || rpc.method !== "chooseActive") {
-      throw new Error("Not awaiting chooseActive");
-    }
-    if (rpc.who !== this.who) {
-      throw new Error("Not your turn");
-    }
-    let activeCharacterId: number;
-    if (targetOrId instanceof Ref) {
-      activeCharacterId = targetOrId.id;
-    } else {
-      const character = this.findCharacter(targetOrId);
-      if (!character) {
-        throw new Error(`Cannot find character ${targetOrId}`);
+  selectCard(id: number): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const rpc = this.awaitingRpc;
+      if (!rpc || rpc.method !== "selectCard") {
+        throw new Error("Not awaiting selectCard");
       }
-      activeCharacterId = character.id;
-    }
-    const candidates = rpc.request.chooseActive!.candidateIds;
-    if (!candidates.includes(activeCharacterId)) {
-      throw new Error(`Cannot choose character ${activeCharacterId}`);
-    }
-    const response: ChooseActiveResponse = { activeCharacterId };
-    rpc.resolve({ chooseActive: response });
-  }
-  async switchHands(removed: (CardHandle | Ref)[]) {
-    await this.controller.stepToNextAction();
-    const rpc = this.awaitingRpc;
-    if (!rpc || rpc.method !== "switchHands") {
-      throw new Error("Not awaiting switchHands");
-    }
-    if (rpc.who !== this.who) {
-      throw new Error("Not your turn");
-    }
-    let removedHandIds: number[] = [];
-    // 先移除指定 id 的（Ref），再移除通过定义指定的
-    for (const card of removed) {
-      if (card instanceof Ref) {
-        removedHandIds.push(card.id);
+      if (rpc.who !== this.who) {
+        throw new Error("Not your turn");
       }
-    }
-    for (const card of removed) {
-      if (!(card instanceof Ref)) {
-        const found = this.findHand(card);
-        if (!found) {
-          throw new Error(`Cannot find card ${card} in your hands`);
+      const candidates = rpc.request.selectCard!.candidateDefinitionIds;
+      if (!candidates.includes(id)) {
+        throw new Error(`Cannot select card ${id}`);
+      }
+      const response: SelectCardResponse = { selectedDefinitionId: id };
+      rpc.resolve({ selectCard: response });
+    });
+  }
+
+  chooseActive(targetOrId: CharacterHandle | Ref): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const rpc = this.awaitingRpc;
+      if (!rpc || rpc.method !== "chooseActive") {
+        throw new Error("Not awaiting chooseActive");
+      }
+      if (rpc.who !== this.who) {
+        throw new Error("Not your turn");
+      }
+      let activeCharacterId: number;
+      if (targetOrId instanceof Ref) {
+        activeCharacterId = targetOrId.id;
+      } else {
+        const character = this.findCharacter(targetOrId);
+        if (!character) {
+          throw new Error(`Cannot find character ${targetOrId}`);
         }
-        removedHandIds.push(found.id);
+        activeCharacterId = character.id;
       }
-    }
-    const response = { removedHandIds };
-    rpc.resolve({ switchHands: response });
+      const candidates = rpc.request.chooseActive!.candidateIds;
+      if (!candidates.includes(activeCharacterId)) {
+        throw new Error(`Cannot choose character ${activeCharacterId}`);
+      }
+      const response: ChooseActiveResponse = { activeCharacterId };
+      rpc.resolve({ chooseActive: response });
+    });
+  }
+
+  switchHands(removed: (CardHandle | Ref)[]): IoResultPromise {
+    return IoResultPromise.create(this.controller, () => {
+      const rpc = this.awaitingRpc;
+      if (!rpc || rpc.method !== "switchHands") {
+        throw new Error("Not awaiting switchHands");
+      }
+      if (rpc.who !== this.who) {
+        throw new Error("Not your turn");
+      }
+      let removedHandIds: number[] = [];
+      // 先移除指定 id 的（Ref），再移除通过定义指定的
+      for (const card of removed) {
+        if (card instanceof Ref) {
+          removedHandIds.push(card.id);
+        }
+      }
+      for (const card of removed) {
+        if (!(card instanceof Ref)) {
+          const found = this.findHand(card);
+          if (!found) {
+            throw new Error(`Cannot find card ${card} in your hands`);
+          }
+          removedHandIds.push(found.id);
+        }
+      }
+      const response = { removedHandIds };
+      rpc.resolve({ switchHands: response });
+    });
   }
   // async reroll() {}
 }

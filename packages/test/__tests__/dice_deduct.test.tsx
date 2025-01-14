@@ -40,7 +40,6 @@ test("klee: dice deduction", async () => {
     </State>,
   );
   await c.me.card(MintyMeatRolls, klee)
-  await c.stepToNextAction();
   expect(c.state.players[0].dice).toBeArrayOfSize(7);
 
   await c.me.skill(JumpyDumpty);
@@ -49,7 +48,6 @@ test("klee: dice deduction", async () => {
   expect(c.state.players[0].dice).toBeArrayOfSize(4);
 
   await c.me.skill(Kaboom);
-  await c.stepToNextAction();
   expect(c.state.players[0].dice).toBeArrayOfSize(4);
 
   c.expect(`my equipment with definition id ${ExplosiveSpark}`).toBeArrayOfSize(0);

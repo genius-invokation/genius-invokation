@@ -35,7 +35,6 @@ test("thunder manifestation: talent works on 'disposed' status", async () => {
   );
   c.expect("my hand cards").toBeArrayOfSize(0);
   await c.me.skill(StrifefulLightning);
-  await c.stepToNextAction();
   // 雷鸣探知弃置，伤害 +1
   c.expect(`status with definition id ${LightningRod}`).toBeArrayOfSize(0);
   c.expect(target).toHaveVariable("health", 6);

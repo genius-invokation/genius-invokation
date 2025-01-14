@@ -32,6 +32,5 @@ test("basic", async () => {
     </State>,
   );
   await c.me.skill(SkywardSonnet);
-  await c.stepToNextAction();
   c.expect("opp active").toHaveVariable("health", 8);
 });
