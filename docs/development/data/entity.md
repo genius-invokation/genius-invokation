@@ -129,9 +129,9 @@ const MyStatus = status(xxx)
   .defineSnippet(...)               // 定义小片段 default（缺省片段名）
   .defineSnippet("mySnippet", ...)  // 定义小片段 mySnippet
   .on("actionPhase")
-  .callSnippet()                    // 调用小片段 default
-  .on("endPhase")
   .callSnippet()                    // 调用小片段 default（缺省片段名）
+  .on("endPhase")
+  .callSnippet()                    // 调用小片段 default
   .callSnippet("mySnippet")         // 调用小片段 mySnippet
   .done();
 ```
