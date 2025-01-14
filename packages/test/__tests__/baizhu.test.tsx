@@ -59,7 +59,7 @@ test("baizhu shield: hit the death", async () => {
   const oppNext = ref();
   const c = setup(
     <State>
-      <Character opp active def={Baizhu} ref={oppActive} health={1} aura={Aura.Hydro} />
+      <Character opp active def={Baizhu} ref={oppActive} health={1} />
       <Character opp ref={oppNext} health={10} />
       <CombatStatus opp def={SeamlessShield} />
       <Character my active def={Keqing} health={10} />
