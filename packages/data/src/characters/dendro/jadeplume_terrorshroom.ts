@@ -24,16 +24,14 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const RadicalVitalityStatus = status(127011)
   .variable("vitality", 0)
+  .defineSnippet("addVitality", (c) => {
+    const max = c.self.master().hasEquipment(ProliferatingSpores) ? 4 : 3;
+    c.addVariableWithMax("vitality", 1, max);
+  })
   .on("dealDamage")
-  .do((c) => {
-    const max = c.self.master().hasEquipment(ProliferatingSpores) ? 4 : 3;
-    c.addVariableWithMax("vitality", 1, max);
-  })
+  .callSnippet("addVitality")
   .on("damaged")
-  .do((c) => {
-    const max = c.self.master().hasEquipment(ProliferatingSpores) ? 4 : 3;
-    c.addVariableWithMax("vitality", 1, max);
-  })
+  .callSnippet("addVitality")
   .on("endPhase", (c) => c.getVariable("vitality") >= 3)
   .do((c) => {
     c.setVariable("vitality", 0);

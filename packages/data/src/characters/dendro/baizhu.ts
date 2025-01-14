@@ -37,22 +37,17 @@ export const GossamerSprite = summon(117051)
  */
 export const SeamlessShield: CombatStatusHandle = combatStatus(117053)
   .shield(1)
+  .defineSnippet((c) => {
+    c.damage(DamageType.Dendro, 1)
+    c.heal(1, "my active")
+    if (c.$(`my equipment with definition id ${AllThingsAreOfTheEarth}`)) {
+      c.generateDice(c.$(`my active`)!.element(), 1);
+    }
+  })
   .on("enter", (c, e) => e.overridden)
-  .damage(DamageType.Dendro, 1)
-  .heal(1, "my active")
-  .do((c) => {
-    if (c.$(`my equipment with definition id ${AllThingsAreOfTheEarth}`)) {
-      c.generateDice(c.$(`my active`)!.element(), 1);
-    }
-  })
+  .callSnippet()
   .on("selfDispose")
-  .damage(DamageType.Dendro, 1)
-  .heal(1, "my active")
-  .do((c) => {
-    if (c.$(`my equipment with definition id ${AllThingsAreOfTheEarth}`)) {
-      c.generateDice(c.$(`my active`)!.element(), 1);
-    }
-  })
+  .callSnippet()
   .done();
 
 /**

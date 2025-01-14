@@ -40,7 +40,6 @@ import {
   TriggeredSkillBuilder,
   TriggeredSkillBuilderMeta,
   UsageOptions,
-  WritableMetaOf,
   enableShortcut,
 } from "./skill";
 import {
@@ -173,7 +172,8 @@ export class EntityBuilder<
       CallerType,
       CallerVars,
       ExtensionHandle<NewExtT>,
-      FromCard
+      FromCard,
+      Snippets
     >;
   }
 
@@ -439,7 +439,8 @@ export class EntityBuilder<
         "status",
         CallerVars,
         AssociatedExt,
-        FromCard
+        FromCard,
+        Snippets
       >
     )
       .on("replaceAction")
@@ -576,7 +577,7 @@ export class EntityBuilder<
   defineSnippet(...args: any[]): any {
     let name: string;
     let snippet: any;
-    if (args.length === 1) {
+    if (args.length <= 1 && typeof args[0] !== "string") {
       name = "default";
       [snippet] = args;
     } else {
@@ -694,39 +695,3 @@ export function status(id: number): EntityBuilderPublic<"status"> {
 export function combatStatus(id: number): EntityBuilderPublic<"combatStatus"> {
   return new EntityBuilder("combatStatus", id);
 }
-
-//// TEST
-
-
-// status(-1)
-//   .defineSnippet((c) => {
-//     c.damage(DamageType.Dendro, 1)
-//   })
-//   .defineSnippet("foo", (c) => {
-//     c.damage(DamageType.Dendro, 2)
-//   })
-//   .on("dispose")
-//   .callSnippet()
-//   .callSnippet("foo")
-//   // @ts-expect-error
-//   .callSnippet(() => 42)
-//   // @ts-expect-error
-//   .callSnippet("foo", () => 42)
-//   .done();
-
-// status(-2)
-//   .defineSnippet((c, e: number) => {
-//     c.damage(DamageType.Dendro, 1)
-//   })
-//   .defineSnippet("foo", (c, e: number) => {
-//     c.damage(DamageType.Dendro, 2)
-//   })
-//   .on("dispose")
-//   // @ts-expect-error
-//   .callSnippet()
-//   // @ts-expect-error
-//   .callSnippet("foo")
-//   .callSnippet(() => 42)
-//   .callSnippet("foo", () => 42)
-//   .done();
-

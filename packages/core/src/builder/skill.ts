@@ -980,7 +980,7 @@ type CallSnippet<
 TriggeredSkillBuilder.prototype.callSnippet = function (...args) {
   let name: string;
   let projection: any;
-  if (args.length === 1) {
+  if (args.length <= 1 && typeof args[0] !== "string") {
     name = DEFAULT_SNIPPET_NAME;
     [projection] = args;
   } else {
