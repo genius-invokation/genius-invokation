@@ -29,5 +29,5 @@ test("bond of life decrease the heal", async () => {
     </State>,
   );
   await c.me.card(MondstadtHashBrown, active);
-  c.expect("my active").toHaveVariable("health", 6);
+  c.expect("my active").toHaveVariable({ health: 6 });
 });

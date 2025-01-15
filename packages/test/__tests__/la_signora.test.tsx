@@ -19,7 +19,10 @@ import {
   IcesealedCrimsonWitchOfEmbers,
   LaSignora,
 } from "@gi-tcg/data/internal/characters/cryo/la_signora";
-import { Chevreuse, RingOfBurstingGrenades } from "@gi-tcg/data/internal/characters/pyro/chevreuse";
+import {
+  Chevreuse,
+  RingOfBurstingGrenades,
+} from "@gi-tcg/data/internal/characters/pyro/chevreuse";
 import { Aura } from "@gi-tcg/typings";
 import { expect } from "bun:test";
 import { test } from "bun:test";
@@ -30,7 +33,14 @@ test("la signora: death in cryo state", async () => {
   const c = setup(
     <State>
       <Card opp def={TeyvatFriedEgg} />
-      <Character opp active def={LaSignora} ref={laSignora} health={1} aura={Aura.Electro}>
+      <Character
+        opp
+        active
+        def={LaSignora}
+        ref={laSignora}
+        health={1}
+        aura={Aura.Electro}
+      >
         <Status def={IcesealedCrimsonWitchOfEmbers} />
       </Character>
       <Character opp aura={Aura.Electro} ref={otherOpp} />
@@ -44,23 +54,20 @@ test("la signora: death in cryo state", async () => {
   await c.me.skill(RingOfBurstingGrenades);
 
   // 死了
-  c.expect(laSignora).toHaveVariable("alive", 0);
+  c.expect(laSignora).toHaveVariable({ alive: 0 });
   // 复活甲没了
   c.expect(
     `opp status with definition id ${IcesealedCrimsonWitchOfEmbers}`,
-  ).toBeArrayOfSize(0);
+  ).toNotExist();
   // 仍然是冰形态
-  expect(c.query(`with id ${laSignora.id}`)[0]?.definition.id).toEqual(
-    LaSignora,
-  );
+  c.expect(`with id ${laSignora.id}`).toBeDefinition(LaSignora);
 
   await c.opp.chooseActive(otherOpp);
   await c.opp.card(TeyvatFriedEgg, laSignora);
 
-  c.expect(laSignora).toHaveVariable("alive", 1);
-  c.expect(laSignora).toHaveVariable("health", 1);
+  c.expect(laSignora).toHaveVariable({ alive: 1, health: 1 });
   // 复活后带着复活甲
   c.expect(
     `opp status with definition id ${IcesealedCrimsonWitchOfEmbers}`,
-  ).toBeArrayOfSize(1);
+  ).toBeExist();
 });

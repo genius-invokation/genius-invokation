@@ -32,6 +32,6 @@ test("wangshu inn", async () => {
     </State>,
   );
   await c.me.end();
-  c.expect(wangshuInn).toHaveVariable("usage", 1);
-  c.expect(target).toHaveVariable("health", 8);
+  c.expect(wangshuInn).toHaveVariable({ usage: 1 });
+  c.expect(target).toHaveVariable({ health: 8 });
 });

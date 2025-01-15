@@ -14,8 +14,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Character, CombatStatus, ref, setup, State } from "#test";
-import { Baizhu, HolisticRevivification, SeamlessShield } from "@gi-tcg/data/internal/characters/dendro/baizhu";
-import { Keqing, YunlaiSwordsmanship } from "@gi-tcg/data/internal/characters/electro/keqing";
+import {
+  Baizhu,
+  HolisticRevivification,
+  SeamlessShield,
+} from "@gi-tcg/data/internal/characters/dendro/baizhu";
+import {
+  Keqing,
+  YunlaiSwordsmanship,
+} from "@gi-tcg/data/internal/characters/electro/keqing";
 import { Aura } from "@gi-tcg/typings";
 import { test } from "bun:test";
 
@@ -32,9 +39,9 @@ test("baizhu shield: onDispose", async () => {
   await c.opp.skill(YunlaiSwordsmanship);
   // 原本打2点伤害，1点护盾 -> 9血
   // 白术盾回1点 -> 10 血
-  c.expect(baizhu).toHaveVariable("health", 10);
+  c.expect(baizhu).toHaveVariable({ health: 10 });
   // 白术盾反
-  c.expect(oppActive).toHaveVariable("health", 9);
+  c.expect(oppActive).toHaveVariable({ health: 9 });
 });
 
 test("baizhu shield: onEnter override", async () => {
@@ -49,9 +56,9 @@ test("baizhu shield: onEnter override", async () => {
   );
   await c.me.skill(HolisticRevivification);
   // 白术盾回1点 -> 10 血
-  c.expect(baizhu).toHaveVariable("health", 6);
+  c.expect(baizhu).toHaveVariable({ health: 6 });
   // 白术盾反
-  c.expect(oppActive).toHaveVariable("health", 9);
+  c.expect(oppActive).toHaveVariable({ health: 9 });
 });
 
 test("baizhu shield: hit the death", async () => {
@@ -69,17 +76,19 @@ test("baizhu shield: hit the death", async () => {
   );
   await c.me.skill(YunlaiSwordsmanship);
   // 被刻晴普攻打死
-  c.expect(oppActive).toHaveVariable("alive", 0);
+  c.expect(oppActive).toHaveVariable({ alive: 0 });
 
   // 白术盾反，1点草伤；但被我方白术盾挡住
-  c.expect(`my active`).toHaveVariable("health", 10);
-  c.expect(`my active`).toHaveVariable("aura", Aura.Dendro);
-  
+  c.expect(`my active`).toHaveVariable({
+    health: 10,
+    aura: Aura.Dendro,
+  });
+
   // 我方白术盾打尸体，但不挂草
-  c.expect(oppActive).toHaveVariable("aura", Aura.None);
-  c.expect(`my status with definition id ${SeamlessShield}`).toBeArrayOfSize(0);
-  
+  c.expect(oppActive).toHaveVariable({ aura: Aura.None });
+  c.expect(`my status with definition id ${SeamlessShield}`).toNotExist();
+
   // 对方选人后没受伤
   await c.opp.chooseActive(oppNext);
-  c.expect(oppNext).toHaveVariable("health", 10);
-})
+  c.expect(oppNext).toHaveVariable({ health: 10 });
+});

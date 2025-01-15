@@ -14,5 +14,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import "@gi-tcg/data";
-import "./matchers";
+import "./matcher";
 export * from "./setup";

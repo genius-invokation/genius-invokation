@@ -16,7 +16,12 @@
 import { ref, setup, Character, State, Status, Card, Equipment } from "#test";
 import { MondstadtHashBrown } from "@gi-tcg/data/internal/cards/event/food";
 import { test } from "bun:test";
-import { ThunderManifestation, GrievingEcho, LightningRod, StrifefulLightning } from "@gi-tcg/data/internal/characters/electro/thunder_manifestation";
+import {
+  ThunderManifestation,
+  GrievingEcho,
+  LightningRod,
+  StrifefulLightning,
+} from "@gi-tcg/data/internal/characters/electro/thunder_manifestation";
 
 test("thunder manifestation: talent works on 'disposed' status", async () => {
   const target = ref();
@@ -33,13 +38,13 @@ test("thunder manifestation: talent works on 'disposed' status", async () => {
       <Card my pile def={MondstadtHashBrown} />
     </State>,
   );
-  c.expect("my hand cards").toBeArrayOfSize(0);
+  c.expect("my hand cards").toBeCount(0);
   await c.me.skill(StrifefulLightning);
   // 雷鸣探知弃置，伤害 +1
-  c.expect(`status with definition id ${LightningRod}`).toBeArrayOfSize(0);
-  c.expect(target).toHaveVariable("health", 6);
+  c.expect(`status with definition id ${LightningRod}`).toNotExist();
+  c.expect(target).toHaveVariable({ health: 6 });
   // 我方抽牌
-  c.expect("my hand cards").toBeArrayOfSize(1);
+  c.expect("my hand cards").toBeCount(1);
   // 我方天赋每回合使用次数归零
-  c.expect(talent).toHaveVariable("usagePerRound", 0);
+  c.expect(talent).toHaveVariable({ usagePerRound: 0 });
 });

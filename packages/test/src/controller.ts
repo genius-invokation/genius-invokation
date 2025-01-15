@@ -40,6 +40,7 @@ import {
 } from "@gi-tcg/core/builder";
 import { Ref } from "./setup";
 import { expect, Matchers } from "bun:test";
+import { StatesMatcher } from "./matcher";
 
 class IoResultPromise extends Promise<TestController> {
   // #controller!: TestController;
@@ -420,13 +421,11 @@ export class TestController {
     return this.game.query(0, query);
   }
 
-  expect(query: string): Matchers;
-  expect(ref: Ref): Matchers;
-  expect(what: string | Ref): Matchers {
+  expect(what: string | Ref): StatesMatcher {
     if (what instanceof Ref) {
       what = `with id ${what.id}`;
     }
-    return expect(this.query(what));
+    return new StatesMatcher(this.query(what));
   }
 
   /** 步进到下一次行动 */

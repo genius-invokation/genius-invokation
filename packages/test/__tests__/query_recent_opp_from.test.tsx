@@ -28,5 +28,5 @@ test("query: recent opp from", async () => {
       <Character my active />
     </State>,
   );
-  c.expect("recent opp from my active").toHaveVariable("expected", 1);
+  c.expect("recent opp from my active").toHaveVariable({ expected: 1 });
 });

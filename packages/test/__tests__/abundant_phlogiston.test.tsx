@@ -36,18 +36,16 @@ test("abundant phlogiston: mualani", async () => {
   );
   await c.me.skill(SurfsharkWavebreaker);
   await c.opp.switch(secondOpp);
-  c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable(
-    "nightsoul",
-    1,
-  );
+  c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable({
+    nightsoul: 1,
+  });
   await c.me.card(AbundantPhlogiston);
   await c.me.skill(CoolingTreatment);
   await c.opp.switch(firstOpp);
-  c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable(
-    "nightsoul",
-    1,
-  );
+  c.expect(`my status with tag (nightsoulsBlessing)`).toHaveVariable({
+    nightsoul: 1,
+  });
   await c.me.end();
   await c.opp.switch(secondOpp);
-  expect(c.query(`my status with tag (nightsoulsBlessing)`)).toBeArrayOfSize(0);
+  c.expect(`my status with tag (nightsoulsBlessing)`).toNotExist();
 });

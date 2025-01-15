@@ -22,6 +22,6 @@ test("query: active includes defeated", async () => {
       <Character my active alive={0} />
     </State>,
   );
-  c.expect("my active").toBeArrayOfSize(0);
-  c.expect("my active includes defeated").toBeArrayOfSize(1);
+  c.expect("my active").toBeCount(0);
+  c.expect("my active includes defeated").toBeExist();
 });

@@ -15,9 +15,15 @@
 
 import { ref, setup, Character, State, Card, Equipment } from "#test";
 import { test } from "bun:test";
-import { AmethystCrown, OrnateKabuto } from "@gi-tcg/data/internal/cards/equipment/artifacts";
+import {
+  AmethystCrown,
+  OrnateKabuto,
+} from "@gi-tcg/data/internal/cards/equipment/artifacts";
 import { Akara, Nahida } from "@gi-tcg/data/internal/characters/dendro/nahida";
-import { Keqing, StarwardSword } from "@gi-tcg/data/internal/characters/electro/keqing";
+import {
+  Keqing,
+  StarwardSword,
+} from "@gi-tcg/data/internal/characters/electro/keqing";
 
 test("listenToAll works (amethyst crown)", async () => {
   const artifact = ref();
@@ -29,7 +35,7 @@ test("listenToAll works (amethyst crown)", async () => {
     </State>,
   );
   await c.me.skill(Akara);
-  c.expect(artifact).toHaveVariable("crystal", 1);
+  c.expect(artifact).toHaveVariable({ crystal: 1 });
 });
 
 test("listenToPlayer works (ornate kabuto)", async () => {
@@ -43,5 +49,5 @@ test("listenToPlayer works (ornate kabuto)", async () => {
     </State>,
   );
   await c.me.skill(StarwardSword);
-  c.expect(master).toHaveVariable("energy", 1);
+  c.expect(master).toHaveVariable({ energy: 1 });
 });
