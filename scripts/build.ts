@@ -18,7 +18,7 @@
  * This file run all build scripts for building standalone target.
  */
 
-import { $, color, Glob } from "bun";
+import { $, Glob } from "bun";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";

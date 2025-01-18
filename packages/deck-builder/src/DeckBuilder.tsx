@@ -18,21 +18,21 @@ import {
   createContext,
   splitProps,
   useContext,
-  type Accessor,
+  untrack,
 } from "solid-js";
 import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
 import type { Deck } from "@gi-tcg/utils";
-import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 
 export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  assetApiEndpoint?: string;
+  assetsApiEndpoint?: string;
   deck?: Deck;
+  version?: string;
   onChangeDeck?: (deck: Deck) => void;
 }
 
 interface DeckBuilderContextValue {
-  assetApiEndpoint: Accessor<string>;
+  assetsApiEndpoint?: string;
 }
 
 const DeckBuilderContext = createContext<DeckBuilderContextValue>();
@@ -45,13 +45,11 @@ const EMPTY_DECK: Deck = {
 };
 
 export function DeckBuilder(props: DeckBuilderProps) {
-  const [local, rest] = splitProps(props, ["assetApiEndpoint", "class"]);
+  const [local, rest] = splitProps(props, ["assetsApiEndpoint", "class"]);
   return (
     <DeckBuilderContext.Provider
       value={{
-        assetApiEndpoint: () =>
-          local.assetApiEndpoint ??
-        DEFAULT_ASSET_API_ENDPOINT,
+        assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
       }}
     >
       <div class={`gi-tcg-deck-builder ${local.class}`}>
@@ -60,12 +58,14 @@ export function DeckBuilder(props: DeckBuilderProps) {
           {...rest}
         >
           <AllCards
+            version={props.version}
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
           />
           <div class="b-r-1 b-gray" />
           <div />
           <CurrentDeck
+            version={props.version}
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
           />

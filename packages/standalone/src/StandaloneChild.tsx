@@ -16,7 +16,6 @@
 import { createPlayer } from "@gi-tcg/webui-core";
 import "@gi-tcg/webui-core/style.css";
 import { onCleanup, onMount } from "solid-js";
-import { getName } from "./names";
 
 export function StandaloneChild() {
   const [uiIo, Chessboard] = createPlayer(0, {
@@ -26,7 +25,6 @@ export function StandaloneChild() {
         method: "giveUp",
       });
     },
-    assetAltText: getName,
   });
 
   async function messageHandler(e: MessageEvent) {

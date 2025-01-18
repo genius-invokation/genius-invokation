@@ -14,6 +14,14 @@
         "typescript": "^5.6.2",
       },
     },
+    "packages/assets-manager": {
+      "name": "@gi-tcg/assets-manager",
+      "version": "0.16.4",
+      "devDependencies": {
+        "@gi-tcg/config": "packages/config",
+        "@gi-tcg/static-data": "packages/static-data",
+      },
+    },
     "packages/cbinding": {
       "name": "@gi-tcg/cbinding",
       "devDependencies": {
@@ -41,13 +49,13 @@
       "name": "@gi-tcg/core",
       "version": "0.16.4",
       "dependencies": {
-        "@gi-tcg/config": "packages/config",
         "@gi-tcg/typings": "packages/typings",
         "@gi-tcg/utils": "packages/utils",
         "immer": "^10.0.3",
         "ohm-js": "^17.1.0",
       },
       "devDependencies": {
+        "@gi-tcg/config": "packages/config",
         "@ohm-js/cli": "^2.0.0",
         "prettier": "3.1.1",
       },
@@ -82,7 +90,9 @@
       "name": "@gi-tcg/deck-builder",
       "version": "0.16.4",
       "dependencies": {
+        "@gi-tcg/assets-manager": "packages/assets-manager",
         "@gi-tcg/utils": "packages/utils",
+        "@solid-primitives/keyed": "^1.4.0",
         "@unocss/reset": "^0.58.3",
       },
       "devDependencies": {
@@ -273,7 +283,9 @@
       "name": "@gi-tcg/webui-core",
       "version": "0.16.4",
       "dependencies": {
+        "@gi-tcg/assets-manager": "packages/assets-manager",
         "@gi-tcg/utils": "packages/utils",
+        "@solid-primitives/keyed": "^1.4.0",
       },
       "devDependencies": {
         "@gi-tcg/config": "packages/config",
@@ -743,17 +755,19 @@
 
     "@fastify/static": ["@fastify/static@7.0.4", "", { "dependencies": { "@fastify/accept-negotiator": "^1.0.0", "@fastify/send": "^2.0.0", "content-disposition": "^0.5.3", "fastify-plugin": "^4.0.0", "fastq": "^1.17.0", "glob": "^10.3.4" } }, "sha512-p2uKtaf8BMOZWLs6wu+Ihg7bWNBdjNgCwDza4MJtTqg+5ovKmcbgbR9Xs5/smZ1YISfzKOCNYmZV8LaCj+eJ1Q=="],
 
+    "@gi-tcg/assets-manager": ["@gi-tcg/assets-manager@workspace:packages/assets-manager", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data" } }],
+
     "@gi-tcg/cbinding": ["@gi-tcg/cbinding@workspace:packages/cbinding", { "devDependencies": { "@babel/preset-typescript": "^7.26.0", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-commonjs": "^28.0.1", "@rollup/plugin-node-resolve": "^15.3.0", "@rollup/plugin-replace": "^6.0.1", "@rollup/plugin-terser": "^0.4.4", "@types/core-js": "^2.5.8", "core-js": "3.38.1", "fast-text-encoding": "^1.0.6", "rollup": "^4.27.4" } }],
 
     "@gi-tcg/config": ["@gi-tcg/config@workspace:packages/config", {}],
 
-    "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core", { "dependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "immer": "^10.0.3", "ohm-js": "^17.1.0" }, "devDependencies": { "@ohm-js/cli": "^2.0.0", "prettier": "3.1.1" } }],
+    "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core", { "dependencies": { "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "immer": "^10.0.3", "ohm-js": "^17.1.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@ohm-js/cli": "^2.0.0", "prettier": "3.1.1" } }],
 
     "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@microsoft/tsdoc": "^0.14.2", "case-anything": "^2.1.13" }, "peerDependencies": { "@gi-tcg/core": "packages/core" } }],
 
     "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext", { "devDependencies": { "@gi-tcg/core": "packages/core", "@types/mocha": "^10.0.10", "@types/node": "20.x", "@types/vscode": "^1.96.0", "@vscode/vsce": "^3.2.1", "rxjs": "^7.8.1", "typescript": "^5.6.2" } }],
 
-    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/utils": "packages/utils", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^0.58.5", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^0.58.3", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^0.58.5", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^0.58.3", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer", { "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^0.58.5", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^0.58.3", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
@@ -773,7 +787,7 @@
 
     "@gi-tcg/webui": ["@gi-tcg/webui@workspace:packages/webui", { "devDependencies": { "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/webui-core": "packages/webui-core", "solid-element": "^1.8.0", "solid-js": "^1.8.15", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" } }],
 
-    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core", { "dependencies": { "@gi-tcg/utils": "packages/utils" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/typings": "packages/typings", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^0.58.3", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^0.58.3", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/typings": "packages/typings", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^0.58.3", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^0.58.3", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@humanwhocodes/config-array": ["@humanwhocodes/config-array@0.11.14", "", { "dependencies": { "@humanwhocodes/object-schema": "^2.0.2", "debug": "^4.3.1", "minimatch": "^3.0.5" } }, "sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg=="],
 
@@ -968,6 +982,8 @@
     "@solid-primitives/event-listener": ["@solid-primitives/event-listener@2.3.3", "", { "dependencies": { "@solid-primitives/utils": "^6.2.3" }, "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-DAJbl+F0wrFW2xmcV8dKMBhk9QLVLuBSW+TR4JmIfTaObxd13PuL7nqaXnaYKDWOYa6otB00qcCUIGbuIhSUgQ=="],
 
     "@solid-primitives/keyboard": ["@solid-primitives/keyboard@1.2.8", "", { "dependencies": { "@solid-primitives/event-listener": "^2.3.3", "@solid-primitives/rootless": "^1.4.5", "@solid-primitives/utils": "^6.2.3" }, "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-pJtcbkjozS6L1xvTht9rPpyPpX55nAkfBzbFWdf3y0Suwh6qClTibvvObzKOf7uzQ+8aZRDH4LsoGmbTKXtJjQ=="],
+
+    "@solid-primitives/keyed": ["@solid-primitives/keyed@1.4.0", "", { "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-mYbYAyyDofdcoReCBDVjZu3D6WrglHBIOaQQKVhcHTmHnpfEWJ4a2qG7f+dMASoss9p5hBnsEgUdsPAm6oIY1g=="],
 
     "@solid-primitives/media": ["@solid-primitives/media@2.2.9", "", { "dependencies": { "@solid-primitives/event-listener": "^2.3.3", "@solid-primitives/rootless": "^1.4.5", "@solid-primitives/static-store": "^0.0.8", "@solid-primitives/utils": "^6.2.3" }, "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-QUmU62D4/d9YWx/4Dvr/UZasIkIpqNXz7wosA5GLmesRW9XlPa3G5M6uOmTw73SByHNTCw0D6x8bSdtvvLgzvQ=="],
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2025 Guyutongxue
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,28 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { render } from "solid-js/web";
-import { DeckBuilder } from ".";
-import type { Deck } from "@gi-tcg/utils";
-import { createEffect, createSignal } from "solid-js";
+import { defineConfig } from "tsup";
 
-const EMPTY_DECK: Deck = {
-  characters: [],
-  cards: [],
-};
-
-function App() {
-  const [deck, setDeck] = createSignal<Deck>(EMPTY_DECK);
-  createEffect(() => {
-    console.log(deck());
-  });
-  return (
-    <DeckBuilder
-      deck={deck()}
-      onChangeDeck={setDeck}
-      // version="v3.3.0"
-    />
-  );
-}
-
-render(() => <App />, document.getElementById("root")!);
+export default defineConfig({
+  entry: ["./src/index.ts"],
+  format: "esm",
+  clean: true,
+  sourcemap: true,
+  dts: !process.env.NO_TYPING,
+  minify: true,
+});

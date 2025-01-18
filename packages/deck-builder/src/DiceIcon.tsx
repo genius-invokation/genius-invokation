@@ -13,28 +13,35 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { render } from "solid-js/web";
-import { DeckBuilder } from ".";
-import type { Deck } from "@gi-tcg/utils";
-import { createEffect, createSignal } from "solid-js";
+import { createResource, Show } from "solid-js";
+import { useDeckBuilderContext } from "./DeckBuilder";
+import { getImageUrl } from "@gi-tcg/assets-manager";
 
-const EMPTY_DECK: Deck = {
-  characters: [],
-  cards: [],
-};
-
-function App() {
-  const [deck, setDeck] = createSignal<Deck>(EMPTY_DECK);
-  createEffect(() => {
-    console.log(deck());
-  });
-  return (
-    <DeckBuilder
-      deck={deck()}
-      onChangeDeck={setDeck}
-      // version="v3.3.0"
-    />
-  );
+export interface DiceIconProps {
+  id: number;
 }
 
-render(() => <App />, document.getElementById("root")!);
+const CHARACTER_ELEMENT_NAME = {
+  1: "冰",
+  2: "水",
+  3: "火",
+  4: "雷",
+  5: "风",
+  6: "岩",
+  7: "草",
+} as Record<number, string>;
+
+export function DiceIcon(props: DiceIconProps) {
+  const { assetsApiEndpoint } = useDeckBuilderContext();
+  const [url] = createResource(() =>
+    getImageUrl(props.id, { assetsApiEndpoint }),
+  );
+  return (
+    <Show
+      when={url.state === "ready"}
+      fallback={CHARACTER_ELEMENT_NAME[Number(props.id)]}
+    >
+      <img src={url()} />
+    </Show>
+  );
+}

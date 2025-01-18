@@ -25,6 +25,7 @@ import {
   ComponentProps,
   Accessor,
   onMount,
+  untrack,
 } from "solid-js";
 import {
   type DiceType,
@@ -54,18 +55,17 @@ import type {
 
 import { PlayerArea } from "./PlayerArea";
 import { DiceSelect, DiceSelectProps } from "./DiceSelect";
-import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { createStore, produce } from "solid-js/store";
 import { groupBy, createWaitNotify } from "./utils";
 import { RerollView } from "./RerollView";
 import { Dice } from "./Dice";
 import { SwitchHandsView } from "./SwitchHandsView";
 import { SkillButton } from "./SkillButton";
-import { cached } from "./fetch";
 import { AsyncQueue } from "./async_queue";
 import { SelectCardView } from "./SelectCardView";
 import { MutationAnnouncer } from "./MutationAnnouncer";
 import { hintTexts } from "./CardDescription";
+import { getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -207,7 +207,6 @@ function buildClickableTransferState(
   const result = new Map<number, DiceAndSelectionState>();
   for (const [k, v] of grouped) {
     const hintText = hintTexts.get(k) ?? [];
-    console.log(hintTexts, hintText);
     result.set(k, buildClickableTransferIter([k], v, 0, hintText));
   }
   return result;
@@ -228,8 +227,8 @@ export interface PlayerContextValue {
   readonly allCosts: Readonly<Record<number, readonly PbDiceRequirement[]>>;
   readonly onClick: (id: number) => void;
   readonly setPrepareTuning: (value: boolean) => void;
-  readonly assetApiEndpoint: Accessor<string>;
-  readonly assetAltText: (id: number) => string | undefined;
+  readonly assetsApiEndpoint: string | undefined;
+  readonly assetsAltText: (id: number) => string | undefined;
 }
 
 export interface EventContextValue {
@@ -250,17 +249,12 @@ export function useEventContext(): Readonly<EventContextValue> {
 export interface WebUiOption {
   onGiveUp?: () => void;
   alternativeAction?: AgentActions;
-  assetApiEndpoint?: string;
-  assetAltText?: (id: number) => string;
+  assetsApiEndpoint?: string;
+  assetsAltText?: (id: number) => string;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
   cancelRpc: () => void;
-}
-
-// Remove proxy
-function sanitize<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value));
 }
 
 export function createPlayer(
@@ -599,16 +593,14 @@ export function createPlayer(
     notifyElementClicked(cardId + ELEMENTAL_TUNING_OFFSET);
     setPrepareTuning(false);
   };
-  const assetApiEndpoint = () =>
-    opt.assetApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT;
   const playerContextValue: PlayerContextValue = {
     allClickable,
     allSelected,
     allCosts,
     onClick: notifyElementClicked,
     setPrepareTuning,
-    assetApiEndpoint,
-    assetAltText: (id) => opt.assetAltText?.(id),
+    assetsApiEndpoint: opt.assetsApiEndpoint,
+    assetsAltText: opt.assetsAltText ?? getNameSync,
   };
 
   const ChessboardWithIO = () => (
@@ -716,7 +708,7 @@ interface ChessboardProps extends ComponentProps<"div"> {
 }
 
 function Chessboard(props: ChessboardProps) {
-  const { assetApiEndpoint } = usePlayerContext();
+  const { assetsApiEndpoint } = usePlayerContext();
   const [local, restProps] = splitProps(props, [
     "class",
     "state",
@@ -755,9 +747,10 @@ function Chessboard(props: ChessboardProps) {
   });
 
   onMount(() => {
+    console.log("CHESSBOARD MOUNTED");
     const prefetchedImages = [1, 2, 3, 4, 5, 6, 7];
     prefetchedImages.map((id) =>
-      cached(`${assetApiEndpoint()}/images/${id}?thumb=1`),
+      getImageUrl(id, { assetsApiEndpoint, thumbnail: true }),
     );
   });
 
@@ -833,23 +826,22 @@ function Chessboard(props: ChessboardProps) {
 }
 
 export interface StandaloneChessboardProps extends ChessboardProps {
-  assetApiEndpoint?: string;
-  assetAltText?: (id: number) => string;
+  assetsApiEndpoint?: string;
+  assetsAltText?: (id: number) => string;
 }
 
 export function StandaloneChessboard(props: StandaloneChessboardProps) {
   const [local, restProps] = splitProps(props, [
-    "assetApiEndpoint",
-    "assetAltText",
+    "assetsApiEndpoint",
+    "assetsAltText",
   ]);
 
   const contextValue = (): PlayerContextValue => ({
     allClickable: [],
     allCosts: [],
     allSelected: [],
-    assetApiEndpoint: () =>
-      local.assetApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT,
-    assetAltText: (id) => local.assetAltText?.(id),
+    assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
+    assetsAltText: untrack(() => local.assetsAltText ?? getNameSync),
     onClick: () => {},
     setPrepareTuning: () => {},
   });

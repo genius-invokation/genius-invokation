@@ -26,11 +26,10 @@ import { createPlayer } from "./index";
 const deck0: DeckConfig = {
   characters: [1214, 1403, 1203],
   cards: [
-    333018, 313006, 212141, 321025, 332042,
-    223041, 223041, 226031, 226031, 312009, 312009, 312010, 312010, 313002,
-    313002, 321002, 321004, 321017, 321017, 322008, 322012, 322012, 322025,
-    332004, 332004, 332006, 332032, 332032, 332041, 332041, 333003,
-    333003, 333009, 333011,
+    333018, 313006, 212141, 321025, 332042, 223041, 223041, 226031, 226031,
+    312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004, 321017,
+    321017, 322008, 322012, 322012, 322025, 332004, 332004, 332006, 332032,
+    332032, 332041, 332041, 333003, 333003, 333009, 333011,
   ],
   noShuffle: import.meta.env.DEV,
 };
@@ -46,9 +45,10 @@ const deck1: DeckConfig = {
 };
 
 function App() {
-  const assetApiEndpoint = "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
-  const [io0, Chessboard0] = createPlayer(0, { assetApiEndpoint });
-  const [io1, Chessboard1] = createPlayer(1, { assetApiEndpoint });
+  const assetsApiEndpoint =
+    void "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
+  const [io0, Chessboard0] = createPlayer(0, { assetsApiEndpoint });
+  const [io1, Chessboard1] = createPlayer(1, { assetsApiEndpoint });
   const [detailLog, setDetailLog] = createSignal<readonly DetailLogEntry[]>([]);
 
   const state = Game.createInitialState({

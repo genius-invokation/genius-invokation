@@ -16,10 +16,11 @@
 import type { ModifyEntityVarEM, PbCharacterState } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { Status } from "./Entity";
-import { For, Index, Show } from "solid-js";
+import { For, Index, onCleanup, onMount, Show } from "solid-js";
 import { useEventContext } from "./Chessboard";
 import { DICE_COLOR } from "./Dice";
 import { Interactive } from "./Interactive";
+import { Key } from "@solid-primitives/keyed";
 
 export interface CharacterAreaProps {
   data: PbCharacterState;
@@ -192,18 +193,18 @@ export function CharacterArea(props: CharacterAreaProps) {
               </Interactive>
             )}
           </Show>
-          <For each={otherEquipments()}>
+          <Key each={otherEquipments()} by="id">
             {(et) => (
               <Interactive
                 class="w-6 h-6 rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                id={et.id}
-                definitionId={et.definitionId}
-                dataHighlight={et.hasUsagePerRound}
+                id={et().id}
+                definitionId={et().definitionId}
+                dataHighlight={et().hasUsagePerRound}
               >
                 &#x2728;
               </Interactive>
             )}
-          </For>
+          </Key>
         </div>
         <Interactive
           class="h-full w-full rounded-xl"
@@ -219,7 +220,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           />
         </Interactive>
         <div class="absolute z-3 hover:z-10 left-0 bottom-0 h-6 flex flex-row">
-          <For each={statuses()}>{(st) => <Status data={st} />}</For>
+          <Key each={statuses()} by="id">{(st) => <Status data={st()} />}</Key>
         </div>
         <Show when={defeated()}>
           <div class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]">

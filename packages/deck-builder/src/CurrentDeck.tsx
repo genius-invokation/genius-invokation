@@ -20,7 +20,7 @@ import {
   c as characters,
   a as actionCards,
 } from "./data.json" /*  with { type: "json" } */;
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import { CHARACTER_CARDS } from "./AllCharacterCards";
 import { ACTION_CARDS } from "./AllActionCards";
 
@@ -28,12 +28,10 @@ type Character = (typeof characters)[0];
 type ActionCard = (typeof actionCards)[0];
 
 export function CurrentDeck(props: AllCardsProps) {
-  const [currentChs, setCurrentChs] = createStore<(Character | null)[]>(
-    Array.from({ length: 3 }, () => null),
-  );
-  const [currentAcs, setCurrentAcs] = createStore<(ActionCard | null)[]>(
-    Array.from({ length: 30 }, () => null),
-  );
+  const [current, setCurrent] = createStore({
+    characters: Array.from({ length: 3 }, () => null) as (Character | null)[],
+    cards: Array.from({ length: 30 }, () => null) as (ActionCard | null)[],
+  });
 
   createEffect(() => {
     const selectedChs = props.deck.characters
@@ -43,28 +41,32 @@ export function CurrentDeck(props: AllCardsProps) {
       .map((id) => ACTION_CARDS[id])
       .filter((ac): ac is ActionCard => typeof ac !== "undefined")
       .toSorted((a, b) => a.i - b.i);
-    for (let i = 0; i < 3; i++) {
-      setCurrentChs(i, selectedChs[i] ? { ...selectedChs[i] } : null);
-    }
-    for (let i = 0; i < 30; i++) {
-      setCurrentAcs(i, selectedAcs[i] ? { ...selectedAcs[i] } : null);
-    }
+    setCurrent(
+      produce((prev) => {
+        for (let i = 0; i < 3; i++) {
+          prev.characters[i] = selectedChs[i] ?? null;
+        }
+        for (let i = 0; i < 30; i++) {
+          prev.cards[i] = selectedAcs[i] ?? null;
+        }
+      }),
+    );
   });
 
   const removeCharacter = (idx: number) => {
-    setCurrentChs(idx, null);
+    setCurrent(produce((prev) => (prev.characters[idx] = null)));
     props.onChangeDeck?.({
       ...props.deck,
-      characters: currentChs
+      characters: current.characters
         .filter((ch): ch is Character => ch !== null)
         .map((ch) => ch.i),
     });
   };
   const removeActionCard = (idx: number) => {
-    setCurrentAcs(idx, null);
+    setCurrent(produce((prev) => (prev.cards[idx] = null)));
     props.onChangeDeck?.({
       ...props.deck,
-      cards: currentAcs
+      cards: current.cards
         .filter((ac): ac is ActionCard => ac !== null)
         .map((ac) => ac.i),
     });
@@ -74,14 +76,14 @@ export function CurrentDeck(props: AllCardsProps) {
     <div class="flex-shrink-0 flex flex-col items-center justify-center gap-3">
       <div>
         <ul class="flex flex-row gap-3">
-          <Index each={currentChs}>
+          <For each={current.characters}>
             {(ch, idx) => (
               <li
                 class="w-[75px] aspect-ratio-[7/12] relative group"
-                onClick={() => ch() && removeCharacter(idx)}
+                onClick={() => ch && removeCharacter(idx())}
               >
                 <Show
-                  when={ch()}
+                  when={ch}
                   fallback={
                     <div class="w-full h-full rounded-lg bg-gray-200" />
                   }
@@ -97,19 +99,19 @@ export function CurrentDeck(props: AllCardsProps) {
                 </Show>
               </li>
             )}
-          </Index>
+          </For>
         </ul>
       </div>
       <div>
         <ul class="grid grid-cols-6 gap-2">
-          <Index each={currentAcs}>
+          <For each={current.cards}>
             {(ac, idx) => (
               <li
                 class="w-[50px] aspect-ratio-[7/12] relative group"
-                onClick={() => ac() && removeActionCard(idx)}
+                onClick={() => ac && removeActionCard(idx())}
               >
                 <Show
-                  when={ac()}
+                  when={ac}
                   fallback={
                     <div class="w-full h-full rounded-lg bg-gray-200" />
                   }
@@ -125,7 +127,7 @@ export function CurrentDeck(props: AllCardsProps) {
                 </Show>
               </li>
             )}
-          </Index>
+          </For>
         </ul>
       </div>
     </div>

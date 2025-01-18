@@ -19,12 +19,13 @@ import type {
   PbPlayerState,
   PbEntityState,
 } from "@gi-tcg/typings";
-import { For, Match, Show, Switch } from "solid-js";
+import { For, Index, Match, Show, Switch } from "solid-js";
 
 import { Summon, Support, Status } from "./Entity";
 import { CharacterArea } from "./CharacterArea";
 import { Card } from "./Card";
 import { useEventContext } from "./Chessboard";
+import { Key } from "@solid-primitives/keyed";
 
 export interface PlayerAreaProps {
   data: PbPlayerState;
@@ -94,24 +95,24 @@ export function PlayerArea(props: PlayerAreaProps) {
       >
         <div class="h-52 flex flex-row justify-center gap-6">
           <div class="min-w-40 grid grid-cols-2 grid-rows-2 gap-2 justify-items-center items-center">
-            <For each={props.data.support}>
-              {(support) => <Support data={support} />}
-            </For>
-            <For each={newSupports()}>
-              {(support) => <Support preview data={support} />}
-            </For>
+            <Key each={props.data.support} by="id">
+              {(support) => <Support data={support()} />}
+            </Key>
+            <Key each={newSupports()} by="id">
+              {(support) => <Support preview data={support()} />}
+            </Key>
           </div>
           <div class="flex flex-row gap-6 items-end">
-            <For each={props.data.character}>
+            <Key each={props.data.character} by="id">
               {(ch) => (
                 <div class="flex flex-col">
-                  <CharacterArea data={ch} />
+                  <CharacterArea data={ch()} />
                   <Switch>
-                    <Match when={ch.id === props.data.activeCharacterId}>
+                    <Match when={ch().id === props.data.activeCharacterId}>
                       <div class="h-6 flex flex-row">
-                        <For each={props.data.combatStatus}>
-                          {(st) => <Status data={st} />}
-                        </For>
+                        <Key each={props.data.combatStatus} by="id">
+                          {(st) => <Status data={st()} />}
+                        </Key>
                       </div>
                     </Match>
                     <Match when={props.opp}>
@@ -120,15 +121,15 @@ export function PlayerArea(props: PlayerAreaProps) {
                   </Switch>
                 </div>
               )}
-            </For>
+            </Key>
           </div>
           <div class="min-w-40 grid grid-cols-2 grid-rows-2 gap-2 justify-items-center items-center">
-            <For each={props.data.summon}>
-              {(summon) => <Summon data={summon} />}
-            </For>
-            <For each={newSummons()}>
-              {(summon) => <Summon preview data={summon} />}
-            </For>
+            <Key each={props.data.summon} by="id">
+              {(summon) => <Summon data={summon()} />}
+            </Key>
+            <Key each={newSummons()} by="id">
+              {(summon) => <Summon preview data={summon()} />}
+            </Key>
           </div>
         </div>
         <div
@@ -137,9 +138,9 @@ export function PlayerArea(props: PlayerAreaProps) {
           }`}
         >
           <div class="hands-area flex flex-row">
-            <For each={props.data.handCard}>
-              {(card) => <Card data={card} />}
-            </For>
+            <Key each={props.data.handCard} by="id">
+              {(card) => <Card data={card()} />}
+            </Key>
           </div>
           <div class="text-blue-500">
             <Show when={props.opp}>

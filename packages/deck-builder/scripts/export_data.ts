@@ -3,27 +3,28 @@ import { characters, actionCards } from "@gi-tcg/static-data";
 const chs = characters.filter((ch) => typeof ch.shareId !== "undefined");
 const acs = actionCards.filter((ac) => typeof ac.shareId !== "undefined");
 
-const allTags = [
-  ...new Set([
-    ...chs.flatMap((ch) => ch.tags),
-    ...acs.flatMap((ac) => ac.tags),
-  ]),
-];
+const allTags = [...new Set([...chs, ...acs].flatMap((x) => x.tags))];
 
 const allTypes = [...new Set([...acs.map((ac) => ac.type)])];
+const allVersions = [
+  ...new Set([...chs, ...acs].map((x) => x.sinceVersion!)),
+].toSorted(Bun.semver.order);
 
 const data = {
   T: allTags,
   Y: allTypes,
+  v: allVersions,
   c: chs.map((ch) => ({
     i: ch.id,
     n: ch.name,
     t: ch.tags.map((t) => allTags.indexOf(t)),
+    v: allVersions.indexOf(ch.sinceVersion!),
   })),
   a: acs.map((ac) => ({
     i: ac.id,
     y: allTypes.indexOf(ac.type),
     t: ac.tags.map((t) => allTags.indexOf(t)),
+    v: allVersions.indexOf(ac.sinceVersion!),
     n: ac.name,
     rc: ac.relatedCharacterId ?? void 0,
     rt: (() => {

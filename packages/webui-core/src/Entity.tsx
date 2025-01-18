@@ -64,7 +64,7 @@ export function Summon(props: EntityProps) {
             {props.data.variableValue}
           </div>
         </Show>
-        <Show when={props.data.hintIcon !== null}>
+        <Show when={typeof props.data.hintIcon === "number"}>
           <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
             <Image
               imageId={props.data.hintIcon!}

@@ -6,9 +6,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "dev": "bunx --bun vite",
-    "generate_data": "bun scripts/generate_names.ts",
-    "build:vite": "bunx --bun vite build",
-    "build": "bun generate_data && bun build:vite",
+    "build": "bunx --bun vite build",
     "preview": "vite preview"
   },
   "browserslist": "defaults",

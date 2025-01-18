@@ -21,7 +21,8 @@ import {
   c as characters,
 } from "./data.json" /*  with { type: "json" } */;
 import { Card } from "./Card";
-import type { AllCardsProps } from "./AllCards";
+import type { AllCardsIncludeVersionProps } from "./AllCards";
+import { Key } from "@solid-primitives/keyed";
 
 const AC_TYPE_TEXT = {
   [typeMap.indexOf("GCG_CARD_MODIFY")]: {
@@ -56,6 +57,8 @@ const AC_TYPE_TEXT = {
   },
 };
 
+type ActionCard = (typeof actionCards)[0];
+
 export const ACTION_CARDS = Object.fromEntries(
   actionCards.map((ac) => [ac.i, ac] as const),
 );
@@ -69,7 +72,7 @@ const CHARACTER_TAGS = Object.fromEntries(
   characters.map((ch) => [ch.i, ch.t] as const),
 );
 
-export function AllActionCards(props: AllCardsProps) {
+export function AllActionCards(props: AllCardsIncludeVersionProps) {
   const [acType, setAcType] = createSignal<number>(0);
   const [acTag, setAcTag] = createSignal<string>("");
 
@@ -84,28 +87,8 @@ export function AllActionCards(props: AllCardsProps) {
 
   // Remove invalid action cards
   createEffect(() => {
-    const currentCharacters = props.deck.characters;
-    const currentChTags = currentCharacters.flatMap(
-      (c) => CHARACTER_TAGS[Number(c)],
-    );
     const currentCards = props.deck.cards;
-    const result: number[] = [];
-    for (const id of currentCards) {
-      const ac = ACTION_CARDS[id];
-      if (!ac) {
-        continue;
-      }
-      if (typeof ac.rc !== "undefined" && !currentCharacters.includes(ac.rc)) {
-        continue;
-      }
-      if (
-        typeof ac.rt !== "undefined" &&
-        currentChTags.filter((t) => t === ac.rt).length < 2
-      ) {
-        continue;
-      }
-      result.push(id);
-    }
+    const result = currentCards.filter((c) => valid(ACTION_CARDS[c]));
     if (result.length < currentCards.length) {
       props.onChangeDeck?.({
         ...props.deck,
@@ -119,6 +102,7 @@ export function AllActionCards(props: AllCardsProps) {
 
   const toggleCard = (id: number) => {
     const cnt = count(id);
+    console.log(id);
     if (cnt >= maxCount(id)) {
       props.onChangeDeck?.({
         ...props.deck,
@@ -137,32 +121,39 @@ export function AllActionCards(props: AllCardsProps) {
     }
   };
 
-  const filtered = () => {
-    const ty = acType();
-    const tag = acTag();
+  const valid = (actionCard: ActionCard) => {
     const currentCharacters = props.deck.characters;
     const currentChTags = currentCharacters.flatMap(
       (c) => CHARACTER_TAGS[Number(c)],
     );
-    const filtered = actionCards.filter(
-      (ac) =>
-        (ty === null || ac.y === ty) &&
-        (tag === "" || ac.t.includes(Number(tag))),
-    );
-    const withReq = filtered.filter((ac) => {
-      if (typeof ac.rc !== "undefined") {
-        return currentCharacters.includes(ac.rc);
-      }
-      if (typeof ac.rt !== "undefined") {
-        return currentChTags.filter((t) => t === ac.rt).length >= 2;
-      }
-      return false;
-    });
-    const withoutReq = filtered.filter(
-      (ac) => typeof ac.rc === "undefined" && typeof ac.rt === "undefined",
-    );
-    return [...withReq, ...withoutReq];
+    if (typeof actionCard.rc !== "undefined") {
+      return currentCharacters.includes(actionCard.rc);
+    }
+    if (typeof actionCard.rt !== "undefined") {
+      return currentChTags.filter((t) => t === actionCard.rt).length >= 2;
+    }
+    return true;
   };
+
+  const shown = (ac: ActionCard) => {
+    const ty = acType();
+    const tag = acTag();
+    if (ac.v > props.version) {
+      return false;
+    }
+    if (ty !== null && ac.y !== ty) {
+      return false;
+    }
+    if (tag !== "" && !ac.t.includes(Number(tag))) {
+      return false;
+    }
+    return valid(ac);
+  };
+
+  const selected = (id: number) => maxCount(id) === count(id);
+  const partialSelected = (id: number) =>
+    !!count(id) && count(id) !== maxCount(id);
+
   return (
     <div class="h-full flex flex-col">
       <div class="flex flex-row gap-2 mb-2">
@@ -191,25 +182,24 @@ export function AllActionCards(props: AllCardsProps) {
         </select>
       </div>
       <ul class="flex-grow overflow-auto flex flex-row flex-wrap gap-2">
-        <For each={filtered()}>
+        <Key each={actionCards} by="i">
           {(ac) => (
             <li
-              class="relative cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-60 data-[disabled=true]:filter-none hover:brightness-110"
-              data-disabled={fullCards() && !count(ac.i)}
-              onClick={() => toggleCard(ac.i)}
+              class="hidden data-[shown=true]-block relative cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-60 data-[disabled=true]:filter-none hover:brightness-110"
+              data-shown={shown(ac())}
+              data-disabled={fullCards() && !count(ac().i)}
+              onClick={() => toggleCard(ac().i)}
             >
               <div class="w-[60px]">
                 <Card
-                  id={ac.i}
-                  name={ac.n}
-                  selected={count(ac.i) === maxCount(ac.i)}
-                  partialSelected={
-                    !!count(ac.i) && count(ac.i) !== maxCount(ac.i)
-                  }
+                  id={ac().i}
+                  name={ac().n}
+                  selected={selected(ac().i)}
+                  partialSelected={partialSelected(ac().i)}
                 />
-                <Show when={count(ac.i)}>
+                <Show when={count(ac().i)}>
                   <Show
-                    when={count(ac.i) === maxCount(ac.i)}
+                    when={selected(ac().i)}
                     fallback={
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl z-1 pointer-events-none">
                         &#128993;
@@ -224,7 +214,7 @@ export function AllActionCards(props: AllCardsProps) {
               </div>
             </li>
           )}
-        </For>
+        </Key>
       </ul>
     </div>
   );

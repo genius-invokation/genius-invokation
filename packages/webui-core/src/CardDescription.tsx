@@ -20,9 +20,11 @@ import {
   JSX,
   For,
   createEffect,
+  createResource,
 } from "solid-js";
 import { Image } from "./Image";
-import { createAssetsData } from "./fetch";
+import { AnyData, getData } from "@gi-tcg/assets-manager";
+import { usePlayerContext } from "./Chessboard";
 
 export type TypeKey =
   | "tcgcharactercards"
@@ -41,7 +43,10 @@ export const hintTexts = new Map<number, string[]>();
 
 export function CardDescription(props: CardDescrptionProps) {
   const [local, rest] = splitProps(props, ["definitionId", "entityId", "type"]);
-  const [data] = createAssetsData(() => local.definitionId);
+  const { assetsApiEndpoint } = usePlayerContext();
+  const [data] = createResource(() =>
+    getData(local.definitionId, { assetsApiEndpoint }),
+  );
   createEffect(() => {
     if (data.state === "ready") {
       const id = local.entityId ?? local.definitionId;
@@ -58,13 +63,13 @@ export function CardDescription(props: CardDescrptionProps) {
   });
 
   const description = (): JSX.Element => {
-    const { description, skills } = data();
-    if (description) {
-      return description;
-    } else if (Array.isArray(skills)) {
+    const d = data.state === "ready" ? data() : ({} as Partial<AnyData>);
+    if ("description" in d) {
+      return d.description;
+    } else if ("skills" in d) {
       return (
         <ul class="clear-both m-0">
-          <For each={skills}>
+          <For each={d.skills}>
             {(s) => (
               <li>
                 <strong>{s.name}</strong>

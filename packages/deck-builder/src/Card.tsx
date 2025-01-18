@@ -13,8 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Show, createResource } from "solid-js";
+import { Show, createResource, onCleanup } from "solid-js";
 import { useDeckBuilderContext } from "./DeckBuilder";
+import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface CardProps {
   id: number;
@@ -23,23 +24,10 @@ export interface CardProps {
   selected?: boolean;
 }
 
-const cache = new Map<string, string>();
-const cachedFetch = async (url: string) => {
-  if (cache.has(url)) {
-    return cache.get(url)!;
-  }
-  const res = await fetch(url);
-  const blob = await res.blob();
-  const objectUrl = URL.createObjectURL(blob);
-  cache.set(url, objectUrl);
-  return objectUrl;
-};
-
 export function Card(props: CardProps) {
-  const { assetApiEndpoint } = useDeckBuilderContext();
-  const [srcUrl] = createResource(
-    () => props.id,
-    (id) => cachedFetch(`${assetApiEndpoint()}/images/${id}?thumb=1`),
+  const { assetsApiEndpoint } = useDeckBuilderContext();
+  const [url] = createResource(() =>
+    getImageUrl(props.id, { assetsApiEndpoint }),
   );
   return (
     <div
@@ -49,12 +37,12 @@ export function Card(props: CardProps) {
       class="w-full rounded-lg overflow-clip data-[selected=true]:border-green data-[partial-selected=true]:border-yellow border-2 border-transparent"
     >
       <Show
-        when={srcUrl()}
+        when={url.state === "ready"}
         fallback={
           <div class="w-full aspect-ratio-[7/12] bg-gray-200">{props.name}</div>
         }
       >
-        {(url) => <img src={url()} alt={props.name} draggable="false" />}
+        <img src={url()} alt={props.name} draggable="false" />
       </Show>
     </div>
   );

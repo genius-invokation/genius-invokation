@@ -33,7 +33,6 @@ import "@gi-tcg/webui-core/style.css";
 import { For, Show, createSignal, onCleanup, onMount } from "solid-js";
 import { decode as decodeShareCode } from "@gi-tcg/utils";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
-import { getName } from "./names";
 
 export interface StandaloneParentProps {
   logs?: GameStateLogEntry[];
@@ -47,7 +46,6 @@ const PARENT_WHO = 1;
 
 export function StandaloneParent(props: StandaloneParentProps) {
   const [uiIo, Chessboard] = createPlayer(1, {
-    assetAltText: getName,
     onGiveUp: () => {
       game?.giveUp(PARENT_WHO);
     },
@@ -332,7 +330,6 @@ export function StandaloneParent(props: StandaloneParentProps) {
               state={exposeState(viewingWho(), state().state)}
               previewData={[]}
               who={viewingWho()}
-              assetAltText={getName}
             />
           </>
         )}
@@ -342,7 +339,7 @@ export function StandaloneParent(props: StandaloneParentProps) {
       </button>
       <button onClick={showDetail}>显示细节</button>
       <dialog ref={detailDialog!}>
-        <DetailLogViewer logs={detailLog()} names={getName} />
+        <DetailLogViewer logs={detailLog()} />
         <button onClick={closeDetail}>关闭</button>
       </dialog>
     </div>

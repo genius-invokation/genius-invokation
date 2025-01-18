@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2025 Guyutongxue
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,28 +13,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { render } from "solid-js/web";
-import { DeckBuilder } from ".";
-import type { Deck } from "@gi-tcg/utils";
-import { createEffect, createSignal } from "solid-js";
+const dataUrls = new Map<Blob, string>();
 
-const EMPTY_DECK: Deck = {
-  characters: [],
-  cards: [],
-};
-
-function App() {
-  const [deck, setDeck] = createSignal<Deck>(EMPTY_DECK);
-  createEffect(() => {
-    console.log(deck());
-  });
-  return (
-    <DeckBuilder
-      deck={deck()}
-      onChangeDeck={setDeck}
-      // version="v3.3.0"
-    />
-  );
+/**
+ * Create URL from `Blob`. `URL.createObjectURL` must be available in the environment.
+ * @param blob 
+ * @returns 
+ */
+export function blobToDataUrl(blob: Blob): string {
+  if (dataUrls.has(blob)) {
+    return dataUrls.get(blob)!;
+  }
+  const url = URL.createObjectURL(blob);
+  dataUrls.set(blob, url);
+  return url;
 }
-
-render(() => <App />, document.getElementById("root")!);

@@ -24,13 +24,13 @@
     "build": "bun build:ohm && tsup"
   },
   "dependencies": {
-    "@gi-tcg/config": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
     "@gi-tcg/utils": "workspace:*",
     "immer": "^10.0.3",
     "ohm-js": "^17.1.0"
   },
   "devDependencies": {
+    "@gi-tcg/config": "workspace:*",
     "@ohm-js/cli": "^2.0.0",
     "prettier": "3.1.1"
   }

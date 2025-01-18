@@ -24,3 +24,5 @@ temp
 *.njsproj
 *.sln
 *.sw?
+
+src/names.json

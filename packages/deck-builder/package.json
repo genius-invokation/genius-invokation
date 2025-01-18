@@ -25,7 +25,9 @@
     "solid-js": "^1.8.15"
   },
   "dependencies": {
+    "@gi-tcg/assets-manager": "workspace:*",
     "@gi-tcg/utils": "workspace:*",
+    "@solid-primitives/keyed": "^1.4.0",
     "@unocss/reset": "^0.58.3"
   },
   "devDependencies": {

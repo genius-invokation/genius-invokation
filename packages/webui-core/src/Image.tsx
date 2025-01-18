@@ -13,9 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { ComponentProps, Show, createResource, splitProps } from "solid-js";
+import {
+  ComponentProps,
+  Show,
+  createResource,
+  splitProps,
+  untrack,
+} from "solid-js";
 import { usePlayerContext } from "./Chessboard";
-import { cached } from "./fetch";
+import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
@@ -23,21 +29,28 @@ export interface ImageProps extends ComponentProps<"img"> {
 
 export function Image(props: ImageProps) {
   const [local, rest] = splitProps(props, ["imageId", "width", "height"]);
-  const { assetApiEndpoint, assetAltText } = usePlayerContext();
-  const [url] = createResource(() => {
-    const placeholderUrl = `https://placehold.jp/70x120.png?text=${encodeURIComponent(
-      assetAltText(local.imageId) ?? local.imageId,
+  const { assetsApiEndpoint, assetsAltText } = usePlayerContext();
+  const placeholderUrl = () =>
+    `https://placehold.jp/70x120.png?text=${encodeURIComponent(
+      assetsAltText(local.imageId) ?? local.imageId,
     )}`;
-    return cached(
-      `${assetApiEndpoint()}/images/${local.imageId}?thumb=1`,
-    ).catch(() => placeholderUrl);
-  });
+  const [url] = createResource(
+    () =>
+      getImageUrl(local.imageId, {
+        assetsApiEndpoint,
+        thumbnail: true,
+      }),
+    {
+      initialValue: untrack(placeholderUrl),
+    },
+  );
+
   const classNames = "flex items-center justify-center object-cover";
   const innerProps = (): ComponentProps<"img"> => ({
     ...rest,
     class: `${rest.class ?? ""} ${classNames}`,
     src: url(),
-    alt: assetAltText(local.imageId) ?? `${local.imageId}`,
+    alt: assetsAltText(local.imageId) ?? `${local.imageId}`,
     draggable: "false",
     style: {
       background: url.state === "ready" ? void 0 : "#e5e7eb",
@@ -45,6 +58,7 @@ export function Image(props: ImageProps) {
       width: local.width ? `${local.width}px` : void 0,
     },
   });
+
   return (
     <Show
       when={url.state === "ready"}

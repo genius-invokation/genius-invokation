@@ -13,14 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { For, Show, createEffect, createSignal } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import {
   T as tagMap,
   c as characters,
 } from "./data.json" /*  with { type: "json" } */;
-import { useDeckBuilderContext } from "./DeckBuilder";
 import { Card } from "./Card";
-import type { AllCardsProps } from "./AllCards";
+import type { AllCardsIncludeVersionProps } from "./AllCards";
+import { DiceIcon } from "./DiceIcon";
+import { Key } from "@solid-primitives/keyed";
 
 const CHARACTER_ELEMENT_TYPES = {
   1: tagMap.indexOf("GCG_TAG_ELEMENT_CRYO"),
@@ -32,29 +33,16 @@ const CHARACTER_ELEMENT_TYPES = {
   7: tagMap.indexOf("GCG_TAG_ELEMENT_DENDRO"),
 };
 
-const CHARACTER_ELEMENT_NAME = {
-  1: "冰",
-  2: "水",
-  3: "火",
-  4: "雷",
-  5: "风",
-  6: "岩",
-  7: "草",
-} as Record<number, string>;
-
 export const CHARACTER_CARDS = Object.fromEntries(
   characters.map((ch) => [ch.i, ch] as const),
 );
+type Character = (typeof characters)[0];
 
-export function AllCharacterCards(props: AllCardsProps) {
-  const { assetApiEndpoint } = useDeckBuilderContext();
+export function AllCharacterCards(props: AllCardsIncludeVersionProps) {
   const [chTag, setChTag] = createSignal<number | null>(0);
-  const filtered = () => {
+  const shown = (ch: Character) => {
     const tag = chTag();
-    if (tag === null) {
-      return characters;
-    }
-    return characters.filter((ch) => ch.t.includes(tag));
+    return ch.v <= props.version && (tag === null || ch.t.includes(tag));
   };
 
   const toggleChTag = (tagIdx: number) => {
@@ -100,25 +88,23 @@ export function AllCharacterCards(props: AllCardsProps) {
               data-selected={chTag() === tagIdx}
               class="data-[selected=true]:bg-black w-5 h-5"
             >
-              <img
-                src={`${assetApiEndpoint()}/images/${imgIdx}?thumb=1`}
-                alt={CHARACTER_ELEMENT_NAME[Number(imgIdx)]}
-              />
+              <DiceIcon id={Number(imgIdx)} />
             </button>
           )}
         </For>
       </div>
       <ul class="flex-grow overflow-auto flex flex-row flex-wrap gap-2">
-        <For each={filtered()}>
+        <Key each={characters} by="i">
           {(ch) => (
             <li
-              class="relative cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-60 data-[disabled=true]:filter-none hover:brightness-110 transition-all"
-              data-disabled={fullCharacters() && !selected(ch.i)}
-              onClick={() => toggleCharacter(ch.i)}
+              class="hidden data-[shown=true]-block relative cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-60 data-[disabled=true]:filter-none hover:brightness-110 transition-all"
+              data-shown={shown(ch())}
+              data-disabled={fullCharacters() && !selected(ch().i)}
+              onClick={() => toggleCharacter(ch().i)}
             >
               <div class="w-[60px]">
-                <Card id={ch.i} name={ch.n} selected={selected(ch.i)} />
-                <Show when={selected(ch.i)}>
+                <Card id={ch().i} name={ch().n} selected={selected(ch().i)} />
+                <Show when={selected(ch().i)}>
                   <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl z-1 pointer-events-none">
                     &#9989;
                   </div>
@@ -126,7 +112,7 @@ export function AllCharacterCards(props: AllCardsProps) {
               </div>
             </li>
           )}
-        </For>
+        </Key>
       </ul>
     </div>
   );
