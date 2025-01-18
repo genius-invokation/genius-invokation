@@ -16,6 +16,8 @@
     }
   },
   "scripts": {
-    "build": "tsup"
+    "build:data": "bun scripts/generate_names.ts",
+    "build:ts": "tsup",
+    "build": "bun run build:data && bun run build:ts"
   }
 }
