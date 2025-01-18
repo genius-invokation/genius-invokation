@@ -52,7 +52,7 @@ export function AllCards(props: AllCardsProps) {
           when={!props.versionSpecified}
           fallback={
             <span class="text-gray-500">
-              当前仅显示 {props.version} 及更低版本
+              当前仅显示 {ALL_VERSIONS[props.version]} 及更低版本
             </span>
           }
         >
