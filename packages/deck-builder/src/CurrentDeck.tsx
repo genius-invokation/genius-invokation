@@ -80,6 +80,7 @@ export function CurrentDeck(props: AllCardsProps) {
             {(ch, idx) => (
               <li
                 class="w-[75px] aspect-ratio-[7/12] relative group"
+                data-warn={ch && ch.v > props.version}
                 onClick={() => ch && removeCharacter(idx())}
               >
                 <Show
@@ -91,6 +92,9 @@ export function CurrentDeck(props: AllCardsProps) {
                   {(ch) => (
                     <>
                       <Card id={ch().i} name={ch().n} />
+                      <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
+                        &#9888;
+                      </div>
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-hover:block hidden pointer-events-none text-red-500">
                         &#10060;
                       </div>
@@ -108,6 +112,7 @@ export function CurrentDeck(props: AllCardsProps) {
             {(ac, idx) => (
               <li
                 class="w-[50px] aspect-ratio-[7/12] relative group"
+                data-warn={ac && ac.v > props.version}
                 onClick={() => ac && removeActionCard(idx())}
               >
                 <Show
@@ -119,6 +124,9 @@ export function CurrentDeck(props: AllCardsProps) {
                   {(ac) => (
                     <>
                       <Card id={ac().i} name={ac().n} />
+                      <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
+                        &#9888;
+                      </div>
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-hover:block hidden pointer-events-none text-red-500">
                         &#10060;
                       </div>

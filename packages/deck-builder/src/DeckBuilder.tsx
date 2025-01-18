@@ -19,10 +19,13 @@ import {
   splitProps,
   useContext,
   untrack,
+  createSignal,
+  createEffect,
 } from "solid-js";
 import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
 import type { Deck } from "@gi-tcg/utils";
+import { v as ALL_VERSIONS } from "./data.json" /*  with { type: "json" } */;
 
 export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
   assetsApiEndpoint?: string;
@@ -46,6 +49,16 @@ const EMPTY_DECK: Deck = {
 
 export function DeckBuilder(props: DeckBuilderProps) {
   const [local, rest] = splitProps(props, ["assetsApiEndpoint", "class"]);
+  const [version, setVersion] = createSignal(ALL_VERSIONS.length - 1);
+  const versionSpecified = () =>
+    !!props.version && ALL_VERSIONS.includes(props.version);
+
+  createEffect(() => {
+    if (versionSpecified()) {
+      setVersion(ALL_VERSIONS.indexOf(props.version!));
+    }
+  });
+
   return (
     <DeckBuilderContext.Provider
       value={{
@@ -58,14 +71,16 @@ export function DeckBuilder(props: DeckBuilderProps) {
           {...rest}
         >
           <AllCards
-            version={props.version}
+            version={version()}
+            versionSpecified={versionSpecified()}
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
+            onSetVersion={setVersion}
           />
           <div class="b-r-1 b-gray" />
           <div />
           <CurrentDeck
-            version={props.version}
+            version={version()}
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
           />

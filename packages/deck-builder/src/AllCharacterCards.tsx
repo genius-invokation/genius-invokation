@@ -19,7 +19,7 @@ import {
   c as characters,
 } from "./data.json" /*  with { type: "json" } */;
 import { Card } from "./Card";
-import type { AllCardsIncludeVersionProps } from "./AllCards";
+import type { AllCardsProps } from "./AllCards";
 import { DiceIcon } from "./DiceIcon";
 import { Key } from "@solid-primitives/keyed";
 
@@ -38,7 +38,7 @@ export const CHARACTER_CARDS = Object.fromEntries(
 );
 type Character = (typeof characters)[0];
 
-export function AllCharacterCards(props: AllCardsIncludeVersionProps) {
+export function AllCharacterCards(props: AllCardsProps) {
   const [chTag, setChTag] = createSignal<number | null>(0);
   const shown = (ch: Character) => {
     const tag = chTag();

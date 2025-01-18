@@ -21,7 +21,7 @@ import {
   c as characters,
 } from "./data.json" /*  with { type: "json" } */;
 import { Card } from "./Card";
-import type { AllCardsIncludeVersionProps } from "./AllCards";
+import type { AllCardsProps } from "./AllCards";
 import { Key } from "@solid-primitives/keyed";
 
 const AC_TYPE_TEXT = {
@@ -72,7 +72,7 @@ const CHARACTER_TAGS = Object.fromEntries(
   characters.map((ch) => [ch.i, ch.t] as const),
 );
 
-export function AllActionCards(props: AllCardsIncludeVersionProps) {
+export function AllActionCards(props: AllCardsProps) {
   const [acType, setAcType] = createSignal<number>(0);
   const [acTag, setAcTag] = createSignal<string>("");
 
