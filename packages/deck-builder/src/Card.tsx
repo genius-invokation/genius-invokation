@@ -27,7 +27,7 @@ export interface CardProps {
 export function Card(props: CardProps) {
   const { assetsApiEndpoint } = useDeckBuilderContext();
   const [url] = createResource(() =>
-    getImageUrl(props.id, { assetsApiEndpoint }),
+    getImageUrl(props.id, { assetsApiEndpoint, thumbnail: true }),
   );
   return (
     <div

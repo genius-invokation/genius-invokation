@@ -34,7 +34,7 @@ const CHARACTER_ELEMENT_NAME = {
 export function DiceIcon(props: DiceIconProps) {
   const { assetsApiEndpoint } = useDeckBuilderContext();
   const [url] = createResource(() =>
-    getImageUrl(props.id, { assetsApiEndpoint }),
+    getImageUrl(props.id, { assetsApiEndpoint, thumbnail: true }),
   );
   return (
     <Show
