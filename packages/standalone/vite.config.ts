@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig } from "vite";
+import { defaultClientConditions, defineConfig } from "vite";
 import solid from "vite-plugin-solid";
 import babel from "@rollup/plugin-babel";
 
@@ -22,7 +22,7 @@ export default defineConfig({
     target: "ES2020"
   },
   resolve: {
-    conditions: ["bun"]
+    conditions: ["bun", ...defaultClientConditions]
   },
   plugins: [
     solid(),

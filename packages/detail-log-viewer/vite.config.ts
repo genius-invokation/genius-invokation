@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { resolve } from "node:path";
-import { defineConfig } from "vite";
+import { defaultClientConditions, defineConfig } from "vite";
 import nodeExternals from "rollup-plugin-node-externals";
 import solid from "vite-plugin-solid";
 import dts from "vite-plugin-dts";
@@ -24,7 +24,7 @@ export default defineConfig({
     target: "ES2022",
   },
   resolve: {
-    conditions: ["bun"],
+    conditions: ["bun", ...defaultClientConditions],
   },
   plugins: [
     {

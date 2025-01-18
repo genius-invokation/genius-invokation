@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig } from "vite";
+import { defaultClientConditions, defineConfig } from "vite";
 import { resolve } from "node:path";
 import dts from "vite-plugin-dts";
 import solid from "vite-plugin-solid";
@@ -23,7 +23,7 @@ export default defineConfig({
     target: "ES2022",
   },
   resolve: {
-    conditions: ["bun"],
+    conditions: ["bun", ...defaultClientConditions],
   },
   plugins: [
     solid(),
