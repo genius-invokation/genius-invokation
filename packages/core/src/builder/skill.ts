@@ -295,27 +295,27 @@ const detailedEventDictionary = {
   }),
   deductVoidDiceSkill: defineDescriptor("modifyAction0", (c, e, r) => {
     return (
-      e.isUseSkill() &&
+      e.isUseCommonSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductVoidCost()
     );
   }),
   deductElementDiceSkill: defineDescriptor("modifyAction1", (c, e, r) => {
     return (
-      e.isUseSkill() &&
+      e.isUseCommonSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r)
     );
   }),
   deductOmniDiceSkill: defineDescriptor("modifyAction2", (c, e, r) => {
     return (
-      e.isUseSkill() &&
+      e.isUseCommonSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductCost()
     );
   }),
   deductOmniDiceTechnique: defineDescriptor("modifyAction2", (c, e, r) => {
     return (
-      e.isUseSkill() &&
+      e.isUseTechnique() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductCost()
     );

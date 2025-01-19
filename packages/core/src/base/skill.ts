@@ -369,23 +369,31 @@ export class ActionEventArg<
   isPlayCard(): this is ActionEventArg<PlayCardInfo> {
     return this.action.type === "playCard";
   }
+  /** 是 `useSkill` 类型的行动，即使用主动技能或特技 */ 
   isUseSkill(): this is ActionEventArg<UseSkillInfo> {
     return this.action.type === "useSkill";
   }
   isDeclareEnd(): this is ActionEventArg<DeclareEndInfo> {
     return this.action.type === "declareEnd";
   }
+  /** 是角色主动技能（而非特技） */
+  isUseCommonSkill(): this is ActionEventArg<UseSkillInfo> {
+    return this.isUseSkill() && commonInitiativeSkillCheck(this.action.skill);
+  }
+  isUseTechnique(): this is ActionEventArg<UseSkillInfo> {
+    return this.isSkillType("technique");
+  }
   isSkillOrTalentOf(
     character: CharacterState,
     skillType?: CommonSkillType,
   ): boolean {
-    if (this.action.type === "useSkill") {
+    if (this.isUseCommonSkill()) {
       const skillDef = this.action.skill.definition;
       return (
         character.definition.skills.some((sk) => sk.id === skillDef.id) &&
         (!skillType || skillDef.initiativeSkillConfig.skillType === skillType)
       );
-    } else if (this.action.type === "playCard") {
+    } else if (this.isPlayCard()) {
       return !!(
         this.action.skill.caller.definition.tags.includes("talent") &&
         this.action.targets.find((target) => target.id === character.id)
