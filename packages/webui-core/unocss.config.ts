@@ -13,23 +13,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig, presetUno } from "unocss";
-import { parseColor, colorToString } from "@unocss/preset-mini/utils";
+// import { defineConfig, presetUno } from "unocss";
+// import { parseColor, colorToString } from "@unocss/preset-mini/utils";
 
-export default defineConfig({
-  presets: [presetUno()],
-  rules: [
-    [
-      /^btn-(.*)$/,
-      ([, c], { theme }) => {
-        const data = parseColor(c, theme, "colors");
+// export default defineConfig({
+//   presets: [presetUno()],
+//   rules: [
+//     [
+//       /^btn-(.*)$/,
+//       ([, c], { theme }) => {
+//         const data = parseColor(c, theme, "colors");
 
-        if (data?.cssColor) {
-          return {
-            "--btn-color": colorToString(data.cssColor),
-          };
-        }
-      },
-    ],
-  ],
-});
+//         if (data?.cssColor) {
+//           return {
+//             "--btn-color": colorToString(data.cssColor),
+//           };
+//         }
+//       },
+//     ],
+//   ],
+// });
+import "css-tree/definition-syntax-data-patch";
+export default {}
