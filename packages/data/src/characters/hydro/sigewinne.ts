@@ -54,13 +54,11 @@ export const Convalescence = combatStatus(112135)
   .increaseDamage(1)
   .done();
 
-// 每层提高此角色的最大生命值1点。
-const DetailedDiagnosisThoroughTreatmentStatus = status(112136)
-  .variableCanAppend("value", 1, Infinity) 
-  .on("enter")
-  .do((c) => {
-    c.increaseMaxHealth(1, "@master");
-  })
+// 所附属角色的生命之契完全移除后，提高此角色1点最大生命值。
+export const DetailedDiagnosisThoroughTreatmentStatus = status(112136)
+  .on("dispose", (c, e) => e.entity.definition.id === BondOfLife)
+  .usage(3)
+  .increaseMaxHealth(1, "@master")
   .done();
 
 /**
@@ -158,20 +156,9 @@ export const SuperSaturatedSyringing = skill(12133)
  * 我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。
  */
 export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
-  .type("passive")
-  .variable("hasBondOfLife", 0)
-  .on("dispose", (c, e) => e.entity.definition.id === BondOfLife)
-  .listenToPlayer()
-  .do((c, e) => {
-    if (e.area.type !== "characters") {
-      return; // unreachable
-    }
-    const target = c.of<"character">(e.area.characterId);
-    const appended = target.hasStatus(DetailedDiagnosisThoroughTreatmentStatus)?.variables.value ?? 0;
-    if (appended < 3) {
-      c.characterStatus(DetailedDiagnosisThoroughTreatmentStatus, target.state);
-    }
-  })
+  .type("passive") // 希格雯入场时：为所有我方角色附属 112136
+  .on("enter")
+  .characterStatus(DetailedDiagnosisThoroughTreatmentStatus, "all my characters")
   .done();
 
 /**
@@ -181,7 +168,10 @@ export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
  * 
  */
 export const DetailedDiagnosisThoroughTreatment02 = skill(12136)
-  .reserve();
+  .type("passive") // 希格雯倒下时：清除所有我方 112136 状态
+  .on("defeated")
+  .dispose(`all my status with definition id ${DetailedDiagnosisThoroughTreatmentStatus}`)
+  .done();
 
 /**
  * @id 12137
@@ -212,7 +202,8 @@ export const Sigewinne = character(1213)
   .tags("hydro", "bow", "fontaine", "pneuma")
   .health(10)
   .energy(2)
-  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention, DetailedDiagnosisThoroughTreatment03)
+  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention, 
+    DetailedDiagnosisThoroughTreatment02, DetailedDiagnosisThoroughTreatment03)
   .done();
 
 /**

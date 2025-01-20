@@ -882,7 +882,10 @@ export class TriggeredSkillBuilder<
     // 【添加各种 filter】
 
     // 0. 被动技能要求角色存活
-    if (this.parent._type === "character") {
+    if (
+      this.parent._type === "character" &&
+      this.detailedEventName !== "defeated"
+    ) {
       this.filters.push((c) => c.self.state.variables.alive);
     }
     // 1. 对于并非响应自身弃置的技能，当实体已经被弃置时，不再响应

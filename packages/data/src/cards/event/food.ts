@@ -266,7 +266,7 @@ export const [MatsutakeMeatRolls] = card(333014)
  * 治疗目标角色1点，该角色接下来3次受到伤害后再治疗其1点。
  * （每回合每个角色最多食用1次「料理」）
  */
-export const [RainbowMacarons] = card(333015)
+export const [RainbowMacarons, RainbowMacaronsInEffect] = card(333015)
   .since("v4.6.0")
   .costVoid(2)
   .food({ extraTargetRestraint: "with health < maxHealth" })
