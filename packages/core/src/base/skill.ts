@@ -51,6 +51,7 @@ import {
   diceCostOfCard,
   diceCostSize,
   getEntityArea,
+  getEntityById,
   mixins,
   normalizeCost,
 } from "../utils";
@@ -369,7 +370,7 @@ export class ActionEventArg<
   isPlayCard(): this is ActionEventArg<PlayCardInfo> {
     return this.action.type === "playCard";
   }
-  /** 是 `useSkill` 类型的行动，即使用主动技能或特技 */ 
+  /** 是 `useSkill` 类型的行动，即使用主动技能或特技 */
   isUseSkill(): this is ActionEventArg<UseSkillInfo> {
     return this.action.type === "useSkill";
   }
@@ -618,7 +619,23 @@ export class UseSkillEventArg extends PlayerEventArg {
     return this._skillInfo;
   }
   get skillCaller() {
-    return this._skillInfo.caller as CharacterState;
+    return this._skillInfo.caller as CharacterState | EntityState;
+  }
+  get techniqueCaller() {
+    if (
+      this._skillInfo.definition.initiativeSkillConfig.skillType !== "technique"
+    ) {
+      throw new GiTcgDataError(`techniqueCaller only available on technique`);
+    }
+    if (this.callerArea.type !== "characters") {
+      throw new GiTcgCoreInternalError(
+        `Technique callerArea not in character zone`,
+      );
+    }
+    return getEntityById(
+      this.onTimeState,
+      this.callerArea.characterId,
+    ) as CharacterState;
   }
   override toString(): string {
     return `use skill [skill:${this.skill.definition.id}]`;
