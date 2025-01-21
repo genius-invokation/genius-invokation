@@ -20,13 +20,15 @@ import { defineConfig } from "tsup";
 
 const requiredEnvVars = ["DEV", "WEB_CLIENT_BASE_PATH", "SERVER_HOST"];
 
-const env = requiredEnvVars.reduce(
-  (acc, varName) => {
-    acc[varName] = process.env[varName] || "";
-    return acc;
-  },
-  { ...(process.env as Record<string, string>) },
-);
+const env: Record<string, string> = {};
+for (const [key, value] of Object.entries(process.env)) {
+  if (/^[A-Z_]+$/.test(key) && value) {
+    env[key] = value;
+  }
+}
+for (const key of requiredEnvVars) {
+  env[key] ??= "";
+}
 
 export default defineConfig({
   entry: ["./src/index.ts"],

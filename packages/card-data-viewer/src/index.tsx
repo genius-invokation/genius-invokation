@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import "@unocss/reset/tailwind-compat.css";
+import "./reset.css";
 import "./style.css";
 import type { JSX } from "solid-js/jsx-runtime";
 import {

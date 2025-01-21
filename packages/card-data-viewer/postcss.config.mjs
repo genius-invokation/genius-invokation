@@ -18,4 +18,10 @@ import UnoCSS from "@unocss/postcss";
 /** @type {import("postcss-load-config").Config} */
 export default {
   plugins: [UnoCSS()],
+  // https://github.com/unocss/unocss/discussions/3444
+  postprocess: [
+    (obj) => {
+      obj.selector = ".gi-tcg-card-data-viewer " + obj.selector;
+    },
+  ],
 };

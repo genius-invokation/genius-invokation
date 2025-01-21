@@ -61,12 +61,16 @@ export function CardDataViewerContainer(props: CardDataViewerContainerProps) {
 function CardDataViewer(props: CardDataViewerProps) {
   const grouped = () => Object.groupBy(props.inputs, (i) => i.type);
   return (
-    <div class="gi-tcg-card-data-viewer flex flex-row justify-begin">
-      <For each={grouped().character}>
-        {(input) =><div class="bg-yellow-1 b-yellow-8 b-solid b-1 rounded-md">
-          <Character {...props} input={input} />
-        </div>}
-      </For>
+    <div class="gi-tcg-card-data-viewer">
+      <div class="flex flex-row justify-begin">
+        <For each={grouped().character}>
+          {(input) => (
+            <div class="bg-yellow-1 b-yellow-8 b-solid b-1 rounded-md">
+              <Character {...props} input={input} />
+            </div>
+          )}
+        </For>
+      </div>
     </div>
   );
 }

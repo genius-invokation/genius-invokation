@@ -35,7 +35,7 @@
         "@unocss/reset": "^65.4.2",
         "rollup-plugin-node-externals": "^7.0.1",
         "unocss": "^65.4.2",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-dts": "^3.7.0",
         "vite-plugin-solid": "^2.11.0",
       },
@@ -128,7 +128,7 @@
         "rollup-plugin-node-externals": "^7.0.1",
         "solid-devtools": "^0.29.2",
         "unocss": "^65.4.2",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-dts": "^3.7.0",
         "vite-plugin-solid": "^2.11.0",
       },
@@ -146,7 +146,7 @@
         "rollup-plugin-node-externals": "^7.0.1",
         "solid-devtools": "^0.29.2",
         "unocss": "^65.4.2",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-dts": "^3.7.0",
         "vite-plugin-solid": "^2.11.0",
       },
@@ -211,7 +211,7 @@
         "eslint-plugin-solid": "^0.13.1",
         "postcss-load-config": "^5.0.3",
         "postcss-preset-env": "^9.3.0",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-solid": "^2.11.0",
       },
     },
@@ -283,7 +283,7 @@
         "postcss-load-config": "^5.0.3",
         "postcss-preset-env": "^9.3.0",
         "unocss": "^65.4.2",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-solid": "^2.11.0",
       },
     },
@@ -295,7 +295,7 @@
         "@gi-tcg/webui-core": "packages/webui-core",
         "solid-element": "^1.8.0",
         "solid-js": "^1.8.15",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-dts": "^3.7.0",
         "vite-plugin-solid": "^2.11.0",
       },
@@ -323,7 +323,7 @@
         "rollup-plugin-node-externals": "^7.0.1",
         "solid-devtools": "^0.29.2",
         "unocss": "^65.4.2",
-        "vite": "^6.0.7",
+        "vite": "^6.0.11",
         "vite-plugin-dts": "^3.7.0",
         "vite-plugin-solid": "^2.11.0",
       },
@@ -779,7 +779,7 @@
 
     "@gi-tcg/assets-manager": ["@gi-tcg/assets-manager@workspace:packages/assets-manager", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data" } }],
 
-    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager" }, "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "@unocss/reset": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "unocss": "^65.4.2", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager" }, "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "@unocss/reset": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@gi-tcg/cbinding": ["@gi-tcg/cbinding@workspace:packages/cbinding", { "devDependencies": { "@babel/preset-typescript": "^7.26.0", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-commonjs": "^28.0.1", "@rollup/plugin-node-resolve": "^15.3.0", "@rollup/plugin-replace": "^6.0.1", "@rollup/plugin-terser": "^0.4.4", "@types/core-js": "^2.5.8", "core-js": "3.38.1", "fast-text-encoding": "^1.0.6", "rollup": "^4.27.4" } }],
 
@@ -791,13 +791,13 @@
 
     "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext", { "devDependencies": { "@gi-tcg/core": "packages/core", "@types/mocha": "^10.0.10", "@types/node": "20.x", "@types/vscode": "^1.96.0", "@vscode/vsce": "^3.2.1", "rxjs": "^7.8.1", "typescript": "^5.6.2" } }],
 
-    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
-    "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer", { "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer", { "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@gi-tcg/server": ["@gi-tcg/server@workspace:packages/server", { "dependencies": { "@fastify/static": "^7.0.4", "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/static-data": "packages/static-data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@nestjs/common": "^10.3.9", "@nestjs/core": "^10.3.9", "@nestjs/jwt": "^10.2.0", "@nestjs/platform-fastify": "^10.3.9", "@paralleldrive/cuid2": "^2.2.2", "@prisma/client": "5.20.0", "axios": "^1.7.7", "class-transformer": "^0.5.1", "class-validator": "^0.14.1", "rxjs": "^7.8.1", "simple-git": "^3.27.0" }, "devDependencies": { "@nestjs/cli": "^10.3.2", "pm2": "^5.4.0", "prisma": "5.20.0" } }],
 
-    "@gi-tcg/standalone": ["@gi-tcg/standalone@workspace:packages/standalone", { "dependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/utils": "packages/utils", "@gi-tcg/webui-core": "packages/webui-core", "@vercel/analytics": "^1.2.0", "core-js": "3.38.1", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "vite": "^6.0.7", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/standalone": ["@gi-tcg/standalone@workspace:packages/standalone", { "dependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/utils": "packages/utils", "@gi-tcg/webui-core": "packages/webui-core", "@vercel/analytics": "^1.2.0", "core-js": "3.38.1", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "vite": "^6.0.11", "vite-plugin-solid": "^2.11.0" } }],
 
     "@gi-tcg/static-data": ["@gi-tcg/static-data@workspace:packages/static-data", { "devDependencies": { "@gi-tcg/config": "packages/config", "lossless-json": "^4.0.1" } }],
 
@@ -807,11 +807,11 @@
 
     "@gi-tcg/utils": ["@gi-tcg/utils@workspace:packages/utils", { "devDependencies": { "@gi-tcg/static-data": "packages/static-data", "@gi-tcg/typings": "packages/typings" } }],
 
-    "@gi-tcg/web-client": ["@gi-tcg/web-client@workspace:packages/web-client", { "dependencies": { "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/webui-core": "packages/webui-core", "@server-sent-stream/web": "^1.0.3", "@solid-primitives/storage": "^4.2.1", "@solidjs/router": "^0.13.5", "@una-ui/preset": "^0.4.0-beta.5", "@unocss/reset": "^0.58.3", "axios": "^1.7.2", "core-js": "3.38.1", "dayjs": "^1.11.13", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@iconify-json/mdi": "^1.1.66", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "@unocss/postcss": "^65.4.2", "@unocss/preset-icons": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "unocss": "^65.4.2", "vite": "^6.0.7", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/web-client": ["@gi-tcg/web-client@workspace:packages/web-client", { "dependencies": { "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/webui-core": "packages/webui-core", "@server-sent-stream/web": "^1.0.3", "@solid-primitives/storage": "^4.2.1", "@solidjs/router": "^0.13.5", "@una-ui/preset": "^0.4.0-beta.5", "@unocss/reset": "^0.58.3", "axios": "^1.7.2", "core-js": "3.38.1", "dayjs": "^1.11.13", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@iconify-json/mdi": "^1.1.66", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "@unocss/postcss": "^65.4.2", "@unocss/preset-icons": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-solid": "^2.11.0" } }],
 
-    "@gi-tcg/webui": ["@gi-tcg/webui@workspace:packages/webui", { "devDependencies": { "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/webui-core": "packages/webui-core", "solid-element": "^1.8.0", "solid-js": "^1.8.15", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/webui": ["@gi-tcg/webui@workspace:packages/webui", { "devDependencies": { "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/webui-core": "packages/webui-core", "solid-element": "^1.8.0", "solid-js": "^1.8.15", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" } }],
 
-    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/typings": "packages/typings", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.7", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/typings": "packages/typings", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@humanwhocodes/config-array": ["@humanwhocodes/config-array@0.11.14", "", { "dependencies": { "@humanwhocodes/object-schema": "^2.0.2", "debug": "^4.3.1", "minimatch": "^3.0.5" } }, "sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg=="],
 
@@ -2499,7 +2499,7 @@
 
     "validator": ["validator@13.12.0", "", {}, "sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg=="],
 
-    "vite": ["vite@6.0.7", "https://r.cnpmjs.org/vite/-/vite-6.0.7.tgz", { "dependencies": { "esbuild": "^0.24.2", "postcss": "^8.4.49", "rollup": "^4.23.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^18.0.0 || ^20.0.0 || >=22.0.0", "jiti": ">=1.21.0", "less": "*", "lightningcss": "^1.21.0", "sass": "*", "sass-embedded": "*", "stylus": "*", "sugarss": "*", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "jiti", "less", "lightningcss", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-RDt8r/7qx9940f8FcOIAH9PTViRrghKaK2K1jY3RaAURrEUbm9Du1mJ72G+jlhtG3WwodnfzY8ORQZbBavZEAQ=="],
+    "vite": ["vite@6.0.11", "", { "dependencies": { "esbuild": "^0.24.2", "postcss": "^8.4.49", "rollup": "^4.23.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "peerDependencies": { "@types/node": "^18.0.0 || ^20.0.0 || >=22.0.0", "jiti": ">=1.21.0", "less": "*", "lightningcss": "^1.21.0", "sass": "*", "sass-embedded": "*", "stylus": "*", "sugarss": "*", "terser": "^5.16.0", "tsx": "^4.8.1", "yaml": "^2.4.2" }, "optionalPeers": ["@types/node", "jiti", "less", "lightningcss", "sass", "sass-embedded", "stylus", "sugarss", "terser", "tsx", "yaml"], "bin": { "vite": "bin/vite.js" } }, "sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg=="],
 
     "vite-plugin-dts": ["vite-plugin-dts@3.9.1", "", { "dependencies": { "@microsoft/api-extractor": "7.43.0", "@rollup/pluginutils": "^5.1.0", "@vue/language-core": "^1.8.27", "debug": "^4.3.4", "kolorist": "^1.8.0", "magic-string": "^0.30.8", "vue-tsc": "^1.8.27" }, "peerDependencies": { "typescript": "*", "vite": "*" }, "optionalPeers": ["vite"] }, "sha512-rVp2KM9Ue22NGWB8dNtWEr+KekN3rIgz1tWD050QnRGlriUCmaDwa7qA5zDEjbXg5lAXhYMSBJtx3q3hQIJZSg=="],
 
@@ -3125,7 +3125,7 @@
 
     "unconfig/@antfu/utils": ["@antfu/utils@8.1.0", "", {}, "sha512-XPR7Jfwp0FFl/dFYPX8ZjpmU4/1mIXTjnZ1ba48BLMyKOV62/tiRjdsFcPs2hsYcSud4tzk7w3a3LjX8Fu3huA=="],
 
-    "vite/postcss": ["postcss@8.4.49", "https://r.cnpmjs.org/postcss/-/postcss-8.4.49.tgz", { "dependencies": { "nanoid": "^3.3.7", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA=="],
+    "vite/postcss": ["postcss@8.5.1", "", { "dependencies": { "nanoid": "^3.3.8", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-6oz2beyjc5VMn/KV1pPw8fliQkhBXrVn1Z3TVyqZxU8kZpzEKhBdmCFqI6ZbmGtamQvQGuU1sgPTk8ZrXDD7jQ=="],
 
     "vite-plugin-dts/@microsoft/api-extractor": ["@microsoft/api-extractor@7.43.0", "", { "dependencies": { "@microsoft/api-extractor-model": "7.28.13", "@microsoft/tsdoc": "0.14.2", "@microsoft/tsdoc-config": "~0.16.1", "@rushstack/node-core-library": "4.0.2", "@rushstack/rig-package": "0.5.2", "@rushstack/terminal": "0.10.0", "@rushstack/ts-command-line": "4.19.1", "lodash": "~4.17.15", "minimatch": "~3.0.3", "resolve": "~1.22.1", "semver": "~7.5.4", "source-map": "~0.6.1", "typescript": "5.4.2" }, "bin": { "api-extractor": "bin/api-extractor" } }, "sha512-GFhTcJpB+MI6FhvXEI9b2K0snulNLWHqC/BbcJtyNYcKUiw7l3Lgis5ApsYncJ0leALX7/of4XfmXk+maT111w=="],
 
@@ -3506,6 +3506,8 @@
     "vite-plugin-dts/@microsoft/api-extractor/semver": ["semver@7.5.4", "", { "dependencies": { "lru-cache": "^6.0.0" }, "bin": { "semver": "bin/semver.js" } }, "sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA=="],
 
     "vite-plugin-dts/@microsoft/api-extractor/typescript": ["typescript@5.4.2", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ=="],
+
+    "vite/postcss/nanoid": ["nanoid@3.3.8", "", { "bin": { "nanoid": "bin/nanoid.cjs" } }, "sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w=="],
 
     "vite/postcss/picocolors": ["picocolors@1.1.1", "https://r.cnpmjs.org/picocolors/-/picocolors-1.1.1.tgz", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 

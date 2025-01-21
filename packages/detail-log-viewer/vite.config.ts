@@ -14,10 +14,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { resolve } from "node:path";
-import { defaultClientConditions, defineConfig } from "vite";
+import { defaultClientConditions, defineConfig, Plugin } from "vite";
 import nodeExternals from "rollup-plugin-node-externals";
 import solid from "vite-plugin-solid";
 import dts from "vite-plugin-dts";
+
+function enableIf(cond: boolean, plugin: Plugin): Plugin {
+  return cond ? plugin : { name: plugin.name };
+}
 
 export default defineConfig({
   esbuild: {
@@ -32,10 +36,12 @@ export default defineConfig({
       enforce: "pre",
     },
     solid(),
-    !process.env.NO_TYPING &&
+    enableIf(
+      !process.env.NO_TYPING,
       dts({
         rollupTypes: true,
       }),
+    ),
   ],
   build: {
     sourcemap: true,

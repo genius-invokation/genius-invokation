@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createResource, Match, Switch } from "solid-js";
+import { createResource, For, Match, Switch } from "solid-js";
 import type {
   CardDataViewerProps,
   NestedStyle,
   ViewerInput,
 } from "./CardDataViewer";
 import { getData } from "@gi-tcg/assets-manager";
-import type { CharacterRawData } from "@gi-tcg/static-data";
+import type { CharacterRawData, SkillRawData } from "@gi-tcg/static-data";
 
 export interface CardDataProps {
   input: ViewerInput;
@@ -41,7 +41,52 @@ export function Character(props: CardDataProps) {
       <Switch>
         <Match when={data.error}>加载失败</Match>
         <Match when={data.loading}>加载中...</Match>
-        <Match when={data()}>{(data) => <h3>{data().name}</h3>}</Match>
+        <Match when={data()}>
+          {(data) => (
+            <>
+              <h3>{data().name}</h3>
+              <ul>
+                <For each={data().skills}>
+                  {(skill) => (
+                    <Skill
+                      {...props}
+                      input={{
+                        from: "definitionId",
+                        type: "skill",
+                        definitionId: skill.id,
+                      }}
+                    />
+                  )}
+                </For>
+              </ul>
+            </>
+          )}
+        </Match>
+      </Switch>
+    </div>
+  );
+}
+
+export function Skill(props: CardDataProps) {
+  const [data] = createResource(
+    () =>
+      getData(props.input.definitionId, {
+        assetsApiEndpoint: props.assetsApiEndPoint,
+      }) as Promise<SkillRawData>,
+  );
+  return (
+    <div>
+      <Switch>
+        <Match when={data.error}>加载失败</Match>
+        <Match when={data.loading}>加载中...</Match>
+        <Match when={data()}>
+          {(data) => (
+            <>
+              <h3>{data().name}</h3>
+              <p>{data().rawDescription}</p>
+            </>
+          )}
+        </Match>
       </Switch>
     </div>
   );

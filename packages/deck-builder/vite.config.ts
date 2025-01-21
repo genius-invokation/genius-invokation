@@ -20,6 +20,10 @@ import solid from "vite-plugin-solid";
 import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
 
+function enableIf(cond: boolean, plugin: Plugin): Plugin {
+  return cond ? plugin : { name: plugin.name };
+}
+
 export default defineConfig({
   esbuild: {
     target: "ES2022",
@@ -32,21 +36,13 @@ export default defineConfig({
       ...nodeExternals(),
       enforce: "pre",
     },
-    // devtools({
-    //   autoname: true,
-    //   locator: {
-    //     targetIDE: "vscode",
-    //     key: "Ctrl",
-    //     jsxLocation: true,
-    //     componentLocation: true,
-    //   },
-    // }),
     solid(),
-    !process.env.NO_TYPING &&
+    enableIf(
+      !process.env.NO_TYPING,
       dts({
-        bundledPackages: ["@gi-tcg/core", "@gi-tcg/typings"],
         rollupTypes: true,
       }),
+    ),
   ],
   build: {
     sourcemap: true,
