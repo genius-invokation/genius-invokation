@@ -332,6 +332,7 @@
     },
   },
   "patchedDependencies": {
+    "importx@0.5.1": "patches/importx@0.5.1.patch",
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
   },
   "overrides": {

@@ -13,8 +13,9 @@
     "./style.css": "./dist/style.css"
   },
   "scripts": {
+    "dev": "bunx --bun vite",
     "check": "tsc --noEmit",
-    "build:": "vite build"
+    "build:": "bunx --bun vite build"
   },
   "peerDependencies": {
     "solid-js": "^1.8.15"
