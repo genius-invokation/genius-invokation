@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import "@unocss/reset/tailwind-compat.css";
+import "./style.css";
 import type { JSX } from "solid-js/jsx-runtime";
 import {
   CardDataViewerContainer,
@@ -29,8 +31,12 @@ export interface RegisterResult {
   readonly showSkill: (id: number) => void;
   readonly showCard: (id: number) => void;
   readonly showStates: {
-    (character: PbCharacterState, combatStatuses: PbEntityState[]): void;
-    (entity: PbEntityState): void;
+    (
+      type: "character",
+      character: PbCharacterState,
+      combatStatuses: PbEntityState[],
+    ): void;
+    (type: "summon" | "support", entity: PbEntityState): void;
   };
   readonly hide: () => void;
 }
@@ -58,6 +64,19 @@ export function createCardDataViewer(
     setShown(true);
   };
 
+  const mapStateToInput = (
+    st: PbCharacterState | PbEntityState,
+    type: StateType,
+  ): ViewerInput => ({
+    from: "state",
+    id: st.id,
+    type,
+    definitionId: st.definitionId,
+    descriptionDictionary:
+      "descriptionDictionary" in st ? st.descriptionDictionary : {},
+    variableValue: "variableValue" in st ? st.variableValue : void 0,
+  });
+
   return {
     CardDataViewer: () => (
       <CardDataViewerContainer
@@ -78,21 +97,24 @@ export function createCardDataViewer(
       showDef(id, "skill");
     },
     showStates: (
+      type: StateType,
       state: PbCharacterState | PbEntityState,
       combatStatuses?: PbEntityState[],
     ) => {
-      if (Array.isArray(combatStatuses)) {
-
-      } else {
-        setInputs([{
-          from: "state",
-          id: state.id,
-          type: "",
-          definitionId: state.definitionId,
-          variableValue: "variableValue" in state ? state.variableValue: void 0,
-          descriptionDictionary: "descriptionDictionary" in state ? state.descriptionDictionary : {}
-        }]);
-      }
+      setInputs([
+        // main item
+        mapStateToInput(state, type),
+        // character zone entities
+        ...("entity" in state
+          ? state.entity.map((st) =>
+              mapStateToInput(st, st.equipment ? "equipment" : "status"),
+            )
+          : []),
+        // combat statuses (2nd argument)
+        ...(combatStatuses ?? []).map((st) =>
+          mapStateToInput(st, "combatStatus"),
+        ),
+      ]);
       setShown(true);
     },
     hide: () => {

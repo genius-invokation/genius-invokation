@@ -17,7 +17,7 @@
     "solid-js": "^1.8.15",
     "@gi-tcg/webui-core": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
-    "vite": "^6.0.7",
+    "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
     "vite-plugin-solid": "^2.11.0"
   }
