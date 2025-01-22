@@ -29,7 +29,7 @@ const COLOR_MAP: Record<string, string> = {
   GCG_COST_DICE_GEO: "#ffcc00",
   GCG_COST_DICE_HYDRO: "#3e99ff",
   GCG_COST_DICE_ANEMO: "#80ffe6",
-  GCG_COST_DICE_OMNI: "#dcd4c2",
+  GCG_COST_DICE_SAME: "#dcd4c2",
   GCG_COST_ENERGY: "#d0cc51",
   GCG_COST_LEGEND: "linear-gradient(135deg,#a855f7,#3b82f6)",
 };
@@ -45,7 +45,7 @@ export function PlayCostList(props: PlayCostProps) {
     }
   };
   const textColor = (type: string) => {
-    if (["GCG_COST_ENERGY", "GCG_COST_DICE_OMNI"].includes(type)) {
+    if (["GCG_COST_ENERGY", "GCG_COST_DICE_SAME"].includes(type)) {
       return "black";
     } else {
       return "white";

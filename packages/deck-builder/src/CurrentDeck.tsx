@@ -91,7 +91,7 @@ export function CurrentDeck(props: AllCardsProps) {
                 >
                   {(ch) => (
                     <>
-                      <Card id={ch().i} name={ch().n} />
+                      <Card id={ch().i} type="character" name={ch().n} />
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
                         &#9888;
                       </div>
@@ -123,7 +123,7 @@ export function CurrentDeck(props: AllCardsProps) {
                 >
                   {(ac) => (
                     <>
-                      <Card id={ac().i} name={ac().n} />
+                      <Card id={ac().i} type="actionCard" name={ac().n} />
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
                         &#9888;
                       </div>

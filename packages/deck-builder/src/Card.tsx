@@ -19,13 +19,15 @@ import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface CardProps {
   id: number;
+  type: "character" | "actionCard";
   name: string;
   partialSelected?: boolean;
   selected?: boolean;
 }
 
 export function Card(props: CardProps) {
-  const { assetsApiEndpoint } = useDeckBuilderContext();
+  const { assetsApiEndpoint, showCard } =
+    useDeckBuilderContext();
   const [url] = createResource(() =>
     getImageUrl(props.id, { assetsApiEndpoint, thumbnail: true }),
   );
@@ -34,7 +36,7 @@ export function Card(props: CardProps) {
       title={props.name}
       data-selected={props.selected}
       data-partial-selected={props.partialSelected}
-      class="w-full rounded-lg overflow-clip data-[selected=true]:border-green data-[partial-selected=true]:border-yellow border-2 border-transparent"
+      class="w-full rounded-lg overflow-clip data-[selected=true]:border-green data-[partial-selected=true]:border-yellow border-2 border-transparent relative group"
     >
       <Show
         when={url.state === "ready"}
@@ -44,6 +46,15 @@ export function Card(props: CardProps) {
       >
         <img src={url()} alt={props.name} draggable="false" />
       </Show>
+      <div
+        class="absolute right-0 top-0 bg-white rounded-full h-6 w-6 line-height-none items-center justify-center hidden group-hover:flex"
+        onClick={(e) => {
+          e.stopPropagation();
+          showCard(e, props.type, props.id);
+        }}
+      >
+        &#128269;
+      </div>
     </div>
   );
 }

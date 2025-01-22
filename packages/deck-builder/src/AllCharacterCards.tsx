@@ -103,7 +103,12 @@ export function AllCharacterCards(props: AllCardsProps) {
               onClick={() => toggleCharacter(ch().i)}
             >
               <div class="w-[60px]">
-                <Card id={ch().i} name={ch().n} selected={selected(ch().i)} />
+                <Card
+                  id={ch().i}
+                  type="character"
+                  name={ch().n}
+                  selected={selected(ch().i)}
+                />
                 <Show when={selected(ch().i)}>
                   <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl z-1 pointer-events-none">
                     &#9989;

@@ -75,7 +75,7 @@ function CardDataViewer(props: CardDataViewerProps) {
       <div class="h-full w-full flex flex-row justify-begin items-start select-none gap-2 min-h-0">
         <For each={grouped().character}>
           {(input) => (
-            <div class="max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80">
+            <div class="card-panel">
               <Character
                 {...props}
                 input={input}
@@ -86,7 +86,7 @@ function CardDataViewer(props: CardDataViewerProps) {
         </For>
         <For each={grouped().card}>
           {(input) => (
-            <div class="max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80">
+            <div class="card-panel">
               <ActionCard
                 class="min-h-0"
                 {...props}
@@ -98,7 +98,7 @@ function CardDataViewer(props: CardDataViewerProps) {
         </For>
         <For each={[...(grouped().summon ?? []), ...(grouped().support ?? [])]}>
           {(input) => (
-            <div class="max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80">
+            <div class="card-panel">
               <Entity
                 class="min-h-0"
                 {...props}
@@ -110,7 +110,7 @@ function CardDataViewer(props: CardDataViewerProps) {
           )}
         </For>
         <Show when={hasStatuses()}>
-          <div class="max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80">
+          <div class="card-panel">
             <Show when={equipmentAndStatuses().length}>
               <h3 class="text-yellow-7 mb-3">装备与状态</h3>
             </Show>
@@ -143,7 +143,7 @@ function CardDataViewer(props: CardDataViewerProps) {
         </Show>
         <Show when={explainKeyword()}>
           {(defId) => (
-            <div class="max-h-100% relative bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80">
+            <div class="card-panel">
               <Keyword {...props} definitionId={defId()} />
               <div
                 class="absolute right-1 top-1 text-xs"

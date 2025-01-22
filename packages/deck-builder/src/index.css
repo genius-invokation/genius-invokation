@@ -9,7 +9,8 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
   font-feature-settings: normal; 
   font-variation-settings: normal;
-  -webkit-tap-highlight-color: transparent; 
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
 
   *,
   ::before,

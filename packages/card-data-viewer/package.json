@@ -7,7 +7,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "bun": "./src/index.ts",
+      "bun": "./src/index.tsx",
       "import": "./dist/index.js"
     },
     "./style.css": "./dist/style.css"

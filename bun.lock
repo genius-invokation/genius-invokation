@@ -111,6 +111,7 @@
       "version": "0.16.4",
       "dependencies": {
         "@gi-tcg/assets-manager": "packages/assets-manager",
+        "@gi-tcg/card-data-viewer": "packages/card-data-viewer",
         "@gi-tcg/utils": "packages/utils",
         "@solid-primitives/keyed": "^1.4.0",
         "@unocss/reset": "^0.58.3",
@@ -790,7 +791,7 @@
 
     "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext", { "devDependencies": { "@gi-tcg/core": "packages/core", "@types/mocha": "^10.0.10", "@types/node": "20.x", "@types/vscode": "^1.96.0", "@vscode/vsce": "^3.2.1", "rxjs": "^7.8.1", "typescript": "^5.6.2" } }],
 
-    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/card-data-viewer": "packages/card-data-viewer", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer", { "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 

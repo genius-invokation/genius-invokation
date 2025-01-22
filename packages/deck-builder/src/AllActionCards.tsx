@@ -193,6 +193,7 @@ export function AllActionCards(props: AllCardsProps) {
               <div class="w-[60px]">
                 <Card
                   id={ac().i}
+                  type="actionCard"
                   name={ac().n}
                   selected={selected(ac().i)}
                   partialSelected={partialSelected(ac().i)}

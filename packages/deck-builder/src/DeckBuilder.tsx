@@ -26,6 +26,7 @@ import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
 import type { Deck } from "@gi-tcg/utils";
 import { v as ALL_VERSIONS } from "./data.json" /*  with { type: "json" } */;
+import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
 
 export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
   assetsApiEndpoint?: string;
@@ -36,6 +37,11 @@ export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 interface DeckBuilderContextValue {
   assetsApiEndpoint?: string;
+  showCard: (
+    e: MouseEvent,
+    type: "actionCard" | "character",
+    id: number,
+  ) => void;
 }
 
 const DeckBuilderContext = createContext<DeckBuilderContextValue>();
@@ -49,6 +55,15 @@ const EMPTY_DECK: Deck = {
 
 export function DeckBuilder(props: DeckBuilderProps) {
   const [local, rest] = splitProps(props, ["assetsApiEndpoint", "class"]);
+  let container!: HTMLDivElement;
+
+  const { CardDataViewer, showCard, showCharacter, hide } =
+    createCardDataViewer({
+      assetsApiEndPoint: untrack(() => local.assetsApiEndpoint),
+    });
+  const [cardDataViewerOffsetX, setCardDataViewerOffsetX] = createSignal(0);
+  const [cardDataViewerOffsetY, setCardDataViewerOffsetY] = createSignal(0);
+
   const [version, setVersion] = createSignal(ALL_VERSIONS.length - 1);
   const versionSpecified = () =>
     !!props.version && ALL_VERSIONS.includes(props.version);
@@ -63,12 +78,34 @@ export function DeckBuilder(props: DeckBuilderProps) {
     <DeckBuilderContext.Provider
       value={{
         assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
+        showCard: (e, type, id) => {
+          const rect = (e.target as HTMLElement).getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          // 当点击事件发生在靠近左侧位置时，在鼠标右下角显示；否则在左上角显示
+          if (rect.left - containerRect.left < 320) {
+            setCardDataViewerOffsetX(
+              rect.left + rect.width / 2 - containerRect.left,
+            );
+            setCardDataViewerOffsetY(
+              rect.top + rect.height / 2 - containerRect.top,
+            );
+          } else {
+            setCardDataViewerOffsetX(0);
+            setCardDataViewerOffsetY(0);
+          }
+          if (type === "actionCard") {
+            showCard(id);
+          } else {
+            showCharacter(id);
+          }
+        },
       }}
     >
-      <div class={`gi-tcg-deck-builder ${local.class}`}>
+      <div class={`gi-tcg-deck-builder ${local.class}`} ref={container}>
         <div
           class="w-full h-full flex flex-row items-stretch gap-3 select-none"
           {...rest}
+          onClick={() => hide()}
         >
           <AllCards
             version={version()}
@@ -84,6 +121,15 @@ export function DeckBuilder(props: DeckBuilderProps) {
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
           />
+        </div>
+        <div
+          class="absolute right-0 bottom-0 pointer-events-none z-50"
+          style={{
+            left: `${cardDataViewerOffsetX()}px`,
+            top: `${cardDataViewerOffsetY()}px`,
+          }}
+        >
+          <CardDataViewer />
         </div>
       </div>
     </DeckBuilderContext.Provider>
