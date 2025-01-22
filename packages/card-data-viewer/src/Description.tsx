@@ -56,7 +56,9 @@ const descriptionToItems = (
   const text = description
     .replace(/<.*?>/g, "")
     .replace(/\\n/g, "\n")
-    .replace(/\{.*?\}/g, "");
+    .replace(/\$?\{(.*?)\}/g, (_, g1: string) => {
+      return keyMap[g1] ??  "";
+    });
   const segs = text.replace(/\$\[(.*?)\]/g, "$$[$1$$[").split("$[");
   const result: DescriptionItem[] = [];
   for (let i = 0; i < segs.length; i++) {
@@ -120,7 +122,7 @@ function DamageDescription(props: DamageDescriptionProps) {
         {(url) => <img src={url()} class="inline-block h-1em mb-2px mx-1" />}
       </Show>
       <span
-        class="font-bold underline underline-1 underline-offset-3 cursor-pointer"
+        class="underline underline-1 underline-offset-3 cursor-pointer"
         style={{ color: DAMAGE_COLORS[id()] }}
         onClick={() => props.onRequestExplain?.(keywordId())}
       >
@@ -135,6 +137,7 @@ export interface DescriptionProps {
   keyMap?: Record<string, string>;
   assetsApiEndPoint?: string;
   includesImage: boolean;
+  fromSkill?: boolean;
   onRequestExplain?: (id: number) => void;
   onAddReference?: (defId: number) => void;
 }
@@ -156,9 +159,14 @@ export function Description(props: DescriptionProps) {
   };
 
   createEffect(() => {
+    const addRefFn = props.onAddReference ?? addReference;
     for (const item of items()) {
-      if (item.type === "reference" && item.rType === "C") {
-        (props.onAddReference ?? addReference)(item.id);
+      if (item.type !== "reference") {
+        continue;
+      } else if (item.rType === "S" && !props.fromSkill) {
+        addRefFn(item.id);
+      } else if (item.rType === "C") {
+        addRefFn(item.id);
       }
     }
   });
@@ -189,13 +197,13 @@ export function Description(props: DescriptionProps) {
                   <Show
                     when={item.rType === "K"}
                     fallback={
-                      <span class="font-bold mx-1">
+                      <span class="text-black mx-1">
                         {getNameSync(item.id) ?? item.id}
                       </span>
                     }
                   >
                     <span
-                      class="font-bold underline underline-1 underline-offset-3 cursor-pointer mx-1"
+                      class="text-black underline underline-1 underline-offset-3 cursor-pointer mx-1"
                       onClick={() => props.onRequestExplain?.(item.id)}
                     >
                       {getNameSync(item.id)}
@@ -207,10 +215,10 @@ export function Description(props: DescriptionProps) {
           )}
         </For>
       </p>
-      <ul class="b-l-2 p-l-2 b-solid b-yellow-5">
+      <ul>
         <For each={references}>
           {(defId) => (
-            <li>
+            <li class="b-l-2 p-l-2 b-solid b-yellow-5 mb-2">
               <Reference
                 {...props}
                 definitionId={defId}

@@ -30,7 +30,7 @@ export interface RegisterResult {
   readonly showCharacter: (id: number) => void;
   readonly showSkill: (id: number) => void;
   readonly showCard: (id: number) => void;
-  readonly showStates: {
+  readonly showState: {
     (
       type: "character",
       character: PbCharacterState,
@@ -94,7 +94,7 @@ export function createCardDataViewer(
     showSkill: (id) => {
       showDef(id, "skill");
     },
-    showStates: (
+    showState: (
       type: StateType,
       state: PbCharacterState | PbEntityState,
       combatStatuses?: PbEntityState[],

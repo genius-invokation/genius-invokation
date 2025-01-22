@@ -24,16 +24,26 @@ import {
   type Setter,
 } from "solid-js";
 import type { ViewerInput } from "./CardDataViewer";
-import { getData, getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
+import {
+  getData,
+  getImageUrl,
+  getNameSync,
+  KEYWORD_ID_OFFSET,
+} from "@gi-tcg/assets-manager";
 import type {
+  ActionCardRawData,
   CharacterRawData,
+  EntityRawData,
   PlayCost,
   SkillRawData,
 } from "@gi-tcg/static-data";
 import { PlayCostList } from "./PlayCost";
 import { Description } from "./Description";
+import { Tags } from "./Tags";
+import { TEXT_MAP } from "./text_map";
 
 export interface CardDataProps {
+  class?: string;
   input: ViewerInput;
   assetsApiEndPoint?: string;
   includesImage: boolean;
@@ -56,7 +66,7 @@ export function Character(props: CardDataProps) {
       }),
   );
   return (
-    <div>
+    <div class={props.class}>
       <Switch>
         <Match when={data.error}>加载失败</Match>
         <Match when={data.loading}>加载中...</Match>
@@ -71,6 +81,7 @@ export function Character(props: CardDataProps) {
                 </div>
               </Show>
               <h3 class="font-bold mb-3">{data().name}</h3>
+              <Tags tags={data().tags} />
               <ul class="clear-both flex flex-col gap-2">
                 <For each={data().skills}>
                   {(skill) => (
@@ -81,6 +92,7 @@ export function Character(props: CardDataProps) {
                         type: "skill",
                         definitionId: skill.id,
                       }}
+                      asChild
                       class="b-yellow-3 b-1 rounded-md"
                     />
                   )}
@@ -90,14 +102,80 @@ export function Character(props: CardDataProps) {
           )}
         </Match>
       </Switch>
+      <p class="mt-2 text-xs font-mono text-yellow-6">
+        DefID: <span class="select-text">{props.input.definitionId}</span>
+        <Show when={props.input.from === "state" && props.input} keyed>
+          {(input) => (
+            <>
+              <span class="inline-block w-1em" />
+              ID: <span class="select-text">{input.id}</span>
+            </>
+          )}
+        </Show>
+      </p>
+    </div>
+  );
+}
+
+export function ActionCard(props: CardDataProps) {
+  const [data] = createResource(
+    () => ({ ...props }),
+    (p) =>
+      getData(p.input.definitionId, {
+        assetsApiEndpoint: p.assetsApiEndPoint,
+      }) as Promise<ActionCardRawData>,
+  );
+  const [image] = createResource(
+    () => ({ ...props }),
+    (p) =>
+      getImageUrl(p.input.definitionId, {
+        assetsApiEndpoint: p.assetsApiEndPoint,
+      }),
+  );
+  return (
+    <div class={props.class}>
+      <Switch>
+        <Match when={data.error}>加载失败</Match>
+        <Match when={data.loading}>加载中...</Match>
+        <Match when={data()}>
+          {(data) => (
+            <>
+              <Show when={props.includesImage}>
+                <div class="w-20 float-start mr-3 mb-3">
+                  <Show when={image()}>
+                    {(image) => <img src={image()} class="w-full" />}
+                  </Show>
+                </div>
+              </Show>
+              <div class="flex flex-col mb-2">
+                <h3 class="font-bold">{data().name}</h3>
+                <div class="h-6 flex flex-row items-center gap-1">
+                  <span class="text-xs">{TEXT_MAP[data().type]}</span>
+                  <PlayCostList playCost={data().playCost} />
+                </div>
+              </div>
+              <Tags tags={data().tags} />
+              <div>
+                <Description
+                  {...props}
+                  description={data().rawDescription}
+                  onRequestExplain={props.onRequestExplain}
+                />
+              </div>
+            </>
+          )}
+        </Match>
+      </Switch>
+      <p class="mt-2 text-xs font-mono text-yellow-6">
+        DefID: <span class="select-text">{props.input.definitionId}</span>
+      </p>
     </div>
   );
 }
 
 interface ExpandableCardDataProps extends CardDataProps {
-  open?: boolean;
-  setOpen?: Setter<boolean>;
   class?: string;
+  asChild?: boolean;
 }
 
 export function Skill(props: ExpandableCardDataProps) {
@@ -117,25 +195,17 @@ export function Skill(props: ExpandableCardDataProps) {
   );
   const [skillTypeText, setSkillTypeText] = createSignal("");
   const [playCost, setPlayCost] = createSignal<PlayCost[]>([]);
-  const SKILL_TYPE_TEXT_MAP: Record<string, string> = {
-    GCG_SKILL_TAG_A: "普通攻击",
-    GCG_SKILL_TAG_E: "元素战技",
-    GCG_SKILL_TAG_Q: "元素爆发",
-    GCG_SKILL_TAG_PASSIVE: "被动技能",
-    GCG_SKILL_TAG_VEHICLE: "特技",
-  };
 
   createEffect(() => {
     if (data.state === "ready") {
       setPlayCost(data().playCost);
-      setSkillTypeText(SKILL_TYPE_TEXT_MAP[data().type]);
+      setSkillTypeText(TEXT_MAP[data().type]);
     }
   });
   return (
     <details
       class={`flex flex-col group ${props.class ?? ""}`}
-      open={props.open}
-      onToggle={(e) => props.setOpen?.((e.target as HTMLDetailsElement).open)}
+      open={!props.asChild}
     >
       <summary class="flex flex-row items-center gap-2 cursor-pointer rounded-md group-not-open:bg-yellow-2 transition-colors">
         <div class="w-12 h-12">
@@ -144,7 +214,9 @@ export function Skill(props: ExpandableCardDataProps) {
           </Show>
         </div>
         <div class="flex flex-col">
-          <h3>{getNameSync(props.input.definitionId) ?? props.input.definitionId}</h3>
+          <h3>
+            {getNameSync(props.input.definitionId) ?? props.input.definitionId}
+          </h3>
           <div class="h-5 flex flex-row items-center gap-1">
             <span class="text-xs">{skillTypeText()}</span>
             <PlayCostList playCost={playCost()} />
@@ -167,10 +239,113 @@ export function Skill(props: ExpandableCardDataProps) {
           )}
         </Match>
       </Switch>
+      <p
+        class="text-xs font-mono text-yellow-6"
+        classList={{
+          "mx-2 mb-2": props.asChild,
+        }}
+      >
+        DefID: <span class="select-text">{props.input.definitionId}</span>
+      </p>
     </details>
   );
 }
+
+export function Entity(props: ExpandableCardDataProps) {
+  const [data] = createResource(
+    () => ({ ...props }),
+    (p) =>
+      getData(p.input.definitionId, {
+        assetsApiEndpoint: p.assetsApiEndPoint,
+      }) as Promise<EntityRawData>,
+  );
+  const [icon] = createResource(
+    () => ({ ...props }),
+    (p) =>
+      getImageUrl(p.input.definitionId, {
+        assetsApiEndpoint: p.assetsApiEndPoint,
+      }),
+  );
+  const [entityTypeText, setEntityTypeText] = createSignal("");
+
+  createEffect(() => {
+    if (data.state === "ready") {
+      setEntityTypeText(TEXT_MAP[data().type]);
+    }
+  });
+  return (
+    <details
+      class={`flex flex-col group ${props.class ?? ""}`}
+      open={!props.asChild}
+    >
+      <summary class="flex flex-row items-center gap-2 cursor-pointer rounded-md group-not-open:bg-yellow-2 transition-colors">
+        <div class="relative h-12">
+          <Show when={icon()} fallback={<div class="w-12 h-12" />}>
+            {(icon) => <img src={icon()} class="h-full" />}
+          </Show>
+          <Show
+            when={
+              props.input.from === "state" &&
+              typeof props.input.variableValue === "number" &&
+              props.input
+            }
+            keyed
+          >
+            {(input) => (
+              <div class="absolute right-0 bottom-0 b-yellow-1 b-2 bg-yellow-8 text-yellow-1 text-xs line-height-0 h-4 w-4 rounded-full flex items-center justify-center">
+                {input.variableValue}
+              </div>
+            )}
+          </Show>
+        </div>
+        <div class="flex flex-col">
+          <h3>
+            {getNameSync(props.input.definitionId) ?? props.input.definitionId}
+          </h3>
+          <div class="h-5 flex flex-row items-center gap-1">
+            <span class="text-xs">{entityTypeText()}</span>
+          </div>
+        </div>
+      </summary>
+      <Switch>
+        <Match when={data.error}>加载失败</Match>
+        <Match when={data.loading}>加载中...</Match>
+        <Match when={data()}>
+          {(data) => (
+            <div class="p-2">
+              <Description
+                {...props}
+                keyMap={
+                  props.input.from === "state"
+                    ? props.input.descriptionDictionary
+                    : {}
+                }
+                description={
+                  data().rawPlayingDescription ?? data().rawDescription
+                }
+                onRequestExplain={props.onRequestExplain}
+              />
+            </div>
+          )}
+        </Match>
+      </Switch>
+      <p class="mx-2 mb-2 text-xs font-mono text-yellow-6">
+        DefID: <span class="select-text">{props.input.definitionId}</span>
+        <Show when={props.input.from === "state" && props.input} keyed>
+          {(input) => (
+            <>
+              <span class="inline-block w-1em" />
+              ID: <span class="select-text">{input.id}</span>
+            </>
+          )}
+        </Show>
+      </p>
+    </details>
+  );
+}
+
 export interface CardDefinitionProps {
+  class?: string;
   definitionId: number;
   assetsApiEndPoint?: string;
   includesImage: boolean;
@@ -185,10 +360,12 @@ export function Keyword(props: CardDefinitionProps) {
       }) as Promise<SkillRawData>,
   );
   return (
-    <>
+    <div class={props.class}>
       <h3>
         <span class="text-yellow-7">规则解释：</span>
-        <span class="font-bold">{getNameSync(props.definitionId) ?? props.definitionId}</span>
+        <span class="font-bold">
+          {getNameSync(props.definitionId) ?? props.definitionId}
+        </span>
       </h3>
       <Switch>
         <Match when={data.error}>加载失败</Match>
@@ -201,7 +378,13 @@ export function Keyword(props: CardDefinitionProps) {
           )}
         </Match>
       </Switch>
-    </>
+      <p class="mt-2 text-xs font-mono text-yellow-6">
+        DefID:{" "}
+        <span class="select-text">
+          {props.definitionId - KEYWORD_ID_OFFSET}
+        </span>
+      </p>
+    </div>
   );
 }
 
@@ -233,17 +416,34 @@ export function Reference(props: ReferenceProps) {
           </Show>
         </div>
       </Show>
-      <h4>{getNameSync(props.definitionId) ?? props.definitionId}</h4>
+      <h4 class="flex flex-row items-center justify-between">
+        <span class="font-bold">
+          {getNameSync(props.definitionId) ?? props.definitionId}
+        </span>
+        <Show when={data()}>
+          {(data) => (
+            <span class="text-xs text-yellow-7">{TEXT_MAP[data().type]}</span>
+          )}
+        </Show>
+      </h4>
       <div class="text-sm">
         <Switch>
           <Match when={data.error}>加载失败</Match>
           <Match when={data.loading}>加载中...</Match>
           <Match when={data()}>
             {(data) => (
-              <Description {...props} description={data().rawDescription} onAddReference={props.onAddReference} />
+              <Description
+                {...props}
+                keyMap={"keyMap" in data() ? data().keyMap : {}}
+                description={data().rawDescription}
+                onAddReference={props.onAddReference}
+              />
             )}
           </Match>
         </Switch>
+        <p class="text-xs font-mono text-yellow-6">
+          DefID: <span class="select-text">{props.definitionId}</span>
+        </p>
       </div>
     </div>
   );

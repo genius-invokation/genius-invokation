@@ -18,15 +18,59 @@ import { createCardDataViewer } from ".";
 import { render } from "solid-js/web";
 
 function App() {
-  const { CardDataViewer, showCharacter } = createCardDataViewer({ includesImage: true, assetsApiEndPoint: "https://beta.assets.gi-tcg.guyutongxue.site/api/v2" });
+  const { CardDataViewer, showCharacter, showState, showCard } =
+    createCardDataViewer({
+      // includesImage: true,
+    });
   onMount(() => {
-    showCharacter(1709);
+    // showCharacter(1304);
+    showState("summon", {
+      id: -5000001,
+      definitionId: 113041,
+      descriptionDictionary: {},
+      hasUsagePerRound: false,
+      variableName: "usage",
+      variableValue: 2,
+    });
+    showState(
+      "character",
+      {
+        id: -500001,
+        definitionId: 1304,
+        aura: 0,
+        defeated: false,
+        health: 10,
+        maxHealth: 10,
+        energy: 2,
+        maxEnergy: 2,
+        entity: [
+          {
+            id: -500002,
+            definitionId: 312015,
+            hasUsagePerRound: false,
+            variableName: "usage",
+            variableValue: 3,
+            equipment: 1,
+            descriptionDictionary: {
+              "[GCG_TOKEN_SHIELD]": "1",
+            },
+          },
+        ],
+      },
+      [
+        {
+          id: -500003,
+          definitionId: 111,
+          variableName: "shield",
+          variableValue: 1,
+          hasUsagePerRound: true,
+          descriptionDictionary: {},
+        },
+      ],
+    );
+    showCard(214011)
   });
-  return (
-    <div>
-      <CardDataViewer />
-    </div>
-  );
+  return <CardDataViewer />;
 }
 
 render(() => <App />, document.querySelector("#root")!);

@@ -32,7 +32,6 @@
         "@gi-tcg/core": "packages/core",
         "@gi-tcg/typings": "packages/typings",
         "@unocss/postcss": "^65.4.2",
-        "@unocss/reset": "^65.4.2",
         "rollup-plugin-node-externals": "^7.0.1",
         "unocss": "^65.4.2",
         "vite": "^6.0.11",
@@ -779,7 +778,7 @@
 
     "@gi-tcg/assets-manager": ["@gi-tcg/assets-manager@workspace:packages/assets-manager", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data" } }],
 
-    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager" }, "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "@unocss/reset": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager" }, "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
 
     "@gi-tcg/cbinding": ["@gi-tcg/cbinding@workspace:packages/cbinding", { "devDependencies": { "@babel/preset-typescript": "^7.26.0", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-commonjs": "^28.0.1", "@rollup/plugin-node-resolve": "^15.3.0", "@rollup/plugin-replace": "^6.0.1", "@rollup/plugin-terser": "^0.4.4", "@types/core-js": "^2.5.8", "core-js": "3.38.1", "fast-text-encoding": "^1.0.6", "rollup": "^4.27.4" } }],
 
@@ -1121,7 +1120,7 @@
 
     "@unocss/preset-wind": ["@unocss/preset-wind@65.4.2", "", { "dependencies": { "@unocss/core": "65.4.2", "@unocss/preset-mini": "65.4.2", "@unocss/rule-utils": "65.4.2" } }, "sha512-TQm9P2UHpqfn92APfZJtbK2brkXQ+GInFL2evup/ZChU1fqdbH9mL0ef6ZNQbCH4gjY6mEzwPXt4lhGod6CajA=="],
 
-    "@unocss/reset": ["@unocss/reset@65.4.2", "", {}, "sha512-Sas0lTGEgzdWKafSiT+dyhhrUOkOpPbhJYbPMgjW6Ol/tB5JXhdlCNm90Xue1wt453P8O3J4v+dQcyrdRSq0Ig=="],
+    "@unocss/reset": ["@unocss/reset@0.58.9", "", {}, "sha512-nA2pg3tnwlquq+FDOHyKwZvs20A6iBsKPU7Yjb48JrNnzoaXqE+O9oN6782IG2yKVW4AcnsAnAnM4cxXhGzy1w=="],
 
     "@unocss/rule-utils": ["@unocss/rule-utils@65.4.2", "", { "dependencies": { "@unocss/core": "^65.4.2", "magic-string": "^0.30.17" } }, "sha512-OdMSJZiZUr8XmLo3Bz3Wrw1nZLT1nTPnPOV8gdi4vZ+2RgCChua9o8Dz4IyeQ7mMhLXoqHIUpJ7jE5Nv+Uz1Fw=="],
 
@@ -2825,10 +2824,6 @@
 
     "@gi-tcg/data-vscode-ext/typescript": ["typescript@5.7.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw=="],
 
-    "@gi-tcg/deck-builder/@unocss/reset": ["@unocss/reset@0.58.9", "", {}, "sha512-nA2pg3tnwlquq+FDOHyKwZvs20A6iBsKPU7Yjb48JrNnzoaXqE+O9oN6782IG2yKVW4AcnsAnAnM4cxXhGzy1w=="],
-
-    "@gi-tcg/web-client/@unocss/reset": ["@unocss/reset@0.58.9", "", {}, "sha512-nA2pg3tnwlquq+FDOHyKwZvs20A6iBsKPU7Yjb48JrNnzoaXqE+O9oN6782IG2yKVW4AcnsAnAnM4cxXhGzy1w=="],
-
     "@humanwhocodes/config-array/minimatch": ["minimatch@3.1.2", "", { "dependencies": { "brace-expansion": "^1.1.7" } }, "sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw=="],
 
     "@iconify/utils/debug": ["debug@4.4.0", "", { "dependencies": { "ms": "^2.1.3" } }, "sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA=="],
@@ -2912,6 +2907,8 @@
     "@una-ui/preset/@unocss/preset-mini": ["@unocss/preset-mini@0.57.7", "", { "dependencies": { "@unocss/core": "0.57.7", "@unocss/extractor-arbitrary-variants": "0.57.7", "@unocss/rule-utils": "0.57.7" } }, "sha512-YPmmh+ZIg4J7/nPMfvzD1tOfUFD+8KEFXX9ISRteooflYeosn2YytGW66d/sq97AZos9N630FJ//DvPD2wfGwA=="],
 
     "@una-ui/preset/unocss": ["unocss@0.57.7", "", { "dependencies": { "@unocss/astro": "0.57.7", "@unocss/cli": "0.57.7", "@unocss/core": "0.57.7", "@unocss/extractor-arbitrary-variants": "0.57.7", "@unocss/postcss": "0.57.7", "@unocss/preset-attributify": "0.57.7", "@unocss/preset-icons": "0.57.7", "@unocss/preset-mini": "0.57.7", "@unocss/preset-tagify": "0.57.7", "@unocss/preset-typography": "0.57.7", "@unocss/preset-uno": "0.57.7", "@unocss/preset-web-fonts": "0.57.7", "@unocss/preset-wind": "0.57.7", "@unocss/reset": "0.57.7", "@unocss/transformer-attributify-jsx": "0.57.7", "@unocss/transformer-attributify-jsx-babel": "0.57.7", "@unocss/transformer-compile-class": "0.57.7", "@unocss/transformer-directives": "0.57.7", "@unocss/transformer-variant-group": "0.57.7", "@unocss/vite": "0.57.7" }, "peerDependencies": { "@unocss/webpack": "0.57.7", "vite": "^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0" }, "optionalPeers": ["@unocss/webpack", "vite"] }, "sha512-Z99ZZPkbkjIUXEM7L+K/7Y5V5yqUS0VigG7ZIFzLf/npieKmXHKlrPyvQWFQaf3OqooMFuKBQivh75TwvSOkcQ=="],
+
+    "@unocss/astro/@unocss/reset": ["@unocss/reset@65.4.2", "", {}, "sha512-Sas0lTGEgzdWKafSiT+dyhhrUOkOpPbhJYbPMgjW6Ol/tB5JXhdlCNm90Xue1wt453P8O3J4v+dQcyrdRSq0Ig=="],
 
     "@unocss/cli/@rollup/pluginutils": ["@rollup/pluginutils@5.1.4", "", { "dependencies": { "@types/estree": "^1.0.0", "estree-walker": "^2.0.2", "picomatch": "^4.0.2" }, "peerDependencies": { "rollup": "^1.20.0||^2.0.0||^3.0.0||^4.0.0" }, "optionalPeers": ["rollup"] }, "sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ=="],
 

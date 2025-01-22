@@ -1,1 +1,19 @@
 @unocss;
+
+.gi-tcg-card-data-viewer {
+  height: 100%;
+  width: 100%;
+
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: darkgoldenrod;
+    border: 3px solid transparent;
+    border-radius: 5px;
+    background-clip: padding-box;
+  }
+}
