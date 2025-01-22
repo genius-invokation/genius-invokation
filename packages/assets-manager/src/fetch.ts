@@ -22,6 +22,7 @@ import type {
   SkillRawData,
 } from "@gi-tcg/static-data";
 import { blobToDataUrl } from "./data_url";
+import { KEYWORD_ID_OFFSET } from "./names";
 
 export type AnyData =
   | ActionCardRawData
@@ -42,9 +43,27 @@ export async function getData(
   id: number,
   options: GetDataOptions = {},
 ): Promise<AnyData> {
+  if (id >= KEYWORD_ID_OFFSET) {
+    return getKeyword(id - KEYWORD_ID_OFFSET, options);
+  }
   const url = `${
     options.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT
   }/data/${id}`;
+  if (cache.has(url)) {
+    return cache.get(url);
+  }
+  const promise = fetch(url).then((r) => r.json());
+  cache.set(url, promise);
+  return promise;
+}
+
+export async function getKeyword(
+  id: number,
+  options: GetDataOptions = {},
+): Promise<AnyData> {
+  const url = `${
+    options.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT
+  }/data/K${id}`;
   if (cache.has(url)) {
     return cache.get(url);
   }
@@ -72,7 +91,10 @@ export async function getImage(
   return promise;
 }
 
-export async function getImageUrl(id: number, options: GetImageOptions = {}): Promise<string> {
+export async function getImageUrl(
+  id: number,
+  options: GetImageOptions = {},
+): Promise<string> {
   const blob = await getImage(id, options);
   return blobToDataUrl(blob);
 }

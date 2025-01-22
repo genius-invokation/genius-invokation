@@ -20,7 +20,6 @@ import type { JSX } from "solid-js/jsx-runtime";
 import {
   CardDataViewerContainer,
   type ViewerInput,
-  type NestedStyle,
   type StateType,
 } from "./CardDataViewer";
 import { createSignal } from "solid-js";
@@ -45,7 +44,6 @@ export interface RegisterResult {
 export interface CreateCardDataViewerOption {
   assetsApiEndPoint?: string;
   includesImage?: boolean;
-  nestedStyle?: NestedStyle;
 }
 
 export function createCardDataViewer(
@@ -84,7 +82,6 @@ export function createCardDataViewer(
         shown={shown()}
         inputs={inputs()}
         includesImage={option.includesImage ?? false}
-        nestedStyle={option.nestedStyle ?? "interactive"}
         assetsApiEndPoint={option.assetsApiEndPoint}
       />
     ),

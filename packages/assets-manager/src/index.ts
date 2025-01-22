@@ -29,4 +29,4 @@ export {
   getImageSync,
   getImageUrlSync,
 } from "./sync";
-export { getNameSync } from "./names";
+export { KEYWORD_ID_OFFSET, getNameSync } from "./names";

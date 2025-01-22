@@ -18,9 +18,9 @@ import { createCardDataViewer } from ".";
 import { render } from "solid-js/web";
 
 function App() {
-  const { CardDataViewer, showCharacter } = createCardDataViewer();
+  const { CardDataViewer, showCharacter } = createCardDataViewer({ includesImage: true, assetsApiEndPoint: "https://beta.assets.gi-tcg.guyutongxue.site/api/v2" });
   onMount(() => {
-    showCharacter(1304);
+    showCharacter(1709);
   });
   return (
     <div>
