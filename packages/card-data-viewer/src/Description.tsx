@@ -54,7 +54,7 @@ const descriptionToItems = (
   keyMap: Record<string, string> = {},
 ): DescriptionItem[] => {
   const text = description
-    .replace(/<.*?>/g, "")
+    .replace(/<[^>]+>/g, "")
     .replace(/\\n/g, "\n")
     .replace(/\$?\{(.*?)\}/g, (_, g1: string) => {
       return keyMap[g1] ??  "";
