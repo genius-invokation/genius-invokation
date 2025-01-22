@@ -10,6 +10,7 @@
       "bun": "./src/index.tsx",
       "import": "./dist/index.js"
     },
+    "./internal/*": "./src/*.ts",
     "./style.css": "./dist/style.css"
   },
   "scripts": {

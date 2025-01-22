@@ -23,6 +23,7 @@ import {
 } from "./CardDataViewer";
 import { createSignal } from "solid-js";
 import type { PbCharacterState, PbEntityState } from "@gi-tcg/typings";
+import { renderToString } from "solid-js/web";
 
 export interface RegisterResult {
   readonly CardDataViewer: () => JSX.Element;
