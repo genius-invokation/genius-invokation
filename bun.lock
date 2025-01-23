@@ -1,5 +1,5 @@
 {
-  "lockfileVersion": 0,
+  "lockfileVersion": 1,
   "workspaces": {
     "": {
       "devDependencies": {
@@ -18,15 +18,16 @@
       "name": "@gi-tcg/assets-manager",
       "version": "0.16.4",
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/static-data": "packages/static-data",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
       },
     },
     "packages/card-data-img-gen": {
       "name": "@gi-tcg/card-data-img-gen",
       "version": "0.0.0",
       "devDependencies": {
-        "@gi-tcg/card-data-viewer": "packages/card-data-viewer",
+        "@gi-tcg/card-data-viewer": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
         "@puppeteer/browsers": "^2.7.0",
         "puppeteer-core": "^24.1.0",
         "vite": "^6.0.11",
@@ -36,11 +37,11 @@
       "name": "@gi-tcg/card-data-viewer",
       "version": "0.16.4",
       "dependencies": {
-        "@gi-tcg/assets-manager": "packages/assets-manager",
+        "@gi-tcg/assets-manager": "workspace:*",
       },
       "devDependencies": {
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/typings": "packages/typings",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
         "@unocss/postcss": "^65.4.2",
         "rollup-plugin-node-externals": "^7.0.1",
         "unocss": "^65.4.2",
@@ -56,10 +57,10 @@
       "name": "@gi-tcg/cbinding",
       "devDependencies": {
         "@babel/preset-typescript": "^7.26.0",
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/data": "packages/data",
-        "@gi-tcg/typings": "packages/typings",
-        "@gi-tcg/utils": "packages/utils",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/data": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^28.0.1",
         "@rollup/plugin-node-resolve": "^15.3.0",
@@ -79,13 +80,13 @@
       "name": "@gi-tcg/core",
       "version": "0.16.4",
       "dependencies": {
-        "@gi-tcg/typings": "packages/typings",
-        "@gi-tcg/utils": "packages/utils",
+        "@gi-tcg/typings": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
         "immer": "^10.0.3",
         "ohm-js": "^17.1.0",
       },
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
+        "@gi-tcg/config": "workspace:*",
         "@ohm-js/cli": "^2.0.0",
         "prettier": "3.1.1",
       },
@@ -94,20 +95,20 @@
       "name": "@gi-tcg/data",
       "version": "0.16.4-5-3-0",
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/static-data": "packages/static-data",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
         "@microsoft/tsdoc": "^0.14.2",
         "case-anything": "^2.1.13",
       },
       "peerDependencies": {
-        "@gi-tcg/core": "packages/core",
+        "@gi-tcg/core": "workspace:*",
       },
     },
     "packages/data-vscode-ext": {
       "name": "@gi-tcg/data-vscode-ext",
       "version": "0.0.1",
       "devDependencies": {
-        "@gi-tcg/core": "packages/core",
+        "@gi-tcg/core": "workspace:*",
         "@types/mocha": "^10.0.10",
         "@types/node": "20.x",
         "@types/vscode": "^1.96.0",
@@ -120,15 +121,15 @@
       "name": "@gi-tcg/deck-builder",
       "version": "0.16.4",
       "dependencies": {
-        "@gi-tcg/assets-manager": "packages/assets-manager",
-        "@gi-tcg/card-data-viewer": "packages/card-data-viewer",
-        "@gi-tcg/utils": "packages/utils",
+        "@gi-tcg/assets-manager": "workspace:*",
+        "@gi-tcg/card-data-viewer": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
         "@solid-primitives/keyed": "^1.4.0",
         "@unocss/reset": "^0.58.3",
       },
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/static-data": "packages/static-data",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
         "@typescript-eslint/eslint-plugin": "^6.18.0",
         "@typescript-eslint/parser": "^6.18.0",
         "@unocss/postcss": "^65.4.2",
@@ -150,8 +151,8 @@
       "name": "@gi-tcg/detail-log-viewer",
       "version": "0.0.0",
       "devDependencies": {
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/typings": "packages/typings",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
         "@unocss/postcss": "^65.4.2",
         "rollup-plugin-node-externals": "^7.0.1",
         "solid-devtools": "^0.29.2",
@@ -169,12 +170,12 @@
       "version": "0.16.4",
       "dependencies": {
         "@fastify/static": "^7.0.4",
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/data": "packages/data",
-        "@gi-tcg/static-data": "packages/static-data",
-        "@gi-tcg/typings": "packages/typings",
-        "@gi-tcg/utils": "packages/utils",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/data": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
         "@nestjs/common": "^10.3.9",
         "@nestjs/core": "^10.3.9",
         "@nestjs/jwt": "^10.2.0",
@@ -188,7 +189,7 @@
         "simple-git": "^3.27.0",
       },
       "devDependencies": {
-        "@gi-tcg/web-client": "packages/web-client",
+        "@gi-tcg/web-client": "workspace:*",
         "@nestjs/cli": "^10.3.2",
         "pm2": "^5.4.0",
         "prisma": "5.20.0",
@@ -198,12 +199,12 @@
       "name": "@gi-tcg/standalone",
       "version": "0.0.0",
       "dependencies": {
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/data": "packages/data",
-        "@gi-tcg/deck-builder": "packages/deck-builder",
-        "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer",
-        "@gi-tcg/utils": "packages/utils",
-        "@gi-tcg/webui-core": "packages/webui-core",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/data": "workspace:*",
+        "@gi-tcg/deck-builder": "workspace:*",
+        "@gi-tcg/detail-log-viewer": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
+        "@gi-tcg/webui-core": "workspace:*",
         "@vercel/analytics": "^1.2.0",
         "core-js": "3.38.1",
         "solid-js": "^1.8.15",
@@ -211,8 +212,8 @@
       "devDependencies": {
         "@babel/core": "^7.24.4",
         "@babel/preset-env": "^7.24.4",
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/static-data": "packages/static-data",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
         "@rollup/plugin-babel": "^6.0.4",
         "@types/core-js": "^2.5.8",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -230,16 +231,16 @@
       "name": "@gi-tcg/static-data",
       "version": "0.16.4-5-3-0",
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
+        "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",
       },
     },
     "packages/test": {
       "name": "@gi-tcg/test",
       "dependencies": {
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/data": "packages/data",
-        "@gi-tcg/typings": "packages/typings",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/data": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
       },
     },
     "packages/typings": {
@@ -256,16 +257,16 @@
       "name": "@gi-tcg/utils",
       "version": "0.16.4",
       "devDependencies": {
-        "@gi-tcg/static-data": "packages/static-data",
-        "@gi-tcg/typings": "packages/typings",
+        "@gi-tcg/static-data": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
       },
     },
     "packages/web-client": {
       "name": "@gi-tcg/web-client",
       "version": "0.0.0",
       "dependencies": {
-        "@gi-tcg/deck-builder": "packages/deck-builder",
-        "@gi-tcg/webui-core": "packages/webui-core",
+        "@gi-tcg/deck-builder": "workspace:*",
+        "@gi-tcg/webui-core": "workspace:*",
         "@server-sent-stream/web": "^1.0.3",
         "@solid-primitives/storage": "^4.2.1",
         "@solidjs/router": "^0.13.5",
@@ -279,8 +280,8 @@
       "devDependencies": {
         "@babel/core": "^7.24.4",
         "@babel/preset-env": "^7.24.4",
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/static-data": "packages/static-data",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/static-data": "workspace:*",
         "@iconify-json/mdi": "^1.1.66",
         "@rollup/plugin-babel": "^6.0.4",
         "@types/core-js": "^2.5.8",
@@ -302,8 +303,8 @@
       "name": "@gi-tcg/webui",
       "version": "0.16.4",
       "devDependencies": {
-        "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer",
-        "@gi-tcg/webui-core": "packages/webui-core",
+        "@gi-tcg/detail-log-viewer": "workspace:*",
+        "@gi-tcg/webui-core": "workspace:*",
         "solid-element": "^1.8.0",
         "solid-js": "^1.8.15",
         "vite": "^6.0.11",
@@ -315,16 +316,16 @@
       "name": "@gi-tcg/webui-core",
       "version": "0.16.4",
       "dependencies": {
-        "@gi-tcg/assets-manager": "packages/assets-manager",
-        "@gi-tcg/utils": "packages/utils",
+        "@gi-tcg/assets-manager": "workspace:*",
+        "@gi-tcg/utils": "workspace:*",
         "@solid-primitives/keyed": "^1.4.0",
       },
       "devDependencies": {
-        "@gi-tcg/config": "packages/config",
-        "@gi-tcg/core": "packages/core",
-        "@gi-tcg/data": "packages/data",
-        "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer",
-        "@gi-tcg/typings": "packages/typings",
+        "@gi-tcg/config": "workspace:*",
+        "@gi-tcg/core": "workspace:*",
+        "@gi-tcg/data": "workspace:*",
+        "@gi-tcg/detail-log-viewer": "workspace:*",
+        "@gi-tcg/typings": "workspace:*",
         "@typescript-eslint/eslint-plugin": "^6.18.0",
         "@typescript-eslint/parser": "^6.18.0",
         "@unocss/postcss": "^65.4.2",
@@ -788,43 +789,43 @@
 
     "@fastify/static": ["@fastify/static@7.0.4", "", { "dependencies": { "@fastify/accept-negotiator": "^1.0.0", "@fastify/send": "^2.0.0", "content-disposition": "^0.5.3", "fastify-plugin": "^4.0.0", "fastq": "^1.17.0", "glob": "^10.3.4" } }, "sha512-p2uKtaf8BMOZWLs6wu+Ihg7bWNBdjNgCwDza4MJtTqg+5ovKmcbgbR9Xs5/smZ1YISfzKOCNYmZV8LaCj+eJ1Q=="],
 
-    "@gi-tcg/assets-manager": ["@gi-tcg/assets-manager@workspace:packages/assets-manager", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data" } }],
+    "@gi-tcg/assets-manager": ["@gi-tcg/assets-manager@workspace:packages/assets-manager"],
 
-    "@gi-tcg/card-data-img-gen": ["@gi-tcg/card-data-img-gen@workspace:packages/card-data-img-gen", { "devDependencies": { "@gi-tcg/card-data-viewer": "packages/card-data-viewer", "@puppeteer/browsers": "^2.7.0", "puppeteer-core": "^24.1.0", "vite": "^6.0.11" } }],
+    "@gi-tcg/card-data-img-gen": ["@gi-tcg/card-data-img-gen@workspace:packages/card-data-img-gen"],
 
-    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager" }, "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/card-data-viewer": ["@gi-tcg/card-data-viewer@workspace:packages/card-data-viewer"],
 
-    "@gi-tcg/cbinding": ["@gi-tcg/cbinding@workspace:packages/cbinding", { "devDependencies": { "@babel/preset-typescript": "^7.26.0", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@rollup/plugin-babel": "^6.0.4", "@rollup/plugin-commonjs": "^28.0.1", "@rollup/plugin-node-resolve": "^15.3.0", "@rollup/plugin-replace": "^6.0.1", "@rollup/plugin-terser": "^0.4.4", "@types/core-js": "^2.5.8", "core-js": "3.38.1", "fast-text-encoding": "^1.0.6", "rollup": "^4.27.4" } }],
+    "@gi-tcg/cbinding": ["@gi-tcg/cbinding@workspace:packages/cbinding"],
 
-    "@gi-tcg/config": ["@gi-tcg/config@workspace:packages/config", {}],
+    "@gi-tcg/config": ["@gi-tcg/config@workspace:packages/config"],
 
-    "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core", { "dependencies": { "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "immer": "^10.0.3", "ohm-js": "^17.1.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@ohm-js/cli": "^2.0.0", "prettier": "3.1.1" } }],
+    "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core"],
 
-    "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data", { "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@microsoft/tsdoc": "^0.14.2", "case-anything": "^2.1.13" }, "peerDependencies": { "@gi-tcg/core": "packages/core" } }],
+    "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data"],
 
-    "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext", { "devDependencies": { "@gi-tcg/core": "packages/core", "@types/mocha": "^10.0.10", "@types/node": "20.x", "@types/vscode": "^1.96.0", "@vscode/vsce": "^3.2.1", "rxjs": "^7.8.1", "typescript": "^5.6.2" } }],
+    "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext"],
 
-    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/card-data-viewer": "packages/card-data-viewer", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0", "@unocss/reset": "^0.58.3" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder"],
 
-    "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer", { "devDependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/typings": "packages/typings", "@unocss/postcss": "^65.4.2", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer"],
 
-    "@gi-tcg/server": ["@gi-tcg/server@workspace:packages/server", { "dependencies": { "@fastify/static": "^7.0.4", "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/static-data": "packages/static-data", "@gi-tcg/typings": "packages/typings", "@gi-tcg/utils": "packages/utils", "@nestjs/common": "^10.3.9", "@nestjs/core": "^10.3.9", "@nestjs/jwt": "^10.2.0", "@nestjs/platform-fastify": "^10.3.9", "@paralleldrive/cuid2": "^2.2.2", "@prisma/client": "5.20.0", "axios": "^1.7.7", "class-transformer": "^0.5.1", "class-validator": "^0.14.1", "rxjs": "^7.8.1", "simple-git": "^3.27.0" }, "devDependencies": { "@gi-tcg/web-client": "packages/web-client", "@nestjs/cli": "^10.3.2", "pm2": "^5.4.0", "prisma": "5.20.0" } }],
+    "@gi-tcg/server": ["@gi-tcg/server@workspace:packages/server"],
 
-    "@gi-tcg/standalone": ["@gi-tcg/standalone@workspace:packages/standalone", { "dependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/utils": "packages/utils", "@gi-tcg/webui-core": "packages/webui-core", "@vercel/analytics": "^1.2.0", "core-js": "3.38.1", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "vite": "^6.0.11", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/standalone": ["@gi-tcg/standalone@workspace:packages/standalone"],
 
-    "@gi-tcg/static-data": ["@gi-tcg/static-data@workspace:packages/static-data", { "devDependencies": { "@gi-tcg/config": "packages/config", "lossless-json": "^4.0.1" } }],
+    "@gi-tcg/static-data": ["@gi-tcg/static-data@workspace:packages/static-data"],
 
-    "@gi-tcg/test": ["@gi-tcg/test@workspace:packages/test", { "dependencies": { "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/typings": "packages/typings" } }],
+    "@gi-tcg/test": ["@gi-tcg/test@workspace:packages/test"],
 
-    "@gi-tcg/typings": ["@gi-tcg/typings@workspace:packages/typings", { "dependencies": { "@bufbuild/protobuf": "^2.2.2" }, "devDependencies": { "@types/node": "^20.3.1" } }],
+    "@gi-tcg/typings": ["@gi-tcg/typings@workspace:packages/typings"],
 
-    "@gi-tcg/utils": ["@gi-tcg/utils@workspace:packages/utils", { "devDependencies": { "@gi-tcg/static-data": "packages/static-data", "@gi-tcg/typings": "packages/typings" } }],
+    "@gi-tcg/utils": ["@gi-tcg/utils@workspace:packages/utils"],
 
-    "@gi-tcg/web-client": ["@gi-tcg/web-client@workspace:packages/web-client", { "dependencies": { "@gi-tcg/deck-builder": "packages/deck-builder", "@gi-tcg/webui-core": "packages/webui-core", "@server-sent-stream/web": "^1.0.3", "@solid-primitives/storage": "^4.2.1", "@solidjs/router": "^0.13.5", "@una-ui/preset": "^0.4.0-beta.5", "@unocss/reset": "^0.58.3", "axios": "^1.7.2", "core-js": "3.38.1", "dayjs": "^1.11.13", "solid-js": "^1.8.15" }, "devDependencies": { "@babel/core": "^7.24.4", "@babel/preset-env": "^7.24.4", "@gi-tcg/config": "packages/config", "@gi-tcg/static-data": "packages/static-data", "@iconify-json/mdi": "^1.1.66", "@rollup/plugin-babel": "^6.0.4", "@types/core-js": "^2.5.8", "@typescript-eslint/eslint-plugin": "^6.21.0", "@typescript-eslint/parser": "^6.21.0", "@unocss/postcss": "^65.4.2", "@unocss/preset-icons": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "postcss-load-config": "^5.0.3", "postcss-preset-env": "^9.3.0", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/web-client": ["@gi-tcg/web-client@workspace:packages/web-client"],
 
-    "@gi-tcg/webui": ["@gi-tcg/webui@workspace:packages/webui", { "devDependencies": { "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/webui-core": "packages/webui-core", "solid-element": "^1.8.0", "solid-js": "^1.8.15", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" } }],
+    "@gi-tcg/webui": ["@gi-tcg/webui@workspace:packages/webui"],
 
-    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core", { "dependencies": { "@gi-tcg/assets-manager": "packages/assets-manager", "@gi-tcg/utils": "packages/utils", "@solid-primitives/keyed": "^1.4.0" }, "devDependencies": { "@gi-tcg/config": "packages/config", "@gi-tcg/core": "packages/core", "@gi-tcg/data": "packages/data", "@gi-tcg/detail-log-viewer": "packages/detail-log-viewer", "@gi-tcg/typings": "packages/typings", "@typescript-eslint/eslint-plugin": "^6.18.0", "@typescript-eslint/parser": "^6.18.0", "@unocss/postcss": "^65.4.2", "eslint": "^8.56.0", "eslint-plugin-only-warn": "^1.1.0", "eslint-plugin-solid": "^0.13.1", "rollup-plugin-node-externals": "^7.0.1", "solid-devtools": "^0.29.2", "unocss": "^65.4.2", "vite": "^6.0.11", "vite-plugin-dts": "^3.7.0", "vite-plugin-solid": "^2.11.0" }, "peerDependencies": { "solid-js": "^1.8.15" } }],
+    "@gi-tcg/webui-core": ["@gi-tcg/webui-core@workspace:packages/webui-core"],
 
     "@humanwhocodes/config-array": ["@humanwhocodes/config-array@0.11.14", "", { "dependencies": { "@humanwhocodes/object-schema": "^2.0.2", "debug": "^4.3.1", "minimatch": "^3.0.5" } }, "sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg=="],
 
