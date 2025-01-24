@@ -21,17 +21,25 @@ jobs:
           bun install
           bun run build -n card-data-img-gen
           bun packages/card-data-img/gen/src/main.ts
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
+          name: artifact
           path: packages/card-data-img/dist
 
   Deploy:
     name: 🌐 Deploy Card Data Images
     needs: Build
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CARD_DATA_IMG }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: artifact
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Deploy to Vercel
+        run: |
+          bunx vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
