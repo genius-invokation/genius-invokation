@@ -1,0 +1,37 @@
+name: 🖼️ Generate Card Data Images
+
+on: ["workflow_dispatch"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  Build:
+    name: ⚙️ Generate Card Data Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Run Build
+        run: |
+          bun install
+          bun run build -n card-data-img-gen
+          bun packages/card-data-img/gen/src/main.ts
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/card-data-img/dist
+
+  Deploy:
+    name: 🌐 Deploy Card Data Images
+    needs: Build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -81,14 +81,14 @@ async function getCard(page: Page, id: number) {
 
 const tasks = [
   ...characters.map((ch) => (page: Page) => getCharacter(page, ch.id)),
-  // ...actionCards.map((ac) => (page: Page) => getCard(page, ac.id))
+  ...actionCards.map((ac) => (page: Page) => getCard(page, ac.id)),
 ];
 
 console.log("Running tasks...");
 const progress = new SingleBar({}, Presets.shades_classic);
 progress.start(tasks.length, 0);
 
-cluster.on('taskerror', (err) => {
+cluster.on("taskerror", (err) => {
   console.log(`Error: ${err.message}`);
 });
 
