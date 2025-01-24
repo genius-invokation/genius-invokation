@@ -3,11 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "devDependencies": {
+  "dependencies": {
     "@gi-tcg/card-data-viewer": "workspace:*",
     "@gi-tcg/static-data": "workspace:*",
-    "vite": "^6.0.11",
+    "@puppeteer/browsers": "^2.7.0",
+    "cli-progress": "^3.12.0",
+    "puppeteer-cluster": "^0.24.0",
     "puppeteer-core": "^24.1.0",
-    "@puppeteer/browsers": "^2.7.0"
+    "vite": "^6.0.11"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.6"
   }
 }
