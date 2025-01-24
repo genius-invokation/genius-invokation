@@ -54,8 +54,6 @@ const cluster: Cluster<void, void> = await Cluster.launch({
       width: 480,
       height: 640,
     },
-    headless: false,
-    devtools: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   } satisfies LaunchOptions,
 });
