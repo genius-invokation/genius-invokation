@@ -54,6 +54,7 @@ const cluster: Cluster<void, void> = await Cluster.launch({
       width: 480,
       height: 640,
     },
+    // headless: false,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   } satisfies LaunchOptions,
 });
@@ -101,5 +102,7 @@ for (const task of tasks) {
 }
 
 await cluster.idle();
-await cluster.close();
 progress.stop();
+// buggy
+// await cluster.close();
+process.exit();
