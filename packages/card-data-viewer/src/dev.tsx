@@ -23,7 +23,6 @@ function App() {
       // includesImage: true,
     });
   onMount(() => {
-    // showCharacter(1304);
     showState("summon", {
       id: -5000001,
       definitionId: 113041,
@@ -68,7 +67,8 @@ function App() {
         },
       ],
     );
-    showCard(214011)
+    showCard(214011);
+    showCharacter(1112);
   });
   return <CardDataViewer />;
 }

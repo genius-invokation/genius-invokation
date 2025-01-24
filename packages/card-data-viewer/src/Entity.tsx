@@ -158,6 +158,7 @@ export function ActionCard(props: CardDataProps) {
               <div>
                 <Description
                   {...props}
+                  definitionId={props.input.definitionId}
                   description={data().rawDescription}
                   onRequestExplain={props.onRequestExplain}
                 />
@@ -231,6 +232,7 @@ export function Skill(props: ExpandableCardDataProps) {
             <div class="p-2">
               <Description
                 {...props}
+                definitionId={props.input.definitionId}
                 description={data().rawDescription}
                 keyMap={data().keyMap}
                 onRequestExplain={props.onRequestExplain}
@@ -320,6 +322,7 @@ export function Entity(props: ExpandableCardDataProps) {
                     ? props.input.descriptionDictionary
                     : {}
                 }
+                definitionId={props.input.definitionId}
                 description={
                   data().rawPlayingDescription ?? data().rawDescription
                 }
@@ -373,7 +376,11 @@ export function Keyword(props: CardDefinitionProps) {
         <Match when={data()}>
           {(data) => (
             <div class="p-2">
-              <Description {...props} description={data().rawDescription} />
+              <Description
+                {...props}
+                definitionId={props.definitionId}
+                description={data().rawDescription}
+              />
             </div>
           )}
         </Match>
@@ -435,6 +442,7 @@ export function Reference(props: ReferenceProps) {
               <Description
                 {...props}
                 keyMap={"keyMap" in data() ? data().keyMap : {}}
+                definitionId={props.definitionId}
                 description={data().rawDescription}
                 onAddReference={props.onAddReference}
               />

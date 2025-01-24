@@ -57,7 +57,7 @@ const descriptionToItems = (
     .replace(/<[^>]+>/g, "")
     .replace(/\\n/g, "\n")
     .replace(/\$?\{(.*?)\}/g, (_, g1: string) => {
-      return keyMap[g1] ??  "";
+      return keyMap[g1] ?? "";
     });
   const segs = text.replace(/\$\[(.*?)\]/g, "$$[$1$$[").split("$[");
   const result: DescriptionItem[] = [];
@@ -133,6 +133,7 @@ function DamageDescription(props: DamageDescriptionProps) {
 }
 
 export interface DescriptionProps {
+  definitionId: number;
   description: string;
   keyMap?: Record<string, string>;
   assetsApiEndPoint?: string;
@@ -151,7 +152,7 @@ export function Description(props: DescriptionProps) {
   const addReference = (defId: number) => {
     setReferences(
       produce((prev) => {
-        if (!prev.includes(defId)) {
+        if (defId !== props.definitionId && !prev.includes(defId)) {
           prev.push(defId);
         }
       }),
