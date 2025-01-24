@@ -100,6 +100,6 @@ for (const task of tasks) {
   });
 }
 
-progress.stop();
 await cluster.idle();
 await cluster.close();
+progress.stop();
