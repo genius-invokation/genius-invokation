@@ -73,15 +73,12 @@ function CardDataViewer(props: CardDataViewerProps) {
   return (
     <div class="gi-tcg-card-data-viewer">
       <ErrorBoundary
-        fallback={(err, reset) => (
-          <div>
-            <p>
-              加载失败，尝试
-              <button class="text-blue underline" onClick={reset}>
-                刷新
-              </button>
-            </p>
-            <pre>{"message" in err ? err.message : `${err}`}</pre>
+        fallback={(err) => (
+          <div class="card-panel">
+            <p>加载失败</p>
+            <pre class="whitespace-pre-wrap">
+              {"message" in err ? err.message : `${err}`}
+            </pre>
           </div>
         )}
       >
