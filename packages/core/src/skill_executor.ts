@@ -65,6 +65,53 @@ export class SkillExecutor {
   }
 
   /**
+   * 对技能返回的事件列表预处理。
+   * - 将重复目标的“伤害事件”合并。
+   * @param events
+   */
+  private static preprocessEventList(events: EventAndRequest[]) {
+    const result: EventAndRequest[] = [];
+    const damageEventIndexInResultBasedOnTarget = new Map<number, number>();
+    for (const event of events) {
+      const [name, arg] = event;
+      if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
+        const previousIndex = damageEventIndexInResultBasedOnTarget.get(
+          arg.target.id,
+        );
+        if (previousIndex) {
+          // combine current event with previous event
+          const previousArg = result[
+            previousIndex
+          ][1] as DamageOrHealEventArg<DamageInfo>;
+          const combinedDamageInfo: DamageInfo = {
+            ...previousArg.damageInfo,
+            value: previousArg.damageInfo.value + arg.damageInfo.value,
+            causeDefeated:
+              previousArg.damageInfo.causeDefeated ||
+              arg.damageInfo.causeDefeated,
+            fromReaction:
+              previousArg.damageInfo.fromReaction ||
+              arg.damageInfo.fromReaction,
+          };
+          result[previousIndex][1] = new DamageOrHealEventArg(
+            previousArg.onTimeState,
+            combinedDamageInfo,
+          );
+        } else {
+          damageEventIndexInResultBasedOnTarget.set(
+            arg.target.id,
+            result.length,
+          );
+          result.push(event);
+        }
+      } else {
+        result.push(event);
+      }
+    }
+    return result;
+  }
+
+  /**
    * 执行并应用技能效果，返回执行过程中触发的事件列表
    * @param skillInfo
    * @param arg
@@ -114,7 +161,7 @@ export class SkillExecutor {
       arg as any,
     );
     this.mutator.resetState(newState);
-    return eventList;
+    return SkillExecutor.preprocessEventList(eventList);
   }
 
   async finalizeSkill(
