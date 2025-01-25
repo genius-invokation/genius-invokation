@@ -427,7 +427,7 @@ export function Reference(props: ReferenceProps) {
         <span class="font-bold">
           {getNameSync(props.definitionId) ?? props.definitionId}
         </span>
-        <Show when={data()}>
+        <Show when={data.state === "ready" && data()}>
           {(data) => (
             <span class="text-xs text-yellow-7">{TEXT_MAP[data().type]}</span>
           )}
