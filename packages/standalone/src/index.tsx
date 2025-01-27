@@ -17,7 +17,7 @@
 import { render } from "solid-js/web";
 import { inject } from "@vercel/analytics";
 
-import "./index.css";
+import "./style.css";
 
 (async () => {
   if (import.meta.env.PROD) {

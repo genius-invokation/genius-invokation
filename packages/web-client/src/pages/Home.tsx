@@ -191,7 +191,7 @@ export function Home() {
                   >
                     <div class="flex flex-row gap-5 items-center mb-8">
                       <button
-                        class="flex-shrink-0 w-35 btn btn-solid-green text-1em gap-0.5em"
+                        class="flex-shrink-0 w-35 btn btn-solid-green"
                         onClick={createRoom}
                       >
                         创建房间…
@@ -202,7 +202,7 @@ export function Home() {
                         onSubmit={joinRoomBySubmitCode}
                       >
                         <input
-                          class="input input-solid rounded-r-0 b-r-0"
+                          class="input input-solid rounded-r-0 b-r-0 h-2.5em"
                           name="roomCode"
                           placeholder="输入房间号"
                           inputmode="numeric"
@@ -215,7 +215,7 @@ export function Home() {
                         />
                         <button
                           type="submit"
-                          class="flex-shrink-0 w-35 btn btn-solid text-1em gap-0.5em rounded-l-0"
+                          class="flex-shrink-0 w-35 btn btn-solid rounded-l-0"
                           disabled={!roomCodeValid()}
                         >
                           加入房间…

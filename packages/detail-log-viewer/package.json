@@ -21,7 +21,6 @@
   "devDependencies": {
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
-    "@unocss/postcss": "^65.4.2",
     "rollup-plugin-node-externals": "^7.0.1",
     "solid-devtools": "^0.29.2",
     "unocss": "^65.4.2",

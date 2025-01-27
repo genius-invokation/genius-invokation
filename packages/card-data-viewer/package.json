@@ -21,12 +21,12 @@
     "solid-js": "^1.8.15"
   },
   "dependencies": {
+    "@gi-tcg/utils": "workspace:*",
     "@gi-tcg/assets-manager": "workspace:*"
   },
   "devDependencies": {
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
-    "@unocss/postcss": "^65.4.2",
     "rollup-plugin-node-externals": "^7.0.1",
     "unocss": "^65.4.2",
     "vite": "^6.0.11",

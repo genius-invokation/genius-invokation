@@ -48,7 +48,7 @@ export function Header() {
           </A>
         </Show>
         <button
-          class="btn btn-outline-red text-1em gap-0.5em"
+          class="btn btn-outline-red"
           onClick={() => {
             logout();
             navigate("/");

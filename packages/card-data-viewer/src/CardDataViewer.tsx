@@ -71,7 +71,7 @@ function CardDataViewer(props: CardDataViewerProps) {
   };
 
   return (
-    <div class="gi-tcg-card-data-viewer">
+    <div class="gi-tcg-card-data-viewer reset">
       <ErrorBoundary
         fallback={(err) => (
           <div class="card-panel">

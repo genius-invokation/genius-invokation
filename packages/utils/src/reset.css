@@ -1,4 +1,4 @@
-.gi-tcg-card-data-viewer {
+.reset {
   /*
 Please read: https://github.com/unocss/unocss/blob/main/packages-presets/reset/tailwind-compat.md
 */
@@ -28,16 +28,17 @@ Please read: https://github.com/unocss/unocss/blob/main/packages-presets/reset/t
 7. Disable tap highlights on iOS.
 */
 
-  line-height: 1.5; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-  -moz-tab-size: 4; /* 3 */
-  tab-size: 4; /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
-  font-feature-settings: normal; /* 5 */
-  font-variation-settings: normal; /* 6 */
-  -webkit-tap-highlight-color: transparent; /* 7 */
-
+  & {
+    line-height: 1.5; /* 1 */
+    -webkit-text-size-adjust: 100%; /* 2 */
+    -moz-tab-size: 4; /* 3 */
+    tab-size: 4; /* 3 */
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+    font-feature-settings: normal; /* 5 */
+    font-variation-settings: normal; /* 6 */
+    -webkit-tap-highlight-color: transparent; /* 7 */
+  }
 
   /*
 1. Add the correct height in Firefox.
@@ -345,7 +346,7 @@ Make sure disabled buttons don't get the pointer cursor.
   /*
 1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
 2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
-   This can trigger a poorly considered lint error in some tools but is included by design.
+ This can trigger a poorly considered lint error in some tools but is included by design.
 */
 
   img,

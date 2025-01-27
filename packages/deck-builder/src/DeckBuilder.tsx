@@ -101,7 +101,7 @@ export function DeckBuilder(props: DeckBuilderProps) {
         },
       }}
     >
-      <div class={`gi-tcg-deck-builder ${local.class}`} ref={container}>
+      <div class={`gi-tcg-deck-builder reset ${local.class}`} ref={container}>
         <div
           class="w-full h-full flex flex-row items-stretch gap-3 select-none"
           {...rest}

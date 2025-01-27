@@ -14,6 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { defineConfig } from "vite";
+import unoCss from "unocss/vite";
 import solid from "vite-plugin-solid";
 import babel from "@rollup/plugin-babel";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
@@ -28,6 +29,7 @@ export default defineConfig({
   },
   base: WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1"),
   plugins: [
+    unoCss(),
     solid(),
     babel({
       babelHelpers: "bundled",

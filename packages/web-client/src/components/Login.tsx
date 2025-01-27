@@ -43,7 +43,7 @@ export function Login() {
     <div class="w-80 flex flex-col items-stretch text-xl my-8 gap-10">
       <a
         href={`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`}
-        class="flex flex-row gap-2 btn btn-solid-black text-1em py-0.8em"
+        class="flex flex-row gap-2 btn btn-solid-black h-2.8em"
       >
         <i class="block i-mdi-github" />
         <span>推荐使用 GitHub 登录</span>
@@ -57,9 +57,9 @@ export function Login() {
           </span>{" "}
           继续……
         </p>
-        <form class="flex flex-row" onSubmit={guestLogin}>
+        <form class="flex flex-row items-stretch" onSubmit={guestLogin}>
           <input
-            class="input input-solid rounded-r-0 b-r-0"
+            class="input input-solid rounded-r-0 b-r-0 h-2.2rem text-1rem"
             name="guestName"
             maxLength={64}
             placeholder="起一个响亮的名字吧！"
@@ -70,7 +70,7 @@ export function Login() {
           />
           <button
             type="submit"
-            class="flex-shrink-0 btn btn-solid rounded-l-0"
+            class="flex-shrink-0 btn btn-solid rounded-l-0 h-2.2rem text-1rem"
             disabled={!guestNameValid()}
           >
             <span>确认</span>

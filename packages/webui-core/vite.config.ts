@@ -15,38 +15,20 @@
 
 import { resolve } from "node:path";
 import { defaultClientConditions, defineConfig } from "vite";
-import devtools from "solid-devtools/vite";
+import unoCss from "unocss/vite";
 import solid from "vite-plugin-solid";
 import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  esbuild: {
-    target: "ES2022",
-  },
-  resolve: {
-    conditions: ["bun", ...defaultClientConditions],
-  },
   plugins: [
     {
       ...nodeExternals(),
       enforce: "pre",
     },
-    // devtools({
-    //   autoname: true,
-    //   locator: {
-    //     targetIDE: "vscode",
-    //     key: "Ctrl",
-    //     jsxLocation: true,
-    //     componentLocation: true,
-    //   },
-    // }),
+    unoCss(),
     solid(),
-    !process.env.NO_TYPING &&
-      dts({
-        bundledPackages: ["@gi-tcg/core", "@gi-tcg/typings"],
-        rollupTypes: true,
-      }),
+    !process.env.NO_TYPING && dts({ rollupTypes: true }),
   ],
   build: {
     sourcemap: true,

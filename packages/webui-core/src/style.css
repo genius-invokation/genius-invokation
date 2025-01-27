@@ -1,0 +1,172 @@
+.gi-tcg-chessboard {
+  --c-void: #4a4a4a;
+  --c-electro: #b380ff;
+  --c-pyro: #ff9955;
+  --c-dendro: #a5c83b;
+  --c-cryo: #55ddff;
+  --c-geo: #ffcc00;
+  --c-hydro: #3e99ff;
+  --c-anemo: #80ffe6;
+  --c-omni: #dcd4c2;
+  /* --c-energy: #eab308; */
+  --c-heal: lightgreen;
+  --font-emoji: Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji,
+    Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
+    Segoe UI Symbol, Noto Color Emoji Compat, emoji;
+
+  --btn-color: darkgray;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: lightgrey;
+    border: 3px solid transparent;
+    border-radius: 5px;
+    background-clip: padding-box;
+  }
+
+  ul,
+  ol {
+    padding: 0;
+    list-style: none;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .clickable {
+    cursor: pointer;
+    outline: 6px solid lightgreen;
+  }
+
+  .focused {
+    outline: 6px solid yellow;
+  }
+
+  .selected::after {
+    content: "\2705";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    font-size: 3rem;
+    font-family: var(--font-emoji);
+  }
+
+  button {
+    line-height: unset;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    gap: 0.25rem;
+    white-space: nowrap;
+    border-width: 1px;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+
+    border-radius: 9999px;
+    color: white;
+    --btn-color-light: color-mix(in srgb, var(--btn-color) 75%, white);
+    --btn-color-heavy: color-mix(in srgb, var(--btn-color) 75%, black);
+
+    --shadow-color: color-mix(in srgb, var(--btn-color) 50%, transparent);
+    background-color: var(--btn-color);
+    border-color: var(--btn-color);
+    border-style: solid;
+    border-width: 1px;
+    box-shadow:
+      0 4px 6px -1px var(--shadow-color),
+      0 2px 4px -2px var(--shadow-color);
+  }
+
+  .btn:hover {
+    background-color: var(--btn-color-light);
+    border-color: var(--btn-color-light);
+  }
+  .btn:active {
+    background-color: var(--btn-color-heavy);
+    border-color: var(--btn-color-heavy);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: var(--btn-color-light);
+    border-color: var(--btn-color-light);
+  }
+
+  .hands-area {
+    .card-wrapper {
+      perspective: 800px;
+      aspect-ratio: 1/2;
+      transition: all 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-wrapper:has(.card):hover,
+    .card-wrapper:has(.selected) {
+      aspect-ratio: 1/1;
+    }
+    .card-wrapper:hover > .card,
+    .card-wrapper > .selected {
+      transform: none;
+      transition: all 0.3s;
+    }
+
+    .card {
+      aspect-ratio: 7/12;
+      transition: all 0.3s;
+    }
+    .rotated {
+      transform: rotate3d(0, 1, 0, 30deg);
+    }
+  }
+
+  .card-wrapper {
+    height: 100%;
+
+    .card {
+      height: 100%;
+    }
+  }
+
+  .entity-highlight-layer[data-highlight="true"] {
+    animation: entity-highlight 2s ease-out infinite alternate;
+  }
+}
+
+@keyframes entity-highlight {
+  from {
+    box-shadow: none;
+  }
+  to {
+    box-shadow: 0 0 10px yellow inset;
+  }
+}

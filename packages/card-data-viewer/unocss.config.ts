@@ -13,19 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig, presetUno } from "unocss";
+import { defineConfig, presetUno, transformerDirectives } from "unocss";
 
 export default defineConfig({
   presets: [presetUno()],
   // https://github.com/unocss/unocss/discussions/3444
-  content: {
-    filesystem: [
-      '**/*.{html,js,ts,jsx,tsx}',
-    ],
+  postprocess: (obj) => {
+    obj.selector = ".gi-tcg-card-data-viewer " + obj.selector;
   },
-  postprocess: [
-    (obj) => {
-      obj.selector = ".gi-tcg-card-data-viewer " + obj.selector;
-    },
-  ],
+  transformers: [transformerDirectives()],
 });

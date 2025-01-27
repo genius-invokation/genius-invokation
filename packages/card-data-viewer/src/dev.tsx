@@ -67,7 +67,7 @@ function App() {
         },
       ],
     );
-    showCard(212111);
+    // showCard(212111);
     // showCharacter(1510);
   });
   return <CardDataViewer />;

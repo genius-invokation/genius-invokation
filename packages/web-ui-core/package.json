@@ -1,12 +1,14 @@
 {
-  "name": "@gi-tcg/deck-builder",
+  "name": "@gi-tcg/web-ui-core",
   "version": "0.16.4",
+  "description": "Core component of @gi-tcg/web-ui",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "bun": "./src/index.ts",
+      "development": "./src/index.ts",
       "import": "./dist/index.js"
     },
     "./style.css": "./dist/style.css"
@@ -16,24 +18,23 @@
   ],
   "scripts": {
     "dev": "bunx --bun vite",
-    "preview": "bunx --bun vite preview",
     "check": "tsc --noEmit",
-    "build:data": "bun scripts/export_data.ts",
-    "build:vite": "bunx --bun vite build",
-    "build": "bun build:data && bun build:vite"
+    "build": "bunx --bun vite build"
+  },
+  "dependencies": {
+    "@gi-tcg/assets-manager": "workspace:*",
+    "@gi-tcg/utils": "workspace:*",
+    "@solid-primitives/keyed": "^1.4.0"
   },
   "peerDependencies": {
     "solid-js": "^1.8.15"
   },
-  "dependencies": {
-    "@gi-tcg/assets-manager": "workspace:*",
-    "@gi-tcg/card-data-viewer": "workspace:*",
-    "@gi-tcg/utils": "workspace:*",
-    "@solid-primitives/keyed": "^1.4.0"
-  },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*",
+    "@gi-tcg/core": "workspace:*",
+    "@gi-tcg/data": "workspace:*",
+    "@gi-tcg/typings": "workspace:*",
+    "@gi-tcg/detail-log-viewer": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",

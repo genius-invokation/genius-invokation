@@ -5,9 +5,12 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "bun": "./src/index.ts",
-    "import": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "bun": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./reset.css": "./src/reset.css"
   },
   "scripts": {
     "build:json": "bun scripts/get_share_id.ts",

@@ -17,7 +17,8 @@
 
 import { render } from "solid-js/web";
 
-import "./index.css";
+import "./style.css";
+import "virtual:uno.css";
 import "@una-ui/preset/una.css";
 import "@unocss/reset/tailwind-compat.css";
 
@@ -40,9 +41,9 @@ async function main() {
     }
     return config;
   });
-  
+
   const app = document.getElementById("app")!;
-  const { default: App } = await import ("./App");
+  const { default: App } = await import("./App");
   render(() => <App />, app);
 }
 

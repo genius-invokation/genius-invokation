@@ -373,13 +373,13 @@ export function RoomDialog(props: RoomDialogProps) {
         </div>
         <div class="flex-shrink-0 flex flex-row justify-end gap-4">
           <button
-            class="btn btn-ghost-red text-1em gap-0.5em"
+            class="btn btn-ghost-red"
             onClick={closeDialog}
           >
             取消
           </button>
           <button
-            class="btn btn-solid-green text-1em gap-0.5em"
+            class="btn btn-solid-green"
             onClick={enterRoom}
             disabled={selectedDeck() === null || entering()}
           >

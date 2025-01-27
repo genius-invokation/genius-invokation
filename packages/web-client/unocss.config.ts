@@ -13,25 +13,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig, presetUno } from "unocss";
+import {
+  defineConfig,
+  presetUno,
+  transformerDirectives,
+  transformerVariantGroup,
+} from "unocss";
 import presetUna from "@una-ui/preset";
 import presetIcons from "@unocss/preset-icons";
 
-export default defineConfig({
+export default defineConfig<object>({
   presets: [
-    presetUno(), 
+    presetUno(),
     presetIcons({
       collections: {
-        mdi: () => import("@iconify-json/mdi").then((i) => i.icons)
-      }
+        mdi: () => import("@iconify-json/mdi").then((i) => i.icons),
+      },
     }),
-    (<any>presetUna)({
-      primary: "yellow"
+    presetUna({
+      primary: "yellow" as any,
     }),
   ],
-  content: {
-    filesystem: [
-      'src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}',
-    ],
-  },
+  transformers: [transformerDirectives(), transformerVariantGroup()],
 });

@@ -14,35 +14,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { resolve } from "node:path";
-import { defaultClientConditions, defineConfig, Plugin } from "vite";
+import { defineConfig } from "vite";
+import unoCss from "unocss/vite";
 // import devtools from "solid-devtools/vite";
 import solid from "vite-plugin-solid";
 import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
 
-function enableIf(cond: boolean, plugin: Plugin): Plugin {
-  return cond ? plugin : { name: plugin.name };
-}
-
 export default defineConfig({
-  esbuild: {
-    target: "ES2022",
-  },
-  resolve: {
-    conditions: ["bun", ...defaultClientConditions],
-  },
   plugins: [
     {
-      ...nodeExternals(),
+      ...nodeExternals({ exclude: /\.css$/ }),
       enforce: "pre",
     },
+    unoCss(),
     solid(),
-    enableIf(
-      !process.env.NO_TYPING,
-      dts({
-        rollupTypes: true,
-      }),
-    ),
+    !process.env.NO_TYPING && dts({ rollupTypes: true }),
   ],
   build: {
     sourcemap: true,
