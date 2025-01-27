@@ -8,8 +8,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "bun": "./src/index.ts",
-      "development": "./src/index.ts",
       "import": "./dist/index.js"
     }
   },

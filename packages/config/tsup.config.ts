@@ -18,7 +18,7 @@ import { defineConfig } from "tsup";
 // We must ensure the built JS file doesn't contains `import.meta.env.*`
 // tsup only replace them when `env` config explicitly provided their value.
 
-const requiredEnvVars = ["DEV", "WEB_CLIENT_BASE_PATH", "SERVER_HOST"];
+const requiredEnvVars = ["WEB_CLIENT_BASE_PATH", "SERVER_HOST"];
 
 const env: Record<string, string> = {};
 for (const [key, value] of Object.entries(process.env)) {
