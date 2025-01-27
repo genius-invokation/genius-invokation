@@ -1,0 +1,89 @@
+// Copyright (C) 2025 Guyutongxue
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+export type Size = [height: number, width: number];
+export type Pos = [x: number, y: number];
+
+const MINIMUM_WIDTH = 192;
+const MINIMUM_HEIGHT = 144;
+
+const GADGET_HEIGHT = 6;
+
+const CARD_HEIGHT = 36;
+const CARD_WIDTH = 21;
+
+const CHARACTER_AREA_HEIGHT = CARD_HEIGHT + 3 * GADGET_HEIGHT;
+const CHARACTER_AREA_WIDTH = CARD_WIDTH;
+const CHARACTER_AREA_GAP = 4;
+
+const HAND_CARD_SHOW_HEIGHT = 18;
+const HAND_CARD_WRAPPED_SHOW_WIDTH = 10;
+const OPP_HAND_CARD_RIGHT_OFFSET = 21;
+
+export function getCharacterAreaPos(
+  size: Size,
+  opp: boolean,
+  totalCount: number,
+  index: number,
+): Pos {
+  const [height, width] = size;
+  const halfHeight = height / 2;
+  const gapAroundCharacterArea = (halfHeight - CHARACTER_AREA_HEIGHT) / 2;
+  const characterAreaY = opp
+    ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
+    : halfHeight + gapAroundCharacterArea;
+
+  const halfWidth = width / 2;
+  const totalCharacterAreaWidth =
+    totalCount * CHARACTER_AREA_WIDTH + (totalCount - 1) * CHARACTER_AREA_GAP;
+  const totalCharacterAreaX = halfWidth - totalCharacterAreaWidth / 2;
+  const characterAreaX =
+    totalCharacterAreaX + index * (CHARACTER_AREA_WIDTH + CHARACTER_AREA_GAP);
+  return [characterAreaX, characterAreaY];
+}
+
+export function getHandCardWrappedPos(
+  size: Size,
+  opp: boolean,
+  totalCount: number,
+  index: number,
+): Pos {
+  const [height, width] = size;
+  if (opp) {
+    const y = HAND_CARD_SHOW_HEIGHT - CARD_HEIGHT;
+    const areaX =
+      width -
+      OPP_HAND_CARD_RIGHT_OFFSET -
+      totalCount * HAND_CARD_WRAPPED_SHOW_WIDTH;
+    const x = areaX + index * HAND_CARD_WRAPPED_SHOW_WIDTH;
+    return [x, y];
+  } else {
+    const y = height - HAND_CARD_SHOW_HEIGHT;
+    const halfWidth = width / 2;
+    const totalHandCardWidth =
+      (totalCount - 1) * HAND_CARD_WRAPPED_SHOW_WIDTH + CARD_WIDTH;
+    const areaX = halfWidth - totalHandCardWidth / 2;
+    const x = areaX + index * HAND_CARD_WRAPPED_SHOW_WIDTH;
+    return [x, y];
+  }
+}
+
+export function getPilePos(size: Size, opp: boolean): Pos {
+  const [height, width] = size;
+  const quarterHeight = height / 4;
+  const y = opp ? quarterHeight : height - quarterHeight - CARD_HEIGHT;
+  const x = (width - MINIMUM_WIDTH) / 2 + 4 - CARD_WIDTH;
+  return [x, y];
+}

@@ -104,7 +104,7 @@ function App() {
         <div ref={cb0} />
         <div ref={cb1} />
       </details>
-      <Chessboard who={0} showingCards={[]} state={p0State()} />
+      <Chessboard who={0} showingCards={[]} state={p0State()} class="h-0" />
     </div>
   );
 }

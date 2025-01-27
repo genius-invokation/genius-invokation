@@ -24,7 +24,10 @@ export interface CardProps {
   data: PbCardState;
   x: number;
   y: number;
-  r: number;
+  z: number;
+  ry: number;
+  rz: number;
+  shadow?: boolean;
 }
 
 export function Card(props: CardProps) {
@@ -34,16 +37,19 @@ export function Card(props: CardProps) {
   );
   return (
     <div
-      class="absolute top-0 left-0 h-36 w-21 relative shadow-lg perspective-600 preserve-3d"
+      class="absolute top-0 left-0 h-36 w-21 preserve-3d"
       style={{
-        transform: `translate(${props.x / 4}rem, ${props.y / 4}rem) rotate(${
-          props.r
-        }deg)`,
+        transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${
+          props.z / 4
+        }rem) rotateY(${props.ry}deg) rotateZ(${props.rz}deg)`,
+      }}
+      classList={{
+        "shadow-lg": props.shadow,
       }}
     >
       <Image
         imageId={props.data.definitionId}
-        class="absolute h-full w-full rounded backface-hidden"
+        class="absolute h-full w-full rounded-xl backface-hidden b-white b-3"
         title={`id = ${props.data.id}`}
       />
       <DiceCost
