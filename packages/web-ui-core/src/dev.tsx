@@ -14,14 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* @refresh reload */
-// import "solid-devtools";
-import { createSignal } from "solid-js";
+
+import "./index";
+import { createSignal, onMount, Show } from "solid-js";
 import { render } from "solid-js/web";
 
+import type { PbGameState, PbPlayerState } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
-import { DetailLogEntry, Game, DeckConfig } from "@gi-tcg/core";
-import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
-import { createPlayer } from "./index";
+import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
+import { createPlayer } from "@gi-tcg/webui";
+import { Chessboard } from "./components/Chessboard";
 
 const deck0: DeckConfig = {
   characters: [1214, 1403, 1203],
@@ -44,34 +46,65 @@ const deck1: DeckConfig = {
   noShuffle: import.meta.env.DEV,
 };
 
+const EMPTY_PLAYER_DATA: PbPlayerState = {
+  activeCharacterId: 0,
+  dice: [],
+  pileCard: [],
+  handCard: [],
+  character: [],
+  combatStatus: [],
+  summon: [],
+  support: [],
+  initiativeSkill: [],
+  declaredEnd: false,
+  legendUsed: false,
+};
+
+export const EMPTY_GAME_STATE: PbGameState = {
+  currentTurn: 0,
+  phase: 0 /* PbPhaseType.PHASE_INIT_HANDS */,
+  roundNumber: 0,
+  player: [EMPTY_PLAYER_DATA, EMPTY_PLAYER_DATA],
+};
+
 function App() {
-  const assetsApiEndpoint =
-    void "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
-  const [io0, Chessboard0] = createPlayer(0, { assetsApiEndpoint });
-  const [io1, Chessboard1] = createPlayer(1, { assetsApiEndpoint });
-  const [detailLog, setDetailLog] = createSignal<readonly DetailLogEntry[]>([]);
+  let cb0!: HTMLDivElement;
+  let cb1!: HTMLDivElement;
+
+  const [p0State, setP0State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
 
   const state = Game.createInitialState({
     data: getData(),
     decks: [deck0, deck1],
   });
-  const game = new Game(state);
-  (game.onPause = async () => {
-    setDetailLog([...game.detailLog]);
-  }),
-    (game.players[0].io = io0);
-  game.players[0].config.alwaysOmni = true;
-  game.players[0].config.allowTuningAnyDice = true;
-  game.players[1].io = io1;
-  game.onIoError = console.error;
-  game.start();
-  Reflect.set(window, "game", game);
+
+  onMount(() => {
+    const io0 = createPlayer(cb0, 0);
+    const io1 = createPlayer(cb1, 1);
+
+    const game = new Game(state);
+    game.players[0].io = {
+      ...io0,
+      notify: (n) => {
+        io0.notify(n);
+        setP0State(n.state!);
+      },
+    };
+    game.players[0].config.alwaysOmni = true;
+    game.players[0].config.allowTuningAnyDice = true;
+    game.players[1].io = io1;
+    game.onIoError = console.error;
+    game.start();
+    Reflect.set(window, "game", game);
+  });
 
   return (
     <div class="min-w-180 flex flex-col gap-2">
-      <Chessboard0 />
-      <Chessboard1 />
-      <DetailLogViewer logs={detailLog()} />
+      <details>
+        <div ref={cb0} />
+        <div ref={cb1} />
+      </details>
+      <Chessboard who={0} showingCards={[]} state={p0State()} />
     </div>
   );
 }

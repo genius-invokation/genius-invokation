@@ -32,4 +32,8 @@ export default defineConfig({
       },
     ],
   ],
+  postprocess: (obj) => {
+    const scope = `.gi-tcg-chessboard`;
+    obj.selector += `:where(${scope},${scope} *)`;
+  }
 });

@@ -23,7 +23,6 @@ import { Interactive } from "./Interactive";
 
 export interface CardProps {
   data: PbCardState;
-  realCost?: DiceType[];
 }
 
 export function Card(props: CardProps) {

@@ -15,7 +15,7 @@
 
 import "@gi-tcg/utils/reset.css";
 import "virtual:uno.css";
-import "./index.css";
+import "./style.css";
 
 // export {
 //   createPlayer,
