@@ -28,17 +28,24 @@ const CHARACTER_AREA_HEIGHT = CARD_HEIGHT + 3 * GADGET_HEIGHT;
 const CHARACTER_AREA_WIDTH = CARD_WIDTH;
 const CHARACTER_AREA_GAP = 4;
 
-const HAND_CARD_SHOW_HEIGHT = 18;
-const HAND_CARD_WRAPPED_SHOW_WIDTH = 10;
+const HAND_CARD_BLURRED_SHOW_HEIGHT = 18;
+const HAND_CARD_BLURRED_SHOW_WIDTH = 10;
 const OPP_HAND_CARD_RIGHT_OFFSET = 21;
 
+const HAND_CARD_FOCUSED_GAP = 2;
+const HAND_CARD_FOCUSED_SHOW_HEIGHT = 36;
+const HAND_CARD_FOCUSED_SHOW_WIDTH_MIN = 15;
+const HAND_CARD_FOCUSED_CENTER_X_OFFSET = 0;
+
+const HAND_CARD_SELECTING_Y_OFFSET = 3;
+const HAND_CARD_SELECTING_X_OFFSET = 2;
+
 export function getCharacterAreaPos(
-  size: Size,
+  [height, width]: Size,
   opp: boolean,
   totalCount: number,
   index: number,
 ): Pos {
-  const [height, width] = size;
   const halfHeight = height / 2;
   const gapAroundCharacterArea = (halfHeight - CHARACTER_AREA_HEIGHT) / 2;
   const characterAreaY = opp
@@ -54,36 +61,65 @@ export function getCharacterAreaPos(
   return [characterAreaX, characterAreaY];
 }
 
-export function getHandCardWrappedPos(
-  size: Size,
+export function getHandCardBlurredPos(
+  [height, width]: Size,
   opp: boolean,
   totalCount: number,
   index: number,
 ): Pos {
-  const [height, width] = size;
   if (opp) {
-    const y = HAND_CARD_SHOW_HEIGHT - CARD_HEIGHT;
+    const y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT;
     const areaX =
       width -
       OPP_HAND_CARD_RIGHT_OFFSET -
-      totalCount * HAND_CARD_WRAPPED_SHOW_WIDTH;
-    const x = areaX + index * HAND_CARD_WRAPPED_SHOW_WIDTH;
+      totalCount * HAND_CARD_BLURRED_SHOW_WIDTH;
+    const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   } else {
-    const y = height - HAND_CARD_SHOW_HEIGHT;
+    const y = height - HAND_CARD_BLURRED_SHOW_HEIGHT;
     const halfWidth = width / 2;
     const totalHandCardWidth =
-      (totalCount - 1) * HAND_CARD_WRAPPED_SHOW_WIDTH + CARD_WIDTH;
+      (totalCount - 1) * HAND_CARD_BLURRED_SHOW_WIDTH + CARD_WIDTH;
     const areaX = halfWidth - totalHandCardWidth / 2;
-    const x = areaX + index * HAND_CARD_WRAPPED_SHOW_WIDTH;
+    const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   }
 }
 
-export function getPilePos(size: Size, opp: boolean): Pos {
-  const [height, width] = size;
+export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const quarterHeight = height / 4;
   const y = opp ? quarterHeight : height - quarterHeight - CARD_HEIGHT;
   const x = (width - MINIMUM_WIDTH) / 2 + 4 - CARD_WIDTH;
+  return [x, y];
+}
+
+export function getHandCardFocusedPos(
+  [height, width]: Size,
+  totalCount: number,
+  index: number,
+  selectingIndex: number | null,
+): Pos {
+  const yBase = height - HAND_CARD_FOCUSED_SHOW_HEIGHT;
+  const y =
+    yBase - (index === selectingIndex ? HAND_CARD_SELECTING_Y_OFFSET : 0);
+  const halfWidth = width / 2;
+
+  const cardAreaCenter = halfWidth + HAND_CARD_FOCUSED_CENTER_X_OFFSET;
+  const cardAreaMaxWidth = 9 * HAND_CARD_FOCUSED_SHOW_WIDTH_MIN + CARD_WIDTH;
+  const realGap = Math.min(
+    (cardAreaMaxWidth - CARD_WIDTH) / (totalCount - 1),
+    CARD_WIDTH + HAND_CARD_FOCUSED_GAP,
+  );
+  const cardAreaWidth = realGap * (totalCount - 1) + CARD_WIDTH;
+  const cardAreaX = cardAreaCenter - cardAreaWidth / 2;
+  let x = cardAreaX + index * realGap;
+  if (selectingIndex === null) {
+    return [x, y];
+  }
+  if (index < selectingIndex) {
+    x -= HAND_CARD_SELECTING_X_OFFSET;
+  } else if (index > selectingIndex) {
+    x += HAND_CARD_SELECTING_X_OFFSET;
+  }
   return [x, y];
 }

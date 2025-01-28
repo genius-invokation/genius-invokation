@@ -76,6 +76,7 @@ function App() {
   const state = Game.createInitialState({
     data: getData(),
     decks: [deck0, deck1],
+    // initialHandsCount: 10,
   });
 
   onMount(() => {
