@@ -24,6 +24,8 @@ import getData from "@gi-tcg/data";
 import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
 import { createPlayer } from "@gi-tcg/webui";
 import { Chessboard } from "./components/Chessboard";
+import { parseMutations } from "./mutations";
+import { AsyncQueue } from "./async_queue";
 
 const deck0: DeckConfig = {
   characters: [1214, 1403, 1203],
@@ -72,24 +74,50 @@ function App() {
   let cb1!: HTMLDivElement;
 
   const [p1State, setP1State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
-
-  const state = Game.createInitialState({
-    data: getData(),
-    decks: [deck0, deck1],
-    // initialHandsCount: 10,
-  });
+  const [p1ShowingCards, setP1ShowingCards] = createSignal<number[]>([]);
+  const [p1TransitioningCards, setP1TransitioningCards] = createSignal<
+    number[]
+  >([]);
 
   onMount(() => {
+    const state = Game.createInitialState({
+      data: getData(),
+      decks: [deck0, deck1],
+      // initialHandsCount: 10,
+    });
     const io0 = createPlayer(cb0, 0);
     const io1 = createPlayer(cb1, 1);
 
     const game = new Game(state);
+
     game.players[0].io = io0;
+    let previousState: PbGameState | undefined = void 0;
+
+    const uiQueue = new AsyncQueue();
+
     game.players[1].io = {
       ...io1,
-      notify: (n) => {
-        io1.notify(n);
-        setP1State(n.state!);
+      notify: async ({ mutation, state }) => {
+        io1.notify({ mutation, state });
+        if (!previousState) {
+          previousState = state;
+          return;
+        }
+        const parsed = parseMutations(previousState, state!, mutation);
+        console.log(parsed);
+        uiQueue.push(async () => {
+          const [first, ...rest] = parsed;
+          setP1ShowingCards(first.showingCardIds);
+          setP1TransitioningCards(first.transitioningCardIds);
+          setP1State(first.state);
+          for (const { state, showingCardIds, transitioningCardIds } of rest) {
+            await new Promise((r) => setTimeout(r, 500));
+            setP1State(state);
+            setP1ShowingCards(showingCardIds);
+            setP1TransitioningCards(transitioningCardIds);
+          }
+          previousState = state;
+        });
       },
     };
     game.players[0].config.alwaysOmni = true;
@@ -105,7 +133,13 @@ function App() {
         <div ref={cb0} />
         <div ref={cb1} />
       </details>
-      <Chessboard who={1} showingCards={[]} state={p1State()} class="h-0" />
+      <Chessboard
+        who={1}
+        state={p1State()}
+        showingCardIds={p1ShowingCards()}
+        transitioningCardIds={p1TransitioningCards()}
+        class="h-0"
+      />
     </div>
   );
 }

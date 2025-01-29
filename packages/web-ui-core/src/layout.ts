@@ -56,7 +56,8 @@ export function getCharacterAreaPos(
   index: number,
 ): Pos {
   const halfHeight = height / 2;
-  const gapAroundCharacterArea = (halfHeight - CHARACTER_AREA_HEIGHT) / 2;
+  const gapAroundCharacterArea =
+    (halfHeight - CHARACTER_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
   const characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
     : halfHeight + gapAroundCharacterArea;
@@ -137,4 +138,8 @@ export function shouldFocusHandWhenDragging(
   currentY: number,
 ) {
   return currentY >= height - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
+}
+
+export function getShowingCardY([height, width]: Size): number {
+  return height / 2 - CARD_HEIGHT / 2;
 }

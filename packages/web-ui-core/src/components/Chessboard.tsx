@@ -13,22 +13,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PbCardState, PbGameState } from "@gi-tcg/typings";
+import type {
+  PbCardState,
+  PbCharacterState,
+  PbGameState,
+} from "@gi-tcg/typings";
 import { Card, type CardProps } from "./Card";
 import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { flip } from "@gi-tcg/utils";
 import { Key } from "@solid-primitives/keyed";
 import {
   DRAGGING_Z,
+  getCharacterAreaPos,
   getHandCardBlurredPos,
   getHandCardFocusedPos,
   getPilePos,
+  getShowingCardY,
   PERSPECTIVE,
   shouldFocusHandWhenDragging,
   unitInPx,
   type Pos,
   type Size,
 } from "../layout";
+import { CharacterArea } from "./CharacterArea";
 
 export interface CardInfo {
   id: number;
@@ -41,7 +48,7 @@ export interface CardInfo {
   ry: number;
   rz: number;
   shadow: boolean;
-  transition: boolean;
+  transitionDuration: number;
 }
 
 interface DraggingCardInfo {
@@ -52,10 +59,21 @@ interface DraggingCardInfo {
   updatePos: (e: PointerEvent) => Pos;
 }
 
+export interface CharacterInfo {
+  id: number;
+  data: PbCharacterState;
+  x: number;
+  y: number;
+  z: number;
+  zIndex: number;
+  rz: number;
+}
+
 export interface ChessboardProps {
   class?: string;
   state: PbGameState;
-  showingCards: { id: number; definitionId: number }[];
+  showingCardIds: number[];
+  transitioningCardIds: number[];
   who: 0 | 1;
 }
 
@@ -103,7 +121,7 @@ export function Chessboard(props: ChessboardProps) {
           ry: 180,
           rz: 90,
           shadow: i === 0,
-          transition: true,
+          transitionDuration: 500,
         });
       }
 
@@ -113,7 +131,7 @@ export function Chessboard(props: ChessboardProps) {
 
       const isFocus = !opp && isFocusingHands;
       const z = isFocus ? DRAGGING_Z : 2;
-      const ry = isFocus ? 0 : opp ? 175 : -5;
+      const ry = isFocus ? 0 : opp ? 185 : 5;
 
       let hoveringHandIndex: number | null = player.handCard.findIndex(
         (card) => card.id === hoveringHand()?.id,
@@ -137,7 +155,7 @@ export function Chessboard(props: ChessboardProps) {
             ry: 0,
             rz: 0,
             shadow: true,
-            transition: !moving,
+            transitionDuration: moving ? 0 : 150,
           });
           continue;
         }
@@ -154,17 +172,44 @@ export function Chessboard(props: ChessboardProps) {
           data: card,
           kind: opp ? "oppHand" : "myHand",
           x,
-          y,
+          y: props.showingCardIds.includes(card.id) ? getShowingCardY(size) : y,
           z,
           zIndex: i,
           ry,
           rz: 0,
           shadow: true,
-          transition: true,
+          transitionDuration:  150,
         });
       }
     }
     return cards.toSorted((a, b) => a.id - b.id);
+  };
+
+  const characters = () => {
+    const size = [height(), width()] as Size;
+    const characters: CharacterInfo[] = [];
+    for (const who of [0, 1] as const) {
+      const player = props.state.player[who];
+      const opp = who !== props.who;
+      const character = player.character;
+
+      const totalCharacterCount = player.character.length;
+      for (let i = 0; i < totalCharacterCount; i++) {
+        const ch = player.character[i];
+        const [x, y] = getCharacterAreaPos(size, opp, totalCharacterCount, i);
+
+        characters.push({
+          id: ch.id,
+          data: ch,
+          x,
+          y,
+          z: 0,
+          zIndex: 0,
+          rz: 0,
+        });
+      }
+    }
+    return characters.toSorted((a, b) => a.id - b.id);
   };
 
   const onCardClick = (
@@ -312,6 +357,9 @@ export function Chessboard(props: ChessboardProps) {
               onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
             />
           )}
+        </Key>
+        <Key each={characters()} by="id">
+          {(character) => <CharacterArea {...character()} />}
         </Key>
       </div>
     </div>

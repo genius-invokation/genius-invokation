@@ -231,6 +231,7 @@ export function exposeMutation(
           from,
           to,
           transferToOpp,
+          targetIndex: m.targetIndex,
           cardId: m.value.id,
           cardDefinitionId: m.who === who ? m.value.definition.id : 0,
         },
@@ -285,6 +286,7 @@ export function exposeMutation(
           cardId: m.target === "hands" ? m.value.id : 0,
           cardDefinitionId: m.who === who ? m.value.definition.id : 0,
           to,
+          targetIndex: m.targetIndex,
         },
       };
     }

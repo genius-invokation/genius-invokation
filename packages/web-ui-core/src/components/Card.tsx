@@ -28,7 +28,7 @@ export interface CardProps {
   ry: number;
   rz: number;
   shadow: boolean;
-  transition: boolean;
+  transitionDuration: number;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
   onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -45,16 +45,16 @@ export function Card(props: CardProps) {
   const data = createMemo(() => props.data);
   return (
     <div
-      class="absolute top-0 left-0 h-36 w-21 preserve-3d transition-ease-in-out touch-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none"
       style={{
         "z-index": `${props.zIndex}`,
         transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${
           props.z / 4
         }rem) rotateY(${props.ry}deg) rotateZ(${props.rz}deg)`,
+        "transition-duration": `${props.transitionDuration}ms`,
       }}
       classList={{
         "shadow-lg": props.shadow,
-        "transition-transform": props.transition,
       }}
       onClick={(e) => {
         e.stopPropagation();
