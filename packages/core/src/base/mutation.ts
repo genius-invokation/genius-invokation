@@ -92,7 +92,7 @@ export interface RemoveCardM {
     | "elementalTuning"
     | "overflow"
     | "disposed"
-    | "disabled";
+    | "playNoEffect";
   readonly oldState: CardState;
 }
 

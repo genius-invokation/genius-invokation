@@ -195,7 +195,7 @@ export function Chessboard(props: ChessboardProps) {
         }
       }
       const target = e.target as HTMLElement;
-      target.setPointerCapture(e.pointerId);
+      // target.setPointerCapture(e.pointerId);
       const rem = parseFloat(
         getComputedStyle(document.documentElement).fontSize,
       );
@@ -216,11 +216,13 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
   const onCardPointerMove = (e: PointerEvent, cardInfo: CardInfo) => {
+    shouldMoveWhenHandBlurring?.resolve(true);
     setDraggingHand((dragging) => {
       if (dragging?.id !== cardInfo.id) {
         return dragging;
       }
       const [x, y] = dragging.updatePos(e);
+      // console.log(x, y);
       return {
         ...dragging,
         moving: true,

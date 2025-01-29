@@ -23,17 +23,25 @@ import {
 import {
   ActionEventArg,
   ActionInfo,
+  ActionInfoBase,
   DisposeOrTuneCardEventArg,
   EventAndRequest,
   GenericModifyActionEventArg,
+  InitiativeSkillEventArg,
   PlayCardEventArg,
   SkillInfo,
   SwitchActiveEventArg,
   UseSkillEventArg,
+  WithActionDetail,
 } from "./base/skill";
 import { GameState } from "./base/state";
 import { GeneralSkillArg, SkillExecutor } from "./skill_executor";
-import { getActiveCharacterIndex, getEntityArea } from "./utils";
+import {
+  getActiveCharacterIndex,
+  getEntityArea,
+  getSkillMainDamageTarget,
+  Writable,
+} from "./utils";
 import { GiTcgPreviewAbortedError, StateMutator } from "./mutator";
 import { ExposedMutation, PreviewData } from "@gi-tcg/typings";
 import { exposeEntity, exposeMutation, exposeState } from "./io";
@@ -173,7 +181,10 @@ class PreviewContext {
 }
 
 /**
- * 对 actionInfo 应用 modifyAction，并附属预览状态
+ * - 对 actionInfo 应用 modifyAction
+ * - 判断角色技能的主要伤害目标
+ * - 判断使用手牌是否会被无效化
+ * - 附属预览状态
  */
 export class ActionPreviewer {
   constructor(
@@ -199,7 +210,8 @@ export class ActionPreviewer {
     await ctx.previewEvent("modifyAction1", eventArgPreCalc);
     await ctx.previewEvent("modifyAction2", eventArgPreCalc);
     await ctx.previewEvent("modifyAction3", eventArgPreCalc);
-    const newActionInfo = eventArgPreCalc.action;
+    const newActionInfo: Writable<WithActionDetail<ActionInfoBase>> =
+      eventArgPreCalc.action;
 
     const player = () => ctx.state.players[this.who];
     const activeCh = () =>
@@ -212,7 +224,15 @@ export class ActionPreviewer {
           "onBeforeUseSkill",
           new UseSkillEventArg(ctx.state, callerArea, newActionInfo.skill),
         );
-        await ctx.previewSkill(skillInfo, { targets: newActionInfo.targets });
+        const skillArg: InitiativeSkillEventArg = {
+          targets: newActionInfo.targets,
+        };
+        newActionInfo.mainDamageTarget = getSkillMainDamageTarget(
+          ctx.state,
+          skillInfo,
+          skillArg,
+        );
+        await ctx.previewSkill(skillInfo, skillArg);
         await ctx.previewEvent(
           "onUseSkill",
           new UseSkillEventArg(ctx.state, callerArea, newActionInfo.skill),
@@ -235,16 +255,17 @@ export class ActionPreviewer {
         );
         if (
           player().combatStatuses.find((st) =>
-            st.definition.tags.includes("disableEvent"),
+            st.definition.tags.includes("eventEffectless"),
           ) &&
           card.definition.cardType === "event"
         ) {
+          newActionInfo.willBeEffectless = true;
           ctx.mutate({
             type: "removeCard",
             who: this.who,
             where: "hands",
             oldState: card,
-            reason: "disabled",
+            reason: "playNoEffect",
           });
         } else {
           ctx.mutate({

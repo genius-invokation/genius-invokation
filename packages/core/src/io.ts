@@ -188,8 +188,8 @@ export function exposeMutation(
           character0DefinitionId: m.characters[0].definition.id,
           character1Id: m.characters[1].id,
           character1DefinitionId: m.characters[1].definition.id,
-        }
-      }
+        },
+      };
     case "changePhase":
       const newPhase = exposePhaseType(m.newPhase);
       return {
@@ -258,8 +258,8 @@ export function exposeMutation(
           reason = PbRemoveCardReason.REMOVE_CARD_REASON_DISPOSED;
           break;
         }
-        case "disabled": {
-          reason = PbRemoveCardReason.REMOVE_CARD_REASON_DISABLED;
+        case "playNoEffect": {
+          reason = PbRemoveCardReason.REMOVE_CARD_REASON_PLAY_NO_EFFECT;
           break;
         }
         case "onDrawTriggered": {
@@ -510,6 +510,7 @@ export function exposeAction(action: ActionInfo): Action {
         useSkill: {
           skillId: action.skill.definition.id,
           targetIds: action.targets.map((t) => t.id),
+          mainDamageTargetId: action.mainDamageTarget?.id,
         },
         requiredCost: exposeDiceRequirement(action.cost),
         preview: action.preview ?? [],
@@ -520,6 +521,7 @@ export function exposeAction(action: ActionInfo): Action {
         playCard: {
           cardId: action.skill.caller.id,
           targetIds: action.targets.map((t) => t.id),
+          willBeEffectless: action.willBeEffectless,
         },
         requiredCost: exposeDiceRequirement(action.cost),
         preview: action.preview ?? [],

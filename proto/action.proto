@@ -43,6 +43,7 @@ message PlayCardAction {
   sint32 card_id = 2;
   // 打出手牌目标 id 列表
   repeated sint32 target_ids = 3;
+  bool will_be_effectless = 4;
 }
 
 // 使用技能
@@ -51,6 +52,7 @@ message UseSkillAction {
   int32 skill_id = 2;
   // 使用技能目标 id 列表
   repeated sint32 target_ids = 3;
+  optional sint32 main_damage_target_id = 4;
 }
 
 // 元素调和

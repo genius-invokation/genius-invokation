@@ -765,7 +765,7 @@ export class Game {
           // 应用“禁用事件牌”效果
           if (
             player().combatStatuses.find((st) =>
-              st.definition.tags.includes("disableEvent"),
+              st.definition.tags.includes("eventEffectless"),
             ) &&
             card.definition.cardType === "event"
           ) {
@@ -774,7 +774,7 @@ export class Game {
               who,
               where: "hands",
               oldState: card,
-              reason: "disabled",
+              reason: "playNoEffect",
             });
           } else {
             this.mutate({
@@ -975,6 +975,7 @@ export class Game {
             targets: arg.targets,
             fast: false,
             cost: skill.initiativeSkillConfig.requiredCost,
+            mainDamageTarget: null,
           };
           result.push(actionInfo);
         }
@@ -1010,6 +1011,7 @@ export class Game {
             targets: arg.targets,
             cost: skillDef.initiativeSkillConfig.requiredCost,
             fast: !card.definition.tags.includes("action"),
+            willBeEffectless: false,
           };
           result.push(actionInfo);
         }

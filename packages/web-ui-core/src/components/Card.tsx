@@ -86,7 +86,7 @@ export function Card(props: CardProps) {
         title={`id = ${props.data.id}`}
       />
       <DiceCost
-        class="absolute left-0 top-0 translate-x-[-50%] flex flex-col backface-hidden pointer-events-none"
+        class="absolute left-0 top-0 translate-x--50% flex flex-col backface-hidden pointer-events-none"
         cost={props.data.definitionCost}
         // realCost={allCosts[props.data.id]}
       />

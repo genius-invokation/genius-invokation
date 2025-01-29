@@ -57,7 +57,7 @@ export function DiceCost(props: DiceCostProps) {
     <div {...restProps}>
       <For each={diceMap()}>
         {([type, count, color]) => (
-          <Dice type={type} text={`${count}`} size={30} color={color} />
+          <Dice type={type} text={`${count}`} size={35} color={color} />
         )}
       </For>
     </div>
