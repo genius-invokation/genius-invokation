@@ -16,6 +16,13 @@
 export type Size = [height: number, width: number];
 export type Pos = [x: number, y: number];
 
+export function unitInPx() {
+  return parseFloat(getComputedStyle(document.documentElement).fontSize) / 4;
+}
+
+export const PERSPECTIVE = 200;
+export const DRAGGING_Z = 10;
+
 const MINIMUM_WIDTH = 192;
 const MINIMUM_HEIGHT = 144;
 
@@ -37,8 +44,10 @@ const HAND_CARD_FOCUSED_SHOW_HEIGHT = 36;
 const HAND_CARD_FOCUSED_SHOW_WIDTH_MIN = 15;
 const HAND_CARD_FOCUSED_CENTER_X_OFFSET = 0;
 
-const HAND_CARD_SELECTING_Y_OFFSET = 3;
-const HAND_CARD_SELECTING_X_OFFSET = 2;
+const HAND_CARD_HOVERING_Y_OFFSET = 3;
+const HAND_CARD_HOVERING_X_OFFSET = 2;
+
+const HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING = CARD_HEIGHT + 10;
 
 export function getCharacterAreaPos(
   [height, width]: Size,
@@ -97,11 +106,10 @@ export function getHandCardFocusedPos(
   [height, width]: Size,
   totalCount: number,
   index: number,
-  selectingIndex: number | null,
+  hoveringIndex: number | null,
 ): Pos {
   const yBase = height - HAND_CARD_FOCUSED_SHOW_HEIGHT;
-  const y =
-    yBase - (index === selectingIndex ? HAND_CARD_SELECTING_Y_OFFSET : 0);
+  const y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
   const halfWidth = width / 2;
 
   const cardAreaCenter = halfWidth + HAND_CARD_FOCUSED_CENTER_X_OFFSET;
@@ -113,13 +121,20 @@ export function getHandCardFocusedPos(
   const cardAreaWidth = realGap * (totalCount - 1) + CARD_WIDTH;
   const cardAreaX = cardAreaCenter - cardAreaWidth / 2;
   let x = cardAreaX + index * realGap;
-  if (selectingIndex === null) {
+  if (hoveringIndex === null) {
     return [x, y];
   }
-  if (index < selectingIndex) {
-    x -= HAND_CARD_SELECTING_X_OFFSET;
-  } else if (index > selectingIndex) {
-    x += HAND_CARD_SELECTING_X_OFFSET;
+  if (index < hoveringIndex) {
+    x -= HAND_CARD_HOVERING_X_OFFSET;
+  } else if (index > hoveringIndex) {
+    x += HAND_CARD_HOVERING_X_OFFSET;
   }
   return [x, y];
+}
+
+export function shouldFocusHandWhenDragging(
+  [height, width]: Size,
+  currentY: number,
+) {
+  return currentY >= height - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
 }

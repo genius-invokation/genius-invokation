@@ -43,7 +43,7 @@ const deck1: DeckConfig = {
     332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032, 332040,
     332040, 333015, 333015,
   ],
-  noShuffle: import.meta.env.DEV,
+  // noShuffle: import.meta.env.DEV,
 };
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
@@ -71,7 +71,7 @@ function App() {
   let cb0!: HTMLDivElement;
   let cb1!: HTMLDivElement;
 
-  const [p0State, setP0State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
+  const [p1State, setP1State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
 
   const state = Game.createInitialState({
     data: getData(),
@@ -84,16 +84,16 @@ function App() {
     const io1 = createPlayer(cb1, 1);
 
     const game = new Game(state);
-    game.players[0].io = {
-      ...io0,
+    game.players[0].io = io0;
+    game.players[1].io = {
+      ...io1,
       notify: (n) => {
-        io0.notify(n);
-        setP0State(n.state!);
+        io1.notify(n);
+        setP1State(n.state!);
       },
     };
     game.players[0].config.alwaysOmni = true;
     game.players[0].config.allowTuningAnyDice = true;
-    game.players[1].io = io1;
     game.onIoError = console.error;
     game.start();
     Reflect.set(window, "game", game);
@@ -105,7 +105,7 @@ function App() {
         <div ref={cb0} />
         <div ref={cb1} />
       </details>
-      <Chessboard who={0} showingCards={[]} state={p0State()} class="h-0" />
+      <Chessboard who={1} showingCards={[]} state={p1State()} class="h-0" />
     </div>
   );
 }

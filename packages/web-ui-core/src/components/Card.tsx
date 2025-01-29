@@ -15,7 +15,7 @@
 
 import { getData } from "@gi-tcg/assets-manager";
 import type { PbCardState, DiceType } from "@gi-tcg/typings";
-import { createResource } from "solid-js";
+import { createMemo, createResource } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 
@@ -29,19 +29,20 @@ export interface CardProps {
   rz: number;
   shadow: boolean;
   transition: boolean;
-  onClick?: (e: MouseEvent) => void;
-  onPointerEnter?: (e: PointerEvent) => void;
-  onPointerLeave?: (e: PointerEvent) => void;
-  onPointerUp?: (e: PointerEvent) => void;
-  onPointerMove?: (e: PointerEvent) => void;
-  onPointerDown?: (e: PointerEvent) => void;
+  onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
+  onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
+  onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
+  onPointerUp?: (e: PointerEvent, currentTarget: HTMLElement) => void;
+  onPointerMove?: (e: PointerEvent, currentTarget: HTMLElement) => void;
+  onPointerDown?: (e: PointerEvent, currentTarget: HTMLElement) => void;
 }
 
 export function Card(props: CardProps) {
-  const [data] = createResource(
-    () => props.data.definitionId,
-    (id) => getData(id),
-  );
+  // const [data] = createResource(
+  //   () => props.data.definitionId,
+  //   (id) => getData(id),
+  // );
+  const data = createMemo(() => props.data);
   return (
     <div
       class="absolute top-0 left-0 h-36 w-21 preserve-3d transition-ease-in-out touch-none"
@@ -57,27 +58,27 @@ export function Card(props: CardProps) {
       }}
       onClick={(e) => {
         e.stopPropagation();
-        props.onClick?.(e);
+        props.onClick?.(e, e.currentTarget);
       }}
       onPointerEnter={(e) => {
         e.stopPropagation();
-        props.onPointerEnter?.(e);
+        props.onPointerEnter?.(e, e.currentTarget);
       }}
       onPointerLeave={(e) => {
         e.stopPropagation();
-        props.onPointerLeave?.(e);
+        props.onPointerLeave?.(e, e.currentTarget);
       }}
       onPointerUp={(e) => {
         e.stopPropagation();
-        props.onPointerUp?.(e);
+        props.onPointerUp?.(e, e.currentTarget);
       }}
       onPointerMove={(e) => {
         e.stopPropagation();
-        props.onPointerMove?.(e);
+        props.onPointerMove?.(e, e.currentTarget);
       }}
       onPointerDown={(e) => {
         e.stopPropagation();
-        props.onPointerDown?.(e);
+        props.onPointerDown?.(e, e.currentTarget);
       }}
     >
       <Image
@@ -86,8 +87,8 @@ export function Card(props: CardProps) {
         title={`id = ${props.data.id}`}
       />
       <DiceCost
-        class="absolute left-0 top-0 translate-x--50% flex flex-col backface-hidden pointer-events-none"
-        cost={props.data.definitionCost}
+        class="absolute left-0 top-0 translate-x--50% flex flex-col backface-hidden"
+        cost={data().definitionCost}
         // realCost={allCosts[props.data.id]}
       />
       <div class="absolute h-full w-full rotate-y-180 translate-z-1px bg-gray-600 b-gray-700 b-solid b-4 color-white rounded backface-hidden" />

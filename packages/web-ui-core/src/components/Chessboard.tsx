@@ -19,9 +19,13 @@ import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { flip } from "@gi-tcg/utils";
 import { Key } from "@solid-primitives/keyed";
 import {
+  DRAGGING_Z,
   getHandCardBlurredPos,
   getHandCardFocusedPos,
   getPilePos,
+  PERSPECTIVE,
+  shouldFocusHandWhenDragging,
+  unitInPx,
   type Pos,
   type Size,
 } from "../layout";
@@ -60,13 +64,13 @@ export function Chessboard(props: ChessboardProps) {
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
   const onResize = () => {
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    setHeight((chessboardElement.clientHeight * 4) / rem);
-    setWidth((chessboardElement.clientWidth * 4) / rem);
+    const unit = unitInPx();
+    setHeight(chessboardElement.clientHeight / unit);
+    setWidth(chessboardElement.clientWidth / unit);
   };
 
   const [focusingHands, setFocusingHands] = createSignal(false);
-  const [selectingHand, setSelectingHand] = createSignal<CardInfo | null>(null);
+  const [hoveringHand, setHoveringHand] = createSignal<CardInfo | null>(null);
   const [draggingHand, setDraggingHand] = createSignal<DraggingCardInfo | null>(
     null,
   );
@@ -74,7 +78,7 @@ export function Chessboard(props: ChessboardProps) {
 
   const resizeObserver = new ResizeObserver(onResize);
 
-  const cards = createMemo(() => {
+  const cards = () => {
     const size = [height(), width()] as Size;
     const isFocusingHands = focusingHands();
     const draggingHandV = draggingHand();
@@ -108,14 +112,14 @@ export function Chessboard(props: ChessboardProps) {
       const totalHandCardCount = player.handCard.length;
 
       const isFocus = !opp && isFocusingHands;
-      const z = isFocus ? 10 : 2;
+      const z = isFocus ? DRAGGING_Z : 2;
       const ry = isFocus ? 0 : opp ? 175 : -5;
 
-      let selectingHandIndex: number | null = player.handCard.findIndex(
-        (card) => card.id === selectingHand()?.id,
+      let hoveringHandIndex: number | null = player.handCard.findIndex(
+        (card) => card.id === hoveringHand()?.id,
       );
-      if (selectingHandIndex === -1) {
-        selectingHandIndex = null;
+      if (hoveringHandIndex === -1) {
+        hoveringHandIndex = null;
       }
 
       for (let i = 0; i < totalHandCardCount; i++) {
@@ -128,7 +132,7 @@ export function Chessboard(props: ChessboardProps) {
             kind: "dragging",
             x,
             y,
-            z: 10,
+            z: DRAGGING_Z,
             zIndex: 100,
             ry: 0,
             rz: 0,
@@ -142,7 +146,7 @@ export function Chessboard(props: ChessboardProps) {
               size,
               totalHandCardCount,
               i,
-              selectingHandIndex,
+              hoveringHandIndex,
             )
           : getHandCardBlurredPos(size, opp, totalHandCardCount, i);
         cards.push({
@@ -161,18 +165,28 @@ export function Chessboard(props: ChessboardProps) {
       }
     }
     return cards.toSorted((a, b) => a.id - b.id);
-  });
-
-  const onCardClick = (e: MouseEvent, cardInfo: CardInfo) => {};
-
-  const onCardPointerEnter = (e: PointerEvent, cardInfo: CardInfo) => {
-    if (focusingHands()) {
-      setSelectingHand(cardInfo);
-    }
   };
-  const onCardPointerLeave = (e: PointerEvent, cardInfo: CardInfo) => {
+
+  const onCardClick = (
+    e: MouseEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {};
+
+  const onCardPointerEnter = (
+    e: PointerEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
+    setHoveringHand(cardInfo);
+  };
+  const onCardPointerLeave = (
+    e: PointerEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
     if (focusingHands()) {
-      setSelectingHand((c) => {
+      setHoveringHand((c) => {
         if (c?.id === cardInfo.id) {
           return null;
         } else {
@@ -181,8 +195,14 @@ export function Chessboard(props: ChessboardProps) {
       });
     }
   };
-  const onCardPointerDown = async (e: PointerEvent, cardInfo: CardInfo) => {
+  const onCardPointerDown = async (
+    e: PointerEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
     if (cardInfo.kind === "myHand") {
+      // 弥补收起手牌时选中由于 z 的差距而导致的视觉不连贯
+      let yAdjust = 0;
       if (!focusingHands()) {
         shouldMoveWhenHandBlurring = Promise.withResolvers();
         setTimeout(() => {
@@ -193,35 +213,44 @@ export function Chessboard(props: ChessboardProps) {
         if (!doMove) {
           return;
         }
+        yAdjust -= 3;
       }
-      const target = e.target as HTMLElement;
-      // target.setPointerCapture(e.pointerId);
-      const rem = parseFloat(
-        getComputedStyle(document.documentElement).fontSize,
-      );
-      const offsetX = e.clientX - (cardInfo.x / 4) * rem;
-      const offsetY = e.clientY - (cardInfo.y / 4) * rem;
-      console.log({ offsetX, offsetY });
+      currentTarget.setPointerCapture(e.pointerId);
+      const unit = unitInPx();
+      const originalX = cardInfo.x;
+      const originalY = cardInfo.y + yAdjust;
+      const initialPointerX = e.clientX;
+      const initialPointerY = e.clientY;
+      const zRatio = (PERSPECTIVE - DRAGGING_Z) / PERSPECTIVE;
       setDraggingHand({
         id: cardInfo.id,
-        x: cardInfo.x,
-        y: cardInfo.y,
+        x: originalX,
+        y: originalY,
         moving: false,
         updatePos: (e2) => {
-          const x = ((e2.clientX - offsetX) * 4) / rem;
-          const y = ((e2.clientY - offsetY) * 4) / rem;
+          const x =
+            originalX + ((e2.clientX - initialPointerX) / unit) * zRatio;
+          const y =
+            originalY + ((e2.clientY - initialPointerY) / unit) * zRatio;
           return [x, y];
         },
       });
     }
   };
-  const onCardPointerMove = (e: PointerEvent, cardInfo: CardInfo) => {
-    shouldMoveWhenHandBlurring?.resolve(true);
+  const onCardPointerMove = (
+    e: PointerEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
     setDraggingHand((dragging) => {
       if (dragging?.id !== cardInfo.id) {
         return dragging;
       }
+      shouldMoveWhenHandBlurring?.resolve(true);
+      const size = [height(), width()] as Size;
       const [x, y] = dragging.updatePos(e);
+      const shouldFocusingHand = shouldFocusHandWhenDragging(size, y);
+      setFocusingHands(shouldFocusingHand);
       // console.log(x, y);
       return {
         ...dragging,
@@ -231,7 +260,11 @@ export function Chessboard(props: ChessboardProps) {
       };
     });
   };
-  const onCardPointerUp = (e: PointerEvent, cardInfo: CardInfo) => {
+  const onCardPointerUp = (
+    e: PointerEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
     shouldMoveWhenHandBlurring?.resolve(false);
     setDraggingHand((dragging) => {
       if (dragging?.id !== cardInfo.id) {
@@ -243,7 +276,7 @@ export function Chessboard(props: ChessboardProps) {
 
   const onChessboardClick = () => {
     setFocusingHands(false);
-    setSelectingHand(null);
+    setHoveringHand(null);
   };
 
   onMount(() => {
@@ -260,20 +293,23 @@ export function Chessboard(props: ChessboardProps) {
       }`}
     >
       <div
-        class="relative h-full w-full perspective-800 preserve-3d overflow-clip select-none"
+        class="relative h-full w-full preserve-3d overflow-clip select-none"
         ref={chessboardElement}
         onPointerDown={onChessboardClick}
+        style={{
+          perspective: `${PERSPECTIVE / 4}rem`,
+        }}
       >
         <Key each={cards()} by="id">
           {(card) => (
             <Card
               {...card()}
-              onClick={(e) => onCardClick(e, card())}
-              onPointerEnter={(e) => onCardPointerEnter(e, card())}
-              onPointerLeave={(e) => onCardPointerLeave(e, card())}
-              onPointerDown={(e) => onCardPointerDown(e, card())}
-              onPointerMove={(e) => onCardPointerMove(e, card())}
-              onPointerUp={(e) => onCardPointerUp(e, card())}
+              onClick={(e, t) => onCardClick(e, t, card())}
+              onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
+              onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
+              onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
+              onPointerMove={(e, t) => onCardPointerMove(e, t, card())}
+              onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
             />
           )}
         </Key>

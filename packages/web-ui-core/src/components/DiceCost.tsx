@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { DiceType, PbDiceRequirement } from "@gi-tcg/typings";
+import { DiceType, type PbDiceRequirement } from "@gi-tcg/typings";
 import { type ComponentProps, For, splitProps } from "solid-js";
 
 import { Dice, type DiceColor } from "./Dice";
@@ -57,7 +57,12 @@ export function DiceCost(props: DiceCostProps) {
     <div {...restProps}>
       <For each={diceMap()}>
         {([type, count, color]) => (
-          <Dice type={type} text={`${count}`} size={35} color={color} />
+          <Dice
+            type={type}
+            text={type === DiceType.Legend ? "" : `${count}`}
+            size={35}
+            color={color}
+          />
         )}
       </For>
     </div>
