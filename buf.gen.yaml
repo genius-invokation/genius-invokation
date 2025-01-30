@@ -3,12 +3,13 @@ managed:
   enabled: true
 plugins:
   - remote: buf.build/community/stephenh-ts-proto:v2.2.0
-    # strategy: all
     out: packages/typings/src/gen
     opt:
       - outputJsonMethods=false
       - unrecognizedEnum=false
       - exportCommonSymbols=false
+      - removeEnumPrefix=true
+      - oneof=unions-value
   # - remote: buf.build/community/protobuf-c:v1.5.0
   #   out: packages/cbinding/src/pb
   - remote: buf.build/protocolbuffers/python:v28.0

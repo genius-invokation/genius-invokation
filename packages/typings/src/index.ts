@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export * from "./common_enums";
+
 export {
   Action,
   UseSkillAction,
@@ -22,6 +23,9 @@ export {
   ElementalTuningAction,
   DeclareEndAction,
 } from "./gen/action";
+
+export { PreviewData } from "./gen/preview";
+
 export {
   PhaseType as PbPhaseType,
   CardState as PbCardState,
@@ -32,16 +36,12 @@ export {
   State as PbGameState,
   EquipmentType as PbEquipmentType,
 } from "./gen/state";
-type ForceRequired<T> = {
-  [P in keyof T]-?: Exclude<T[P], undefined>;
-};
-export type Notification = ForceRequired<
-  import("./gen/notification").Notification
->;
-export { PreviewData } from "./gen/preview";
+
+export { Notification } from "./gen/notification";
+
 export {
   CardArea as PbCardArea,
-  CreateEntityArea as PbCreateEntityArea,
+  EntityArea as PbEntityArea,
   ActionType as PbActionType,
   PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
@@ -64,12 +64,7 @@ export {
   TransferCardEM,
   TransformDefinitionEM,
   TriggeredEM,
-  ExposedMutation,
 } from "./gen/mutation";
-
-import { Request as RpcRequest, Response as RpcResponse } from "./gen/rpc";
-export type RpcMethod = keyof RpcRequest;
-export { RpcRequest, RpcResponse };
 export {
   ActionRequest,
   ActionResponse,
@@ -82,3 +77,78 @@ export {
   SwitchHandsRequest,
   SwitchHandsResponse,
 } from "./gen/rpc";
+
+import { Request as RpcRequest, Response as RpcResponse } from "./gen/rpc";
+import { ExposedMutation as PbExposedMutation } from "./gen/mutation";
+
+type Calculated<T> = { [K in keyof T]: T[K] } & {};
+
+export type OneofBase = { $case: string; value: object } | undefined;
+export type OneofCase<T extends OneofBase> = NonNullable<T>["$case"];
+export type ExtractOneof<T extends OneofBase, K extends OneofCase<T>> = (T & {
+  $case: K;
+  value: unknown;
+})["value"];
+export type FlattenOneof<T extends OneofBase> = {
+  [K in NonNullable<T>["$case"]]: Calculated<
+    {
+      $case: K;
+    } & ExtractOneof<T, K>
+  >;
+}[NonNullable<T>["$case"]];
+
+export type RpcMethod = OneofCase<RpcRequest["request"]>;
+export type RpcRequestPayloadOf<Method extends RpcMethod> = ExtractOneof<
+  RpcRequest["request"],
+  Method
+>;
+export type RpcResponsePayloadOf<Method extends RpcMethod> = ExtractOneof<
+  RpcResponse["response"],
+  Method
+>;
+
+export function createRpcRequest<const Method extends RpcMethod>(
+  method: Method,
+  value: NoInfer<RpcRequestPayloadOf<Method>>,
+): RpcRequest {
+  return { request: { $case: method, value } } as any;
+}
+export function createRpcResponse<const Method extends RpcMethod>(
+  method: Method,
+  value: NoInfer<RpcResponsePayloadOf<Method>>,
+): RpcResponse {
+  return { response: { $case: method, value } } as any;
+}
+type RpcDispatcher = {
+  [K in RpcMethod]: (
+    payload: RpcRequestPayloadOf<K>,
+  ) => Promise<RpcResponsePayloadOf<K>>;
+};
+export function dispatchRpc(
+  dispatcher: RpcDispatcher,
+): (req: RpcRequest) => Promise<RpcResponse> {
+  return async (req) => {
+    const { $case, value } = req.request!;
+    const handler = dispatcher[$case];
+    if (!handler) {
+      throw new Error(`Unknown RPC method: ${$case}`);
+    }
+    const response = await handler(value as any);
+    return createRpcResponse($case, response);
+  };
+}
+
+export function flattenPbOneof<T extends OneofBase>(
+  oneof: NonNullable<T>,
+): FlattenOneof<T> {
+  return { $case: oneof.$case, ...oneof.value } as FlattenOneof<T>;
+}
+export function unFlattenOneof<T extends OneofBase>(
+  flatten: FlattenOneof<T>,
+): T {
+  return { $case: flatten.$case, value: flatten } as unknown as T;
+}
+
+export { RpcRequest, RpcResponse };
+export { PbExposedMutation };
+export type ExposedMutation = FlattenOneof<PbExposedMutation["mutation"]>;

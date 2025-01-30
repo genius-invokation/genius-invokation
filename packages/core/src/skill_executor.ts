@@ -141,10 +141,9 @@ export class SkillExecutor {
       skillInfo.caller.definition.skills.find((sk) => sk.id === skillDef.id)
     ) {
       preExposedMutations.push({
-        triggered: {
-          entityId: skillInfo.caller.id,
-          entityDefinitionId: skillInfo.caller.definition.id,
-        },
+        $case: "triggered",
+        entityId: skillInfo.caller.id,
+        entityDefinitionId: skillInfo.caller.definition.id,
       });
     }
     this.mutator.notify({
@@ -314,14 +313,13 @@ export class SkillExecutor {
         await this.mutator.notifyAndPause({
           mutations: [
             {
-              damage: {
-                type: healInfo.type,
-                value: healInfo.value,
-                sourceId: healInfo.source.id,
-                sourceDefinitionId: healInfo.source.definition.id,
-                targetId: healInfo.target.id,
-                targetDefinitionId: healInfo.target.definition.id,
-              },
+              $case: "damage",
+              damageType: healInfo.type,
+              value: healInfo.value,
+              sourceId: healInfo.source.id,
+              sourceDefinitionId: healInfo.source.definition.id,
+              targetId: healInfo.target.id,
+              targetDefinitionId: healInfo.target.definition.id,
             },
           ],
         });
@@ -428,11 +426,10 @@ export class SkillExecutor {
         this.mutator.notify({
           mutations: [
             {
-              switchActive: {
-                who: arg.switchInfo.who,
-                characterId: arg.switchInfo.to.id,
-                characterDefinitionId: arg.switchInfo.to.definition.id,
-              },
+              $case: "switchActive",
+              who: arg.switchInfo.who,
+              characterId: arg.switchInfo.to.id,
+              characterDefinitionId: arg.switchInfo.to.definition.id,
             },
           ],
         });

@@ -532,14 +532,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutator.notify({
       mutations: [
         {
-          switchActive: {
-            who: playerWho,
-            characterId: switchToTarget.id,
-            characterDefinitionId: switchToTarget.definition.id,
-            viaSkillId: this.fromReaction
-              ? Reaction.Overloaded
-              : this.skillInfo.definition.id ?? null,
-          },
+          $case: "switchActive",
+          who: playerWho,
+          characterId: switchToTarget.id,
+          characterDefinitionId: switchToTarget.definition.id,
+          viaSkillId: this.fromReaction
+            ? Reaction.Overloaded
+            : this.skillInfo.definition.id ?? null,
         },
       ],
     });
@@ -634,14 +633,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutator.notify({
       mutations: [
         {
-          damage: {
-            type: healInfo.type,
-            sourceId: this.skillInfo.caller.id,
-            sourceDefinitionId: this.skillInfo.caller.definition.id,
-            value: healInfo.value,
-            targetId: targetState.id,
-            targetDefinitionId: targetState.definition.id,
-          },
+          $case: "damage",
+          damageType: healInfo.type,
+          sourceId: this.skillInfo.caller.id,
+          sourceDefinitionId: this.skillInfo.caller.definition.id,
+          value: healInfo.value,
+          targetId: targetState.id,
+          targetDefinitionId: targetState.definition.id,
         },
       ],
     });
@@ -737,14 +735,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.mutator.notify({
           mutations: [
             {
-              damage: {
-                type: damageInfo.type,
-                sourceId: damageInfo.source.id,
-                sourceDefinitionId: damageInfo.source.definition.id,
-                value: damageInfo.value,
-                targetId: damageInfo.target.id,
-                targetDefinitionId: damageInfo.target.definition.id,
-              },
+              $case: "damage",
+              damageType: damageInfo.type,
+              sourceId: damageInfo.source.id,
+              sourceDefinitionId: damageInfo.source.definition.id,
+              value: damageInfo.value,
+              targetId: damageInfo.target.id,
+              targetDefinitionId: damageInfo.target.definition.id,
             },
           ],
         });
@@ -809,11 +806,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.mutator.notify({
         mutations: [
           {
-            elementalReaction: {
-              type: reaction,
-              characterId: target.state.id,
-              characterDefinitionId: target.state.definition.id,
-            },
+            $case: "elementalReaction",
+            reactionType: reaction,
+            characterId: target.state.id,
+            characterDefinitionId: target.state.definition.id,
           },
         ],
       });

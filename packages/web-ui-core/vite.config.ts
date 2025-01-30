@@ -21,6 +21,9 @@ import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
+  esbuild: {
+    target: "ES2023",
+  },
   plugins: [
     {
       ...nodeExternals(),

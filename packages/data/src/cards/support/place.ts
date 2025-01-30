@@ -337,7 +337,7 @@ export const OperaEpiclese = card(321017)
  * 可用次数：1
  */
 export const StrictProhibited = combatStatus(301018)
-  .tags("disableEvent")
+  .tags("eventEffectless")
   .oneDuration()
   .on("playCard", (c, e) => e.card.definition.cardType === "event")
   .usage(1)

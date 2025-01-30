@@ -44,6 +44,7 @@ import {
   SelectCardResponse,
   CURRENT_VERSION,
   type Version,
+  dispatchRpc,
 } from "@gi-tcg/core";
 import getData from "@gi-tcg/data";
 import { type Deck, flip } from "@gi-tcg/utils";
@@ -232,39 +233,30 @@ class Player implements PlayerIOWithError {
     });
   }
 
-  private timeoutRpc(request: RpcRequest): RpcResponse {
-    if (request.action) {
-      const { action } = request.action;
-      const declareEndIdx = action.findIndex((c) => c.declareEnd);
-      const result: ActionResponse = {
-        chosenActionIndex: declareEndIdx,
-        usedDice: [],
-      };
-      return { action: result };
-    } else if (request.chooseActive) {
-      const { candidateIds } = request.chooseActive;
-      const result: ChooseActiveResponse = {
+  private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
+    return dispatchRpc({
+      action: async ({ action }) => {
+        const declareEndIdx = action.findIndex(
+          (c) => c.action?.$case === "declareEnd",
+        );
+        return {
+          chosenActionIndex: declareEndIdx,
+          usedDice: [],
+        };
+      },
+      chooseActive: async ({ candidateIds }) => ({
         activeCharacterId: candidateIds[0]!,
-      };
-      return { chooseActive: result };
-    } else if (request.rerollDice) {
-      const result: RerollDiceResponse = {
+      }),
+      rerollDice: async () => ({
         diceToReroll: [],
-      };
-      return { rerollDice: result };
-    } else if (request.switchHands) {
-      const result: SwitchHandsResponse = {
+      }),
+      switchHands: async () => ({
         removedHandIds: [],
-      };
-      return { switchHands: result };
-    } else if (request.selectCard) {
-      const result: SelectCardResponse = {
-        selectedDefinitionId: request.selectCard.candidateDefinitionIds[0]!,
-      };
-      return { selectCard: result };
-    } else {
-      throw new Error("Unknown rpc request");
-    }
+      }),
+      selectCard: async ({ candidateDefinitionIds }) => ({
+        selectedDefinitionId: candidateDefinitionIds[0]!,
+      }),
+    })(request);
   }
 
   async rpc(request: RpcRequest): Promise<RpcResponse> {
@@ -275,7 +267,7 @@ class Player implements PlayerIOWithError {
     let timeout: number;
     // 行动结束后，计算新的回合剩余时间
     let setRoundTimeout: (remained: number) => void;
-    if (request.rerollDice) {
+    if (request.request?.$case === "rerollDice") {
       timeout = this._timeoutConfig?.rerollTime ?? Infinity;
       setRoundTimeout = () => {};
     } else {
@@ -286,7 +278,7 @@ class Player implements PlayerIOWithError {
     }
     const payload: SSERpc = { type: "rpc", id, timeout, request };
     this.rpcSseSource.next(payload);
-    return new Promise((resolve) => {
+    return new Promise<RpcResponse>((resolve) => {
       const resolver: RpcResolver = {
         id,
         request,

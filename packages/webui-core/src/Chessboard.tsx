@@ -45,10 +45,13 @@ import {
   type SelectCardResponse,
   type SelectCardRequest,
   type PreviewData,
+  dispatchRpc,
+  flattenPbOneof,
 } from "@gi-tcg/typings";
 import type {
   PbDiceRequirement,
   PbDiceType,
+  PbExposedMutation,
   PlayerIO,
   RpcResponse,
 } from "@gi-tcg/core";
@@ -267,7 +270,7 @@ export function createPlayer(
   const [gameState, setGameState] = createSignal(EMPTY_GAME_STATE);
   const [previewData, setPreviewData] = createSignal<PreviewData[]>([]);
   const [previewing, setPreviewing] = createSignal(false);
-  const [mutations, setMutations] = createSignal<ExposedMutation[]>([]);
+  const [mutations, setMutations] = createSignal<PbExposedMutation[]>([]);
   const [giveUp, setGiveUp] = createSignal(false);
   const [rerolling, waitReroll, notifyRerolled] =
     createWaitNotify<PbDiceType[]>();
@@ -365,8 +368,8 @@ export function createPlayer(
       const initialClickable = new Map<number, DiceAndSelectionState>();
       const newAllCosts: Record<number, readonly PbDiceRequirement[]> = {};
       for (const [actionObj, i] of actions.map((v, i) => [v, i] as const)) {
-        if (actionObj.useSkill) {
-          const action = actionObj.useSkill;
+        const action = flattenPbOneof(actionObj.action!);
+        if (action.$case === "useSkill") {
           const energyReq = actionObj.requiredCost.find(
             ({ type }) => type === 9 /* energy */,
           );
@@ -379,8 +382,7 @@ export function createPlayer(
             requiredCost: actionObj.requiredCost,
           });
           newAllCosts[action.skillId] = actionObj.requiredCost;
-        } else if (actionObj.playCard) {
-          const action = actionObj.playCard;
+        } else if (action.$case === "playCard") {
           const energyReq = actionObj.requiredCost.find(
             ({ type }) => type === 9 /* energy */,
           );
@@ -393,8 +395,7 @@ export function createPlayer(
             requiredCost: actionObj.requiredCost,
           });
           newAllCosts[action.cardId] = actionObj.requiredCost;
-        } else if (actionObj.switchActive) {
-          const action = actionObj.switchActive;
+        } else if (action.$case === "switchActive") {
           initialClickable.set(action.characterId, {
             actionIndex: i,
             required: actionObj.requiredCost,
@@ -403,8 +404,7 @@ export function createPlayer(
             depth: 0,
           });
           newAllCosts[action.characterId] = actionObj.requiredCost;
-        } else if (actionObj.elementalTuning) {
-          const action = actionObj.elementalTuning;
+        } else if (action.$case === "elementalTuning") {
           initialClickable.set(action.removedCardId + ELEMENTAL_TUNING_OFFSET, {
             actionIndex: i,
             disabledDice: [8 /* omni */, action.targetDice],
@@ -413,7 +413,7 @@ export function createPlayer(
             hintText: "元素调和",
             depth: 0,
           });
-        } else if (actionObj.declareEnd) {
+        } else if (action.$case === "declareEnd") {
           initialClickable.set(0, {
             actionIndex: i,
             required: [],
@@ -461,7 +461,7 @@ export function createPlayer(
         const chosenActionIndex = state.actionIndex!;
         setPreviewData(actions[chosenActionIndex].preview);
 
-        if (actions[chosenActionIndex].declareEnd) {
+        if (actions[chosenActionIndex].action?.$case === "declareEnd") {
           setClickable([]);
           setSelected([]);
           setHintText("");
@@ -517,7 +517,10 @@ export function createPlayer(
           console.log(msg);
         }
         if (
-          msg.mutation.filter((mut) => mut.damage || mut.triggered).length > 0
+          msg.mutation.filter(
+            ({ mutation }) =>
+              mutation?.$case === "damage" || mutation?.$case === "triggered",
+          ).length > 0
         ) {
           await new Promise<void>((resolve) => setTimeout(resolve, 500));
         }
@@ -530,37 +533,13 @@ export function createPlayer(
           reject(e);
           clearIo();
         };
-        if (request.switchHands) {
-          action
-            .onSwitchHands()
-            .then((r): RpcResponse => ({ switchHands: { ...r } }))
-            .then(resolve)
-            .catch(reject);
-        } else if (request.chooseActive) {
-          action
-            .onChooseActive(request.chooseActive)
-            .then((r): RpcResponse => ({ chooseActive: { ...r } }))
-            .then(resolve)
-            .catch(reject);
-        } else if (request.rerollDice) {
-          action
-            .onRerollDice()
-            .then((r): RpcResponse => ({ rerollDice: { ...r } }))
-            .then(resolve)
-            .catch(reject);
-        } else if (request.selectCard) {
-          action
-            .onSelectCard(request.selectCard)
-            .then((r): RpcResponse => ({ selectCard: { ...r } }))
-            .then(resolve)
-            .catch(reject);
-        } else if (request.action) {
-          action
-            .onAction(request.action)
-            .then((r): RpcResponse => ({ action: { ...r } }))
-            .then(resolve)
-            .catch(reject);
-        }
+        return dispatchRpc({
+          action: action.onAction,
+          rerollDice: action.onRerollDice,
+          chooseActive: action.onChooseActive,
+          switchHands: action.onSwitchHands,
+          selectCard: action.onSelectCard,
+        })(request).then(resolve, reject);
       });
     },
     cancelRpc: () => {
@@ -700,7 +679,7 @@ export function createPlayer(
 
 interface ChessboardProps extends ComponentProps<"div"> {
   state: PbGameState;
-  mutations?: readonly ExposedMutation[];
+  mutations?: readonly PbExposedMutation[];
   who: 0 | 1;
   children?: JSX.Element;
   previewData: PreviewData[] | null;
@@ -726,15 +705,15 @@ function Chessboard(props: ChessboardProps) {
   createEffect(() => {
     let currentFocusing: number | null = null;
     const currentDamages: DamageEM[] = [];
-    for (const event of local.mutations ?? []) {
-      if (event.damage) {
-        currentDamages.push(event.damage);
+    for (const { mutation } of local.mutations ?? []) {
+      if (mutation?.$case === "damage") {
+        currentDamages.push(mutation.value);
       }
-      if (event.triggered) {
-        currentFocusing = event.triggered.entityId;
+      if (mutation?.$case === "triggered") {
+        currentFocusing = mutation.value.entityId;
       }
-      if (event.playerStatusChange) {
-        const { who, status } = event.playerStatusChange;
+      if (mutation?.$case === "playerStatusChange") {
+        const { who, status } = mutation.value;
         setPlayerStatus(
           produce((st) => {
             st[who] = status;

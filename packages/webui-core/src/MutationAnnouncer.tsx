@@ -21,16 +21,18 @@ import {
   untrack,
 } from "solid-js";
 import { usePlayerContext } from "./Chessboard";
-import type {
-  ExposedMutation,
-  PbGameState,
-  PbReactionType,
+import {
+  flattenPbOneof,
+  type ExposedMutation,
+  type PbExposedMutation,
+  type PbGameState,
+  type PbReactionType,
 } from "@gi-tcg/typings";
 import { createStore } from "solid-js/store";
 
 export interface MutationAnnouncerProps extends ComponentProps<"div"> {
   state: PbGameState;
-  mutations?: readonly ExposedMutation[];
+  mutations?: readonly PbExposedMutation[];
   who: 0 | 1;
 }
 
@@ -40,7 +42,12 @@ export function MutationAnnouncer(props: MutationAnnouncerProps) {
 
   const getSpells = () =>
     local.mutations?.map((m) =>
-      spellMutation(m, local.who, local.state, assetsAltText),
+      spellMutation(
+        flattenPbOneof(m.mutation!),
+        local.who,
+        local.state,
+        assetsAltText,
+      ),
     );
   const [mutationHintTexts, setMutationHintTexts] = createStore<string[]>([]);
   createEffect(() => {
@@ -130,85 +137,75 @@ const spellMutation = (
         return "不知道哪";
     }
   };
-  if (m.actionDone) {
-    if (m.actionDone.skillOrCardDefinitionId) {
-      spell = `${spellWho(m.actionDone.who)} 使用 ${altTextFunc(
-        m.actionDone.skillOrCardDefinitionId,
+  if (m.$case === "actionDone") {
+    if (m.skillOrCardDefinitionId) {
+      spell = `${spellWho(m.who)} 使用 ${altTextFunc(
+        m.skillOrCardDefinitionId,
       )}`;
-    } else if (m.actionDone.actionType === 5 /* declare end */) {
-      spell = `${spellWho(m.actionDone.who)} 宣布回合结束`;
+    } else if (m.actionType === 5 /* declare end */) {
+      spell = `${spellWho(m.who)} 宣布回合结束`;
     }
-  } else if (m.damage) {
-    spell = `${altTextFunc(m.damage.targetDefinitionId)} 受到 ${
-      m.damage.value
-    } 点 \
-          ${typeSpellArray[m.damage.type]} ${
-            m.damage.type === 9 ? "" : "伤害"
-          }`;
-  } else if (m.stepRound) {
+  } else if (m.$case === "damage") {
+    spell = `${altTextFunc(m.targetDefinitionId)} 受到 ${m.value} 点 \
+          ${typeSpellArray[m.damageType]} ${m.damageType === 9 ? "" : "伤害"}`;
+  } else if (m.$case === "stepRound") {
     spell = `回合开始`;
-  } else if (m.changePhase) {
-    spell = `进入 ${phaseSpellArray[m.changePhase.newPhase]} 阶段`;
-  } else if (m.triggered) {
-    spell = `${altTextFunc(m.triggered.entityDefinitionId)} 触发了`;
-  } else if (m.resetDice) {
-    spell = `${spellWho(m.resetDice.who)} 现在有 ${
-      m.resetDice.dice.length
-    } 个骰子`;
-  } else if (m.switchTurn) {
+  } else if (m.$case === "changePhase") {
+    spell = `进入 ${phaseSpellArray[m.newPhase]} 阶段`;
+  } else if (m.$case === "triggered") {
+    spell = `${altTextFunc(m.entityDefinitionId)} 触发了`;
+  } else if (m.$case === "resetDice") {
+    spell = `${spellWho(m.who)} 现在有 ${m.dice.length} 个骰子`;
+  } else if (m.$case === "switchTurn") {
     spell = `切换行动方`;
-  } else if (m.switchActive) {
-    spell = `${spellWho(m.switchActive.who)} 切换出战角色至 ${altTextFunc(
-      m.switchActive.characterDefinitionId,
+  } else if (m.$case === "switchActive") {
+    spell = `${spellWho(m.who)} 切换出战角色至 ${altTextFunc(
+      m.characterDefinitionId,
     )}`;
-  } else if (m.createCard) {
+  } else if (m.$case === "createCard") {
     // 跳过开局发牌的解说
     if (state.phase !== 0) {
-      spell = `${spellWho(m.createCard.who)} 将一张 ${
-        altTextFunc(m.createCard.cardDefinitionId) ?? "行动牌"
-      } 置入了 ${spellCreateCardTarget(m.createCard.to)}`;
+      spell = `${spellWho(m.who)} 将一张 ${
+        altTextFunc(m.card!.definitionId) ?? "行动牌"
+      } 置入了 ${spellCreateCardTarget(m.to)}`;
     }
-  } else if (m.removeCard) {
-    switch (m.removeCard.reason) {
+  } else if (m.$case === "removeCard") {
+    switch (m.reason) {
       case 2:
-        spell = `${spellWho(m.removeCard.who)} 调和了 一张卡牌`;
+        spell = `${spellWho(m.who)} 调和了 一张卡牌`;
         break;
       case 3:
-        spell = `${spellWho(m.removeCard.who)} 手牌已满 弃置了一张卡牌`;
+        spell = `${spellWho(m.who)} 手牌已满 弃置了一张卡牌`;
         break;
       case 4:
-        spell = `${spellWho(m.removeCard.who)} 弃置了一张卡牌`;
+        spell = `${spellWho(m.who)} 弃置了一张卡牌`;
         break;
       case 5:
-        spell = `${spellWho(m.removeCard.who)} 被裁了 一张卡牌`;
+        spell = `${spellWho(m.who)} 被裁了 一张卡牌`;
         break;
     }
-  } else if (m.transferCard) {
+  } else if (m.$case === "transferCard") {
     if (state.phase !== 0) {
-      if (
-        m.transferCard.from === 1 &&
-        m.transferCard.to === 0 &&
-        !m.transferCard.transferToOpp
-      ) {
-        spell = `${spellWho(m.transferCard.who)} 抽了一张 ${
-          altTextFunc(m.transferCard.cardDefinitionId) ?? "行动牌"
+      if (m.from === 1 && m.to === 0 && !m.transferToOpp) {
+        spell = `${spellWho(m.who)} 抽了一张 ${
+          altTextFunc(m.card!.definitionId) ?? "行动牌"
         }`;
       } else {
-        spell = `${spellWho(m.transferCard.who)} 将一张 ${
-          altTextFunc(m.transferCard.cardDefinitionId) ?? "行动牌"
-        } 从 ${spellCreateCardTarget(m.transferCard.from)} 移动到 ${
-          m.transferCard.transferToOpp ? "对方的" : ""
-        }${spellCreateCardTarget(m.transferCard.to)}`;
+        spell = `${spellWho(m.who)} 将一张 ${
+          altTextFunc(m.card!.definitionId) ?? "行动牌"
+        } 从 ${spellCreateCardTarget(m.from)} 移动到 ${
+          m.transferToOpp ? "对方的" : ""
+        }${spellCreateCardTarget(m.to)}`;
       }
     }
-  } else if (m.createEntity) {
-    spell = `${altTextFunc(m.createEntity.entityDefinitionId)} 创建了`;
-  } else if (m.removeEntity) {
-    spell = `${altTextFunc(m.removeEntity.entityDefinitionId)} 移除了`;
-  } else if (m.elementalReaction) {
+  } else if (m.$case === "createEntity") {
+    spell = `${altTextFunc(m.entity!.definitionId)} 创建了`;
+  } else if (m.$case === "removeEntity") {
+    spell = `${altTextFunc(m.entityDefinitionId)} 移除了`;
+  } else if (m.$case === "elementalReaction") {
     spell = `${altTextFunc(
-      m.elementalReaction.characterDefinitionId,
-    )} 上触发了元素反应 ${spellReactionType(m.elementalReaction.type)}`;
+      m.characterDefinitionId,
+    )} 上触发了元素反应 ${spellReactionType(m.reactionType)}`;
   }
   return spell;
 };

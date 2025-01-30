@@ -43,7 +43,12 @@ import {
   Writable,
 } from "./utils";
 import { GiTcgPreviewAbortedError, StateMutator } from "./mutator";
-import { ExposedMutation, PreviewData } from "@gi-tcg/typings";
+import {
+  ExposedMutation,
+  FlattenOneof,
+  PreviewData,
+  unFlattenOneof,
+} from "@gi-tcg/typings";
 import { exposeEntity, exposeMutation, exposeState } from "./io";
 
 export type ActionInfoWithModification = ActionInfo & {
@@ -105,9 +110,9 @@ class PreviewContext {
   }
 
   getPreviewData(): PreviewData[] {
-    const result: PreviewData[] = [];
+    const result: ExposedMutation[] = [];
     for (const em of this.exposedMutations) {
-      if (em.elementalReaction) {
+      if (em.$case === "elementalReaction") {
         result.push(em);
       }
     }
@@ -176,7 +181,9 @@ class PreviewContext {
         .map((m) => exposeMutation(0, m))
         .filter((em) => em !== null),
     );
-    return result;
+    return result.map((r) => ({
+      mutation: unFlattenOneof(r as FlattenOneof<PreviewData["mutation"]>),
+    }));
   }
 }
 

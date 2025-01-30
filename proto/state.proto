@@ -19,12 +19,12 @@ option csharp_namespace = "GiTcg.Proto";
 import "enums.proto";
 
 enum PhaseType {
-  PHASE_INIT_HANDS = 0;
-  PHASE_INIT_ACTIVES = 1;
-  PHASE_ROLL = 2;
-  PHASE_ACTION = 3;
-  PHASE_END = 4;
-  PHASE_GAME_END = 5;
+  PHASE_TYPE_INIT_HANDS = 0;
+  PHASE_TYPE_INIT_ACTIVES = 1;
+  PHASE_TYPE_ROLL = 2;
+  PHASE_TYPE_ACTION = 3;
+  PHASE_TYPE_END = 4;
+  PHASE_TYPE_GAME_END = 5;
 }
 
 message State {
@@ -90,13 +90,13 @@ message EntityState {
 
 enum EquipmentType {
   // 其他装备（天赋）
-  EQUIPMENT_OTHER = 0;
+  EQUIPMENT_TYPE_OTHER = 0;
   // 武器
-  EQUIPMENT_WEAPON = 1;
+  EQUIPMENT_TYPE_WEAPON = 1;
   // 圣遗物
-  EQUIPMENT_ARTIFACT = 2;
+  EQUIPMENT_TYPE_ARTIFACT = 2;
   // 特技
-  EQUIPMENT_TECHNIQUE = 3;
+  EQUIPMENT_TYPE_TECHNIQUE = 3;
 }
 
 message CardState {

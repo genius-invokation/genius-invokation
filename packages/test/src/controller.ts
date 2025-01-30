@@ -14,24 +14,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import {
-  ActionRequest,
+  Action,
   ActionResponse,
-  AnyState,
-  ChooseActiveRequest,
   ChooseActiveResponse,
-  Game,
-  GameState,
-  PlayCardAction,
-  PlayerConfig,
+  createRpcResponse,
   RpcMethod,
   RpcRequest,
   RpcResponse,
-  SelectCardRequest,
+  RpcResponsePayloadOf,
   SelectCardResponse,
-  SwitchActiveAction,
-  SwitchHandsResponse,
-  UseSkillAction,
-} from "@gi-tcg/core";
+} from "@gi-tcg/typings";
+import { AnyState, Game, GameState, PlayerConfig } from "@gi-tcg/core";
 import {
   CardHandle,
   CharacterHandle,
@@ -39,7 +32,6 @@ import {
   SkillHandle,
 } from "@gi-tcg/core/builder";
 import { Ref } from "./setup";
-import { expect, Matchers } from "bun:test";
 import { StatesMatcher } from "./matcher";
 
 class IoResultPromise extends Promise<TestController> {
@@ -109,15 +101,15 @@ class IoController {
     return rpc;
   }
 
-  private listAvailableActions() {
+  private listAvailableActions(): Action[] {
     const rpc = this.awaitingRpc;
-    if (!rpc || rpc.method !== "action") {
+    if (!rpc || rpc.request.$case !== "action") {
       throw new Error("Not awaiting action");
     }
     if (rpc.who !== this.who) {
       throw new Error("Not your turn");
     }
-    return rpc.request.action!.action;
+    return rpc.request.value.action;
   }
 
   private generateCost(length: number) {
@@ -127,11 +119,11 @@ class IoController {
   skill(id: SkillHandle, ...targets: Ref[]): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const actions = this.listAvailableActions();
-      const chosenActionIndex = actions.findIndex((a) => {
-        if (!a.useSkill) return false;
-        if (a.useSkill.skillId !== id) return false;
-        if (a.useSkill.targetIds.length !== targets.length) return false;
-        return a.useSkill.targetIds.every((t, i) => t === targets[i].id);
+      const chosenActionIndex = actions.findIndex(({ action }) => {
+        if (action?.$case !== "useSkill") return false;
+        if (action.value.skillId !== id) return false;
+        if (action.value.targetIds.length !== targets.length) return false;
+        return action.value.targetIds.every((t, i) => t === targets[i].id);
       });
       if (chosenActionIndex === -1) {
         throw new Error(`You cannot use skill ${id} (with given targets)`);
@@ -144,7 +136,7 @@ class IoController {
         ),
       );
       const response: ActionResponse = { chosenActionIndex, usedDice };
-      this.awaitingRpc!.resolve({ action: response });
+      this.awaitingRpc!.resolve(response);
     });
   }
 
@@ -161,11 +153,11 @@ class IoController {
         }
         cardId = card.id;
       }
-      const chosenActionIndex = actions.findIndex((a) => {
-        if (!a.playCard) return false;
-        if (a.playCard.cardId !== cardId) return false;
-        if (a.playCard.targetIds.length !== targets.length) return false;
-        return a.playCard.targetIds.every((t, i) => t === targets[i].id);
+      const chosenActionIndex = actions.findIndex(({ action }) => {
+        if (action?.$case !== "playCard") return false;
+        if (action.value.cardId !== cardId) return false;
+        if (action.value.targetIds.length !== targets.length) return false;
+        return action.value.targetIds.every((t, i) => t === targets[i].id);
       });
       if (chosenActionIndex === -1) {
         throw new Error(`You cannot play card ${cardId} (with given targets)`);
@@ -178,7 +170,7 @@ class IoController {
         ),
       );
       const response: ActionResponse = { chosenActionIndex, usedDice };
-      this.awaitingRpc!.resolve({ action: response });
+      this.awaitingRpc!.resolve(response);
     });
   }
 
@@ -195,16 +187,16 @@ class IoController {
         }
         cardId = card.id;
       }
-      const chosenActionIndex = actions.findIndex((a) => {
-        if (!a.elementalTuning) return false;
-        return a.elementalTuning.removedCardId === cardId;
+      const chosenActionIndex = actions.findIndex(({ action }) => {
+        if (action?.$case !== "elementalTuning") return false;
+        return action.value.removedCardId === cardId;
       });
       if (chosenActionIndex === -1) {
         throw new Error(`You cannot tune card ${cardId}`);
       }
       const usedDice = this.generateCost(1);
       const response: ActionResponse = { chosenActionIndex, usedDice };
-      this.awaitingRpc!.resolve({ action: response });
+      this.awaitingRpc!.resolve(response);
     });
   }
 
@@ -221,9 +213,9 @@ class IoController {
         }
         characterId = character.id;
       }
-      const chosenActionIndex = actions.findIndex((a) => {
-        if (!a.switchActive) return false;
-        return a.switchActive.characterId === characterId;
+      const chosenActionIndex = actions.findIndex(({ action }) => {
+        if (action?.$case !== "switchActive") return false;
+        return action.value.characterId === characterId;
       });
       if (chosenActionIndex === -1) {
         throw new Error(`You cannot switch to character ${characterId}`);
@@ -236,19 +228,21 @@ class IoController {
         ),
       );
       const response: ActionResponse = { chosenActionIndex, usedDice };
-      this.awaitingRpc!.resolve({ action: response });
+      this.awaitingRpc!.resolve(response);
     });
   }
 
   end(): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const actions = this.listAvailableActions();
-      const chosenActionIndex = actions.findIndex((a) => a.declareEnd);
+      const chosenActionIndex = actions.findIndex(
+        ({ action }) => action?.$case === "declareEnd",
+      );
       if (chosenActionIndex === -1) {
         throw new Error("You cannot declare end (wtf?)");
       }
       const response: ActionResponse = { chosenActionIndex, usedDice: [] };
-      this.awaitingRpc!.resolve({ action: response });
+      this.awaitingRpc!.resolve(response);
     });
   }
 
@@ -264,25 +258,25 @@ class IoController {
   selectCard(id: number): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const rpc = this.awaitingRpc;
-      if (!rpc || rpc.method !== "selectCard") {
+      if (!rpc || rpc.request.$case !== "selectCard") {
         throw new Error("Not awaiting selectCard");
       }
       if (rpc.who !== this.who) {
         throw new Error("Not your turn");
       }
-      const candidates = rpc.request.selectCard!.candidateDefinitionIds;
+      const candidates = rpc.request.value.candidateDefinitionIds;
       if (!candidates.includes(id)) {
         throw new Error(`Cannot select card ${id}`);
       }
       const response: SelectCardResponse = { selectedDefinitionId: id };
-      rpc.resolve({ selectCard: response });
+      rpc.resolve(response);
     });
   }
 
   chooseActive(targetOrId: CharacterHandle | Ref): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const rpc = this.awaitingRpc;
-      if (!rpc || rpc.method !== "chooseActive") {
+      if (!rpc || rpc.request.$case !== "chooseActive") {
         throw new Error("Not awaiting chooseActive");
       }
       if (rpc.who !== this.who) {
@@ -298,19 +292,19 @@ class IoController {
         }
         activeCharacterId = character.id;
       }
-      const candidates = rpc.request.chooseActive!.candidateIds;
+      const candidates = rpc.request.value.candidateIds;
       if (!candidates.includes(activeCharacterId)) {
         throw new Error(`Cannot choose character ${activeCharacterId}`);
       }
       const response: ChooseActiveResponse = { activeCharacterId };
-      rpc.resolve({ chooseActive: response });
+      rpc.resolve(response);
     });
   }
 
   switchHands(removed: (CardHandle | Ref)[]): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const rpc = this.awaitingRpc;
-      if (!rpc || rpc.method !== "switchHands") {
+      if (!rpc || rpc.request.$case !== "switchHands") {
         throw new Error("Not awaiting switchHands");
       }
       if (rpc.who !== this.who) {
@@ -333,25 +327,22 @@ class IoController {
         }
       }
       const response = { removedHandIds };
-      rpc.resolve({ switchHands: response });
+      rpc.resolve(response);
     });
   }
   // async reroll() {}
 }
 
 class AwaitingRpc {
-  private readonly resolver: PromiseWithResolvers<RpcResponse> =
-    Promise.withResolvers();
+  private readonly resolver: PromiseWithResolvers<
+    RpcResponsePayloadOf<RpcMethod>
+  > = Promise.withResolvers();
   constructor(
     public readonly who: 0 | 1,
-    public readonly method: RpcMethod,
-    public readonly request: RpcRequest,
+    public readonly request: NonNullable<RpcRequest["request"]>,
   ) {}
 
-  resolve(response: RpcResponse) {
-    if (!(this.method in response)) {
-      throw new Error(`Response does not have ${this.method}`);
-    }
+  resolve(response: RpcResponsePayloadOf<RpcMethod>) {
     this.resolver.resolve(response);
   }
 
@@ -396,21 +387,21 @@ export class TestController {
   private stepping = Promise.withResolvers<void>();
   private awaitingRpc: AwaitingRpc | null = null;
   private async rpc(who: 0 | 1, request: RpcRequest): Promise<RpcResponse> {
-    const method = Object.keys(request)[0] as RpcMethod;
+    const method = request.request!.$case;
     if (method === "rerollDice") {
-      return { rerollDice: { diceToReroll: [] } };
+      return createRpcResponse("rerollDice", { diceToReroll: [] });
     }
     if (this.awaitingRpc) {
       throw new Error(
-        `Previous rpc (${this.awaitingRpc.who} ${this.awaitingRpc.method}) is not resolved, cannot send another rpc (${who} ${method})`,
+        `Previous rpc (${this.awaitingRpc.who} ${this.awaitingRpc.request.$case}) is not resolved, cannot send another rpc (${who} ${method})`,
       );
     }
-    this.awaitingRpc = new AwaitingRpc(who, method, request);
+    this.awaitingRpc = new AwaitingRpc(who, request.request!);
     this.stepping.resolve();
     const response = await this.awaitingRpc.promise;
     this.awaitingRpc = null;
     this.stepping = Promise.withResolvers();
-    return response;
+    return createRpcResponse(method, response as any);
   }
 
   get state() {

@@ -30,10 +30,12 @@ export function Summon(props: EntityProps) {
     if (!props.data.variableName) {
       return null;
     }
-    const previewValue = previewData().find(
-      (p) =>
-        p.modifyEntityVar?.entityId === props.data.id
-    )?.modifyEntityVar?.variableValue;
+    const previewValue = previewData().flatMap(({mutation}) =>
+      mutation?.$case === "modifyEntityVar" &&
+      mutation.value.entityId === props.data.id
+        ? [mutation.value.variableValue]
+        : [],
+    )[0];
     if (typeof previewValue === "undefined") {
       return null;
     }

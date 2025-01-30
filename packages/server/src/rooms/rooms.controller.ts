@@ -38,7 +38,7 @@ import {
 } from "class-validator";
 import { RoomsService, type PlayerId } from "./rooms.service";
 import { Guest, User, UserOrGuest } from "../auth/user.decorator";
-import type { RpcMethod, RpcResponse } from "@gi-tcg/typings";
+import type { RpcMethod, RpcResponse, RpcResponsePayloadOf } from "@gi-tcg/typings";
 import { VERSIONS, type Version } from "@gi-tcg/core";
 import { DeckDto } from "../decks/decks.controller";
 import { Public } from "../auth/auth.guard";
@@ -127,7 +127,7 @@ export class PlayerActionResponseDto {
   id!: number;
 
   @IsObject()
-  response!: RpcResponse[RpcMethod];
+  response!: RpcResponsePayloadOf<RpcMethod>;
 }
 
 @Controller("rooms")

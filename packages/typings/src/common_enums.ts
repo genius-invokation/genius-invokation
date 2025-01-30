@@ -23,69 +23,69 @@ import {
 } from "./gen/enums";
 
 export const DiceType = {
-  Void: PbDiceRequirementType.DICE_REQ_VOID,
-  Cryo: PbDiceType.DICE_CRYO,
-  Hydro: PbDiceType.DICE_HYDRO,
-  Pyro: PbDiceType.DICE_PYRO,
-  Electro: PbDiceType.DICE_ELECTRO,
-  Anemo: PbDiceType.DICE_ANEMO,
-  Geo: PbDiceType.DICE_GEO,
-  Dendro: PbDiceType.DICE_DENDRO,
-  Omni: PbDiceType.DICE_OMNI,
-  Aligned: PbDiceRequirementType.DICE_REQ_ALIGNED,
-  Energy: PbDiceRequirementType.DICE_REQ_ENERGY,
-  Legend: PbDiceRequirementType.DICE_REQ_LEGEND,
+  Void: PbDiceRequirementType.VOID,
+  Cryo: PbDiceType.CRYO,
+  Hydro: PbDiceType.HYDRO,
+  Pyro: PbDiceType.PYRO,
+  Electro: PbDiceType.ELECTRO,
+  Anemo: PbDiceType.ANEMO,
+  Geo: PbDiceType.GEO,
+  Dendro: PbDiceType.DENDRO,
+  Omni: PbDiceType.OMNI,
+  Aligned: PbDiceRequirementType.ALIGNED,
+  Energy: PbDiceRequirementType.ENERGY,
+  Legend: PbDiceRequirementType.LEGEND,
 } as const;
-export type DiceType = typeof DiceType[keyof typeof DiceType];
+export type DiceType = (typeof DiceType)[keyof typeof DiceType];
 
 export type DiceRequirement = Map<DiceType, number>;
 export type ReadonlyDiceRequirement = ReadonlyMap<DiceType, number>;
 
 export const DamageType = {
-  Physical: PbDamageType.DMG_PHYSICAL,
-  Cryo: PbDamageType.DMG_CRYO,
-  Hydro: PbDamageType.DMG_HYDRO,
-  Pyro: PbDamageType.DMG_PYRO,
-  Electro: PbDamageType.DMG_ELECTRO,
-  Anemo: PbDamageType.DMG_ANEMO,
-  Geo: PbDamageType.DMG_GEO,
-  Dendro: PbDamageType.DMG_DENDRO,
-  Piercing: PbDamageType.DMG_PIERCING,
-  Heal: PbDamageType.DMG_HEAL,
+  Physical: PbDamageType.PHYSICAL,
+  Cryo: PbDamageType.CRYO,
+  Hydro: PbDamageType.HYDRO,
+  Pyro: PbDamageType.PYRO,
+  Electro: PbDamageType.ELECTRO,
+  Anemo: PbDamageType.ANEMO,
+  Geo: PbDamageType.GEO,
+  Dendro: PbDamageType.DENDRO,
+  Piercing: PbDamageType.PIERCING,
+  Heal: PbDamageType.HEAL,
 } as const;
-export type DamageType = typeof DamageType[keyof typeof DamageType];
+export type DamageType = (typeof DamageType)[keyof typeof DamageType];
 
 export const Aura = {
-  None: PbAuraType.AURA_NONE,
-  Cryo: PbAuraType.AURA_CRYO,
-  Hydro: PbAuraType.AURA_HYDRO,
-  Pyro: PbAuraType.AURA_PYRO,
-  Electro: PbAuraType.AURA_ELECTRO,
-  Dendro: PbAuraType.AURA_DENDRO,
-  CryoDendro: PbAuraType.AURA_CRYO_DENDRO,
+  None: PbAuraType.NONE,
+  Cryo: PbAuraType.CRYO,
+  Hydro: PbAuraType.HYDRO,
+  Pyro: PbAuraType.PYRO,
+  Electro: PbAuraType.ELECTRO,
+  Dendro: PbAuraType.DENDRO,
+  CryoDendro: PbAuraType.CRYO_DENDRO,
 } as const;
-export type Aura = typeof Aura[keyof typeof Aura];
+export type Aura = (typeof Aura)[keyof typeof Aura];
 
 export const Reaction = {
-  Melt: PbReactionType.REACTION_MELT,
-  Vaporize: PbReactionType.REACTION_VAPORIZE,
-  Overloaded: PbReactionType.REACTION_OVERLOADED,
-  Superconduct: PbReactionType.REACTION_SUPERCONDUCT,
-  ElectroCharged: PbReactionType.REACTION_ELECTRO_CHARGED,
-  Frozen: PbReactionType.REACTION_FROZEN,
-  SwirlCryo: PbReactionType.REACTION_SWIRL_CRYO,
-  SwirlHydro: PbReactionType.REACTION_SWIRL_HYDRO,
-  SwirlPyro: PbReactionType.REACTION_SWIRL_PYRO,
-  SwirlElectro: PbReactionType.REACTION_SWIRL_ELECTRO,
-  CrystallizeCryo: PbReactionType.REACTION_CRYSTALLIZE_CRYO,
-  CrystallizeHydro: PbReactionType.REACTION_CRYSTALLIZE_HYDRO,
-  CrystallizePyro: PbReactionType.REACTION_CRYSTALLIZE_PYRO,
-  CrystallizeElectro: PbReactionType.REACTION_CRYSTALLIZE_ELECTRO,
-  Burning: PbReactionType.REACTION_BURNING,
-  Bloom: PbReactionType.REACTION_BLOOM,
-  Quicken: PbReactionType.REACTION_QUICKEN,
+  Melt: PbReactionType.MELT,
+  Vaporize: PbReactionType.VAPORIZE,
+  Overloaded: PbReactionType.OVERLOADED,
+  Superconduct: PbReactionType.SUPERCONDUCT,
+  ElectroCharged: PbReactionType.ELECTRO_CHARGED,
+  Frozen: PbReactionType.FROZEN,
+  SwirlCryo: PbReactionType.SWIRL_CRYO,
+  SwirlHydro: PbReactionType.SWIRL_HYDRO,
+  SwirlPyro: PbReactionType.SWIRL_PYRO,
+  SwirlElectro: PbReactionType.SWIRL_ELECTRO,
+  CrystallizeCryo: PbReactionType.CRYSTALLIZE_CRYO,
+  CrystallizeHydro: PbReactionType.CRYSTALLIZE_HYDRO,
+  CrystallizePyro: PbReactionType.CRYSTALLIZE_PYRO,
+  CrystallizeElectro: PbReactionType.CRYSTALLIZE_ELECTRO,
+  Burning: PbReactionType.BURNING,
+  Bloom: PbReactionType.BLOOM,
+  Quicken: PbReactionType.QUICKEN,
 } as const;
-export type Reaction = typeof Reaction[keyof typeof Reaction];
+export type Reaction = (typeof Reaction)[keyof typeof Reaction];
 
 export {
   PbDiceType,

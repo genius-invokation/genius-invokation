@@ -13,7 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { ModifyEntityVarEM, PbCharacterState } from "@gi-tcg/typings";
+import {
+  DamageType,
+  type ModifyEntityVarEM,
+  type PbCharacterState,
+} from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { Status } from "./Entity";
 import { For, Index, onCleanup, onMount, Show } from "solid-js";
@@ -81,33 +85,40 @@ export function CharacterArea(props: CharacterAreaProps) {
 
   const aura = (): [number, number] => {
     const aura =
-      previewData().find(
-        (p) =>
-          p.modifyEntityVar?.entityId === props.data.id &&
-          p.modifyEntityVar?.variableName === "aura",
-      )?.modifyEntityVar?.variableValue ?? props.data.aura;
+      previewData().flatMap(({ mutation }) =>
+        mutation?.$case === "modifyEntityVar" &&
+        mutation.value.entityId === props.data.id &&
+        mutation.value.variableName === "aura"
+          ? [mutation.value.variableValue]
+          : [],
+      )[0] ?? props.data.aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   };
   const energy = () =>
-    previewData().find(
-      (p) =>
-        p.modifyEntityVar?.entityId === props.data.id &&
-        p.modifyEntityVar?.variableName === "energy",
-    )?.modifyEntityVar?.variableValue ?? props.data.energy;
+    previewData().flatMap(({ mutation }) =>
+      mutation?.$case === "modifyEntityVar" &&
+      mutation.value.entityId === props.data.id &&
+      mutation.value.variableName === "energy"
+        ? [mutation.value.variableValue]
+        : [],
+    )[0] ?? props.data.energy;
   const defeated = () =>
     previewData().some(
-      (p) =>
-        p.modifyEntityVar?.entityId === props.data.id &&
-        p.modifyEntityVar?.variableName === "alive" &&
-        p.modifyEntityVar?.variableValue === 0,
+      ({ mutation }) =>
+        mutation?.$case === "modifyEntityVar" &&
+        mutation.value.entityId === props.data.id &&
+        mutation.value.variableName === "alive" &&
+        mutation.value.variableValue === 0,
     ) || props.data.defeated;
 
   const previewHealthDiff = () => {
-    const previewHealth = previewData().find(
-      (p) =>
-        p.modifyEntityVar?.entityId === props.data.id &&
-        p.modifyEntityVar?.variableName === "health",
-    )?.modifyEntityVar?.variableValue;
+    const previewHealth = previewData().flatMap(({ mutation }) =>
+      mutation?.$case === "modifyEntityVar" &&
+      mutation.value.entityId === props.data.id &&
+      mutation.value.variableName === "health"
+        ? [mutation.value.variableValue]
+        : [],
+    )[0];
     if (typeof previewHealth === "undefined") {
       return null;
     }
@@ -220,7 +231,9 @@ export function CharacterArea(props: CharacterAreaProps) {
           />
         </Interactive>
         <div class="absolute z-3 hover:z-10 left-0 bottom-0 h-6 flex flex-row">
-          <Key each={statuses()} by="id">{(st) => <Status data={st()} />}</Key>
+          <Key each={statuses()} by="id">
+            {(st) => <Status data={st()} />}
+          </Key>
         </div>
         <Show when={defeated()}>
           <div class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]">
@@ -232,11 +245,11 @@ export function CharacterArea(props: CharacterAreaProps) {
             <div
               class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-999 w-20 h-20 bg-white b-2 b-dashed text-5xl flex items-center justify-center"
               style={{
-                "border-color": `var(--c-${DICE_COLOR[damaged().type]})`,
-                color: `var(--c-${DICE_COLOR[damaged().type]})`,
+                "border-color": `var(--c-${DICE_COLOR[damaged().damageType]})`,
+                color: `var(--c-${DICE_COLOR[damaged().damageType]})`,
               }}
             >
-              {damaged().type >= 9 /* heal/revive */ ? "+" : "-"}
+              {damaged().damageType === DamageType.Heal ? "+" : "-"}
               {damaged().value}
             </div>
           )}

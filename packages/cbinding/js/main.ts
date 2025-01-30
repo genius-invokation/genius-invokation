@@ -253,17 +253,17 @@ class State {
       case c.GITCG_ATTR_STATE_PHASE: {
         switch (this.state.phase) {
           case "initActives":
-            return PbPhaseType.PHASE_INIT_ACTIVES;
+            return PbPhaseType.INIT_ACTIVES;
           case "initHands":
-            return PbPhaseType.PHASE_INIT_HANDS;
+            return PbPhaseType.INIT_HANDS;
           case "roll":
-            return PbPhaseType.PHASE_ROLL;
+            return PbPhaseType.ROLL;
           case "action":
-            return PbPhaseType.PHASE_ACTION;
+            return PbPhaseType.ACTION;
           case "end":
-            return PbPhaseType.PHASE_END;
+            return PbPhaseType.END;
           case "gameEnd":
-            return PbPhaseType.PHASE_GAME_END;
+            return PbPhaseType.GAME_END;
           default:
             return -1;
         }

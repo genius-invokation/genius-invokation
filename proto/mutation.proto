@@ -113,7 +113,7 @@ message CreateCharacterEM {
   CharacterState character = 4;
 }
 
-enum CreateEntityArea {
+enum EntityArea {
   ENTITY_AREA_UNSPECIFIED = 0;
   ENTITY_AREA_CHARACTER = 1;
   ENTITY_AREA_COMBAT_STATUS = 2;
@@ -125,7 +125,7 @@ message CreateEntityEM {
   int32 who = 1;
   reserved 2;
   reserved 3;
-  CreateEntityArea where = 4;
+  EntityArea where = 4;
   EntityState entity = 5;
 }
 
@@ -152,7 +152,7 @@ message ResetDiceEM {
 }
 
 message DamageEM {
-  DamageType type = 1;
+  DamageType damage_type = 1;
   int32 value = 2;
   sint32 target_id = 3;
   int32 target_definition_id = 4;
@@ -161,18 +161,18 @@ message DamageEM {
 }
 
 message ElementalReactionEM {
-  ReactionType type = 1;
+  ReactionType reaction_type = 1;
   sint32 character_id = 3;
   int32 character_definition_id = 4;
 }
 
 enum ActionType {
-  ACTION_UNSPECIFIED = 0;
-  ACTION_USE_SKILL = 1;
-  ACTION_PLAY_CARD = 2;
-  ACTION_SWITCH_ACTIVE = 3;
-  ACTION_ELEMENTAL_TUNING = 4;
-  ACTION_DECLARE_END = 5;
+  ACTION_TYPE_UNSPECIFIED = 0;
+  ACTION_TYPE_USE_SKILL = 1;
+  ACTION_TYPE_PLAY_CARD = 2;
+  ACTION_TYPE_SWITCH_ACTIVE = 3;
+  ACTION_TYPE_ELEMENTAL_TUNING = 4;
+  ACTION_TYPE_DECLARE_END = 5;
 }
 
 // 玩家选择了某行动

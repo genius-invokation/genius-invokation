@@ -13,12 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type {
-  PbCreateEntityArea,
-  CreateEntityEM,
-  PbPlayerState,
-  PbEntityState,
-} from "@gi-tcg/typings";
+import { type PbPlayerState, PbEntityArea } from "@gi-tcg/typings";
 import { For, Index, Match, Show, Switch } from "solid-js";
 
 import { Summon, Support, Status } from "./Entity";
@@ -38,34 +33,24 @@ export function PlayerArea(props: PlayerAreaProps) {
   const { previewData } = useEventContext();
   const newSummons = () =>
     previewData()
-      .filter(
-        (p) =>
-          p.createEntity?.who === props.who &&
-          p.createEntity?.where === 3 /* SUMMON */,
+      .map(({mutation}) =>
+        mutation?.$case === "createEntity" &&
+        mutation.value.who === props.who &&
+        mutation.value.where === PbEntityArea.SUMMON
+          ? mutation.value.entity
+          : null,
       )
-      .map(
-        (p): PbEntityState => ({
-          id: p.createEntity!.entityId,
-          definitionId: p.createEntity!.entityDefinitionId,
-          descriptionDictionary: {},
-          hasUsagePerRound: false,
-        }),
-      );
+      .filter((v) => !!v);
   const newSupports = () =>
     previewData()
-      .filter(
-        (p) =>
-          p.createEntity?.who === props.who &&
-          p.createEntity?.where === 4 /* SUPPORT */,
+      .map(({mutation}) =>
+        mutation?.$case === "createEntity" &&
+        mutation.value.who === props.who &&
+        mutation.value.where === PbEntityArea.SUPPORT
+          ? mutation.value.entity
+          : null,
       )
-      .map(
-        (p): PbEntityState => ({
-          id: p.createEntity!.entityId,
-          definitionId: p.createEntity!.entityDefinitionId,
-          descriptionDictionary: {},
-          hasUsagePerRound: false,
-        }),
-      );
+      .filter((v) => !!v);
 
   const statusText = (who: string) => {
     if (props.data.declaredEnd) {
@@ -144,7 +129,7 @@ export function PlayerArea(props: PlayerAreaProps) {
           </div>
           <div class="text-blue-500">
             <Show when={props.opp}>
-              <p>{statusText('对方')}</p>
+              <p>{statusText("对方")}</p>
             </Show>
           </div>
         </div>
