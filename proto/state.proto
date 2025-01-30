@@ -1,0 +1,113 @@
+// Copyright (C) 2024-2025 Guyutongxue
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+syntax = "proto3";
+option csharp_namespace = "GiTcg.Proto";
+
+import "enums.proto";
+
+enum PhaseType {
+  PHASE_INIT_HANDS = 0;
+  PHASE_INIT_ACTIVES = 1;
+  PHASE_ROLL = 2;
+  PHASE_ACTION = 3;
+  PHASE_END = 4;
+  PHASE_GAME_END = 5;
+}
+
+message State {
+  PhaseType phase = 1;
+  int32 round_number = 2;
+  int32 current_turn = 3;
+  optional int32 winner = 4;
+  repeated PlayerState player = 5;
+}
+
+message PlayerState {
+  optional sint32 active_character_id = 1;
+  repeated CharacterState character = 2;
+  repeated EntityState combat_status = 3;
+  repeated EntityState summon = 4;
+  repeated EntityState support = 5;
+  repeated DiceType dice = 6;
+  // 牌堆数据
+  repeated CardState pile_card = 7;
+  // 手牌数据
+  repeated CardState hand_card = 8;
+  
+  // 是否已宣布结束
+  bool declared_end = 51;
+  // 是否使用了秘传牌
+  bool legend_used = 52;
+  
+  // 当前出战角色的主动技能和特技列表
+  repeated SkillInfo initiative_skill = 101;
+}
+
+message CharacterState {
+  sint32 id = 1;
+  int32 definition_id = 2;
+  repeated EntityState entity = 3;
+  
+  bool defeated = 51;
+  int32 health = 52;
+  int32 max_health = 53;
+  int32 energy = 54;
+  int32 max_energy = 55;
+  AuraType aura = 56;
+}
+
+message EntityState {
+  sint32 id = 1;
+  int32 definition_id = 2;
+  // 指示如何替换文本描述中的变量名 
+  map<string, string> description_dictionary = 4;
+  
+  // 显示于召唤物、支援牌右上角的变量名和变量值
+  optional string variable_name = 51;
+  optional int32 variable_value = 52;
+  // 召唤物左下角标文字
+  optional string hint_text = 53;
+  // 召唤物左下角标图标 id
+  optional int32 hint_icon = 54;
+  // 是否带有高光以显示此回合内有可用次数
+  bool has_usage_per_round = 55;
+  // 若为装备，则提供此字段以显示装备类型
+  optional EquipmentType equipment = 56;
+}
+
+enum EquipmentType {
+  // 其他装备（天赋）
+  EQUIPMENT_OTHER = 0;
+  // 武器
+  EQUIPMENT_WEAPON = 1;
+  // 圣遗物
+  EQUIPMENT_ARTIFACT = 2;
+  // 特技
+  EQUIPMENT_TECHNIQUE = 3;
+}
+
+message CardState {
+  sint32 id = 1;
+  int32 definition_id = 2;
+  map<string, string> description_dictionary = 4;
+  // 原本费用
+  repeated DiceRequirement definition_cost = 5;
+}
+
+message SkillInfo {
+  int32 definition_id = 2;
+  repeated DiceRequirement definition_cost = 5;
+}

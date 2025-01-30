@@ -23,6 +23,7 @@ export {
   DeclareEndAction,
 } from "./gen/action";
 export {
+  PhaseType as PbPhaseType,
   CardState as PbCardState,
   CharacterState as PbCharacterState,
   EntityState as PbEntityState,
@@ -30,14 +31,18 @@ export {
   SkillInfo as PbSkillInfo,
   State as PbGameState,
   EquipmentType as PbEquipmentType,
-  Notification,
-} from "./gen/notification";
+} from "./gen/state";
+type ForceRequired<T> = {
+  [P in keyof T]-?: Exclude<T[P], undefined>;
+};
+export type Notification = ForceRequired<
+  import("./gen/notification").Notification
+>;
 export { PreviewData } from "./gen/preview";
 export {
   CardArea as PbCardArea,
   CreateEntityArea as PbCreateEntityArea,
   ActionType as PbActionType,
-  PhaseType as PbPhaseType,
   PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
   ActionDoneEM,

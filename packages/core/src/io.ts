@@ -225,6 +225,7 @@ export function exposeMutation(
           break;
         }
       }
+      const hidden = m.who !== who && !transferToOpp;
       return {
         transferCard: {
           who: m.who,
@@ -232,8 +233,7 @@ export function exposeMutation(
           to,
           transferToOpp,
           targetIndex: m.targetIndex,
-          cardId: m.value.id,
-          cardDefinitionId: m.who === who ? m.value.definition.id : 0,
+          card: exposeCard(null, m.value, hidden),
         },
       };
     }
@@ -283,8 +283,7 @@ export function exposeMutation(
       return {
         createCard: {
           who: m.who,
-          cardId: m.target === "hands" ? m.value.id : 0,
-          cardDefinitionId: m.who === who ? m.value.definition.id : 0,
+          card: exposeCard(null, m.value, m.who !== who),
           to,
           targetIndex: m.targetIndex,
         },
@@ -294,8 +293,7 @@ export function exposeMutation(
       return {
         createCharacter: {
           who: m.who,
-          characterId: m.value.id,
-          characterDefinitionId: m.value.definition.id,
+          character: exposeCharacter(null, m.value),
         },
       };
     }
@@ -320,8 +318,7 @@ export function exposeMutation(
         createEntity: {
           who: m.where.who,
           where,
-          entityId: m.value.id,
-          entityDefinitionId: m.value.definition.id,
+          entity: exposeEntity(null, m.value),
         },
       };
     }
@@ -370,7 +367,10 @@ export function exposeMutation(
   }
 }
 
-export function exposeEntity(state: GameState, e: EntityState): PbEntityState {
+export function exposeEntity(
+  state: GameState | null,
+  e: EntityState,
+): PbEntityState {
   let equipment: PbEquipmentType | undefined = void 0;
   if (e.definition.type === "equipment") {
     if (e.definition.tags.includes("artifact")) {
@@ -383,12 +383,15 @@ export function exposeEntity(state: GameState, e: EntityState): PbEntityState {
       equipment = PbEquipmentType.EQUIPMENT_OTHER;
     }
   }
-  const descriptionDictionary = Object.fromEntries(
-    Object.entries(e.definition.descriptionDictionary).map(([k, v]) => [
-      k,
-      v(state, e.id),
-    ]),
-  );
+  const descriptionDictionary =
+    state === null
+      ? {}
+      : Object.fromEntries(
+          Object.entries(e.definition.descriptionDictionary).map(([k, v]) => [
+            k,
+            v(state, e.id),
+          ]),
+        );
   const hasUsagePerRound = USAGE_PER_ROUND_VARIABLE_NAMES.some(
     (name) => e.variables[name],
   );
@@ -417,21 +420,22 @@ function exposeDiceRequirement(
 }
 
 function exposeCard(
-  state: GameState,
+  state: GameState | null,
   c: CardState,
   hide: boolean,
 ): PbCardState {
   if (c.id === 0) {
     hide = true;
   }
-  const descriptionDictionary = hide
-    ? {}
-    : Object.fromEntries(
-        Object.entries(c.definition.descriptionDictionary).map(([k, v]) => [
-          k,
-          v(state, c.id),
-        ]),
-      );
+  const descriptionDictionary =
+    hide || state === null
+      ? {}
+      : Object.fromEntries(
+          Object.entries(c.definition.descriptionDictionary).map(([k, v]) => [
+            k,
+            v(state, c.id),
+          ]),
+        );
   const definitionCost: PbDiceRequirement[] = [];
   if (!hide) {
     definitionCost.push(...exposeDiceRequirement(costOfCard(c.definition)));
@@ -451,7 +455,7 @@ function exposeCard(
 }
 
 function exposeCharacter(
-  state: GameState,
+  state: GameState | null,
   ch: CharacterState,
 ): PbCharacterState {
   return {
