@@ -33,18 +33,25 @@ from gitcg import (
     SwitchHandsRequest,
     SwitchHandsResponse,
     DiceRequirementType,
-    DiceType
+    DiceType,
 )
 
 
 class MyPlayer(Player):
     who: int
     omni_dice_count = 0
+
     def __init__(self, who: int):
         self.who = who
 
     def on_notify(self, notification):
-        self.omni_dice_count = len([i for i in notification.state.player[self.who].dice if i == DiceType.DICE_OMNI])
+        self.omni_dice_count = len(
+            [
+                i
+                for i in notification.state.player[self.who].dice
+                if i == DiceType.DICE_TYPE_OMNI
+            ]
+        )
 
     def on_io_error(self, error_msg):
         print(error_msg)
@@ -60,7 +67,10 @@ class MyPlayer(Player):
             if action.HasField("elemental_tuning"):
                 continue
             for req in list(action.required_cost):
-                if req.type == DiceRequirementType.DICE_REQ_ENERGY or req.type == DiceRequirementType.DICE_REQ_LEGEND:
+                if (
+                    req.type == DiceRequirementType.DICE_REQUIREMENT_TYPE_ENERGY
+                    or req.type == DiceRequirementType.DICE_REQUIREMENT_TYPE_LEGEND
+                ):
                     has_non_dice_requirement = True
                 else:
                     required_count += req.count
@@ -69,7 +79,7 @@ class MyPlayer(Player):
             if required_count > self.omni_dice_count:
                 continue
             chosen_index = i
-            used_dice = [DiceType.DICE_OMNI] * required_count
+            used_dice = [DiceType.DICE_TYPE_OMNI] * required_count
             break
         return ActionResponse(chosen_action_index=chosen_index, used_dice=used_dice)
 
