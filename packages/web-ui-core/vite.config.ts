@@ -22,7 +22,9 @@ import dts from "vite-plugin-dts";
 
 export default defineConfig({
   esbuild: {
-    target: "ES2023",
+    supported: {
+      using: false,
+    },
   },
   plugins: [
     {

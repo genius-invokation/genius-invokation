@@ -14,11 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  CreateCardEM,
+  type CreateCardEM,
   PbCardArea,
-  RemoveCardEM,
-  TransferCardEM,
-  type ExposedMutation,
+  type PbExposedMutation,
+  type RemoveCardEM,
+  type TransferCardEM,
   type PbCardState,
   type PbGameState,
 } from "@gi-tcg/typings";
@@ -30,8 +30,8 @@ export interface ParseMutationResultEntry {
 }
 
 const CARD_AREA_PROP_MAP = {
-  [PbCardArea.CARD_AREA_HAND]: "handCard",
-  [PbCardArea.CARD_AREA_PILE]: "pileCard",
+  [PbCardArea.HAND]: "handCard",
+  [PbCardArea.PILE]: "pileCard",
 } as const;
 
 type CardRelatedMutations =
@@ -48,11 +48,11 @@ type CardRelatedMutations =
       data: RemoveCardEM[];
     };
 
-function selectAndGroupCardRelatedMutations(mutations: ExposedMutation[]) {
+function selectAndGroupCardRelatedMutations(mutations: PbExposedMutation[]) {
   const result: CardRelatedMutations[] = [];
   let current: CardRelatedMutations | undefined;
-  for (const m of mutations) {
-    if (m.createCard) {
+  for (const { mutation } of mutations) {
+    if (mutation?.$case === "createCard") {
       if (!current || current.type !== "create") {
         current = {
           type: "create",
@@ -60,8 +60,8 @@ function selectAndGroupCardRelatedMutations(mutations: ExposedMutation[]) {
         };
         result.push(current);
       }
-      current.data.push(m.createCard);
-    } else if (m.transferCard) {
+      current.data.push(mutation.value);
+    } else if (mutation?.$case === "transferCard") {
       if (!current || current.type !== "transfer") {
         current = {
           type: "transfer",
@@ -69,8 +69,8 @@ function selectAndGroupCardRelatedMutations(mutations: ExposedMutation[]) {
         };
         result.push(current);
       }
-      current.data.push(m.transferCard);
-    } else if (m.removeCard) {
+      current.data.push(mutation.value);
+    } else if (mutation?.$case === "removeCard") {
       if (!current || current.type !== "remove") {
         current = {
           type: "remove",
@@ -78,7 +78,7 @@ function selectAndGroupCardRelatedMutations(mutations: ExposedMutation[]) {
         };
         result.push(current);
       }
-      current.data.push(m.removeCard);
+      current.data.push(mutation.value);
     }
   }
   return result;
@@ -87,7 +87,7 @@ function selectAndGroupCardRelatedMutations(mutations: ExposedMutation[]) {
 export function parseMutations(
   oldState: PbGameState,
   newState: PbGameState,
-  mutations: ExposedMutation[],
+  mutations: PbExposedMutation[],
 ) {
   const result: ParseMutationResultEntry[] = [];
   const currentState = structuredClone(oldState);
@@ -99,8 +99,7 @@ export function parseMutations(
       const showingCardIds: number[] = [];
       const transitioningCardIds: number[] = [];
       for (const {
-        cardId,
-        cardDefinitionId,
+        card,
         who,
         transferToOpp,
         from,
@@ -112,21 +111,17 @@ export function parseMutations(
         const targetWho = transferToOpp ? (who === 0 ? 1 : 0) : who;
         const sourceCards = currentState.player[who][fromProp];
         const targetCards = currentState.player[targetWho][toProp];
-        const index = sourceCards.findIndex((c) => c.id === cardId);
+        const index = sourceCards.findIndex((c) => c.id === card!.id);
         if (index === -1) {
           continue;
         }
-        const card = {
-          ...sourceCards[index],
-          definitionId: cardDefinitionId,
-        };
         sourceCards.splice(index, 1);
-        console.log({ targetCards })
-        targetCards.splice(targetIndex ?? targetCards.length, 0, card);
-        if (card.definitionId !== 0) {
-          showingCardIds.push(card.id);
+        console.log({ targetCards });
+        targetCards.splice(targetIndex ?? targetCards.length, 0, card!);
+        if (card!.definitionId !== 0) {
+          showingCardIds.push(card!.id);
         }
-        transitioningCardIds.push(card.id);
+        transitioningCardIds.push(card!.id);
       }
       result.push(
         {
@@ -143,19 +138,14 @@ export function parseMutations(
     } else if (type === "create") {
       const showingCardIds: number[] = [];
       const transitioningCardIds: number[] = [];
-      for (const { cardId, cardDefinitionId, who, to, targetIndex } of data) {
+      for (const { card, who, to, targetIndex } of data) {
         const prop = CARD_AREA_PROP_MAP[to];
         const cards = currentState.player[who][prop];
-        cards.splice(targetIndex ?? cards.length, 0, {
-          id: cardId,
-          definitionId: cardDefinitionId,
-          definitionCost: [], // TODO: FIX ME
-          descriptionDictionary: {},
-        });
-        if (cardDefinitionId !== 0) {
-          showingCardIds.push(cardId);
+        cards.splice(targetIndex ?? cards.length, 0, card!);
+        if (card!.definitionId !== 0) {
+          showingCardIds.push(card!.id);
         }
-        transitioningCardIds.push(cardId);
+        transitioningCardIds.push(card!.id);
       }
       result.push(
         {

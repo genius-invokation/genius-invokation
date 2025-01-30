@@ -116,8 +116,8 @@ export function Chessboard(props: ChessboardProps) {
           kind: "pile",
           x,
           y,
-          z: i / 4,
-          zIndex: i,
+          z: (player.pileCard.length - 1 - i) / 4,
+          zIndex: player.pileCard.length - 1 - i,
           ry: 180,
           rz: 90,
           shadow: i === 0,
@@ -178,7 +178,7 @@ export function Chessboard(props: ChessboardProps) {
           ry,
           rz: 0,
           shadow: true,
-          transitionDuration:  150,
+          transitionDuration: 150,
         });
       }
     }

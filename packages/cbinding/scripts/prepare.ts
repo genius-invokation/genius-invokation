@@ -22,6 +22,7 @@ async function writeGeneratedJsCodeCpp() {
       replace({
         preventAssignment: true,
         values: {
+          "import.meta.env.DEV": "void 0",
           "process.env.NODE_ENV": JSON.stringify("production"),
         },
       }),
