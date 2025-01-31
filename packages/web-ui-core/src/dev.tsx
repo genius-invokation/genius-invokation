@@ -105,17 +105,17 @@ function App() {
             return;
           }
           const { animatingCards } = parseMutations(mutation);
-          console.log(animatingCards);
+          // console.log(previousState, animatingCards, state);
           batch(() => {
             setP1PreviousState(previousState!);
             setP1State(state!);
             setP1AnimatingCards(animatingCards);
+            previousState = state;
           });
           if (animatingCards.length > 0) {
             // TODO: use callback to determine wait duration
-            await new Promise((resolve) => setTimeout(resolve, 1600));
+            await new Promise((resolve) => setTimeout(resolve, 1500));
           }
-          previousState = state;
         });
       },
     };

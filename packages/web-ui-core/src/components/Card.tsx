@@ -19,6 +19,7 @@ import {
   createEffect,
   createMemo,
   createResource,
+  createSignal,
   onMount,
   untrack,
 } from "solid-js";
@@ -76,7 +77,7 @@ export function Card(props: CardProps) {
   // );
   let el!: HTMLDivElement;
   const data = createMemo(() => props.data);
-  const isAnimating = createMemo(() => props.uiState.type === "animation");
+  const [runningAnimation, setRunningAnimation] = createSignal(false);
 
   const style = createMemo(() => {
     if (props.uiState.type === "static") {
@@ -88,34 +89,39 @@ export function Card(props: CardProps) {
   });
 
   createEffect(() => {
-    if (isAnimating()) {
-      const { start, middle, end, delay, duration } = untrack(
-        () => props.uiState as AnimatedCardUiState,
-      );
+    if (props.data.definitionId === 112131) {
+      console.log(props.uiState);
+    }
+  });
+
+  createEffect(() => {
+    const uiState = props.uiState;
+    if (uiState.type === "animation" && !untrack(runningAnimation)) {
+      const { start, middle, end, delay, duration } = uiState;
       const fallbackStyle = cssProperty(middle ?? end ?? start!);
       const startKeyframe: Keyframe = {
         offset: 0,
         ...(start ? cssProperty(start) : fallbackStyle),
-        "--opacity": start ? 1 : 0,
+        "--gi-tcg-opacity": start ? 1 : 0,
       };
       const middleKeyframes: Keyframe[] = middle
         ? [
             {
               offset: 0.4,
               ...cssProperty(middle),
-              "--opacity": 1,
+              "--gi-tcg-opacity": 1,
             },
             {
               offset: 0.6,
               ...cssProperty(middle),
-              "--opacity": 1,
+              "--gi-tcg-opacity": 1,
             },
           ]
         : [];
       const endKeyframe: Keyframe = {
         offset: 1,
         ...(end ? cssProperty(end) : fallbackStyle),
-        "--opacity": end ? 1 : 0,
+        "--gi-tcg-opacity": end ? 1 : 0,
       };
       const animation = el.animate(
         [startKeyframe, ...middleKeyframes, endKeyframe],
@@ -126,9 +132,11 @@ export function Card(props: CardProps) {
         },
       );
       // console.log([startKeyframe, ...middleKeyframes, endKeyframe]);
+      setRunningAnimation(true);
       animation.finished.then(() => {
         animation.commitStyles();
         animation.cancel();
+        setRunningAnimation(false);
       });
     }
   });
@@ -136,7 +144,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none opacity-[var(--gi-tcg-opacity)]"
       style={style()}
       classList={{
         "transition-transform": props.enableTransition,
@@ -169,15 +177,15 @@ export function Card(props: CardProps) {
     >
       <Image
         imageId={props.data.definitionId}
-        class="absolute h-full w-full rounded-xl backface-hidden b-white b-solid b-3 transition-opacity opacity-[var(--opacity)]"
+        class="absolute h-full w-full rounded-xl backface-hidden b-white b-solid b-3"
         title={`id = ${props.data.id}`}
       />
       <DiceCost
-        class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col transition-opacity opacity-[var(--opacity)]"
+        class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col "
         cost={data().definitionCost}
         // realCost={allCosts[props.data.id]}
       />
-      <div class="absolute h-full w-full rotate-y-180 translate-z-1px bg-gray-600 b-gray-700 b-solid b-4 color-white rounded backface-hidden transition-opacity opacity-[var(--opacity)]" />
+      <div class="absolute h-full w-full rotate-y-180 translate-z-1px bg-gray-600 b-gray-700 b-solid b-4 color-white rounded backface-hidden" />
     </div>
   );
 }
