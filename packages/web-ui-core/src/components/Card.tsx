@@ -21,6 +21,7 @@ import {
   createResource,
   createSignal,
   onMount,
+  Show,
   untrack,
 } from "solid-js";
 import { Image } from "./Image";
@@ -41,11 +42,23 @@ export type StaticCardUiState = {
 };
 export type AnimatedCardUiState = {
   type: "animation";
+  /**
+   * 动画开始时牌的位置；应当从上一个对局状态中查找到
+   */
   start: CardTransform | null;
+  /**
+   * 牌面向上时展示；牌背向上时设置为 `null`
+   */
   middle: CardTransform | null;
+  /**
+   * 动画结束时牌的位置；应当从当前对局状态中查找到
+   */
   end: CardTransform | null;
+  /** 动画持续毫秒数 */
   duration: number;
+  /** 动画延迟播放毫秒数 */
   delay: number;
+  onFinish?: () => void;
 };
 
 export type CardUiState = StaticCardUiState | AnimatedCardUiState;
@@ -175,17 +188,25 @@ export function Card(props: CardProps) {
         props.onPointerDown?.(e, e.currentTarget);
       }}
     >
-      <Image
-        imageId={props.data.definitionId}
-        class="absolute h-full w-full rounded-xl backface-hidden b-white b-solid b-3"
-        title={`id = ${props.data.id}`}
-      />
+      <Show
+        when={props.data.definitionId}
+        // 令不知道什么牌的牌面和牌背显示一样的东西。从而避免一些因为奇怪 CSS 渲染问题导致的不和谐结果
+        fallback={
+          <div class="absolute h-full w-full rounded-xl backface-hidden bg-gray-600 b-gray-700 b-solid b-4 rounded" />
+        }
+      >
+        <Image
+          imageId={props.data.definitionId}
+          class="absolute h-full w-full rounded-xl backface-hidden b-white b-solid b-3"
+          title={`id = ${props.data.id}`}
+        />
+      </Show>
       <DiceCost
         class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col "
         cost={data().definitionCost}
         // realCost={allCosts[props.data.id]}
       />
-      <div class="absolute h-full w-full rotate-y-180 translate-z-1px bg-gray-600 b-gray-700 b-solid b-4 color-white rounded backface-hidden" />
+      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-solid b-4 rounded" />
     </div>
   );
 }

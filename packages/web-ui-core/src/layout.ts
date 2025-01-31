@@ -21,7 +21,8 @@ export function unitInPx() {
 }
 
 export const PERSPECTIVE = 200;
-export const DRAGGING_Z = 10;
+export const FOCUSING_HANDS_Z = 10;
+export const DRAGGING_Z = 12;
 
 const MINIMUM_WIDTH = 192;
 const MINIMUM_HEIGHT = 144;

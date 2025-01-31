@@ -38,10 +38,12 @@ const deck0: DeckConfig = {
   noShuffle: import.meta.env.DEV,
 };
 const deck1: DeckConfig = {
-  characters: [1213, 1111, 1210],
+  characters: [1213, 1111, 1608],
   cards: [
-    332031, 311105, 311110, 311110, 311205, 312023, 312023, 312031, 312031,
-    321004, 321004, 321024, 321024, 322018, 322018, 330007, 331202, 331202,
+    116081, 116081,
+    332031, 311105, 330007, 
+    311110, 311205, 312023, 312023, 312031, 312031,
+    321004, 321004, 321024, 321024, 322018, 322018, 331202, 331202,
     332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032, 332040,
     332040, 333015, 333015,
   ],
@@ -114,7 +116,7 @@ function App() {
           });
           if (animatingCards.length > 0) {
             // TODO: use callback to determine wait duration
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            await new Promise((resolve) => setTimeout(resolve, 1500 + 100));
           }
         });
       },

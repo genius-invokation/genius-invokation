@@ -30,6 +30,7 @@ import { flip } from "@gi-tcg/utils";
 import { Key } from "@solid-primitives/keyed";
 import {
   DRAGGING_Z,
+  FOCUSING_HANDS_Z,
   getCharacterAreaPos,
   getHandCardBlurredPos,
   getHandCardFocusedPos,
@@ -83,6 +84,7 @@ export interface ChessboardProps {
   state: PbGameState;
   animatingCards: AnimatingCardInfo[];
   who: 0 | 1;
+  onAnimationFinish?: () => void;
 }
 
 export interface CardInfoCalcContext {
@@ -135,7 +137,7 @@ function calcCardsInfo(
     const totalHandCardCount = handCard.length;
 
     const isFocus = !opp && focusingHands;
-    const z = isFocus ? DRAGGING_Z : 2;
+    const z = isFocus ? FOCUSING_HANDS_Z : 1;
     const ry = isFocus ? 0 : opp ? 185 : 5;
 
     let hoveringHandIndex: number | null = handCard.findIndex(
@@ -181,7 +183,7 @@ function calcCardsInfo(
           transform: {
             x,
             y,
-            z,
+            z: z, //+ +(i === hoveringHandIndex),
             // zIndex: 10 + i,
             ry,
             rz: 0,
