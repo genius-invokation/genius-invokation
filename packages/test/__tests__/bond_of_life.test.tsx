@@ -22,12 +22,12 @@ test("bond of life decrease the heal", async () => {
   const active = ref();
   const c = setup(
     <State>
-      <Character my health={5} ref={active}>
-        <Status def={BondOfLife} usage={1} />
+      <Character my health={5} maxHealth={6} ref={active}>
+        <Status def={BondOfLife} usage={2} />
       </Character>
       <Card my def={MondstadtHashBrown} />
     </State>,
   );
   await c.me.card(MondstadtHashBrown, active);
-  c.expect("my active").toHaveVariable({ health: 6 });
+  c.expect("my active").toHaveVariable({ health: 5 });
 });

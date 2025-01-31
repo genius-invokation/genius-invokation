@@ -90,13 +90,13 @@ export const CatalyzingField = combatStatus(117)
  * 可用次数：1（可叠加，没有上限）。
  */
 export const BondOfLife = status(122)
-  .on("decreaseHealed", (c, e) => e.damageInfo.healKind !== "revive" && e.damageInfo.healKind !== "distribution")
+  .on("decreaseHealed", (c, e) => e.healInfo.healKind !== "revive" && e.healInfo.healKind !== "distribution")
   .usage(1, {
     append: { limit: Infinity },
     autoDecrease: false,
   })
   .do((c, e) => {
-    const deducted = Math.min(c.getVariable("usage"), e.damageInfo.value);
+    const deducted = Math.min(c.getVariable("usage"), e.expectedValue);
     e.decreaseHeal(deducted);
     c.consumeUsage(deducted);
   })

@@ -797,6 +797,9 @@ class ModifyHealEventArgBase extends DamageOrHealEventArg<HealInfo> {
   get healInfo() {
     return this.damageInfo;
   }
+  get expectedValue() {
+    return this.healInfo.expectedValue;
+  }
 }
 
 export class ModifyHeal1EventArg extends ModifyHealEventArgBase {

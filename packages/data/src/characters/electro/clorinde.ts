@@ -29,7 +29,7 @@ export const NightVigil = status(114121)
   .duration(1)
   .on("cancelHealed", (c, e) => e.via.definition.id !== HuntersVigil)
   .do((c, e) => {
-    const value = e.value;
+    const value = e.expectedValue;
     e.cancel();
     if (value > 0) {
       c.characterStatus(BondOfLife, "@master", {

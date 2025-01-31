@@ -36,6 +36,8 @@ import {
   InitiativeSkillEventArg,
   InitiativeSkillTargetGetter,
   SkillInfoOfContextConstruction,
+  ModifyHeal0EventArg,
+  ModifyHeal1EventArg,
 } from "../base/skill";
 import {
   AnyState,
@@ -543,6 +545,8 @@ type OverrideEventArgType = {
   deductVoidDiceSkill: ModifyAction0EventArg<UseSkillInfo>;
   deductElementDiceSkill: ModifyAction1EventArg<UseSkillInfo>;
   deductOmniDiceSkill: ModifyAction2EventArg<UseSkillInfo>;
+  cancelHealed: Omit<ModifyHeal0EventArg, "damageInfo" | "value">;
+  decreaseHealed: Omit<ModifyHeal1EventArg, "damageInfo" | "value">;
 };
 
 type DetailedEventDictionary = typeof detailedEventDictionary;
