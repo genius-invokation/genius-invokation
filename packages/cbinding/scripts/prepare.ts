@@ -14,17 +14,17 @@ async function writeGeneratedJsCodeCpp() {
     input: `${import.meta.dirname}/../js/main.ts`,
     external: ["@gi-tcg/cbinding-io"],
     plugins: [
-      babel({
-        extensions: [".mjs", ".js", ".ts"],
-        presets: ["@babel/preset-typescript"],
-        babelHelpers: "bundled",
-      }),
       replace({
         preventAssignment: true,
         values: {
           "import.meta.env.DEV": "void 0",
           "process.env.NODE_ENV": JSON.stringify("production"),
         },
+      }),
+      babel({
+        extensions: [".mjs", ".js", ".ts"],
+        presets: ["@babel/preset-typescript"],
+        babelHelpers: "bundled",
       }),
       commonjs(),
       nodeResolve({

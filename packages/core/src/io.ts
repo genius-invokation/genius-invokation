@@ -273,8 +273,7 @@ export function exposeMutation(
         who: m.who,
         from,
         reason,
-        cardId: m.oldState.id,
-        cardDefinitionId: hide ? 0 : m.oldState.definition.id,
+        card: exposeCard(null, m.oldState, hide),
       };
     }
     case "createCard": {
@@ -320,8 +319,7 @@ export function exposeMutation(
     case "removeEntity": {
       return {
         $case: "removeEntity",
-        entityId: m.oldState.id,
-        entityDefinitionId: m.oldState.definition.id,
+        entity: exposeEntity(null, m.oldState as EntityState),
       };
     }
     case "modifyEntityVar": {

@@ -16,184 +16,93 @@
 import {
   type CreateCardEM,
   PbCardArea,
+  PbCardState,
   type PbExposedMutation,
   type RemoveCardEM,
   type TransferCardEM,
-  type PbCardState,
-  type PbGameState,
 } from "@gi-tcg/typings";
+import type { AnimatingCardInfo } from "./components/Chessboard";
 
-export interface ParseMutationResultEntry {
-  state: PbGameState;
-  showingCardIds: number[];
-  transitioningCardIds: number[];
+export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
+function getCardArea(
+  verb: "from" | "to",
+  mut: CreateCardEM | TransferCardEM | RemoveCardEM,
+): CardDestination | null {
+  const area =
+    verb === "from" && verb in mut
+      ? mut[verb]
+      : verb === "to" && verb in mut
+        ? mut[verb]
+        : null;
+  const who = mut.who as 0 | 1;
+  if (area === PbCardArea.HAND) {
+    return `hand${who}`;
+  } else if (area === PbCardArea.PILE) {
+    return `pile${who}`;
+  } else {
+    return null;
+  }
 }
 
-const CARD_AREA_PROP_MAP = {
-  [PbCardArea.HAND]: "handCard",
-  [PbCardArea.PILE]: "pileCard",
-} as const;
+interface AnimatingCardWithDestination extends AnimatingCardInfo {
+  destination: CardDestination | null;
+}
 
-type CardRelatedMutations =
-  | {
-      type: "create";
-      data: CreateCardEM[];
+export function parseMutations(mutations: PbExposedMutation[]) {
+  const animatingCards: AnimatingCardWithDestination[] = [];
+  // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
+  // 如果新的卡牌动画的 from 和之前的进出方向相反，则新的卡牌动画延迟一刻
+  // to 部分同理
+  const cardAreaState = new Map<
+    CardDestination,
+    {
+      direction: "in" | "out";
+      delay: number;
     }
-  | {
-      type: "transfer";
-      data: TransferCardEM[];
-    }
-  | {
-      type: "remove";
-      data: RemoveCardEM[];
-    };
-
-function selectAndGroupCardRelatedMutations(mutations: PbExposedMutation[]) {
-  const result: CardRelatedMutations[] = [];
-  let current: CardRelatedMutations | undefined;
+  >();
   for (const { mutation } of mutations) {
-    if (mutation?.$case === "createCard") {
-      if (!current || current.type !== "create") {
-        current = {
-          type: "create",
-          data: [],
-        };
-        result.push(current);
+    switch (mutation?.$case) {
+      case "createCard":
+      case "transferCard":
+      case "removeCard": {
+        const card = mutation.value.card!;
+        const source = getCardArea("from", mutation.value);
+        const destination = getCardArea("to", mutation.value);
+
+        const current = animatingCards.find((x) => x.data.id === card.id);
+        if (current) {
+          current.destination = destination;
+        } else {
+          const sourceState = source ? cardAreaState.get(source) : void 0;
+          const destinationState = destination
+            ? cardAreaState.get(destination)
+            : void 0;
+          const sourceDelay = sourceState
+            ? sourceState.delay + +(sourceState.direction === "in")
+            : 0;
+          const destinationDelay = destinationState
+            ? destinationState.delay + +(destinationState.direction === "out")
+            : 0;
+          animatingCards.push({
+            data: card,
+            destination,
+            delay: Math.max(sourceDelay, destinationDelay),
+          });
+          if (source) {
+            cardAreaState.set(source, {
+              direction: "out",
+              delay: sourceDelay,
+            });
+          }
+          if (destination) {
+            cardAreaState.set(destination, {
+              direction: "in",
+              delay: destinationDelay,
+            });
+          }
+        }
       }
-      current.data.push(mutation.value);
-    } else if (mutation?.$case === "transferCard") {
-      if (!current || current.type !== "transfer") {
-        current = {
-          type: "transfer",
-          data: [],
-        };
-        result.push(current);
-      }
-      current.data.push(mutation.value);
-    } else if (mutation?.$case === "removeCard") {
-      if (!current || current.type !== "remove") {
-        current = {
-          type: "remove",
-          data: [],
-        };
-        result.push(current);
-      }
-      current.data.push(mutation.value);
     }
   }
-  return result;
-}
-
-export function parseMutations(
-  oldState: PbGameState,
-  newState: PbGameState,
-  mutations: PbExposedMutation[],
-) {
-  const result: ParseMutationResultEntry[] = [];
-  const currentState = structuredClone(oldState);
-
-  const cardRelatedMutations = selectAndGroupCardRelatedMutations(mutations);
-
-  for (const { type, data } of cardRelatedMutations) {
-    if (type === "transfer") {
-      const showingCardIds: number[] = [];
-      const transitioningCardIds: number[] = [];
-      for (const {
-        card,
-        who,
-        transferToOpp,
-        from,
-        to,
-        targetIndex,
-      } of data) {
-        const fromProp = CARD_AREA_PROP_MAP[from];
-        const toProp = CARD_AREA_PROP_MAP[to];
-        const targetWho = transferToOpp ? (who === 0 ? 1 : 0) : who;
-        const sourceCards = currentState.player[who][fromProp];
-        const targetCards = currentState.player[targetWho][toProp];
-        const index = sourceCards.findIndex((c) => c.id === card!.id);
-        if (index === -1) {
-          continue;
-        }
-        sourceCards.splice(index, 1);
-        console.log({ targetCards });
-        targetCards.splice(targetIndex ?? targetCards.length, 0, card!);
-        if (card!.definitionId !== 0) {
-          showingCardIds.push(card!.id);
-        }
-        transitioningCardIds.push(card!.id);
-      }
-      result.push(
-        {
-          state: structuredClone(currentState),
-          showingCardIds,
-          transitioningCardIds: [],
-        },
-        {
-          state: structuredClone(currentState),
-          showingCardIds: [],
-          transitioningCardIds,
-        },
-      );
-    } else if (type === "create") {
-      const showingCardIds: number[] = [];
-      const transitioningCardIds: number[] = [];
-      for (const { card, who, to, targetIndex } of data) {
-        const prop = CARD_AREA_PROP_MAP[to];
-        const cards = currentState.player[who][prop];
-        cards.splice(targetIndex ?? cards.length, 0, card!);
-        if (card!.definitionId !== 0) {
-          showingCardIds.push(card!.id);
-        }
-        transitioningCardIds.push(card!.id);
-      }
-      result.push(
-        {
-          state: structuredClone(currentState),
-          showingCardIds,
-          transitioningCardIds: [],
-        },
-        {
-          state: structuredClone(currentState),
-          showingCardIds,
-          transitioningCardIds,
-        },
-      );
-    } else if (type === "remove") {
-      const showingCardIds: number[] = [];
-      const transitioningCardIds: number[] = [];
-      for (const { cardId, who, from } of data) {
-        const prop = CARD_AREA_PROP_MAP[from];
-        const cards = currentState.player[who][prop];
-        const index = cards.findIndex((c) => c.id === cardId);
-        if (index === -1) {
-          continue;
-        }
-        const card = cards[index];
-        cards.splice(index, 1);
-        if (card.definitionId !== 0) {
-          showingCardIds.push(card.id);
-        }
-        transitioningCardIds.push(card.id);
-      }
-      result.push(
-        {
-          state: structuredClone(currentState),
-          showingCardIds,
-          transitioningCardIds: [],
-        },
-        {
-          state: structuredClone(currentState),
-          showingCardIds,
-          transitioningCardIds,
-        },
-      );
-    }
-  }
-  result.push({
-    state: newState,
-    showingCardIds: [],
-    transitioningCardIds: [],
-  });
-  return result;
+  return { animatingCards };
 }

@@ -16,7 +16,9 @@
 import {
   type ComponentProps,
   Show,
+  createMemo,
   createResource,
+  mergeProps,
   splitProps,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
@@ -24,10 +26,17 @@ import { getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
 
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
+  zero?: "unknown" | "physic";
 }
 
 export function Image(props: ImageProps) {
-  const [local, rest] = splitProps(props, ["imageId", "width", "height"]);
+  const merged = mergeProps({ zero: "unknown" } as const, props);
+  const [local, rest] = splitProps(merged, [
+    "imageId",
+    "width",
+    "height",
+    "zero",
+  ]);
   const { assetsApiEndpoint } = useUiContext();
   const [url] = createResource(
     () => local.imageId,
@@ -38,23 +47,35 @@ export function Image(props: ImageProps) {
       }),
   );
 
+  const isUnknown = () => local.imageId === 0 && local.zero === "unknown";
+
+  const showImage = () => {
+    if (local.imageId === 0 && local.zero === "unknown") {
+      return false;
+    } else {
+      return url.state === "ready";
+    }
+  };
+
   const classNames = "flex items-center justify-center object-cover";
-  const innerProps = (): ComponentProps<"img"> => ({
-    ...rest,
-    class: `${rest.class ?? ""} ${classNames}`,
-    src: url(),
-    alt: getNameSync(local.imageId) ?? `${local.imageId}`,
-    draggable: "false",
-    style: {
-      background: url.state === "ready" ? void 0 : "#e5e7eb",
-      height: local.height ? `${local.height}px` : void 0,
-      width: local.width ? `${local.width}px` : void 0,
-    },
-  });
+  const innerProps = createMemo(
+    (): ComponentProps<"img"> => ({
+      ...rest,
+      class: `${rest.class ?? ""} ${classNames}`,
+      src: url(),
+      alt: isUnknown() ? "" : getNameSync(local.imageId) ?? `${local.imageId}`,
+      draggable: "false",
+      style: {
+        background: showImage() ? void 0 : "#e5e7eb",
+        height: local.height ? `${local.height}px` : void 0,
+        width: local.width ? `${local.width}px` : void 0,
+      },
+    }),
+  );
 
   return (
     <Show
-      when={url.state === "ready"}
+      when={showImage()}
       fallback={
         <div {...(innerProps() as ComponentProps<"div">)}>
           {innerProps().alt}

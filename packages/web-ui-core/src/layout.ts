@@ -49,6 +49,8 @@ const HAND_CARD_HOVERING_X_OFFSET = 2;
 
 const HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING = CARD_HEIGHT + 10;
 
+const SHOING_CARD_GAP_MIN = 10;
+
 export function getCharacterAreaPos(
   [height, width]: Size,
   opp: boolean,
@@ -140,6 +142,18 @@ export function shouldFocusHandWhenDragging(
   return currentY >= height - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
 }
 
-export function getShowingCardY([height, width]: Size): number {
-  return height / 2 - CARD_HEIGHT / 2;
+export function getShowingCardPos(
+  [height, width]: Size,
+  totalCount: number,
+  index: number,
+): Pos {
+  const y = height / 2 - CARD_HEIGHT / 2;
+  const xOffset = Math.min(
+    (width - CARD_WIDTH) / (totalCount - 1),
+    CARD_WIDTH + SHOING_CARD_GAP_MIN,
+  );
+  const totalWidth = xOffset * (totalCount - 1) + CARD_WIDTH;
+  const xStart = (width - totalWidth) / 2;
+  const x = xStart + index * xOffset;
+  return [x, y];
 }

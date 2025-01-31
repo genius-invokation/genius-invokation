@@ -63,8 +63,7 @@ enum CardArea {
 
 message TransferCardEM {
   int32 who = 1;
-  reserved 2;
-  reserved 3;
+  reserved 2, 3;
   CardArea from = 4;
   CardArea to = 5;
   bool transfer_to_opp = 6;
@@ -91,16 +90,15 @@ enum RemoveCardReason {
 
 message RemoveCardEM {
   int32 who = 1;
-  sint32 card_id = 2;
-  int32 card_definition_id = 3;
+  reserved 2, 3;
   CardArea from = 4;
   RemoveCardReason reason = 5;
+  CardState card = 6;
 }
 
 message CreateCardEM {
   int32 who = 1;
-  reserved 2;
-  reserved 3;
+  reserved 2, 3;
   CardArea to = 4;
   optional int32 target_index = 5;
   CardState card = 6;
@@ -108,8 +106,7 @@ message CreateCardEM {
 
 message CreateCharacterEM {
   int32 who = 1;
-  reserved 2;
-  reserved 3;
+  reserved 2, 3;
   CharacterState character = 4;
 }
 
@@ -123,15 +120,14 @@ enum EntityArea {
 
 message CreateEntityEM {
   int32 who = 1;
-  reserved 2;
-  reserved 3;
+  reserved 2, 3;
   EntityArea where = 4;
   EntityState entity = 5;
 }
 
 message RemoveEntityEM {
-  sint32 entity_id = 2;
-  int32 entity_definition_id = 3;
+  reserved 2, 3;
+  EntityState entity = 4;
 }
 
 message ModifyEntityVarEM {

@@ -16,14 +16,14 @@
 /* @refresh reload */
 
 import "./index";
-import { createSignal, onMount, Show } from "solid-js";
+import { batch, createSignal, onMount, Show, untrack } from "solid-js";
 import { render } from "solid-js/web";
 
 import type { PbGameState, PbPlayerState } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
 import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
 import { createPlayer } from "@gi-tcg/webui";
-import { Chessboard } from "./components/Chessboard";
+import { Chessboard, type AnimatingCardInfo } from "./components/Chessboard";
 import { parseMutations } from "./mutations";
 import { AsyncQueue } from "./async_queue";
 
@@ -33,19 +33,19 @@ const deck0: DeckConfig = {
     333016, 313006, 212141, 321025, 332042, 223041, 223041, 226031, 226031,
     312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004, 321017,
     321017, 322008, 322012, 322012, 322025, 332004, 332004, 332006, 332032,
-    332032, 332041, 332041, 333003, 333003, 333009, 333011,
+    332032, 332041, 332041,
   ],
   noShuffle: import.meta.env.DEV,
 };
 const deck1: DeckConfig = {
   characters: [1213, 1111, 1210],
   cards: [
-    311105, 311105, 311110, 311110, 311205, 312023, 312023, 312031, 312031,
+    332031, 311105, 311110, 311110, 311205, 312023, 312023, 312031, 312031,
     321004, 321004, 321024, 321024, 322018, 322018, 330007, 331202, 331202,
     332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032, 332040,
     332040, 333015, 333015,
   ],
-  // noShuffle: import.meta.env.DEV,
+  noShuffle: import.meta.env.DEV,
 };
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
@@ -74,9 +74,10 @@ function App() {
   let cb1!: HTMLDivElement;
 
   const [p1State, setP1State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
-  const [p1ShowingCards, setP1ShowingCards] = createSignal<number[]>([]);
-  const [p1TransitioningCards, setP1TransitioningCards] = createSignal<
-    number[]
+  const [p1PreviousState, setP1PreviousState] =
+    createSignal<PbGameState>(EMPTY_GAME_STATE);
+  const [p1AnimatingCards, setP1AnimatingCards] = createSignal<
+    AnimatingCardInfo[]
   >([]);
 
   onMount(() => {
@@ -91,30 +92,28 @@ function App() {
     const game = new Game(state);
 
     game.players[0].io = io0;
-    let previousState: PbGameState | undefined = void 0;
 
     const uiQueue = new AsyncQueue();
-
+    let previousState: PbGameState | undefined = void 0;
     game.players[1].io = {
       ...io1,
       notify: async ({ mutation, state }) => {
         io1.notify({ mutation, state });
-        if (!previousState) {
-          previousState = state;
-          return;
-        }
-        const parsed = parseMutations(previousState, state!, mutation);
-        console.log(parsed);
         uiQueue.push(async () => {
-          const [first, ...rest] = parsed;
-          setP1ShowingCards(first.showingCardIds);
-          setP1TransitioningCards(first.transitioningCardIds);
-          setP1State(first.state);
-          for (const { state, showingCardIds, transitioningCardIds } of rest) {
-            await new Promise((r) => setTimeout(r, 500));
-            setP1State(state);
-            setP1ShowingCards(showingCardIds);
-            setP1TransitioningCards(transitioningCardIds);
+          if (!previousState) {
+            previousState = state;
+            return;
+          }
+          const { animatingCards } = parseMutations(mutation);
+          console.log(animatingCards);
+          batch(() => {
+            setP1PreviousState(previousState!);
+            setP1State(state!);
+            setP1AnimatingCards(animatingCards);
+          });
+          if (animatingCards.length > 0) {
+            // TODO: use callback to determine wait duration
+            await new Promise((resolve) => setTimeout(resolve, 1600));
           }
           previousState = state;
         });
@@ -136,8 +135,8 @@ function App() {
       <Chessboard
         who={1}
         state={p1State()}
-        showingCardIds={p1ShowingCards()}
-        transitioningCardIds={p1TransitioningCards()}
+        previousState={p1PreviousState()}
+        animatingCards={p1AnimatingCards()}
         class="h-0"
       />
     </div>
