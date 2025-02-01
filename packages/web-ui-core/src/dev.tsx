@@ -40,12 +40,10 @@ const deck0: DeckConfig = {
 const deck1: DeckConfig = {
   characters: [1213, 1111, 1608],
   cards: [
-    116081, 116081,
-    332031, 311105, 330007, 
-    311110, 311205, 312023, 312023, 312031, 312031,
-    321004, 321004, 321024, 321024, 322018, 322018, 331202, 331202,
-    332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032, 332040,
-    332040, 333015, 333015,
+    116081, 116081, 332031, 311105, 330007, 311110, 311205, 312023, 312023,
+    312031, 312031, 321004, 321004, 321024, 321024, 322018, 322018, 331202,
+    331202, 332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032,
+    332040, 332040, 333015, 333015,
   ],
   noShuffle: import.meta.env.DEV,
 };
@@ -81,6 +79,8 @@ function App() {
   const [p1AnimatingCards, setP1AnimatingCards] = createSignal<
     AnimatingCardInfo[]
   >([]);
+  const [p1AnimationResolver, setP1AnimationResolver] =
+    createSignal<() => void>();
 
   onMount(() => {
     const state = Game.createInitialState({
@@ -108,15 +108,16 @@ function App() {
           }
           const { animatingCards } = parseMutations(mutation);
           // console.log(previousState, animatingCards, state);
+          const { promise, resolve } = Promise.withResolvers<void>();
           batch(() => {
             setP1PreviousState(previousState!);
             setP1State(state!);
             setP1AnimatingCards(animatingCards);
+            setP1AnimationResolver(() => resolve);
             previousState = state;
           });
           if (animatingCards.length > 0) {
-            // TODO: use callback to determine wait duration
-            await new Promise((resolve) => setTimeout(resolve, 1500 + 100));
+            await promise;
           }
         });
       },
@@ -139,6 +140,7 @@ function App() {
         state={p1State()}
         previousState={p1PreviousState()}
         animatingCards={p1AnimatingCards()}
+        onAnimationFinish={p1AnimationResolver()}
         class="h-0"
       />
     </div>

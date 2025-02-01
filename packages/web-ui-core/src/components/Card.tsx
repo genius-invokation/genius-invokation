@@ -40,7 +40,7 @@ export type StaticCardUiState = {
   type: "static";
   transform: CardTransform;
 };
-export type AnimatedCardUiState = {
+export type IAnimatedCardUiState = {
   type: "animation";
   /**
    * 动画开始时牌的位置；应当从上一个对局状态中查找到
@@ -61,7 +61,39 @@ export type AnimatedCardUiState = {
   onFinish?: () => void;
 };
 
-export type CardUiState = StaticCardUiState | AnimatedCardUiState;
+export interface AnimatedCardUiStateInit {
+  start: CardTransform | null;
+  middle: CardTransform | null;
+  end: CardTransform | null;
+  delay: number;
+}
+
+export class AnimatedCardUiState implements IAnimatedCardUiState {
+  private static readonly ANIMATION_DURATION = 900;
+
+  readonly type = "animation";
+  readonly start: CardTransform | null;
+  readonly middle: CardTransform | null;
+  readonly end: CardTransform | null;
+  readonly delay: number;
+  readonly duration = AnimatedCardUiState.ANIMATION_DURATION;
+
+  readonly resolvers = Promise.withResolvers<void>();
+
+  constructor({ start, middle, end, delay }: AnimatedCardUiStateInit) {
+    this.start = start;
+    this.middle = middle;
+    this.end = end;
+    this.delay = delay * AnimatedCardUiState.ANIMATION_DURATION;
+  }
+
+  onFinish() {
+    console.log(this);
+    this.resolvers.resolve();
+  }
+}
+
+export type CardUiState = StaticCardUiState | IAnimatedCardUiState;
 
 const cssProperty = (x: CardTransform): Record<string, string> => ({
   // "z-index": `${x.zIndex}`,
@@ -83,7 +115,7 @@ export interface CardProps {
   onPointerDown?: (e: PointerEvent, currentTarget: HTMLElement) => void;
 }
 
-const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+const transformKeyframes = (uiState: IAnimatedCardUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
   const fallbackStyle = cssProperty(middle ?? end ?? start!);
   const startKeyframe: Keyframe = {
@@ -113,7 +145,7 @@ const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
  * The opacity keyframes must be applied to a non-3d rendering context.
  * In our case, apply to the card's children.
  */
-const opacityKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+const opacityKeyframes = (uiState: IAnimatedCardUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
   const startKeyframe: Keyframe = {
     offset: 0,
@@ -186,7 +218,7 @@ export function Card(props: CardProps) {
         ...[...el.children].map((e) => applyAndWait(e, opacityKf)),
       ]).then(() => {
         setRunningAnimation(false);
-        onFinish?.();
+        onFinish?.call(uiState);
       });
       setRunningAnimation(true);
     }

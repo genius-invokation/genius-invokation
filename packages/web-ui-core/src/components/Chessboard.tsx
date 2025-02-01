@@ -19,6 +19,7 @@ import type {
   PbGameState,
 } from "@gi-tcg/typings";
 import {
+  AnimatedCardUiState,
   Card,
   type CardProps,
   type CardTransform,
@@ -119,7 +120,6 @@ function calcCardsInfo(
             x,
             y,
             z: (pileSize - 1 - i) / 4,
-            // zIndex: 10 + pileSize - 1 - i,
             ry: 180,
             rz: 90,
           },
@@ -225,6 +225,7 @@ export function Chessboard(props: ChessboardProps) {
     const focusingHands = getFocusingHands();
     const hoveringHand = getHoveringHand();
     const draggingHand = getDraggingHand();
+    const onAnimationFinish = props.onAnimationFinish;
 
     const animatingCards = props.animatingCards;
     const currentCards = calcCardsInfo(props.state, {
@@ -236,6 +237,7 @@ export function Chessboard(props: ChessboardProps) {
     });
 
     if (animatingCards.length > 0) {
+      const animationPromises: Promise<void>[] = [];
       const previousCards = calcCardsInfo(props.previousState, {
         who,
         size,
@@ -281,22 +283,27 @@ export function Chessboard(props: ChessboardProps) {
           rz: 0,
         };
         const hasMiddle = animatingCard.data.definitionId !== 0;
+        const animation = new AnimatedCardUiState({
+          start: startTransform,
+          middle: hasMiddle ? middleTransform : null,
+          end: endTransform,
+          delay: animatingCard.delay,
+        });
         currentCards.push({
           id: animatingCard.data.id,
           data: animatingCard.data,
           kind: "animating",
-          uiState: {
-            type: "animation",
-            start: startTransform,
-            middle: hasMiddle ? middleTransform : null,
-            end: endTransform,
-            duration: 1500, // todo
-            delay: animatingCard.delay * 1500, // todo
-          },
+          uiState: animation,
           enableShadow: true,
           enableTransition: false,
         });
+        animationPromises.push(animation.resolvers.promise);
       }
+      Promise.all(animationPromises).then(() => {
+        onAnimationFinish?.();
+      });
+    } else {
+      onAnimationFinish?.();
     }
 
     return currentCards; //.toSorted((a, b) => a.id - b.id);
