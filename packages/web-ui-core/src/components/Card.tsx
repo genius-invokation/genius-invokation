@@ -83,6 +83,61 @@ export interface CardProps {
   onPointerDown?: (e: PointerEvent, currentTarget: HTMLElement) => void;
 }
 
+const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+  const { start, middle, end } = uiState;
+  const fallbackStyle = cssProperty(middle ?? end ?? start!);
+  const startKeyframe: Keyframe = {
+    offset: 0,
+    ...(start ? cssProperty(start) : fallbackStyle),
+  };
+  const middleKeyframes: Keyframe[] = middle
+    ? [
+        {
+          offset: 0.4,
+          ...cssProperty(middle),
+        },
+        {
+          offset: 0.6,
+          ...cssProperty(middle),
+        },
+      ]
+    : [];
+  const endKeyframe: Keyframe = {
+    offset: 1,
+    ...(end ? cssProperty(end) : fallbackStyle),
+  };
+  return [startKeyframe, ...middleKeyframes, endKeyframe];
+};
+
+/**
+ * The opacity keyframes must be applied to a non-3d rendering context.
+ * In our case, apply to the card's children.
+ */
+const opacityKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+  const { start, middle, end } = uiState;
+  const startKeyframe: Keyframe = {
+    offset: 0,
+    opacity: start ? 1 : 0,
+  };
+  const middleKeyframes: Keyframe[] = middle
+    ? [
+        {
+          offset: 0.4,
+          opacity: 1,
+        },
+        {
+          offset: 0.6,
+          opacity: 1,
+        },
+      ]
+    : [];
+  const endKeyframe: Keyframe = {
+    offset: 1,
+    opacity: end ? 1 : 0,
+  };
+  return [startKeyframe, ...middleKeyframes, endKeyframe];
+};
+
 export function Card(props: CardProps) {
   // const [data] = createResource(
   //   () => props.data.definitionId,
@@ -110,55 +165,37 @@ export function Card(props: CardProps) {
   createEffect(() => {
     const uiState = props.uiState;
     if (uiState.type === "animation" && !untrack(runningAnimation)) {
-      const { start, middle, end, delay, duration, onFinish } = uiState;
-      const fallbackStyle = cssProperty(middle ?? end ?? start!);
-      const startKeyframe: Keyframe = {
-        offset: 0,
-        ...(start ? cssProperty(start) : fallbackStyle),
-        "--gi-tcg-opacity": start ? 1 : 0,
+      const { delay, duration, onFinish } = uiState;
+      const transformKf = transformKeyframes(uiState);
+      const opacityKf = opacityKeyframes(uiState);
+      const opt: KeyframeAnimationOptions = {
+        delay,
+        duration,
+        fill: "both",
+        // easing: "cubic-bezier(0.4, 0, 0.2, 1)",
       };
-      const middleKeyframes: Keyframe[] = middle
-        ? [
-            {
-              offset: 0.4,
-              ...cssProperty(middle),
-              "--gi-tcg-opacity": 1,
-            },
-            {
-              offset: 0.6,
-              ...cssProperty(middle),
-              "--gi-tcg-opacity": 1,
-            },
-          ]
-        : [];
-      const endKeyframe: Keyframe = {
-        offset: 1,
-        ...(end ? cssProperty(end) : fallbackStyle),
-        "--gi-tcg-opacity": end ? 1 : 0,
+      const applyAndWait = (el: Element, kf: Keyframe[]) => {
+        const animation = el.animate(kf, opt);
+        return animation.finished.then(() => {
+          animation.commitStyles();
+          animation.cancel();
+        });
       };
-      const animation = el.animate(
-        [startKeyframe, ...middleKeyframes, endKeyframe],
-        {
-          delay,
-          duration,
-          fill: "both",
-        },
-      );
-      // console.log([startKeyframe, ...middleKeyframes, endKeyframe]);
-      setRunningAnimation(true);
-      animation.finished.then(() => {
-        animation.commitStyles();
-        animation.cancel();
+      Promise.all([
+        applyAndWait(el, transformKf),
+        ...[...el.children].map((e) => applyAndWait(e, opacityKf)),
+      ]).then(() => {
         setRunningAnimation(false);
         onFinish?.();
       });
+      setRunningAnimation(true);
     }
   });
 
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none opacity-[var(--gi-tcg-opacity)]"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none"
       style={style()}
       classList={{
         "transition-transform": props.enableTransition,
@@ -189,25 +226,18 @@ export function Card(props: CardProps) {
         props.onPointerDown?.(e, e.currentTarget);
       }}
     >
-      <Show
-        when={props.data.definitionId}
-        // 令不知道什么牌的牌面和牌背显示一样的东西。从而避免一些因为奇怪 CSS 渲染问题导致的不和谐结果
-        fallback={
-          <div class="absolute h-full w-full rounded-xl backface-hidden bg-gray-600 b-gray-700 b-solid b-4 rounded" />
-        }
-      >
+      <div class="absolute h-full w-full backface-hidden opacity-[var(--gi-tcg-opacity)]">
         <Image
+          class="h-full w-full rounded-xl b-white b-solid b-3 "
           imageId={props.data.definitionId}
-          class="absolute h-full w-full rounded-xl backface-hidden b-white b-solid b-3"
-          title={`id = ${props.data.id}`}
         />
-      </Show>
+      </div>
       <DiceCost
-        class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col "
+        class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col opacity-[var(--gi-tcg-opacity)]"
         cost={data().definitionCost}
         // realCost={allCosts[props.data.id]}
       />
-      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-solid b-4 rounded" />
+      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-solid b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
     </div>
   );
 }

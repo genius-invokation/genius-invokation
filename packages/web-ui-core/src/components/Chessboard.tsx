@@ -43,7 +43,6 @@ import {
   type Size,
 } from "../layout";
 import { CharacterArea } from "./CharacterArea";
-import { registerCssProperty } from "../css";
 
 export interface CardInfo {
   id: number;
@@ -452,7 +451,6 @@ export function Chessboard(props: ChessboardProps) {
   onMount(() => {
     onResize();
     resizeObserver.observe(chessboardElement);
-    registerCssProperty();
   });
   onCleanup(() => {
     resizeObserver.disconnect();
