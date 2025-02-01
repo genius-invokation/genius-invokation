@@ -110,7 +110,7 @@ export function Card(props: CardProps) {
   createEffect(() => {
     const uiState = props.uiState;
     if (uiState.type === "animation" && !untrack(runningAnimation)) {
-      const { start, middle, end, delay, duration } = uiState;
+      const { start, middle, end, delay, duration, onFinish } = uiState;
       const fallbackStyle = cssProperty(middle ?? end ?? start!);
       const startKeyframe: Keyframe = {
         offset: 0,
@@ -150,6 +150,7 @@ export function Card(props: CardProps) {
         animation.commitStyles();
         animation.cancel();
         setRunningAnimation(false);
+        onFinish?.();
       });
     }
   });

@@ -281,6 +281,7 @@ export function Chessboard(props: ChessboardProps) {
           ry: 5,
           rz: 0,
         };
+        const hasMiddle = animatingCard.data.definitionId !== 0;
         currentCards.push({
           id: animatingCard.data.id,
           data: animatingCard.data,
@@ -288,8 +289,7 @@ export function Chessboard(props: ChessboardProps) {
           uiState: {
             type: "animation",
             start: startTransform,
-            middle:
-              animatingCard.data.definitionId === 0 ? null : middleTransform,
+            middle: hasMiddle ? middleTransform : null,
             end: endTransform,
             duration: 1500, // todo
             delay: animatingCard.delay * 1500, // todo
