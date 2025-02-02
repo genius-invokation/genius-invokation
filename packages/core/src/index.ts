@@ -28,7 +28,7 @@ export { executeQueryOnState } from "./query";
 export { type Version, VERSIONS, CURRENT_VERSION } from "./base/version";
 export { type PlayerIO, exposeState } from "./io";
 export * from "./error";
-export type * from "@gi-tcg/typings";
+export * from "@gi-tcg/typings";
 
 import type { ExEntityType, HandleT, ExEntityState, ExTag } from "./builder/type";
 export declare namespace BuilderTypes {

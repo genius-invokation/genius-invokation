@@ -44,8 +44,8 @@ import {
   SelectCardResponse,
   CURRENT_VERSION,
   type Version,
-  dispatchRpc,
 } from "@gi-tcg/core";
+import { dispatchRpc } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
 import { type Deck, flip } from "@gi-tcg/utils";
 import {
