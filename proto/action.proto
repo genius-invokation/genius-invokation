@@ -17,6 +17,19 @@ syntax = "proto3";
 option csharp_namespace = "GiTcg.Proto";
 
 import "enums.proto";
+import "preview.proto";
+
+message Action {
+  oneof action {
+    SwitchActiveAction switch_active = 1;
+    PlayCardAction play_card = 2;
+    UseSkillAction use_skill = 3;
+    ElementalTuningAction elemental_tuning = 4;
+    DeclareEndAction declare_end = 5;
+  }
+  repeated PreviewData preview = 10;
+  repeated DiceRequirement required_cost = 11;
+}
 
 // 切换出战角色
 message SwitchActiveAction {

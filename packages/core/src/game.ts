@@ -638,10 +638,6 @@ export class Game {
         new PlayerEventArg(this.state, who),
       );
       const actions = await this.availableActions();
-      // TODO
-      // this.notifyOne(flip(who), {
-      //   type: "oppAction",
-      // });
       const { chosenActionIndex, usedDice } = await this.rpc(who, "action", {
         action: actions.map(exposeAction),
       });
@@ -710,18 +706,6 @@ export class Game {
 
       switch (actionInfo.type) {
         case "useSkill": {
-          this.mutator.notify({
-            mutations: [
-              // {
-              //   $case: "actionDone",
-              //   who,
-              //   actionType: PbActionType.PLAY_CARD,
-              //   characterOrCardId: actionInfo.skill.caller.id,
-              //   characterDefinitionId: actionInfo.skill.caller.definition.id,
-              //   skillOrCardDefinitionId: actionInfo.skill.definition.id,
-              // },
-            ],
-          });
           const callerArea = getEntityArea(this.state, activeCh().id);
           await this.handleEvent(
             "onBeforeUseSkill",
@@ -738,17 +722,6 @@ export class Game {
         }
         case "playCard": {
           const card = actionInfo.skill.caller;
-          this.mutator.notify({
-            mutations: [
-              // {
-              //   $case: "actionDone",
-              //   who,
-              //   actionType: PbActionType.PLAY_CARD,
-              //   characterOrCardId: card.id,
-              //   skillOrCardDefinitionId: card.definition.id,
-              // },
-            ],
-          });
           if (card.definition.tags.includes("legend")) {
             this.mutate({
               type: "setPlayerFlag",
@@ -822,15 +795,6 @@ export class Game {
           break;
         }
         case "declareEnd": {
-          this.mutator.notify({
-            mutations: [
-              // {
-              //   $case: "actionDone",
-              //   who,
-              //   actionType: PbActionType.DECLARE_END,
-              // },
-            ],
-          });
           this.mutate({
             type: "setPlayerFlag",
             who,

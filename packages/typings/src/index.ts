@@ -16,6 +16,7 @@
 export * from "./common_enums";
 
 export {
+  Action,
   UseSkillAction,
   PlayCardAction,
   SwitchActiveAction,
@@ -43,7 +44,6 @@ export {
   EntityArea as PbEntityArea,
   PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
-  ActionDoneEM,
   ChangePhaseEM,
   CreateCardEM,
   CreateCharacterEM,
@@ -61,10 +61,9 @@ export {
   SwitchTurnEM,
   TransferCardEM,
   TransformDefinitionEM,
-  TriggeredEM,
+  SkillUsedEM,
 } from "./gen/mutation";
 export {
-  Action,
   ActionRequest,
   ActionResponse,
   ChooseActiveRequest,

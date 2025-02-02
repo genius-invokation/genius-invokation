@@ -18,7 +18,6 @@ option csharp_namespace = "GiTcg.Proto";
 
 import "enums.proto";
 import "state.proto";
-import "action.proto";
 
 message ExposedMutation {
   oneof mutation {
@@ -38,11 +37,11 @@ message ExposedMutation {
     ResetDiceEM reset_dice = 14;
     DamageEM damage = 15;
     ElementalReactionEM elemental_reaction = 16;
-    ActionDoneEM action_done = 17;
-    TriggeredEM triggered = 18;
+    SkillUsedEM skill_used = 18;
     PlayerStatusChangeEM player_status_change = 19;
     SwapCharacterPositionEM swap_character_position = 20;
   }
+  reserved 17;
 }
 
 message ChangePhaseEM {
@@ -163,23 +162,12 @@ message ElementalReactionEM {
   int32 character_definition_id = 4;
 }
 
-// 玩家选择了某行动
-message ActionDoneEM {
-  int32 who = 1;
-  reserved 2 to 5;
-  oneof action {
-    SwitchActiveAction switch_active = 6;
-    PlayCardAction play_card = 7;
-    UseSkillAction use_skill = 8;
-    ElementalTuningAction elemental_tuning = 9;
-    DeclareEndAction declare_end = 10;
-  }
-}
-
-// 某实体的被动技能被触发
-message TriggeredEM {
-  sint32 entity_id = 1;
-  int32 entity_definition_id = 2;
+// 使用或触发了技能
+message SkillUsedEM {
+  sint32 caller_id = 1;
+  int32 caller_definition_id = 2;
+  int32 skill_definition_id = 3;
+  bool initiative = 4;
 }
 
 // 玩家的当前 IO 状态
