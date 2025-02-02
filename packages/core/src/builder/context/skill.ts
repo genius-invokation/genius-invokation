@@ -30,6 +30,7 @@ import { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
 import {
   ConsumeNightsoulInfo,
   DamageInfo,
+  DamageOrHealEventArg,
   DisposeOrTuneMethod,
   EventAndRequest,
   EventAndRequestConstructorArgs,
@@ -42,6 +43,7 @@ import {
   InlineEventNames,
   ReactionInfo,
   SkillDescription,
+  SkillDescriptionReturn,
   SkillInfo,
   SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
@@ -165,9 +167,11 @@ export type ContextMetaBase = {
 export class SkillContext<Meta extends ContextMetaBase> {
   public readonly skillInfo: Required<SkillInfoOfContextConstruction>;
   private readonly mutator: StateMutator;
-  private readonly eventAndRequests: EventAndRequest[] = [];
   private readonly originalOnNotify?: (opt: InternalNotifyOption) => void;
   public readonly callerArea: EntityArea;
+
+  private readonly eventAndRequests: EventAndRequest[] = [];
+  private mainDamage: DamageInfo | null = null;
 
   /**
    * 获取正在执行逻辑的实体的 `Character` 或 `Entity`。
@@ -201,11 +205,58 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutator = new StateMutator(state, mutatorConfig);
     this._self = this.of<Meta["callerType"]>(this.skillInfo.caller);
   }
+
+  /**
+   * 对技能返回的事件列表预处理。
+   * - 将重复目标的“伤害事件”合并。
+   */
+  private preprocessEventList() {
+    const result: EventAndRequest[] = [];
+    const damageEventIndexInResultBasedOnTarget = new Map<number, number>();
+    for (const event of this.eventAndRequests) {
+      const [name, arg] = event;
+      if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
+        const previousIndex = damageEventIndexInResultBasedOnTarget.get(
+          arg.target.id,
+        );
+        if (previousIndex) {
+          // combine current event with previous event
+          const previousArg = result[
+            previousIndex
+          ][1] as DamageOrHealEventArg<DamageInfo>;
+          const combinedDamageInfo: DamageInfo = {
+            ...previousArg.damageInfo,
+            value: previousArg.damageInfo.value + arg.damageInfo.value,
+            causeDefeated:
+              previousArg.damageInfo.causeDefeated ||
+              arg.damageInfo.causeDefeated,
+            fromReaction:
+              previousArg.damageInfo.fromReaction ||
+              arg.damageInfo.fromReaction,
+          };
+          result[previousIndex][1] = new DamageOrHealEventArg(
+            previousArg.onTimeState,
+            combinedDamageInfo,
+          );
+        } else {
+          damageEventIndexInResultBasedOnTarget.set(
+            arg.target.id,
+            result.length,
+          );
+          result.push(event);
+        }
+      } else {
+        result.push(event);
+      }
+    }
+    return result;
+  }
+
   /**
    * 技能执行完毕，发出通知，禁止后续改动。
    * @internal
    */
-  _terminate() {
+  _terminate(): SkillDescriptionReturn {
     this.mutator.notify();
     this.originalOnNotify?.({
       canResume: false,
@@ -214,6 +265,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
       exposedMutations: this._exposedMutations,
     });
     Object.freeze(this);
+    const emittedEvents = this.preprocessEventList();
+    return [
+      this.state,
+      {
+        emittedEvents,
+        mainDamage: this.mainDamage,
+      },
+    ];
   }
   private _stateMutations: Mutation[] = [];
   private _exposedMutations: ExposedMutation[] = [];
@@ -296,10 +355,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
         `Using skill [skill:${info.definition.id}]`,
       );
       const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
-      const [newState, newEvents] = desc(this.state, info, arg);
+      const [newState, { emittedEvents }] = desc(this.state, info, arg);
       this.mutator.notify();
       this.mutator.resetState(newState);
-      this.eventAndRequests.push(...newEvents);
+      this.eventAndRequests.push(...emittedEvents);
     }
   }
 
@@ -640,6 +699,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           value: healInfo.value,
           targetId: targetState.id,
           targetDefinitionId: targetState.definition.id,
+          isSkillMainDamage: false,
         },
       ],
     });
@@ -694,12 +754,21 @@ export class SkillContext<Meta extends ContextMetaBase> {
         `Deal ${value} [damage:${type}] damage to ${stringifyState(t.state)}`,
       );
       const targetState = t.state;
+      let isSkillMainDamage = false;
+      if (
+        !this.fromReaction &&
+        !this.mainDamage &&
+        type !== DamageType.Piercing
+      ) {
+        isSkillMainDamage = true;
+      }
       let damageInfo: DamageInfo = {
         source: this.skillInfo.caller,
         target: targetState,
         type,
         value,
         via: this.skillInfo,
+        isSkillMainDamage,
         causeDefeated:
           !!targetState.variables.alive &&
           targetState.variables.health <= value,
@@ -742,11 +811,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
               value: damageInfo.value,
               targetId: damageInfo.target.id,
               targetDefinitionId: damageInfo.target.definition.id,
+              isSkillMainDamage: damageInfo.isSkillMainDamage,
             },
           ],
         });
       }
       this.emitEvent("onDamageOrHeal", this.state, damageInfo);
+      if (isSkillMainDamage) {
+        this.mainDamage = damageInfo;
+      }
       if (
         damageInfo.type !== DamageType.Physical &&
         damageInfo.type !== DamageType.Piercing
@@ -823,12 +896,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
       };
       const reactionDescription = getReactionDescription(reaction);
       if (reactionDescription) {
-        const [newState, events] = reactionDescription(
+        const [newState, { emittedEvents }] = reactionDescription(
           this.state,
           this.skillInfo,
           reactionDescriptionEventArg,
         );
-        this.eventAndRequests.push(...events);
+        this.eventAndRequests.push(...emittedEvents);
         this.mutator.resetState(newState);
       }
     }

@@ -136,15 +136,17 @@ export function dispatchRpc(
   };
 }
 
-export function flattenPbOneof<T extends OneofBase>(
-  oneof: NonNullable<T>,
-): FlattenOneof<T> {
-  return { $case: oneof.$case, ...oneof.value } as FlattenOneof<T>;
+export function flattenPbOneof<T extends OneofBase>({
+  $case,
+  value,
+}: NonNullable<T>): FlattenOneof<T> {
+  return { $case, ...value } as FlattenOneof<T>;
 }
 export function unFlattenOneof<T extends OneofBase>(
   flatten: FlattenOneof<T>,
 ): T {
-  return { $case: flatten.$case, value: flatten } as unknown as T;
+  const { $case, ...value } = flatten;
+  return { $case, value } as unknown as T;
 }
 
 export { RpcRequest, RpcResponse };

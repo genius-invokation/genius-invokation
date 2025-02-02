@@ -28,6 +28,7 @@ import {
   EventAndRequest,
   GenericModifyActionEventArg,
   InitiativeSkillEventArg,
+  InitiativeSkillInfo,
   PlayCardEventArg,
   SkillInfo,
   SwitchActiveEventArg,
@@ -36,16 +37,12 @@ import {
 } from "./base/skill";
 import { GameState } from "./base/state";
 import { GeneralSkillArg, SkillExecutor } from "./skill_executor";
-import {
-  getActiveCharacterIndex,
-  getEntityArea,
-  getSkillMainDamageTarget,
-  Writable,
-} from "./utils";
+import { getActiveCharacterIndex, getEntityArea, Writable } from "./utils";
 import { GiTcgPreviewAbortedError, StateMutator } from "./mutator";
 import {
   ExposedMutation,
   FlattenOneof,
+  PbCharacterState,
   PreviewData,
   unFlattenOneof,
 } from "@gi-tcg/typings";
@@ -78,7 +75,10 @@ class PreviewContext {
     this.mutator.mutate(mutation);
   }
 
-  async previewSkill(skillInfo: SkillInfo, arg: GeneralSkillArg) {
+  async previewSkill(
+    skillInfo: InitiativeSkillInfo,
+    arg: InitiativeSkillEventArg,
+  ) {
     if (this.stopped) {
       return;
     }
@@ -105,6 +105,14 @@ class PreviewContext {
         this.stopped = true;
       } else {
         throw e;
+      }
+    }
+  }
+
+  getMainDamageTargetId(): number | undefined {
+    for (const em of this.exposedMutations) {
+      if (em.$case === "damage" && em.isSkillMainDamage) {
+        return em.targetId;
       }
     }
   }
@@ -191,7 +199,7 @@ class PreviewContext {
  * - 对 actionInfo 应用 modifyAction
  * - 判断角色技能的主要伤害目标
  * - 判断使用手牌是否会被无效化
- * - 附属预览状态
+ * - 附属预览结果
  */
 export class ActionPreviewer {
   constructor(
@@ -234,16 +242,12 @@ export class ActionPreviewer {
         const skillArg: InitiativeSkillEventArg = {
           targets: newActionInfo.targets,
         };
-        newActionInfo.mainDamageTarget = getSkillMainDamageTarget(
-          ctx.state,
-          skillInfo,
-          skillArg,
-        );
         await ctx.previewSkill(skillInfo, skillArg);
         await ctx.previewEvent(
           "onUseSkill",
           new UseSkillEventArg(ctx.state, callerArea, newActionInfo.skill),
         );
+        newActionInfo.mainDamageTargetId = ctx.getMainDamageTargetId();
         break;
       }
       case "playCard": {

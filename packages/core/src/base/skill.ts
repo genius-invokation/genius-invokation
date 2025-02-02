@@ -66,13 +66,23 @@ export interface SkillDefinitionBase<Arg> {
   readonly usagePerRoundVariableName: UsagePerRoundVariableNames | null;
 }
 
-export type SkillResult = readonly [GameState, EventAndRequest[]];
+export type SkillResult = {
+  readonly emittedEvents: readonly EventAndRequest[];
+  readonly mainDamage: DamageInfo | null;
+}
+
+export const EMPTY_SKILL_RESULT: SkillResult = {
+  emittedEvents: [],
+  mainDamage: null,
+};
+
+export type SkillDescriptionReturn = readonly [GameState, SkillResult];
 
 export type SkillDescription<Arg> = (
   state: GameState,
   skillInfo: SkillInfo,
   arg: Arg,
-) => SkillResult;
+) => SkillDescriptionReturn;
 
 export type CommonSkillType = "normal" | "elemental" | "burst" | "technique";
 export type SkillType = CommonSkillType | "playCard";
@@ -173,6 +183,7 @@ export interface DamageInfo {
   readonly source: AnyState;
   readonly via: SkillInfo;
   readonly target: CharacterState;
+  readonly isSkillMainDamage: boolean;
   readonly causeDefeated: boolean;
   readonly fromReaction: Reaction | null;
   readonly log?: string;
@@ -210,7 +221,7 @@ export interface UseSkillInfo {
   readonly who: 0 | 1;
   readonly skill: InitiativeSkillInfo;
   readonly targets: AnyState[];
-  readonly mainDamageTarget: CharacterState | null;
+  readonly mainDamageTargetId?: number;
 }
 
 export interface PlayCardInfo {

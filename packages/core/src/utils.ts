@@ -54,6 +54,7 @@ import {
   GiTcgCoreInternalEntityNotFoundError,
   GiTcgCoreInternalError,
 } from "./error";
+import { GeneralSkillArg } from "./skill_executor";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -357,30 +358,6 @@ export function isSkillDisabled(character: CharacterState): boolean {
   return character.entities.some((st) =>
     st.definition.tags.includes("disableSkill"),
   );
-}
-
-/** 主动技能的主要伤害目标，姑且确定为首个非穿透伤害的目标 */
-export function getSkillMainDamageTarget(
-  state: GameState,
-  skillInfo: SkillInfo,
-  arg: InitiativeSkillEventArg,
-): CharacterState | null {
-  const [newState, events] = (0,
-  (skillInfo.definition as InitiativeSkillDefinition).action)(
-    state,
-    skillInfo,
-    arg,
-  );
-  for (const [type, arg] of events) {
-    if (
-      type === "onDamageOrHeal" &&
-      arg.isDamageTypeDamage() &&
-      arg.type !== DamageType.Piercing
-    ) {
-      return arg.target;
-    }
-  }
-  return null;
 }
 
 export function playSkillOfCard(

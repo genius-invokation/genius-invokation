@@ -18,12 +18,14 @@ import {
   DamageOrHealEventArg,
   defineSkillInfo,
   DisposeEventArg,
+  EMPTY_SKILL_RESULT,
   Event,
   EventAndRequest,
   EventArg,
   HealInfo,
   InitiativeSkillEventArg,
   SkillInfo,
+  SkillResult,
   SwitchActiveEventArg,
   TriggeredSkillDefinition,
   UseSkillEventArg,
@@ -65,53 +67,6 @@ export class SkillExecutor {
   }
 
   /**
-   * 对技能返回的事件列表预处理。
-   * - 将重复目标的“伤害事件”合并。
-   * @param events
-   */
-  private static preprocessEventList(events: EventAndRequest[]) {
-    const result: EventAndRequest[] = [];
-    const damageEventIndexInResultBasedOnTarget = new Map<number, number>();
-    for (const event of events) {
-      const [name, arg] = event;
-      if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
-        const previousIndex = damageEventIndexInResultBasedOnTarget.get(
-          arg.target.id,
-        );
-        if (previousIndex) {
-          // combine current event with previous event
-          const previousArg = result[
-            previousIndex
-          ][1] as DamageOrHealEventArg<DamageInfo>;
-          const combinedDamageInfo: DamageInfo = {
-            ...previousArg.damageInfo,
-            value: previousArg.damageInfo.value + arg.damageInfo.value,
-            causeDefeated:
-              previousArg.damageInfo.causeDefeated ||
-              arg.damageInfo.causeDefeated,
-            fromReaction:
-              previousArg.damageInfo.fromReaction ||
-              arg.damageInfo.fromReaction,
-          };
-          result[previousIndex][1] = new DamageOrHealEventArg(
-            previousArg.onTimeState,
-            combinedDamageInfo,
-          );
-        } else {
-          damageEventIndexInResultBasedOnTarget.set(
-            arg.target.id,
-            result.length,
-          );
-          result.push(event);
-        }
-      } else {
-        result.push(event);
-      }
-    }
-    return result;
-  }
-
-  /**
    * 执行并应用技能效果，返回执行过程中触发的事件列表
    * @param skillInfo
    * @param arg
@@ -120,9 +75,9 @@ export class SkillExecutor {
   private executeSkill(
     skillInfo: SkillInfo,
     arg: GeneralSkillArg,
-  ): EventAndRequest[] {
+  ): SkillResult {
     if (this.state.phase === "gameEnd") {
-      return [];
+      return EMPTY_SKILL_RESULT;
     }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
@@ -136,16 +91,6 @@ export class SkillExecutor {
     );
     const skillDef = skillInfo.definition;
 
-    // const preExposedMutations: ExposedMutation[] = [];
-    // if (
-    //   skillInfo.caller.definition.skills.find((sk) => sk.id === skillDef.id)
-    // ) {
-    //   preExposedMutations.push({
-    //     $case: "triggered",
-    //     entityId: skillInfo.caller.id,
-    //     entityDefinitionId: skillInfo.caller.definition.id,
-    //   });
-    // }
     this.mutator.notify({
       mutations: [
         {
@@ -158,7 +103,7 @@ export class SkillExecutor {
       ],
     });
 
-    const [newState, eventList] = (0, skillDef.action)(
+    const [newState, result] = (0, skillDef.action)(
       this.state,
       {
         ...skillInfo,
@@ -168,7 +113,7 @@ export class SkillExecutor {
       arg as any,
     );
     this.mutator.resetState(newState);
-    return SkillExecutor.preprocessEventList(eventList);
+    return result;
   }
 
   async finalizeSkill(
@@ -178,7 +123,7 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return;
     }
-    const eventList = this.executeSkill(skillInfo, arg);
+    const { emittedEvents } = this.executeSkill(skillInfo, arg);
     await this.mutator.notifyAndPause();
 
     const nonDamageEvents: EventAndRequest[] = [];
@@ -187,7 +132,7 @@ export class SkillExecutor {
 
     const failedPlayers = new Set<0 | 1>();
 
-    for (const event of eventList) {
+    for (const event of emittedEvents) {
       const [name, arg] = event;
       if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
         if (arg.damageInfo.causeDefeated) {
@@ -328,6 +273,7 @@ export class SkillExecutor {
               sourceDefinitionId: healInfo.source.definition.id,
               targetId: healInfo.target.id,
               targetDefinitionId: healInfo.target.definition.id,
+              isSkillMainDamage: false,
             },
           ],
         });
@@ -479,10 +425,10 @@ export class SkillExecutor {
    * @param event
    * @returns
    */
-  private handleEventShallow(event: Event) {
+  private handleEventShallow(event: Event): EventAndRequest[] {
     const [name, arg] = event;
     const callerAndSkills = this.broadcastEvent(event);
-    const emittedEvents: EventAndRequest[] = [];
+    const result: EventAndRequest[] = [];
     for (const { caller, skill } of callerAndSkills) {
       const skillInfo = defineSkillInfo({
         caller,
@@ -492,9 +438,10 @@ export class SkillExecutor {
         continue;
       }
       arg._currentSkillInfo = skillInfo;
-      emittedEvents.push(...this.executeSkill(skillInfo, arg));
+      const { emittedEvents } = this.executeSkill(skillInfo, arg);
+      result.push(...emittedEvents);
     }
-    return emittedEvents;
+    return result;
   }
 
   /**

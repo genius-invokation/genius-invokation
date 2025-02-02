@@ -937,7 +937,6 @@ export class Game {
             targets: arg.targets,
             fast: false,
             cost: skill.initiativeSkillConfig.requiredCost,
-            mainDamageTarget: null,
           };
           result.push(actionInfo);
         }

@@ -31,7 +31,7 @@ import {
   ModifyAction2EventArg,
   ModifyAction3EventArg,
   DamageInfo,
-  SkillResult,
+  SkillDescriptionReturn,
   InitiativeSkillDefinition,
   InitiativeSkillEventArg,
   InitiativeSkillTargetGetter,
@@ -621,7 +621,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
       state: GameState,
       skillInfo: SkillInfo,
       arg: Arg,
-    ): SkillResult {
+    ): SkillDescriptionReturn {
       const ctx = new SkillContext<WritableMetaOf<Meta>>(
         state,
         wrapSkillInfoWithExt(skillInfo, extId),
@@ -630,8 +630,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
       for (const op of operation) {
         op(ctx as any, ctx.eventArg);
       }
-      ctx._terminate();
-      return [ctx.state, ctx.events] as const;
+      return ctx._terminate();
     };
   }
 

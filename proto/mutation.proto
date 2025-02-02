@@ -154,6 +154,7 @@ message DamageEM {
   int32 target_definition_id = 4;
   sint32 source_id = 5;
   int32 source_definition_id = 6;
+  bool is_skill_main_damage = 7;
 }
 
 message ElementalReactionEM {

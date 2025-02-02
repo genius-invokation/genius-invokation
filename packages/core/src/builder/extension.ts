@@ -60,7 +60,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
         WritableMetaOf<ExtensionBuilderMeta<ExtStateType, E>>
       >(state, wrapSkillInfoWithExt(skillInfo, extId), arg);
       ctx.setExtensionState((st) => operation(st, arg, state));
-      return [ctx.state, ctx.events] as const;
+      return ctx._terminate();
     };
     const def: TriggeredSkillDefinition = {
       type: "skill",

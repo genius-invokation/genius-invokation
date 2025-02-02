@@ -507,7 +507,7 @@ export function exposeAction(action: ActionInfo): Action {
           value: {
             skillDefinitionId: action.skill.definition.id,
             targetIds: action.targets.map((t) => t.id),
-            mainDamageTargetId: action.mainDamageTarget?.id,
+            mainDamageTargetId: action.mainDamageTargetId,
           },
         },
         requiredCost: exposeDiceRequirement(action.cost),

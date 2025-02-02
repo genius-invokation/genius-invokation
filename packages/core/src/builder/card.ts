@@ -29,6 +29,7 @@ import {
 } from "../base/entity";
 import {
   DisposeOrTuneCardEventArg,
+  EMPTY_SKILL_RESULT,
   HandCardInsertedEventArg,
   InitiativeSkillDefinition,
   InitiativeSkillEventArg,
@@ -486,7 +487,7 @@ export class CardBuilder<
           getTarget: () => [],
         },
         filter: () => false,
-        action: (st) => [st, []],
+        action: (st) => [st, EMPTY_SKILL_RESULT],
         usagePerRoundVariableName: null,
       };
       skills.push(skillDef, drawSkillDef);
