@@ -505,7 +505,7 @@ export function exposeAction(action: ActionInfo): Action {
         action: {
           $case: "useSkill",
           value: {
-            skillId: action.skill.definition.id,
+            skillDefinitionId: action.skill.definition.id,
             targetIds: action.targets.map((t) => t.id),
             mainDamageTargetId: action.mainDamageTarget?.id,
           },
@@ -520,6 +520,7 @@ export function exposeAction(action: ActionInfo): Action {
           $case: "playCard",
           value: {
             cardId: action.skill.caller.id,
+            cardDefinitionId: action.skill.caller.definition.id,
             targetIds: action.targets.map((t) => t.id),
             willBeEffectless: action.willBeEffectless,
           },
@@ -534,6 +535,7 @@ export function exposeAction(action: ActionInfo): Action {
           $case: "switchActive",
           value: {
             characterId: action.to.id,
+            characterDefinitionId: action.to.definition.id,
           },
         },
         requiredCost: exposeDiceRequirement(action.cost),

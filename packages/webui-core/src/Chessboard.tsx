@@ -205,7 +205,7 @@ function buildClickableTransferState(
   cardAction: ClickableActionWithIndex[],
 ): Map<number, DiceAndSelectionState> {
   const grouped = groupBy(cardAction, (v) =>
-    "skillId" in v ? v.skillId : v.cardId,
+    "skillDefinitionId" in v ? v.skillDefinitionId : v.cardId,
   );
   const result = new Map<number, DiceAndSelectionState>();
   for (const [k, v] of grouped) {
@@ -381,7 +381,7 @@ export function createPlayer(
             index: i,
             requiredCost: actionObj.requiredCost,
           });
-          newAllCosts[action.skillId] = actionObj.requiredCost;
+          newAllCosts[action.skillDefinitionId] = actionObj.requiredCost;
         } else if (action.$case === "playCard") {
           const energyReq = actionObj.requiredCost.find(
             ({ type }) => type === 9 /* energy */,

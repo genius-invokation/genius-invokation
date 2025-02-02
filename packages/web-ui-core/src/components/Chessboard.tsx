@@ -19,7 +19,7 @@ import type {
   PbGameState,
 } from "@gi-tcg/typings";
 import {
-  AnimatedCardUiState,
+  CardAnimation,
   Card,
   type CardProps,
   type CardTransform,
@@ -65,6 +65,7 @@ interface DraggingCardInfo {
 export interface CharacterInfo {
   id: number;
   data: PbCharacterState;
+  active: boolean;
   x: number;
   y: number;
   z: number;
@@ -246,58 +247,68 @@ export function Chessboard(props: ChessboardProps) {
         draggingHand,
       });
       const showingCards = Map.groupBy(animatingCards, (x) => x.delay);
-      for (const animatingCard of animatingCards) {
-        const start = previousCards.find(
-          (card) => card.id === animatingCard.data.id,
-        );
-        const startTransform = start
-          ? (start.uiState as StaticCardUiState).transform
-          : null;
-
-        const endIndex = currentCards.findIndex(
-          (card) => card.id === animatingCard.data.id,
-        );
-        let endTransform: CardTransform | null = null;
-        if (endIndex !== -1) {
-          endTransform = (currentCards[endIndex].uiState as StaticCardUiState)
-            .transform;
-          currentCards.splice(endIndex, 1);
-        }
-
-        const currentShowingCards = showingCards
-          .get(animatingCard.delay)!
+      let totalDelayMs = 0;
+      for (const d of showingCards
+        .keys()
+        .toArray()
+        .toSorted((a, b) => a - b)) {
+        const currentAnimatingCards = showingCards.get(d)!;
+        const currentShowingCards = currentAnimatingCards
           .filter((card) => card.data.definitionId !== 0)
           .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
-        const index = currentShowingCards.indexOf(animatingCard);
-        const [x, y] = getShowingCardPos(
-          size,
-          currentShowingCards.length,
-          index,
-        );
-        const middleTransform: CardTransform = {
-          x,
-          y,
-          z: 20,
-          // zIndex: 100,
-          ry: 5,
-          rz: 0,
-        };
-        const hasMiddle = animatingCard.data.definitionId !== 0;
-        const animation = new AnimatedCardUiState({
-          start: startTransform,
-          middle: hasMiddle ? middleTransform : null,
-          end: endTransform,
-          delay: animatingCard.delay,
-        });
-        currentCards.push({
-          id: animatingCard.data.id,
-          data: animatingCard.data,
-          kind: "animating",
-          uiState: animation,
-          enableShadow: true,
-          enableTransition: false,
-        });
-        animationPromises.push(animation.resolvers.promise);
+        let currentDurationMs = 0;
+        for (const animatingCard of currentAnimatingCards) {
+          const start = previousCards.find(
+            (card) => card.id === animatingCard.data.id,
+          );
+          const startTransform = start
+            ? (start.uiState as StaticCardUiState).transform
+            : null;
+
+          const endIndex = currentCards.findIndex(
+            (card) => card.id === animatingCard.data.id,
+          );
+          let endTransform: CardTransform | null = null;
+          if (endIndex !== -1) {
+            endTransform = (currentCards[endIndex].uiState as StaticCardUiState)
+              .transform;
+            currentCards.splice(endIndex, 1);
+          }
+          let middleTransform: CardTransform | null = null;
+          const index = currentShowingCards.indexOf(animatingCard);
+          const hasMiddle = index !== -1;
+          if (hasMiddle) {
+            const [x, y] = getShowingCardPos(
+              size,
+              currentShowingCards.length,
+              index,
+            );
+            middleTransform = {
+              x,
+              y,
+              z: 20,
+              ry: 5,
+              rz: 0,
+            };
+          }
+          const animation = new CardAnimation({
+            start: startTransform,
+            middle: hasMiddle ? middleTransform : null,
+            end: endTransform,
+            delayMs: totalDelayMs,
+          });
+          currentDurationMs = Math.max(currentDurationMs, animation.duration);
+          currentCards.push({
+            id: animatingCard.data.id,
+            data: animatingCard.data,
+            kind: "animating",
+            uiState: animation,
+            enableShadow: true,
+            enableTransition: false,
+          });
+          animationPromises.push(animation.resolvers.promise);
+        }
+        totalDelayMs += currentDurationMs;
       }
       Promise.all(animationPromises).then(() => {
         onAnimationFinish?.();
@@ -319,11 +330,19 @@ export function Chessboard(props: ChessboardProps) {
       const totalCharacterCount = player.character.length;
       for (let i = 0; i < totalCharacterCount; i++) {
         const ch = player.character[i];
-        const [x, y] = getCharacterAreaPos(size, opp, totalCharacterCount, i);
+        const isActive = player.activeCharacterId === ch.id;
+        const [x, y] = getCharacterAreaPos(
+          size,
+          opp,
+          totalCharacterCount,
+          i,
+          isActive,
+        );
 
         characters.push({
           id: ch.id,
           data: ch,
+          active: isActive,
           x,
           y,
           z: 0,

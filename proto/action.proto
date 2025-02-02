@@ -17,30 +17,19 @@ syntax = "proto3";
 option csharp_namespace = "GiTcg.Proto";
 
 import "enums.proto";
-import "preview.proto";
-
-message Action {
-  oneof action {
-    SwitchActiveAction switch_active = 1;
-    PlayCardAction play_card = 2;
-    UseSkillAction use_skill = 3;
-    ElementalTuningAction elemental_tuning = 4;
-    DeclareEndAction declare_end = 5;
-  }
-  repeated PreviewData preview = 10;
-  repeated DiceRequirement required_cost = 11;
-}
 
 // 切换出战角色
 message SwitchActiveAction {
   // 出站角色 id
   sint32 character_id = 2;
+  uint32 character_definition_id = 3;
 }
 
 // 打出手牌
 message PlayCardAction {
   // 手牌 id
   sint32 card_id = 2;
+  uint32 card_definition_id = 5;
   // 打出手牌目标 id 列表
   repeated sint32 target_ids = 3;
   bool will_be_effectless = 4;
@@ -49,7 +38,7 @@ message PlayCardAction {
 // 使用技能
 message UseSkillAction {
   // 技能定义 id
-  int32 skill_id = 2;
+  int32 skill_definition_id = 2;
   // 使用技能目标 id 列表
   repeated sint32 target_ids = 3;
   optional sint32 main_damage_target_id = 4;

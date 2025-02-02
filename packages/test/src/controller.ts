@@ -121,7 +121,7 @@ class IoController {
       const actions = this.listAvailableActions();
       const chosenActionIndex = actions.findIndex(({ action }) => {
         if (action?.$case !== "useSkill") return false;
-        if (action.value.skillId !== id) return false;
+        if (action.value.skillDefinitionId !== id) return false;
         if (action.value.targetIds.length !== targets.length) return false;
         return action.value.targetIds.every((t, i) => t === targets[i].id);
       });

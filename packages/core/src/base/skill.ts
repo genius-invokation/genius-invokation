@@ -20,6 +20,7 @@ import {
   PreviewData,
   ReadonlyDiceRequirement,
   DiceRequirement,
+  ExposedMutation,
 } from "@gi-tcg/typings";
 import {
   AnyState,
@@ -124,6 +125,11 @@ export interface SkillInfo {
    * 是否是预览中。部分技能会因是否为预览而采取不同的效果。
    */
   readonly isPreview: boolean;
+  /**
+   * 在结算技能前，需要暴露的 mutations。
+   * 用于打出主动技能、手牌；标记实体被触发等。
+   */
+  readonly preExposedMutations: ExposedMutation[];
   /** @internal SkillContext 内部的 StateMutator 的配置 */
   readonly mutatorConfig?: MutatorConfig;
 }
@@ -154,6 +160,7 @@ export function defineSkillInfo(init: InitSkillInfo): SkillInfo {
     charged: false,
     plunging: false,
     isPreview: false,
+    preExposedMutations: [],
     ...init,
   };
 }

@@ -57,13 +57,18 @@ export function getCharacterAreaPos(
   opp: boolean,
   totalCount: number,
   index: number,
+  isActive: boolean,
 ): Pos {
   const halfHeight = height / 2;
   const gapAroundCharacterArea =
     (halfHeight - CHARACTER_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
-  const characterAreaY = opp
+  let characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
     : halfHeight + gapAroundCharacterArea;
+
+  if (isActive === opp) {
+    characterAreaY += GADGET_HEIGHT;
+  }
 
   const halfWidth = width / 2;
   const totalCharacterAreaWidth =

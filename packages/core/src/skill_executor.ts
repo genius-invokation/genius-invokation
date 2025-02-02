@@ -136,18 +136,18 @@ export class SkillExecutor {
     );
     const skillDef = skillInfo.definition;
 
-    const preExposedMutations: ExposedMutation[] = [];
-    if (
-      skillInfo.caller.definition.skills.find((sk) => sk.id === skillDef.id)
-    ) {
-      preExposedMutations.push({
-        $case: "triggered",
-        entityId: skillInfo.caller.id,
-        entityDefinitionId: skillInfo.caller.definition.id,
-      });
-    }
+    // const preExposedMutations: ExposedMutation[] = [];
+    // if (
+    //   skillInfo.caller.definition.skills.find((sk) => sk.id === skillDef.id)
+    // ) {
+    //   preExposedMutations.push({
+    //     $case: "triggered",
+    //     entityId: skillInfo.caller.id,
+    //     entityDefinitionId: skillInfo.caller.definition.id,
+    //   });
+    // }
     this.mutator.notify({
-      mutations: preExposedMutations,
+      mutations: skillInfo.preExposedMutations,
     });
 
     const [newState, eventList] = (0, skillDef.action)(
@@ -603,6 +603,13 @@ export class SkillExecutor {
           const skillInfo = defineSkillInfo({
             caller,
             definition: skill,
+            preExposedMutations: [
+              {
+                $case: "triggered",
+                entityId: caller.id,
+                entityDefinitionId: caller.definition.id,
+              },
+            ],
           });
           if (!(0, skill.filter)(this.state, skillInfo, arg)) {
             continue;

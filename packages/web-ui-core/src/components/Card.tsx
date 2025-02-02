@@ -40,7 +40,7 @@ export type StaticCardUiState = {
   type: "static";
   transform: CardTransform;
 };
-export type IAnimatedCardUiState = {
+export type AnimatedCardUiState = {
   type: "animation";
   /**
    * 动画开始时牌的位置；应当从上一个对局状态中查找到
@@ -65,26 +65,30 @@ export interface AnimatedCardUiStateInit {
   start: CardTransform | null;
   middle: CardTransform | null;
   end: CardTransform | null;
-  delay: number;
+  delayMs: number;
 }
 
-export class AnimatedCardUiState implements IAnimatedCardUiState {
-  private static readonly ANIMATION_DURATION = 900;
+export class CardAnimation implements AnimatedCardUiState {
+  private static readonly ANIMATION_DURATION_HAS_MIDDLE = 900;
+  private static readonly ANIMATION_DURATION_NO_MIDDLE = 500;
 
   readonly type = "animation";
   readonly start: CardTransform | null;
   readonly middle: CardTransform | null;
   readonly end: CardTransform | null;
   readonly delay: number;
-  readonly duration = AnimatedCardUiState.ANIMATION_DURATION;
+  readonly duration: number;
 
   readonly resolvers = Promise.withResolvers<void>();
 
-  constructor({ start, middle, end, delay }: AnimatedCardUiStateInit) {
-    this.start = start;
-    this.middle = middle;
-    this.end = end;
-    this.delay = delay * AnimatedCardUiState.ANIMATION_DURATION;
+  constructor(init: AnimatedCardUiStateInit) {
+    this.start = init.start;
+    this.middle = init.middle;
+    this.end = init.end;
+    this.duration = init.middle
+      ? CardAnimation.ANIMATION_DURATION_HAS_MIDDLE
+      : CardAnimation.ANIMATION_DURATION_NO_MIDDLE;
+    this.delay = init.delayMs;
   }
 
   onFinish() {
@@ -93,7 +97,7 @@ export class AnimatedCardUiState implements IAnimatedCardUiState {
   }
 }
 
-export type CardUiState = StaticCardUiState | IAnimatedCardUiState;
+export type CardUiState = StaticCardUiState | AnimatedCardUiState;
 
 const cssProperty = (x: CardTransform): Record<string, string> => ({
   // "z-index": `${x.zIndex}`,
@@ -115,7 +119,7 @@ export interface CardProps {
   onPointerDown?: (e: PointerEvent, currentTarget: HTMLElement) => void;
 }
 
-const transformKeyframes = (uiState: IAnimatedCardUiState): Keyframe[] => {
+const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
   const fallbackStyle = cssProperty(middle ?? end ?? start!);
   const startKeyframe: Keyframe = {
@@ -134,18 +138,33 @@ const transformKeyframes = (uiState: IAnimatedCardUiState): Keyframe[] => {
         },
       ]
     : [];
-  const endKeyframe: Keyframe = {
-    offset: 1,
-    ...(end ? cssProperty(end) : fallbackStyle),
-  };
-  return [startKeyframe, ...middleKeyframes, endKeyframe];
+  const endKeyframe: Keyframe[] = end
+    ? [
+        {
+          offset: 1,
+          ...cssProperty(end),
+        },
+      ]
+    : [
+        {
+          offset: 0.99,
+          ...fallbackStyle,
+          visibility: "visible",
+        },
+        {
+          offset: 1,
+          ...fallbackStyle,
+          visibility: "hidden",
+        },
+      ];
+  return [startKeyframe, ...middleKeyframes, ...endKeyframe];
 };
 
 /**
  * The opacity keyframes must be applied to a non-3d rendering context.
  * In our case, apply to the card's children.
  */
-const opacityKeyframes = (uiState: IAnimatedCardUiState): Keyframe[] => {
+const opacityKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
   const startKeyframe: Keyframe = {
     offset: 0,

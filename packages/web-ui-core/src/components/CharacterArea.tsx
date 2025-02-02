@@ -88,7 +88,7 @@ export function CharacterArea(props: CharacterAreaProps) {
     props.data.entity.filter((et) => et.equipment === 0 /* other */);
   return (
     <div
-      class="absolute flex flex-col items-center"
+      class="absolute flex flex-col items-center transition-transform"
       style={{
         "z-index": `${props.zIndex}`,
         transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${

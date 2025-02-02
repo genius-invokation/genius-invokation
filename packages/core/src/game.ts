@@ -21,7 +21,6 @@ import {
   RpcRequest,
   RpcResponse,
   DiceRequirement,
-  PbActionType,
   PbPlayerStatus,
   RpcRequestPayloadOf,
   RpcResponsePayloadOf,
@@ -713,14 +712,14 @@ export class Game {
         case "useSkill": {
           this.mutator.notify({
             mutations: [
-              {
-                $case: "actionDone",
-                who,
-                actionType: PbActionType.PLAY_CARD,
-                characterOrCardId: actionInfo.skill.caller.id,
-                characterDefinitionId: actionInfo.skill.caller.definition.id,
-                skillOrCardDefinitionId: actionInfo.skill.definition.id,
-              },
+              // {
+              //   $case: "actionDone",
+              //   who,
+              //   actionType: PbActionType.PLAY_CARD,
+              //   characterOrCardId: actionInfo.skill.caller.id,
+              //   characterDefinitionId: actionInfo.skill.caller.definition.id,
+              //   skillOrCardDefinitionId: actionInfo.skill.definition.id,
+              // },
             ],
           });
           const callerArea = getEntityArea(this.state, activeCh().id);
@@ -741,13 +740,13 @@ export class Game {
           const card = actionInfo.skill.caller;
           this.mutator.notify({
             mutations: [
-              {
-                $case: "actionDone",
-                who,
-                actionType: PbActionType.PLAY_CARD,
-                characterOrCardId: card.id,
-                skillOrCardDefinitionId: card.definition.id,
-              },
+              // {
+              //   $case: "actionDone",
+              //   who,
+              //   actionType: PbActionType.PLAY_CARD,
+              //   characterOrCardId: card.id,
+              //   skillOrCardDefinitionId: card.definition.id,
+              // },
             ],
           });
           if (card.definition.tags.includes("legend")) {
@@ -825,11 +824,11 @@ export class Game {
         case "declareEnd": {
           this.mutator.notify({
             mutations: [
-              {
-                $case: "actionDone",
-                who,
-                actionType: PbActionType.DECLARE_END,
-              },
+              // {
+              //   $case: "actionDone",
+              //   who,
+              //   actionType: PbActionType.DECLARE_END,
+              // },
             ],
           });
           this.mutate({

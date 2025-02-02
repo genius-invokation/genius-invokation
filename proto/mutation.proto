@@ -18,6 +18,7 @@ option csharp_namespace = "GiTcg.Proto";
 
 import "enums.proto";
 import "state.proto";
+import "action.proto";
 
 message ExposedMutation {
   oneof mutation {
@@ -162,26 +163,17 @@ message ElementalReactionEM {
   int32 character_definition_id = 4;
 }
 
-enum ActionType {
-  ACTION_TYPE_UNSPECIFIED = 0;
-  ACTION_TYPE_USE_SKILL = 1;
-  ACTION_TYPE_PLAY_CARD = 2;
-  ACTION_TYPE_SWITCH_ACTIVE = 3;
-  ACTION_TYPE_ELEMENTAL_TUNING = 4;
-  ACTION_TYPE_DECLARE_END = 5;
-}
-
 // 玩家选择了某行动
-// 适用于：使用技能、打出手牌和宣布结束
 message ActionDoneEM {
   int32 who = 1;
-  ActionType action_type = 2;
-  // If action_type == ACTION_PLAY_CARD or ACTION_USE_SKILL
-  optional sint32 character_or_card_id = 3;
-  // If action_type == ACTION_PLAY_CARD or ACTION_USE_SKILL
-  optional int32 skill_or_card_definition_id = 4;
-  // If action_type == ACTION_USE_SKILL
-  optional int32 character_definition_id = 5;
+  reserved 2 to 5;
+  oneof action {
+    SwitchActiveAction switch_active = 6;
+    PlayCardAction play_card = 7;
+    UseSkillAction use_skill = 8;
+    ElementalTuningAction elemental_tuning = 9;
+    DeclareEndAction declare_end = 10;
+  }
 }
 
 // 某实体的被动技能被触发
@@ -190,7 +182,7 @@ message TriggeredEM {
   int32 entity_definition_id = 2;
 }
 
-// 玩家的当前 IO 状态 (WIP)
+// 玩家的当前 IO 状态
 enum PlayerStatus {
   PLAYER_STATUS_UNSPECIFIED = 0;
   PLAYER_STATUS_CHOOSING_ACTIVE = 1;
