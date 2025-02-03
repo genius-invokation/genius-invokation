@@ -527,12 +527,10 @@ export class SkillExecutor {
           plunging,
         });
         await this.finalizeSkill(skillInfo, { targets: [] });
-        if (!skillDef.initiativeSkillConfig.prepared) {
-          await this.handleEvent([
-            "onUseSkill",
-            new UseSkillEventArg(this.state, callerArea, skillInfo),
-          ]);
-        }
+        await this.handleEvent([
+          "onUseSkill",
+          new UseSkillEventArg(this.state, callerArea, skillInfo),
+        ]);
       } else if (name === "requestTriggerEndPhaseSkill") {
         using l = this.mutator.subLog(
           DetailLogType.Event,

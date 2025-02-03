@@ -62,6 +62,7 @@ import {
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  isCharacterInitiativeSkill,
   sortDice,
 } from "../../utils";
 import { executeQuery } from "../../query";
@@ -756,6 +757,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       const targetState = t.state;
       let isSkillMainDamage = false;
       if (
+        isCharacterInitiativeSkill(this.skillInfo) &&
         !this.fromReaction &&
         !this.mainDamage &&
         type !== DamageType.Piercing

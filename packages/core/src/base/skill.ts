@@ -53,10 +53,10 @@ import {
   diceCostSize,
   getEntityArea,
   getEntityById,
+  isCharacterInitiativeSkill,
   mixins,
   normalizeCost,
 } from "../utils";
-import { commonInitiativeSkillCheck } from "../builder/skill";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -69,7 +69,7 @@ export interface SkillDefinitionBase<Arg> {
 export type SkillResult = {
   readonly emittedEvents: readonly EventAndRequest[];
   readonly mainDamage: DamageInfo | null;
-}
+};
 
 export const EMPTY_SKILL_RESULT: SkillResult = {
   emittedEvents: [],
@@ -392,8 +392,8 @@ export class ActionEventArg<
     return this.action.type === "declareEnd";
   }
   /** 是角色主动技能（而非特技） */
-  isUseCommonSkill(): this is ActionEventArg<UseSkillInfo> {
-    return this.isUseSkill() && commonInitiativeSkillCheck(this.action.skill);
+  isUseCharacterSkill(): this is ActionEventArg<UseSkillInfo> {
+    return this.isUseSkill() && isCharacterInitiativeSkill(this.action.skill);
   }
   isUseTechnique(): this is ActionEventArg<UseSkillInfo> {
     return this.isSkillType("technique");
@@ -402,7 +402,7 @@ export class ActionEventArg<
     character: CharacterState,
     skillType?: CommonSkillType,
   ): boolean {
-    if (this.isUseCommonSkill()) {
+    if (this.isUseCharacterSkill()) {
       const skillDef = this.action.skill.definition;
       return (
         character.definition.skills.some((sk) => sk.id === skillDef.id) &&
@@ -1051,8 +1051,8 @@ export class ReactionEventArg extends CharacterEventArg {
   }
 
   /** 是否为“角色引发的” */
-  viaCommonInitiativeSkill() {
-    return commonInitiativeSkillCheck(this.reactionInfo.via);
+  viaCharacterSkill() {
+    return isCharacterInitiativeSkill(this.reactionInfo.via);
   }
 
   relatedTo(target: DamageType): boolean {

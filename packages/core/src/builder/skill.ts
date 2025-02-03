@@ -236,15 +236,6 @@ function defineDescriptor<E extends EventNames>(
  *
  * @param allowTechnique 是否允许特技
  */
-export function commonInitiativeSkillCheck(
-  skillInfo: SkillInfo,
-  allowTechnique = false,
-): boolean {
-  return (
-    isCharacterInitiativeSkill(skillInfo.definition, allowTechnique) &&
-    !skillInfo.definition.initiativeSkillConfig.prepared
-  );
-}
 
 function isDebuff(state: GameState, damageInfo: DamageInfo): boolean {
   return (
@@ -297,20 +288,20 @@ const detailedEventDictionary = {
   }),
   deductVoidDiceSkill: defineDescriptor("modifyAction0", (c, e, r) => {
     return (
-      e.isUseCommonSkill() &&
+      e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductVoidCost()
     );
   }),
   deductElementDiceSkill: defineDescriptor("modifyAction1", (c, e, r) => {
     return (
-      e.isUseCommonSkill() &&
+      e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r)
     );
   }),
   deductOmniDiceSkill: defineDescriptor("modifyAction2", (c, e, r) => {
     return (
-      e.isUseCommonSkill() &&
+      e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductCost()
     );
@@ -339,7 +330,7 @@ const detailedEventDictionary = {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via.definition) &&
+      isCharacterInitiativeSkill(e.via) &&
       e.damageInfo.fromReaction === null
     );
   }),
@@ -354,7 +345,7 @@ const detailedEventDictionary = {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via.definition) &&
+      isCharacterInitiativeSkill(e.via) &&
       e.damageInfo.fromReaction === null
     );
   }),
@@ -370,7 +361,7 @@ const detailedEventDictionary = {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via.definition) &&
+      isCharacterInitiativeSkill(e.via) &&
       !isDebuff(e.onTimeState, e.damageInfo)
     );
   }),
@@ -423,16 +414,11 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
-  // modifySkill: defineDescriptor("modifyUseSkill", (c, e, r) => {
-  //   return (
-  //     checkRelative(e.onTimeState, e.callerArea, r) &&
-  //     commonInitiativeSkillCheck(e.skill)
-  //   );
-  // }),
   useSkill: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
-      commonInitiativeSkillCheck(e.skill)
+      isCharacterInitiativeSkill(e.skill) &&
+      !e.skill.definition.initiativeSkillConfig.prepared
     );
   }),
   useTechinque: defineDescriptor("onUseSkill", (c, e, r) => {
@@ -444,7 +430,8 @@ const detailedEventDictionary = {
   useSkillOrTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
-      commonInitiativeSkillCheck(e.skill, true)
+      isCharacterInitiativeSkill(e.skill, true) &&
+      !e.skill.definition.initiativeSkillConfig.prepared
     );
   }),
   declareEnd: defineDescriptor("onAction", (c, e, r) => {
@@ -499,8 +486,7 @@ const detailedEventDictionary = {
   }),
   skillReaction: defineDescriptor("onReaction", (c, e, r) => {
     return (
-      checkRelative(e.onTimeState, e.caller.id, r) &&
-      e.viaCommonInitiativeSkill()
+      checkRelative(e.onTimeState, e.caller.id, r) && e.viaCharacterSkill()
     );
   }),
   enter: defineDescriptor("onEnter", (c, e, r) => {

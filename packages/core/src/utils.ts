@@ -44,6 +44,7 @@ import {
   EventNames,
   InitiativeSkillDefinition,
   InitiativeSkillEventArg,
+  InitiativeSkillInfo,
   SkillDefinition,
   SkillInfo,
   SkillType,
@@ -303,17 +304,18 @@ export function removeEntity(state: Draft<GameState>, id: number) {
   throw new GiTcgCoreInternalEntityNotFoundError(state, id);
 }
 
+/** 检查 `skill` 是否是角色主动技能 */
 export function isCharacterInitiativeSkill(
-  skillDef: SkillDefinition,
+  skill: SkillInfo,
   allowTechnique = false,
-): skillDef is InitiativeSkillDefinition {
+): skill is InitiativeSkillInfo {
   const allowSkillType: SkillType[] = ["normal", "elemental", "burst"];
   if (allowTechnique) {
     allowSkillType.push("technique");
   }
   return (
-    skillDef.triggerOn === "initiative" &&
-    allowSkillType.includes(skillDef.initiativeSkillConfig.skillType)
+    skill.definition.triggerOn === "initiative" &&
+    allowSkillType.includes(skill.definition.initiativeSkillConfig.skillType)
   );
 }
 
