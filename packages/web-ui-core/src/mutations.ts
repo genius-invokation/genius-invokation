@@ -15,13 +15,22 @@
 
 import {
   type CreateCardEM,
+  type DamageEM,
+  DamageType,
+  type ElementalReactionEM,
   PbCardArea,
-  PbCardState,
   type PbExposedMutation,
+  Reaction,
   type RemoveCardEM,
+  SkillUsedEM,
   type TransferCardEM,
 } from "@gi-tcg/typings";
-import type { AnimatingCardInfo } from "./components/Chessboard";
+import type {
+  AnimatingCardInfo,
+  DamageInfo,
+  NotificationBoxInfo,
+  ReactionInfo,
+} from "./components/Chessboard";
 
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
@@ -48,7 +57,14 @@ interface AnimatingCardWithDestination extends AnimatingCardInfo {
   destination: CardDestination | null;
 }
 
-export function parseMutations(mutations: PbExposedMutation[]) {
+export interface ParsedMutation {
+  animatingCards: AnimatingCardInfo[];
+  damages: DamageInfo[];
+  reactions: ReactionInfo[];
+  notificationBox: NotificationBoxInfo[];
+}
+
+export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
   // 如果新的卡牌动画的 from 和之前的进出方向相反，则新的卡牌动画延迟一刻
@@ -60,6 +76,14 @@ export function parseMutations(mutations: PbExposedMutation[]) {
       delay: number;
     }
   >();
+
+  const damagesByTarget = new Map<number, DamageInfo[]>();
+  const reactionsByTarget = new Map<number, ReactionInfo[]>();
+  const notificationBoxByWho: [NotificationBoxInfo[], NotificationBoxInfo[]] = [
+    [],
+    [],
+  ];
+
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
       case "createCard":
@@ -101,8 +125,55 @@ export function parseMutations(mutations: PbExposedMutation[]) {
             });
           }
         }
+        break;
+      }
+      case "elementalReaction": {
+        const targetId = mutation.value.characterId;
+        if (!reactionsByTarget.has(targetId)) {
+          reactionsByTarget.set(targetId, []);
+        }
+        const targetReactions = reactionsByTarget.get(targetId)!;
+        targetReactions.push({
+          reactionType: mutation.value.reactionType as Reaction,
+          targetId,
+          delay: targetReactions.length,
+        });
+        break;
+      }
+      case "damage": {
+        const targetId = mutation.value.targetId;
+        if (!damagesByTarget.has(targetId)) {
+          damagesByTarget.set(targetId, []);
+        }
+        const targetDamages = damagesByTarget.get(targetId)!;
+        targetDamages.push({
+          damageType: mutation.value.damageType as DamageType,
+          value: mutation.value.value,
+          sourceId: mutation.value.sourceId,
+          targetId,
+          isSkillMainDamage: mutation.value.isSkillMainDamage,
+          delay: targetDamages.length,
+        });
+        break;
+      }
+      case "skillUsed": {
+        const who = mutation.value.who as 0 | 1;
+        const delay = notificationBoxByWho[who].length;
+        notificationBoxByWho[who].push({
+          type: "useSkill",
+          who,
+          characterDefinitionId: mutation.value.callerDefinitionId,
+          skillDefinitionId: mutation.value.skillDefinitionId,
+          delay,
+        });
+        break;
       }
     }
   }
-  return { animatingCards };
+  return {
+    animatingCards,
+    damages: damagesByTarget.values().toArray().flat(),
+    reactions: reactionsByTarget.values().toArray().flat(),
+    notificationBox: notificationBoxByWho.flat(1),
+  };
 }

@@ -92,7 +92,6 @@ export class CardAnimation implements AnimatedCardUiState {
   }
 
   onFinish() {
-    console.log(this);
     this.resolvers.resolve();
   }
 }
@@ -207,11 +206,11 @@ export function Card(props: CardProps) {
     }
   });
 
-  createEffect(() => {
-    if (props.data.definitionId === 112131) {
-      console.log(props.uiState);
-    }
-  });
+  // createEffect(() => {
+  //   if (props.data.id === -500067) {
+  //     console.log({ ...props });
+  //   }
+  // });
 
   createEffect(() => {
     const uiState = props.uiState;

@@ -1,11 +1,17 @@
-import {
-  dispatchRpc,
+import type {
   PbGameState,
   PbPlayerState,
-  type RpcDispatcher,
+  SkillUsedEM,
+  RpcDispatcher,
 } from "@gi-tcg/typings";
 import { batch, createSignal, type ComponentProps, type JSX } from "solid-js";
-import { Chessboard, type AnimatingCardInfo } from "./components/Chessboard";
+import {
+  Chessboard,
+  type AnimatingCardInfo,
+  type DamageInfo,
+  type NotificationBoxInfo,
+  type ReactionInfo,
+} from "./components/Chessboard";
 import type { PlayerIO } from "@gi-tcg/core";
 import { AsyncQueue } from "./async_queue";
 import { parseMutations } from "./mutations";
@@ -53,6 +59,11 @@ export function createClient(who: 0 | 1): Client {
   const [animatingCards, setAnimatingCards] = createSignal<AnimatingCardInfo[]>(
     [],
   );
+  const [damages, setDamages] = createSignal<DamageInfo[]>([]);
+  const [reactions, setReactions] = createSignal<ReactionInfo[]>([]);
+  const [notificationBox, setNotificationBox] = createSignal<
+    NotificationBoxInfo[]
+  >([]);
   const [animationResolver, setAnimationResolver] = createSignal<() => void>();
 
   const uiQueue = new AsyncQueue();
@@ -68,19 +79,20 @@ export function createClient(who: 0 | 1): Client {
           savedState = state;
           return;
         }
-        const { animatingCards } = parseMutations(mutation);
-        // console.log(previousState, animatingCards, state);
+        const parsed = parseMutations(mutation);
         const { promise, resolve } = Promise.withResolvers<void>();
+        console.log(parsed);
         batch(() => {
           setPreviousState(savedState!);
           setState(state!);
-          setAnimatingCards(animatingCards);
+          setAnimatingCards(parsed.animatingCards);
+          setDamages(parsed.damages);
+          setReactions(parsed.reactions);
+          setNotificationBox(parsed.notificationBox);
           setAnimationResolver(() => resolve);
           savedState = state;
         });
-        if (animatingCards.length > 0) {
-          await promise;
-        }
+        await promise;
       });
     },
     rpc: () => {
@@ -90,10 +102,13 @@ export function createClient(who: 0 | 1): Client {
 
   const Wrapper = (props: ComponentProps<"div">) => (
     <Chessboard
-      who={1}
+      who={who}
       state={state()}
       previousState={previousState()}
       animatingCards={animatingCards()}
+      damages={damages()}
+      reactions={reactions()}
+      notificationBox={notificationBox()}
       onAnimationFinish={animationResolver()}
       class="h-0"
       {...props}

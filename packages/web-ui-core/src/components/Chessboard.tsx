@@ -14,14 +14,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type {
+  DamageType,
   PbCardState,
   PbCharacterState,
   PbGameState,
+  
+  Reaction,
+  SkillUsedEM,
 } from "@gi-tcg/typings";
 import {
   CardAnimation,
   Card,
-  type CardProps,
   type CardTransform,
   type CardUiState,
   type StaticCardUiState,
@@ -34,7 +37,6 @@ import {
   splitProps,
   type ComponentProps,
 } from "solid-js";
-import { flip } from "@gi-tcg/utils";
 import { Key } from "@solid-primitives/keyed";
 import {
   DRAGGING_Z,
@@ -85,12 +87,38 @@ export interface AnimatingCardInfo {
   delay: number;
 }
 
+export interface DamageInfo {
+  damageType: DamageType;
+  value: number;
+  sourceId: number;
+  targetId: number;
+  isSkillMainDamage: boolean;
+  delay: number;
+}
+
+export interface ReactionInfo {
+  reactionType: Reaction;
+  targetId: number;
+  delay: number;
+}
+
+export interface NotificationBoxInfo {
+  type: "useSkill" | "switchActive";
+  who: 0 | 1;
+  delay: number;
+  characterDefinitionId: number;
+  skillDefinitionId: number | "overload";
+}
+
 export interface ChessboardProps extends ComponentProps<"div"> {
+  who: 0 | 1;
   /** 保存上一个状态以计算动画效果 */
   previousState: PbGameState;
   state: PbGameState;
   animatingCards: AnimatingCardInfo[];
-  who: 0 | 1;
+  damages: DamageInfo[];
+  reactions: ReactionInfo[];
+  notificationBox: NotificationBoxInfo[];
   onAnimationFinish?: () => void;
 }
 
@@ -205,10 +233,13 @@ function calcCardsInfo(
 
 export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, [
+    "who",
     "previousState",
     "state",
     "animatingCards",
-    "who",
+    "damages",
+    "reactions",
+    "notificationBox",
     "onAnimationFinish",
     "class",
   ]);
