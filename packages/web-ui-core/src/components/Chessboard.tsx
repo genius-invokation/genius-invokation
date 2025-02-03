@@ -17,10 +17,9 @@ import type {
   DamageType,
   PbCardState,
   PbCharacterState,
+  PbEntityState,
   PbGameState,
-  
   Reaction,
-  SkillUsedEM,
 } from "@gi-tcg/typings";
 import {
   CardAnimation,
@@ -52,7 +51,11 @@ import {
   type Pos,
   type Size,
 } from "../layout";
-import { CharacterArea } from "./CharacterArea";
+import {
+  CHARACTER_ANIMATION_NONE,
+  CharacterArea,
+  type CharacterAnimation,
+} from "./CharacterArea";
 
 export interface CardInfo {
   id: number;
@@ -74,12 +77,12 @@ interface DraggingCardInfo {
 export interface CharacterInfo {
   id: number;
   data: PbCharacterState;
+  combatStatus: PbEntityState[];
   active: boolean;
   x: number;
   y: number;
   z: number;
-  zIndex: number;
-  rz: number;
+  animation: CharacterAnimation;
 }
 
 export interface AnimatingCardInfo {
@@ -371,6 +374,7 @@ export function Chessboard(props: ChessboardProps) {
     for (const who of [0, 1] as const) {
       const player = localProps.state.player[who];
       const opp = who !== localProps.who;
+      const combatStatus = player.combatStatus;
 
       const totalCharacterCount = player.character.length;
       for (let i = 0; i < totalCharacterCount; i++) {
@@ -388,11 +392,11 @@ export function Chessboard(props: ChessboardProps) {
           id: ch.id,
           data: ch,
           active: isActive,
+          combatStatus: isActive ? combatStatus : [],
           x,
           y,
           z: 0,
-          zIndex: 0,
-          rz: 0,
+          animation: CHARACTER_ANIMATION_NONE, // TODO
         });
       }
     }

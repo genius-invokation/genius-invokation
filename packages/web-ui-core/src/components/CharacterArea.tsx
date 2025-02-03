@@ -13,23 +13,43 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, type PbCharacterState } from "@gi-tcg/typings";
+import {
+  DamageType,
+  PbEntityState,
+  type PbCharacterState,
+} from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import { For, Index, Show } from "solid-js";
 import { Image } from "./Image";
 
-export interface AttackingInfo {
+export interface DamageSourceAnimation {
+  type: "damageSource";
   targetX: number;
   targetY: number;
+  delayMs: number;
 }
+
+export interface DamageTargetAnimation {
+  type: "damageTarget";
+  sourceX: number;
+  sourceY: number;
+  delayMs: number;
+}
+
+export const CHARACTER_ANIMATION_NONE = { type: "none" as const };
+
+export type CharacterAnimation =
+  | DamageSourceAnimation
+  | DamageTargetAnimation
+  | typeof CHARACTER_ANIMATION_NONE;
 
 export interface CharacterAreaProps {
   data: PbCharacterState;
+  combatStatus: PbEntityState[];
   x: number;
   y: number;
   z: number;
-  zIndex: number;
-  rz: number;
+  animation: CharacterAnimation;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
@@ -90,10 +110,9 @@ export function CharacterArea(props: CharacterAreaProps) {
     <div
       class="absolute flex flex-col items-center transition-transform"
       style={{
-        "z-index": `${props.zIndex}`,
         transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${
           props.z / 4
-        }rem) rotateY(0deg) rotateZ(${props.rz}deg)`,
+        }rem)`,
       }}
     >
       <div class="h-5 flex flex-row items-end gap-2">
@@ -122,7 +141,6 @@ export function CharacterArea(props: CharacterAreaProps) {
               </div>
             )}
           </Show>
-
         </div>
         {/* <Show when={previewHealthDiff()}>
           {(diff) => {
