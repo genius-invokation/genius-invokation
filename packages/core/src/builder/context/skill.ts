@@ -41,6 +41,7 @@ import {
   type HealInfo,
   type HealKind,
   type InlineEventNames,
+  type StateMutationAndExposedMutation,
   type ReactionInfo,
   type SkillDescription,
   type SkillDescriptionReturn,
@@ -166,9 +167,7 @@ export type ContextMetaBase = {
  * 它们出现在 `.do()` 形式内，将其作为参数传入。
  */
 export class SkillContext<Meta extends ContextMetaBase> {
-  public readonly skillInfo: Required<SkillInfoOfContextConstruction>;
   private readonly mutator: StateMutator;
-  private readonly originalOnNotify?: (opt: InternalNotifyOption) => void;
   public readonly callerArea: EntityArea;
 
   private readonly eventAndRequests: EventAndRequest[] = [];
@@ -187,22 +186,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   constructor(
     state: GameState,
-    skillInfo: SkillInfoOfContextConstruction,
+    public readonly skillInfo: SkillInfoOfContextConstruction,
     public readonly eventArg: Meta["eventArgType"] extends object
       ? Omit<Meta["eventArgType"], `_${string}`>
       : Meta["eventArgType"],
   ) {
-    this.originalOnNotify = skillInfo.mutatorConfig?.onNotify;
     const mutatorConfig: MutatorConfig = {
-      ...skillInfo.mutatorConfig,
       onNotify: (opt) => this.onNotify(opt),
-      onPause: async () => {},
+      onPause: () =>
+        Promise.reject(
+          new GiTcgDataError(`Async operation is not permitted in skill`),
+        ),
     };
     this.callerArea = getEntityArea(state, skillInfo.caller.id);
-    this.skillInfo = {
-      ...skillInfo,
-      mutatorConfig,
-    };
     this.mutator = new StateMutator(state, mutatorConfig);
     this._self = this.of<Meta["callerType"]>(this.skillInfo.caller);
   }
@@ -259,29 +255,43 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   _terminate(): SkillDescriptionReturn {
     this.mutator.notify();
-    this.originalOnNotify?.({
-      canResume: false,
-      state: this.state,
-      stateMutations: this._stateMutations,
-      exposedMutations: this._exposedMutations,
-    });
     Object.freeze(this);
     const emittedEvents = this.preprocessEventList();
     return [
       this.state,
       {
         emittedEvents,
+        innerNotify: this._savedNotify,
         mainDamage: this.mainDamage,
       },
     ];
   }
-  private _stateMutations: Mutation[] = [];
-  private _exposedMutations: ExposedMutation[] = [];
 
-  // 将技能中引发的通知保存下来，最后调用 _terminate 时再整体通知
+  private readonly _savedNotify: StateMutationAndExposedMutation = {
+    stateMutations: [],
+    exposedMutations: [],
+  };
+
+  // 将技能中引发的通知保存下来，最后调用 _terminate 时返回
   private onNotify(opt: InternalNotifyOption): void {
-    this._stateMutations.push(...opt.stateMutations);
-    this._exposedMutations.push(...opt.exposedMutations);
+    this._savedNotify.stateMutations.push(...opt.stateMutations);
+    this._savedNotify.exposedMutations.push(...opt.exposedMutations);
+  }
+
+  private executeInlineSkill<Arg>(
+    skillDescription: SkillDescription<Arg>,
+    skill: SkillInfo,
+    arg: Arg,
+  ) {
+    const [newState, { innerNotify, emittedEvents }] = skillDescription(
+      this.state,
+      skill,
+      arg,
+    );
+    this.mutator.resetState(newState, innerNotify);
+    this._savedNotify.stateMutations.push(...innerNotify.stateMutations);
+    this._savedNotify.exposedMutations.push(...innerNotify.exposedMutations);
+    this.eventAndRequests.push(...emittedEvents);
   }
 
   mutate(mut: Mutation) {
@@ -335,7 +345,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         plunging: false,
         isPreview: this.skillInfo.isPreview,
         isSelfDispose: false,
-        mutatorConfig: this.skillInfo.mutatorConfig,
       }),
     );
     for (const info of infos) {
@@ -356,10 +365,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         `Using skill [skill:${info.definition.id}]`,
       );
       const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
-      const [newState, { emittedEvents }] = desc(this.state, info, arg);
-      this.mutator.notify();
-      this.mutator.resetState(newState);
-      this.eventAndRequests.push(...emittedEvents);
+      this.executeInlineSkill(desc, info, arg);
     }
   }
 
@@ -898,13 +904,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
       };
       const reactionDescription = getReactionDescription(reaction);
       if (reactionDescription) {
-        const [newState, { emittedEvents }] = reactionDescription(
-          this.state,
+        this.executeInlineSkill(
+          reactionDescription,
           this.skillInfo,
           reactionDescriptionEventArg,
         );
-        this.eventAndRequests.push(...emittedEvents);
-        this.mutator.resetState(newState);
       }
     }
   }

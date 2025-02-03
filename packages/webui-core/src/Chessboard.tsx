@@ -519,7 +519,7 @@ export function createPlayer(
         if (
           msg.mutation.filter(
             ({ mutation }) =>
-              mutation?.$case === "damage" || mutation?.$case === "triggered",
+              mutation?.$case === "damage" || mutation?.$case === "skillUsed",
           ).length > 0
         ) {
           await new Promise<void>((resolve) => setTimeout(resolve, 500));
@@ -709,8 +709,8 @@ function Chessboard(props: ChessboardProps) {
       if (mutation?.$case === "damage") {
         currentDamages.push(mutation.value);
       }
-      if (mutation?.$case === "triggered") {
-        currentFocusing = mutation.value.entityId;
+      if (mutation?.$case === "skillUsed") {
+        currentFocusing = mutation.value.callerId;
       }
       if (mutation?.$case === "playerStatusChange") {
         const { who, status } = mutation.value;

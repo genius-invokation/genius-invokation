@@ -40,6 +40,7 @@ import {
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  isCharacterInitiativeSkill,
 } from "./utils";
 import { flip } from "@gi-tcg/utils";
 import { DetailLogType } from "./log";
@@ -75,9 +76,9 @@ export class SkillExecutor {
   private executeSkill(
     skillInfo: SkillInfo,
     arg: GeneralSkillArg,
-  ): SkillResult {
+  ): readonly EventAndRequest[] {
     if (this.state.phase === "gameEnd") {
-      return EMPTY_SKILL_RESULT;
+      return [];
     }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
@@ -91,29 +92,33 @@ export class SkillExecutor {
     );
     const skillDef = skillInfo.definition;
 
-    this.mutator.notify({
-      mutations: [
-        {
-          $case: "skillUsed",
-          callerId: skillInfo.caller.id,
-          callerDefinitionId: skillInfo.caller.definition.id,
-          skillDefinitionId: skillDef.id,
-          initiative: skillDef.initiativeSkillConfig !== null,
-        },
-      ],
-    });
+    if (skillDef.ownerType !== "extension" && skillDef.ownerType !== "card") {
+      this.mutator.notify({
+        mutations: [
+          {
+            $case: "skillUsed",
+            who: getEntityArea(this.state, skillInfo.caller.id).who,
+            callerId: skillInfo.caller.id,
+            callerDefinitionId: skillInfo.caller.definition.id,
+            skillDefinitionId: skillDef.id,
+            initiative: isCharacterInitiativeSkill(skillInfo, true),
+          },
+        ],
+      });
+    }
 
-    const [newState, result] = (0, skillDef.action)(
+    this.mutator.notify();
+    const [newState, { innerNotify, emittedEvents }] = (0, skillDef.action)(
       this.state,
       {
         ...skillInfo,
         isPreview: this.config.preview,
-        mutatorConfig: this.mutator.config,
       },
       arg as any,
     );
-    this.mutator.resetState(newState);
-    return result;
+    this.mutator.resetState(newState, innerNotify);
+    
+    return emittedEvents;
   }
 
   async finalizeSkill(
@@ -123,7 +128,7 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return;
     }
-    const { emittedEvents } = this.executeSkill(skillInfo, arg);
+    const emittedEvents = this.executeSkill(skillInfo, arg);
     await this.mutator.notifyAndPause();
 
     const nonDamageEvents: EventAndRequest[] = [];
@@ -438,7 +443,7 @@ export class SkillExecutor {
         continue;
       }
       arg._currentSkillInfo = skillInfo;
-      const { emittedEvents } = this.executeSkill(skillInfo, arg);
+      const emittedEvents = this.executeSkill(skillInfo, arg);
       result.push(...emittedEvents);
     }
     return result;

@@ -117,7 +117,7 @@ export function createRpcResponse<const Method extends RpcMethod>(
 ): RpcResponse {
   return { response: { $case: method, value } } as any;
 }
-type RpcDispatcher = {
+export type RpcDispatcher = {
   [K in RpcMethod]: (
     payload: RpcRequestPayloadOf<K>,
   ) => Promise<RpcResponsePayloadOf<K>>;

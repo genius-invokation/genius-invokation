@@ -26,7 +26,14 @@ import {
   type CardUiState,
   type StaticCardUiState,
 } from "./Card";
-import { createMemo, createSignal, onCleanup, onMount } from "solid-js";
+import {
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  splitProps,
+  type ComponentProps,
+} from "solid-js";
 import { flip } from "@gi-tcg/utils";
 import { Key } from "@solid-primitives/keyed";
 import {
@@ -78,8 +85,7 @@ export interface AnimatingCardInfo {
   delay: number;
 }
 
-export interface ChessboardProps {
-  class?: string;
+export interface ChessboardProps extends ComponentProps<"div"> {
   /** 保存上一个状态以计算动画效果 */
   previousState: PbGameState;
   state: PbGameState;
@@ -198,6 +204,14 @@ function calcCardsInfo(
 }
 
 export function Chessboard(props: ChessboardProps) {
+  const [localProps, elProps] = splitProps(props, [
+    "previousState",
+    "state",
+    "animatingCards",
+    "who",
+    "onAnimationFinish",
+    "class",
+  ]);
   let chessboardElement!: HTMLDivElement;
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
@@ -214,22 +228,22 @@ export function Chessboard(props: ChessboardProps) {
   const [getDraggingHand, setDraggingHand] =
     createSignal<DraggingCardInfo | null>(null);
   const canToggleHandFocus = createMemo(
-    () => props.animatingCards.length === 0,
+    () => localProps.animatingCards.length === 0,
   );
   let shouldMoveWhenHandBlurring: PromiseWithResolvers<boolean>;
 
   const resizeObserver = new ResizeObserver(onResize);
 
   const cards = createMemo(() => {
-    const who = props.who;
+    const who = localProps.who;
     const size = [height(), width()] as Size;
     const focusingHands = getFocusingHands();
     const hoveringHand = getHoveringHand();
     const draggingHand = getDraggingHand();
-    const onAnimationFinish = props.onAnimationFinish;
+    const onAnimationFinish = localProps.onAnimationFinish;
 
-    const animatingCards = props.animatingCards;
-    const currentCards = calcCardsInfo(props.state, {
+    const animatingCards = localProps.animatingCards;
+    const currentCards = calcCardsInfo(localProps.state, {
       who,
       size,
       focusingHands,
@@ -239,7 +253,7 @@ export function Chessboard(props: ChessboardProps) {
 
     if (animatingCards.length > 0) {
       const animationPromises: Promise<void>[] = [];
-      const previousCards = calcCardsInfo(props.previousState, {
+      const previousCards = calcCardsInfo(localProps.previousState, {
         who,
         size,
         focusingHands,
@@ -324,8 +338,8 @@ export function Chessboard(props: ChessboardProps) {
     const size = [height(), width()] as Size;
     const characters: CharacterInfo[] = [];
     for (const who of [0, 1] as const) {
-      const player = props.state.player[who];
-      const opp = who !== props.who;
+      const player = localProps.state.player[who];
+      const opp = who !== localProps.who;
 
       const totalCharacterCount = player.character.length;
       for (let i = 0; i < totalCharacterCount; i++) {
@@ -484,8 +498,9 @@ export function Chessboard(props: ChessboardProps) {
   return (
     <div
       class={`gi-tcg-chessboard-new reset min-h-xl min-w-3xl bg-yellow-1 overflow-clip ${
-        props.class ?? ""
+        localProps.class ?? ""
       }`}
+      {...elProps}
     >
       <div
         class="relative h-full w-full preserve-3d select-none"

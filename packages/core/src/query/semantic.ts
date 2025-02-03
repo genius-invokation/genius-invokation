@@ -377,9 +377,10 @@ const tagSpecifierDict: QueryLangActionDict<string[]> = {
     const queryCtx = { ...this.args.ctx, resetCandidates };
     const result = query.doQuery(queryCtx);
     if (result.length !== 1) {
-      console.warn(
+      console?.warn(
         `Indirect tag specifier (${query.sourceString}) is expected to be unique, got ${result.length} instead`,
       );
+      console?.trace();
     }
     const tags = result.flatMap((st) => st.definition.tags);
 

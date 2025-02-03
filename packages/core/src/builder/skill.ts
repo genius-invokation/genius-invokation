@@ -903,6 +903,7 @@ export class TriggeredSkillBuilder<
     const def: TriggeredSkillDefinition = {
       type: "skill",
       id: this.id,
+      ownerType: this.parent._type,
       triggerOn,
       initiativeSkillConfig: null,
       filter: this.buildFilter(),
@@ -1177,6 +1178,7 @@ export class InitiativeSkillBuilder<
       skill: {
         type: "skill",
         id: this.skillId,
+        ownerType: "character",
         initiativeSkillConfig: {
           skillType: this._skillType,
           requiredCost: normalizeCost(this._cost),
@@ -1311,6 +1313,9 @@ export class TechniqueBuilder<
     }
     const def: InitiativeSkillDefinition = {
       type: "skill",
+      id: this.id,
+      ownerType: "equipment",
+      triggerOn: "initiative",
       initiativeSkillConfig: {
         skillType: "technique",
         requiredCost: normalizeCost(this._cost),
@@ -1320,8 +1325,6 @@ export class TechniqueBuilder<
         prepared: false,
         getTarget: this.buildTargetGetter(),
       },
-      triggerOn: "initiative",
-      id: this.id,
       filter: this.buildFilter(),
       action: this.buildAction(),
       usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,

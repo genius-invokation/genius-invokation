@@ -26,6 +26,7 @@ import { createPlayer } from "@gi-tcg/webui";
 import { Chessboard, type AnimatingCardInfo } from "./components/Chessboard";
 import { parseMutations } from "./mutations";
 import { AsyncQueue } from "./async_queue";
+import { createClient } from "./client";
 
 const deck0: DeckConfig = {
   characters: [1214, 1403, 1203],
@@ -61,26 +62,11 @@ const EMPTY_PLAYER_DATA: PbPlayerState = {
   declaredEnd: false,
   legendUsed: false,
 };
-
-export const EMPTY_GAME_STATE: PbGameState = {
-  currentTurn: 0,
-  phase: 0 /* PbPhaseType.PHASE_INIT_HANDS */,
-  roundNumber: 0,
-  player: [EMPTY_PLAYER_DATA, EMPTY_PLAYER_DATA],
-};
-
 function App() {
   let cb0!: HTMLDivElement;
   let cb1!: HTMLDivElement;
 
-  const [p1State, setP1State] = createSignal<PbGameState>(EMPTY_GAME_STATE);
-  const [p1PreviousState, setP1PreviousState] =
-    createSignal<PbGameState>(EMPTY_GAME_STATE);
-  const [p1AnimatingCards, setP1AnimatingCards] = createSignal<
-    AnimatingCardInfo[]
-  >([]);
-  const [p1AnimationResolver, setP1AnimationResolver] =
-    createSignal<() => void>();
+  const [newIo1, NewChessboard] = createClient(1);
 
   onMount(() => {
     const state = Game.createInitialState({
@@ -94,32 +80,11 @@ function App() {
     const game = new Game(state);
 
     game.players[0].io = io0;
-
-    const uiQueue = new AsyncQueue();
-    let previousState: PbGameState | undefined = void 0;
     game.players[1].io = {
       ...io1,
-      notify: async ({ mutation, state }) => {
-        io1.notify({ mutation, state });
-        uiQueue.push(async () => {
-          if (!previousState) {
-            previousState = state;
-            return;
-          }
-          const { animatingCards } = parseMutations(mutation);
-          // console.log(previousState, animatingCards, state);
-          const { promise, resolve } = Promise.withResolvers<void>();
-          batch(() => {
-            setP1PreviousState(previousState!);
-            setP1State(state!);
-            setP1AnimatingCards(animatingCards);
-            setP1AnimationResolver(() => resolve);
-            previousState = state;
-          });
-          if (animatingCards.length > 0) {
-            await promise;
-          }
-        });
+      notify: async (n) => {
+        io1.notify(n);
+        newIo1.notify(n);
       },
     };
     game.players[0].config.alwaysOmni = true;
@@ -135,14 +100,7 @@ function App() {
         <div ref={cb0} />
         <div ref={cb1} />
       </details>
-      <Chessboard
-        who={1}
-        state={p1State()}
-        previousState={p1PreviousState()}
-        animatingCards={p1AnimatingCards()}
-        onAnimationFinish={p1AnimationResolver()}
-        class="h-0"
-      />
+      <NewChessboard class="h-0" />
     </div>
   );
 }

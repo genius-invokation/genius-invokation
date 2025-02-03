@@ -301,7 +301,7 @@ export function removeEntity(state: Draft<GameState>, id: number) {
   throw new GiTcgCoreInternalEntityNotFoundError(state, id);
 }
 
-/** 检查 `skill` 是否是角色主动技能 */
+/** 检查 `skill` 是否是角色主动技能（或者特技） */
 export function isCharacterInitiativeSkill(
   skill: SkillInfo,
   allowTechnique = false,

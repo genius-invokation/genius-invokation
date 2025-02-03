@@ -576,11 +576,6 @@ export class Game {
         await this.mutator.reroll(who, count);
       }),
     );
-    // Change to action phase:
-    // - do `changePhase`
-    // - clean `hasDefeated`
-    // - clean `declaredEnd`
-    // - emit event `actionPhase`
     this.mutate({
       type: "changePhase",
       newPhase: "action",

@@ -169,6 +169,7 @@ message SkillUsedEM {
   int32 caller_definition_id = 2;
   int32 skill_definition_id = 3;
   bool initiative = 4;
+  int32 who = 5;
 }
 
 // 玩家的当前 IO 状态

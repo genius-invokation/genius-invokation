@@ -14,6 +14,7 @@
     "./builder": {
       "types": "./dist/builder.d.ts",
       "bun": "./src/builder/index.ts",
+      "development": "./src/builder/index.ts",
       "import": "./dist/builder.js"
     },
     "./builder/internal": "./src/builder/internal_exports.ts"

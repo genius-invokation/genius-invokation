@@ -23,6 +23,7 @@ import {
 import { usePlayerContext } from "./Chessboard";
 import {
   flattenPbOneof,
+  PbRemoveCardReason,
   type ExposedMutation,
   type PbExposedMutation,
   type PbGameState,
@@ -137,13 +138,13 @@ const spellMutation = (
         return "不知道哪";
     }
   };
-  if (m.$case === "actionDone") {
-    if (m.skillOrCardDefinitionId) {
-      spell = `${spellWho(m.who)} 使用 ${altTextFunc(
-        m.skillOrCardDefinitionId,
-      )}`;
-    } else if (m.actionType === 5 /* declare end */) {
-      spell = `${spellWho(m.who)} 宣布回合结束`;
+  if (m.$case === "skillUsed") {
+    if (m.initiative) {
+      spell = `${spellWho(m.who)} ${altTextFunc(
+        m.callerDefinitionId,
+      )} 使用 ${altTextFunc(m.skillDefinitionId)}`;
+    } else {
+      spell = `${spellWho(m.who)} ${altTextFunc(m.callerDefinitionId)} 触发`;
     }
   } else if (m.$case === "damage") {
     spell = `${altTextFunc(m.targetDefinitionId)} 受到 ${m.value} 点 \
@@ -152,8 +153,6 @@ const spellMutation = (
     spell = `回合开始`;
   } else if (m.$case === "changePhase") {
     spell = `进入 ${phaseSpellArray[m.newPhase]} 阶段`;
-  } else if (m.$case === "triggered") {
-    spell = `${altTextFunc(m.entityDefinitionId)} 触发了`;
   } else if (m.$case === "resetDice") {
     spell = `${spellWho(m.who)} 现在有 ${m.dice.length} 个骰子`;
   } else if (m.$case === "switchTurn") {
@@ -171,16 +170,21 @@ const spellMutation = (
     }
   } else if (m.$case === "removeCard") {
     switch (m.reason) {
-      case 2:
+      case PbRemoveCardReason.PLAY:
+        spell = `${spellWho(m.who)} 打出了 ${
+          altTextFunc(m.card!.definitionId) ?? "一张行动牌"
+        }`;
+        break;
+      case PbRemoveCardReason.ELEMENTAL_TUNING:
         spell = `${spellWho(m.who)} 调和了 一张卡牌`;
         break;
-      case 3:
+      case PbRemoveCardReason.HANDS_OVERFLOW:
         spell = `${spellWho(m.who)} 手牌已满 弃置了一张卡牌`;
         break;
-      case 4:
+      case PbRemoveCardReason.DISPOSED:
         spell = `${spellWho(m.who)} 弃置了一张卡牌`;
         break;
-      case 5:
+      case PbRemoveCardReason.PLAY_NO_EFFECT:
         spell = `${spellWho(m.who)} 被裁了 一张卡牌`;
         break;
     }
@@ -201,7 +205,7 @@ const spellMutation = (
   } else if (m.$case === "createEntity") {
     spell = `${altTextFunc(m.entity!.definitionId)} 创建了`;
   } else if (m.$case === "removeEntity") {
-    spell = `${altTextFunc(m.entityDefinitionId)} 移除了`;
+    spell = `${altTextFunc(m.entity!.definitionId)} 移除了`;
   } else if (m.$case === "elementalReaction") {
     spell = `${altTextFunc(
       m.characterDefinitionId,

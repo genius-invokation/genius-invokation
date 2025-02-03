@@ -436,6 +436,7 @@ export class CardBuilder<
       const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
         type: "skill",
         id: this.cardId + 0.02,
+        ownerType: "card",
         triggerOn: "onDisposeOrTuneCard",
         initiativeSkillConfig: null,
         action: disposeAction,
@@ -461,6 +462,7 @@ export class CardBuilder<
       const drawSkillDef: TriggeredSkillDefinition<"onHandCardInserted"> = {
         type: "skill",
         id: this.cardId + 0.03,
+        ownerType: "card",
         triggerOn: "onHandCardInserted",
         initiativeSkillConfig: null,
         filter: (st, info, arg) => {
@@ -472,6 +474,7 @@ export class CardBuilder<
       const skillDef: InitiativeSkillDefinition = {
         type: "skill",
         id: this.cardId + 0.01,
+        ownerType: "card",
         triggerOn: "initiative",
         initiativeSkillConfig: {
           skillType: "playCard",
@@ -493,6 +496,7 @@ export class CardBuilder<
       const skillDef: InitiativeSkillDefinition = {
         type: "skill",
         id: this.cardId + 0.01,
+        ownerType: "card",
         triggerOn: "initiative",
         initiativeSkillConfig: {
           skillType: "playCard",

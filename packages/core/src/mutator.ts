@@ -19,6 +19,7 @@ import {
   type EventAndRequest,
   HandCardInsertedEventArg,
   type SelectCardInfo,
+  type StateMutationAndExposedMutation,
 } from "./base/skill";
 import {
   type EntityArea,
@@ -121,15 +122,30 @@ export class StateMutator {
     return this.config.logger;
   }
 
-  resetState(newState: GameState) {
+  /**
+   * Reset state with `newState`, notify mutations specified in `withMutations`.
+   * @param newState
+   * @param withMutations
+   * @param notifyOpt
+   */
+  resetState(
+    newState: GameState,
+    withMutations: StateMutationAndExposedMutation,
+    notifyOpt?: Omit<NotifyOption, "mutations">,
+  ) {
     if (this._mutationsToBeNotified.length > 0) {
-      console.warn("Resetting state with pending mutations not notified");
-      console.warn(this._mutationsToBeNotified);
+      console?.warn("Resetting state with pending mutations not notified");
+      console?.warn(this._mutationsToBeNotified);
+      console?.trace();
       // debugger;
     }
     this._state = newState;
-    this._mutationsToBeNotified = [];
-    this._mutationsToBePause = [];
+    this._mutationsToBeNotified = [...withMutations.stateMutations];
+    this._mutationsToBePause = [...withMutations.stateMutations];
+    this.notify({
+      ...notifyOpt,
+      mutations: withMutations.exposedMutations,
+    });
   }
 
   log(type: DetailLogType, value: string): void {

@@ -20,6 +20,7 @@ import {
   PreviewData,
   type ReadonlyDiceRequirement,
   type DiceRequirement,
+  type ExposedMutation,
 } from "@gi-tcg/typings";
 import {
   type AnyState,
@@ -43,9 +44,9 @@ import { GiTcgCoreInternalError, GiTcgDataError } from "../error";
 import type {
   EntityArea,
   EntityDefinition,
+  EntityType,
   UsagePerRoundVariableNames,
 } from "./entity";
-import type { MutatorConfig } from "../mutator";
 import {
   costSize,
   diceCostOfCard,
@@ -56,22 +57,34 @@ import {
   mixins,
   normalizeCost,
 } from "../utils";
+import type { Mutation } from "./mutation";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
+  readonly ownerType: EntityType | "character" | "card" | "extension";
   readonly id: number;
   readonly action: SkillDescription<Arg>;
   readonly filter: SkillActionFilter<Arg>;
   readonly usagePerRoundVariableName: UsagePerRoundVariableNames | null;
 }
 
+export type StateMutationAndExposedMutation = {
+  exposedMutations: ExposedMutation[];
+  stateMutations: Mutation[];
+};
+
 export type SkillResult = {
   readonly emittedEvents: readonly EventAndRequest[];
+  readonly innerNotify: StateMutationAndExposedMutation;
   readonly mainDamage: DamageInfo | null;
 };
 
 export const EMPTY_SKILL_RESULT: SkillResult = {
   emittedEvents: [],
+  innerNotify: {
+    exposedMutations: [],
+    stateMutations: [],
+  },
   mainDamage: null,
 };
 
@@ -134,8 +147,6 @@ export interface SkillInfo {
    * 是否是预览中。部分技能会因是否为预览而采取不同的效果。
    */
   readonly isPreview: boolean;
-  /** @internal SkillContext 内部的 StateMutator 的配置 */
-  readonly mutatorConfig?: MutatorConfig;
 }
 export interface InitiativeSkillInfo extends SkillInfo {
   readonly definition: InitiativeSkillDefinition;
@@ -579,7 +590,8 @@ export class ModifyAction2EventArg<
   }
   setFastAction(): void {
     if (this._fast) {
-      console.warn("Potential error: fast action already set");
+      console?.warn("Potential error: fast action already set");
+      console?.trace();
     }
     this._log += `${stringifyState(this.caller)} set fast action.\n`;
     this._fast = true;
@@ -876,7 +888,8 @@ export class ModifyDamage0EventArg extends ModifyDamageEventArgBase {
       super.damageInfo.type
     }] to [damage:${type}].\n`;
     if (this._newDamageType !== null) {
-      console.warn("Potential error: damage type already changed");
+      console?.warn("Potential error: damage type already changed");
+      console?.trace();
     }
     this._newDamageType = type;
   }
