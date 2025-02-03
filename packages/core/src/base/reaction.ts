@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Reaction as R, Aura as A, DamageType as D } from "@gi-tcg/typings";
-import { DamageInfo } from "../base/skill";
+import type { DamageInfo } from "../base/skill";
 
 export type NontrivialDamageType = Exclude<
   D,

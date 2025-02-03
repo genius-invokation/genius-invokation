@@ -13,64 +13,60 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, DiceType, DiceRequirement } from "@gi-tcg/typings";
+import { DamageType, DiceType, type DiceRequirement } from "@gi-tcg/typings";
 import {
-  CommonSkillType,
-  SkillDescription,
-  SkillType,
-  EventNames,
-  SkillInfo,
-  TriggeredSkillDefinition,
-  SkillActionFilter,
-  PlayCardInfo,
-  SwitchActiveInfo,
-  UseSkillInfo,
-  EventArgOf,
+  type CommonSkillType,
+  type SkillDescription,
+  type SkillType,
+  type EventNames,
+  type SkillInfo,
+  type TriggeredSkillDefinition,
+  type SkillActionFilter,
+  type PlayCardInfo,
+  type SwitchActiveInfo,
+  type UseSkillInfo,
+  type EventArgOf,
   ModifyAction0EventArg,
   ModifyAction1EventArg,
   ModifyAction2EventArg,
   ModifyAction3EventArg,
-  DamageInfo,
-  SkillDescriptionReturn,
-  InitiativeSkillDefinition,
-  InitiativeSkillEventArg,
-  InitiativeSkillTargetGetter,
-  SkillInfoOfContextConstruction,
+  type DamageInfo,
+  type SkillDescriptionReturn,
+  type InitiativeSkillDefinition,
+  type InitiativeSkillTargetGetter,
+  type SkillInfoOfContextConstruction,
   ModifyHeal0EventArg,
   ModifyHeal1EventArg,
 } from "../base/skill";
-import {
+import type {
   AnyState,
   CharacterState,
   EntityState,
   GameState,
 } from "../base/state";
 import {
-  ContextMetaBase,
+  type ContextMetaBase,
   ENABLE_SHORTCUT,
   SkillContext,
-  TypedSkillContext,
+  type TypedSkillContext,
 } from "./context/skill";
-import {
-  EquipmentHandle,
+import type {
   ExEntityType,
   ExtensionHandle,
   SkillHandle,
-  StatusHandle,
 } from "./type";
 import {
-  EntityArea,
-  EntityType,
+  type EntityArea,
+  type EntityType,
   USAGE_PER_ROUND_VARIABLE_NAMES,
-  UsagePerRoundVariableNames,
+  type UsagePerRoundVariableNames,
 } from "../base/entity";
 import {
   DEFAULT_SNIPPET_NAME,
-  DefaultCustomEventArg,
+  type DefaultCustomEventArg,
   EntityBuilder,
-  EntityBuilderPublic,
-  EntityBuilderResultT,
-  VariableOptions,
+  type EntityBuilderPublic,
+  type VariableOptions,
 } from "./entity";
 import {
   costSize,
@@ -80,10 +76,14 @@ import {
   normalizeCost,
 } from "../utils";
 import { GiTcgDataError } from "../error";
-import { DEFAULT_VERSION_INFO, Version, VersionInfo } from "../base/version";
+import {
+  DEFAULT_VERSION_INFO,
+  type Version,
+  type VersionInfo,
+} from "../base/version";
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
-import { InitiativeSkillTargetKind } from "../base/card";
-import { TargetKindOfQuery, TargetQuery } from "./card";
+import type { InitiativeSkillTargetKind } from "../base/card";
+import type { TargetKindOfQuery, TargetQuery } from "./card";
 
 export type SkillBuilderMetaBase = Omit<ContextMetaBase, "readonly">;
 export type ReadonlyMetaOf<BM extends SkillBuilderMetaBase> = {

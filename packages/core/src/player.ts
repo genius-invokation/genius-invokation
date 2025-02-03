@@ -1,5 +1,5 @@
 
-import { PlayerIO } from "./io";
+import type { PlayerIO } from "./io";
 
 export interface PlayerConfig {
   alwaysOmni: boolean;

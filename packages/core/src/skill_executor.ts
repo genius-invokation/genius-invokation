@@ -14,28 +14,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  DamageInfo,
+  type DamageInfo,
   DamageOrHealEventArg,
   defineSkillInfo,
   DisposeEventArg,
   EMPTY_SKILL_RESULT,
-  Event,
-  EventAndRequest,
+  type Event,
+  type EventAndRequest,
   EventArg,
-  HealInfo,
-  InitiativeSkillEventArg,
-  SkillInfo,
-  SkillResult,
+  type HealInfo,
+  type InitiativeSkillEventArg,
+  type SkillInfo,
+  type SkillResult,
   SwitchActiveEventArg,
-  TriggeredSkillDefinition,
+  type TriggeredSkillDefinition,
   UseSkillEventArg,
   ZeroHealthEventArg,
 } from "./base/skill";
-import { CharacterState, GameState, stringifyState } from "./base/state";
-import { Aura, DamageType, ExposedMutation } from "@gi-tcg/typings";
+import { type CharacterState, stringifyState } from "./base/state";
+import { Aura, DamageType } from "@gi-tcg/typings";
 import {
   allSkills,
-  CallerAndTriggeredSkill,
+  type CallerAndTriggeredSkill,
   checkImmune,
   getActiveCharacterIndex,
   getEntityArea,
@@ -44,7 +44,7 @@ import {
 import { flip } from "@gi-tcg/utils";
 import { DetailLogType } from "./log";
 import { StateMutator } from "./mutator";
-import { Mutation } from "./base/mutation";
+import type { Mutation } from "./base/mutation";
 
 export type GeneralSkillArg = EventArg | InitiativeSkillEventArg;
 

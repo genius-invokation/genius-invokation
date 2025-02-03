@@ -13,17 +13,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardDefinition } from "../base/card";
-import { CharacterDefinition } from "../base/character";
-import { EntityDefinition, VariableConfig } from "../base/entity";
-import { ExtensionDefinition } from "../base/extension";
-import { InitiativeSkillDefinition, SkillDefinition } from "../base/skill";
+import type { CardDefinition } from "../base/card";
+import type { CharacterDefinition } from "../base/character";
+import type { EntityDefinition, VariableConfig } from "../base/entity";
+import type { ExtensionDefinition } from "../base/extension";
+import type { InitiativeSkillDefinition, SkillDefinition } from "../base/skill";
 import { GiTcgDataError } from "../error";
 import {
   CURRENT_VERSION,
-  Version,
-  VersionInfo,
-  WithVersionInfo,
+  type Version,
+  type VersionInfo,
+  type WithVersionInfo,
   getCorrectVersion,
 } from "../base/version";
 import { freeze } from "immer";

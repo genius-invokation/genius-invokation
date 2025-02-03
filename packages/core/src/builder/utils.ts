@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { VariableConfig } from "../base/entity";
+import type { VariableConfig } from "../base/entity";
 
 export function createVariable<const T extends number>(initialValue: T, forceOverwrite = false): VariableConfig<T> {
   return {

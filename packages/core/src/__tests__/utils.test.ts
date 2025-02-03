@@ -15,8 +15,8 @@
 
 import { test, expect } from "bun:test";
 import { shuffle, sortDice } from "../utils";
-import { Aura, DiceType } from "@gi-tcg/typings";
-import { PlayerState } from "..";
+import { DiceType } from "@gi-tcg/typings";
+import type { PlayerState } from "../base/state";
 
 test("sort dice", () => {
   const dice = [

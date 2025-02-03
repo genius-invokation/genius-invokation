@@ -14,38 +14,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  Action,
-  PbCardState,
-  PbCharacterState,
-  PbEntityState,
-  ExposedMutation,
-  Notification,
-  PbPlayerState,
-  RpcMethod,
-  RpcRequest,
-  RpcResponse,
-  PbSkillInfo,
-  PbGameState,
-  PbPhaseType,
+  PbCardArea,
+  PbDiceRequirementType,
   PbDiceType,
   PbEquipmentType,
-  ReadonlyDiceRequirement,
-  PbDiceRequirement,
-  PbDiceRequirementType,
-  PbCardArea,
   PbRemoveCardReason,
+  type Action,
+  type PbCardState,
+  type PbCharacterState,
+  type PbEntityState,
+  type ExposedMutation,
+  type Notification,
+  type PbPlayerState,
+  type RpcMethod,
+  type RpcRequest,
+  type RpcResponse,
+  type PbSkillInfo,
+  type PbGameState,
+  PbPhaseType,
+  type ReadonlyDiceRequirement,
+  type PbDiceRequirement,
   PbEntityArea,
-  RpcResponsePayloadOf,
+  type RpcResponsePayloadOf,
 } from "@gi-tcg/typings";
-import {
+import type {
   CardState,
   CharacterState,
   EntityState,
   GameState,
   PhaseType,
 } from "./base/state";
-import { Mutation } from "./base/mutation";
-import { ActionInfo, InitiativeSkillDefinition } from "./base/skill";
+import type { Mutation } from "./base/mutation";
+import type { ActionInfo, InitiativeSkillDefinition } from "./base/skill";
 import { GiTcgIoError } from "./error";
 import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
 import { costOfCard, initiativeSkillsOfPlayer } from "./utils";

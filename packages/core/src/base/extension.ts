@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { SkillDefinition } from "./skill";
-import { VersionInfo } from "./version";
+import type { SkillDefinition } from "./skill";
+import type { VersionInfo } from "./version";
 
 export interface ExtensionDefinition {
   readonly __definition: "extensions",

@@ -1,6 +1,6 @@
-import { Draft } from "immer";
-import { GameState } from "../base/state";
-import {
+import type { Draft } from "immer";
+import type { GameState } from "../base/state";
+import type {
   EventArgOf,
   EventNames,
   SkillDescription,
@@ -8,8 +8,8 @@ import {
 } from "../base/skill";
 import { SkillContext } from "./context/skill";
 import { registerExtension, builderWeakRefs } from "./registry";
-import { wrapSkillInfoWithExt, WritableMetaOf } from "./skill";
-import { ExtensionHandle } from "./type";
+import { wrapSkillInfoWithExt, type WritableMetaOf } from "./skill";
+import type { ExtensionHandle } from "./type";
 import { DEFAULT_VERSION_INFO } from "../base/version";
 
 type ExtensionBuilderMeta<

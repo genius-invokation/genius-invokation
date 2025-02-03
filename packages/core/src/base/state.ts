@@ -15,15 +15,15 @@
 
 import { DiceType } from "@gi-tcg/typings";
 
-import { CardDefinition } from "./card";
-import { CharacterDefinition, CharacterVariableConfigs } from "./character";
-import {
+import type { CardDefinition } from "./card";
+import type { CharacterDefinition, CharacterVariableConfigs } from "./character";
+import type {
   EntityDefinition,
   EntityVariableConfigs,
   VariableOfConfig,
 } from "./entity";
-import { GameData } from "../builder/registry";
-import { ExtensionDefinition } from "./extension";
+import type { GameData } from "../builder/registry";
+import type { ExtensionDefinition } from "./extension";
 
 export interface GameConfig {
   readonly randomSeed: number;

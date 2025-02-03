@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { GameState } from "./base/state";
-import { QueryArgs } from "./query/semantic";
+import type { GameState } from "./base/state";
+import type { QueryArgs } from "./query/semantic";
 
 export abstract class GiTcgError extends Error {}
 

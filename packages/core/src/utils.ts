@@ -16,46 +16,43 @@
 import type { Draft } from "immer";
 import {
   DiceType,
-  DiceRequirement,
-  ReadonlyDiceRequirement,
-  DamageType,
+  type DiceRequirement,
+  type ReadonlyDiceRequirement,
 } from "@gi-tcg/typings";
 import { flip } from "@gi-tcg/utils";
-import {
+import type {
   AnyState,
   CharacterState,
   EntityState,
   GameState,
   PlayerState,
 } from "./base/state";
-import { EntityArea } from "./base/entity";
+import type { EntityArea } from "./base/entity";
 import {
-  CharacterDefinition,
-  CharacterTag,
-  ElementTag,
   NATION_TAGS,
-  NationTag,
   WEAPON_TAGS,
-  WeaponTag,
+  type CharacterDefinition,
+  type CharacterTag,
+  type ElementTag,
+  type NationTag,
+  type WeaponTag,
 } from "./base/character";
-import { CardDefinition } from "./base/card";
+import type { CardDefinition } from "./base/card";
 import {
   defineSkillInfo,
-  EventNames,
-  InitiativeSkillDefinition,
-  InitiativeSkillEventArg,
-  InitiativeSkillInfo,
-  SkillDefinition,
-  SkillInfo,
-  SkillType,
-  TriggeredSkillDefinition,
+  type EventNames,
+  type InitiativeSkillDefinition,
+  type InitiativeSkillInfo,
+  type SkillDefinition,
+  type SkillInfo,
+  type SkillType,
+  type TriggeredSkillDefinition,
   ZeroHealthEventArg,
 } from "./base/skill";
 import {
   GiTcgCoreInternalEntityNotFoundError,
   GiTcgCoreInternalError,
 } from "./error";
-import { GeneralSkillArg } from "./skill_executor";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];

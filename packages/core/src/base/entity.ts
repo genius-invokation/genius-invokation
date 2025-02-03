@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { GameState } from "./state";
-import { EquipmentTag, SupportTag } from "./card";
-import { SkillDefinition } from "./skill";
-import { VersionInfo } from "./version";
+import type { GameState } from "./state";
+import type { EquipmentTag, SupportTag } from "./card";
+import type { SkillDefinition } from "./skill";
+import type { VersionInfo } from "./version";
 
 export type EntityTag =
   | "disableSkill" // 禁用技能（仅角色状态）

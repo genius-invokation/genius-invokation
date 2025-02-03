@@ -13,15 +13,35 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CharacterState, CharacterVariables, EntityState, GameState } from "../../base/state";
+import type {
+  CharacterState,
+  CharacterVariables,
+  EntityState,
+  GameState,
+} from "../../base/state";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../../error";
-import { CharacterDefinition, NationTag, WeaponTag } from "../../base/character";
-import { EntityArea, EntityTag } from "../../base/entity";
-import { elementOfCharacter, getActiveCharacterIndex, getEntityArea, getEntityById, nationOfCharacter, weaponOfCharacter } from "../../utils";
-import { ContextMetaBase, HealOption, SkillContext } from "./skill";
+import type {
+  CharacterDefinition,
+  NationTag,
+  WeaponTag,
+} from "../../base/character";
+import type { EntityArea, EntityTag } from "../../base/entity";
+import {
+  elementOfCharacter,
+  getActiveCharacterIndex,
+  getEntityArea,
+  getEntityById,
+  nationOfCharacter,
+  weaponOfCharacter,
+} from "../../utils";
+import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
 import { Aura, DamageType, DiceType } from "@gi-tcg/typings";
-import { AppliableDamageType, EquipmentHandle, StatusHandle } from "../type";
-import { CreateEntityOptions } from "../../mutator";
+import type {
+  AppliableDamageType,
+  EquipmentHandle,
+  StatusHandle,
+} from "../type";
+import type { CreateEntityOptions } from "../../mutator";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 

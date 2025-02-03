@@ -13,15 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType } from "@gi-tcg/typings";
-import { CharacterTag } from "../base/character";
-import { EntityTag, EntityType } from "../base/entity";
-import { ContextMetaBase } from "./context/skill";
-import { TypedCharacter } from "./context/character";
-import { TypedEntity } from "./context/entity";
-import { CardState, CharacterState, EntityState } from "..";
-import { TypedCard } from "./context/card";
-import { CardTag } from "../base/card";
+import type { DamageType } from "@gi-tcg/typings";
+import type { CharacterTag } from "../base/character";
+import type { EntityTag, EntityType } from "../base/entity";
+import type { ContextMetaBase } from "./context/skill";
+import type { TypedCharacter } from "./context/character";
+import type { TypedEntity } from "./context/entity";
+import type { CardState, CharacterState, EntityState } from "..";
+import type { TypedCard } from "./context/card";
+import type { CardTag } from "../base/card";
 
 export type CharacterHandle = number & { readonly _char: unique symbol };
 export type SkillHandle = number & { readonly _skill: unique symbol };

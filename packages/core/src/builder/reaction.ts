@@ -14,11 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Reaction, DamageType } from "@gi-tcg/typings";
-import { SkillDescription } from "../base/skill";
+import type { SkillDescription } from "../base/skill";
 import { SkillBuilder, enableShortcut } from "./skill";
-import { TypedSkillContext } from "./context/skill";
-import { CombatStatusHandle, StatusHandle, SummonHandle } from "./type";
-import { SwirlableElement } from "../base/reaction";
+import type { TypedSkillContext } from "./context/skill";
+import type { CombatStatusHandle, StatusHandle, SummonHandle } from "./type";
+import type { SwirlableElement } from "../base/reaction";
 import { builderWeakRefs } from "./registry";
 
 export const CALLED_FROM_REACTION: unique symbol = Symbol();

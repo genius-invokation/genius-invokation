@@ -13,16 +13,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { EntityState, EntityVariables } from "../../base/state";
+import type { EntityState, EntityVariables } from "../../base/state";
 import { GiTcgDataError } from "../../error";
 import {
-  EntityArea,
-  EntityDefinition,
+  type EntityArea,
+  type EntityDefinition,
   USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "../../base/entity";
 import { getEntityArea, getEntityById } from "../../utils";
 import { Character } from "./character";
-import { ContextMetaBase, SkillContext } from "./skill";
+import type { ContextMetaBase, SkillContext } from "./skill";
 
 export class Entity<Meta extends ContextMetaBase> {
   private readonly _area: EntityArea;

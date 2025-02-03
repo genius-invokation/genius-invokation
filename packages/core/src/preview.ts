@@ -13,40 +13,36 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { produce } from "immer";
-import {
-  applyMutation,
+import type {
   ModifyEntityVarM,
   Mutation,
   SwitchActiveM,
 } from "./base/mutation";
 import {
   ActionEventArg,
-  ActionInfo,
-  ActionInfoBase,
   DisposeOrTuneCardEventArg,
-  EventAndRequest,
   GenericModifyActionEventArg,
-  InitiativeSkillEventArg,
-  InitiativeSkillInfo,
   PlayCardEventArg,
-  SkillInfo,
   SwitchActiveEventArg,
   UseSkillEventArg,
-  WithActionDetail,
+  type ActionInfo,
+  type ActionInfoBase,
+  type EventAndRequest,
+  type InitiativeSkillEventArg,
+  type InitiativeSkillInfo,
+  type WithActionDetail,
 } from "./base/skill";
-import { GameState } from "./base/state";
-import { GeneralSkillArg, SkillExecutor } from "./skill_executor";
-import { getActiveCharacterIndex, getEntityArea, Writable } from "./utils";
+import type { GameState } from "./base/state";
+import { SkillExecutor } from "./skill_executor";
+import { getActiveCharacterIndex, getEntityArea, type Writable } from "./utils";
 import { GiTcgPreviewAbortedError, StateMutator } from "./mutator";
 import {
-  ExposedMutation,
-  FlattenOneof,
-  PbCharacterState,
-  PreviewData,
+  type ExposedMutation,
+  type FlattenOneof,
+  type PreviewData,
   unFlattenOneof,
 } from "@gi-tcg/typings";
-import { exposeEntity, exposeMutation, exposeState } from "./io";
+import { exposeMutation } from "./io";
 
 export type ActionInfoWithModification = ActionInfo & {
   eventArg: InstanceType<typeof GenericModifyActionEventArg>;

@@ -13,22 +13,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { checkDice, Deck, diceToMap, flip } from "@gi-tcg/utils";
+import { checkDice, type Deck, flip } from "@gi-tcg/utils";
 import {
   DiceType,
-  ExposedMutation,
-  RpcMethod,
-  RpcRequest,
-  RpcResponse,
-  DiceRequirement,
+  type ExposedMutation,
+  type RpcMethod,
+  type DiceRequirement,
   PbPlayerStatus,
-  RpcRequestPayloadOf,
-  RpcResponsePayloadOf,
+  type RpcRequestPayloadOf,
+  type RpcResponsePayloadOf,
   createRpcRequest,
-  PbExposedMutation,
+  type PbExposedMutation,
   unFlattenOneof,
 } from "@gi-tcg/typings";
-import {
+import type {
   AnyState,
   CardState,
   CharacterState,
@@ -37,10 +35,10 @@ import {
   GameState,
   PlayerState,
 } from "./base/state";
-import { Mutation } from "./base/mutation";
+import type { Mutation } from "./base/mutation";
 import {
-  IoErrorHandler,
-  PauseHandler,
+  type IoErrorHandler,
+  type PauseHandler,
   exposeAction,
   exposeMutation,
   exposeState,
@@ -56,28 +54,28 @@ import {
   initiativeSkillsOfPlayer,
   getEntityArea,
   playSkillOfCard,
-  Writable,
+  type Writable,
 } from "./utils";
-import { GameData } from "./builder/registry";
+import type { GameData } from "./builder/registry";
 import {
   ActionEventArg,
-  ActionInfo,
+  type ActionInfo,
   DisposeOrTuneCardEventArg,
   HandCardInsertedEventArg,
-  ElementalTuningInfo,
-  EventAndRequest,
+  type ElementalTuningInfo,
+  type EventAndRequest,
   EventArg,
   ModifyRollEventArg,
   PlayCardEventArg,
   PlayerEventArg,
-  SkillInfo,
+  type SkillInfo,
   SwitchActiveEventArg,
-  SwitchActiveInfo,
+  type SwitchActiveInfo,
   UseSkillEventArg,
-  InitiativeSkillEventArg,
+  type InitiativeSkillEventArg,
   defineSkillInfo,
 } from "./base/skill";
-import { CardDefinition } from "./base/card";
+import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
 import {
   GiTcgCoreInternalError,
@@ -87,17 +85,17 @@ import {
 } from "./error";
 import { DetailLogType, DetailLogger } from "./log";
 import { randomSeed } from "./random";
-import { GeneralSkillArg, SkillExecutor } from "./skill_executor";
+import { type GeneralSkillArg, SkillExecutor } from "./skill_executor";
 import {
-  InternalNotifyOption,
-  InternalPauseOption,
-  MutatorConfig,
+  type InternalNotifyOption,
+  type InternalPauseOption,
+  type MutatorConfig,
   StateMutator,
 } from "./mutator";
-import { ActionInfoWithModification, ActionPreviewer } from "./preview";
-import { Version } from "./base/version";
+import { type ActionInfoWithModification, ActionPreviewer } from "./preview";
+import type { Version } from "./base/version";
 import { Player } from "./player";
-import { CharacterDefinition } from "./base/character";
+import type { CharacterDefinition } from "./base/character";
 
 export interface DeckConfig extends Deck {
   noShuffle?: boolean;

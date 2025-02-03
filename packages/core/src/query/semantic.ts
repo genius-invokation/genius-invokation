@@ -16,23 +16,16 @@
 import { flip } from "@gi-tcg/utils";
 import type { MatchResult, Node, NonterminalNode } from "ohm-js";
 
-import grammar, { QueryLangActionDict } from "./query.ohm-bundle";
-import {
+import grammar, { type QueryLangActionDict } from "./query.ohm-bundle";
+import type {
   AnyState,
-  CardState,
   CharacterState,
-  EntityState,
   GameState,
 } from "../base/state";
-import { ContextMetaBase, SkillContext } from "../builder/context/skill";
+import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
 import { CharacterBase } from "../builder/context/character";
-import {
-  allEntities,
-  getActiveCharacterIndex,
-  getEntityArea,
-  getEntityById,
-} from "../utils";
-import { EntityType } from "../base/entity";
+import { allEntities, getEntityArea, getEntityById } from "../utils";
+import type { EntityType } from "../base/entity";
 import { GiTcgQueryError } from "../error";
 
 type AnySkillContext = SkillContext<ContextMetaBase>;

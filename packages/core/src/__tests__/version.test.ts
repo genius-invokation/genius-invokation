@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { WithVersionInfo, getCorrectVersion } from "../base/version";
+import { type WithVersionInfo, getCorrectVersion } from "../base/version";
 import "../utils";
 
 test("find version", () => {

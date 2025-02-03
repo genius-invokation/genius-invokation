@@ -18,35 +18,34 @@ import {
   DiceType,
   Reaction,
   PreviewData,
-  ReadonlyDiceRequirement,
-  DiceRequirement,
-  ExposedMutation,
+  type ReadonlyDiceRequirement,
+  type DiceRequirement,
 } from "@gi-tcg/typings";
 import {
-  AnyState,
-  CardState,
-  CharacterState,
-  EntityState,
-  GameState,
+  type AnyState,
+  type CardState,
+  type CharacterState,
+  type EntityState,
+  type GameState,
   stringifyState,
 } from "./state";
-import { CardTag, CardDefinition } from "./card";
+import type { CardTag, CardDefinition } from "./card";
 import {
   REACTION_MAP,
   REACTION_RELATIVES,
-  SwirlableElement,
+  type SwirlableElement,
   getReaction,
   isReactionRelatedTo,
   isReactionSwirl,
 } from "../base/reaction";
-import { CharacterDefinition } from "./character";
+import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../error";
-import {
+import type {
   EntityArea,
   EntityDefinition,
   UsagePerRoundVariableNames,
 } from "./entity";
-import { MutatorConfig } from "../mutator";
+import type { MutatorConfig } from "../mutator";
 import {
   costSize,
   diceCostOfCard,

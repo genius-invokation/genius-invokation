@@ -14,12 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Aura } from "@gi-tcg/typings";
-import { CharacterTag } from "../base/character";
+import type { CharacterTag } from "../base/character";
 import { registerCharacter, builderWeakRefs } from "./registry";
-import { CharacterHandle, PassiveSkillHandle, SkillHandle } from "./type";
+import type { CharacterHandle, PassiveSkillHandle, SkillHandle } from "./type";
 import { createVariable } from "./utils";
-import { VariableConfig } from "../base/entity";
-import { Version, VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
+import type { VariableConfig } from "../base/entity";
+import {
+  type Version,
+  type VersionInfo,
+  DEFAULT_VERSION_INFO,
+} from "../base/version";
 
 export class CharacterBuilder {
   private readonly _tags: CharacterTag[] = [];

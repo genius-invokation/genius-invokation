@@ -1,27 +1,31 @@
-import { DiceType, ExposedMutation } from "@gi-tcg/typings";
-import { CardState, CharacterState, GameState } from "./base/state";
-import { DetailLogType, IDetailLogger } from "./log";
+import { DiceType, type ExposedMutation } from "@gi-tcg/typings";
+import type { CardState, CharacterState, GameState } from "./base/state";
+import { DetailLogType, type IDetailLogger } from "./log";
 import {
-  Mutation,
-  StepRandomM,
+  type Mutation,
+  type StepRandomM,
   applyMutation,
   stringifyMutation,
 } from "./base/mutation";
-import { EntityState, EntityVariables, stringifyState } from "./base/state";
+import {
+  type EntityState,
+  type EntityVariables,
+  stringifyState,
+} from "./base/state";
 import { allEntitiesAtArea, getEntityById, sortDice } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
   EnterEventArg,
-  EventAndRequest,
+  type EventAndRequest,
   HandCardInsertedEventArg,
-  SelectCardInfo,
+  type SelectCardInfo,
 } from "./base/skill";
 import {
-  EntityArea,
-  EntityDefinition,
+  type EntityArea,
+  type EntityDefinition,
   stringifyEntityArea,
 } from "./base/entity";
-import { CardDefinition } from "./base/card";
+import type { CardDefinition } from "./base/card";
 
 export class GiTcgPreviewAbortedError extends GiTcgCoreInternalError {
   constructor(message?: string) {

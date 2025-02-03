@@ -18,17 +18,17 @@ import { type Draft, produce, enableMapSet } from "immer";
 import { DiceType } from "@gi-tcg/typings";
 import { flip } from "@gi-tcg/utils";
 import {
-  PhaseType,
-  CardState,
-  CharacterState,
-  EntityState,
-  GameState,
-  PlayerState,
+  type PhaseType,
+  type CardState,
+  type CharacterState,
+  type EntityState,
+  type GameState,
+  type PlayerState,
   stringifyState,
 } from "./state";
 import { removeEntity, getEntityById, sortDice, getEntityArea } from "../utils";
-import { EntityArea, EntityDefinition, stringifyEntityArea } from "./entity";
-import { CharacterDefinition } from "./character";
+import { type EntityArea, type EntityDefinition, stringifyEntityArea } from "./entity";
+import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
 

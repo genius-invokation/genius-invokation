@@ -15,34 +15,34 @@
 
 import { DamageType } from "@gi-tcg/typings";
 import {
-  DescriptionDictionary,
-  DescriptionDictionaryEntry,
-  DescriptionDictionaryKey,
-  EntityArea,
-  EntityTag,
-  EntityType,
-  EntityVariableConfigs,
+  type DescriptionDictionary,
+  type DescriptionDictionaryEntry,
+  type DescriptionDictionaryKey,
+  type EntityArea,
+  type EntityTag,
+  type EntityType,
+  type EntityVariableConfigs,
   USAGE_PER_ROUND_VARIABLE_NAMES,
-  VariableConfig,
+  type VariableConfig,
 } from "../base/entity";
-import { SkillDefinition } from "../base/skill";
+import type { SkillDefinition } from "../base/skill";
 import {
   registerEntity,
   registerPassiveSkill,
   builderWeakRefs,
 } from "./registry";
 import {
-  BuilderWithShortcut,
-  DetailedEventNames,
-  SkillOperation,
-  SkillOperationFilter,
+  enableShortcut,
   TechniqueBuilder,
   TriggeredSkillBuilder,
-  TriggeredSkillBuilderMeta,
-  UsageOptions,
-  enableShortcut,
+  type BuilderWithShortcut,
+  type DetailedEventNames,
+  type SkillOperation,
+  type SkillOperationFilter,
+  type TriggeredSkillBuilderMeta,
+  type UsageOptions,
 } from "./skill";
-import {
+import type {
   CardHandle,
   ExEntityType,
   ExtensionHandle,
@@ -52,10 +52,14 @@ import {
 } from "./type";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../error";
 import { createVariable, createVariableCanAppend } from "./utils";
-import { Writable, getEntityArea, getEntityById } from "../utils";
-import { EntityState, GameState } from "../base/state";
-import { Version, VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
-import { TypedSkillContext } from "./context/skill";
+import { getEntityArea, getEntityById, type Writable } from "../utils";
+import type { EntityState, GameState } from "../base/state";
+import {
+  type Version,
+  type VersionInfo,
+  DEFAULT_VERSION_INFO,
+} from "../base/version";
+import type { TypedSkillContext } from "./context/skill";
 
 export interface AppendOptions {
   /** 重复创建时的累积值上限 */

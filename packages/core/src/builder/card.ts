@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CharacterState, EntityState, GameState } from "../base/state";
-import {
+import type { EntityState, GameState } from "../base/state";
+import type {
   CardTag,
   InitiativeSkillTargetKind,
   CardType,
@@ -22,33 +22,30 @@ import {
   WeaponCardTag,
   CardDefinition,
 } from "../base/card";
-import {
+import type {
   DescriptionDictionary,
   DescriptionDictionaryEntry,
   DescriptionDictionaryKey,
 } from "../base/entity";
 import {
-  DisposeOrTuneCardEventArg,
+  type DisposeOrTuneCardEventArg,
   EMPTY_SKILL_RESULT,
-  HandCardInsertedEventArg,
-  InitiativeSkillDefinition,
-  InitiativeSkillEventArg,
-  SkillDefinition,
-  SkillDescription,
-  TriggeredSkillDefinition,
+  type HandCardInsertedEventArg,
+  type InitiativeSkillDefinition,
+  type InitiativeSkillEventArg,
+  type SkillDefinition,
+  type TriggeredSkillDefinition,
 } from "../base/skill";
 import { registerCard } from "./registry";
-import { SkillContext } from "./context/skill";
 import {
   SkillBuilderWithCost,
   enableShortcut,
-  BuilderWithShortcut,
-  SkillOperation,
-  WritableMetaOf,
-  StrictInitiativeSkillEventArg,
-  StrictInitiativeSkillFilter,
+  type BuilderWithShortcut,
+  type SkillOperation,
+  type StrictInitiativeSkillEventArg,
+  type StrictInitiativeSkillFilter,
 } from "./skill";
-import {
+import type {
   CardHandle,
   CharacterHandle,
   CombatStatusHandle,
@@ -57,11 +54,11 @@ import {
   StatusHandle,
   SupportHandle,
 } from "./type";
-import { EntityBuilder, EntityBuilderPublic } from "./entity";
-import { GuessedTypeOfQuery } from "../query/types";
+import { EntityBuilder, type EntityBuilderPublic } from "./entity";
+import type { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
-import { costSize, diceCostSize, normalizeCost, Writable } from "../utils";
-import { Version, VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
+import { costSize, diceCostSize, normalizeCost, type Writable } from "../utils";
+import { type Version, type VersionInfo, DEFAULT_VERSION_INFO } from "../base/version";
 
 type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
   callerType: "character";
@@ -428,7 +425,6 @@ export class CardBuilder<
       const target = this._satiatedTarget;
       this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
     }
-    const extId = this.associatedExtensionId;
     const skills: SkillDefinition[] = [];
 
     const targetGetter = this.buildTargetGetter();

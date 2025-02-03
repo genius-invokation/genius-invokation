@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { WeaponTag } from "./character";
-import { DescriptionDictionary } from "./entity";
-import { SkillDefinition } from "./skill";
-import { VersionInfo } from "./version";
+import type { WeaponTag } from "./character";
+import type { DescriptionDictionary } from "./entity";
+import type { SkillDefinition } from "./skill";
+import type { VersionInfo } from "./version";
 
 export type WeaponCardTag = Exclude<WeaponTag, "otherWeapon">;
 

@@ -16,44 +16,44 @@
 import {
   DamageType,
   DiceType,
-  ExposedMutation,
+  type ExposedMutation,
   Reaction,
 } from "@gi-tcg/typings";
 
 import {
-  EntityArea,
-  EntityDefinition,
-  EntityType,
+  type EntityArea,
+  type EntityDefinition,
+  type EntityType,
   stringifyEntityArea,
 } from "../../base/entity";
-import { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
+import type { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
 import {
-  ConsumeNightsoulInfo,
-  DamageInfo,
+  type ConsumeNightsoulInfo,
+  type DamageInfo,
   DamageOrHealEventArg,
-  DisposeOrTuneMethod,
-  EventAndRequest,
-  EventAndRequestConstructorArgs,
-  EventAndRequestNames,
-  EventArgOf,
+  type DisposeOrTuneMethod,
+  type EventAndRequest,
+  type EventAndRequestConstructorArgs,
+  type EventAndRequestNames,
+  type EventArgOf,
   GenericModifyDamageEventArg,
   GenericModifyHealEventArg,
-  HealInfo,
-  HealKind,
-  InlineEventNames,
-  ReactionInfo,
-  SkillDescription,
-  SkillDescriptionReturn,
-  SkillInfo,
-  SkillInfoOfContextConstruction,
+  type HealInfo,
+  type HealKind,
+  type InlineEventNames,
+  type ReactionInfo,
+  type SkillDescription,
+  type SkillDescriptionReturn,
+  type SkillInfo,
+  type SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
 } from "../../base/skill";
 import {
-  AnyState,
-  CardState,
-  CharacterState,
-  EntityState,
-  GameState,
+  type AnyState,
+  type CardState,
+  type CharacterState,
+  type EntityState,
+  type GameState,
   stringifyState,
 } from "../../base/state";
 import {
@@ -66,7 +66,7 @@ import {
   sortDice,
 } from "../../utils";
 import { executeQuery } from "../../query";
-import {
+import type {
   AppliableDamageType,
   CardHandle,
   CharacterHandle,
@@ -80,28 +80,28 @@ import {
   SummonHandle,
   TypedExEntity,
 } from "../type";
-import { CardDefinition, CardTag, CardType } from "../../base/card";
-import { GuessedTypeOfQuery } from "../../query/types";
-import { NontrivialDamageType, REACTION_MAP } from "../../base/reaction";
+import type { CardDefinition, CardTag, CardType } from "../../base/card";
+import type { GuessedTypeOfQuery } from "../../query/types";
+import { REACTION_MAP, type NontrivialDamageType } from "../../base/reaction";
 import {
   CALLED_FROM_REACTION,
-  ReactionDescriptionEventArg,
+  type ReactionDescriptionEventArg,
   getReactionDescription,
 } from "../reaction";
 import { flip } from "@gi-tcg/utils";
 import { GiTcgDataError } from "../../error";
 import { DetailLogType } from "../../log";
 import {
-  CreateEntityOptions,
+  type CreateEntityOptions,
   GiTcgPreviewAbortedError,
-  InternalNotifyOption,
-  MutatorConfig,
+  type InternalNotifyOption,
+  type MutatorConfig,
   StateMutator,
 } from "../../mutator";
-import { Draft, produce } from "immer";
+import { type Draft, produce } from "immer";
 import { nextRandom } from "../../random";
-import { Character, TypedCharacter } from "./character";
-import { Entity, TypedEntity } from "./entity";
+import { Character, type TypedCharacter } from "./character";
+import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;

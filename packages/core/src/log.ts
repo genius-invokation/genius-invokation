@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { GameState } from "./base/state";
-import { Version } from "./base/version";
-import { GameData, GameDataGetter } from "./builder";
-import { CORE_VERSION } from ".";
+import type { GameState } from "./base/state";
+import type { Version } from "./base/version";
+import type { GameData, GameDataGetter } from "./builder";
+import { CORE_VERSION } from "./index";
 
 export interface GameStateLogEntry {
   readonly state: GameState;

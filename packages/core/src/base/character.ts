@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Aura } from "@gi-tcg/typings";
-import { SkillDefinition } from "./skill";
-import { VariableConfig } from "./entity";
-import { VersionInfo } from "./version";
+import type { SkillDefinition } from "./skill";
+import type { VariableConfig } from "./entity";
+import type { VersionInfo } from "./version";
 
 export type ElementTag =
   | "cryo"

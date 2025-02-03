@@ -14,10 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { GiTcgDataError } from "../../error";
-import { CardState } from "../../base/state";
+import type { CardState } from "../../base/state";
 import { getEntityArea, getEntityById } from "../../utils";
-import { ContextMetaBase, SkillContext } from "./skill";
-import { EntityArea } from "../../base/entity";
+import type { ContextMetaBase, SkillContext } from "./skill";
+import type { EntityArea } from "../../base/entity";
 
 export class Card<Meta extends ContextMetaBase> {
   public readonly area: EntityArea;
