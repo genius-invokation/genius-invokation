@@ -15,23 +15,30 @@
 
 import { DamageType } from "@gi-tcg/typings";
 import { DICE_COLOR } from "./Dice";
+import type { DamageInfo } from "./Chessboard";
+import { createMemo } from "solid-js";
 
 export interface DamageProps {
-  damageType: DamageType;
-  value: number;
+  info: DamageInfo;
+  shown: boolean;
 }
 
 export function Damage(props: DamageProps) {
+  const damageType = createMemo(() => props.info.damageType);
+  const damageValue = createMemo(() => props.info.value);
   return (
-    <div
-      class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-999 w-20 h-20 bg-white b-2 b-dashed text-5xl flex items-center justify-center starting:scale-0 transition-transform"
-      style={{
-        "border-color": `var(--c-${DICE_COLOR[props.damageType]})`,
-        color: `var(--c-${DICE_COLOR[props.damageType]})`,
-      }}
-    >
-      {props.damageType === DamageType.Heal ? "+" : "-"}
-      {props.value}
+    <div class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+      <div
+        class="rounded-full w-16 h-16 bg-white b-2 b-dashed text-5xl items-center justify-center transition-all transition-discrete hidden data-[shown=true]:flex scale-80 data-[shown=true]:scale-100 starting:data-[shown=true]:scale-80"
+        data-shown={props.shown}
+        style={{
+          "border-color": `var(--c-${DICE_COLOR[damageType()]})`,
+          color: `var(--c-${DICE_COLOR[damageType()]})`,
+        }}
+      >
+        {damageType() === DamageType.Heal ? "+" : "-"}
+        {damageValue()}
+      </div>
     </div>
   );
 }

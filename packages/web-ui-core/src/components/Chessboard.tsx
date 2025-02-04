@@ -83,6 +83,7 @@ export interface CharacterInfo {
   y: number;
   z: number;
   animation: CharacterAnimation;
+  damage: DamageInfo | null;
 }
 
 export interface AnimatingCardInfo {
@@ -268,12 +269,16 @@ export function Chessboard(props: ChessboardProps) {
 
   const resizeObserver = new ResizeObserver(onResize);
 
-  const cards = createMemo(() => {
+  const children = createMemo(() => {
     const who = localProps.who;
     const size = [height(), width()] as Size;
     const focusingHands = getFocusingHands();
     const hoveringHand = getHoveringHand();
     const draggingHand = getDraggingHand();
+
+    const damages = localProps.damages;
+
+    const animationPromises: Promise<void>[] = [];
     const onAnimationFinish = localProps.onAnimationFinish;
 
     const animatingCards = localProps.animatingCards;
@@ -286,7 +291,6 @@ export function Chessboard(props: ChessboardProps) {
     });
 
     if (animatingCards.length > 0) {
-      const animationPromises: Promise<void>[] = [];
       const previousCards = calcCardsInfo(localProps.previousState, {
         who,
         size,
@@ -358,18 +362,8 @@ export function Chessboard(props: ChessboardProps) {
         }
         totalDelayMs += currentDurationMs;
       }
-      Promise.all(animationPromises).then(() => {
-        onAnimationFinish?.();
-      });
-    } else {
-      onAnimationFinish?.();
     }
 
-    return currentCards; //.toSorted((a, b) => a.id - b.id);
-  });
-
-  const characters = createMemo(() => {
-    const size = [height(), width()] as Size;
     const characters: CharacterInfo[] = [];
     for (const who of [0, 1] as const) {
       const player = localProps.state.player[who];
@@ -388,6 +382,8 @@ export function Chessboard(props: ChessboardProps) {
           isActive,
         );
 
+        const damage = damages.find((dmg) => dmg.targetId === ch.id) ?? null;
+
         characters.push({
           id: ch.id,
           data: ch,
@@ -397,10 +393,26 @@ export function Chessboard(props: ChessboardProps) {
           y,
           z: 0,
           animation: CHARACTER_ANIMATION_NONE, // TODO
+          damage,
         });
+        if (damage) {
+          animationPromises.push(new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 500);
+          }));
+        }
       }
     }
-    return characters.toSorted((a, b) => a.id - b.id);
+
+    Promise.all(animationPromises).then(() => {
+      onAnimationFinish?.();
+    });
+
+    return {
+      cards: currentCards,
+      characters: characters,
+    };
   });
 
   const onCardClick = (
@@ -545,10 +557,10 @@ export function Chessboard(props: ChessboardProps) {
           perspective: `${PERSPECTIVE / 4}rem`,
         }}
       >
-        <Key each={characters()} by="id">
+        <Key each={children().characters} by="id">
           {(character) => <CharacterArea {...character()} />}
         </Key>
-        <Key each={cards()} by="id">
+        <Key each={children().cards} by="id">
           {(card) => (
             <Card
               {...card()}

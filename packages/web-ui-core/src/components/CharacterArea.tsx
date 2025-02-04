@@ -21,6 +21,8 @@ import {
 import { Key } from "@solid-primitives/keyed";
 import { For, Index, Show } from "solid-js";
 import { Image } from "./Image";
+import type { DamageInfo } from "./Chessboard";
+import { Damage } from "./Damage";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -50,6 +52,7 @@ export interface CharacterAreaProps {
   y: number;
   z: number;
   animation: CharacterAnimation;
+  damage: DamageInfo | null;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
@@ -125,24 +128,25 @@ export function CharacterArea(props: CharacterAreaProps) {
         </For>
       </div>
       <div class="h-36 w-21 relative">
-        <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
-          <WaterDrop />
-          <div class="absolute">{props.data.health}</div>
-        </div>
-        <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
-          <EnergyBar current={energy()} total={props.data.maxEnergy} />
-          <Show when={technique()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#129668;
-              </div>
-            )}
-          </Show>
-        </div>
-        {/* <Show when={previewHealthDiff()}>
+        <Show when={!props.data.defeated}>
+          <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
+            <WaterDrop />
+            <div class="absolute">{props.data.health}</div>
+          </div>
+          <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
+            <EnergyBar current={energy()} total={props.data.maxEnergy} />
+            <Show when={technique()}>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
+                  data-highlight={et().hasUsagePerRound}
+                >
+                  &#129668;
+                </div>
+              )}
+            </Show>
+          </div>
+          {/* <Show when={previewHealthDiff()}>
           {(diff) => {
             return (
               <div class="absolute z-2 top-5 left-50% translate-x--50% bg-white opacity-80 p-2 rounded-md">
@@ -151,38 +155,39 @@ export function CharacterArea(props: CharacterAreaProps) {
             );
           }}
         </Show> */}
-        <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
-          <Show when={weapon()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x1F5E1;
-              </div>
-            )}
-          </Show>
-          <Show when={artifact()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x1F451;
-              </div>
-            )}
-          </Show>
-          <Key each={otherEquipments()} by="id">
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x2728;
-              </div>
-            )}
-          </Key>
-        </div>
+          <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
+            <Show when={weapon()}>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
+                  data-highlight={et().hasUsagePerRound}
+                >
+                  &#x1F5E1;
+                </div>
+              )}
+            </Show>
+            <Show when={artifact()}>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
+                  data-highlight={et().hasUsagePerRound}
+                >
+                  &#x1F451;
+                </div>
+              )}
+            </Show>
+            <Key each={otherEquipments()} by="id">
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
+                  data-highlight={et().hasUsagePerRound}
+                >
+                  &#x2728;
+                </div>
+              )}
+            </Key>
+          </div>
+        </Show>
         <div class="h-full w-full rounded-xl">
           <Image
             imageId={props.data.definitionId}
@@ -214,6 +219,9 @@ export function CharacterArea(props: CharacterAreaProps) {
             </div>
           )}
         </Show> */}
+        <Show when={props.damage}>
+          {(dmg) => <Damage info={dmg()} shown={true} />}
+        </Show>
       </div>
     </div>
   );
