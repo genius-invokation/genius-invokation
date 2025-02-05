@@ -13,5 +13,10 @@
   --font-emoji: Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji,
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
+}
 
+@keyframes damage-text-enter {
+  50% {
+    scale: 200%;
+  }
 }

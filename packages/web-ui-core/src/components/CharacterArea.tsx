@@ -19,7 +19,7 @@ import {
   type PbCharacterState,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
-import { For, Index, Show } from "solid-js";
+import { createEffect, createSignal, For, Index, Show } from "solid-js";
 import { Image } from "./Image";
 import type { DamageInfo } from "./Chessboard";
 import { Damage } from "./Damage";
@@ -28,14 +28,16 @@ export interface DamageSourceAnimation {
   type: "damageSource";
   targetX: number;
   targetY: number;
-  delayMs: number;
 }
+
+export const DAMAGE_SOURCE_ANIMATION_DURATION = 800;
+export const DAMAGE_TARGET_ANIMATION_DELAY = 500;
+export const DAMAGE_TARGET_ANIMATION_DURATION = 200;
 
 export interface DamageTargetAnimation {
   type: "damageTarget";
   sourceX: number;
   sourceY: number;
-  delayMs: number;
 }
 
 export const CHARACTER_ANIMATION_NONE = { type: "none" as const };
@@ -52,13 +54,67 @@ export interface CharacterAreaProps {
   y: number;
   z: number;
   animation: CharacterAnimation;
-  damage: DamageInfo | null;
+  damages: DamageInfo[];
+  onAnimationFinish?: () => void;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export function CharacterArea(props: CharacterAreaProps) {
-  // const { allDamages, previewData } = useEventContext();
-  // const damaged = () => allDamages().find((d) => d.targetId === props.data.id);
+  let el!: HTMLDivElement;
+
+  const [getDamage, setDamage] = createSignal<DamageInfo | null>(null);
+  const [showDamage, setShowDamage] = createSignal(false);
+
+  const renderDamages = async (delayMs: number, damages: DamageInfo[]) => {
+    await sleep(delayMs);
+    for (const damage of damages) {
+      setDamage(damage);
+      setShowDamage(true);
+      await sleep(500);
+      setShowDamage(false);
+      await sleep(100);
+    }
+    props.onAnimationFinish?.();
+  };
+
+  createEffect(() => {
+    const { damages, animation: propAnimation, x, y } = props;
+    const onAnimationFinish = props.onAnimationFinish;
+    let damageDelay = 0;
+    const animations: Promise<void>[] = [];
+
+    if (propAnimation.type === "damageTarget") {
+      damageDelay = DAMAGE_TARGET_ANIMATION_DELAY;
+      const animation = el.animate([], {
+        delay: 0,
+        duration: DAMAGE_SOURCE_ANIMATION_DURATION,
+      });
+      animations.push(animation.finished.then(() => animation.cancel()));
+    } else if (propAnimation.type === "damageSource") {
+      const { targetX, targetY } = propAnimation;
+      const animation = el.animate(
+        [
+          {
+            offset: 0.5,
+            transform: `translate3d(${targetX / 4}rem, ${targetY / 4}rem, ${1 / 4}rem)`,
+          },
+        ],
+        {
+          delay: 0,
+          duration: DAMAGE_SOURCE_ANIMATION_DURATION,
+        },
+      );
+      animations.push(animation.finished.then(() => animation.cancel()));
+    }
+    const dmgRender = renderDamages(damageDelay, damages);
+    animations.push(dmgRender);
+
+    Promise.all(animations).then(() => {
+      onAnimationFinish?.();
+    });
+  });
 
   const aura = (): [number, number] => {
     const aura =
@@ -117,6 +173,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           props.z / 4
         }rem)`,
       }}
+      ref={el}
     >
       <div class="h-5 flex flex-row items-end gap-2">
         <For each={aura()}>
@@ -219,8 +276,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             </div>
           )}
         </Show> */}
-        <Show when={props.damage}>
-          {(dmg) => <Damage info={dmg()} shown={true} />}
+        <Show when={getDamage()}>
+          {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>
       </div>
     </div>

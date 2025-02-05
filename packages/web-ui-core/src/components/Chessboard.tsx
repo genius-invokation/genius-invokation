@@ -83,7 +83,8 @@ export interface CharacterInfo {
   y: number;
   z: number;
   animation: CharacterAnimation;
-  damage: DamageInfo | null;
+  onAnimationFinish?: () => void;
+  damages: DamageInfo[];
 }
 
 export interface AnimatingCardInfo {
@@ -364,7 +365,7 @@ export function Chessboard(props: ChessboardProps) {
       }
     }
 
-    const characters: CharacterInfo[] = [];
+    const characters = new Map<number, CharacterInfo>();
     for (const who of [0, 1] as const) {
       const player = localProps.state.player[who];
       const opp = who !== localProps.who;
@@ -381,28 +382,39 @@ export function Chessboard(props: ChessboardProps) {
           i,
           isActive,
         );
-
-        const damage = damages.find((dmg) => dmg.targetId === ch.id) ?? null;
-
-        characters.push({
+        const { promise, resolve } = Promise.withResolvers<void>();
+        characters.set(ch.id, {
           id: ch.id,
           data: ch,
-          active: isActive,
-          combatStatus: isActive ? combatStatus : [],
           x,
           y,
           z: 0,
-          animation: CHARACTER_ANIMATION_NONE, // TODO
-          damage,
+          active: isActive,
+          combatStatus: isActive ? combatStatus : [],
+          damages: [],
+          animation: CHARACTER_ANIMATION_NONE,
+          onAnimationFinish: resolve,
         });
-        if (damage) {
-          animationPromises.push(new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-            }, 500);
-          }));
-        }
+        animationPromises.push(promise);
       }
+    }
+    for (const damage of damages) {
+      const source = characters.get(damage.sourceId);
+      const target = characters.get(damage.targetId)!;
+      if (source && damage.isSkillMainDamage) {
+        source.animation = {
+          type: "damageSource",
+          targetX: target.x,
+          targetY: target.y,
+        };
+        target.animation = {
+          type: "damageTarget",
+          sourceX: source.x,
+          sourceY: source.y,
+        };
+      }
+      target.damages.push(damage);
+      // TODO: animations
     }
 
     Promise.all(animationPromises).then(() => {
@@ -411,7 +423,7 @@ export function Chessboard(props: ChessboardProps) {
 
     return {
       cards: currentCards,
-      characters: characters,
+      characters: characters.values().toArray(),
     };
   });
 

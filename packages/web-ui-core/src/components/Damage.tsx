@@ -29,15 +29,20 @@ export function Damage(props: DamageProps) {
   return (
     <div class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
       <div
-        class="rounded-full w-16 h-16 bg-white b-2 b-dashed text-5xl items-center justify-center transition-all transition-discrete hidden data-[shown=true]:flex scale-80 data-[shown=true]:scale-100 starting:data-[shown=true]:scale-80"
+        class="rounded-full w-18 h-18 bg-white b-2 b-dashed items-center justify-center transition-all-100 transition-discrete hidden data-[shown=true]:flex scale-80 data-[shown=true]:scale-100 starting:data-[shown=true]:scale-80"
         data-shown={props.shown}
         style={{
           "border-color": `var(--c-${DICE_COLOR[damageType()]})`,
           color: `var(--c-${DICE_COLOR[damageType()]})`,
         }}
       >
-        {damageType() === DamageType.Heal ? "+" : "-"}
-        {damageValue()}
+        <span
+          class="data-[heal=false]:animate-[damage-text-enter] animate-duration-200 text-5xl font-bold text-stroke-white text-stroke-2"
+          data-heal={damageType() === DamageType.Heal}
+        >
+          {damageType() === DamageType.Heal ? "+" : "-"}
+          {damageValue()}
+        </span>
       </div>
     </div>
   );
