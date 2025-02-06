@@ -92,7 +92,7 @@ export const HuntersVigil: SkillHandle = skill(14122)
     const st = c.self.hasStatus(BondOfLife);
     let value = 0;
     if (st) {
-      value = st.variables.usage!;
+      value = Math.min(st.variables.usage!, 4);
       c.dispose(st);
     }
     if (value > 0) {
