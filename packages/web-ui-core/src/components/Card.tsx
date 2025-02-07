@@ -15,7 +15,13 @@
 
 import { getData } from "@gi-tcg/assets-manager";
 import type { PbCardState, DiceType } from "@gi-tcg/typings";
-import { createEffect, createMemo, createSignal, onMount, untrack } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+  untrack,
+} from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import {
@@ -128,11 +134,11 @@ export function Card(props: CardProps) {
   //   console.log(el);
   // });
 
-  createEffect(() => {
-    if (props.data.id === -500039) {
-      console.log(el);
-    }
-  });
+  // createEffect(() => {
+  //   if (props.data.id === -500039) {
+  //     console.log(el);
+  //   }
+  // });
 
   createEffect(() => {
     const uiState = props.uiState;

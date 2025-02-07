@@ -26,6 +26,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  on,
   onCleanup,
   onMount,
   splitProps,
@@ -59,6 +60,10 @@ import {
   type Transform,
 } from "../ui_state";
 import type { ParsedMutation } from "../mutations";
+import {
+  KeyWithAnimation,
+  type UpdateSignal,
+} from "../primitives/key_with_animation";
 
 export interface CardInfo {
   id: number;
@@ -176,7 +181,7 @@ function calcCardsInfo(
 
     const isFocus = !opp && focusingHands;
     const z = isFocus ? FOCUSING_HANDS_Z : 1;
-    const ry = isFocus ? 0 : opp ? 185 : 5;
+    const ry = isFocus ? 1 : opp ? 185 : 5;
 
     let hoveringHandIndex: number | null = handCard.findIndex(
       (card) => card.id === hoveringHand?.id,
@@ -242,18 +247,14 @@ interface ChessboardChildren {
   cards: CardInfo[];
 }
 
-function rerenderChildren(
-  oldChildren: ChessboardChildren,
-  dataUpdate: boolean,
-  opt: {
-    who: 0 | 1;
-    size: Size;
-    focusingHands: boolean;
-    hoveringHand: CardInfo | null;
-    draggingHand: DraggingCardInfo | null;
-    data: ChessboardData;
-  },
-): ChessboardChildren {
+function rerenderChildren(opt: {
+  who: 0 | 1;
+  size: Size;
+  focusingHands: boolean;
+  hoveringHand: CardInfo | null;
+  draggingHand: DraggingCardInfo | null;
+  data: ChessboardData;
+}): ChessboardChildren {
   const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
@@ -411,13 +412,17 @@ function rerenderChildren(
 
   return {
     cards: currentCards.toSorted((a, b) => a.id - b.id),
-    characters: characters.values().toArray().toSorted((a, b) => a.id - b.id),
+    characters: characters
+      .values()
+      .toArray()
+      .toSorted((a, b) => a.id - b.id),
   };
 }
 
 export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, ["who", "data", "class"]);
   let chessboardElement!: HTMLDivElement;
+
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
   const onResize = () => {
@@ -426,6 +431,9 @@ export function Chessboard(props: ChessboardProps) {
     setWidth(chessboardElement.clientWidth / unit);
   };
 
+  const [updateDataSignal, triggerUpdateData] = createSignal<UpdateSignal>({
+    force: true,
+  });
   const [getFocusingHands, setFocusingHands] = createSignal(false);
   const [getHoveringHand, setHoveringHand] = createSignal<CardInfo | null>(
     null,
@@ -443,23 +451,46 @@ export function Chessboard(props: ChessboardProps) {
     characters: [],
     cards: [],
   });
-  createEffect(() => {
-    const who = localProps.who;
-    const size = [height(), width()] as Size;
-    const focusingHands = getFocusingHands();
-    const hoveringHand = getHoveringHand();
-    const draggingHand = getDraggingHand();
-    setChildren((oldChildren) =>
-      rerenderChildren(oldChildren, false, {
-        who,
-        size,
-        focusingHands,
-        hoveringHand,
-        draggingHand,
-        data: localProps.data,
-      }),
-    );
-  });
+
+  createEffect(
+    on(
+      () => props.data,
+      (data) => {
+        const newChildren = rerenderChildren({
+          who: localProps.who,
+          size: [height(), width()],
+          focusingHands: getFocusingHands(),
+          hoveringHand: getHoveringHand(),
+          draggingHand: getDraggingHand(),
+          data,
+        });
+        setChildren(newChildren);
+        triggerUpdateData({ force: true });
+      },
+    ),
+  );
+  createEffect(
+    on(
+      [
+        () => [height(), width()] as Size,
+        getFocusingHands,
+        getHoveringHand,
+        getDraggingHand,
+      ],
+      ([size, focusingHands, hoveringHand, draggingHand]) => {
+        const newChildren = rerenderChildren({
+          who: localProps.who,
+          size,
+          focusingHands,
+          hoveringHand,
+          draggingHand,
+          data: localProps.data,
+        });
+        setChildren(newChildren);
+        triggerUpdateData({ force: false });
+      },
+    ),
+  );
 
   const onCardClick = (
     e: MouseEvent,
@@ -603,10 +634,16 @@ export function Chessboard(props: ChessboardProps) {
           perspective: `${PERSPECTIVE / 4}rem`,
         }}
       >
-        <Key each={children().characters} by="id">
+        <KeyWithAnimation
+          each={children().characters}
+          updateWhen={updateDataSignal()}
+        >
           {(character) => <CharacterArea {...character()} />}
-        </Key>
-        <Key each={children().cards} by="id">
+        </KeyWithAnimation>
+        <KeyWithAnimation
+          each={children().cards}
+          updateWhen={updateDataSignal()}
+        >
           {(card) => (
             <Card
               {...card()}
@@ -618,7 +655,7 @@ export function Chessboard(props: ChessboardProps) {
               onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
             />
           )}
-        </Key>
+        </KeyWithAnimation>
       </div>
     </div>
   );
