@@ -337,7 +337,7 @@ export const ElementalResonanceWovenWeeds = card(331701)
  * 本回合中，我方角色使用技能后：将下一个我方后台角色切换到场上。
  * （牌组包含至少2个「蒙德」角色，才能加入牌组）
  */
-export const [WindAndFreedom] = card(331801)
+export const [WindAndFreedom, WindAndFreedomInEffect] = card(331801)
   .since("v3.7.0")
   .filter((c) => c.$(`my standby characters`))
   .toCombatStatus(303181)

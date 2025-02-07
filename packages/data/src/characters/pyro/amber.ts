@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, summon, card, DamageType, SummonHandle } from "@gi-tcg/core/builder";
 
 /**
  * @id 113041
@@ -23,12 +23,17 @@ import { character, skill, summon, card, DamageType } from "@gi-tcg/core/builder
  * 可用次数：1，耗尽时不弃置此牌。
  * 结束阶段，如果可用次数已耗尽：弃置此牌，以造成2点火元素伤害。
  */
-export const BaronBunny = summon(113041)
+export const BaronBunny: SummonHandle = summon(113041)
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(2)
   .on("endPhase", (c) => c.getVariable("usage") <= 0)
   .damage(DamageType.Pyro, 2)
+  .dispose()
+  .on("useSkill", (c, e) =>
+    c.$(`@event.skillCaller and character with definition id ${Amber} and has equipment with definition id ${BunnyTriggered}`) &&
+    e.isSkillType("normal"))
+  .damage(DamageType.Pyro, 4)
   .dispose()
   .done();
 
@@ -101,12 +106,4 @@ export const BunnyTriggered = card(213041)
   .talent(Amber)
   .on("enter")
   .useSkill(ExplosivePuppet)
-  .on("useSkill", (c, e) => e.isSkillType("normal"))
-  .do((c) => {
-    const bunny = c.$(`my summon with definition id ${BaronBunny}`);
-    if (bunny) {
-      c.damage(DamageType.Pyro, 4);
-      bunny.dispose();
-    }
-  })
   .done();

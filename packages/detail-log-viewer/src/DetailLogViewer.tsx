@@ -1,25 +1,25 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { DetailLogEntry, DetailLogType } from "@gi-tcg/core";
 import { For, Show, createEffect, createSignal } from "solid-js";
-import styles from "./style.css?inline"
+import styles from "./style.css?inline";
+import { getNameSync } from "@gi-tcg/assets-manager";
 
 export interface DetailLogEntryProps {
   log: DetailLogEntry;
-  names?: (id: number) => string;
 }
 
 export function DetailLogEntry(props: DetailLogEntryProps) {
@@ -77,7 +77,7 @@ export function DetailLogEntry(props: DetailLogEntryProps) {
           );
         default: {
           const rid = Math.floor(id);
-          let result = props.names?.(rid);
+          let result = getNameSync?.(rid);
           if (result) {
             if (rid !== id) {
               result += "的响应技能";
@@ -108,7 +108,7 @@ export function DetailLogEntry(props: DetailLogEntryProps) {
       <div class="detail-log__children">
         <Show when={open()}>
           <For each={props.log.children}>
-            {(child) => <DetailLogEntry log={child} names={props.names} />}
+            {(child) => <DetailLogEntry log={child} />}
           </For>
         </Show>
       </div>
@@ -120,9 +120,7 @@ export function DetailLogViewer(props: DetailLogViewer.Props) {
   return (
     <div>
       <style>{styles}</style>
-      <For each={props.logs}>
-        {(log) => <DetailLogEntry log={log} names={props.names} />}
-      </For>
+      <For each={props.logs}>{(log) => <DetailLogEntry log={log} />}</For>
     </div>
   );
 }

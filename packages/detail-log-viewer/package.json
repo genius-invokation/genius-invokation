@@ -18,6 +18,9 @@
   "peerDependencies": {
     "solid-js": "^1.8.15"
   },
+  "dependencies": {
+    "@gi-tcg/assets-manager": "workspace:*"
+  },
   "devDependencies": {
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
