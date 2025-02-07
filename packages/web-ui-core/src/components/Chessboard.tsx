@@ -21,14 +21,9 @@ import type {
   PbGameState,
   Reaction,
 } from "@gi-tcg/typings";
+import { Card } from "./Card";
 import {
-  CardAnimation,
-  Card,
-  type CardTransform,
-  type CardUiState,
-  type StaticCardUiState,
-} from "./Card";
-import {
+  createEffect,
   createMemo,
   createSignal,
   onCleanup,
@@ -56,6 +51,14 @@ import {
   CharacterArea,
   type CharacterAnimation,
 } from "./CharacterArea";
+import {
+  createCardAnimation,
+  type CardStaticUiState,
+  type CardUiState,
+  type CharacterUiState,
+  type Transform,
+} from "../ui_state";
+import type { ParsedMutation } from "../mutations";
 
 export interface CardInfo {
   id: number;
@@ -79,12 +82,7 @@ export interface CharacterInfo {
   data: PbCharacterState;
   combatStatus: PbEntityState[];
   active: boolean;
-  x: number;
-  y: number;
-  z: number;
-  animation: CharacterAnimation;
-  onAnimationFinish?: () => void;
-  damages: DamageInfo[];
+  uiState: CharacterUiState;
 }
 
 export interface AnimatingCardInfo {
@@ -115,16 +113,16 @@ export interface NotificationBoxInfo {
   skillDefinitionId: number | "overload";
 }
 
-export interface ChessboardProps extends ComponentProps<"div"> {
-  who: 0 | 1;
+export interface ChessboardData extends ParsedMutation {
   /** 保存上一个状态以计算动画效果 */
   previousState: PbGameState;
   state: PbGameState;
-  animatingCards: AnimatingCardInfo[];
-  damages: DamageInfo[];
-  reactions: ReactionInfo[];
-  notificationBox: NotificationBoxInfo[];
   onAnimationFinish?: () => void;
+}
+
+export interface ChessboardProps extends ComponentProps<"div"> {
+  who: 0 | 1;
+  data: ChessboardData;
 }
 
 export interface CardInfoCalcContext {
@@ -155,7 +153,8 @@ function calcCardsInfo(
         data: card,
         kind: "pile",
         uiState: {
-          type: "static",
+          type: "cardStatic",
+          isAnimating: false,
           transform: {
             x,
             y,
@@ -195,7 +194,8 @@ function calcCardsInfo(
           data: card,
           kind: "dragging",
           uiState: {
-            type: "static",
+            type: "cardStatic",
+            isAnimating: false,
             transform: {
               x,
               y,
@@ -218,7 +218,8 @@ function calcCardsInfo(
         data: card,
         kind: opp ? "oppHand" : "myHand",
         uiState: {
-          type: "static",
+          type: "cardStatic",
+          isAnimating: false,
           transform: {
             x,
             y,
@@ -236,18 +237,186 @@ function calcCardsInfo(
   return cards;
 }
 
+interface ChessboardChildren {
+  characters: CharacterInfo[];
+  cards: CardInfo[];
+}
+
+function rerenderChildren(
+  oldChildren: ChessboardChildren,
+  dataUpdate: boolean,
+  opt: {
+    who: 0 | 1;
+    size: Size;
+    focusingHands: boolean;
+    hoveringHand: CardInfo | null;
+    draggingHand: DraggingCardInfo | null;
+    data: ChessboardData;
+  },
+): ChessboardChildren {
+  const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
+
+  const { damages, onAnimationFinish, animatingCards, state, previousState } =
+    data;
+
+  const animationPromises: Promise<void>[] = [];
+  const currentCards = calcCardsInfo(state, {
+    who: opt.who,
+    size,
+    focusingHands,
+    hoveringHand,
+    draggingHand,
+  });
+
+  if (animatingCards.length > 0) {
+    const previousCards = calcCardsInfo(previousState, {
+      who: opt.who,
+      size,
+      focusingHands,
+      hoveringHand,
+      draggingHand,
+    });
+    const showingCards = Map.groupBy(animatingCards, (x) => x.delay);
+    let totalDelayMs = 0;
+    for (const d of showingCards
+      .keys()
+      .toArray()
+      .toSorted((a, b) => a - b)) {
+      const currentAnimatingCards = showingCards.get(d)!;
+      const currentShowingCards = currentAnimatingCards
+        .filter((card) => card.data.definitionId !== 0)
+        .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
+      let currentDurationMs = 0;
+      for (const animatingCard of currentAnimatingCards) {
+        const start = previousCards.find(
+          (card) => card.id === animatingCard.data.id,
+        );
+        const startTransform = start
+          ? (start.uiState as CardStaticUiState).transform
+          : null;
+
+        const endIndex = currentCards.findIndex(
+          (card) => card.id === animatingCard.data.id,
+        );
+        let endTransform: Transform | null = null;
+        if (endIndex !== -1) {
+          endTransform = (currentCards[endIndex].uiState as CardStaticUiState)
+            .transform;
+          currentCards.splice(endIndex, 1);
+        }
+        let middleTransform: Transform | null = null;
+        const index = currentShowingCards.indexOf(animatingCard);
+        const hasMiddle = index !== -1;
+        if (hasMiddle) {
+          const [x, y] = getShowingCardPos(
+            size,
+            currentShowingCards.length,
+            index,
+          );
+          middleTransform = {
+            x,
+            y,
+            z: 20,
+            ry: 5,
+            rz: 0,
+          };
+        }
+        const [animation, promise] = createCardAnimation({
+          start: startTransform,
+          middle: hasMiddle ? middleTransform : null,
+          end: endTransform,
+          delayMs: totalDelayMs,
+        });
+        currentDurationMs = Math.max(currentDurationMs, animation.durationMs);
+        currentCards.push({
+          id: animatingCard.data.id,
+          data: animatingCard.data,
+          kind: "animating",
+          uiState: animation,
+          enableShadow: true,
+          enableTransition: false,
+        });
+        animationPromises.push(promise);
+      }
+      totalDelayMs += currentDurationMs;
+    }
+  }
+
+  const characters = new Map<number, CharacterInfo>();
+  for (const who of [0, 1] as const) {
+    const player = state.player[who];
+    const opp = who !== opt.who;
+    const combatStatus = player.combatStatus;
+
+    const totalCharacterCount = player.character.length;
+    for (let i = 0; i < totalCharacterCount; i++) {
+      const ch = player.character[i];
+      const isActive = player.activeCharacterId === ch.id;
+      const [x, y] = getCharacterAreaPos(
+        size,
+        opp,
+        totalCharacterCount,
+        i,
+        isActive,
+      );
+      const { promise, resolve } = Promise.withResolvers<void>();
+      characters.set(ch.id, {
+        id: ch.id,
+        data: ch,
+        uiState: {
+          type: "character",
+          isAnimating: true,
+          transform: {
+            x,
+            y,
+            z: 0,
+            ry: 0,
+            rz: 0,
+          },
+          damages: [],
+          animation: CHARACTER_ANIMATION_NONE,
+          onAnimationFinish: resolve,
+        },
+        active: isActive,
+        combatStatus: isActive ? combatStatus : [],
+      });
+      animationPromises.push(promise);
+    }
+  }
+  for (const damage of damages) {
+    const source = characters.get(damage.sourceId);
+    const target = characters.get(damage.targetId)!;
+    if (source && damage.isSkillMainDamage) {
+      source.uiState.animation = {
+        type: "damageSource",
+        targetX: target.uiState.transform.x,
+        targetY: target.uiState.transform.y,
+      };
+      target.uiState.animation = {
+        type: "damageTarget",
+        sourceX: source.uiState.transform.x,
+        sourceY: source.uiState.transform.y,
+      };
+    }
+    target.uiState.damages.push(damage);
+  }
+
+  Promise.all(animationPromises).then(() => {
+    onAnimationFinish?.();
+  });
+
+  if (!currentCards.find((card) => card.id === -500039)) {
+    console.log(data);
+  }
+
+  return {
+    cards: currentCards.toSorted((a, b) => a.id - b.id),
+    characters: characters.values().toArray().toSorted((a, b) => a.id - b.id),
+  };
+}
+
 export function Chessboard(props: ChessboardProps) {
-  const [localProps, elProps] = splitProps(props, [
-    "who",
-    "previousState",
-    "state",
-    "animatingCards",
-    "damages",
-    "reactions",
-    "notificationBox",
-    "onAnimationFinish",
-    "class",
-  ]);
+  const [localProps, elProps] = splitProps(props, ["who", "data", "class"]);
   let chessboardElement!: HTMLDivElement;
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
@@ -264,167 +433,32 @@ export function Chessboard(props: ChessboardProps) {
   const [getDraggingHand, setDraggingHand] =
     createSignal<DraggingCardInfo | null>(null);
   const canToggleHandFocus = createMemo(
-    () => localProps.animatingCards.length === 0,
+    () => localProps.data.animatingCards.length === 0,
   );
   let shouldMoveWhenHandBlurring: PromiseWithResolvers<boolean>;
 
   const resizeObserver = new ResizeObserver(onResize);
 
-  const children = createMemo(() => {
+  const [children, setChildren] = createSignal<ChessboardChildren>({
+    characters: [],
+    cards: [],
+  });
+  createEffect(() => {
     const who = localProps.who;
     const size = [height(), width()] as Size;
     const focusingHands = getFocusingHands();
     const hoveringHand = getHoveringHand();
     const draggingHand = getDraggingHand();
-
-    const damages = localProps.damages;
-
-    const animationPromises: Promise<void>[] = [];
-    const onAnimationFinish = localProps.onAnimationFinish;
-
-    const animatingCards = localProps.animatingCards;
-    const currentCards = calcCardsInfo(localProps.state, {
-      who,
-      size,
-      focusingHands,
-      hoveringHand,
-      draggingHand,
-    });
-
-    if (animatingCards.length > 0) {
-      const previousCards = calcCardsInfo(localProps.previousState, {
+    setChildren((oldChildren) =>
+      rerenderChildren(oldChildren, false, {
         who,
         size,
         focusingHands,
         hoveringHand,
         draggingHand,
-      });
-      const showingCards = Map.groupBy(animatingCards, (x) => x.delay);
-      let totalDelayMs = 0;
-      for (const d of showingCards
-        .keys()
-        .toArray()
-        .toSorted((a, b) => a - b)) {
-        const currentAnimatingCards = showingCards.get(d)!;
-        const currentShowingCards = currentAnimatingCards
-          .filter((card) => card.data.definitionId !== 0)
-          .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
-        let currentDurationMs = 0;
-        for (const animatingCard of currentAnimatingCards) {
-          const start = previousCards.find(
-            (card) => card.id === animatingCard.data.id,
-          );
-          const startTransform = start
-            ? (start.uiState as StaticCardUiState).transform
-            : null;
-
-          const endIndex = currentCards.findIndex(
-            (card) => card.id === animatingCard.data.id,
-          );
-          let endTransform: CardTransform | null = null;
-          if (endIndex !== -1) {
-            endTransform = (currentCards[endIndex].uiState as StaticCardUiState)
-              .transform;
-            currentCards.splice(endIndex, 1);
-          }
-          let middleTransform: CardTransform | null = null;
-          const index = currentShowingCards.indexOf(animatingCard);
-          const hasMiddle = index !== -1;
-          if (hasMiddle) {
-            const [x, y] = getShowingCardPos(
-              size,
-              currentShowingCards.length,
-              index,
-            );
-            middleTransform = {
-              x,
-              y,
-              z: 20,
-              ry: 5,
-              rz: 0,
-            };
-          }
-          const animation = new CardAnimation({
-            start: startTransform,
-            middle: hasMiddle ? middleTransform : null,
-            end: endTransform,
-            delayMs: totalDelayMs,
-          });
-          currentDurationMs = Math.max(currentDurationMs, animation.duration);
-          currentCards.push({
-            id: animatingCard.data.id,
-            data: animatingCard.data,
-            kind: "animating",
-            uiState: animation,
-            enableShadow: true,
-            enableTransition: false,
-          });
-          animationPromises.push(animation.resolvers.promise);
-        }
-        totalDelayMs += currentDurationMs;
-      }
-    }
-
-    const characters = new Map<number, CharacterInfo>();
-    for (const who of [0, 1] as const) {
-      const player = localProps.state.player[who];
-      const opp = who !== localProps.who;
-      const combatStatus = player.combatStatus;
-
-      const totalCharacterCount = player.character.length;
-      for (let i = 0; i < totalCharacterCount; i++) {
-        const ch = player.character[i];
-        const isActive = player.activeCharacterId === ch.id;
-        const [x, y] = getCharacterAreaPos(
-          size,
-          opp,
-          totalCharacterCount,
-          i,
-          isActive,
-        );
-        const { promise, resolve } = Promise.withResolvers<void>();
-        characters.set(ch.id, {
-          id: ch.id,
-          data: ch,
-          x,
-          y,
-          z: 0,
-          active: isActive,
-          combatStatus: isActive ? combatStatus : [],
-          damages: [],
-          animation: CHARACTER_ANIMATION_NONE,
-          onAnimationFinish: resolve,
-        });
-        animationPromises.push(promise);
-      }
-    }
-    for (const damage of damages) {
-      const source = characters.get(damage.sourceId);
-      const target = characters.get(damage.targetId)!;
-      if (source && damage.isSkillMainDamage) {
-        source.animation = {
-          type: "damageSource",
-          targetX: target.x,
-          targetY: target.y,
-        };
-        target.animation = {
-          type: "damageTarget",
-          sourceX: source.x,
-          sourceY: source.y,
-        };
-      }
-      target.damages.push(damage);
-      // TODO: animations
-    }
-
-    Promise.all(animationPromises).then(() => {
-      onAnimationFinish?.();
-    });
-
-    return {
-      cards: currentCards,
-      characters: characters.values().toArray(),
-    };
+        data: localProps.data,
+      }),
+    );
   });
 
   const onCardClick = (
@@ -462,7 +496,7 @@ export function Chessboard(props: ChessboardProps) {
     currentTarget: HTMLElement,
     cardInfo: CardInfo,
   ) => {
-    if (cardInfo.kind === "myHand" && cardInfo.uiState.type === "static") {
+    if (cardInfo.kind === "myHand" && cardInfo.uiState.type === "cardStatic") {
       // 弥补收起手牌时选中由于 z 的差距而导致的视觉不连贯
       let yAdjust = 0;
       if (!getFocusingHands()) {

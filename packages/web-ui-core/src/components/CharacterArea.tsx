@@ -19,10 +19,18 @@ import {
   type PbCharacterState,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
-import { createEffect, createSignal, For, Index, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  Index,
+  Show,
+  untrack,
+} from "solid-js";
 import { Image } from "./Image";
 import type { DamageInfo } from "./Chessboard";
 import { Damage } from "./Damage";
+import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -50,12 +58,7 @@ export type CharacterAnimation =
 export interface CharacterAreaProps {
   data: PbCharacterState;
   combatStatus: PbEntityState[];
-  x: number;
-  y: number;
-  z: number;
-  animation: CharacterAnimation;
-  damages: DamageInfo[];
-  onAnimationFinish?: () => void;
+  uiState: CharacterUiState;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
@@ -76,12 +79,16 @@ export function CharacterArea(props: CharacterAreaProps) {
       setShowDamage(false);
       await sleep(100);
     }
-    props.onAnimationFinish?.();
   };
 
   createEffect(() => {
-    const { damages, animation: propAnimation, x, y } = props;
-    const onAnimationFinish = props.onAnimationFinish;
+    const {
+      damages,
+      animation: propAnimation,
+      transform,
+      onAnimationFinish,
+    } = props.uiState;
+
     let damageDelay = 0;
     const animations: Promise<void>[] = [];
 
@@ -98,7 +105,9 @@ export function CharacterArea(props: CharacterAreaProps) {
         [
           {
             offset: 0.5,
-            transform: `translate3d(${targetX / 4}rem, ${targetY / 4}rem, ${1 / 4}rem)`,
+            transform: `translate3d(${targetX / 4}rem, ${targetY / 4}rem, ${
+              1 / 4
+            }rem)`,
           },
         ],
         {
@@ -168,11 +177,7 @@ export function CharacterArea(props: CharacterAreaProps) {
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
-      style={{
-        transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${
-          props.z / 4
-        }rem)`,
-      }}
+      style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
     >
       <div class="h-5 flex flex-row items-end gap-2">

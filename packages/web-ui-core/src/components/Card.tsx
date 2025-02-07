@@ -15,95 +15,14 @@
 
 import { getData } from "@gi-tcg/assets-manager";
 import type { PbCardState, DiceType } from "@gi-tcg/typings";
-import {
-  createEffect,
-  createMemo,
-  createResource,
-  createSignal,
-  onMount,
-  Show,
-  untrack,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, onMount, untrack } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
-
-export interface CardTransform {
-  x: number;
-  y: number;
-  z: number;
-  // zIndex: number;
-  ry: number;
-  rz: number;
-}
-
-export type StaticCardUiState = {
-  type: "static";
-  transform: CardTransform;
-};
-export type AnimatedCardUiState = {
-  type: "animation";
-  /**
-   * 动画开始时牌的位置；应当从上一个对局状态中查找到
-   */
-  start: CardTransform | null;
-  /**
-   * 牌面向上时展示；牌背向上时设置为 `null`
-   */
-  middle: CardTransform | null;
-  /**
-   * 动画结束时牌的位置；应当从当前对局状态中查找到
-   */
-  end: CardTransform | null;
-  /** 动画持续毫秒数 */
-  duration: number;
-  /** 动画延迟播放毫秒数 */
-  delay: number;
-  onFinish?: () => void;
-};
-
-export interface AnimatedCardUiStateInit {
-  start: CardTransform | null;
-  middle: CardTransform | null;
-  end: CardTransform | null;
-  delayMs: number;
-}
-
-export class CardAnimation implements AnimatedCardUiState {
-  private static readonly ANIMATION_DURATION_HAS_MIDDLE = 900;
-  private static readonly ANIMATION_DURATION_NO_MIDDLE = 500;
-
-  readonly type = "animation";
-  readonly start: CardTransform | null;
-  readonly middle: CardTransform | null;
-  readonly end: CardTransform | null;
-  readonly delay: number;
-  readonly duration: number;
-
-  readonly resolvers = Promise.withResolvers<void>();
-
-  constructor(init: AnimatedCardUiStateInit) {
-    this.start = init.start;
-    this.middle = init.middle;
-    this.end = init.end;
-    this.duration = init.middle
-      ? CardAnimation.ANIMATION_DURATION_HAS_MIDDLE
-      : CardAnimation.ANIMATION_DURATION_NO_MIDDLE;
-    this.delay = init.delayMs;
-  }
-
-  onFinish() {
-    this.resolvers.resolve();
-  }
-}
-
-export type CardUiState = StaticCardUiState | AnimatedCardUiState;
-
-const cssProperty = (x: CardTransform): Record<string, string> => ({
-  // "z-index": `${x.zIndex}`,
-  transform: `translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem) 
-    rotateY(${x.ry}deg) 
-    rotateZ(${x.rz}deg)`,
-});
+import {
+  cssPropertyOfTransform,
+  type CardAnimatingUiState,
+  type CardUiState,
+} from "../ui_state";
 
 export interface CardProps {
   data: PbCardState;
@@ -118,22 +37,22 @@ export interface CardProps {
   onPointerDown?: (e: PointerEvent, currentTarget: HTMLElement) => void;
 }
 
-const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+const transformKeyframes = (uiState: CardAnimatingUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
-  const fallbackStyle = cssProperty(middle ?? end ?? start!);
+  const fallbackStyle = cssPropertyOfTransform(middle ?? end ?? start!);
   const startKeyframe: Keyframe = {
     offset: 0,
-    ...(start ? cssProperty(start) : fallbackStyle),
+    ...(start ? cssPropertyOfTransform(start) : fallbackStyle),
   };
   const middleKeyframes: Keyframe[] = middle
     ? [
         {
           offset: 0.4,
-          ...cssProperty(middle),
+          ...cssPropertyOfTransform(middle),
         },
         {
           offset: 0.6,
-          ...cssProperty(middle),
+          ...cssPropertyOfTransform(middle),
         },
       ]
     : [];
@@ -141,7 +60,7 @@ const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
     ? [
         {
           offset: 1,
-          ...cssProperty(end),
+          ...cssPropertyOfTransform(end),
         },
       ]
     : [
@@ -163,7 +82,7 @@ const transformKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
  * The opacity keyframes must be applied to a non-3d rendering context.
  * In our case, apply to the card's children.
  */
-const opacityKeyframes = (uiState: AnimatedCardUiState): Keyframe[] => {
+const opacityKeyframes = (uiState: CardAnimatingUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
   const startKeyframe: Keyframe = {
     offset: 0,
@@ -195,39 +114,44 @@ export function Card(props: CardProps) {
   // );
   let el!: HTMLDivElement;
   const data = createMemo(() => props.data);
-  const [runningAnimation, setRunningAnimation] = createSignal(false);
 
   const style = createMemo(() => {
-    if (props.uiState.type === "static") {
-      return cssProperty(props.uiState.transform);
+    if (props.uiState.type === "cardStatic") {
+      return cssPropertyOfTransform(props.uiState.transform);
     } else {
       const { end } = props.uiState;
-      return end ? cssProperty(end) : {};
+      return end ? cssPropertyOfTransform(end) : {};
     }
   });
 
-  // createEffect(() => {
-  //   if (props.data.id === -500067) {
-  //     console.log({ ...props });
-  //   }
+  // onMount(() => {
+  //   console.log(el);
   // });
 
   createEffect(() => {
+    if (props.data.id === -500039) {
+      console.log(el);
+    }
+  });
+
+  createEffect(() => {
     const uiState = props.uiState;
-    if (uiState.type === "animation" && !untrack(runningAnimation)) {
-      const { delay, duration, onFinish } = uiState;
+    if (uiState.type === "cardAnimation") {
+      const { delayMs, durationMs, onAnimationFinish } = uiState;
       const transformKf = transformKeyframes(uiState);
       const opacityKf = opacityKeyframes(uiState);
       const opt: KeyframeAnimationOptions = {
-        delay,
-        duration,
+        delay: delayMs,
+        duration: durationMs,
         fill: "both",
         // easing: "cubic-bezier(0.4, 0, 0.2, 1)",
       };
       const applyAndWait = (el: Element, kf: Keyframe[]) => {
         const animation = el.animate(kf, opt);
         return animation.finished.then(() => {
-          animation.commitStyles();
+          try {
+            animation.commitStyles();
+          } catch {}
           animation.cancel();
         });
       };
@@ -235,10 +159,8 @@ export function Card(props: CardProps) {
         applyAndWait(el, transformKf),
         ...[...el.children].map((e) => applyAndWait(e, opacityKf)),
       ]).then(() => {
-        setRunningAnimation(false);
-        onFinish?.call(uiState);
+        onAnimationFinish?.();
       });
-      setRunningAnimation(true);
     }
   });
 
