@@ -22,14 +22,14 @@ import {
   onCleanup,
   type Setter,
   untrack,
-  $TRACK,
 } from "solid-js";
+import type { UiState } from "../ui_state";
 
 function dispose(list: Iterable<{ dispose: VoidFunction }>) {
   for (const o of list) o.dispose();
 }
 
-type AnimatingElement = { id: number; uiState: { isAnimating: boolean } };
+type AnimatingElement = { id: number; uiState: UiState };
 export type UpdateSignal = { force: boolean };
 
 function keyArray<T extends AnimatingElement, U, K>(
@@ -78,7 +78,6 @@ function keyArray<T extends AnimatingElement, U, K>(
           lookup.setIndex?.(i);
           lookup.setItem((prev) => {
             if (!isForceUpdate && prev.uiState.isAnimating) {
-              console.log("SKIP", key);
               return prev;
             } else {
               return item;
@@ -139,7 +138,7 @@ function keyArray<T extends AnimatingElement, U, K>(
  * 
  * 使用时，当：
  * - `<Chessboard>` 中的 `data` 发生更新（即收到了新的 `notification`），设置 `each` 并触发一次强制更新；
- * - 对于 `<Chessboard>` 内部的 UI 布局更新（如元素大小、手牌展开与否），设置 `each` 并触发一次非强制的更新；
+ * - 对于 `<Chessboard>` 内部的 UI 布局更新（如视窗 resize、手牌展开与否），设置 `each` 并触发一次非强制的更新；
  * 此时未在动画中的元素会更新到新位置，而动画中的元素不会被打断也不会重新触发动画。
  * 
  * ```

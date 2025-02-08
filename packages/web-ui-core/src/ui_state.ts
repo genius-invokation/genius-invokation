@@ -24,6 +24,11 @@ export interface StaticUiState {
   readonly isAnimating: false;
 }
 
+export interface UiState {
+  readonly isAnimating: boolean;
+  readonly onAnimationFinish?: () => void;
+}
+
 export interface Transform {
   readonly x: number;
   readonly y: number;
@@ -105,7 +110,7 @@ export type CharacterAnimation =
   | DamageTargetAnimation
   | typeof CHARACTER_ANIMATION_NONE;
 
-export interface CharacterUiState extends AnimatingUiState {
+export interface CharacterUiState extends UiState {
   readonly type: "character";
   readonly transform: Transform;
   damages: DamageInfo[];

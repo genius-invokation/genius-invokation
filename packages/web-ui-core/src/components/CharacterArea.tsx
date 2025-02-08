@@ -200,8 +200,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             <Show when={technique()}>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                  data-highlight={et().hasUsagePerRound}
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et().hasUsagePerRound}
                 >
                   &#129668;
                 </div>
@@ -221,8 +221,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             <Show when={weapon()}>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                  data-highlight={et().hasUsagePerRound}
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et().hasUsagePerRound}
                 >
                   &#x1F5E1;
                 </div>
@@ -231,8 +231,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             <Show when={artifact()}>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                  data-highlight={et().hasUsagePerRound}
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et().hasUsagePerRound}
                 >
                   &#x1F451;
                 </div>
@@ -241,8 +241,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             <Key each={otherEquipments()} by="id">
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                  data-highlight={et().hasUsagePerRound}
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et().hasUsagePerRound}
                 >
                   &#x2728;
                 </div>

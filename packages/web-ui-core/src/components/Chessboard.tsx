@@ -344,6 +344,7 @@ function rerenderChildren(opt: {
   }
 
   const characters = new Map<number, CharacterInfo>();
+  const isCharacterAnimating = damages.some((d) => d.isSkillMainDamage);
   for (const who of [0, 1] as const) {
     const player = state.player[who];
     const opp = who !== opt.who;
@@ -366,7 +367,7 @@ function rerenderChildren(opt: {
         data: ch,
         uiState: {
           type: "character",
-          isAnimating: true,
+          isAnimating: isCharacterAnimating,
           transform: {
             x,
             y,
@@ -431,9 +432,10 @@ export function Chessboard(props: ChessboardProps) {
     setWidth(chessboardElement.clientWidth / unit);
   };
 
-  const [updateDataSignal, triggerUpdateData] = createSignal<UpdateSignal>({
-    force: true,
-  });
+  const [updateChildrenSignal, triggerUpdateChildren] =
+    createSignal<UpdateSignal>({
+      force: true,
+    });
   const [getFocusingHands, setFocusingHands] = createSignal(false);
   const [getHoveringHand, setHoveringHand] = createSignal<CardInfo | null>(
     null,
@@ -465,7 +467,7 @@ export function Chessboard(props: ChessboardProps) {
           data,
         });
         setChildren(newChildren);
-        triggerUpdateData({ force: true });
+        triggerUpdateChildren({ force: true });
       },
     ),
   );
@@ -487,7 +489,7 @@ export function Chessboard(props: ChessboardProps) {
           data: localProps.data,
         });
         setChildren(newChildren);
-        triggerUpdateData({ force: false });
+        triggerUpdateChildren({ force: false });
       },
     ),
   );
@@ -636,13 +638,13 @@ export function Chessboard(props: ChessboardProps) {
       >
         <KeyWithAnimation
           each={children().characters}
-          updateWhen={updateDataSignal()}
+          updateWhen={updateChildrenSignal()}
         >
           {(character) => <CharacterArea {...character()} />}
         </KeyWithAnimation>
         <KeyWithAnimation
           each={children().cards}
-          updateWhen={updateDataSignal()}
+          updateWhen={updateChildrenSignal()}
         >
           {(card) => (
             <Card
