@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "solid-element": "^1.8.0",
-    "solid-js": "^1.8.15",
+    "solid-js": "^1.9.4",
     "@gi-tcg/webui-core": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-solid": "^2.11.0"
+    "vite-plugin-solid": "^2.11.1"
   }
 }

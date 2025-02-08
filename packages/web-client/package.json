@@ -21,7 +21,7 @@
     "axios": "^1.7.2",
     "core-js": "3.38.1",
     "dayjs": "^1.11.13",
-    "solid-js": "^1.8.15"
+    "solid-js": "^1.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
@@ -39,6 +39,6 @@
     "eslint-plugin-solid": "^0.13.1",
     "unocss": "^65.4.2",
     "vite": "^6.0.11",
-    "vite-plugin-solid": "^2.11.0"
+    "vite-plugin-solid": "^2.11.1"
   }
 }

@@ -23,7 +23,7 @@
     "build": "bun build:data && bun build:vite"
   },
   "peerDependencies": {
-    "solid-js": "^1.8.15"
+    "solid-js": "^1.9.4"
   },
   "dependencies": {
     "@gi-tcg/assets-manager": "workspace:*",
@@ -44,6 +44,6 @@
     "unocss": "^65.4.2",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-solid": "^2.11.0"
+    "vite-plugin-solid": "^2.11.1"
   }
 }

@@ -23,7 +23,8 @@
   },
   "overrides": {
     "esbuild": "0.19.11",
-    "caniuse-lite": "1.0.30001690"
+    "caniuse-lite": "1.0.30001690",
+    "babel-plugin-jsx-dom-expressions": "0.39.6"
   },
   "patchedDependencies": {
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
