@@ -163,5 +163,5 @@ export const AllReprisalsAndArrearsMineToBear: EquipmentHandle = card(213141)
   .on("enter")
   .characterStatus(BondOfLife, "@master", {
     overrideVariables: { usage: 3 }
-  })
+  }) // 消耗生命之契增伤的部分在被动技能 13147 里
   .done();

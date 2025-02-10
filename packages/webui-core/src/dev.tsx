@@ -24,7 +24,7 @@ import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 import { createPlayer } from "./index";
 
 const deck0: DeckConfig = {
-  characters: [1214, 1403, 1203],
+  characters: [1314, 1709, 1203],
   cards: [
     333016, 313006, 212141, 321025, 332042, 223041, 223041, 226031, 226031,
     312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004, 321017,
@@ -46,7 +46,7 @@ const deck1: DeckConfig = {
 
 function App() {
   const assetsApiEndpoint =
-    void "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
+    "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
   const [io0, Chessboard0] = createPlayer(0, { assetsApiEndpoint });
   const [io1, Chessboard1] = createPlayer(1, { assetsApiEndpoint });
   const [detailLog, setDetailLog] = createSignal<readonly DetailLogEntry[]>([]);
