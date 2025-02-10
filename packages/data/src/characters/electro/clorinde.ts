@@ -140,7 +140,7 @@ export const Clorinde = character(1412)
  * @description
  * 战斗行动：我方出战角色为克洛琳德时，装备此牌。
  * 克洛琳德装备此牌后，立刻使用一次狩夜之巡。
- * 我方触发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)
+ * 我方角色引发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)
  * （牌组中包含克洛琳德，才能加入牌组）
  */
 export const DarkshatteringFlame = card(214121)
@@ -149,6 +149,6 @@ export const DarkshatteringFlame = card(214121)
   .talent(Clorinde)
   .on("enter")
   .useSkill(HuntersVigil)
-  .on("reaction", (c, e) => e.relatedTo(DamageType.Electro))
+  .on("skillReaction", (c, e) => e.relatedTo(DamageType.Electro))
   .characterStatus(DarkshatteringFlameInEffect, "@master")
   .done();

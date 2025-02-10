@@ -588,3 +588,15 @@ export const PeopleOfTheSprings = card(321025)
     target?.addVariable("usage", 1);
   })
   .done();
+
+/**
+ * @id 321026
+ * @name 「花羽会」
+ * @description
+ * 我方舍弃2张卡牌后：我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）
+ */
+export const FlowerfeatherClan = card(321026)
+  .since("v5.4.0")
+  .support("place")
+  // TODO
+  .done();

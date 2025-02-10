@@ -870,7 +870,7 @@ export const Lyresong = card(332024)
  * @id 332025
  * @name 野猪公主
  * @description
- * 本回合中，我方每有一张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
+ * 本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
  * （角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）
  */
 export const [TheBoarPrincess] = card(332025)
@@ -1655,4 +1655,16 @@ export const [AbundantPhlogiston] = card(332042)
       st.addVariable("nightsoul", 1);
     }
   })
+  .done();
+
+/**
+ * @id 332043
+ * @name 小嵴锋龙！发现宝藏！
+ * @description
+ * 向双方牌组中放入2张燃素充盈，随后双方各抓2张牌。
+ */
+export const LittleTepetlisaurTreasureHunterAtLarge = card(332043)
+  .since("v5.4.0")
+  .costSame(1)
+  // TODO
   .done();

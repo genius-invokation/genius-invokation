@@ -97,6 +97,8 @@ export const WordOfWindAndFlower = skill(15101)
  * @id 15102
  * @name 朝起鹤云
  * @description
+ * 造成1点风元素伤害，生成步天梯，本角色附属闲云冲击波。
+ * @outdated
  * 造成2点风元素伤害，生成步天梯，本角色附属闲云冲击波。
  */
 export const WhiteCloudsAtDawn = skill(15102)

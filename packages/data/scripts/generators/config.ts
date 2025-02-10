@@ -15,10 +15,15 @@
 
 import path from "node:path";
 import { IS_BETA, BETA_VERSION } from "@gi-tcg/config";
+import { existsSync } from "node:fs";
 
-export const OLD_VERSION = "v5.2.0";
-export const NEW_VERSION = IS_BETA ? BETA_VERSION : "v5.3.0";
+export const OLD_VERSION = "v5.3.0";
+export const NEW_VERSION: string = IS_BETA ? BETA_VERSION : "v5.4.0";
 export const SAVE_OLD_CODES = !IS_BETA;
+
+if (SAVE_OLD_CODES && existsSync(path.resolve(import.meta.dirname, `../../src/old_versions/${OLD_VERSION}`))) {
+  throw new Error("Old version already exists; you may forgot to update (OLD|NEW)_VERSION at scripts/generators/config.ts .");
+}
 
 export const BASE_PATH = path.resolve(
   import.meta.dirname,

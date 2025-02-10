@@ -353,3 +353,17 @@ export const [PuffPops] = card(333018)
   .usage(3)
   .heal(1, "@master") 
   .done();
+
+/**
+ * @id 333019
+ * @name 温泉时光
+ * @description
+ * 治疗目标角色1点，我方场上每有1个召唤物，则额外治疗1点。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const HotSpringOclock = card(333019)
+  .since("v5.4.0")
+  .costSame(1)
+  .tags("food")
+  // TODO
+  .done();
