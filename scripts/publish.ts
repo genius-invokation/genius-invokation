@@ -1,16 +1,16 @@
 #!/usr/bin/env bun
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,8 +27,17 @@ if (IS_BETA) {
   throw new Error(`You should not publish packages when IS_BETA is true.`);
 }
 
-const packages = ["static-data", "typings", "utils", "core", "data", "webui-core", "webui"];
-const VERSION = "0.16.4";
+const packages = [
+  "static-data",
+  "typings",
+  "utils",
+  "core",
+  "data",
+  "assets-manager",
+  "webui-core",
+  "webui",
+];
+const VERSION = "0.17.0";
 
 const doPublish = !!process.env.PUBLISH;
 if (!doPublish) {
@@ -45,7 +54,9 @@ const packageInfos: PackageInfo[] = [];
 function transferWorkspaceDeps(deps: Partial<Record<string, string>> = {}) {
   for (const [key, value] of Object.entries(deps)) {
     if (value?.startsWith("workspace:")) {
-      const foundDep = packageInfos.find((info) => info.packageJson.name === key);
+      const foundDep = packageInfos.find(
+        (info) => info.packageJson.name === key,
+      );
       if (!foundDep) {
         throw new Error(`Workspace dependency not found: ${key}`);
       }
@@ -54,7 +65,9 @@ function transferWorkspaceDeps(deps: Partial<Record<string, string>> = {}) {
   }
 }
 
-function removeBunFromExport(exports: PackageJson["exports"]): PackageJson["exports"] {
+function removeBunFromExport(
+  exports: PackageJson["exports"],
+): PackageJson["exports"] {
   if (!exports) {
     return exports;
   }
@@ -80,7 +93,9 @@ for (const pkg of packages) {
   if (!existsSync(directory)) {
     throw new Error(`Package directory not found: ${directory}`);
   }
-  const packageJson: PackageJson = await Bun.file(`${directory}/package.json`).json();
+  const packageJson: PackageJson = await Bun.file(
+    `${directory}/package.json`,
+  ).json();
   if ("build" in (packageJson.scripts ?? {})) {
     await $`bun run build`.cwd(directory).quiet();
   }
@@ -119,7 +134,11 @@ for (const { packageJson, directory } of packageInfos) {
   await $`cp -r ${directory}/dist ${publishDir}/`.quiet();
   // await $`cp -r ${directory}/src ${publishDir}/`.quiet();
   // await $`cp ${directory}/tsconfig.json ${publishDir}/`.quiet();
-  await $`echo ${JSON.stringify(packageJson, void 0, 2)} > ${publishDir}/package.json`.quiet();
+  await $`echo ${JSON.stringify(
+    packageJson,
+    void 0,
+    2,
+  )} > ${publishDir}/package.json`.quiet();
   await $`cp ${directory}/README.md ${publishDir}/`.quiet();
   await $`cp ${licensePath} ${publishDir}/`.quiet();
   // Bro attw is so strict

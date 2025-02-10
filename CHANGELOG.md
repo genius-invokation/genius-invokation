@@ -2,6 +2,12 @@
 
 **仅记录破坏性改动。**
 
+## 0.17.0
+- 修改了 Protobuf TypeScript 的生成方式，现在使用 Tagged Union ADT。
+- 修改了大量 `ExposedMutation` 的结构，主要包括：
+  - 部分 mutation 使用详细状态消息来替换原先 `id` `definition_id` 对；
+  - 使用 `SkillUsedEM` 提换掉 `TriggerEM`，移除了 `ActionDoneEM`。
+
 ## 0.16.0
 - 修改了 `RerollResponse` protobuf 的格式。
 
