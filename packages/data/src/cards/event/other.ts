@@ -1666,5 +1666,8 @@ export const [AbundantPhlogiston] = card(332042)
 export const LittleTepetlisaurTreasureHunterAtLarge = card(332043)
   .since("v5.4.0")
   .costSame(1)
-  // TODO
+  .createPileCards(AbundantPhlogiston, 2, "random", "my")
+  .createPileCards(AbundantPhlogiston, 2, "random", "opp")
+  .drawCards(2, { who: "my" })
+  .drawCards(2, { who: "opp" })
   .done();

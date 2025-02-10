@@ -590,6 +590,21 @@ export const PeopleOfTheSprings = card(321025)
   .done();
 
 /**
+ * @id 301024
+ * @name 「花羽会」（生效中）
+ * @description
+ * 下次切换至前台时，回复1个对应元素的骰子。（可叠加，每次触发一层）
+ */
+export const FlowerfeatherClanInEffect = status(301024)
+  .on("switchActive", (c, e) => c.self.master().id === e.switchInfo.to.id)
+  .usageCanAppend(1, Infinity)
+  .do((c) => {
+    const element = c.self.master().element();
+    c.generateDice(element, 1);
+  })
+  .done();
+
+/**
  * @id 321026
  * @name 「花羽会」
  * @description
@@ -598,5 +613,10 @@ export const PeopleOfTheSprings = card(321025)
 export const FlowerfeatherClan = card(321026)
   .since("v5.4.0")
   .support("place")
-  // TODO
+  .variable("disposedCardCount", 0)
+  .on("disposeCard")
+  .addVariable("disposedCardCount", 1)
+  .on("disposeCard", (c) => c.getVariable("disposedCardCount") >= 2)
+  .setVariable("disposedCardCount", 0)
+  .characterStatus(FlowerfeatherClanInEffect, "my next")
   .done();

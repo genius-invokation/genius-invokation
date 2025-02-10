@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2024 Guyutongxue
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, combatStatus, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, card, DamageType, combatStatus, EquipmentHandle } from "@gi-tcg/core/builder";
+import { BondOfLife } from "../../commons";
 
 /**
  * @id 113141
@@ -24,7 +25,12 @@ import { character, skill, combatStatus, card, DamageType } from "@gi-tcg/core/b
  */
 export const BlooddebtDirective = combatStatus(113141)
   .since("v5.4.0")
-  // TODO
+  .on("damaged", (c, e) => c.of(e.target).isActive())
+  .usage(5)
+  .do((c, e) => {
+    c.characterStatus(BondOfLife, e.target);
+    c.characterStatus(BondOfLife, `opp characters with definition id ${Arlecchino}`);
+  })
   .done();
 
 /**
@@ -37,7 +43,15 @@ export const InvitationToABeheading = skill(13141)
   .type("normal")
   .costPyro(1)
   .costVoid(2)
-  // TODO
+  .do((c) => {
+    let increasedValue = 0;
+    const bond = c.$(`status with definition id ${BondOfLife} at opp active`);
+    if (bond) {
+      increasedValue = Math.min(3, bond.getVariable("usage"));
+      c.consumeUsage(increasedValue, bond.state);
+    }
+    c.damage(DamageType.Physical, 2 + increasedValue);
+  })
   .done();
 
 /**
@@ -49,7 +63,8 @@ export const InvitationToABeheading = skill(13141)
 export const AllIsAsh = skill(13142)
   .type("elemental")
   .costPyro(3)
-  // TODO
+  .combatStatus(BlooddebtDirective, "opp")
+  .damage(DamageType.Pyro, 2)
   .done();
 
 /**
@@ -62,7 +77,16 @@ export const BalemoonRising = skill(13143)
   .type("burst")
   .costPyro(3)
   .costEnergy(3)
-  // TODO
+  .damage(DamageType.Pyro, 4)
+  .do((c) => {
+    const bond = c.$(`status with definition id ${BondOfLife} at my active`);
+    let healValue = 0;
+    if (bond) {
+      healValue = bond.getVariable("usage");
+      bond.dispose();
+    }
+    c.heal(healValue, "@self");
+  })
   .done();
 
 /**
@@ -72,9 +96,12 @@ export const BalemoonRising = skill(13143)
  * 角色不会受到厄月将升以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow01 = skill(13144)
+export const TheBalemoonAloneMayKnowPassive01 = skill(13144)
   .type("passive")
-  // TODO
+  .on("cancelHealed", (c, e) => e.via.definition.id !== BalemoonRising)
+  .cancel()
+  .on("modifySkillDamageType", (c, e) => e.type === DamageType.Physical && c.self.hasStatus(BondOfLife))
+  .changeDamageType(DamageType.Pyro)
   .done();
 
 /**
@@ -84,35 +111,41 @@ export const TheBalemoonAloneMayKnow01 = skill(13144)
  * 角色不会受到厄月将升以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow02 = skill(13146)
+export const TheBalemoonAloneMayKnowPassive02 = skill(13146)
   .type("passive")
-  // TODO
-  .done();
+  .reserve();
 
 /**
  * @id 13147
  * @name 唯厄月可知晓
  * @description
- * 角色不会受到厄月将升以外的治疗。
+ * 角色不会受到S13143以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow03 = skill(13147)
+export const TheBalemoonAloneMayKnowPassive03 = skill(13147)
   .type("passive")
-  // TODO
+  .on("decreaseDamaged", (c) => c.self.hasEquipment(AllReprisalsAndArrearsMineToBear))
+  .do((c, e) => {
+    const bond = c.self.hasStatus(BondOfLife);
+    if (bond) {
+      e.decreaseDamage(1)
+      c.addVariable("usage", -1, bond);
+    }
+  })
   .done();
 
 /**
  * @id 1314
  * @name 阿蕾奇诺
  * @description
- * 繁星晦暗，厄月孤存。
+ * 
  */
 export const Arlecchino = character(1314)
   .since("v5.4.0")
   .tags("pyro", "pole", "fatui")
   .health(10)
   .energy(3)
-  .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnow01, TheBalemoonAloneMayKnow02, TheBalemoonAloneMayKnow03)
+  .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03)
   .done();
 
 /**
@@ -123,9 +156,12 @@ export const Arlecchino = character(1314)
  * 装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。
  * （牌组中包含阿蕾奇诺，才能加入牌组）
  */
-export const AllReprisalsAndArrearsMineToBear = card(213141)
+export const AllReprisalsAndArrearsMineToBear: EquipmentHandle = card(213141)
   .since("v5.4.0")
   .costPyro(2)
   .talent(Arlecchino)
-  // TODO
+  .on("enter")
+  .characterStatus(BondOfLife, "@master", {
+    overrideVariables: { usage: 3 }
+  })
   .done();

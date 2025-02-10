@@ -1,31 +1,19 @@
-// Copyright (C) 2024-2025 Guyutongxue
-// 
+// Copyright (C) 2024 Guyutongxue
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, card, DamageType } from "@gi-tcg/core/builder";
-
-/**
- * @id 117093
- * @name 伟大圣龙阿乔
- * @description
- * 结束阶段：造成1点草元素伤害，然后对敌方下一个角色造成1点草元素伤害。
- * 可用次数：2
- */
-export const AlmightyDragonlordAjaw = summon(117093)
-  .since("v5.4.0")
-  // TODO
-  .done();
+import { character, skill, card, DamageType, status, summon, Reaction } from "@gi-tcg/core/builder";
 
 /**
  * @id 117091
@@ -37,7 +25,26 @@ export const AlmightyDragonlordAjaw = summon(117093)
  */
 export const GrappleLink = status(117091)
   .since("v5.4.0")
-  // TODO
+  .duration(2)
+  .defineSnippet((c) => {
+    const nightsoul = c.self.master().hasStatus(NightsoulsBlessing);
+    if (nightsoul) {
+      c.addVariableWithMax("nightsoul", 1, 2, nightsoul);
+      if (c.of(nightsoul).getVariable("nightsoul") === 2) {
+        c.self.master().addStatus(GrapplePrepare);
+        c.consumeNightsoul("@master", 2);
+      }
+    }
+  })
+  .on("damaged", (c, e) =>
+    e.getReaction() === Reaction.Burning &&
+    !c.of(e.target).isMine()
+  )
+  .listenToAll()
+  .callSnippet()
+  .on("useTechinque", (c, e) => e.techniqueCaller.id !== c.self.master().id)
+  .listenToPlayer()
+  .callSnippet()
   .done();
 
 /**
@@ -48,7 +55,22 @@ export const GrappleLink = status(117091)
  */
 export const NightsoulsBlessing = status(117092)
   .since("v5.4.0")
-  // TODO
+  .nightsoulsBlessing(2)
+  .done();
+
+/**
+ * @id 117093
+ * @name 伟大圣龙阿乔
+ * @description
+ * 结束阶段：造成1点草元素伤害，然后对敌方下一个角色造成1点草元素伤害。
+ * 可用次数：2
+ */
+export const AlmightyDragonlordAjaw = summon(117093)
+  .since("v5.4.0")
+  .endPhaseDamage(DamageType.Dendro, 1)
+  .usage(2)
+  .if((c) => c.$("opp next and not opp active"))
+  .damage(DamageType.Dendro, 1, "opp next")
   .done();
 
 /**
@@ -59,7 +81,8 @@ export const NightsoulsBlessing = status(117092)
  */
 export const GrapplePrepare = status(117094)
   .since("v5.4.0")
-  // TODO
+  .once("beforeAction", (c) => c.self.master().isActive()) // 如果一直都打也太离谱了，先假设它只打一次
+  .damage(DamageType.Dendro, 3, "recent opp from @master")
   .done();
 
 /**
@@ -72,7 +95,7 @@ export const NightsunStyle = skill(17091)
   .type("normal")
   .costDendro(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -84,7 +107,25 @@ export const NightsunStyle = skill(17091)
 export const CanopyHunterRidingHigh = skill(17092)
   .type("elemental")
   .costDendro(3)
-  // TODO
+  .addTarget("my characters")
+  .characterStatus(GrappleLink)
+  .characterStatus(NightsoulsBlessing)
+  .damage(DamageType.Dendro, 2)
+  .swapCharacterPosition("@self", "@targets.0")
+  .do((c) => {
+    const talent = c.self.hasEquipment(NightRealmsGiftRepaidInFull);
+    if (
+      talent &&
+      c.player.hands.length <= c.oppPlayer.hands.length &&
+      c.oppPlayer.hands.length > 0 &&
+      talent.variables.usagePerRound! > 0
+    ) {
+      const [targetCard] = c.maxCostHands(1, { who: "opp" });
+      c.stealHandCard(targetCard);
+      c.drawCards(1, { who: "opp" });
+      c.addVariable("usagePerRound", -1, talent);
+    }
+  })
   .done();
 
 /**
@@ -97,7 +138,8 @@ export const HailToTheAlmightyDragonlord = skill(17093)
   .type("burst")
   .costDendro(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Dendro, 1)
+  .summon(AlmightyDragonlordAjaw)
   .done();
 
 /**
@@ -133,6 +175,16 @@ export const Kinich = character(1709)
 export const NightRealmsGiftRepaidInFull = card(217091)
   .since("v5.4.0")
   .costDendro(1)
-  .talent(Kinich)
-  // TODO
+  .talent(Kinich, "none")
+  .on("switchActive", (c, e) =>
+    c.self.master().id === e.switchInfo.to.id &&
+    c.player.hands.length <= c.oppPlayer.hands.length &&
+    c.oppPlayer.hands.length > 0,
+  )
+  .usagePerRound(1)
+  .do((c) => {
+    const [targetCard] = c.maxCostHands(1, { who: "opp" });
+    c.stealHandCard(targetCard);
+    c.drawCards(1, { who: "opp" });
+  })
   .done();
