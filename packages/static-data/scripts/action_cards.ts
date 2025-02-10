@@ -72,7 +72,7 @@ export function collateActionCards(langCode: string) {
       // 热斗模式
       continue;
     }
-    if (Math.floor(id / 10) === 13309) {
+    if (133085 <= id && id <= 133099) {
       // 骗骗花就算了吧
       continue;
     }
