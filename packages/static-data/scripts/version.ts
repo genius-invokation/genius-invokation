@@ -28,7 +28,7 @@ const newVersion = "v" + packageJsonVersion.substring(giIndex + 3).replace(/-/g,
 let newVersionChecked = false;
 function checkNewVersion() {
   if (!newVersionChecked) {
-    console.log(newVersion);
+    console.log(`Generating ${newVersion}...`);
     if (Object.values(existingVersion).includes(newVersion)) {
       throw new Error(
         "New version already exists, you may forget to update newVersion!",

@@ -98,7 +98,7 @@
     },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.16.4-5-3-0",
+      "version": "0.16.4-5-4-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -233,7 +233,7 @@
     },
     "packages/static-data": {
       "name": "@gi-tcg/static-data",
-      "version": "0.16.4-5-3-0",
+      "version": "0.16.4-5-4-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",

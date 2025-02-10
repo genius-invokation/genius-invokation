@@ -20,6 +20,10 @@ const doFetch = async (id: number | string) => {
   const body = await fetch(url, {
     proxy: process.env.https_proxy,
   }).then((r) => r.json() as Promise<any>);
+  if (!body.ok) {
+    console.error(`Failed to fetch ${url}`);
+    return;
+  }
   return body;
 }
 
@@ -39,7 +43,7 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
     // 角色技能
     const chId = skillId.slice(0, 4)
     const body = await doFetch(chId);
-    if (body.response !== 200) {
+    if (!body) {
       console.warn(`Failed to fetch ${chId}`);
       return;
     }
@@ -54,7 +58,7 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
       // 单独的特技装备牌
       const cardId = skillId.slice(0, 6);
       const body = await doFetch(cardId);
-      if (body.response !== 200) {
+      if (!body) {
         console.warn(`Failed to fetch ${cardId}`);
         return;
       }
@@ -63,7 +67,7 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
       // 角色衍生装备牌
       const chId = skillId.slice(1, 5);
       const body = await doFetch(chId);
-      if (body.response !== 200) {
+      if (!body) {
         console.warn(`Failed to fetch ${chId}`);
         return;
       }

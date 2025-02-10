@@ -87,6 +87,10 @@ export async function collateEntities(langCode: string) {
       // 热斗模式
       continue;
     }
+    if (Math.floor(id / 10) === 13309) {
+      // 骗骗花就算了吧
+      continue;
+    }
     const type = obj.cardType;
     const [name, englishName] = [locale, english].map((lc) =>
       sanitizeName(lc[obj.nameTextMapHash] ?? ""),

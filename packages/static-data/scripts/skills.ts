@@ -78,7 +78,7 @@ for (const filename of fileList) {
         if (typeof value === "undefined") {
           if (PROPERTIES_KEY_MAP[key] === "D__KEY__ELEMENT") {
             // D__KEY__ELEMENT 可空（即物理伤害）
-          } else if (dataName.startsWith("Char_Skill_7")) {
+          } else if (/^Char_Skill_(7|8)/.test(dataName)) {
             // 自走棋角色技能
           } else {
             console.log(

@@ -1808,6 +1808,44 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Chevreuse"
   },
   {
+    "id": 213141,
+    "shareId": 456,
+    "sinceVersion": "v5.4.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "所有的仇与债皆由我偿…",
+    "englishName": "All Reprisals and Arrears, Mine to Bear",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11314,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>阿蕾奇诺</color>",
+        "hintText": "装备给出战中的阿蕾奇诺"
+      }
+    ],
+    "relatedCharacterId": 1314,
+    "relatedCharacterTags": [],
+    "storyTitle": "阿蕾奇诺·所有的仇与债皆由我偿…",
+    "storyText": "「如月长存。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 2
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1314]</color>时，对该角色打出。使$[A1314]附属3层<color=#FFFFFFFF>$[C122]</color>。\\n装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。\\n（牌组中包含$[A1314]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出。使阿蕾奇诺附属3层生命之契。\n装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。\n（牌组中包含阿蕾奇诺，才能加入牌组）",
+    "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。",
+    "playingDescription": "装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Arlecchino"
+  },
+  {
     "id": 214011,
     "shareId": 86,
     "sinceVersion": "v3.3.0",
@@ -2304,10 +2342,10 @@
         "count": 2
       }
     ],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1412]</color>时，装备此牌。\\n$[A1412]装备此牌后，立刻使用一次<color=#FFD780FF>$[S14122]</color>。\\n我方触发$[K214]后:本回合$[A1412]下次造成的伤害+1。(可叠加，最多叠加到+3)\\n（牌组中包含$[A1412]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为克洛琳德时，装备此牌。\n克洛琳德装备此牌后，立刻使用一次狩夜之巡。\n我方触发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)\n（牌组中包含克洛琳德，才能加入牌组）",
-    "rawPlayingDescription": "我方触发$[K214]后:本回合$[A1412]下次造成的伤害+1。(可叠加，最多叠加到+3)",
-    "playingDescription": "我方触发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1412]</color>时，装备此牌。\\n$[A1412]装备此牌后，立刻使用一次<color=#FFD780FF>$[S14122]</color>。\\n我方角色引发$[K214]后:本回合$[A1412]下次造成的伤害+1。(可叠加，最多叠加到+3)\\n（牌组中包含$[A1412]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为克洛琳德时，装备此牌。\n克洛琳德装备此牌后，立刻使用一次狩夜之巡。\n我方角色引发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)\n（牌组中包含克洛琳德，才能加入牌组）",
+    "rawPlayingDescription": "我方角色引发$[K214]后:本回合$[A1412]下次造成的伤害+1。(可叠加，最多叠加到+3)",
+    "playingDescription": "我方角色引发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Clorinde"
   },
   {
@@ -3010,7 +3048,7 @@
   },
   {
     "id": 116081,
-    "obtainable": true,
+    "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "裂晶弹片",
     "englishName": "Crystal Shrapnel",
@@ -3104,7 +3142,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_GEO",
-        "count": 3
+        "count": 4
       }
     ],
     "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1609]</color>时，装备此牌。\\n$[A1609]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16092]</color>。\\n装备有此牌的$[A1609]使用<color=#FFFFFFFF>$[S16092]</color>时：额外召唤1个<color=#FFFFFFFF>$[C116094]</color>，并改为从4个<color=#FFFFFFFF>$[C116097]</color>中$[K59]1个并召唤。\\n（牌组中包含$[A1609]，才能加入牌组）",
@@ -3428,6 +3466,43 @@
     "rawPlayingDescription": "装备有此牌的$[A1708]在场，我方触发<color=#FFFFFFFF>$[C117082]</color>的效果后：将1张所$[K56]卡牌的复制加入你的手牌。如果该牌为「{SPRITE_PRESET#3104}场地」牌，则使本回合中我方下次打出「{SPRITE_PRESET#3104}场地」时少花费2个元素骰。（每回合1次）",
     "playingDescription": "装备有此牌的卡维在场，我方触发迸发扫描的效果后：将1张所舍弃卡牌的复制加入你的手牌。如果该牌为「场地」牌，则使本回合中我方下次打出「场地」时少花费2个元素骰。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kaveh"
+  },
+  {
+    "id": 217091,
+    "shareId": 457,
+    "sinceVersion": "v5.4.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "夜域赐礼·索报皆偿",
+    "englishName": "Night Realm's Gift: Repaid in Full",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11709,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>基尼奇</color>",
+        "hintText": "装备给我方的基尼奇"
+      }
+    ],
+    "relatedCharacterId": 1709,
+    "relatedCharacterTags": [],
+    "storyTitle": "基尼奇·索报皆偿",
+    "storyText": "「报偿夜神。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_DENDRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "装备有此牌的<color=#FFFFFFFF>$[A1709]</color>切换至前台或使用<color=#FFFFFFFF>$[S17092]</color>时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）\\n（牌组中包含$[A1709]，才能加入牌组）",
+    "description": "装备有此牌的基尼奇切换至前台或使用悬猎·游骋高狩时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）\n（牌组中包含基尼奇，才能加入牌组）",
+    "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1709]</color>切换至前台或使用<color=#FFFFFFFF>$[S17092]</color>时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）",
+    "playingDescription": "装备有此牌的基尼奇切换至前台或使用悬猎·游骋高狩时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kinich"
   },
   {
     "id": 221011,
@@ -4723,238 +4798,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Weapon_SwordDvalin"
   },
   {
-    "id": 133090,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "海底寻宝",
-    "englishName": "Underwater Treasure Hunt",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 2
-      }
-    ],
-    "rawDescription": "生成6张<color=#FFFFFFFF>$[K2003]</color>，随机地置入我方牌库中。",
-    "description": "生成6张海底宝藏，随机地置入我方牌库中。",
-    "rawPlayingDescription": "咦…这张牌好像有点不对劲？",
-    "playingDescription": "咦…这张牌好像有点不对劲？",
-    "cardFace": "UI_Gcg_CardFace_Event_Event_Xunbao"
-  },
-  {
-    "id": 133091,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "可控性危害化式定向爆破",
-    "englishName": "Controlled Directional Blast",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>对方支援区和召唤物区的卡牌数量总和至少为4时，才能打出：</color>双方所有召唤物的可用次数-1。",
-    "description": "对方支援区和召唤物区的卡牌数量总和至少为4时，才能打出：双方所有召唤物的可用次数-1。",
-    "rawPlayingDescription": "咦…这张牌好像有点不对劲？",
-    "playingDescription": "咦…这张牌好像有点不对劲？",
-    "cardFace": "UI_Gcg_CardFace_Event_Event_Kexueyuan"
-  },
-  {
-    "id": 133092,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "王下近待",
-    "englishName": "King's Valet",
-    "tags": [
-      "GCG_TAG_WEAPON",
-      "GCG_TAG_WEAPON_BOW"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>入场时：</color>在本回合中，下次对角色打出「{SPRITE_PRESET#3006}天赋」或角色使用「元素战技」时，少花费2个元素骰。\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3202}弓」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
-    "description": "角色造成的伤害+1。\n入场时：在本回合中，下次对角色打出「天赋」或角色使用「元素战技」时，少花费2个元素骰。\n（「弓」角色才能装备。角色最多装备1件「武器」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。",
-    "playingDescription": "角色造成的伤害+1。",
-    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_Wangxia"
-  },
-  {
-    "id": 133093,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "阿斯莫之弓",
-    "englishName": "Asmo's Bow",
-    "tags": [
-      "GCG_TAG_WEAPON",
-      "GCG_TAG_WEAPON_BOW"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色使用原本元素骰费用+充能费用至少为5的技能时，</color>伤害额外+2。（每回合1次）\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3202}弓」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
-    "description": "角色造成的伤害+1。\n角色使用原本元素骰费用+充能费用至少为5的技能时，伤害额外+2。（每回合1次）\n（「弓」角色才能装备。角色最多装备1件「武器」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色使用原本元素骰费用+充能费用至少为5的技能时，</color>伤害额外+2。（每回合1次）",
-    "playingDescription": "角色造成的伤害+1。\n角色使用原本元素骰费用+充能费用至少为5的技能时，伤害额外+2。（每回合1次）",
-    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_Amos"
-  },
-  {
-    "id": 133094,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "温妮莎传说",
-    "englishName": "The Tale of Vennessa",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 3
-      }
-    ],
-    "rawDescription": "生成4个不同类型的基础元素骰。",
-    "description": "生成4个不同类型的基础元素骰。",
-    "rawPlayingDescription": "咦…这张牌好像有点不对劲？",
-    "playingDescription": "咦…这张牌好像有点不对劲？",
-    "cardFace": "UI_Gcg_CardFace_Event_Event_Wennisha"
-  },
-  {
-    "id": 133095,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "饰金之梦",
-    "englishName": "Gilded Dreams",
-    "tags": [
-      "GCG_TAG_ARTIFACT"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>入场时：</color>生成1个所附属角色类型的元素骰。如果我方队伍中存在3种不同元素类型的角色，则改为生成2个。\\n<color=#FFFFFFFF>所附属角色为出战角色期间，敌方受到元素反应伤害时：</color>抓1张牌。（每回合至多2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
-    "description": "入场时：生成1个所附属角色类型的元素骰。如果我方队伍中存在3种不同元素类型的角色，则改为生成2个。\n所附属角色为出战角色期间，敌方受到元素反应伤害时：抓1张牌。（每回合至多2次）\n（角色最多装备1件「圣遗物」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色为出战角色期间，敌方受到元素反应伤害时：</color>抓1张牌。（每回合至多2次）",
-    "playingDescription": "所附属角色为出战角色期间，敌方受到元素反应伤害时：抓1张牌。（每回合至多2次）",
-    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Chiwangdanjian"
-  },
-  {
-    "id": 133096,
-    "obtainable": false,
-    "type": "GCG_CARD_ASSIST",
-    "name": "流明媒触石",
-    "englishName": "Lumenarystone",
-    "tags": [
-      "GCG_TAG_ITEM"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_VOID",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>我方打出行动牌后：</color>如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个$[K411]。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：3</color>",
-    "description": "我方打出行动牌后：如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个万能元素。（每回合1次）\n可用次数：3",
-    "rawPlayingDescription": "<color=#FFFFFFFF>我方打出行动牌后：</color>如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个$[K411]。（每回合1次，<color=#D3BC8EFF>当前已打出${[GCG_TOKEN_COUNTER]}张</color>）\\n<color=#FFFFFFFF>$[K3]：3</color>",
-    "playingDescription": "我方打出行动牌后：如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个万能元素。（每回合1次，当前已打出${[GCG_TOKEN_COUNTER]}张）\n可用次数：3",
-    "cardFace": "UI_Gcg_CardFace_Assist_Prop_Liumingshi"
-  },
-  {
-    "id": 133097,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "甜甜酿花鸡",
-    "englishName": "Sweet Ma'am",
-    "tags": [
-      "GCG_TAG_FOOD"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "治疗目标角色1点。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
-    "description": "治疗目标角色1点。\n（每回合每个角色最多食用1次「料理」）",
-    "rawPlayingDescription": "咦…这张牌好像有点不对劲？",
-    "playingDescription": "咦…这张牌好像有点不对劲？",
-    "cardFace": "UI_Gcg_CardFace_Event_Food_Huaniangji"
-  },
-  {
-    "id": 133098,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "美味马卡龙",
-    "englishName": "Delicious Macarons",
-    "tags": [
-      "GCG_TAG_FOOD"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_VOID",
-        "count": 2
-      }
-    ],
-    "rawDescription": "治疗目标角色1点，该角色接下来3次受到伤害后再治疗其1点。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
-    "description": "治疗目标角色1点，该角色接下来3次受到伤害后再治疗其1点。\n（每回合每个角色最多食用1次「料理」）",
-    "rawPlayingDescription": "咦…这张牌好像有点不对劲？",
-    "playingDescription": "咦…这张牌好像有点不对劲？",
-    "cardFace": "UI_Gcg_CardFace_Event_Food_Macarons"
-  },
-  {
-    "id": 133099,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "万世涌流大典",
-    "englishName": "Tomb of the Eternal Flow",
-    "tags": [
-      "GCG_TAG_WEAPON",
-      "GCG_TAG_WEAPON_CATALYST"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色受到伤害或治疗后：</color>如果本回合已受到伤害或治疗累计2次，则角色本回合中下次造成的伤害+2。（每回合1次）\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3201}法器」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
-    "description": "角色造成的伤害+1。\n角色受到伤害或治疗后：如果本回合已受到伤害或治疗累计2次，则角色本回合中下次造成的伤害+2。（每回合1次）\n（「法器」角色才能装备。角色最多装备1件「武器」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色受到伤害或治疗后：</color>如果本回合已受到伤害或治疗累计2次，则角色本回合中下次造成的伤害+2。（每回合1次）",
-    "playingDescription": "角色造成的伤害+1。\n角色受到伤害或治疗后：如果本回合已受到伤害或治疗累计2次，则角色本回合中下次造成的伤害+2。（每回合1次）",
-    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_Wanshiliuyongdadian"
-  },
-  {
     "id": 311101,
     "shareId": 121,
     "sinceVersion": "v3.3.0",
@@ -6068,8 +5911,8 @@
         "count": 3
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>入场时：</color>我方队伍中每有一名「{SPRITE_PRESET#3402}璃月」角色，此牌就为附属的角色提供<color=#FFFFFFFF>1点$[K6]</color>。（最多3点）\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3204}长柄武器」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
-    "description": "角色造成的伤害+1。\n入场时：我方队伍中每有一名「璃月」角色，此牌就为附属的角色提供1点护盾。（最多3点）\n（「长柄武器」角色才能装备。角色最多装备1件「武器」）",
+    "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>入场时：</color>我方队伍中每有1名「{SPRITE_PRESET#3402}璃月」角色，此牌就为附属的角色提供<color=#FFFFFFFF>1点$[K6]</color>。（最多3点）\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3204}长柄武器」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
+    "description": "角色造成的伤害+1。\n入场时：我方队伍中每有1名「璃月」角色，此牌就为附属的角色提供1点护盾。（最多3点）\n（「长柄武器」角色才能装备。角色最多装备1件「武器」）",
     "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。",
     "playingDescription": "角色造成的伤害+1。",
     "cardFace": "UI_Gcg_CardFace_Modify_Weapon_PoleLapis"
@@ -9213,6 +9056,27 @@
     "cardFace": "UI_Gcg_CardFace_Assist_Location_LiuQuan"
   },
   {
+    "id": 321026,
+    "shareId": 458,
+    "sinceVersion": "v5.4.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "「花羽会」",
+    "englishName": "\"Flower-Feather Clan\"",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「花羽会」",
+    "storyText": "信仰执掌热量与焚风之流转的大灵，迅猛而孤高的龙骑士们的部族…\n每日，与绒翼龙一起飞行的部族成员，都会在空中巡视他们的领地。",
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>我方$[K56]2张卡牌后：</color>我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
+    "description": "我方舍弃2张卡牌后：我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_HuaYu"
+  },
+  {
     "id": 322001,
     "shareId": 194,
     "sinceVersion": "v3.3.0",
@@ -9655,8 +9519,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3003}武器」手牌时：</color>少花费1个元素骰；我方场上每有一个已装备「{SPRITE_PRESET#3003}武器」的角色，就额外少花费1个元素骰。（每回合1次）",
-    "description": "我方打出「武器」手牌时：少花费1个元素骰；我方场上每有一个已装备「武器」的角色，就额外少花费1个元素骰。（每回合1次）",
+    "rawDescription": "<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3003}武器」手牌时：</color>少花费1个元素骰；我方场上每有1个已装备「{SPRITE_PRESET#3003}武器」的角色，就额外少花费1个元素骰。（每回合1次）",
+    "description": "我方打出「武器」手牌时：少花费1个元素骰；我方场上每有1个已装备「武器」的角色，就额外少花费1个元素骰。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_Laozhang"
   },
   {
@@ -11802,8 +11666,8 @@
     "storyTitle": "野猪公主",
     "storyText": "久远的传说中，野猪的王国富足快乐。王国的小公主带着智慧的狐狸与长寿的乌龟，踏上了前往北方的道路，打算让不幸的小狼变回原来的那个好孩子…",
     "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>本回合中，我方每有一张装备在角色身上的「装备牌」被弃置时：</color>获得1个$[K411]。（最多获得2个）\\n（角色被击倒时弃置装备牌，或者覆盖装备「{SPRITE_PRESET#3003}武器」「{SPRITE_PRESET#3004}圣遗物」或「{SPRITE_PRESET#3008}特技」，都可以触发此效果）",
-    "description": "本回合中，我方每有一张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）\n（角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）",
+    "rawDescription": "<color=#FFFFFFFF>本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：</color>获得1个$[K411]。（最多获得2个）\\n（角色被击倒时弃置装备牌，或者覆盖装备「{SPRITE_PRESET#3003}武器」「{SPRITE_PRESET#3004}圣遗物」或「{SPRITE_PRESET#3008}特技」，都可以触发此效果）",
+    "description": "本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）\n（角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Yezhu"
   },
   {
@@ -12178,6 +12042,30 @@
     "rawDescription": "<color=#FFFFFFFF>本回合我方下次角色消耗「夜魂值」后：</color>该角色获得1点「夜魂值」。",
     "description": "本回合我方下次角色消耗「夜魂值」后：该角色获得1点「夜魂值」。",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Ransu"
+  },
+  {
+    "id": 332043,
+    "shareId": 459,
+    "sinceVersion": "v5.4.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "小嵴锋龙！发现宝藏！",
+    "englishName": "Little Tepetlisaur — Treasure Hunter at Large",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "小嵴锋龙！发现宝藏！",
+    "storyText": "「亮晶晶的石头，金闪闪的摩拉！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "向双方牌组中放入2张<color=#FFFFFFFF>$[C332042]</color>，随后双方各抓2张牌。",
+    "description": "向双方牌组中放入2张燃素充盈，随后双方各抓2张牌。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_JifengLong"
   },
   {
     "id": 333001,
@@ -12763,6 +12651,41 @@
     "cardFace": "UI_Gcg_CardFace_Event_Food_DongDongPengPeng"
   },
   {
+    "id": 333019,
+    "shareId": 460,
+    "sinceVersion": "v5.4.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "温泉时光",
+    "englishName": "Hot Spring O'Clock",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [
+      {
+        "id": 103,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择一个角色食用<color=#FFD780FF>料理</color>",
+        "hintText": "请选择一个角色食用料理"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "温泉时光",
+    "storyText": "颗粒果制成的披萨。在饼皮上铺匀颗粒果，再撒上一层厚厚的奶酪，送入烤箱中，最后画上可爱的鳍游龙图案就大功告成了。趁热吃上一口，暖呼呼的，让人一下子联想到了泡温泉的悠哉时光。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "治疗目标角色1点，我方场上每有1个召唤物，则额外治疗1点。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
+    "description": "治疗目标角色1点，我方场上每有1个召唤物，则额外治疗1点。\n（每回合每个角色最多食用1次「料理」）",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_WenQuan"
+  },
+  {
     "id": 421001,
     "obtainable": false,
     "type": "GCG_CARD_ASSIST",
@@ -12970,6 +12893,81 @@
     "playCost": [],
     "rawDescription": "<color=#FFFFFFFF>敌方角色使用「元素战技」后：</color>治疗所有角色2点，然后对所有角色造成2点$[K5]。",
     "description": "敌方角色使用「元素战技」后：治疗所有角色2点，然后对所有角色造成2点穿透伤害。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
+  },
+  {
+    "id": 421015,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "血契暗蚀",
+    "englishName": "Blood Bond: Dark Decay",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "附属有<color=#FFFFFFFF>$[C122]</color>的角色受到的伤害+1。",
+    "description": "附属有生命之契的角色受到的伤害+1。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
+  },
+  {
+    "id": 421016,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "血契合奏",
+    "englishName": "Blood Bond: Ensemble",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>所有角色附属2层<color=#FFFFFFFF>$[C122]</color>。",
+    "description": "行动阶段开始时：所有角色附属2层生命之契。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
+  },
+  {
+    "id": 421017,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "烈焰复燃",
+    "englishName": "Rekindled Flame",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>$[C115]</color>造成的伤害+3，并且在宣布结束时立刻触发一次。",
+    "description": "燃烧烈焰造成的伤害+3，并且在宣布结束时立刻触发一次。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
+  },
+  {
+    "id": 421018,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "高调阵势",
+    "englishName": "Elevated Array",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "所有召唤物造成的伤害+1。",
+    "description": "所有召唤物造成的伤害+1。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
+  },
+  {
+    "id": 421019,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "元素强音",
+    "englishName": "Elemental Forte",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "元素反应伤害额外+1。",
+    "description": "元素反应伤害额外+1。",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_DimaiZhenshi"
   },
   {
@@ -14022,6 +14020,36 @@
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Yibianzhishi"
   },
   {
+    "id": 422070,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "丘丘援军",
+    "englishName": "Hilichurl Reserve",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>召唤一个<color=#FFFFFFFF>$[K1001]</color>！",
+    "description": "行动阶段开始时：召唤一个随机「丘丘人」召唤物！",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_Yibianzhishi"
+  },
+  {
+    "id": 422071,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "严寒蔓延",
+    "englishName": "Spreading Cold",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>对敌方所有角色$[K201]，重复1次。",
+    "description": "行动阶段开始时：对敌方所有角色附着冰元素，重复1次。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_Yibianzhishi"
+  },
+  {
     "id": 423001,
     "obtainable": false,
     "type": "GCG_CARD_ASSIST",
@@ -14724,8 +14752,8 @@
     "relatedCharacterId": null,
     "relatedCharacterTags": [],
     "playCost": [],
-    "rawDescription": "我方召唤物造成的伤害+1。\\n<color=#FFFFFFFF>我方宣布结束时：</color>我方场上每有一个召唤物，就在下回合行动阶段开始时生成1个$[K411]。",
-    "description": "我方召唤物造成的伤害+1。\n我方宣布结束时：我方场上每有一个召唤物，就在下回合行动阶段开始时生成1个万能元素。",
+    "rawDescription": "我方召唤物造成的伤害+1。\\n<color=#FFFFFFFF>我方宣布结束时：</color>我方场上每有1个召唤物，就在下回合行动阶段开始时生成1个$[K411]。",
+    "description": "我方召唤物造成的伤害+1。\n我方宣布结束时：我方场上每有1个召唤物，就在下回合行动阶段开始时生成1个万能元素。",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Juelubingji"
   },
   {
@@ -15161,6 +15189,21 @@
     "playCost": [],
     "rawDescription": "<color=#FFFFFFFF>敌方角色受到元素反应伤害后：</color>生成2个$[K411]。",
     "description": "敌方角色受到元素反应伤害后：生成2个万能元素。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_Juelubingji"
+  },
+  {
+    "id": 423078,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "转化之火",
+    "englishName": "Transfiguring Flame",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>任意角色触发燃烧反应后：</color>生成1个$[K411]。",
+    "description": "任意角色触发燃烧反应后：生成1个万能元素。",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Juelubingji"
   }
 ]
