@@ -68,13 +68,6 @@ export const XenochromaticHuntersRay = card(313001)
  * [3130021: 钩物巧技] (2*Same) 造成1点物理伤害，窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。
  * 如果我方手牌数不多于2，此特技少花费1个元素骰。
  * [3130022: ] ()
- * @outdated
- * 特技：钩物巧技
- * 可用次数：2
- * （角色最多装备1个「特技」）
- * [3130021: 钩物巧技] (2*Same) 造成1点物理伤害，窃取1张原本元素骰费用最高的对方手牌。
- * 如果我方手牌数不多于2，此特技少花费1个元素骰。
- * [3130022: ] ()
  */
 export const Yumkasaurus = card(313002)
   .since("v5.0.0")
@@ -91,6 +84,7 @@ export const Yumkasaurus = card(313002)
     const [handCard] = c.maxCostHands(1, { who: "opp" });
     if (handCard) {
       c.stealHandCard(handCard);
+      c.drawCards(1, { who: "opp" });
     }
   })
   .done();

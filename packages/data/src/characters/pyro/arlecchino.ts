@@ -72,7 +72,7 @@ export const BalemoonRising = skill(13143)
  * 角色不会受到厄月将升以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow = skill(13144)
+export const TheBalemoonAloneMayKnow01 = skill(13144)
   .type("passive")
   // TODO
   .done();
@@ -84,7 +84,7 @@ export const TheBalemoonAloneMayKnow = skill(13144)
  * 角色不会受到厄月将升以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow = skill(13146)
+export const TheBalemoonAloneMayKnow02 = skill(13146)
   .type("passive")
   // TODO
   .done();
@@ -96,7 +96,7 @@ export const TheBalemoonAloneMayKnow = skill(13146)
  * 角色不会受到厄月将升以外的治疗。
  * 自身附属生命之契时：角色造成的物理伤害变为火元素伤害。
  */
-export const TheBalemoonAloneMayKnow = skill(13147)
+export const TheBalemoonAloneMayKnow03 = skill(13147)
   .type("passive")
   // TODO
   .done();
@@ -112,7 +112,7 @@ export const Arlecchino = character(1314)
   .tags("pyro", "pole", "fatui")
   .health(10)
   .energy(3)
-  .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnow, TheBalemoonAloneMayKnow, TheBalemoonAloneMayKnow)
+  .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnow01, TheBalemoonAloneMayKnow02, TheBalemoonAloneMayKnow03)
   .done();
 
 /**

@@ -107,9 +107,7 @@ export const HailToTheAlmightyDragonlord = skill(17093)
  * 
  */
 export const Untitled11 = skill(17094)
-  .type("undefined")
-  // TODO
-  .done();
+  .reserve();
 
 /**
  * @id 1709
@@ -122,7 +120,7 @@ export const Kinich = character(1709)
   .tags("dendro", "claymore", "natlan")
   .health(10)
   .energy(2)
-  .skills(NightsunStyle, CanopyHunterRidingHigh, HailToTheAlmightyDragonlord, Untitled12)
+  .skills(NightsunStyle, CanopyHunterRidingHigh, HailToTheAlmightyDragonlord)
   .done();
 
 /**

@@ -166,7 +166,7 @@ export const ImperialPanoply01 = skill(23047)
 export const EmperorOfFireAndIron = character(2304)
   .since("v4.6.0")
   .tags("pyro", "monster")
-  .health(6)
+  .health(5)
   .energy(2)
   .skills(ShatterclampStrike, BusterBlaze, BattlelineDetonation, ImperialPanoply, SearingBlast)
   .done();

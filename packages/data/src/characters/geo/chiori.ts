@@ -229,7 +229,7 @@ export const Chiori = character(1609)
  */
 export const InFiveColorsDyed = card(216091)
   .since("v5.1.0")
-  .costGeo(3)
+  .costGeo(4)
   .talent(Chiori)
   .on("enter")
   .useSkill(FlutteringHasode)
