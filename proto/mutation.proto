@@ -75,7 +75,7 @@ message SwitchActiveEM {
   int32 who = 1;
   sint32 character_id = 2;
   int32 character_definition_id = 3;
-  optional int32 via_skill_id = 4;
+  optional int32 via_skill_definition_id = 4;
 }
 
 enum RemoveCardReason {
@@ -163,12 +163,21 @@ message ElementalReactionEM {
   int32 character_definition_id = 4;
 }
 
+enum SkillType {
+  SKILL_TYPE_TRIGGERED = 0;
+  SKILL_TYPE_CHARACTER_PASSIVE = 1;
+  SKILL_TYPE_NORMAL = 2;
+  SKILL_TYPE_ELEMENTAL = 3;
+  SKILL_TYPE_BURST = 4;
+  SKILL_TYPE_TECHNIQUE = 5;
+}
+
 // 使用或触发了技能
 message SkillUsedEM {
   sint32 caller_id = 1;
   int32 caller_definition_id = 2;
   int32 skill_definition_id = 3;
-  bool initiative = 4;
+  SkillType skill_type = 4;
   int32 who = 5;
 }
 
