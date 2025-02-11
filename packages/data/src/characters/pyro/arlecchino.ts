@@ -25,7 +25,7 @@ import { BondOfLife } from "../../commons";
  */
 export const BlooddebtDirective = combatStatus(113141)
   .since("v5.4.0")
-  .on("damaged", (c, e) => c.of(e.target).isActive())
+  .on("damaged")
   .usage(5)
   .do((c, e) => {
     c.characterStatus(BondOfLife, e.target);
