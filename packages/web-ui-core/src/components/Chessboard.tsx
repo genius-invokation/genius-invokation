@@ -34,7 +34,6 @@ import {
   splitProps,
   type ComponentProps,
 } from "solid-js";
-import { Key } from "@solid-primitives/keyed";
 import {
   DRAGGING_Z,
   FOCUSING_HANDS_Z,
@@ -49,11 +48,7 @@ import {
   type Pos,
   type Size,
 } from "../layout";
-import {
-  CHARACTER_ANIMATION_NONE,
-  CharacterArea,
-  type CharacterAnimation,
-} from "./CharacterArea";
+import { CHARACTER_ANIMATION_NONE, CharacterArea } from "./CharacterArea";
 import {
   createCardAnimation,
   type CardStaticUiState,
@@ -88,9 +83,15 @@ interface DraggingCardInfo {
 export interface CharacterInfo {
   id: number;
   data: PbCharacterState;
-  combatStatus: PbEntityState[];
+  entities: EntityInfo[];
+  combatStatus: EntityInfo[];
   active: boolean;
   uiState: CharacterUiState;
+}
+
+export interface EntityInfo {
+  id: number;
+  data: PbEntityState;
 }
 
 export interface AnimatingCardInfo {
@@ -351,12 +352,13 @@ function rerenderChildren(opt: {
   for (const who of [0, 1] as const) {
     const player = state.player[who];
     const opp = who !== opt.who;
-    const combatStatus = player.combatStatus;
+    const combatStatus = player.combatStatus.map(getEntityInfo);
 
     const totalCharacterCount = player.character.length;
     for (let i = 0; i < totalCharacterCount; i++) {
       const ch = player.character[i];
-      const isActive = player.activeCharacterId === ch.id;
+      const entities = ch.entity.map(getEntityInfo);
+      const isActive = player.activeCharacterId === ch.id && !ch.defeated;
       const [x, y] = getCharacterAreaPos(
         size,
         opp,
@@ -368,6 +370,7 @@ function rerenderChildren(opt: {
       characters.set(ch.id, {
         id: ch.id,
         data: ch,
+        entities,
         uiState: {
           type: "character",
           isAnimating: isCharacterAnimating,
@@ -421,6 +424,13 @@ function rerenderChildren(opt: {
       .toArray()
       .toSorted((a, b) => a.id - b.id),
   };
+
+  function getEntityInfo(state: PbEntityState): EntityInfo {
+    return {
+      id: state.id,
+      data: state,
+    };
+  }
 }
 
 export function Chessboard(props: ChessboardProps) {

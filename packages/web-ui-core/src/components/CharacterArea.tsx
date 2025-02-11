@@ -16,11 +16,13 @@
 import {
   DamageType,
   PbEntityState,
+  PbEquipmentType,
   type PbCharacterState,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
   createEffect,
+  createMemo,
   createSignal,
   For,
   Index,
@@ -28,9 +30,10 @@ import {
   untrack,
 } from "solid-js";
 import { Image } from "./Image";
-import type { DamageInfo } from "./Chessboard";
+import type { DamageInfo, EntityInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
+import { StatusGroup } from "./StatusGroup";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -57,7 +60,9 @@ export type CharacterAnimation =
 
 export interface CharacterAreaProps {
   data: PbCharacterState;
-  combatStatus: PbEntityState[];
+  active: boolean;
+  entities: EntityInfo[];
+  combatStatus: EntityInfo[];
   uiState: CharacterUiState;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
@@ -66,6 +71,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function CharacterArea(props: CharacterAreaProps) {
   let el!: HTMLDivElement;
+  const data = createMemo(() => props.data);
 
   const [getDamage, setDamage] = createSignal<DamageInfo | null>(null);
   const [showDamage, setShowDamage] = createSignal(false);
@@ -125,28 +131,32 @@ export function CharacterArea(props: CharacterAreaProps) {
     });
   });
 
-  const aura = (): [number, number] => {
+  const aura = createMemo((): [number, number] => {
     const aura =
       /* previewData().find(
         (p) =>
           p.modifyEntityVar?.entityId === props.data.id &&
           p.modifyEntityVar?.variableName === "aura",
-      )?.modifyEntityVar?.variableValue ?? */ props.data.aura;
+      )?.modifyEntityVar?.variableValue ?? */ data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
-  };
-  const energy = () =>
-    /* previewData().find(
+  });
+  const energy = createMemo(
+    () =>
+      /* previewData().find(
       (p) =>
         p.modifyEntityVar?.entityId === props.data.id &&
         p.modifyEntityVar?.variableName === "energy",
-    )?.modifyEntityVar?.variableValue ?? */ props.data.energy;
-  const defeated = () =>
-    /* previewData().some(
+    )?.modifyEntityVar?.variableValue ?? */ data().energy,
+  );
+  const defeated = createMemo(
+    () =>
+      /* previewData().some(
       (p) =>
         p.modifyEntityVar?.entityId === props.data.id &&
         p.modifyEntityVar?.variableName === "alive" &&
         p.modifyEntityVar?.variableValue === 0,
-    ) || */ props.data.defeated;
+    ) || */ data().defeated,
+  );
 
   // const previewHealthDiff = () => {
   //   const previewHealth = previewData().find(
@@ -164,16 +174,23 @@ export function CharacterArea(props: CharacterAreaProps) {
   //   }
   // };
 
-  const statuses = () =>
-    props.data.entity.filter((et) => typeof et.equipment === "undefined");
-  const weapon = () =>
-    props.data.entity.find((et) => et.equipment === 1 /* weapon */);
-  const artifact = () =>
-    props.data.entity.find((et) => et.equipment === 2 /* artifact */);
-  const technique = () =>
-    props.data.entity.find((et) => et.equipment === 3 /* technique */);
-  const otherEquipments = () =>
-    props.data.entity.filter((et) => et.equipment === 0 /* other */);
+  const statuses = createMemo(() =>
+    props.entities.filter((et) => typeof et.data.equipment === "undefined"),
+  );
+  const weapon = createMemo(() =>
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.WEAPON),
+  );
+  const artifact = createMemo(() =>
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.ARTIFACT),
+  );
+  const technique = createMemo(() =>
+    props.entities.find(
+      (et) => et.data.equipment === PbEquipmentType.TECHNIQUE,
+    ),
+  );
+  const otherEquipments = createMemo(() =>
+    props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
+  );
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
@@ -190,18 +207,18 @@ export function CharacterArea(props: CharacterAreaProps) {
         </For>
       </div>
       <div class="h-36 w-21 relative">
-        <Show when={!props.data.defeated}>
+        <Show when={!defeated()}>
           <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
             <WaterDrop />
-            <div class="absolute">{props.data.health}</div>
+            <div class="absolute line-height-none">{data().health}</div>
           </div>
           <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
-            <EnergyBar current={energy()} total={props.data.maxEnergy} />
+            <EnergyBar current={energy()} total={data().maxEnergy} />
             <Show when={technique()}>
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().hasUsagePerRound}
+                  bool:data-highlight={et().data.hasUsagePerRound}
                 >
                   &#129668;
                 </div>
@@ -222,7 +239,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().hasUsagePerRound}
+                  bool:data-highlight={et().data.hasUsagePerRound}
                 >
                   &#x1F5E1;
                 </div>
@@ -232,7 +249,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().hasUsagePerRound}
+                  bool:data-highlight={et().data.hasUsagePerRound}
                 >
                   &#x1F451;
                 </div>
@@ -242,7 +259,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().hasUsagePerRound}
+                  bool:data-highlight={et().data.hasUsagePerRound}
                 >
                   &#x2728;
                 </div>
@@ -252,16 +269,23 @@ export function CharacterArea(props: CharacterAreaProps) {
         </Show>
         <div class="h-full w-full rounded-xl">
           <Image
-            imageId={props.data.definitionId}
+            imageId={data().definitionId}
             class="h-full rounded-xl b-white b-solid b-3"
             classList={{
-              "brightness-50": props.data.defeated,
+              "brightness-50": defeated(),
             }}
           />
         </div>
-        <div class="absolute z-3 hover:z-10 left-0 bottom-0 h-6 flex flex-row">
-          {/* <Key each={statuses()} by="id">{(st) => <Status data={st()} /> }</Key>*/}
-        </div>
+        <StatusGroup
+          class="absolute z-3 left-0.5 bottom-0 h-6"
+          statuses={statuses()}
+        />
+        <Show when={props.active}>
+          <StatusGroup
+            class="absolute z-3 left-0.5 bottom--6 h-6"
+            statuses={props.combatStatus}
+          />
+        </Show>
         <Show when={defeated()}>
           <div class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]">
             &#9760;
