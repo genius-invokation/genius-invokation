@@ -19,6 +19,7 @@ import type {
   PbCharacterState,
   PbEntityState,
   PbGameState,
+  PbSkillType,
   Reaction,
 } from "@gi-tcg/typings";
 import { Card } from "./Card";
@@ -29,6 +30,7 @@ import {
   on,
   onCleanup,
   onMount,
+  Show,
   splitProps,
   type ComponentProps,
 } from "solid-js";
@@ -64,6 +66,7 @@ import {
   KeyWithAnimation,
   type UpdateSignal,
 } from "../primitives/key_with_animation";
+import { NotificationBox } from "./NotificationBox";
 
 export interface CardInfo {
   id: number;
@@ -113,9 +116,9 @@ export interface ReactionInfo {
 export interface NotificationBoxInfo {
   type: "useSkill" | "switchActive";
   who: 0 | 1;
-  delay: number;
   characterDefinitionId: number;
-  skillDefinitionId: number | "overload";
+  skillDefinitionId?: number;
+  skillType: PbSkillType | "overloaded" | null;
 }
 
 export interface ChessboardData extends ParsedMutation {
@@ -403,13 +406,13 @@ function rerenderChildren(opt: {
     target.uiState.damages.push(damage);
   }
 
+  if (data.notificationBox) {
+    animationPromises.push(new Promise((resolve) => setTimeout(resolve, 700)));
+  }
+
   Promise.all(animationPromises).then(() => {
     onAnimationFinish?.();
   });
-
-  if (!currentCards.find((card) => card.id === -500039)) {
-    console.log(data);
-  }
 
   return {
     cards: currentCards.toSorted((a, b) => a.id - b.id),
@@ -623,7 +626,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset min-h-xl min-w-3xl bg-yellow-1 overflow-clip ${
+      class={`gi-tcg-chessboard-new reset relative min-h-xl min-w-3xl bg-yellow-1 overflow-clip ${
         localProps.class ?? ""
       }`}
       {...elProps}
@@ -659,6 +662,9 @@ export function Chessboard(props: ChessboardProps) {
           )}
         </KeyWithAnimation>
       </div>
+      <Show when={localProps.data.notificationBox} keyed>
+        {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
+      </Show>
     </div>
   );
 }

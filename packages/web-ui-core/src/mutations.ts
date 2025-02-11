@@ -15,14 +15,12 @@
 
 import {
   type CreateCardEM,
-  type DamageEM,
   DamageType,
-  type ElementalReactionEM,
   PbCardArea,
   type PbExposedMutation,
+  PbSkillType,
   Reaction,
   type RemoveCardEM,
-  SkillUsedEM,
   type TransferCardEM,
 } from "@gi-tcg/typings";
 import type {
@@ -61,7 +59,7 @@ export interface ParsedMutation {
   animatingCards: AnimatingCardInfo[];
   damages: DamageInfo[];
   reactions: ReactionInfo[];
-  notificationBox: NotificationBoxInfo[];
+  notificationBox: NotificationBoxInfo | null;
 }
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
@@ -79,10 +77,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
 
   const damagesByTarget = new Map<number, DamageInfo[]>();
   const reactionsByTarget = new Map<number, ReactionInfo[]>();
-  const notificationBoxByWho: [NotificationBoxInfo[], NotificationBoxInfo[]] = [
-    [],
-    [],
-  ];
+  let notificationBox: NotificationBoxInfo | null = null;
 
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
@@ -157,15 +152,30 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "skillUsed": {
-        const who = mutation.value.who as 0 | 1;
-        const delay = notificationBoxByWho[who].length;
-        notificationBoxByWho[who].push({
-          type: "useSkill",
-          who,
-          characterDefinitionId: mutation.value.callerDefinitionId,
-          skillDefinitionId: mutation.value.skillDefinitionId,
-          delay,
-        });
+        if (mutation.value.skillType === PbSkillType.TRIGGERED) {
+          // TODO: triggered
+        } else {
+          notificationBox = {
+            type: "useSkill",
+            who: mutation.value.who as 0 | 1,
+            characterDefinitionId: mutation.value.callerDefinitionId,
+            skillDefinitionId: mutation.value.skillDefinitionId,
+            skillType: mutation.value.skillType,
+          };
+        }
+        break;
+      }
+      case "switchActive": {
+        notificationBox = {
+          type: "switchActive",
+          who: mutation.value.who as 0 | 1,
+          characterDefinitionId: mutation.value.characterDefinitionId,
+          skillDefinitionId: mutation.value.viaSkillDefinitionId,
+          skillType:
+            mutation.value.viaSkillDefinitionId === Reaction.Overloaded
+              ? "overloaded"
+              : null,
+        };
         break;
       }
     }
@@ -174,6 +184,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),
     reactions: reactionsByTarget.values().toArray().flat(),
-    notificationBox: notificationBoxByWho.flat(1),
+    notificationBox,
   };
 }
