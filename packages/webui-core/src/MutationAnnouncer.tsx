@@ -24,6 +24,7 @@ import { usePlayerContext } from "./Chessboard";
 import {
   flattenPbOneof,
   PbRemoveCardReason,
+  PbSkillType,
   type ExposedMutation,
   type PbExposedMutation,
   type PbGameState,
@@ -139,12 +140,12 @@ const spellMutation = (
     }
   };
   if (m.$case === "skillUsed") {
-    if (m.initiative) {
+    if (m.skillType === PbSkillType.TRIGGERED) {
+      spell = `${spellWho(m.who)} ${altTextFunc(m.callerDefinitionId)} 触发`;
+    } else {
       spell = `${spellWho(m.who)} ${altTextFunc(
         m.callerDefinitionId,
       )} 使用 ${altTextFunc(m.skillDefinitionId)}`;
-    } else {
-      spell = `${spellWho(m.who)} ${altTextFunc(m.callerDefinitionId)} 触发`;
     }
   } else if (m.$case === "damage") {
     spell = `${altTextFunc(m.targetDefinitionId)} 受到 ${m.value} 点 \
