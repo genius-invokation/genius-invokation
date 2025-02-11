@@ -1049,16 +1049,6 @@ export class Game {
       who,
       value: to,
     });
-    this.mutator.notify({
-      mutations: [
-        {
-          $case: "switchActive",
-          who,
-          characterId: to.id,
-          characterDefinitionId: to.definition.id,
-        },
-      ],
-    });
     await this.handleEvent(
       "onSwitchActive",
       new SwitchActiveEventArg(oldState, {

@@ -44,6 +44,7 @@ export {
   EntityArea as PbEntityArea,
   PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
+  SkillType as PbSkillType,
   ChangePhaseEM,
   CreateCardEM,
   CreateCharacterEM,

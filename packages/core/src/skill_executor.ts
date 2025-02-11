@@ -32,7 +32,13 @@ import {
   ZeroHealthEventArg,
 } from "./base/skill";
 import { type CharacterState, stringifyState } from "./base/state";
-import { Aura, DamageType } from "@gi-tcg/typings";
+import {
+  Aura,
+  DamageType,
+  PbSkillType,
+  Reaction,
+  type ExposedMutation,
+} from "@gi-tcg/typings";
 import {
   allSkills,
   type CallerAndTriggeredSkill,
@@ -92,21 +98,7 @@ export class SkillExecutor {
     );
     const skillDef = skillInfo.definition;
 
-    if (skillDef.ownerType !== "extension" && skillDef.ownerType !== "card") {
-      this.mutator.notify({
-        mutations: [
-          {
-            $case: "skillUsed",
-            who: getEntityArea(this.state, skillInfo.caller.id).who,
-            callerId: skillInfo.caller.id,
-            callerDefinitionId: skillInfo.caller.definition.id,
-            skillDefinitionId: skillDef.id,
-            initiative: isCharacterInitiativeSkill(skillInfo, true),
-          },
-        ],
-      });
-    }
-
+    const oldState = this.state;
     this.mutator.notify();
     const [newState, { innerNotify, emittedEvents }] = (0, skillDef.action)(
       this.state,
@@ -116,8 +108,46 @@ export class SkillExecutor {
       },
       arg as any,
     );
+
+    const prependMutations: ExposedMutation[] = [];
+    if (skillDef.ownerType !== "extension" && skillDef.ownerType !== "card") {
+      let skillType: PbSkillType;
+      switch (skillDef.initiativeSkillConfig?.skillType) {
+        case "normal":
+          skillType = PbSkillType.NORMAL;
+          break;
+        case "elemental":
+          skillType = PbSkillType.ELEMENTAL;
+          break;
+        case "burst":
+          skillType = PbSkillType.BURST;
+          break;
+        case "technique":
+          skillType = PbSkillType.TECHNIQUE;
+          break;
+        default: {
+          if (skillInfo.caller.definition.type === "character") {
+            skillType = PbSkillType.CHARACTER_PASSIVE;
+          } else {
+            skillType = PbSkillType.TRIGGERED;
+          }
+        }
+      }
+      if (skillDef.initiativeSkillConfig || newState !== oldState) {
+        prependMutations.push({
+          $case: "skillUsed",
+          who: getEntityArea(oldState, skillInfo.caller.id).who,
+          callerId: skillInfo.caller.id,
+          callerDefinitionId: skillInfo.caller.definition.id,
+          skillDefinitionId: skillDef.id,
+          skillType,
+        });
+      }
+    }
+
+    innerNotify.exposedMutations.unshift(...prependMutations);
     this.mutator.resetState(newState, innerNotify);
-    
+
     return emittedEvents;
   }
 
@@ -382,16 +412,6 @@ export class SkillExecutor {
           who: arg.switchInfo.who,
           value: arg.switchInfo.to,
         });
-        this.mutator.notify({
-          mutations: [
-            {
-              $case: "switchActive",
-              who: arg.switchInfo.who,
-              characterId: arg.switchInfo.to.id,
-              characterDefinitionId: arg.switchInfo.to.definition.id,
-            },
-          ],
-        });
       }
     }
     for (const who of [currentTurn, flip(currentTurn)]) {
@@ -554,6 +574,21 @@ export class SkillExecutor {
           await this.finalizeSkill(skillInfo, eventArg);
         }
       } else {
+        if (name === "onSwitchActive") {
+          this.mutator.notify({
+            mutations: [
+              {
+                $case: "switchActive",
+                who: arg.switchInfo.who,
+                characterId: arg.switchInfo.to.id,
+                characterDefinitionId: arg.switchInfo.to.definition.id,
+                viaSkillDefinitionId: arg.switchInfo.fromReaction
+                  ? Reaction.Overloaded
+                  : arg.switchInfo.via?.definition.id,
+              },
+            ],
+          });
+        }
         using l = this.mutator.subLog(
           DetailLogType.Event,
           `Handling event ${name} (${arg.toString()}):`,

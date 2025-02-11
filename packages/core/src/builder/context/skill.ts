@@ -595,19 +595,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who: playerWho,
       value: switchToTarget.state,
     });
-    this.mutator.notify({
-      mutations: [
-        {
-          $case: "switchActive",
-          who: playerWho,
-          characterId: switchToTarget.id,
-          characterDefinitionId: switchToTarget.definition.id,
-          viaSkillId: this.fromReaction
-            ? Reaction.Overloaded
-            : this.skillInfo.definition.id ?? null,
-        },
-      ],
-    });
     this.emitEvent("onSwitchActive", this.state, {
       type: "switchActive",
       who: playerWho,
