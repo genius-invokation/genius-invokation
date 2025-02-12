@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo } from "solid-js";
+import { createMemo, Show } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
@@ -27,7 +27,21 @@ export function Entity(props: EntityProps) {
       class="absolute left-0 top-0 h-18 w-15 transition-transform"
       style={cssPropertyOfTransform(props.uiState.transform)}
     >
-      <Image class="absolute h-full w-full rounded-lg b-white b-solid b-2" imageId={data().definitionId} />
+      <Image
+        class="absolute h-full w-full rounded-lg b-white b-solid b-2"
+        imageId={data().definitionId}
+      />
+      <Show when={typeof data().variableValue === "number"}>
+        <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-solid b-black flex items-center justify-center line-height-none">
+          {data().variableValue}
+        </div>
+      </Show>
+      <Show when={typeof data().hintIcon === "number"}>
+        <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
+          <Image imageId={data().hintIcon!} class="h-4 w-4" />
+          {data().hintText}
+        </div>
+      </Show>
     </div>
   );
 }
