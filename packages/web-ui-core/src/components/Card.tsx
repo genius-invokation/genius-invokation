@@ -13,28 +13,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { getData } from "@gi-tcg/assets-manager";
-import type { PbCardState, DiceType } from "@gi-tcg/typings";
 import {
   createEffect,
   createMemo,
-  createSignal,
-  onMount,
-  untrack,
 } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import {
   cssPropertyOfTransform,
   type CardAnimatingUiState,
-  type CardUiState,
 } from "../ui_state";
+import type { CardInfo } from "./Chessboard";
 
-export interface CardProps {
-  data: PbCardState;
-  uiState: CardUiState;
-  enableShadow: boolean;
-  enableTransition: boolean;
+export interface CardProps extends CardInfo {
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
   onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -173,7 +164,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none transform-origin-tl"
       style={style()}
       classList={{
         "transition-transform": props.enableTransition,

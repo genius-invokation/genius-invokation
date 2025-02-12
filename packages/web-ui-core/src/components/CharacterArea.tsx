@@ -30,7 +30,7 @@ import {
   untrack,
 } from "solid-js";
 import { Image } from "./Image";
-import type { DamageInfo, EntityInfo } from "./Chessboard";
+import type { CharacterInfo, DamageInfo, StatusInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
@@ -58,12 +58,7 @@ export type CharacterAnimation =
   | DamageTargetAnimation
   | typeof CHARACTER_ANIMATION_NONE;
 
-export interface CharacterAreaProps {
-  data: PbCharacterState;
-  active: boolean;
-  entities: EntityInfo[];
-  combatStatus: EntityInfo[];
-  uiState: CharacterUiState;
+export interface CharacterAreaProps extends CharacterInfo {
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 

@@ -116,3 +116,8 @@ export interface CharacterUiState extends UiState {
   damages: DamageInfo[];
   animation: CharacterAnimation;
 }
+
+export interface EntityUiState extends StaticUiState {
+  readonly type: "entityStatic";
+  readonly transform: Transform;
+}

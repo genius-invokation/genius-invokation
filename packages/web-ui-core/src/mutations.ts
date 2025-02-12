@@ -60,6 +60,8 @@ export interface ParsedMutation {
   damages: DamageInfo[];
   reactions: ReactionInfo[];
   notificationBox: NotificationBoxInfo | null;
+  enteringEntities: number[];
+  disposingEntities: number[];
 }
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
@@ -78,6 +80,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const damagesByTarget = new Map<number, DamageInfo[]>();
   const reactionsByTarget = new Map<number, ReactionInfo[]>();
   let notificationBox: NotificationBoxInfo | null = null;
+  const enteringEntities: number[] = [];
+  const disposingEntities: number[] = [];
 
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
@@ -178,6 +182,14 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         };
         break;
       }
+      case "createEntity": {
+        enteringEntities.push(mutation.value.entity!.id);
+        break;
+      }
+      case "removeEntity": {
+        disposingEntities.push(mutation.value.entity!.id);
+        break;
+      }
     }
   }
   return {
@@ -185,5 +197,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     damages: damagesByTarget.values().toArray().flat(),
     reactions: reactionsByTarget.values().toArray().flat(),
     notificationBox,
+    enteringEntities,
+    disposingEntities,
   };
 }

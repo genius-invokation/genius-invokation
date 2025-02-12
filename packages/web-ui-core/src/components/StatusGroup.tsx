@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Key } from "@solid-primitives/keyed";
-import type { EntityInfo } from "./Chessboard";
+import type { StatusInfo } from "./Chessboard";
 import type { PbEntityState } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { createMemo, Show } from "solid-js";
@@ -35,7 +35,7 @@ function Status(props: StatusProps) {
 
 export interface StatusGroupProps {
   class?: string;
-  statuses: EntityInfo[];
+  statuses: StatusInfo[];
 }
 
 export function StatusGroup(props: StatusGroupProps) {

@@ -34,10 +34,12 @@ import {
   splitProps,
   type ComponentProps,
 } from "solid-js";
+import debounce from "debounce";
 import {
   DRAGGING_Z,
   FOCUSING_HANDS_Z,
   getCharacterAreaPos,
+  getEntityPos,
   getHandCardBlurredPos,
   getHandCardFocusedPos,
   getPilePos,
@@ -54,6 +56,8 @@ import {
   type CardStaticUiState,
   type CardUiState,
   type CharacterUiState,
+  type EntityUiState,
+  type StaticUiState,
   type Transform,
 } from "../ui_state";
 import type { ParsedMutation } from "../mutations";
@@ -62,6 +66,7 @@ import {
   type UpdateSignal,
 } from "../primitives/key_with_animation";
 import { NotificationBox } from "./NotificationBox";
+import { Entity } from "./Entity";
 
 export interface CardInfo {
   id: number;
@@ -83,15 +88,20 @@ interface DraggingCardInfo {
 export interface CharacterInfo {
   id: number;
   data: PbCharacterState;
-  entities: EntityInfo[];
-  combatStatus: EntityInfo[];
+  entities: StatusInfo[];
+  combatStatus: StatusInfo[];
   active: boolean;
   uiState: CharacterUiState;
 }
 
-export interface EntityInfo {
+export interface StatusInfo {
   id: number;
   data: PbEntityState;
+  animation: "none" | "entering" | "disposing" | "triggered";
+}
+
+export interface EntityInfo extends StatusInfo {
+  uiState: EntityUiState;
 }
 
 export interface AnimatingCardInfo {
@@ -134,7 +144,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   data: ChessboardData;
 }
 
-export interface CardInfoCalcContext {
+interface CardInfoCalcContext {
   who: 0 | 1;
   size: Size;
   focusingHands: boolean;
@@ -246,9 +256,75 @@ function calcCardsInfo(
   return cards;
 }
 
+interface CalcEntitiesInfoResult {
+  supports: EntityInfo[];
+  summons: EntityInfo[];
+  combatStatuses: StatusInfo[];
+  characterAreaEntities: Map<number, StatusInfo[]>;
+}
+
+interface EntityInfoCalcContext {
+  who: 0 | 1;
+  size: Size;
+}
+
+function calcEntitiesInfo(
+  state: PbGameState,
+  { who, size }: EntityInfoCalcContext,
+): CalcEntitiesInfoResult[] {
+  const result: CalcEntitiesInfoResult[] = [];
+  const calcEntityInfo =
+    (opp: boolean, type: "support" | "summon") =>
+    (data: PbEntityState, index: number): EntityInfo => {
+      const [x, y] = getEntityPos(size, opp, type, index);
+      return {
+        id: data.id,
+        data,
+        animation: "none",
+        uiState: {
+          type: "entityStatic",
+          isAnimating: false,
+          transform: {
+            x,
+            y,
+            z: 0,
+            ry: 0,
+            rz: 0,
+          },
+        },
+      };
+    };
+  const calcStatusInfo = (data: PbEntityState): StatusInfo => {
+    return {
+      id: data.id,
+      data,
+      animation: "none",
+    };
+  };
+  for (const who2 of [0, 1] as const) {
+    const opp = who2 !== who;
+    const player = state.player[who2];
+    const supports = player.support.map(calcEntityInfo(opp, "support"));
+    const summons = player.summon.map(calcEntityInfo(opp, "summon"));
+    const combatStatuses = player.combatStatus.map(calcStatusInfo);
+    const statuses = new Map<number, StatusInfo[]>();
+    for (const ch of player.character) {
+      statuses.set(ch.id, ch.entity.map(calcStatusInfo));
+    }
+    result.push({
+      supports,
+      summons,
+      combatStatuses,
+      characterAreaEntities: statuses,
+    });
+  }
+  return result;
+}
+
 interface ChessboardChildren {
   characters: CharacterInfo[];
   cards: CardInfo[];
+  entities: EntityInfo[];
 }
 
 function rerenderChildren(opt: {
@@ -271,6 +347,10 @@ function rerenderChildren(opt: {
     focusingHands,
     hoveringHand,
     draggingHand,
+  });
+  const currentEntities = calcEntitiesInfo(state, {
+    who: opt.who,
+    size,
   });
 
   if (animatingCards.length > 0) {
@@ -352,12 +432,13 @@ function rerenderChildren(opt: {
   for (const who of [0, 1] as const) {
     const player = state.player[who];
     const opp = who !== opt.who;
-    const combatStatus = player.combatStatus.map(getEntityInfo);
+    const combatStatus = currentEntities[who].combatStatuses;
 
     const totalCharacterCount = player.character.length;
     for (let i = 0; i < totalCharacterCount; i++) {
       const ch = player.character[i];
-      const entities = ch.entity.map(getEntityInfo);
+      const entities =
+        currentEntities[who].characterAreaEntities.get(ch.id) ?? [];
       const isActive = player.activeCharacterId === ch.id && !ch.defeated;
       const [x, y] = getCharacterAreaPos(
         size,
@@ -423,14 +504,13 @@ function rerenderChildren(opt: {
       .values()
       .toArray()
       .toSorted((a, b) => a.id - b.id),
+    entities: [
+      ...currentEntities[0].supports,
+      ...currentEntities[0].summons,
+      ...currentEntities[1].supports,
+      ...currentEntities[1].summons,
+    ],
   };
-
-  function getEntityInfo(state: PbEntityState): EntityInfo {
-    return {
-      id: state.id,
-      data: state,
-    };
-  }
 }
 
 export function Chessboard(props: ChessboardProps) {
@@ -460,11 +540,12 @@ export function Chessboard(props: ChessboardProps) {
   );
   let shouldMoveWhenHandBlurring: PromiseWithResolvers<boolean>;
 
-  const resizeObserver = new ResizeObserver(onResize);
+  const resizeObserver = new ResizeObserver(debounce(onResize, 200));
 
   const [children, setChildren] = createSignal<ChessboardChildren>({
     characters: [],
     cards: [],
+    entities: [],
   });
 
   createEffect(
@@ -670,6 +751,12 @@ export function Chessboard(props: ChessboardProps) {
               onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
             />
           )}
+        </KeyWithAnimation>
+        <KeyWithAnimation
+          each={children().entities}
+          updateWhen={updateChildrenSignal()}
+        >
+          {(entity) => <Entity {...entity()} />}
         </KeyWithAnimation>
       </div>
       <Show when={localProps.data.notificationBox} keyed>

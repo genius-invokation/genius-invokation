@@ -27,6 +27,8 @@ export const DRAGGING_Z = 12;
 const MINIMUM_WIDTH = 192;
 const MINIMUM_HEIGHT = 144;
 
+const EFFECTIVE_MAXIMUM_WIDTH = 240;
+
 const GADGET_HEIGHT = 6;
 
 const CARD_HEIGHT = 36;
@@ -35,6 +37,15 @@ const CARD_WIDTH = 21;
 const CHARACTER_AREA_HEIGHT = CARD_HEIGHT + 3 * GADGET_HEIGHT;
 const CHARACTER_AREA_WIDTH = CARD_WIDTH;
 const CHARACTER_AREA_GAP = 4;
+
+const TOTAL_CHARACTERS_MAX_WIDTH =
+  4 * CHARACTER_AREA_WIDTH + 3 * CHARACTER_AREA_GAP;
+
+const ENTITY_HEIGHT = 18;
+const ENTITY_WIDTH = 15;
+const ENTITY_GAP = 4;
+const ENTITY_AREA_HEIGHT = 2 * ENTITY_HEIGHT + ENTITY_GAP;
+const ENTITY_AREA_WIDTH = 2 * ENTITY_WIDTH + ENTITY_GAP;
 
 const HAND_CARD_BLURRED_SHOW_HEIGHT = 18;
 const HAND_CARD_BLURRED_SHOW_WIDTH = 10;
@@ -79,6 +90,35 @@ export function getCharacterAreaPos(
   return [characterAreaX, characterAreaY];
 }
 
+export function getEntityPos(
+  [height, width]: Size,
+  opp: boolean,
+  type: "summon" | "support",
+  index: number,
+) {
+  const halfHeight = height / 2;
+  const halfWidth = width / 2;
+  const gapAroundEntityArea =
+    (halfHeight - ENTITY_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
+  const entityAreaY = opp
+    ? halfHeight - gapAroundEntityArea - ENTITY_AREA_HEIGHT
+    : halfHeight + gapAroundEntityArea;
+  const effectiveWidth = Math.min(width, EFFECTIVE_MAXIMUM_WIDTH);
+  const entityXGap =
+    (effectiveWidth - TOTAL_CHARACTERS_MAX_WIDTH - 10 - 2 * ENTITY_AREA_WIDTH) /
+    4;
+  const entityAreaX =
+    type === "summon"
+      ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + entityXGap
+      : halfWidth -
+        TOTAL_CHARACTERS_MAX_WIDTH / 2 -
+        entityXGap -
+        ENTITY_AREA_WIDTH;
+  const x = entityAreaX + (index % 2) * (ENTITY_WIDTH + ENTITY_GAP);
+  const y = entityAreaY + Math.floor(index / 2) * (ENTITY_HEIGHT + ENTITY_GAP);
+  return [x, y];
+}
+
 export function getHandCardBlurredPos(
   [height, width]: Size,
   opp: boolean,
@@ -104,10 +144,14 @@ export function getHandCardBlurredPos(
   }
 }
 
+function effectiveAreaX(width: number) {
+  return Math.max(0, (width - EFFECTIVE_MAXIMUM_WIDTH) / 2);
+}
+
 export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const quarterHeight = height / 4;
   const y = opp ? quarterHeight : height - quarterHeight - CARD_HEIGHT;
-  const x = (width - MINIMUM_WIDTH) / 2 + 4 - CARD_WIDTH;
+  const x = effectiveAreaX(width) + 6 - CARD_HEIGHT;
   return [x, y];
 }
 
