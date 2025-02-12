@@ -277,15 +277,9 @@ export function CharacterArea(props: CharacterAreaProps) {
           />
         </div>
         <StatusGroup
-          class="absolute z-3 left-0.5 bottom-0 h-6"
+          class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
           statuses={statuses()}
         />
-        <Show when={props.active}>
-          <StatusGroup
-            class="absolute z-3 left-0.5 bottom--6 h-6"
-            statuses={props.combatStatus}
-          />
-        </Show>
         <Show when={defeated()}>
           <div class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]">
             &#9760;
@@ -309,6 +303,9 @@ export function CharacterArea(props: CharacterAreaProps) {
           {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>
       </div>
+      <Show when={props.active}>
+        <StatusGroup class="h-6 w-20" statuses={props.combatStatus} />
+      </Show>
     </div>
   );
 }

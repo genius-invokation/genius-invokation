@@ -17,7 +17,7 @@ import { Key } from "@solid-primitives/keyed";
 import type { EntityInfo } from "./Chessboard";
 import type { PbEntityState } from "@gi-tcg/typings";
 import { Image } from "./Image";
-import { createMemo } from "solid-js";
+import { createMemo, Show } from "solid-js";
 
 interface StatusProps {
   id: number;
@@ -39,12 +39,22 @@ export interface StatusGroupProps {
 }
 
 export function StatusGroup(props: StatusGroupProps) {
-  // TODO: if length > 4, add a ellipsis
+  const showEllipsis = () => props.statuses.length > 4;
+  const statuses = createMemo(() =>
+    showEllipsis() ? props.statuses.slice(0, 3) : props.statuses,
+  );
   return (
     <div class={`flex flex-row ${props.class ?? ""}`}>
-      <Key each={props.statuses.slice(0, 4)} by="id">
+      <Key each={statuses()} by="id">
         {(status) => <Status {...status()} />}
       </Key>
+      <Show when={showEllipsis()}>
+        <img
+          class="h-5 w-5"
+          // TODO: replace this with an API endpoint
+          src="https://assets.gi-tcg.guyutongxue.site/assets/UI_Gcg_Buff_Common_More.webp"
+        />
+      </Show>
     </div>
   );
 }
