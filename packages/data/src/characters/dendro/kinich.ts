@@ -117,11 +117,12 @@ export const CanopyHunterRidingHigh = skill(17092)
     if (
       talent &&
       c.player.hands.length <= c.oppPlayer.hands.length &&
-      c.oppPlayer.hands.length > 0 &&
       talent.variables.usagePerRound! > 0
     ) {
-      const [targetCard] = c.maxCostHands(1, { who: "opp" });
-      c.stealHandCard(targetCard);
+      if (c.oppPlayer.hands.length > 0) {
+        const [targetCard] = c.maxCostHands(1, { who: "opp" });
+        c.stealHandCard(targetCard);
+      }
       c.drawCards(1, { who: "opp" });
       c.addVariable("usagePerRound", -1, talent);
     }

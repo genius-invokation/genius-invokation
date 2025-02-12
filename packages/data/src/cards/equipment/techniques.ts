@@ -84,8 +84,8 @@ export const Yumkasaurus = card(313002)
     const [handCard] = c.maxCostHands(1, { who: "opp" });
     if (handCard) {
       c.stealHandCard(handCard);
-      c.drawCards(1, { who: "opp" });
     }
+    c.drawCards(1, { who: "opp" });
   })
   .done();
 
