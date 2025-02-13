@@ -19,15 +19,16 @@ import type { PbEntityState } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { createMemo, Show } from "solid-js";
 
-interface StatusProps {
-  id: number;
-  data: PbEntityState;
-}
+interface StatusProps extends StatusInfo {}
 
-function Status(props: StatusProps) {
+function Status(props: StatusInfo) {
   const data = createMemo(() => props.data);
   return (
-    <div>
+    <div
+      bool:data-entering={props.animation === "entering"}
+      bool:data-disposing={props.animation === "disposing"}
+      bool:data-triggered={props.animation === "triggered"}
+    >
       <Image imageId={data().definitionId} class="h-5 w-5" />
     </div>
   );

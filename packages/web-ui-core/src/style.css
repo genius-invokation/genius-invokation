@@ -13,6 +13,13 @@
   --font-emoji: Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji,
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
+
+    [data-entering] {
+      background-color: green;
+    }
+    [data-disposing] {
+      background-color: red;
+    }
 }
 
 @keyframes damage-text-enter {

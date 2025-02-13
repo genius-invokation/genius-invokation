@@ -348,10 +348,6 @@ function rerenderChildren(opt: {
     hoveringHand,
     draggingHand,
   });
-  const currentEntities = calcEntitiesInfo(state, {
-    who: opt.who,
-    size,
-  });
 
   if (animatingCards.length > 0) {
     const previousCards = calcCardsInfo(previousState, {
@@ -427,6 +423,68 @@ function rerenderChildren(opt: {
     }
   }
 
+  let currentEntities = calcEntitiesInfo(state, {
+    who: opt.who,
+    size,
+  });
+  if (data.disposingEntities.length > 0) {
+    const previousEntities = calcEntitiesInfo(previousState, {
+      who: opt.who,
+      size,
+    });
+    const applyDiff = <T extends StatusInfo>(
+      entities: T[],
+      newEntities: T[],
+    ) => {
+      for (const entity of entities) {
+        if (data.disposingEntities.includes(entity.id)) {
+          entity.animation = "disposing";
+        }
+        if (data.triggeringEntities.includes(entity.id)) {
+          entity.animation = "triggered";
+        }
+      }
+      for (const entity of newEntities) {
+        if (data.enteringEntities.includes(entity.id)) {
+          entity.animation = "entering";
+          entities.push(entity);
+        }
+      }
+    };
+    for (const who of [0, 1]) {
+      const previousPlayer = previousEntities[who];
+      const currentPlayer = currentEntities[who];
+
+      applyDiff(previousPlayer.supports, currentPlayer.supports);
+      applyDiff(previousPlayer.summons, currentPlayer.summons);
+      applyDiff(previousPlayer.combatStatuses, currentPlayer.combatStatuses);
+      for (const [id, entities] of previousPlayer.characterAreaEntities) {
+        applyDiff(entities, currentPlayer.characterAreaEntities.get(id) ?? []);
+      }
+    }
+    currentEntities = previousEntities;
+  } else {
+    const applyAnimation = <T extends StatusInfo>(entities: T[]) => {
+      for (const entity of entities) {
+        if (data.triggeringEntities.includes(entity.id)) {
+          entity.animation = "triggered";
+        }
+        if (data.enteringEntities.includes(entity.id)) {
+          entity.animation = "entering";
+        }
+      }
+    };
+    for (const who of [0, 1]) {
+      const currentPlayer = currentEntities[who];
+      applyAnimation(currentPlayer.supports);
+      applyAnimation(currentPlayer.summons);
+      applyAnimation(currentPlayer.combatStatuses);
+      for (const entities of currentPlayer.characterAreaEntities.values()) {
+        applyAnimation(entities);
+      }
+    }
+  }
+
   const characters = new Map<number, CharacterInfo>();
   const isCharacterAnimating = damages.some((d) => d.isSkillMainDamage);
   for (const who of [0, 1] as const) {
@@ -492,6 +550,13 @@ function rerenderChildren(opt: {
 
   if (data.notificationBox) {
     animationPromises.push(new Promise((resolve) => setTimeout(resolve, 700)));
+  }
+  if (
+    data.enteringEntities.length > 0 ||
+    data.triggeringEntities.length > 0 ||
+    data.disposingEntities.length > 0
+  ) {
+    animationPromises.push(new Promise((resolve) => setTimeout(resolve, 500)));
   }
 
   Promise.all(animationPromises).then(() => {

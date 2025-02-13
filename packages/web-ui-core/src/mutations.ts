@@ -61,6 +61,7 @@ export interface ParsedMutation {
   reactions: ReactionInfo[];
   notificationBox: NotificationBoxInfo | null;
   enteringEntities: number[];
+  triggeringEntities: number[];
   disposingEntities: number[];
 }
 
@@ -81,6 +82,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const reactionsByTarget = new Map<number, ReactionInfo[]>();
   let notificationBox: NotificationBoxInfo | null = null;
   const enteringEntities: number[] = [];
+  const triggeringEntities: number[] = [];
   const disposingEntities: number[] = [];
 
   for (const { mutation } of mutations) {
@@ -157,7 +159,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
       }
       case "skillUsed": {
         if (mutation.value.skillType === PbSkillType.TRIGGERED) {
-          // TODO: triggered
+          triggeringEntities.push(mutation.value.who as number);
         } else {
           notificationBox = {
             type: "useSkill",
@@ -187,7 +189,12 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "removeEntity": {
-        disposingEntities.push(mutation.value.entity!.id);
+        const id = mutation.value.entity!.id;
+        if (enteringEntities.includes(id)) {
+          enteringEntities.splice(enteringEntities.indexOf(id), 1);
+        } else {
+          disposingEntities.push(id);
+        }
         break;
       }
     }
@@ -198,6 +205,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     reactions: reactionsByTarget.values().toArray().flat(),
     notificationBox,
     enteringEntities,
+    triggeringEntities,
     disposingEntities,
   };
 }

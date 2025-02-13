@@ -19,13 +19,9 @@ import "./index";
 import { batch, createSignal, onMount, Show, untrack } from "solid-js";
 import { render } from "solid-js/web";
 
-import type { PbGameState, PbPlayerState } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
 import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
 import { createPlayer } from "@gi-tcg/webui";
-import { Chessboard, type AnimatingCardInfo } from "./components/Chessboard";
-import { parseMutations } from "./mutations";
-import { AsyncQueue } from "./async_queue";
 import { createClient } from "./client";
 
 const deck0: DeckConfig = {
@@ -50,19 +46,6 @@ const deck1: DeckConfig = {
   noShuffle: import.meta.env.DEV,
 };
 
-const EMPTY_PLAYER_DATA: PbPlayerState = {
-  activeCharacterId: 0,
-  dice: [],
-  pileCard: [],
-  handCard: [],
-  character: [],
-  combatStatus: [],
-  summon: [],
-  support: [],
-  initiativeSkill: [],
-  declaredEnd: false,
-  legendUsed: false,
-};
 function App() {
   let cb0!: HTMLDivElement;
   let cb1!: HTMLDivElement;
