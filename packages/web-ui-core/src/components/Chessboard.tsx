@@ -98,7 +98,8 @@ export interface CharacterInfo {
 export interface StatusInfo {
   id: number;
   data: PbEntityState;
-  animation: "none" | "entering" | "disposing" | "triggered";
+  animation: "none" | "entering" | "disposing";
+  triggered: boolean;
 }
 
 export interface EntityInfo extends StatusInfo {
@@ -282,6 +283,7 @@ function calcEntitiesInfo(
         id: data.id,
         data,
         animation: "none",
+        triggered: false,
         uiState: {
           type: "entityStatic",
           isAnimating: false,
@@ -300,6 +302,7 @@ function calcEntitiesInfo(
       id: data.id,
       data,
       animation: "none",
+      triggered: false,
     };
   };
   for (const who2 of [0, 1] as const) {
@@ -337,7 +340,6 @@ function rerenderChildren(opt: {
   data: ChessboardData;
 }): ChessboardChildren {
   const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
-  console.log(data.triggeringEntities);
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
     data;
@@ -425,6 +427,7 @@ function rerenderChildren(opt: {
     }
   }
 
+  let entityAnimationDuration = 500;
   let currentEntities = calcEntitiesInfo(state, {
     who: opt.who,
     size,
@@ -439,11 +442,16 @@ function rerenderChildren(opt: {
       newEntities: T[],
     ) => {
       for (const entity of entities) {
-        if (data.disposingEntities.includes(entity.id)) {
+        const isDisposing = data.disposingEntities.includes(entity.id);
+        if (isDisposing) {
           entity.animation = "disposing";
         }
         if (data.triggeringEntities.includes(entity.id)) {
-          entity.animation = "triggered";
+          entity.triggered = true;
+          if (isDisposing) {
+            // 此时要播放触发和消失两个动画，略微延长时间
+            entityAnimationDuration = 700;
+          }
         }
       }
       for (const entity of newEntities) {
@@ -469,7 +477,7 @@ function rerenderChildren(opt: {
     const applyAnimation = <T extends StatusInfo>(entities: T[]) => {
       for (const entity of entities) {
         if (data.triggeringEntities.includes(entity.id)) {
-          entity.animation = "triggered";
+          entity.triggered = true;
         }
         if (data.enteringEntities.includes(entity.id)) {
           entity.animation = "entering";
@@ -555,12 +563,13 @@ function rerenderChildren(opt: {
   if (data.notificationBox) {
     animationPromises.push(new Promise((resolve) => setTimeout(resolve, 700)));
   }
-  if (
-    data.enteringEntities.length > 0 ||
-    data.triggeringEntities.length > 0 ||
-    data.disposingEntities.length > 0
-  ) {
-    animationPromises.push(new Promise((resolve) => setTimeout(resolve, 500)));
+  if (data.enteringEntities.length > 0 || data.triggeringEntities.length > 0) {
+    animationPromises.push(
+      new Promise((resolve) => setTimeout(resolve, entityAnimationDuration)),
+    );
+  }
+  if (data.disposingEntities.length > 0) {
+    animationPromises.push(new Promise((resolve) => setTimeout(resolve, 200)));
   }
 
   Promise.all(animationPromises).then(() => {

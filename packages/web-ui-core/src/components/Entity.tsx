@@ -28,7 +28,7 @@ export function Entity(props: EntityProps) {
       style={cssPropertyOfTransform(props.uiState.transform)}
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
-      bool:data-triggered={props.animation === "triggered"}
+      bool:data-triggered={props.triggered}
     >
       <Image
         class="absolute h-full w-full rounded-lg b-white b-solid b-2"

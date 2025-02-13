@@ -15,7 +15,6 @@
 
 import { Key } from "@solid-primitives/keyed";
 import type { StatusInfo } from "./Chessboard";
-import type { PbEntityState } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { createMemo, Show } from "solid-js";
 
@@ -28,7 +27,7 @@ function Status(props: StatusInfo) {
       class="h-5 w-5 rounded-full"
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
-      bool:data-triggered={props.animation === "triggered"}
+      bool:data-triggered={props.triggered}
     >
       <Image imageId={data().definitionId} class="h-full w-full" />
     </div>

@@ -14,15 +14,20 @@
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
 
-    [data-entering] {
-      animation: entity-entering 0.5s;
-    }
-    [data-triggered] {
-      animation: entity-triggered 0.5s;
-    }
-    [data-disposing] {
-      animation: entity-disposing 0.5s;
-    }
+  [data-entering] {
+    animation: entity-entering 0.5s;
+  }
+  [data-triggered] {
+    animation: entity-triggered 0.5s;
+  }
+  [data-disposing] {
+    animation: entity-disposing 0.2s;
+  }
+  [data-triggered][data-disposing] {
+    animation:
+      entity-triggered 0.5s,
+      entity-disposing 0.2s 0.5s;
+  }
 }
 
 @keyframes entity-entering {
