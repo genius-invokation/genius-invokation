@@ -262,7 +262,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             </Key>
           </div>
         </Show>
-        <div class="h-full w-full rounded-xl">
+        <div class="h-full w-full rounded-xl" bool:data-triggered={props.triggered}>
           <Image
             imageId={data().definitionId}
             class="h-full rounded-xl b-white b-solid b-3"

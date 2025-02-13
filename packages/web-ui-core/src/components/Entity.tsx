@@ -24,8 +24,11 @@ export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
   return (
     <div
-      class="absolute left-0 top-0 h-18 w-15 transition-transform"
+      class="absolute left-0 top-0 h-18 w-15 transition-transform rounded-lg"
       style={cssPropertyOfTransform(props.uiState.transform)}
+      bool:data-entering={props.animation === "entering"}
+      bool:data-disposing={props.animation === "disposing"}
+      bool:data-triggered={props.animation === "triggered"}
     >
       <Image
         class="absolute h-full w-full rounded-lg b-white b-solid b-2"

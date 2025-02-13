@@ -91,6 +91,7 @@ export interface CharacterInfo {
   entities: StatusInfo[];
   combatStatus: StatusInfo[];
   active: boolean;
+  triggered: boolean;
   uiState: CharacterUiState;
 }
 
@@ -336,6 +337,7 @@ function rerenderChildren(opt: {
   data: ChessboardData;
 }): ChessboardChildren {
   const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
+  console.log(data.triggeringEntities);
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
     data;
@@ -510,6 +512,7 @@ function rerenderChildren(opt: {
         id: ch.id,
         data: ch,
         entities,
+        triggered: data.triggeringEntities.includes(ch.id),
         uiState: {
           type: "character",
           isAnimating: isCharacterAnimating,
@@ -534,6 +537,7 @@ function rerenderChildren(opt: {
     const source = characters.get(damage.sourceId);
     const target = characters.get(damage.targetId)!;
     if (source && damage.isSkillMainDamage) {
+      source.triggered = false;
       source.uiState.animation = {
         type: "damageSource",
         targetX: target.uiState.transform.x,

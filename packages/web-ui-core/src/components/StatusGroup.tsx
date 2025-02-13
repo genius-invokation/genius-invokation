@@ -25,11 +25,12 @@ function Status(props: StatusInfo) {
   const data = createMemo(() => props.data);
   return (
     <div
+      class="h-5 w-5 rounded-full"
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
       bool:data-triggered={props.animation === "triggered"}
     >
-      <Image imageId={data().definitionId} class="h-5 w-5" />
+      <Image imageId={data().definitionId} class="h-full w-full" />
     </div>
   );
 }

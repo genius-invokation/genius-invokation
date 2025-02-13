@@ -158,9 +158,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "skillUsed": {
-        if (mutation.value.skillType === PbSkillType.TRIGGERED) {
-          triggeringEntities.push(mutation.value.who as number);
-        } else {
+        triggeringEntities.push(mutation.value.callerId);
+        if (mutation.value.skillType !== PbSkillType.TRIGGERED) {
           notificationBox = {
             type: "useSkill",
             who: mutation.value.who as 0 | 1,
