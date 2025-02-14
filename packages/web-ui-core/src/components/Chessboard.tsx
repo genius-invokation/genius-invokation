@@ -796,7 +796,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset relative min-h-xl min-w-3xl bg-yellow-1 overflow-clip ${
+      class={`gi-tcg-chessboard-new reset relative min-h-xl min-w-3xl bg-green-50 overflow-clip ${
         localProps.class ?? ""
       }`}
       {...elProps}
@@ -837,6 +837,12 @@ export function Chessboard(props: ChessboardProps) {
         >
           {(entity) => <Entity {...entity()} />}
         </KeyWithAnimation>
+      </div>
+      <div
+        class="absolute h-16 w-16 rounded-full left-2 top-50% translate-y--50% data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center"
+        data-opp={localProps.data.state.currentTurn !== localProps.who}
+      >
+        T{localProps.data.state.roundNumber}
       </div>
       <Show when={localProps.data.notificationBox} keyed>
         {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}

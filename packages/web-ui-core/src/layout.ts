@@ -150,7 +150,7 @@ function effectiveAreaX(width: number) {
 
 export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const quarterHeight = height / 4;
-  const y = opp ? quarterHeight : height - quarterHeight - CARD_HEIGHT;
+  const y = opp ? quarterHeight - CARD_WIDTH / 2 : height - quarterHeight - CARD_WIDTH / 2;
   const x = effectiveAreaX(width) + 6 - CARD_HEIGHT;
   return [x, y];
 }
