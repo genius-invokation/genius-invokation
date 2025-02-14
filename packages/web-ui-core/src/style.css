@@ -15,18 +15,18 @@
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
 
   [data-entering] {
-    animation: entity-entering 0.5s;
+    animation: entity-entering 0.5s both;
   }
   [data-triggered] {
-    animation: entity-triggered 0.5s;
+    animation: entity-triggered 0.5s both;
   }
   [data-disposing] {
-    animation: entity-disposing 0.2s;
+    animation: entity-disposing 0.2s both;
   }
   [data-triggered][data-disposing] {
     animation:
-      entity-triggered 0.5s,
-      entity-disposing 0.2s 0.5s;
+      entity-triggered 0.5s both,
+      entity-disposing 0.2s 0.5s both;
   }
 }
 
@@ -64,6 +64,14 @@
   }
   100% {
     opacity: 0;
+  }
+}
+@keyframes entity-highlight {
+  from {
+    box-shadow: none;
+  }
+  to {
+    box-shadow: 0 0 10px yellow inset;
   }
 }
 

@@ -31,11 +31,16 @@ export function Entity(props: EntityProps) {
       bool:data-triggered={props.triggered}
     >
       <Image
-        class="absolute h-full w-full rounded-lg b-white b-solid b-2"
+        class="absolute h-full w-full rounded-lg b-white b-2"
         imageId={data().definitionId}
       />
+      <Show when={data().hasUsagePerRound}>
+        <div
+          class="absolute inset-2px animate-[entity-highlight] animate-duration-2000 animate-ease-in-out animate-alternate animate-count-infinite"
+        />
+      </Show>
       <Show when={typeof data().variableValue === "number"}>
-        <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-solid b-black flex items-center justify-center line-height-none">
+        <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
           {data().variableValue}
         </div>
       </Show>

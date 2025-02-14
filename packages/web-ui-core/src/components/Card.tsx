@@ -197,7 +197,7 @@ export function Card(props: CardProps) {
     >
       <div class="absolute h-full w-full backface-hidden opacity-[var(--gi-tcg-opacity)]">
         <Image
-          class="h-full w-full rounded-xl b-white b-solid b-3 "
+          class="h-full w-full rounded-xl b-white b-3 "
           imageId={props.data.definitionId}
         />
       </div>
@@ -206,7 +206,7 @@ export function Card(props: CardProps) {
         cost={data().definitionCost}
         // realCost={allCosts[props.data.id]}
       />
-      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-solid b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
+      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
     </div>
   );
 }

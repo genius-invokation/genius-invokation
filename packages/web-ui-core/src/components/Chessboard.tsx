@@ -340,6 +340,7 @@ function rerenderChildren(opt: {
   data: ChessboardData;
 }): ChessboardChildren {
   const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
+  // console.log(data);
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
     data;
