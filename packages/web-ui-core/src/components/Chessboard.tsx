@@ -13,14 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type {
-  DamageType,
-  PbCardState,
-  PbCharacterState,
-  PbEntityState,
-  PbGameState,
-  PbSkillType,
-  Reaction,
+import {
+  PbPlayerStatus,
+  type DamageType,
+  type PbCardState,
+  type PbCharacterState,
+  type PbEntityState,
+  type PbGameState,
+  type PbSkillType,
+  type Reaction,
 } from "@gi-tcg/typings";
 import { Card } from "./Card";
 import {
@@ -67,6 +68,8 @@ import {
 } from "../primitives/key_with_animation";
 import { NotificationBox } from "./NotificationBox";
 import { Entity } from "./Entity";
+import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
+import { flip } from "@gi-tcg/utils";
 
 export interface CardInfo {
   id: number;
@@ -667,6 +670,16 @@ export function Chessboard(props: ChessboardProps) {
     ),
   );
 
+  const playerInfoPropsOf = (who: 0 | 1): PlayerInfoProps => {
+    const player = localProps.data.state.player[who];
+    return {
+      declaredEnd: player.declaredEnd,
+      diceCount: player.dice.length,
+      legendUsed: player.legendUsed,
+      status: PbPlayerStatus.UNSPECIFIED, // TODO
+    };
+  };
+
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -847,6 +860,15 @@ export function Chessboard(props: ChessboardProps) {
       <Show when={localProps.data.notificationBox} keyed>
         {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
       </Show>
+      <PlayerInfo
+        opp
+        class="absolute top-0 bottom-[calc(50%+2.75rem)]"
+        {...playerInfoPropsOf(flip(localProps.who))}
+      />
+      <PlayerInfo
+        class="absolute top-[calc(50%+2.75rem)] bottom-0"
+        {...playerInfoPropsOf(localProps.who)}
+      />
     </div>
   );
 }

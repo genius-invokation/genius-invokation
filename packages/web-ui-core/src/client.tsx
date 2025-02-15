@@ -72,8 +72,11 @@ export function createClient(who: 0 | 1): Client {
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
     animatingCards: [],
+    enteringEntities: [],
+    disposingEntities: [],
+    triggeringEntities: [],
     damages: [],
-    notificationBox: [],
+    notificationBox: null,
     reactions: [],
   });
 
