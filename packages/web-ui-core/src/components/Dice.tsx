@@ -185,7 +185,7 @@ export function Dice(props: DiceProps) {
   );
 
   return (
-    <div class="relative flex items-center justify-center">
+    <div class="relative flex items-center justify-center m--1">
       <Switch>
         <Match when={merged.type === 9}>
           <EnergyIcon size={merged.size} />

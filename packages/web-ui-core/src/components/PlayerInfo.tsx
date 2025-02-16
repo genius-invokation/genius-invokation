@@ -22,13 +22,13 @@ export interface PlayerInfoProps {
   diceCount: number;
   legendUsed: boolean;
   declaredEnd: boolean;
-  status: PbPlayerStatus;
+  status: PbPlayerStatus; // TODO
 }
 
 export function PlayerInfo(props: PlayerInfoProps) {
   return (
     <div
-      class={`pointer-events-none mx-3 flex justify-between items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
+      class={`pointer-events-none mx-2 flex justify-between items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
         props.class ?? ""
       }`}
       data-opp={!!props.opp}

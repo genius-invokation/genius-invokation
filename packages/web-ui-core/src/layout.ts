@@ -51,6 +51,8 @@ const HAND_CARD_BLURRED_SHOW_HEIGHT = 18;
 const HAND_CARD_BLURRED_SHOW_WIDTH = 10;
 const OPP_HAND_CARD_RIGHT_OFFSET = 21;
 
+const SKILL_BUTTON_WIDTH = 13;
+
 const HAND_CARD_FOCUSED_GAP = 2;
 const HAND_CARD_FOCUSED_SHOW_HEIGHT = 36;
 const HAND_CARD_FOCUSED_SHOW_WIDTH_MIN = 15;
@@ -111,9 +113,9 @@ export function getEntityPos(
     type === "summon"
       ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + entityXGap
       : halfWidth -
-        TOTAL_CHARACTERS_MAX_WIDTH / 2 -
-        entityXGap -
-        ENTITY_AREA_WIDTH;
+      TOTAL_CHARACTERS_MAX_WIDTH / 2 -
+      entityXGap -
+      ENTITY_AREA_WIDTH;
   const x = entityAreaX + (index % 2) * (ENTITY_WIDTH + ENTITY_GAP);
   const y = entityAreaY + Math.floor(index / 2) * (ENTITY_HEIGHT + ENTITY_GAP);
   return [x, y];
@@ -124,6 +126,7 @@ export function getHandCardBlurredPos(
   opp: boolean,
   totalCount: number,
   index: number,
+  skillCount: number,
 ): Pos {
   if (opp) {
     const y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT;
@@ -138,7 +141,11 @@ export function getHandCardBlurredPos(
     const halfWidth = width / 2;
     const totalHandCardWidth =
       (totalCount - 1) * HAND_CARD_BLURRED_SHOW_WIDTH + CARD_WIDTH;
-    const areaX = halfWidth - totalHandCardWidth / 2;
+    let areaX = halfWidth - totalHandCardWidth / 2;
+    const skillButtonGroupWidth = skillCount * SKILL_BUTTON_WIDTH + 2;
+    if (areaX + totalHandCardWidth > width - skillButtonGroupWidth) {
+      areaX = width - skillButtonGroupWidth - totalHandCardWidth;
+    }
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   }

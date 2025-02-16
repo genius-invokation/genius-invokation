@@ -70,6 +70,8 @@ import { NotificationBox } from "./NotificationBox";
 import { Entity } from "./Entity";
 import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
 import { flip } from "@gi-tcg/utils";
+import { DiceList } from "./DiceList";
+import { SkillButtonGroup } from "./SkillButtonGroup";
 
 export interface CardInfo {
   id: number;
@@ -197,6 +199,7 @@ function calcCardsInfo(
       (a, b) => a.definitionId - b.definitionId,
     );
     const totalHandCardCount = handCard.length;
+    const skillCount = player.initiativeSkill.length;
 
     const isFocus = !opp && focusingHands;
     const z = isFocus ? FOCUSING_HANDS_Z : 1;
@@ -236,7 +239,7 @@ function calcCardsInfo(
       }
       const [x, y] = isFocus
         ? getHandCardFocusedPos(size, totalHandCardCount, i, hoveringHandIndex)
-        : getHandCardBlurredPos(size, opp, totalHandCardCount, i);
+        : getHandCardBlurredPos(size, opp, totalHandCardCount, i, skillCount);
       cards.push({
         id: card.id,
         data: card,
@@ -679,6 +682,12 @@ export function Chessboard(props: ChessboardProps) {
       status: PbPlayerStatus.UNSPECIFIED, // TODO
     };
   };
+  const myDice = createMemo(
+    () => localProps.data.state.player[localProps.who].dice,
+  );
+  const mySkills = createMemo(
+    () => localProps.data.state.player[localProps.who].initiativeSkill,
+  );
 
   const onCardClick = (
     e: MouseEvent,
@@ -852,7 +861,7 @@ export function Chessboard(props: ChessboardProps) {
         </KeyWithAnimation>
       </div>
       <div
-        class="absolute h-16 w-16 rounded-full left-2 top-50% translate-y--50% data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center"
+        class="absolute h-16 w-16 rounded-full left-2 top-50% translate-y--50% data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center select-none"
         data-opp={localProps.data.state.currentTurn !== localProps.who}
       >
         T{localProps.data.state.roundNumber}
@@ -869,6 +878,13 @@ export function Chessboard(props: ChessboardProps) {
         class="absolute top-[calc(50%+2.75rem)] bottom-0"
         {...playerInfoPropsOf(localProps.who)}
       />
+      <DiceList class="absolute right-2 top-2" dice={myDice()} />
+      <Show when={!getFocusingHands() && !getDraggingHand()}>
+        <SkillButtonGroup
+          class="absolute bottom-2 right-2"
+          skills={mySkills()}
+        />
+      </Show>
     </div>
   );
 }

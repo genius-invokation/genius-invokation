@@ -202,9 +202,10 @@ export function Card(props: CardProps) {
         />
       </div>
       <DiceCost
-        class="absolute left-0 top-0 translate-x--50% backface-hidden flex flex-col opacity-[var(--gi-tcg-opacity)]"
+        class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1 opacity-[var(--gi-tcg-opacity)]"
         cost={data().definitionCost}
-        // realCost={allCosts[props.data.id]}
+        size={36}
+        // realCost={allCosts[props.data.id]} // TODO
       />
       <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
     </div>
