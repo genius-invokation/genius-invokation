@@ -21,6 +21,7 @@ import {
   PbPhaseType,
   PbPlayerFlag,
   PbPlayerStatus,
+  PbRemoveCardReason,
   PbSkillType,
   Reaction,
   type RemoveCardEM,
@@ -30,6 +31,7 @@ import type {
   AnimatingCardInfo,
   DamageInfo,
   NotificationBoxInfo,
+  PlayingCardInfo,
   ReactionInfo,
 } from "./components/Chessboard";
 
@@ -68,6 +70,7 @@ export interface ParsedMutation {
   roundAndPhase: RoundAndPhaseNotificationInfo;
   playerStatus: (PbPlayerStatus | null)[];
   animatingCards: AnimatingCardInfo[];
+  playingCard: PlayingCardInfo | null;
   damages: DamageInfo[];
   reactions: ReactionInfo[];
   notificationBox: NotificationBoxInfo | null;
@@ -78,6 +81,7 @@ export interface ParsedMutation {
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const playerStatus: (PbPlayerStatus | null)[] = [null, null];
+  let playingCard: PlayingCardInfo | null = null;
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
   // 如果新的卡牌动画的 from 和之前的进出方向相反，则新的卡牌动画延迟一刻
@@ -108,6 +112,17 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
       case "transferCard":
       case "removeCard": {
         const card = mutation.value.card!;
+        let showing = card.definitionId !== 0;
+        if (mutation.$case === "removeCard") {
+          if ([PbRemoveCardReason.PLAY, PbRemoveCardReason.PLAY_NO_EFFECT].includes(mutation.value.reason)) {
+            playingCard = {
+              who: mutation.value.who as 0 | 1,
+              data: card,
+              noEffect: mutation.value.reason === PbRemoveCardReason.PLAY_NO_EFFECT,
+            };
+          }
+          showing = false;
+        }
         const source = getCardArea("from", mutation.value);
         const destination = getCardArea("to", mutation.value);
 
@@ -127,6 +142,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
             : 0;
           animatingCards.push({
             data: card,
+            showing,
             destination,
             delay: Math.max(sourceDelay, destinationDelay),
           });
@@ -243,6 +259,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   return {
     roundAndPhase,
     playerStatus,
+    playingCard,
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),
     reactions: reactionsByTarget.values().toArray().flat(),

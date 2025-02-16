@@ -112,3 +112,24 @@
     opacity: 0;
   }
 }
+
+@keyframes playing-card {
+  0% {
+    opacity: 0;
+    filter: none;
+    box-shadow: none;
+  }
+  15% {
+    opacity: 1;
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px yellow;
+  }
+  85% {
+    opacity: 1;
+    filter: none;
+    box-shadow: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}

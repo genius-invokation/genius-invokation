@@ -74,6 +74,7 @@ import { DiceList } from "./DiceList";
 import { SkillButtonGroup } from "./SkillButtonGroup";
 import { createStore } from "solid-js/store";
 import { RoundAndPhaseNotification } from "./RoundAndPhaseNotification";
+import { PlayingCard } from "./PlayingCard";
 
 export interface CardInfo {
   id: number;
@@ -115,7 +116,14 @@ export interface EntityInfo extends StatusInfo {
 
 export interface AnimatingCardInfo {
   data: PbCardState;
+  showing: boolean;
   delay: number;
+}
+
+export interface PlayingCardInfo {
+  who: 0 | 1;
+  data: PbCardState;
+  noEffect: boolean;
 }
 
 export interface DamageInfo {
@@ -378,7 +386,7 @@ function rerenderChildren(opt: {
       .toSorted((a, b) => a - b)) {
       const currentAnimatingCards = showingCards.get(d)!;
       const currentShowingCards = currentAnimatingCards
-        .filter((card) => card.data.definitionId !== 0)
+        .filter((card) => card.showing)
         .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
       let currentDurationMs = 0;
       for (const animatingCard of currentAnimatingCards) {
@@ -575,7 +583,7 @@ function rerenderChildren(opt: {
       new Promise((resolve) => setTimeout(resolve, duration)),
     );
   }
-  if (data.notificationBox) {
+  if (data.playingCard || data.notificationBox) {
     animationPromises.push(new Promise((resolve) => setTimeout(resolve, 700)));
   }
   if (data.enteringEntities.length > 0 || data.triggeringEntities.length > 0) {
@@ -895,6 +903,9 @@ export function Chessboard(props: ChessboardProps) {
       />
       <Show when={localProps.data.notificationBox} keyed>
         {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
+      </Show>
+      <Show when={localProps.data.playingCard} keyed>
+        {(data) => <PlayingCard opp={data.who !== props.who} {...data} />}
       </Show>
       <PlayerInfo
         opp

@@ -197,7 +197,7 @@ export function Card(props: CardProps) {
     >
       <div class="absolute h-full w-full backface-hidden opacity-[var(--gi-tcg-opacity)]">
         <Image
-          class="h-full w-full rounded-xl b-white b-3 "
+          class="h-full w-full rounded-xl b-white b-3"
           imageId={props.data.definitionId}
         />
       </div>
