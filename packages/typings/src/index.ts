@@ -63,6 +63,8 @@ export {
   TransferCardEM,
   TransformDefinitionEM,
   SkillUsedEM,
+  PlayerFlag as PbPlayerFlag,
+  SetPlayerFlagEM,
 } from "./gen/mutation";
 export {
   ActionRequest,

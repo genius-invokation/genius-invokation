@@ -40,6 +40,7 @@ message ExposedMutation {
     SkillUsedEM skill_used = 18;
     PlayerStatusChangeEM player_status_change = 19;
     SwapCharacterPositionEM swap_character_position = 20;
+    SetPlayerFlagEM set_player_flag = 21;
   }
   reserved 17;
 }
@@ -202,4 +203,16 @@ message SwapCharacterPositionEM {
   int32 character_0_definition_id = 3;
   sint32 character_1_id = 4;
   int32 character_1_definition_id = 5;
+}
+
+enum PlayerFlag {
+  PLAYER_FLAG_UNSPECIFIED = 0;
+  PLAYER_FLAG_DECLARED_END = 1;
+  PLAYER_FLAG_LEGEND_USED = 2;
+}
+
+message SetPlayerFlagEM {
+  int32 who = 1;
+  PlayerFlag flag_name = 2;
+  bool flag_value = 3;
 }

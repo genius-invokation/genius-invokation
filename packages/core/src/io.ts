@@ -36,6 +36,7 @@ import {
   type PbDiceRequirement,
   PbEntityArea,
   type RpcResponsePayloadOf,
+  PbPlayerFlag,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -44,7 +45,7 @@ import type {
   GameState,
   PhaseType,
 } from "./base/state";
-import type { Mutation } from "./base/mutation";
+import type { Mutation, PlayerFlag } from "./base/mutation";
 import type { ActionInfo, InitiativeSkillDefinition } from "./base/skill";
 import { GiTcgIoError } from "./error";
 import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
@@ -178,9 +179,25 @@ export function exposeMutation(
     case "pushRoundSkillLog":
     case "clearRoundSkillLog":
     case "clearRemovedEntities":
-    case "setPlayerFlag":
     case "switchActive": // We will manually handle this
       return null;
+    case "setPlayerFlag": {
+      const FLAG_NAME_MAP: Partial<Record<PlayerFlag, PbPlayerFlag>> = {
+        declaredEnd: PbPlayerFlag.DECLARED_END,
+        legendUsed: PbPlayerFlag.LEGEND_USED,
+      }
+      const flagName = FLAG_NAME_MAP[m.flagName];
+      if (flagName) {
+        return {
+          $case: "setPlayerFlag",
+          who: m.who,
+          flagName,
+          flagValue: m.value,
+        };
+      } else {
+        return null;
+      }
+    }
     case "swapCharacterPosition":
       return {
         $case: "swapCharacterPosition",
