@@ -209,11 +209,14 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
           <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
             <EnergyBar current={energy()} total={data().maxEnergy} />
-            <Show when={technique()}>
+            <Show when={technique()} keyed>
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().data.hasUsagePerRound}
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
                 >
                   &#129668;
                 </div>
@@ -230,21 +233,27 @@ export function CharacterArea(props: CharacterAreaProps) {
           }}
         </Show> */}
           <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
-            <Show when={weapon()}>
+            <Show when={weapon()} keyed>
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().data.hasUsagePerRound}
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
                 >
                   &#x1F5E1;
                 </div>
               )}
             </Show>
-            <Show when={artifact()}>
+            <Show when={artifact()} keyed>
               {(et) => (
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().data.hasUsagePerRound}
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
                 >
                   &#x1F451;
                 </div>
@@ -255,6 +264,9 @@ export function CharacterArea(props: CharacterAreaProps) {
                 <div
                   class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
                   bool:data-highlight={et().data.hasUsagePerRound}
+                  bool:data-entering={et().animation === "entering"}
+                  bool:data-disposing={et().animation === "disposing"}
+                  bool:data-triggered={et().triggered}
                 >
                   &#x2728;
                 </div>

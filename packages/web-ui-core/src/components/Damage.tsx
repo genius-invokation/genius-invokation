@@ -37,7 +37,7 @@ export function Damage(props: DamageProps) {
         }}
       >
         <span
-          class="data-[heal=false]:animate-[damage-text-enter] data-[heal]:animate-duration-200 text-5xl font-bold text-stroke-white text-stroke-2"
+          class="data-[heal=false]:animate-[damage-text-enter_200ms] text-5xl font-bold text-stroke-white text-stroke-2"
           data-heal={damageType() === DamageType.Heal}
         >
           {damageType() === DamageType.Heal ? "+" : "-"}

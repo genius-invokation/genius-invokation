@@ -46,11 +46,17 @@ function SkillButton(props: SkillButtonProps) {
 export interface SkillButtonGroupProps {
   class?: string;
   skills: PbSkillInfo[];
+  shown: boolean;
 }
 
 export function SkillButtonGroup(props: SkillButtonGroupProps) {
   return (
-    <div class={`flex flex-row gap-1 ${props.class ?? ""}`}>
+    <div
+      class={`data-[shown]:flex flex-row gap-1 transition-all-100 transition-discrete hidden opacity-0 data-[shown]:opacity-100 starting:data-[shown]:opacity-0 ${
+        props.class ?? ""
+      }`}
+      bool:data-shown={props.shown}
+    >
       <For each={props.skills}>{(skill) => <SkillButton data={skill} />}</For>
     </div>
   );

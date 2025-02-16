@@ -36,7 +36,7 @@ export function Entity(props: EntityProps) {
       />
       <Show when={data().hasUsagePerRound}>
         <div
-          class="absolute inset-2px animate-[entity-highlight] animate-duration-2000 animate-ease-in-out animate-alternate animate-count-infinite"
+          class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite"
         />
       </Show>
       <Show when={typeof data().variableValue === "number"}>

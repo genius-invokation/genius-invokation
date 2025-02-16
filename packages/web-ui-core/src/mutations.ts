@@ -18,6 +18,8 @@ import {
   DamageType,
   PbCardArea,
   type PbExposedMutation,
+  PbPhaseType,
+  PbPlayerStatus,
   PbSkillType,
   Reaction,
   type RemoveCardEM,
@@ -55,7 +57,15 @@ interface AnimatingCardWithDestination extends AnimatingCardInfo {
   destination: CardDestination | null;
 }
 
+export interface RoundAndPhaseNotificationInfo {
+  showRound: boolean;
+  who: 0 | 1 | null;
+  value: PbPhaseType | "action" | "declareEnd" | null;
+}
+
 export interface ParsedMutation {
+  roundAndPhase: RoundAndPhaseNotificationInfo;
+  playerStatus: (PbPlayerStatus | null)[];
   animatingCards: AnimatingCardInfo[];
   damages: DamageInfo[];
   reactions: ReactionInfo[];
@@ -66,6 +76,7 @@ export interface ParsedMutation {
 }
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
+  const playerStatus: (PbPlayerStatus | null)[] = [null, null];
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
   // 如果新的卡牌动画的 from 和之前的进出方向相反，则新的卡牌动画延迟一刻
@@ -84,6 +95,11 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const enteringEntities: number[] = [];
   const triggeringEntities: number[] = [];
   const disposingEntities: number[] = [];
+  const roundAndPhase: RoundAndPhaseNotificationInfo = {
+    showRound: false,
+    who: null,
+    value: null,
+  };
 
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
@@ -196,9 +212,29 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         }
         break;
       }
+      case "playerStatusChange": {
+        playerStatus[mutation.value.who] = mutation.value.status;
+        if (mutation.value.status === PbPlayerStatus.ACTING) {
+          roundAndPhase.who = mutation.value.who as 0 | 1;
+          roundAndPhase.value = "action";
+        }
+        break;
+      }
+      case "stepRound": {
+        roundAndPhase.showRound = true;
+        break;
+      }
+      case "changePhase": {
+        if ([PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(mutation.value.newPhase)) {
+          roundAndPhase.value = mutation.value.newPhase;
+        }
+        break;
+      }
     }
   }
   return {
+    roundAndPhase,
+    playerStatus,
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),
     reactions: reactionsByTarget.values().toArray().flat(),

@@ -72,6 +72,8 @@ import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
 import { flip } from "@gi-tcg/utils";
 import { DiceList } from "./DiceList";
 import { SkillButtonGroup } from "./SkillButtonGroup";
+import { createStore } from "solid-js/store";
+import { RoundAndPhaseNotification } from "./RoundAndPhaseNotification";
 
 export interface CardInfo {
   id: number;
@@ -567,6 +569,12 @@ function rerenderChildren(opt: {
     target.uiState.damages.push(damage);
   }
 
+  if (data.roundAndPhase.value !== null) {
+    const duration = data.roundAndPhase.showRound ? 1300 : 500;
+    animationPromises.push(
+      new Promise((resolve) => setTimeout(resolve, duration)),
+    );
+  }
   if (data.notificationBox) {
     animationPromises.push(new Promise((resolve) => setTimeout(resolve, 700)));
   }
@@ -673,13 +681,25 @@ export function Chessboard(props: ChessboardProps) {
     ),
   );
 
+  const [playerStatus, setPlayerStatus] = createStore<PbPlayerStatus[]>([
+    PbPlayerStatus.UNSPECIFIED,
+    PbPlayerStatus.UNSPECIFIED,
+  ]);
+  createEffect(() => {
+    for (const who of [0, 1]) {
+      if (localProps.data.playerStatus[who] !== null) {
+        setPlayerStatus(who, localProps.data.playerStatus[who]);
+      }
+    }
+  });
+
   const playerInfoPropsOf = (who: 0 | 1): PlayerInfoProps => {
     const player = localProps.data.state.player[who];
     return {
       declaredEnd: player.declaredEnd,
       diceCount: player.dice.length,
       legendUsed: player.legendUsed,
-      status: PbPlayerStatus.UNSPECIFIED, // TODO
+      status: playerStatus[who],
     };
   };
   const myDice = createMemo(
@@ -866,6 +886,13 @@ export function Chessboard(props: ChessboardProps) {
       >
         T{localProps.data.state.roundNumber}
       </div>
+      <RoundAndPhaseNotification
+        who={localProps.who}
+        roundNumber={localProps.data.state.roundNumber}
+        currentTurn={localProps.data.state.currentTurn as 0 | 1}
+        class="absolute left-0 w-full top-50% translate-y--50%"
+        info={localProps.data.roundAndPhase}
+      />
       <Show when={localProps.data.notificationBox} keyed>
         {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
       </Show>
@@ -879,12 +906,11 @@ export function Chessboard(props: ChessboardProps) {
         {...playerInfoPropsOf(localProps.who)}
       />
       <DiceList class="absolute right-2 top-2" dice={myDice()} />
-      <Show when={!getFocusingHands() && !getDraggingHand()}>
-        <SkillButtonGroup
-          class="absolute bottom-2 right-2"
-          skills={mySkills()}
-        />
-      </Show>
+      <SkillButtonGroup
+        class="absolute bottom-2 right-2"
+        skills={mySkills()}
+        shown={!getFocusingHands() && !getDraggingHand()}
+      />
     </div>
   );
 }

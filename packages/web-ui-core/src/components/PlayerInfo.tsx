@@ -13,8 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DiceType, type PbPlayerStatus } from "@gi-tcg/typings";
+import { DiceType, PbPlayerStatus } from "@gi-tcg/typings";
 import { Dice } from "./Dice";
+import { Show } from "solid-js";
 
 export interface PlayerInfoProps {
   class?: string;
@@ -25,10 +26,19 @@ export interface PlayerInfoProps {
   status: PbPlayerStatus; // TODO
 }
 
+const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
+  [PbPlayerStatus.UNSPECIFIED]: "",
+  [PbPlayerStatus.ACTING]: "正在行动中…",
+  [PbPlayerStatus.CHOOSING_ACTIVE]: "正在选择出战角色…",
+  [PbPlayerStatus.REROLLING]: "正在重投骰子…",
+  [PbPlayerStatus.SWITCHING_HANDS]: "正在替换手牌…",
+  [PbPlayerStatus.SELECTING_CARDS]: "正在挑选…",
+};
+
 export function PlayerInfo(props: PlayerInfoProps) {
   return (
     <div
-      class={`pointer-events-none mx-2 flex justify-between items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
+      class={`pointer-events-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
         props.class ?? ""
       }`}
       data-opp={!!props.opp}
@@ -36,7 +46,8 @@ export function PlayerInfo(props: PlayerInfoProps) {
       <div>
         <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
       </div>
-      <div class="my-5 flex flex-row gap-4 items-center">
+      <div class="flex-grow-1" />
+      <div class="flex flex-row gap-4 items-center">
         <div
           class="ml-1.75 h-6 w-6 b-gray-400 b-2 rounded-md rotate-45 bg-gradient-to-r from-purple-500 to-blue-500 data-[used]:bg-gray-300"
           bool:data-used={props.legendUsed}
@@ -47,6 +58,12 @@ export function PlayerInfo(props: PlayerInfoProps) {
         >
           已宣布结束
         </div>
+      </div>
+      <div class="text-blue-600 text-xs h-4">
+        <Show when={props.status !== PbPlayerStatus.UNSPECIFIED}>
+          {props.opp ? "对方" : "我方"}
+          {STATUS_TEXT_MAP[props.status]}
+        </Show>
       </div>
     </div>
   );

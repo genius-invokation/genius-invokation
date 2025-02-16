@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type {
-  PbGameState,
-  PbPlayerState,
-  RpcDispatcher,
+import {
+  PbPlayerStatus,
+  type PbGameState,
+  type PbPlayerState,
+  type RpcDispatcher,
 } from "@gi-tcg/typings";
 import { batch, createSignal, type ComponentProps, type JSX } from "solid-js";
 import {
@@ -69,8 +70,14 @@ export type Client = [
 
 export function createClient(who: 0 | 1): Client {
   const [data, setData] = createSignal<ChessboardData>({
+    roundAndPhase: {
+      showRound: false,
+      who: null,
+      value: null,
+    },
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
+    playerStatus: [null, null],
     animatingCards: [],
     enteringEntities: [],
     disposingEntities: [],
