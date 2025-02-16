@@ -19,6 +19,7 @@ import {
   PbCardArea,
   type PbExposedMutation,
   PbPhaseType,
+  PbPlayerFlag,
   PbPlayerStatus,
   PbSkillType,
   Reaction,
@@ -217,6 +218,13 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         if (mutation.value.status === PbPlayerStatus.ACTING) {
           roundAndPhase.who = mutation.value.who as 0 | 1;
           roundAndPhase.value = "action";
+        }
+        break;
+      }
+      case "setPlayerFlag": {
+        if (mutation.value.flagName === PbPlayerFlag.DECLARED_END) {
+          roundAndPhase.who = mutation.value.who as 0 | 1;
+          roundAndPhase.value = "declareEnd";
         }
         break;
       }

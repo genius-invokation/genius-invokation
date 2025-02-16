@@ -15,7 +15,7 @@
 
 import { PbPhaseType } from "@gi-tcg/typings";
 import type { RoundAndPhaseNotificationInfo } from "../mutations";
-import { createMemo, Match, Show, Switch } from "solid-js";
+import { createEffect, createMemo, createSignal, Match, Show, Switch } from "solid-js";
 
 export interface RoundAndPhaseNotificationProps {
   class?: string;
@@ -38,6 +38,13 @@ export function RoundAndPhaseNotification(
   props: RoundAndPhaseNotificationProps,
 ) {
   const opp = createMemo(() => props.who !== props.info.who);
+  const [isFirst, setIsFirst] = createSignal(true);
+  createEffect(() => {
+    // 宣布回合结束总是先手方先宣布，随后后手方宣布，周而复始
+    if (props.info.value === "declareEnd") {
+      setIsFirst((prev) => !prev);
+    }
+  });
   return (
     <div
       class={`grid grid-cols-1 grid-rows-1 justify-items-center items-center select-none group ${props.class} children:row-span-full children:col-span-full`}
@@ -60,6 +67,9 @@ export function RoundAndPhaseNotification(
           <div class="w-192 h-6 flex flex-row justify-center items-center bg-gradient-to-r group-data-[opp=true]:from-blue-200/0 group-data-[opp=true]:via-blue-200 group-data-[opp=true]:to-blue-200/0 group-data-[opp=false]:from-yellow-200/0 group-data-[opp=false]:via-yellow-200 group-data-[opp=false]:to-yellow-200/0 group-data-[opp=true]:text-blue-700 group-data-[opp=false]:text-yellow-700 animate-[phase-notification_500ms_both]">
             {opp() ? "对方" : "我方"}
             {props.info.value === "action" ? "行动" : "宣布结束"}
+            <Show when={props.info.value === "declareEnd"}>
+              ，获得{isFirst() ? "后手" : "先手"}
+            </Show>
           </div>
         </Match>
       </Switch>
