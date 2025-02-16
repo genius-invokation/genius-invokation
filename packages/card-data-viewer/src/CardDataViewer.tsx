@@ -15,7 +15,7 @@
 
 import type { AnyState } from "@gi-tcg/core";
 import { createMemo, createSignal, ErrorBoundary, For, Show } from "solid-js";
-import { ActionCard, Character, Entity, Keyword } from "./Entity";
+import { ActionCard, Character, Entity, Keyword, Skill } from "./Entity";
 
 export type StateType = AnyState["definition"]["type"] | "skill" | "keyword";
 
@@ -106,6 +106,18 @@ function CardDataViewer(props: CardDataViewerProps) {
               </div>
             )}
           </For>
+          <For each={grouped().skill}>
+            {(input) => (
+              <div class="card-panel">
+                <Skill
+                  class="min-h-0"
+                  {...props}
+                  input={input}
+                  onRequestExplain={onRequestExplain}
+                />
+              </div>
+            )}
+          </For>
           <For
             each={[...(grouped().summon ?? []), ...(grouped().support ?? [])]}
           >
@@ -115,7 +127,6 @@ function CardDataViewer(props: CardDataViewerProps) {
                   class="min-h-0"
                   {...props}
                   input={input}
-                  asChild
                   onRequestExplain={onRequestExplain}
                 />
               </div>
@@ -124,12 +135,12 @@ function CardDataViewer(props: CardDataViewerProps) {
           <Show when={hasStatuses()}>
             <div class="card-panel">
               <Show when={equipmentAndStatuses().length}>
-                <h3 class="text-yellow-7 mb-3">装备与状态</h3>
+                <h3 class="text-yellow-7 mb-2">装备与状态</h3>
               </Show>
               <For each={equipmentAndStatuses()}>
                 {(input) => (
                   <Entity
-                    class="b-yellow-3 b-1 rounded-md mb"
+                    class="b-yellow-3 b-1 rounded-md mb-2"
                     {...props}
                     input={input}
                     asChild
@@ -138,12 +149,12 @@ function CardDataViewer(props: CardDataViewerProps) {
                 )}
               </For>
               <Show when={grouped().combatStatus?.length}>
-                <h3 class="text-yellow-7 mb-3">出战状态</h3>
+                <h3 class="text-yellow-7 mb-2">出战状态</h3>
               </Show>
               <For each={grouped().combatStatus}>
                 {(input) => (
                   <Entity
-                    class="b-yellow-3 b-1 rounded-md"
+                    class="b-yellow-3 b-1 rounded-md mb-2"
                     {...props}
                     input={input}
                     asChild

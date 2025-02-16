@@ -31,13 +31,12 @@ const COLOR_MAP: Record<string, string> = {
   GCG_COST_DICE_ANEMO: "#80ffe6",
   GCG_COST_DICE_SAME: "#dcd4c2",
   GCG_COST_ENERGY: "#d0cc51",
-  GCG_COST_LEGEND: "linear-gradient(135deg,#a855f7,#3b82f6)",
 };
 
 export function PlayCostList(props: PlayCostProps) {
   const glyph = (type: string) => {
     if (type === "GCG_COST_LEGEND") {
-      return "\u25c6";
+      return "";
     } else if (type === "GCG_COST_ENERGY") {
       return "\u2726";
     } else {
@@ -58,7 +57,8 @@ export function PlayCostList(props: PlayCostProps) {
         {(item) => (
           <div class="relative">
             <div
-              class="line-height-none text-2xl"
+              class="line-height-none text-2xl data-[legend]:w-3 data-[legend]:h-3 data-[legend]:bg-gradient-to-r data-[legend]:rotate-45 from-purple-500 to-blue-500"
+              bool:data-legend={item.type === "GCG_COST_LEGEND"}
               style={{ color: COLOR_MAP[item.type] }}
             >
               {glyph(item.type)}

@@ -18,19 +18,11 @@ import { createCardDataViewer } from ".";
 import { render } from "solid-js/web";
 
 function App() {
-  const { CardDataViewer, showCharacter, showState, showCard } =
+  const { CardDataViewer, showCharacter, showState, showCard, showSkill } =
     createCardDataViewer({
       // includesImage: true,
     });
   onMount(() => {
-    showState("summon", {
-      id: -5000001,
-      definitionId: 113041,
-      descriptionDictionary: {},
-      hasUsagePerRound: false,
-      variableName: "usage",
-      variableValue: 2,
-    });
     showState(
       "character",
       {
@@ -67,8 +59,25 @@ function App() {
         },
       ],
     );
+    showState("card", {
+      id: -5000001,
+      definitionId: 330005,
+      definitionCost: [],
+      descriptionDictionary: {
+        "[T]": "2",
+      },
+    });
+    // showState("summon", {
+    //   id: -5000001,
+    //   definitionId: 113041,
+    //   descriptionDictionary: {},
+    //   hasUsagePerRound: false,
+    //   variableName: "usage",
+    //   variableValue: 2,
+    // });
     // showCard(212111);
     // showCharacter(1510);
+    // showSkill(12111);
   });
   return <CardDataViewer />;
 }

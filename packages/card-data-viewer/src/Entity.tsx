@@ -158,8 +158,15 @@ export function ActionCard(props: CardDataProps) {
               <div>
                 <Description
                   {...props}
+                  keyMap={
+                    props.input.from === "state"
+                      ? props.input.descriptionDictionary
+                      : {}
+                  }
                   definitionId={props.input.definitionId}
-                  description={data().rawDescription}
+                  description={
+                    data().rawPlayingDescription ?? data().rawDescription
+                  }
                   onRequestExplain={props.onRequestExplain}
                 />
               </div>
