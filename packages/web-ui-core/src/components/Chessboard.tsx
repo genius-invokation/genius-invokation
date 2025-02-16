@@ -75,6 +75,9 @@ import { SkillButtonGroup } from "./SkillButtonGroup";
 import { createStore } from "solid-js/store";
 import { RoundAndPhaseNotification } from "./RoundAndPhaseNotification";
 import { PlayingCard } from "./PlayingCard";
+import "@gi-tcg/card-data-viewer/style.css";
+import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
+import { useUiContext } from "../hooks/context";
 
 export interface CardInfo {
   id: number;
@@ -111,6 +114,7 @@ export interface StatusInfo {
 }
 
 export interface EntityInfo extends StatusInfo {
+  type: "support" | "summon";
   uiState: EntityUiState;
 }
 
@@ -297,6 +301,7 @@ function calcEntitiesInfo(
       const [x, y] = getEntityPos(size, opp, type, index);
       return {
         id: data.id,
+        type,
         data,
         animation: "none",
         triggered: false,
@@ -618,6 +623,11 @@ export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, ["who", "data", "class"]);
   let chessboardElement!: HTMLDivElement;
 
+  const { assetsApiEndpoint } = useUiContext();
+  const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
+    includesImage: true,
+  });
+
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
   const onResize = () => {
@@ -717,11 +727,11 @@ export function Chessboard(props: ChessboardProps) {
     () => localProps.data.state.player[localProps.who].initiativeSkill,
   );
 
-  const onCardClick = (
-    e: MouseEvent,
-    currentTarget: HTMLElement,
-    cardInfo: CardInfo,
-  ) => {};
+  // const onCardClick = (
+  //   e: MouseEvent,
+  //   currentTarget: HTMLElement,
+  //   cardInfo: CardInfo,
+  // ) => {};
 
   const onCardPointerEnter = (
     e: PointerEvent,
@@ -769,6 +779,7 @@ export function Chessboard(props: ChessboardProps) {
         }
         yAdjust -= 3;
       }
+      dataViewerController.showCard(cardInfo.data.definitionId);
       currentTarget.setPointerCapture(e.pointerId);
       const unit = unitInPx();
       const originalX = cardInfo.uiState.transform.x;
@@ -835,6 +846,27 @@ export function Chessboard(props: ChessboardProps) {
       setFocusingHands(false);
     }
     setHoveringHand(null);
+    dataViewerController.hide();
+  };
+
+  const onCharacterAreaClick = (
+    e: MouseEvent,
+    currentTarget: HTMLElement,
+    characterInfo: CharacterInfo,
+  ) => {
+    dataViewerController.showState(
+      "character",
+      characterInfo.data,
+      characterInfo.combatStatus.map((st) => st.data),
+    );
+  };
+
+  const onEntityClick = (
+    e: MouseEvent,
+    currentTarget: HTMLElement,
+    entityInfo: EntityInfo,
+  ) => {
+    dataViewerController.showState(entityInfo.type, entityInfo.data);
   };
 
   onMount(() => {
@@ -863,7 +895,12 @@ export function Chessboard(props: ChessboardProps) {
           each={children().characters}
           updateWhen={updateChildrenSignal()}
         >
-          {(character) => <CharacterArea {...character()} />}
+          {(character) => (
+            <CharacterArea
+              {...character()}
+              onClick={(e, t) => onCharacterAreaClick(e, t, character())}
+            />
+          )}
         </KeyWithAnimation>
         <KeyWithAnimation
           each={children().cards}
@@ -872,7 +909,7 @@ export function Chessboard(props: ChessboardProps) {
           {(card) => (
             <Card
               {...card()}
-              onClick={(e, t) => onCardClick(e, t, card())}
+              // onClick={(e, t) => onCardClick(e, t, card())}
               onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
               onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
               onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
@@ -885,7 +922,12 @@ export function Chessboard(props: ChessboardProps) {
           each={children().entities}
           updateWhen={updateChildrenSignal()}
         >
-          {(entity) => <Entity {...entity()} />}
+          {(entity) => (
+            <Entity
+              {...entity()}
+              onClick={(e, t) => onEntityClick(e, t, entity())}
+            />
+          )}
         </KeyWithAnimation>
       </div>
       <div
@@ -922,6 +964,9 @@ export function Chessboard(props: ChessboardProps) {
         skills={mySkills()}
         shown={!getFocusingHands() && !getDraggingHand()}
       />
+      <div class="absolute inset-2 pointer-events-none">
+        <CardDataViewer />
+      </div>
     </div>
   );
 }

@@ -18,7 +18,9 @@ import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
 
-export interface EntityProps extends EntityInfo {}
+export interface EntityProps extends EntityInfo {
+  onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
+}
 
 export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
@@ -29,6 +31,7 @@ export function Entity(props: EntityProps) {
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
       bool:data-triggered={props.triggered}
+      onClick={(e) => props.onClick?.(e, e.currentTarget)}
     >
       <Image
         class="absolute h-full w-full rounded-lg b-white b-2"

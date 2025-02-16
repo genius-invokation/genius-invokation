@@ -31,6 +31,7 @@ import {
 import type { PlayerIO } from "@gi-tcg/core";
 import { AsyncQueue } from "./async_queue";
 import { parseMutations } from "./mutations";
+import { UiContext } from "./hooks/context";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -68,7 +69,7 @@ export type Client = [
   Chessboard: (props: ComponentProps<"div">) => JSX.Element,
 ];
 
-export function createClient(who: 0 | 1): Client {
+export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const [data, setData] = createSignal<ChessboardData>({
     roundAndPhase: {
       showRound: false,
@@ -79,6 +80,7 @@ export function createClient(who: 0 | 1): Client {
     previousState: EMPTY_GAME_STATE,
     playerStatus: [null, null],
     animatingCards: [],
+    playingCard: null,
     enteringEntities: [],
     disposingEntities: [],
     triggeringEntities: [],
@@ -115,7 +117,9 @@ export function createClient(who: 0 | 1): Client {
   };
 
   const Wrapper = (props: ComponentProps<"div">) => (
-    <Chessboard who={/*@once*/ who} data={data()} class="h-0" {...props} />
+    <UiContext.Provider value={{ assetsApiEndpoint: option.assetsApiEndpoint }}>
+      <Chessboard who={/*@once*/ who} data={data()} class="h-0" {...props} />
+    </UiContext.Provider>
   );
 
   return [io, Wrapper];

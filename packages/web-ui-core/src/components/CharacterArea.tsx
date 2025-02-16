@@ -191,6 +191,7 @@ export function CharacterArea(props: CharacterAreaProps) {
       class="absolute flex flex-col items-center transition-transform"
       style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
+      onClick={(e) => props.onClick?.(e, e.currentTarget)}
     >
       <div class="h-5 flex flex-row items-end gap-2">
         <For each={aura()}>
@@ -274,7 +275,10 @@ export function CharacterArea(props: CharacterAreaProps) {
             </Key>
           </div>
         </Show>
-        <div class="h-full w-full rounded-xl" bool:data-triggered={props.triggered}>
+        <div
+          class="h-full w-full rounded-xl"
+          bool:data-triggered={props.triggered}
+        >
           <Image
             imageId={data().definitionId}
             class="h-full rounded-xl b-white b-3"

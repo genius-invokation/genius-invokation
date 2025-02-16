@@ -25,8 +25,6 @@ export interface NotificationBoxProps {
 }
 
 export function NotificationBox(props: NotificationBoxProps) {
-  createEffect(() => console.log(props.data));
-
   const typeText = (
     type: NotificationBoxInfo["skillType"],
   ): string | undefined => {

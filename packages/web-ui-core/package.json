@@ -24,6 +24,7 @@
   "dependencies": {
     "@gi-tcg/assets-manager": "workspace:*",
     "@gi-tcg/utils": "workspace:*",
+    "@gi-tcg/card-data-viewer": "workspace:*",
     "@solid-primitives/keyed": "^1.4.0",
     "debounce": "^2.2.0"
   },
