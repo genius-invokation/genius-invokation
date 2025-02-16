@@ -779,7 +779,7 @@ export function Chessboard(props: ChessboardProps) {
         }
         yAdjust -= 3;
       }
-      dataViewerController.showCard(cardInfo.data.definitionId);
+      dataViewerController.showState("card", cardInfo.data);
       currentTarget.setPointerCapture(e.pointerId);
       const unit = unitInPx();
       const originalX = cardInfo.uiState.transform.x;
@@ -854,6 +854,9 @@ export function Chessboard(props: ChessboardProps) {
     currentTarget: HTMLElement,
     characterInfo: CharacterInfo,
   ) => {
+    if (canToggleHandFocus()) {
+      setFocusingHands(false);
+    }
     dataViewerController.showState(
       "character",
       characterInfo.data,
@@ -866,6 +869,9 @@ export function Chessboard(props: ChessboardProps) {
     currentTarget: HTMLElement,
     entityInfo: EntityInfo,
   ) => {
+    if (canToggleHandFocus()) {
+      setFocusingHands(false);
+    }
     dataViewerController.showState(entityInfo.type, entityInfo.data);
   };
 
@@ -886,7 +892,7 @@ export function Chessboard(props: ChessboardProps) {
       <div
         class="relative h-full w-full preserve-3d select-none"
         ref={chessboardElement}
-        onPointerDown={onChessboardClick}
+        onClick={onChessboardClick}
         style={{
           perspective: `${PERSPECTIVE / 4}rem`,
         }}

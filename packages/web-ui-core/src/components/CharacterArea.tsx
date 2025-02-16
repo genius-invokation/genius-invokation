@@ -191,7 +191,10 @@ export function CharacterArea(props: CharacterAreaProps) {
       class="absolute flex flex-col items-center transition-transform"
       style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
-      onClick={(e) => props.onClick?.(e, e.currentTarget)}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onClick?.(e, e.currentTarget);
+      }}
     >
       <div class="h-5 flex flex-row items-end gap-2">
         <For each={aura()}>
