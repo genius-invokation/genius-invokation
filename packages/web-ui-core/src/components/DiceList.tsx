@@ -25,7 +25,7 @@ export interface DiceListProps {
 export function DiceList(props: DiceListProps) {
   return (
     <div class={`flex flex-col gap-2 items-center ${props.class ?? ""}`}>
-      <div class="h-8 w-8 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1">
+      <div class="h-8 w-8 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1 text-yellow-800">
         {props.dice.length}
       </div>
       <div class="flex flex-col gap-2 items-center">

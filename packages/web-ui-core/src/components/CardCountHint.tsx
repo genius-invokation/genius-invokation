@@ -13,14 +13,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createContext, useContext } from "solid-js";
+import { cssPropertyOfTransform } from "../ui_state";
+import type { CardCountHintInfo } from "./Chessboard";
 
-export interface UiContextValue {
-  assetsApiEndPoint?: string;
+export interface CardCountHintProps extends CardCountHintInfo {
+  shown: boolean;
 }
 
-export const UiContext = createContext<UiContextValue>({});
-
-export function useUiContext() {
-  return useContext(UiContext);
+export function CardCountHint(props: CardCountHintProps) {
+  return (
+    <div
+      class="pointer-events-none absolute left-0 top-0 h-6 w-6 rounded-full flex items-center justify-center bg-yellow-100 b-yellow-300 b-1 text-yellow-800 opacity-0 data-[shown]:opacity-100 transition-opacity"
+      style={cssPropertyOfTransform(props.transform)}
+      bool:data-shown={props.shown}
+    >
+      {props.value}
+    </div>
+  );
 }

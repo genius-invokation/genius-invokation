@@ -52,7 +52,7 @@ export interface SkillButtonGroupProps {
 export function SkillButtonGroup(props: SkillButtonGroupProps) {
   return (
     <div
-      class={`data-[shown]:flex flex-row gap-1 transition-all-100 transition-discrete hidden opacity-0 data-[shown]:opacity-100 starting:data-[shown]:opacity-0 ${
+      class={`flex flex-row gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 ${
         props.class ?? ""
       }`}
       bool:data-shown={props.shown}

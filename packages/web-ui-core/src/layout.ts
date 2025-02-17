@@ -113,9 +113,9 @@ export function getEntityPos(
     type === "summon"
       ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + entityXGap
       : halfWidth -
-      TOTAL_CHARACTERS_MAX_WIDTH / 2 -
-      entityXGap -
-      ENTITY_AREA_WIDTH;
+        TOTAL_CHARACTERS_MAX_WIDTH / 2 -
+        entityXGap -
+        ENTITY_AREA_WIDTH;
   const x = entityAreaX + (index % 2) * (ENTITY_WIDTH + ENTITY_GAP);
   const y = entityAreaY + Math.floor(index / 2) * (ENTITY_HEIGHT + ENTITY_GAP);
   return [x, y];
@@ -157,7 +157,9 @@ function effectiveAreaX(width: number) {
 
 export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const quarterHeight = height / 4;
-  const y = opp ? quarterHeight - CARD_WIDTH / 2 : height - quarterHeight - CARD_WIDTH / 2;
+  const y = opp
+    ? quarterHeight - CARD_WIDTH / 2
+    : height - quarterHeight - CARD_WIDTH / 2;
   const x = effectiveAreaX(width) + 6 - CARD_HEIGHT;
   return [x, y];
 }
@@ -213,4 +215,28 @@ export function getShowingCardPos(
   const xStart = (width - totalWidth) / 2;
   const x = xStart + index * xOffset;
   return [x, y];
+}
+
+export function getPileHintPos(size: Size, opp: boolean) {
+  const [x, y] = getPilePos(size, opp);
+  return {
+    x: x + CARD_HEIGHT + 2,
+    y: y + CARD_WIDTH / 2 - 3,
+  };
+}
+
+export function getHandHintPos(size: Size, opp: boolean, value: number) {
+  if (opp) {
+    const [x, y] = getHandCardBlurredPos(size, true, value, value - 1, 0);
+    return {
+      x: x - CARD_WIDTH / 2 - 3,
+      y: y + CARD_HEIGHT + 2,
+    };
+  } else {
+    const [x, y] = getHandCardFocusedPos(size, value, value - 1, null);
+    return {
+      x: x + CARD_WIDTH / 2 - 3,
+      y: y - 10,
+    };
+  }
 }

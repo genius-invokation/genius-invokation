@@ -28,6 +28,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  For,
   on,
   onCleanup,
   onMount,
@@ -43,6 +44,8 @@ import {
   getEntityPos,
   getHandCardBlurredPos,
   getHandCardFocusedPos,
+  getHandHintPos,
+  getPileHintPos,
   getPilePos,
   getShowingCardPos,
   PERSPECTIVE,
@@ -78,11 +81,15 @@ import { PlayingCard } from "./PlayingCard";
 import "@gi-tcg/card-data-viewer/style.css";
 import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
 import { useUiContext } from "../hooks/context";
+import { CardCountHint } from "./CardCountHint";
+import { Key } from "@solid-primitives/keyed";
+
+export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
 export interface CardInfo {
   id: number;
   data: PbCardState;
-  kind: "pile" | "myHand" | "oppHand" | "animating" | "dragging";
+  kind: CardArea | "animating" | "dragging";
   uiState: CardUiState;
   enableShadow: boolean;
   enableTransition: boolean;
@@ -191,7 +198,7 @@ function calcCardsInfo(
       cards.push({
         id: card.id,
         data: card,
-        kind: "pile",
+        kind: opp ? "oppPile" : "myPile",
         uiState: {
           type: "cardStatic",
           isAnimating: false,
@@ -346,10 +353,17 @@ function calcEntitiesInfo(
   return result;
 }
 
+export interface CardCountHintInfo {
+  area: CardArea;
+  value: number;
+  transform: Transform;
+}
+
 interface ChessboardChildren {
   characters: CharacterInfo[];
   cards: CardInfo[];
   entities: EntityInfo[];
+  cardCountHints: CardCountHintInfo[];
 }
 
 function rerenderChildren(opt: {
@@ -365,6 +379,34 @@ function rerenderChildren(opt: {
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
     data;
+
+  const cardCountHints: CardCountHintInfo[] = [];
+  const COUNT_HINT_TRANSFORM_BASE = {
+    ry: 0,
+    rz: 0,
+  };
+  for (const who of [0, 1] as const) {
+    const opp = who !== opt.who;
+    const player = state.player[who];
+    cardCountHints.push({
+      area: opp ? "oppPile" : "myPile",
+      value: player.pileCard.length,
+      transform: {
+        ...getPileHintPos(size, opp),
+        z: 0,
+        ...COUNT_HINT_TRANSFORM_BASE,
+      },
+    });
+    cardCountHints.push({
+      area: opp ? "oppHand" : "myHand",
+      value: player.handCard.length,
+      transform: {
+        ...getHandHintPos(size, opp, player.handCard.length),
+        ...COUNT_HINT_TRANSFORM_BASE,
+        z: opp ? 2 : FOCUSING_HANDS_Z,
+      },
+    });
+  }
 
   const animationPromises: Promise<void>[] = [];
   const currentCards = calcCardsInfo(state, {
@@ -616,6 +658,7 @@ function rerenderChildren(opt: {
       ...currentEntities[1].supports,
       ...currentEntities[1].summons,
     ],
+    cardCountHints,
   };
 }
 
@@ -623,9 +666,10 @@ export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, ["who", "data", "class"]);
   let chessboardElement!: HTMLDivElement;
 
-  const { assetsApiEndpoint } = useUiContext();
+  const { assetsApiEndPoint } = useUiContext();
   const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
     includesImage: true,
+    assetsApiEndPoint,
   });
 
   const [height, setHeight] = createSignal(0);
@@ -657,6 +701,7 @@ export function Chessboard(props: ChessboardProps) {
     characters: [],
     cards: [],
     entities: [],
+    cardCountHints: [],
   });
 
   createEffect(
@@ -703,6 +748,7 @@ export function Chessboard(props: ChessboardProps) {
     PbPlayerStatus.UNSPECIFIED,
     PbPlayerStatus.UNSPECIFIED,
   ]);
+
   createEffect(() => {
     for (const who of [0, 1]) {
       if (localProps.data.playerStatus[who] !== null) {
@@ -710,6 +756,26 @@ export function Chessboard(props: ChessboardProps) {
       }
     }
   });
+
+  const [isShowCardHint, setShowCardHint] = createStore<
+    Record<CardArea, number | null>
+  >({
+    myPile: null,
+    oppPile: null,
+    myHand: null,
+    oppHand: null,
+  });
+
+  const showCardHint = (area: CardArea) => {
+    const current = isShowCardHint[area];
+    if (current !== null) {
+      clearTimeout(current);
+    }
+    const timeout = window.setTimeout(() => {
+      setShowCardHint(area, null);
+    }, 500);
+    setShowCardHint(area, timeout);
+  };
 
   const playerInfoPropsOf = (who: 0 | 1): PlayerInfoProps => {
     const player = localProps.data.state.player[who];
@@ -773,6 +839,7 @@ export function Chessboard(props: ChessboardProps) {
         const doMove = await shouldMoveWhenHandBlurring.promise;
         if (canToggleHandFocus()) {
           setFocusingHands(true);
+          showCardHint("myHand");
         }
         if (!doMove) {
           return;
@@ -800,6 +867,12 @@ export function Chessboard(props: ChessboardProps) {
           return [x, y];
         },
       });
+    } else if (
+      cardInfo.kind === "myPile" ||
+      cardInfo.kind === "oppHand" ||
+      cardInfo.kind === "oppPile"
+    ) {
+      showCardHint(cardInfo.kind);
     }
   };
   const onCardPointerMove = (
@@ -935,6 +1008,14 @@ export function Chessboard(props: ChessboardProps) {
             />
           )}
         </KeyWithAnimation>
+        <Key each={children().cardCountHints} by="area">
+          {(hint) => (
+            <CardCountHint
+              {...hint()}
+              shown={isShowCardHint[hint().area] !== null}
+            />
+          )}
+        </Key>
       </div>
       <div
         class="absolute h-16 w-16 rounded-full left-2 top-50% translate-y--50% data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center select-none"
