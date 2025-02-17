@@ -53,7 +53,7 @@ export function PlayerInfo(props: PlayerInfoProps) {
           bool:data-used={props.legendUsed}
         />
         <div
-          class="opacity-0 data-[shown]:opacity-100 bg-blue-200 text-blue-600 py-1 px-3 rounded-xl transition-opacity"
+          class="opacity-0 data-[shown]:opacity-100 bg-yellow-100 text-yellow-800 py-1 px-3 rounded-xl transition-opacity"
           bool:data-shown={props.declaredEnd}
         >
           已宣布结束
