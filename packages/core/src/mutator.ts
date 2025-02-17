@@ -18,7 +18,9 @@ import {
   EnterEventArg,
   type EventAndRequest,
   HandCardInsertedEventArg,
+  PlayCardRequestArg,
   type SelectCardInfo,
+  type SkillInfo,
   type StateMutationAndExposedMutation,
 } from "./base/skill";
 import {
@@ -360,6 +362,7 @@ export class StateMutator {
 
   async selectCard(
     who: 0 | 1,
+    via: SkillInfo,
     info: SelectCardInfo,
   ): Promise<EventAndRequest[]> {
     if (!this.config.howToSelectCard) {
@@ -399,6 +402,18 @@ export class StateMutator {
         } else {
           return [];
         }
+      }
+      case "requestPlayCard": {
+        const cardDefinition = this.state.data.cards.get(selected);
+        if (!cardDefinition) {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        return [
+          [
+            "requestPlayCard",
+            new PlayCardRequestArg(via, who, cardDefinition, info.targets),
+          ],
+        ];
       }
       default: {
         const _: never = info;

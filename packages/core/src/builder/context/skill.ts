@@ -471,8 +471,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
       ? (card: CardState) => {
-          return nextRandom(card.id) ^ this.state.iterators.random;
-        }
+        return nextRandom(card.id) ^ this.state.iterators.random;
+      }
       : (_: CardState) => 0;
     const sortData = new Map(
       player.hands.map(
@@ -566,7 +566,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const playerWho = switchToTarget.who;
     const from =
       this.state.players[playerWho].characters[
-        getActiveCharacterIndex(this.state.players[playerWho])
+      getActiveCharacterIndex(this.state.players[playerWho])
       ];
     if (from.id === switchToTarget.id) {
       return;
@@ -1178,8 +1178,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Transform ${stringifyState(target)}'s definition to [${def.type}:${
-        def.id
+      `Transform ${stringifyState(target)}'s definition to [${def.type}:${def.id
       }]`,
     );
     this.mutate({
@@ -1286,8 +1285,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const maxCount = this.state.config.maxDiceCount - this.player.dice.length;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Generate ${count}${
-        maxCount < count ? ` (only ${maxCount} due to limit)` : ""
+      `Generate ${count}${maxCount < count ? ` (only ${maxCount} due to limit)` : ""
       } dice of ${typeof type === "string" ? type : `[dice:${type}]`}`,
     );
     count = Math.min(count, maxCount);
@@ -1345,8 +1343,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       myOrOpt === "my" ? this.callerArea.who : flip(this.callerArea.who);
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Player ${who} draw ${count} cards, ${
-        withTag ? `(with tag ${withTag})` : ""
+      `Player ${who} draw ${count} cards, ${withTag ? `(with tag ${withTag})` : ""
       }`,
     );
     const cards: CardState[] = [];
@@ -1562,6 +1559,43 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
   }
 
+  swapPlayerHandCards() {
+    const myHands = this.player.hands;
+    const oppHands = this.oppPlayer.hands;
+    for (const card of oppHands) {
+      this.mutate({
+        type: "transferCard",
+        from: "hands",
+        to: "oppHands",
+        who: flip(this.callerArea.who),
+        value: card,
+      });
+      this.emitEvent(
+        "onHandCardInserted",
+        this.state,
+        this.callerArea.who,
+        card,
+        "stolen",
+      );
+    }
+    for (const card of myHands) {
+      this.mutate({
+        type: "transferCard",
+        from: "hands",
+        to: "oppHands",
+        who: this.callerArea.who,
+        value: card,
+      });
+      this.emitEvent(
+        "onHandCardInserted",
+        this.state,
+        flip(this.callerArea.who),
+        card,
+        "stolen",
+      );
+    }
+  }
+
   /** 弃置一张行动牌，并触发其“弃置时”效果。 */
   disposeCard(...cards: CardState[]) {
     const player = this.player;
@@ -1662,6 +1696,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
   }
 
+  private getCardsDefinition(cards: (CardHandle | CardDefinition)[]) {
+    return cards.map((defOrId) => {
+      if (typeof defOrId === "number") {
+        const def = this.state.data.cards.get(defOrId);
+        if (!def) {
+          throw new GiTcgDataError(`Unknown card definition id ${defOrId}`);
+        }
+        return def;
+      } else {
+        return defOrId;
+      }
+    });
+  }
+
   selectAndSummon(summons: (SummonHandle | EntityDefinition)[]) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "createEntity",
@@ -1681,17 +1729,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
   selectAndCreateHandCard(cards: (CardHandle | CardDefinition)[]) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "createHandCard",
-      cards: cards.map((defOrId) => {
-        if (typeof defOrId === "number") {
-          const def = this.state.data.cards.get(defOrId);
-          if (!def) {
-            throw new GiTcgDataError(`Unknown card definition id ${defOrId}`);
-          }
-          return def;
-        } else {
-          return defOrId;
-        }
-      }),
+      cards: this.getCardsDefinition(cards),
+    });
+  }
+  selectAndPlay(cards: (CardHandle | CardDefinition)[], targets: CharacterTargetArg | EntityTargetArg) {
+    const targetStates = this.queryOrOf(targets).map((t) => t.state);
+    this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
+      type: "requestPlayCard",
+      cards: this.getCardsDefinition(cards),
+      targets: targetStates
     });
   }
 
@@ -1764,5 +1810,5 @@ type SkillContextMutativeProps =
  */
 export type TypedSkillContext<Meta extends ContextMetaBase> =
   Meta["readonly"] extends true
-    ? Omit<SkillContext<Meta>, SkillContextMutativeProps | InternalProp>
-    : Omit<SkillContext<Meta>, InternalProp>;
+  ? Omit<SkillContext<Meta>, SkillContextMutativeProps | InternalProp>
+  : Omit<SkillContext<Meta>, InternalProp>;

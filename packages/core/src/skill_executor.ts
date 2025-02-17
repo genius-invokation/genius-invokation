@@ -46,7 +46,7 @@ import {
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
-  isCharacterInitiativeSkill,
+  playSkillOfCard,
 } from "./utils";
 import { flip } from "@gi-tcg/utils";
 import { DetailLogType } from "./log";
@@ -63,7 +63,7 @@ export class SkillExecutor {
   constructor(
     private mutator: StateMutator,
     private readonly config: SkillExecutorConfig,
-  ) {}
+  ) { }
 
   get state() {
     return this.mutator.state;
@@ -88,8 +88,7 @@ export class SkillExecutor {
     }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
-      `Using skill [skill:${skillInfo.definition.id}]${
-        skillInfo.charged ? " (charged)" : ""
+      `Using skill [skill:${skillInfo.definition.id}]${skillInfo.charged ? " (charged)" : ""
       }${skillInfo.plunging ? " (plunging)" : ""}`,
     );
     this.mutator.log(
@@ -274,8 +273,7 @@ export class SkillExecutor {
       if (arg._immuneInfo !== null) {
         this.mutator.log(
           DetailLogType.Primitive,
-          `${stringifyState(arg.target)} is immune to defeated. Revive him to ${
-            arg._immuneInfo.newHealth
+          `${stringifyState(arg.target)} is immune to defeated. Revive him to ${arg._immuneInfo.newHealth
           }`,
         );
         const source = arg._immuneInfo.skill.caller;
@@ -493,7 +491,7 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to select card`,
         );
-        const events = await this.mutator.selectCard(arg.who, arg.info);
+        const events = await this.mutator.selectCard(arg.who, arg.via, arg.info);
         await this.handleEvent(...events);
       } else if (name === "requestUseSkill") {
         using l = this.mutator.subLog(
@@ -510,8 +508,7 @@ export class SkillExecutor {
         ) {
           this.mutator.log(
             DetailLogType.Other,
-            `Skill [skill:${
-              arg.requestingSkillId
+            `Skill [skill:${arg.requestingSkillId
             }] (requested by ${stringifyState(
               arg.via.caller,
             )}) is requested, but current active character ${stringifyState(
@@ -526,8 +523,7 @@ export class SkillExecutor {
         if (!skillDef || !skillDef.initiativeSkillConfig) {
           this.mutator.log(
             DetailLogType.Other,
-            `Skill [skill:${
-              arg.requestingSkillId
+            `Skill [skill:${arg.requestingSkillId
             }] (requested by ${stringifyState(
               arg.via.caller,
             )}) is not available on current active character ${stringifyState(
@@ -556,6 +552,17 @@ export class SkillExecutor {
           "onUseSkill",
           new UseSkillEventArg(this.state, callerArea, skillInfo),
         ]);
+      } else if (name === "requestPlayCard") {
+        using l = this.mutator.subLog(
+          DetailLogType.Event,
+          `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
+        );
+        const skillInfo = defineSkillInfo({
+          caller: arg.via.caller,
+          definition: playSkillOfCard(arg.cardDefinition),
+          requestBy: arg.via,
+        });
+        await this.finalizeSkill(skillInfo, { targets: arg.targets });
       } else if (name === "requestTriggerEndPhaseSkill") {
         using l = this.mutator.subLog(
           DetailLogType.Event,
