@@ -69,7 +69,7 @@ export function Character(props: CardDataProps) {
     <div class={props.class}>
       <Switch>
         <Match when={data.error}>加载失败</Match>
-        <Match when={data.loading}>加载中...</Match>
+        <Match when={data.state === "pending"}>加载中...</Match>
         <Match when={data()}>
           {(data) => (
             <>
@@ -136,7 +136,7 @@ export function ActionCard(props: CardDataProps) {
     <div class={props.class}>
       <Switch>
         <Match when={data.error}>加载失败</Match>
-        <Match when={data.loading}>加载中...</Match>
+        <Match when={data.state === "pending"}>加载中...</Match>
         <Match when={data()}>
           {(data) => (
             <>
@@ -233,7 +233,7 @@ export function Skill(props: ExpandableCardDataProps) {
       </summary>
       <Switch>
         <Match when={data.error}>加载失败</Match>
-        <Match when={data.loading}>加载中...</Match>
+        <Match when={data.state === "pending"}>加载中...</Match>
         <Match when={data()}>
           {(data) => (
             <div class="p-2">
@@ -318,7 +318,7 @@ export function Entity(props: ExpandableCardDataProps) {
       </summary>
       <Switch>
         <Match when={data.error}>加载失败</Match>
-        <Match when={data.loading}>加载中...</Match>
+        <Match when={data.state === "pending"}>加载中...</Match>
         <Match when={data()}>
           {(data) => (
             <div class="p-2">
@@ -379,7 +379,7 @@ export function Keyword(props: CardDefinitionProps) {
       </h3>
       <Switch>
         <Match when={data.error}>加载失败</Match>
-        <Match when={data.loading}>加载中...</Match>
+        <Match when={data.state === "pending"}>加载中...</Match>
         <Match when={data()}>
           {(data) => (
             <div class="p-2">
@@ -443,7 +443,7 @@ export function Reference(props: ReferenceProps) {
       <div class="text-sm">
         <Switch>
           <Match when={data.error}>加载失败</Match>
-          <Match when={data.loading}>加载中...</Match>
+          <Match when={data.state === "pending"}>加载中...</Match>
           <Match when={data()}>
             {(data) => (
               <Description
