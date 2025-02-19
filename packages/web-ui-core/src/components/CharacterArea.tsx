@@ -34,6 +34,7 @@ import type { CharacterInfo, DamageInfo, StatusInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
+import { SelectingIcon } from "./SelectingIcon";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -59,6 +60,7 @@ export type CharacterAnimation =
   | typeof CHARACTER_ANIMATION_NONE;
 
 export interface CharacterAreaProps extends CharacterInfo {
+  selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
@@ -319,6 +321,11 @@ export function CharacterArea(props: CharacterAreaProps) {
             </div>
           )}
         </Show> */}
+        <Show when={props.selecting}>
+          <div class="absolute top-0 left-0 h-full w-full backface-hidden flex items-center justify-center">
+            <SelectingIcon />
+          </div>
+        </Show>
         <Show when={getDamage()}>
           {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>

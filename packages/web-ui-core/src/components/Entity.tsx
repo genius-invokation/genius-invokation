@@ -17,8 +17,10 @@ import { createMemo, Show } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
+import { SelectingIcon } from "./SelectingIcon";
 
 export interface EntityProps extends EntityInfo {
+  selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
@@ -44,6 +46,11 @@ export function Entity(props: EntityProps) {
         <div
           class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite"
         />
+      </Show>
+      <Show when={props.selecting}>
+        <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
+          <SelectingIcon />
+        </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
         <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">

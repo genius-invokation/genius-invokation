@@ -702,6 +702,7 @@ export function Chessboard(props: ChessboardProps) {
     setHeight(chessboardElement.clientHeight / unit);
     setWidth(chessboardElement.clientWidth / unit);
   };
+  const [selectingItem, setSelectingItem] = createSignal<number | null>(null);
 
   const [updateChildrenSignal, triggerUpdateChildren] =
     createSignal<UpdateSignal>({
@@ -886,6 +887,7 @@ export function Chessboard(props: ChessboardProps) {
         yAdjust -= 3;
       }
       dataViewerController.showState("card", cardInfo.data);
+      setSelectingItem(cardInfo.id);
       currentTarget.setPointerCapture(e.pointerId);
       const unit = unitInPx();
       const originalX = cardInfo.uiState.transform.x;
@@ -924,11 +926,13 @@ export function Chessboard(props: ChessboardProps) {
         return dragging;
       }
       shouldMoveWhenHandBlurring?.resolve(true);
+      setSelectingItem(null);
       const size = [height(), width()] as Size;
       const [x, y] = dragging.updatePos(e);
       if (canToggleHandFocus()) {
         const shouldFocusingHand = shouldFocusHandWhenDragging(size, y);
         setFocusingHands(shouldFocusingHand);
+        setShowCardHint("myHand", null);
       }
       // console.log(x, y);
       return {
@@ -956,9 +960,11 @@ export function Chessboard(props: ChessboardProps) {
   const onChessboardClick = () => {
     if (canToggleHandFocus()) {
       setFocusingHands(false);
+      setShowCardHint("myHand", null);
     }
     setHoveringHand(null);
     dataViewerController.hide();
+    setSelectingItem(null);
     if (localProps.actionState) {
       localProps.onStepActionState(CANCEL_ACTION_STEP, []);
     }
@@ -971,12 +977,14 @@ export function Chessboard(props: ChessboardProps) {
   ) => {
     if (canToggleHandFocus()) {
       setFocusingHands(false);
+      setShowCardHint("myHand", null);
     }
     dataViewerController.showState(
       "character",
       characterInfo.data,
       characterInfo.combatStatus.map((st) => st.data),
     );
+    setSelectingItem(characterInfo.id);
   };
 
   const onEntityClick = (
@@ -986,8 +994,10 @@ export function Chessboard(props: ChessboardProps) {
   ) => {
     if (canToggleHandFocus()) {
       setFocusingHands(false);
+      setShowCardHint("myHand", null);
     }
     dataViewerController.showState(entityInfo.type, entityInfo.data);
+    setSelectingItem(entityInfo.id);
   };
 
   onMount(() => {
@@ -1019,6 +1029,7 @@ export function Chessboard(props: ChessboardProps) {
           {(character) => (
             <CharacterArea
               {...character()}
+              selecting={character().id === selectingItem()}
               onClick={(e, t) => onCharacterAreaClick(e, t, character())}
             />
           )}
@@ -1030,6 +1041,7 @@ export function Chessboard(props: ChessboardProps) {
           {(card) => (
             <Card
               {...card()}
+              selecting={card().id === selectingItem()}
               // onClick={(e, t) => onCardClick(e, t, card())}
               onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
               onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
@@ -1046,6 +1058,7 @@ export function Chessboard(props: ChessboardProps) {
           {(entity) => (
             <Entity
               {...entity()}
+              selecting={entity().id === selectingItem()}
               onClick={(e, t) => onEntityClick(e, t, entity())}
             />
           )}

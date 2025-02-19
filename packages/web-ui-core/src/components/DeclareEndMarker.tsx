@@ -17,6 +17,7 @@ import type { PbPhaseType } from "@gi-tcg/typings";
 import type { ActionStep } from "../action";
 import { createEffect, Show } from "solid-js";
 import type { StepActionStateHandler } from "./Chessboard";
+import { Button } from "./Button";
 
 export interface DeclareEndMarkerProps {
   class?: string;
@@ -30,9 +31,13 @@ export interface DeclareEndMarkerProps {
 
 export function DeclareEndMarker(props: DeclareEndMarkerProps) {
   return (
-    <div class={`flex flex-row items-center select-none ${props.class ?? ""}`}>
+    <div
+      class={`flex flex-row items-center pointer-events-none select-none gap-3 ${
+        props.class ?? ""
+      }`}
+    >
       <div
-        class="h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center data-[clickable]:cursor-pointer"
+        class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
         data-opp={props.opp}
         onClick={(e) => {
           e.stopPropagation();
@@ -44,8 +49,11 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
       >
         T{props.roundNumber}
       </div>
-      <Show when={props.buttonStep}>
-        <button
+      <div
+        class="opacity-0 data-[shown]:pointer-events-auto data-[shown]:opacity-100 transition-opacity"
+        bool:data-shown={props.buttonStep}
+      >
+        <Button
           onClick={(e) => {
             e.stopPropagation();
             if (props.buttonStep) {
@@ -54,8 +62,8 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
           }}
         >
           宣布结束
-        </button>
-      </Show>
+        </Button>
+      </div>
     </div>
   );
 }

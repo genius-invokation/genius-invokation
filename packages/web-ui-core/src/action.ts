@@ -105,7 +105,7 @@ function createDeclareEndActionState(
 ): ActionState {
   return {
     availableSteps: [
-      CANCEL_ACTION_STEP,
+      ...root.availableSteps,
       { type: "clickDeclareEndMarker" },
       { type: "clickDeclareEndButton" },
     ],
@@ -143,6 +143,7 @@ export function createActionState(actions: Action[]): ActionState {
     },
   };
   const steps = new Map<ActionStep, ActionState>([[CANCEL_ACTION_STEP, root]]);
+  let declareEndIndex: number | null = null;
   for (let i = 0; i < actions.length; i++) {
     const { action, preview, requiredCost } = actions[i];
     switch (action?.$case) {
@@ -152,14 +153,18 @@ export function createActionState(actions: Action[]): ActionState {
       case "elementalTuning":
         break;
       case "declareEnd": {
-        const step: ActionStep = {
-          type: "clickDeclareEndMarker",
-        };
-        steps.set(step, createDeclareEndActionState(root, i));
+        declareEndIndex = i;
         break;
       }
     }
   }
   root.availableSteps = steps.keys().toArray();
+  if (declareEndIndex !== null) {
+    const step: ActionStep = {
+      type: "clickDeclareEndMarker",
+    };
+    steps.set(step, createDeclareEndActionState(root, declareEndIndex));
+    root.availableSteps.push(step);
+  }
   return root;
 }

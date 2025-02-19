@@ -13,19 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  createEffect,
-  createMemo,
-} from "solid-js";
+import { createEffect, createMemo, Show } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
-import {
-  cssPropertyOfTransform,
-  type CardAnimatingUiState,
-} from "../ui_state";
+import { cssPropertyOfTransform, type CardAnimatingUiState } from "../ui_state";
 import type { CardInfo } from "./Chessboard";
+import { SelectingIcon } from "./SelectingIcon";
 
 export interface CardProps extends CardInfo {
+  selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
   onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -201,6 +197,11 @@ export function Card(props: CardProps) {
           imageId={props.data.definitionId}
         />
       </div>
+      <Show when={props.selecting}>
+        <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
+          <SelectingIcon />
+        </div>
+      </Show>
       <DiceCost
         class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1 opacity-[var(--gi-tcg-opacity)]"
         cost={data().definitionCost}
