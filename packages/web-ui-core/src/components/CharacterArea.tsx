@@ -82,6 +82,12 @@ export function CharacterArea(props: CharacterAreaProps) {
     }
   };
 
+  // createEffect(() => {
+  //   if (props.id === -500035) {
+  //     console.log(props.uiState.damages);
+  //   }
+  // });
+
   createEffect(() => {
     const {
       damages,

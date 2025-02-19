@@ -14,7 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  ActionResponse,
+  dispatchRpc,
   PbPlayerStatus,
+  type RpcMethod,
   type PbGameState,
   type PbPlayerState,
   type RpcDispatcher,
@@ -27,11 +30,13 @@ import {
   type DamageInfo,
   type NotificationBoxInfo,
   type ReactionInfo,
+  type StepActionStateHandler,
 } from "./components/Chessboard";
-import type { PlayerIO } from "@gi-tcg/core";
+import type { PlayerIO, RpcResponsePayloadOf } from "@gi-tcg/core";
 import { AsyncQueue } from "./async_queue";
 import { parseMutations } from "./mutations";
 import { UiContext } from "./hooks/context";
+import { createActionState, type ActionState } from "./action";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -57,7 +62,7 @@ const EMPTY_GAME_STATE: PbGameState = {
 export interface ClientOption {
   onGiveUp?: () => void;
   rpc?: Partial<RpcDispatcher>;
-  assetsApiEndpoint?: string;
+  assetsApiEndPoint?: string;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
@@ -88,9 +93,44 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     notificationBox: null,
     reactions: [],
   });
+  const [actionState, setActionState] = createSignal<ActionState | null>(null);
 
   const uiQueue = new AsyncQueue();
   let savedState: PbGameState | undefined = void 0;
+
+  const actionResolvers: {
+    [K in RpcMethod]: PromiseWithResolvers<RpcResponsePayloadOf<K>> | null;
+  } = {
+    selectCard: null,
+    chooseActive: null,
+    rerollDice: null,
+    switchHands: null,
+    action: null,
+  };
+
+  const dispatcher: RpcDispatcher = {
+    selectCard: async ({ candidateDefinitionIds }) => ({
+      selectedDefinitionId: candidateDefinitionIds[0],
+    }),
+    chooseActive: async ({ candidateIds }) => ({
+      activeCharacterId: candidateIds[0],
+    }),
+    rerollDice: async () => ({
+      diceToReroll: [],
+    }),
+    switchHands: async () => ({
+      removedHandIds: [],
+    }),
+    action: async ({ action }) => {
+      const resolver = Promise.withResolvers<ActionResponse>();
+      actionResolvers.action = resolver;
+      const acState = createActionState(action);
+      setActionState(acState);
+      const response = await resolver.promise;
+      setActionState(null);
+      return response;
+    },
+  };
 
   const io: PlayerIOWithCancellation = {
     cancelRpc: () => {
@@ -111,14 +151,40 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         await promise;
       });
     },
-    rpc: () => {
-      throw new Error();
-    },
+    rpc: dispatchRpc(dispatcher),
+  };
+
+  const onStepActionState: StepActionStateHandler = (step, dice) => {
+    const currentActionState = actionState();
+    if (!currentActionState) {
+      return;
+    }
+    const result = currentActionState.step(step, dice);
+    switch (result.type) {
+      case "newState": {
+        setActionState(result.newState);
+        break;
+      }
+      case "actionCommitted": {
+        actionResolvers.action?.resolve(result);
+        break;
+      }
+      case "chooseActiveCommitted": {
+        break;
+      }
+    }
   };
 
   const Wrapper = (props: ComponentProps<"div">) => (
-    <UiContext.Provider value={{ assetsApiEndpoint: option.assetsApiEndpoint }}>
-      <Chessboard who={/*@once*/ who} data={data()} class="h-0" {...props} />
+    <UiContext.Provider value={{ assetsApiEndPoint: option.assetsApiEndPoint }}>
+      <Chessboard
+        who={/*@once*/ who}
+        data={data()}
+        actionState={actionState()}
+        onStepActionState={onStepActionState}
+        class="h-0"
+        {...props}
+      />
     </UiContext.Provider>
   );
 

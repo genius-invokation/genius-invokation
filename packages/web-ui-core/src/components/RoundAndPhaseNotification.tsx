@@ -47,7 +47,7 @@ export function RoundAndPhaseNotification(
   });
   return (
     <div
-      class={`grid grid-cols-1 grid-rows-1 justify-items-center items-center select-none group ${props.class} children:row-span-full children:col-span-full`}
+      class={`grid grid-cols-1 grid-rows-1 justify-items-center items-center pointer-events-none select-none group ${props.class} children:row-span-full children:col-span-full`}
       data-opp={opp()}
     >
       <Switch>

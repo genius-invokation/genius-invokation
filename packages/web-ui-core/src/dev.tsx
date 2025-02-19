@@ -65,7 +65,7 @@ function App() {
 
     game.players[0].io = io0;
     game.players[1].io = {
-      ...io1,
+      ...newIo1,
       notify: async (n) => {
         io1.notify(n);
         newIo1.notify(n);
@@ -80,8 +80,8 @@ function App() {
 
   return (
     <div class="min-w-180 flex flex-col gap-2">
+      <div ref={cb0} />
       <details>
-        <div ref={cb0} />
         <div ref={cb1} />
       </details>
       <NewChessboard class="h-0" />

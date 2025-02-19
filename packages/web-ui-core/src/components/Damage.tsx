@@ -16,7 +16,7 @@
 import { DamageType } from "@gi-tcg/typings";
 import { DICE_COLOR } from "./Dice";
 import type { DamageInfo } from "./Chessboard";
-import { createMemo } from "solid-js";
+import { createEffect, createMemo } from "solid-js";
 
 export interface DamageProps {
   info: DamageInfo;
@@ -37,7 +37,7 @@ export function Damage(props: DamageProps) {
         }}
       >
         <span
-          class="data-[heal=false]:animate-[damage-text-enter_200ms] text-5xl font-bold text-stroke-white text-stroke-2"
+          class="data-[heal=false]:animate-[damage-text-enter_200ms_both] text-5xl font-bold text-stroke-white text-stroke-2"
           data-heal={damageType() === DamageType.Heal}
         >
           {damageType() === DamageType.Heal ? "+" : "-"}

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  DiceType,
   PbPlayerStatus,
   type DamageType,
   type PbCardState,
@@ -83,6 +84,15 @@ import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
 import { useUiContext } from "../hooks/context";
 import { CardCountHint } from "./CardCountHint";
 import { Key } from "@solid-primitives/keyed";
+import {
+  DeclareEndMarker,
+  type DeclareEndMarkerProps,
+} from "./DeclareEndMarker";
+import {
+  CANCEL_ACTION_STEP,
+  type ActionState,
+  type ActionStep,
+} from "../action";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -167,9 +177,16 @@ export interface ChessboardData extends ParsedMutation {
   onAnimationFinish?: () => void;
 }
 
+export type StepActionStateHandler = (
+  step: ActionStep,
+  selectedDice: DiceType[],
+) => void;
+
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
   data: ChessboardData;
+  actionState: ActionState | null;
+  onStepActionState: StepActionStateHandler;
 }
 
 interface CardInfoCalcContext {
@@ -663,7 +680,13 @@ function rerenderChildren(opt: {
 }
 
 export function Chessboard(props: ChessboardProps) {
-  const [localProps, elProps] = splitProps(props, ["who", "data", "class"]);
+  const [localProps, elProps] = splitProps(props, [
+    "who",
+    "data",
+    "actionState",
+    "onStepActionState",
+    "class",
+  ]);
   let chessboardElement!: HTMLDivElement;
 
   const { assetsApiEndPoint } = useUiContext();
@@ -776,6 +799,22 @@ export function Chessboard(props: ChessboardProps) {
     }, 500);
     setShowCardHint(area, timeout);
   };
+
+  const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
+    const availableSteps = localProps.actionState?.availableSteps ?? [];
+    return {
+      opp: localProps.data.state.currentTurn !== localProps.who,
+      roundNumber: localProps.data.state.roundNumber,
+      phase: localProps.data.state.phase,
+      markerStep:
+        availableSteps.find(({ type }) => type === "clickDeclareEndMarker") ??
+        null,
+      buttonStep:
+        availableSteps.find(({ type }) => type === "clickDeclareEndButton") ??
+        null,
+      onStepActionState: localProps.onStepActionState,
+    };
+  });
 
   const playerInfoPropsOf = (who: 0 | 1): PlayerInfoProps => {
     const player = localProps.data.state.player[who];
@@ -920,6 +959,9 @@ export function Chessboard(props: ChessboardProps) {
     }
     setHoveringHand(null);
     dataViewerController.hide();
+    if (localProps.actionState) {
+      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
+    }
   };
 
   const onCharacterAreaClick = (
@@ -1017,25 +1059,10 @@ export function Chessboard(props: ChessboardProps) {
           )}
         </Key>
       </div>
-      <div
-        class="absolute h-16 w-16 rounded-full left-2 top-50% translate-y--50% data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center select-none"
-        data-opp={localProps.data.state.currentTurn !== localProps.who}
-      >
-        T{localProps.data.state.roundNumber}
-      </div>
-      <RoundAndPhaseNotification
-        who={localProps.who}
-        roundNumber={localProps.data.state.roundNumber}
-        currentTurn={localProps.data.state.currentTurn as 0 | 1}
-        class="absolute left-0 w-full top-50% translate-y--50%"
-        info={localProps.data.roundAndPhase}
+      <DeclareEndMarker
+        class="absolute left-2 top-50% translate-y--50%"
+        {...declareEndMarkerProps()}
       />
-      <Show when={localProps.data.notificationBox} keyed>
-        {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
-      </Show>
-      <Show when={localProps.data.playingCard} keyed>
-        {(data) => <PlayingCard opp={data.who !== props.who} {...data} />}
-      </Show>
       <PlayerInfo
         opp
         class="absolute top-0 bottom-[calc(50%+2.75rem)]"
@@ -1051,6 +1078,19 @@ export function Chessboard(props: ChessboardProps) {
         skills={mySkills()}
         shown={!getFocusingHands() && !getDraggingHand()}
       />
+      <RoundAndPhaseNotification
+        who={localProps.who}
+        roundNumber={localProps.data.state.roundNumber}
+        currentTurn={localProps.data.state.currentTurn as 0 | 1}
+        class="absolute left-0 w-full top-50% translate-y--50%"
+        info={localProps.data.roundAndPhase}
+      />
+      <Show when={localProps.data.notificationBox} keyed>
+        {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
+      </Show>
+      <Show when={localProps.data.playingCard} keyed>
+        {(data) => <PlayingCard opp={data.who !== props.who} {...data} />}
+      </Show>
       <div class="absolute inset-2 pointer-events-none">
         <CardDataViewer />
       </div>
