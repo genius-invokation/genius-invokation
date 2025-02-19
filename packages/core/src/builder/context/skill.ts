@@ -290,8 +290,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
       arg,
     );
     this.mutator.resetState(newState, innerNotify);
-    this._savedNotify.stateMutations.push(...innerNotify.stateMutations);
-    this._savedNotify.exposedMutations.push(...innerNotify.exposedMutations);
     this.eventAndRequests.push(...emittedEvents);
   }
 
