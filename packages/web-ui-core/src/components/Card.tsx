@@ -19,9 +19,11 @@ import { DiceCost } from "./DiceCost";
 import { cssPropertyOfTransform, type CardAnimatingUiState } from "../ui_state";
 import type { CardInfo } from "./Chessboard";
 import { SelectingIcon } from "./SelectingIcon";
+import type { PbDiceRequirement } from "@gi-tcg/typings";
 
 export interface CardProps extends CardInfo {
   selecting: boolean;
+  realCost?: PbDiceRequirement[];
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
   onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -206,7 +208,7 @@ export function Card(props: CardProps) {
         class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1 opacity-[var(--gi-tcg-opacity)]"
         cost={data().definitionCost}
         size={36}
-        // realCost={allCosts[props.data.id]} // TODO
+        realCost={props.realCost}
       />
       <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
     </div>

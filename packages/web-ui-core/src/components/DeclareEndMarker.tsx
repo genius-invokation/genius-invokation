@@ -15,8 +15,6 @@
 
 import type { PbPhaseType } from "@gi-tcg/typings";
 import type { ActionStep } from "../action";
-import { createEffect, Show } from "solid-js";
-import type { StepActionStateHandler } from "./Chessboard";
 import { Button } from "./Button";
 
 export interface DeclareEndMarkerProps {
@@ -26,7 +24,7 @@ export interface DeclareEndMarkerProps {
   opp: boolean;
   roundNumber: number;
   phase: PbPhaseType;
-  onStepActionState: StepActionStateHandler;
+  onStepActionState: (step: ActionStep) => void;
 }
 
 export function DeclareEndMarker(props: DeclareEndMarkerProps) {
@@ -42,7 +40,7 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
         onClick={(e) => {
           e.stopPropagation();
           if (props.markerStep) {
-            props.onStepActionState(props.markerStep, []);
+            props.onStepActionState(props.markerStep);
           }
         }}
         bool:data-clickable={props.markerStep}
@@ -57,7 +55,7 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
           onClick={(e) => {
             e.stopPropagation();
             if (props.buttonStep) {
-              props.onStepActionState(props.buttonStep, []);
+              props.onStepActionState(props.buttonStep);
             }
           }}
         >

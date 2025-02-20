@@ -103,6 +103,8 @@ export interface CardInfo {
   uiState: CardUiState;
   enableShadow: boolean;
   enableTransition: boolean;
+  playStep: ActionStep | null;
+  tuneStep: ActionStep | null;
 }
 
 interface DraggingCardInfo {
@@ -121,6 +123,7 @@ export interface CharacterInfo {
   active: boolean;
   triggered: boolean;
   uiState: CharacterUiState;
+  clickStep: ActionStep | null;
 }
 
 export interface StatusInfo {
@@ -133,6 +136,7 @@ export interface StatusInfo {
 export interface EntityInfo extends StatusInfo {
   type: "support" | "summon";
   uiState: EntityUiState;
+  clickStep: ActionStep | null;
 }
 
 export interface AnimatingCardInfo {
@@ -184,7 +188,13 @@ export type StepActionStateHandler = (
 
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
+  /**
+   * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
+   */
   data: ChessboardData;
+  /**
+   * 从 rpc/action 或 rpc/switchActive 解析后的
+   */
   actionState: ActionState | null;
   onStepActionState: StepActionStateHandler;
 }
@@ -229,6 +239,8 @@ function calcCardsInfo(
         },
         enableShadow: i === pileSize - 1,
         enableTransition: true,
+        playStep: null,
+        tuneStep: null,
       });
     }
 
@@ -272,6 +284,8 @@ function calcCardsInfo(
           },
           enableShadow: true,
           enableTransition: !moving,
+          playStep: null,
+          tuneStep: null,
         });
         continue;
       }
@@ -296,6 +310,8 @@ function calcCardsInfo(
         },
         enableShadow: true,
         enableTransition: true,
+        playStep: null,
+        tuneStep: null,
       });
     }
   }
@@ -340,6 +356,7 @@ function calcEntitiesInfo(
             rz: 0,
           },
         },
+        clickStep: null,
       };
     };
   const calcStatusInfo = (data: PbEntityState): StatusInfo => {
@@ -390,8 +407,16 @@ function rerenderChildren(opt: {
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   data: ChessboardData;
+  availableSteps: ActionStep[];
 }): ChessboardChildren {
-  const { size, focusingHands, hoveringHand, draggingHand, data } = opt;
+  const {
+    size,
+    focusingHands,
+    hoveringHand,
+    draggingHand,
+    data,
+    availableSteps,
+  } = opt;
   // console.log(data);
 
   const { damages, onAnimationFinish, animatingCards, state, previousState } =
@@ -501,6 +526,8 @@ function rerenderChildren(opt: {
           uiState: animation,
           enableShadow: true,
           enableTransition: false,
+          playStep: null,
+          tuneStep: null,
         });
         animationPromises.push(promise);
       }
@@ -576,7 +603,7 @@ function rerenderChildren(opt: {
     }
   }
 
-  const characters = new Map<number, CharacterInfo>();
+  const charactersMap = new Map<number, CharacterInfo>();
   const isCharacterAnimating = damages.some((d) => d.isSkillMainDamage);
   for (const who of [0, 1] as const) {
     const player = state.player[who];
@@ -597,7 +624,7 @@ function rerenderChildren(opt: {
         isActive,
       );
       const { promise, resolve } = Promise.withResolvers<void>();
-      characters.set(ch.id, {
+      charactersMap.set(ch.id, {
         id: ch.id,
         data: ch,
         entities,
@@ -618,13 +645,14 @@ function rerenderChildren(opt: {
         },
         active: isActive,
         combatStatus: isActive ? combatStatus : [],
+        clickStep: null,
       });
       animationPromises.push(promise);
     }
   }
   for (const damage of damages) {
-    const source = characters.get(damage.sourceId);
-    const target = characters.get(damage.targetId)!;
+    const source = charactersMap.get(damage.sourceId);
+    const target = charactersMap.get(damage.targetId)!;
     if (source && damage.isSkillMainDamage) {
       source.triggered = false;
       source.uiState.animation = {
@@ -663,18 +691,40 @@ function rerenderChildren(opt: {
     onAnimationFinish?.();
   });
 
+  const cards = currentCards.toSorted((a, b) => a.id - b.id);
+  const characters = charactersMap
+    .values()
+    .toArray()
+    .toSorted((a, b) => a.id - b.id);
+  const entities = [
+    ...currentEntities[0].supports,
+    ...currentEntities[0].summons,
+    ...currentEntities[1].supports,
+    ...currentEntities[1].summons,
+  ];
+
+  // Apply steps to children
+  for (const obj of [...characters, ...entities]) {
+    obj.clickStep =
+      availableSteps.find(
+        (step) => step.type === "clickEntity" && step.entityId === obj.id,
+      ) ?? null;
+  }
+  for (const card of cards) {
+    card.playStep =
+      availableSteps.find(
+        (step) => step.type === "playCard" && step.cardId === card.id,
+      ) ?? null;
+    card.tuneStep =
+      availableSteps.find(
+        (step) => step.type === "elementalTunning" && step.cardId === card.id,
+      ) ?? null;
+  }
+
   return {
-    cards: currentCards.toSorted((a, b) => a.id - b.id),
-    characters: characters
-      .values()
-      .toArray()
-      .toSorted((a, b) => a.id - b.id),
-    entities: [
-      ...currentEntities[0].supports,
-      ...currentEntities[0].summons,
-      ...currentEntities[1].supports,
-      ...currentEntities[1].summons,
-    ],
+    cards,
+    characters,
+    entities,
     cardCountHints,
   };
 }
@@ -739,6 +789,7 @@ export function Chessboard(props: ChessboardProps) {
           hoveringHand: getHoveringHand(),
           draggingHand: getDraggingHand(),
           data,
+          availableSteps: props.actionState?.availableSteps ?? [],
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: true });
@@ -752,8 +803,9 @@ export function Chessboard(props: ChessboardProps) {
         getFocusingHands,
         getHoveringHand,
         getDraggingHand,
+        () => props.actionState,
       ],
-      ([size, focusingHands, hoveringHand, draggingHand]) => {
+      ([size, focusingHands, hoveringHand, draggingHand, actionState]) => {
         const newChildren = rerenderChildren({
           who: localProps.who,
           size,
@@ -761,6 +813,7 @@ export function Chessboard(props: ChessboardProps) {
           hoveringHand,
           draggingHand,
           data: localProps.data,
+          availableSteps: actionState?.availableSteps ?? [],
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: false });
@@ -813,7 +866,7 @@ export function Chessboard(props: ChessboardProps) {
       buttonStep:
         availableSteps.find(({ type }) => type === "clickDeclareEndButton") ??
         null,
-      onStepActionState: localProps.onStepActionState,
+      onStepActionState: (step) => localProps.onStepActionState(step, []), // TODO
     };
   });
 
@@ -926,7 +979,6 @@ export function Chessboard(props: ChessboardProps) {
         return dragging;
       }
       shouldMoveWhenHandBlurring?.resolve(true);
-      setSelectingItem(null);
       const size = [height(), width()] as Size;
       const [x, y] = dragging.updatePos(e);
       if (canToggleHandFocus()) {
@@ -985,6 +1037,11 @@ export function Chessboard(props: ChessboardProps) {
       characterInfo.combatStatus.map((st) => st.data),
     );
     setSelectingItem(characterInfo.id);
+    if (characterInfo.clickStep) {
+      localProps.onStepActionState(characterInfo.clickStep, []);
+    } else {
+      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
+    }
   };
 
   const onEntityClick = (
@@ -1041,7 +1098,10 @@ export function Chessboard(props: ChessboardProps) {
           {(card) => (
             <Card
               {...card()}
-              selecting={card().id === selectingItem()}
+              selecting={
+                card().id === selectingItem() && card().kind !== "dragging"
+              }
+              realCost={props.actionState?.realCosts.cards.get(card().id)}
               // onClick={(e, t) => onCardClick(e, t, card())}
               onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
               onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
@@ -1089,6 +1149,9 @@ export function Chessboard(props: ChessboardProps) {
       <SkillButtonGroup
         class="absolute bottom-2 right-2"
         skills={mySkills()}
+        switchActiveButton={localProps.actionState?.availableSteps.find((s) => s.type === "clickSwitchActiveButton") ?? null}
+        switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
+        onStepActionState={(s) => localProps.onStepActionState(s, [])} // TODO
         shown={!getFocusingHands() && !getDraggingHand()}
       />
       <RoundAndPhaseNotification

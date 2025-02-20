@@ -24,7 +24,7 @@ function Status(props: StatusProps) {
   const data = createMemo(() => props.data);
   return (
     <div
-      class="h-5 w-5 rounded-full relative"
+      class="pointer-events-auto h-5 w-5 rounded-full relative"
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
       bool:data-triggered={props.triggered}
@@ -56,7 +56,7 @@ export function StatusGroup(props: StatusGroupProps) {
       </Key>
       <Show when={showEllipsis()}>
         <img
-          class="h-5 w-5"
+          class="pointer-events-auto h-5 w-5"
           // TODO: replace this with an API endpoint
           src="https://assets.gi-tcg.guyutongxue.site/assets/UI_Gcg_Buff_Common_More.webp"
         />

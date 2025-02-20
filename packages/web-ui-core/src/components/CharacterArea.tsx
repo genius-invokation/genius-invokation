@@ -287,8 +287,9 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-xl"
+          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
           bool:data-triggered={props.triggered}
+          bool:data-clickable={props.clickStep}
         >
           <Image
             imageId={data().definitionId}
@@ -322,7 +323,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           )}
         </Show> */}
         <Show when={props.selecting}>
-          <div class="absolute top-0 left-0 h-full w-full backface-hidden flex items-center justify-center">
+          <div class="absolute inset-0 backface-hidden flex items-center justify-center">
             <SelectingIcon />
           </div>
         </Show>

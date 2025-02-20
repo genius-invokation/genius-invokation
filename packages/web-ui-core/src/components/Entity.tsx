@@ -39,7 +39,7 @@ export function Entity(props: EntityProps) {
       }}
     >
       <Image
-        class="absolute h-full w-full rounded-lg b-white b-2"
+        class="absolute inset-0 rounded-lg b-white b-2"
         imageId={data().definitionId}
       />
       <Show when={data().hasUsagePerRound}>
