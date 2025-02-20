@@ -40,9 +40,9 @@ export const SnappySilhouette = status(111101)
   .usage(2)
   .do((c) => {
     if (([Aura.Cryo, Aura.CryoDendro] as Aura[]).includes(c.self.master().aura) && c.getVariable("usage") === 1) {
-      c.damage(DamageType.Cryo, 2);
+      c.damage(DamageType.Cryo, 2, "@master");
     } else {
-      c.damage(DamageType.Cryo, 1);
+      c.damage(DamageType.Cryo, 1, "@master");
     }
   })
   .done();

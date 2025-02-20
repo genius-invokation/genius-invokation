@@ -24,6 +24,7 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const BloodBlossom = status(113072)
   .on("endPhase")
+  .usage(1)
   .damage(DamageType.Pyro, 1, "@master")
   .done();
 
