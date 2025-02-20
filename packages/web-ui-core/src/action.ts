@@ -35,6 +35,7 @@ export interface ElementalTunningActionStep {
 export interface ClickEntityActionStep {
   readonly type: "clickEntity";
   readonly entityId: number;
+  readonly hasOutline: boolean;
   readonly isSelected: boolean;
 }
 export interface ClickSkillButtonActionStep {
@@ -154,11 +155,13 @@ function createSwitchActiveActionState(
   const CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.characterId,
+    hasOutline: false,
     isSelected: false,
   };
   const CONFIRM_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.characterDefinitionId,
+    hasOutline: true,
     isSelected: true,
   };
   const innerState: ActionState = {

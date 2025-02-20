@@ -289,7 +289,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         <div
           class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
           bool:data-triggered={props.triggered}
-          bool:data-clickable={props.clickStep}
+          bool:data-clickable={props.clickStep?.hasOutline}
         >
           <Image
             imageId={data().definitionId}

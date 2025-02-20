@@ -92,6 +92,7 @@ import {
   CANCEL_ACTION_STEP,
   type ActionState,
   type ActionStep,
+  type ClickEntityActionStep,
 } from "../action";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
@@ -123,7 +124,7 @@ export interface CharacterInfo {
   active: boolean;
   triggered: boolean;
   uiState: CharacterUiState;
-  clickStep: ActionStep | null;
+  clickStep: ClickEntityActionStep | null;
 }
 
 export interface StatusInfo {
@@ -136,7 +137,7 @@ export interface StatusInfo {
 export interface EntityInfo extends StatusInfo {
   type: "support" | "summon";
   uiState: EntityUiState;
-  clickStep: ActionStep | null;
+  clickStep: ClickEntityActionStep | null;
 }
 
 export interface AnimatingCardInfo {
@@ -707,7 +708,7 @@ function rerenderChildren(opt: {
   for (const obj of [...characters, ...entities]) {
     obj.clickStep =
       availableSteps.find(
-        (step) => step.type === "clickEntity" && step.entityId === obj.id,
+        (step): step is ClickEntityActionStep => step.type === "clickEntity" && step.entityId === obj.id,
       ) ?? null;
   }
   for (const card of cards) {
@@ -933,6 +934,8 @@ export function Chessboard(props: ChessboardProps) {
         if (canToggleHandFocus()) {
           setFocusingHands(true);
           showCardHint("myHand");
+          setSelectingItem(null);
+          dataViewerController.hide();
         }
         if (!doMove) {
           return;
@@ -1007,6 +1010,10 @@ export function Chessboard(props: ChessboardProps) {
       }
       return null;
     });
+    if (!getFocusingHands()) {
+      dataViewerController.hide();
+      setSelectingItem(null);
+    }
   };
 
   const onChessboardClick = () => {
