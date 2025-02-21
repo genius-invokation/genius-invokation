@@ -234,7 +234,7 @@ export function getPileHintPos(size: Size, opp: boolean) {
 
 export function getHandHintPos(size: Size, opp: boolean, value: number) {
   if (opp) {
-    const [x, y] = getHandCardBlurredPos(size, true, false, value, value - 1, 0);
+    const [x, y] = getHandCardBlurredPos(size, true, true, value, value - 1, 0);
     return {
       x: x - CARD_WIDTH / 2 - 3,
       y: y + CARD_HEIGHT + 2,

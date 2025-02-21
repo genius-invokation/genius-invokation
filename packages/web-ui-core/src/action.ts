@@ -14,14 +14,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { getNameSync } from "@gi-tcg/assets-manager";
-import type {
-  Action,
-  DiceRequirement,
-  DiceType,
-  PbDiceRequirement,
-  PbDiceType,
-  PreviewData,
-  SwitchActiveAction,
+import {
+  ActionValidity,
+  type Action,
+  type DiceRequirement,
+  type DiceType,
+  type PbDiceRequirement,
+  type PbDiceType,
+  type PreviewData,
+  type SwitchActiveAction,
 } from "@gi-tcg/typings";
 import type { DicePanelState } from "./components/DicePanel";
 import { checkDice } from "@gi-tcg/utils";
@@ -268,7 +269,7 @@ export function createActionState(actions: Action[]): ActionState {
   const switchActiveOuterStates = new Map<ClickEntityActionStep, ActionState>();
   let declareEndIndex: number | null = null;
   for (let i = 0; i < actions.length; i++) {
-    const { action, preview, requiredCost } = actions[i];
+    const { action, preview, requiredCost, validity } = actions[i];
     switch (action?.$case) {
       case "useSkill": {
         realCosts.skills.set(action.value.skillDefinitionId, requiredCost);
@@ -281,6 +282,9 @@ export function createActionState(actions: Action[]): ActionState {
         break;
       }
       case "switchActive": {
+        if (validity !== ActionValidity.VALID) {
+          continue;
+        }
         realCosts.switchActive = requiredCost;
         createSwitchActiveActionState(root, {
           outerLevelStates: switchActiveOuterStates,

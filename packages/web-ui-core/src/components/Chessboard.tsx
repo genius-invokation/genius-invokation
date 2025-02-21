@@ -1122,7 +1122,10 @@ export function Chessboard(props: ChessboardProps) {
     );
     setSelectingItem(characterInfo.id);
     if (characterInfo.clickStep) {
-      localProps.onStepActionState(characterInfo.clickStep, []);
+      localProps.onStepActionState(
+        characterInfo.clickStep,
+        selectedDiceValue(),
+      );
     } else {
       localProps.onStepActionState(CANCEL_ACTION_STEP, []);
     }

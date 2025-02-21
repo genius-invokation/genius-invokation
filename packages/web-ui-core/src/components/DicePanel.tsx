@@ -81,7 +81,9 @@ export function DicePanel(props: DicePanelProps) {
           <ul class="flex flex-col gap-2 items-center">
             <Index each={props.dice}>
               {(dice, index) => (
-                <li onClick={() => toggleDice(index)}>
+                <li
+                  onClick={() => props.state === "wrapped" && toggleDice(index)}
+                >
                   <Dice
                     type={dice()}
                     selected={
