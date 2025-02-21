@@ -43,16 +43,14 @@ export interface ClickEntityActionStep {
 export interface ClickSkillButtonActionStep {
   readonly type: "clickSkillButton";
   readonly skillId: number;
-  readonly isSelected: boolean;
+  readonly isFocused: boolean;
 }
 export interface ClickSwitchActiveButtonActionStep {
   readonly type: "clickSwitchActiveButton";
+  readonly isFocused: boolean;
 }
-export interface ClickDeclareEndMarkerActionStep {
-  readonly type: "clickDeclareEndMarker";
-}
-export interface ClickDeclareEndButtonActionStep {
-  readonly type: "clickDeclareEndButton";
+export interface ClickDeclareEndActionStep {
+  readonly type: "declareEnd";
 }
 export interface ClickConfirmButtonActionStep {
   readonly type: "clickConfirmButton";
@@ -69,8 +67,7 @@ export type ActionStep =
   | ClickEntityActionStep
   | ClickSkillButtonActionStep
   | ClickSwitchActiveButtonActionStep
-  | ClickDeclareEndMarkerActionStep
-  | ClickDeclareEndButtonActionStep
+  | ClickDeclareEndActionStep
   | ClickConfirmButtonActionStep
   | typeof CANCEL_ACTION_STEP;
 
@@ -107,49 +104,16 @@ export interface ActionState {
   hintText: string | null;
   alertText: string | null;
   dicePanel: DicePanelState;
+  autoSelectedDice: DiceType[] | null;
   showBackdrop: boolean;
   previewData: PreviewData[];
   step: StepActionFunction;
 }
 
-function createDeclareEndActionState(
-  root: ActionState,
-  actionIndex: number,
-): ActionState {
-  return {
-    availableSteps: [
-      ...root.availableSteps,
-      { type: "clickDeclareEndMarker" },
-      { type: "clickDeclareEndButton" },
-    ],
-    realCosts: root.realCosts,
-    showHands: true,
-    hintText: "结束回合",
-    alertText: null,
-    dicePanel: "hidden",
-    showBackdrop: false,
-    previewData: [],
-    step: (step, dice) => {
-      if (
-        step.type === "clickDeclareEndButton" ||
-        step.type === "clickDeclareEndMarker"
-      ) {
-        return {
-          type: "actionCommitted",
-          chosenActionIndex: actionIndex,
-          usedDice: [],
-        };
-      } else {
-        return root.step(step, dice);
-      }
-    },
-  };
-}
-
 interface CreateSwitchActiveActionStateOption {
   outerLevelStates: Map<ClickEntityActionStep, ActionState>;
   innerLevelStates: Map<ClickEntityActionStep, ActionState>;
-  action: SwitchActiveAction;
+  action: Action & { value: SwitchActiveAction };
   index: number;
 }
 
@@ -157,41 +121,49 @@ function createSwitchActiveActionState(
   root: ActionState,
   opt: CreateSwitchActiveActionStateOption,
 ): void {
-  const SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
+  const INNER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    isFocused: true,
+  };
+  const OUTER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
+    type: "clickSwitchActiveButton",
+    isFocused: false,
   };
   const OUTER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
-    entityId: opt.action.characterId,
+    entityId: opt.action.value.characterId,
     hasOutline: false,
     isSelected: false,
   };
   const INNER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
-    entityId: opt.action.characterId,
+    entityId: opt.action.value.characterId,
     hasOutline: true,
     isSelected: false,
   };
   const CONFIRM_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
-    entityId: opt.action.characterId,
+    entityId: opt.action.value.characterId,
     hasOutline: true,
     isSelected: true,
   };
   const innerState: ActionState = {
-    availableSteps: [SWITCH_ACTIVE_BUTTON, CONFIRM_CLICK_ACTION],
+    availableSteps: [INNER_SWITCH_ACTIVE_BUTTON, CONFIRM_CLICK_ACTION],
     realCosts: root.realCosts,
     showHands: false,
-    hintText: `切换出战角色为 ${getNameSync(opt.action.characterDefinitionId)}`,
+    hintText: `切换出战角色为 ${getNameSync(
+      opt.action.value.characterDefinitionId,
+    )}`,
     alertText: null,
     dicePanel: "visible",
+    autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
     previewData: [], // TODO,
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
       } else if (
-        step === SWITCH_ACTIVE_BUTTON ||
+        step === INNER_SWITCH_ACTIVE_BUTTON ||
         step === CONFIRM_CLICK_ACTION
       ) {
         const diceReq = new Map(
@@ -211,6 +183,7 @@ function createSwitchActiveActionState(
             type: "newState",
             newState: {
               ...innerState,
+              autoSelectedDice: null,
               alertText: "骰子不符合要求",
             },
           };
@@ -218,7 +191,10 @@ function createSwitchActiveActionState(
       } else if (step.type === "clickEntity") {
         return {
           type: "newState",
-          newState: opt.innerLevelStates.get(step)!,
+          newState: {
+            ...opt.innerLevelStates.get(step)!,
+            autoSelectedDice: null,
+          },
         };
       } else {
         throw new Error("Unexpected step");
@@ -226,18 +202,19 @@ function createSwitchActiveActionState(
     },
   };
   const outerState: ActionState = {
-    availableSteps: [SWITCH_ACTIVE_BUTTON],
+    availableSteps: [OUTER_SWITCH_ACTIVE_BUTTON],
     realCosts: root.realCosts,
     showHands: true,
     hintText: null,
     alertText: null,
     dicePanel: "hidden",
+    autoSelectedDice: null,
     showBackdrop: false,
     previewData: [],
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
-      } else if (step === SWITCH_ACTIVE_BUTTON) {
+      } else if (step === OUTER_SWITCH_ACTIVE_BUTTON) {
         return {
           type: "newState",
           newState: innerState,
@@ -269,9 +246,17 @@ export function createActionState(actions: Action[]): ActionState {
     hintText: null,
     previewData: [],
     dicePanel: "hidden",
+    autoSelectedDice: null,
     showBackdrop: false,
     showHands: true,
     step: (step) => {
+      if (step.type === "declareEnd") {
+        return {
+          type: "actionCommitted",
+          chosenActionIndex: declareEndIndex!,
+          usedDice: [],
+        };
+      }
       return {
         type: "newState",
         newState: steps.get(step)!,
@@ -300,7 +285,7 @@ export function createActionState(actions: Action[]): ActionState {
         createSwitchActiveActionState(root, {
           outerLevelStates: switchActiveOuterStates,
           innerLevelStates: switchActiveInnerStates,
-          action: action.value,
+          action: { value: action.value, ...actions[i] },
           index: i,
         });
         break;
@@ -310,12 +295,15 @@ export function createActionState(actions: Action[]): ActionState {
         break;
       }
       case "declareEnd": {
+        root.availableSteps.push({
+          type: "declareEnd",
+        });
         declareEndIndex = i;
         break;
       }
     }
   }
-  root.availableSteps = steps.keys().toArray();
+  root.availableSteps.push(...steps.keys());
 
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
@@ -329,13 +317,6 @@ export function createActionState(actions: Action[]): ActionState {
     );
   }
   root.availableSteps.push(...switchActiveOuterStates.keys());
-  if (declareEndIndex !== null) {
-    const step: ActionStep = {
-      type: "clickDeclareEndMarker",
-    };
-    steps.set(step, createDeclareEndActionState(root, declareEndIndex));
-    root.availableSteps.push(step);
-  }
   console.log(root);
   return root;
 }

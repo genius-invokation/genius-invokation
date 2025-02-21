@@ -14,20 +14,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { PbPhaseType } from "@gi-tcg/typings";
-import type { ActionStep } from "../action";
 import { Button } from "./Button";
 
 export interface DeclareEndMarkerProps {
   class?: string;
-  markerStep: ActionStep | null;
-  buttonStep: ActionStep | null;
+  markerClickable: boolean;
+  showButton: boolean;
   opp: boolean;
   roundNumber: number;
   phase: PbPhaseType;
-  onStepActionState: (step: ActionStep) => void;
+  onClick: (e: MouseEvent) => void;
 }
 
 export function DeclareEndMarker(props: DeclareEndMarkerProps) {
+  const onClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    props.onClick(e);
+  };
   return (
     <div
       class={`flex flex-row items-center pointer-events-none select-none gap-3 ${
@@ -37,30 +40,16 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
       <div
         class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
         data-opp={props.opp}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (props.markerStep) {
-            props.onStepActionState(props.markerStep);
-          }
-        }}
-        bool:data-clickable={props.markerStep}
+        onClick={onClick}
+        bool:data-clickable={props.markerClickable}
       >
         T{props.roundNumber}
       </div>
       <div
         class="opacity-0 data-[shown]:pointer-events-auto data-[shown]:opacity-100 transition-opacity"
-        bool:data-shown={props.buttonStep}
+        bool:data-shown={props.showButton}
       >
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (props.buttonStep) {
-              props.onStepActionState(props.buttonStep);
-            }
-          }}
-        >
-          宣布结束
-        </Button>
+        <Button onClick={onClick}>宣布结束</Button>
       </div>
     </div>
   );

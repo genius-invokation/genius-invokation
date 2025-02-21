@@ -26,6 +26,7 @@ import {
 } from "@gi-tcg/typings";
 import { Card } from "./Card";
 import {
+  batch,
   createEffect,
   createMemo,
   createSignal,
@@ -74,7 +75,7 @@ import { NotificationBox } from "./NotificationBox";
 import { Entity } from "./Entity";
 import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
 import { flip } from "@gi-tcg/utils";
-import { DiceList } from "./DiceList";
+import { DicePanel, type DicePanelState } from "./DicePanel";
 import { SkillButtonGroup } from "./SkillButtonGroup";
 import { createStore } from "solid-js/store";
 import { RoundAndPhaseNotification } from "./RoundAndPhaseNotification";
@@ -854,7 +855,41 @@ export function Chessboard(props: ChessboardProps) {
   });
 
   // DEBUG
-  createEffect(() => console.log(props.actionState));
+  createEffect(
+    on(
+      () => props.actionState,
+      (actionState, prevActionState) => {
+        console.log(actionState);
+        if (actionState) {
+          if (actionState.autoSelectedDice) {
+            const dice = myDice();
+            const selectingDice = Array.from(
+              { length: dice.length },
+              () => false,
+            );
+            for (const d of actionState.autoSelectedDice) {
+              for (let i = 0; i < dice.length; i++) {
+                if (dice[i] === d && !selectingDice[i]) {
+                  selectingDice[i] = true;
+                  break;
+                }
+              }
+            }
+            setSelectedDice(selectingDice);
+          }
+          if (actionState.alertText) {
+            alert(actionState.alertText);
+          }
+          setDicePanelState(actionState.dicePanel);
+        } else if (prevActionState) {
+          // 退出行动时，取消所有的选择项
+          dataViewerController.hide();
+          setSelectingItem(null);
+          setDicePanelState("hidden");
+        }
+      },
+    ),
+  );
 
   const [isShowCardHint, setShowCardHint] = createStore<
     Record<CardArea, number | null>
@@ -876,19 +911,27 @@ export function Chessboard(props: ChessboardProps) {
     setShowCardHint(area, timeout);
   };
 
+  const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
-    const availableSteps = localProps.actionState?.availableSteps ?? [];
+    const canDeclareEnd = localProps.actionState?.availableSteps?.find(
+      (s) => s.type === "declareEnd",
+    );
     return {
       opp: localProps.data.state.currentTurn !== localProps.who,
       roundNumber: localProps.data.state.roundNumber,
       phase: localProps.data.state.phase,
-      markerStep:
-        availableSteps.find(({ type }) => type === "clickDeclareEndMarker") ??
-        null,
-      buttonStep:
-        availableSteps.find(({ type }) => type === "clickDeclareEndButton") ??
-        null,
-      onStepActionState: (step) => localProps.onStepActionState(step, []), // TODO
+      markerClickable: !!canDeclareEnd,
+      showButton: showDeclareEndButton(),
+      onClick: () => {
+        if (canDeclareEnd) {
+          if (!showDeclareEndButton()) {
+            setShowDeclareEndButton(true);
+          } else {
+            setShowDeclareEndButton(false);
+            localProps.onStepActionState(canDeclareEnd, []);
+          }
+        }
+      },
     };
   });
 
@@ -902,12 +945,20 @@ export function Chessboard(props: ChessboardProps) {
     };
   };
   const myDice = createMemo(
-    () => localProps.data.state.player[localProps.who].dice,
+    () => localProps.data.state.player[localProps.who].dice as DiceType[],
   );
   const mySkills = createMemo(
     () => localProps.data.state.player[localProps.who].initiativeSkill,
   );
 
+  const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
+  const [dicePanelState, setDicePanelState] =
+    createSignal<DicePanelState>("hidden");
+
+  const selectedDiceValue = () => {
+    const selected = selectedDice();
+    return myDice().filter((_, i) => selected[i]);
+  };
   // const onCardClick = (
   //   e: MouseEvent,
   //   currentTarget: HTMLElement,
@@ -943,6 +994,7 @@ export function Chessboard(props: ChessboardProps) {
     currentTarget: HTMLElement,
     cardInfo: CardInfo,
   ) => {
+    setShowDeclareEndButton(false);
     if (cardInfo.kind === "myHand" && cardInfo.uiState.type === "cardStatic") {
       // 弥补收起手牌时选中由于 z 的差距而导致的视觉不连贯
       let yAdjust = 0;
@@ -1038,16 +1090,19 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const onChessboardClick = () => {
-    if (canToggleHandFocus()) {
-      setFocusingHands(false);
-      setShowCardHint("myHand", null);
-    }
-    setHoveringHand(null);
-    dataViewerController.hide();
-    setSelectingItem(null);
-    if (localProps.actionState) {
-      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
-    }
+    batch(() => {
+      if (canToggleHandFocus()) {
+        setFocusingHands(false);
+        setShowCardHint("myHand", null);
+      }
+      setShowDeclareEndButton(false);
+      setHoveringHand(null);
+      dataViewerController.hide();
+      setSelectingItem(null);
+      if (localProps.actionState) {
+        localProps.onStepActionState(CANCEL_ACTION_STEP, []);
+      }
+    });
   };
 
   const onCharacterAreaClick = (
@@ -1059,6 +1114,7 @@ export function Chessboard(props: ChessboardProps) {
       setFocusingHands(false);
       setShowCardHint("myHand", null);
     }
+    setShowDeclareEndButton(false);
     dataViewerController.showState(
       "character",
       characterInfo.data,
@@ -1081,6 +1137,7 @@ export function Chessboard(props: ChessboardProps) {
       setFocusingHands(false);
       setShowCardHint("myHand", null);
     }
+    setShowDeclareEndButton(false);
     dataViewerController.showState(entityInfo.type, entityInfo.data);
     setSelectingItem(entityInfo.id);
   };
@@ -1174,7 +1231,13 @@ export function Chessboard(props: ChessboardProps) {
         class="absolute top-[calc(50%+2.75rem)] bottom-0"
         {...playerInfoPropsOf(localProps.who)}
       />
-      <DiceList class="absolute right-2 top-2" dice={myDice()} />
+      <DicePanel
+        dice={myDice()}
+        selectedDice={selectedDice()}
+        onSelectDice={setSelectedDice}
+        state={dicePanelState()}
+        onStateChange={setDicePanelState}
+      />
       <SkillButtonGroup
         class="absolute bottom-2 right-2"
         skills={mySkills()}
@@ -1184,7 +1247,9 @@ export function Chessboard(props: ChessboardProps) {
           ) ?? null
         }
         switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
-        onStepActionState={(s) => localProps.onStepActionState(s, [])} // TODO
+        onStepActionState={(s) =>
+          localProps.onStepActionState(s, selectedDiceValue())
+        }
         shown={!getFocusingHands() && !getDraggingHand()}
       />
       <RoundAndPhaseNotification

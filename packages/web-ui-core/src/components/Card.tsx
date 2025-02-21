@@ -109,6 +109,7 @@ export function Card(props: CardProps) {
   // );
   let el!: HTMLDivElement;
   const data = createMemo(() => props.data);
+  const realCost = createMemo(() => props.realCost);
 
   const style = createMemo(() => {
     if (props.uiState.type === "cardStatic") {
@@ -208,7 +209,7 @@ export function Card(props: CardProps) {
         class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1 opacity-[var(--gi-tcg-opacity)]"
         cost={data().definitionCost}
         size={36}
-        realCost={props.realCost}
+        realCost={realCost()}
       />
       <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
     </div>

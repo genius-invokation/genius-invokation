@@ -17,13 +17,13 @@ import type { PbDiceRequirement, PbSkillInfo } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import { createMemo, For, Match, Switch } from "solid-js";
-import type { ActionStep } from "../action";
+import type { ActionStep, ClickSwitchActiveButtonActionStep } from "../action";
 
 interface SkillButtonInfo {
   skillId: number | "switchActive";
   cost: PbDiceRequirement[];
   clickable: boolean;
-  blurred: boolean;
+  focused: boolean;
 }
 
 export interface SkillButtonProps extends SkillButtonInfo {
@@ -35,8 +35,9 @@ function SkillButton(props: SkillButtonProps) {
     <div class="w-12 flex flex-col items-center gap-1 group select-none">
       <button
         type="button"
-        class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 b-3 disabled:opacity-50 hover:bg-yellow-700 active:bg-yellow-900 transition-all disabled:bg-yellow-700 flex items-center justify-center disabled:cursor-not-allowed"
+        class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 data-[focused]:bg-yellow-700 data-[focused]:b-yellow-400 b-3 disabled:opacity-50 hover:bg-yellow-700 data-[focused]:hover:bg-yellow-600 active:bg-yellow-600 transition-all disabled:bg-yellow-700 flex items-center justify-center disabled:cursor-not-allowed"
         disabled={!props.clickable}
+        bool:data-focused={props.focused}
         onClick={() => props.onClick?.()}
       >
         <Switch>
@@ -63,7 +64,7 @@ export interface SkillButtonGroupProps {
   class?: string;
   skills: PbSkillInfo[];
   shown: boolean;
-  switchActiveButton: ActionStep | null;
+  switchActiveButton: ClickSwitchActiveButtonActionStep | null;
   switchActiveCost: PbDiceRequirement[];
   onStepActionState: (step: ActionStep) => void;
 }
@@ -74,7 +75,7 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
       const step = props.switchActiveButton;
       return [
         {
-          blurred: false,
+          focused: step.isFocused,
           clickable: true,
           cost: props.switchActiveCost,
           skillId: "switchActive",
@@ -83,7 +84,7 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
       ];
     } else {
       return props.skills.map((skill) => ({
-        blurred: false, // TODO
+        focused: false, // TODO
         clickable: false, // TODO
         cost: skill.definitionCost,
         skillId: skill.definitionId,
@@ -92,7 +93,7 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
   });
   return (
     <div
-      class={`flex flex-row gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 ${
+      class={`flex flex-row gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto ${
         props.class ?? ""
       }`}
       bool:data-shown={props.shown}
