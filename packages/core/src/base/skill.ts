@@ -21,6 +21,7 @@ import {
   type ReadonlyDiceRequirement,
   type DiceRequirement,
   type ExposedMutation,
+  ActionValidity,
 } from "@gi-tcg/typings";
 import {
   type AnyState,
@@ -273,6 +274,8 @@ export type ActionInfoBase =
 export type WithActionDetail<T extends ActionInfoBase> = T & {
   readonly cost: ReadonlyDiceRequirement;
   readonly fast: boolean;
+  readonly validity: ActionValidity;
+  readonly autoSelectedDice: DiceType[];
   readonly log?: string;
   readonly preview?: PreviewData[];
 };

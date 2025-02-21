@@ -17,6 +17,7 @@ export * from "./common_enums";
 
 export {
   Action,
+  ActionValidity,
   UseSkillAction,
   PlayCardAction,
   SwitchActiveAction,

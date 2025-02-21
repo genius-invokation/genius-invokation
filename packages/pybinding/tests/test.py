@@ -22,6 +22,7 @@ from gitcg import (
     CreateParam,
     Deck,
     Player,
+    ActionValidity,
     ActionRequest,
     ActionResponse,
     RerollDiceRequest,
@@ -64,7 +65,7 @@ class MyPlayer(Player):
         for i, action in actions:
             required_count = 0
             has_non_dice_requirement = False
-            if action.HasField("elemental_tuning"):
+            if action.validity != ActionValidity.ACTION_VALIDITY_VALID:
                 continue
             for req in list(action.required_cost):
                 if (

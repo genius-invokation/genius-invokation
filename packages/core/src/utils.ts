@@ -15,11 +15,12 @@
 
 import type { Draft } from "immer";
 import {
+  ActionValidity,
   DiceType,
   type DiceRequirement,
   type ReadonlyDiceRequirement,
 } from "@gi-tcg/typings";
-import { flip } from "@gi-tcg/utils";
+import { checkDice, chooseDiceValue, flip } from "@gi-tcg/utils";
 import type {
   AnyState,
   CharacterState,
@@ -53,6 +54,7 @@ import {
   GiTcgCoreInternalEntityNotFoundError,
   GiTcgCoreInternalError,
 } from "./error";
+import type { ActionInfoWithModification } from "./preview";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -357,6 +359,57 @@ export function isSkillDisabled(character: CharacterState): boolean {
   return character.entities.some((st) =>
     st.definition.tags.includes("disableSkill"),
   );
+}
+
+export function applyAutoSelectedDiceToAction(
+  actionInfo: ActionInfoWithModification,
+  player: PlayerState,
+): ActionInfoWithModification {
+  if (actionInfo.validity !== ActionValidity.VALID) {
+    return actionInfo;
+  }
+  if (actionInfo.type === "elementalTuning") {
+    const tunningDice = player.dice.find(
+      (d) => ![DiceType.Omni, actionInfo.result].includes(d),
+    );
+    if (!tunningDice) {
+      return {
+        ...actionInfo,
+        validity: ActionValidity.NO_DICE,
+      };
+    } else {
+      return {
+        ...actionInfo,
+        autoSelectedDice: [tunningDice],
+      };
+    }
+  }
+  try {
+  const autoSelectedDice = chooseDiceValue(actionInfo.cost, player.dice);
+  const ok = checkDice(actionInfo.cost, autoSelectedDice);
+  if (!ok) {
+    return {
+      ...actionInfo,
+      validity: ActionValidity.NO_DICE,
+    };
+  }
+  const energy =
+    player.characters[getActiveCharacterIndex(player)].variables.energy;
+  const requiredEnergy = actionInfo.cost.get(DiceType.Energy) ?? 0;
+  if (energy < requiredEnergy) {
+    return {
+      ...actionInfo,
+      validity: ActionValidity.NO_ENERGY,
+    };
+  }
+  return {
+    ...actionInfo,
+    autoSelectedDice,
+  };} catch (e) {
+    console.error(e);
+    console.log({ dice: player.dice, req: actionInfo.cost });
+    throw e;
+  }
 }
 
 export function playSkillOfCard(

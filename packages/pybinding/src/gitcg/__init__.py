@@ -25,7 +25,7 @@ from .state import State
 from .create_param import CreateParam, Deck
 from .entity import Entity
 from . import proto
-from .proto import ActionRequest, ActionResponse, RerollDiceRequest, RerollDiceResponse, ChooseActiveRequest, ChooseActiveResponse, SelectCardRequest, SelectCardResponse, SwitchHandsRequest, SwitchHandsResponse, Notification, Action, DiceRequirementType, DiceRequirement, DiceType
+from .proto import ActionRequest, ActionResponse, RerollDiceRequest, RerollDiceResponse, ChooseActiveRequest, ChooseActiveResponse, SelectCardRequest, SelectCardResponse, SwitchHandsRequest, SwitchHandsResponse, Notification, Action, ActionValidity, DiceRequirementType, DiceRequirement, DiceType
 
 __all__ = [
     "thread_initialize",
@@ -49,6 +49,7 @@ __all__ = [
     "SwitchHandsResponse",
     "Notification",
     "Action",
+    "ActionValidity",
     "DiceRequirementType",
     "DiceRequirement",
     "DiceType",

@@ -66,6 +66,7 @@ export function chooseDice(
   }
   const requiredArray = required
     .entries()
+    .toArray()
     .flatMap(([k, v]) => Array.from({ length: v }, () => k));
   // 无色或者杂色
   next: for (const r of requiredArray) {
@@ -99,16 +100,17 @@ export function chooseDice(
 }
 
 /**
- * 将骰子列表改写为 `Map<DiceType, number>` 形式
- * @param dice 骰子列表
- * @returns
+ * "智能"选骰算法（不检查能量）
+ * @param required 卡牌或技能需要的骰子类型
+ * @param dice 当前持有的骰子
+ * @returns 被选中的骰子
  */
-export function diceToMap(dice: readonly DiceType[]): Map<DiceType, number> {
-  const result = new Map<DiceType, number>();
-  for (const d of dice) {
-    result.set(d, (result.get(d) ?? 0) + 1);
-  }
-  return result;
+export function chooseDiceValue(
+  required: ReadonlyDiceRequirement,
+  dice: readonly DiceType[],
+): DiceType[] {
+  const result = chooseDice(required, dice);
+  return dice.filter((_, i) => result[i]);
 }
 
 /**

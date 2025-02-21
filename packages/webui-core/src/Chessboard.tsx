@@ -47,6 +47,7 @@ import {
   type PreviewData,
   dispatchRpc,
   flattenPbOneof,
+  ActionValidity,
 } from "@gi-tcg/typings";
 import type {
   PbDiceRequirement,
@@ -368,6 +369,9 @@ export function createPlayer(
       const initialClickable = new Map<number, DiceAndSelectionState>();
       const newAllCosts: Record<number, readonly PbDiceRequirement[]> = {};
       for (const [actionObj, i] of actions.map((v, i) => [v, i] as const)) {
+        if (actionObj.validity !== ActionValidity.VALID) {
+          continue;
+        }
         const action = flattenPbOneof(actionObj.action!);
         if (action.$case === "useSkill") {
           const energyReq = actionObj.requiredCost.find(

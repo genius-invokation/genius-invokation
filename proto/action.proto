@@ -19,6 +19,15 @@ option csharp_namespace = "GiTcg.Proto";
 import "enums.proto";
 import "preview.proto";
 
+enum ActionValidity {
+  ACTION_VALIDITY_VALID = 0;
+  ACTION_VALIDITY_CONDITION_NOT_MET = 1;
+  ACTION_VALIDITY_NO_TARGET = 2;
+  ACTION_VALIDITY_NO_DICE = 3;
+  ACTION_VALIDITY_NO_ENERGY = 4;
+  ACTION_VALIDITY_DISABLED = 5;
+}
+
 message Action {
   oneof action {
     SwitchActiveAction switch_active = 1;
@@ -29,6 +38,8 @@ message Action {
   }
   repeated PreviewData preview = 10;
   repeated DiceRequirement required_cost = 11;
+  repeated DiceType auto_selected_dice = 12;
+  ActionValidity validity = 13;
 }
 
 // 切换出战角色

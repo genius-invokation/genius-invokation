@@ -516,6 +516,12 @@ export function exposeState(who: 0 | 1, state: GameState): PbGameState {
 }
 
 export function exposeAction(action: ActionInfo): Action {
+  const BASE = {
+    requiredCost: exposeDiceRequirement(action.cost),
+    autoSelectedDice: action.autoSelectedDice as PbDiceType[],
+    validity: action.validity,
+    preview: action.preview ?? [],
+  };
   switch (action.type) {
     case "useSkill": {
       return {
@@ -527,8 +533,7 @@ export function exposeAction(action: ActionInfo): Action {
             mainDamageTargetId: action.mainDamageTargetId,
           },
         },
-        requiredCost: exposeDiceRequirement(action.cost),
-        preview: action.preview ?? [],
+        ...BASE,
       };
     }
     case "playCard": {
@@ -542,8 +547,7 @@ export function exposeAction(action: ActionInfo): Action {
             willBeEffectless: action.willBeEffectless,
           },
         },
-        requiredCost: exposeDiceRequirement(action.cost),
-        preview: action.preview ?? [],
+        ...BASE,
       };
     }
     case "switchActive": {
@@ -555,8 +559,7 @@ export function exposeAction(action: ActionInfo): Action {
             characterDefinitionId: action.to.definition.id,
           },
         },
-        requiredCost: exposeDiceRequirement(action.cost),
-        preview: action.preview ?? [],
+        ...BASE,
       };
     }
     case "elementalTuning": {
@@ -568,8 +571,7 @@ export function exposeAction(action: ActionInfo): Action {
             targetDice: action.result as PbDiceType,
           },
         },
-        requiredCost: exposeDiceRequirement(action.cost),
-        preview: [],
+        ...BASE,
       };
     }
     case "declareEnd": {
@@ -578,8 +580,7 @@ export function exposeAction(action: ActionInfo): Action {
           $case: "declareEnd",
           value: {},
         },
-        requiredCost: [],
-        preview: [],
+        ...BASE,
       };
     }
   }

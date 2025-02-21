@@ -25,6 +25,7 @@ import {
   createRpcRequest,
   type PbExposedMutation,
   unFlattenOneof,
+  ActionValidity,
 } from "@gi-tcg/typings";
 import type {
   AnyState,
@@ -55,6 +56,7 @@ import {
   getEntityArea,
   playSkillOfCard,
   type Writable,
+  applyAutoSelectedDiceToAction,
 } from "./utils";
 import type { GameData } from "./builder/registry";
 import {
@@ -62,7 +64,6 @@ import {
   type ActionInfo,
   DisposeOrTuneCardEventArg,
   HandCardInsertedEventArg,
-  type ElementalTuningInfo,
   type EventAndRequest,
   EventArg,
   ModifyRollEventArg,
@@ -70,7 +71,6 @@ import {
   PlayerEventArg,
   type SkillInfo,
   SwitchActiveEventArg,
-  type SwitchActiveInfo,
   UseSkillEventArg,
   type InitiativeSkillEventArg,
   defineSkillInfo,
@@ -639,6 +639,14 @@ export class Game {
         throw new GiTcgIoError(who, `User chosen index out of range`);
       }
       const actionInfo = actions[chosenActionIndex];
+      if (actionInfo.validity !== ActionValidity.VALID) {
+        throw new GiTcgIoError(
+          who,
+          `User-selected action is invalid: ${
+            ActionValidity[actionInfo.validity]
+          }`,
+        );
+      }
       await this.handleEvent("modifyAction0", actionInfo.eventArg);
       await this.handleEvent("modifyAction1", actionInfo.eventArg);
       await this.handleEvent("modifyAction2", actionInfo.eventArg);
@@ -898,42 +906,66 @@ export class Game {
     const result: ActionInfo[] = [];
 
     // Skills
-    if (isSkillDisabled(activeCh)) {
-      // Use skill is disabled, skip
-    } else {
-      for (const { caller, skill } of initiativeSkillsOfPlayer(player)) {
-        const skillType = skill.initiativeSkillConfig.skillType;
-        const charged = skillType === "normal" && player.canCharged;
-        const plunging =
-          skillType === "normal" &&
-          (player.canPlunging ||
-            activeCh.entities.some((et) =>
-              et.definition.tags.includes("normalAsPlunging"),
-            ));
-        const skillInfo = defineSkillInfo({
-          caller,
-          definition: skill,
-          charged,
-          plunging,
-        });
-        const allTargets = (0, skill.initiativeSkillConfig.getTarget)(
-          this.state,
-          skillInfo,
-        );
-        for (const arg of allTargets) {
-          if (!(0, skill.filter)(this.state, skillInfo, arg)) {
-            continue;
-          }
-          const actionInfo: ActionInfo = {
-            type: "useSkill",
-            who,
-            skill: skillInfo,
-            targets: arg.targets,
-            fast: false,
-            cost: skill.initiativeSkillConfig.requiredCost,
+    const skillDisabled = isSkillDisabled(activeCh);
+    for (const { caller, skill } of initiativeSkillsOfPlayer(player)) {
+      const skillType = skill.initiativeSkillConfig.skillType;
+      const charged = skillType === "normal" && player.canCharged;
+      const plunging =
+        skillType === "normal" &&
+        (player.canPlunging ||
+          activeCh.entities.some((et) =>
+            et.definition.tags.includes("normalAsPlunging"),
+          ));
+      const skillInfo = defineSkillInfo({
+        caller,
+        definition: skill,
+        charged,
+        plunging,
+      });
+      const actionInfoBase = {
+        type: "useSkill" as const,
+        who,
+        skill: skillInfo,
+        targets: [],
+        fast: false,
+        cost: skill.initiativeSkillConfig.requiredCost,
+        autoSelectedDice: [],
+      };
+      if (skillDisabled) {
+        const fakeActionInfo: ActionInfo = {
+          ...actionInfoBase,
+          validity: ActionValidity.DISABLED,
+        };
+        result.push(fakeActionInfo);
+        continue;
+      }
+      const allTargets = (0, skill.initiativeSkillConfig.getTarget)(
+        this.state,
+        skillInfo,
+      );
+      if (allTargets.length === 0) {
+        const fakeActionInfo: ActionInfo = {
+          ...actionInfoBase,
+          validity: ActionValidity.NO_TARGET,
+        };
+        result.push(fakeActionInfo);
+        continue;
+      }
+      for (const arg of allTargets) {
+        if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+          const fakeActionInfo: ActionInfo = {
+            ...actionInfoBase,
+            validity: ActionValidity.CONDITION_NOT_MET,
           };
-          result.push(actionInfo);
+          result.push(fakeActionInfo);
+          continue;
         }
+        const actionInfo: ActionInfo = {
+          ...actionInfoBase,
+          targets: arg.targets,
+          validity: ActionValidity.VALID,
+        };
+        result.push(actionInfo);
       }
     }
 
@@ -945,6 +977,16 @@ export class Game {
         caller: card,
         definition: skillDef,
       });
+      const actionInfoBase = {
+        type: "playCard" as const,
+        who,
+        skill: skillInfo,
+        cost: skillDef.initiativeSkillConfig.requiredCost,
+        fast: !card.definition.tags.includes("action"),
+        autoSelectedDice: [],
+        targets: [],
+        willBeEffectless: false,
+      };
       // 当支援区满时，卡牌目标为“要离场的支援牌”
       if (
         card.definition.cardType === "support" &&
@@ -957,19 +999,29 @@ export class Game {
           skillInfo,
         );
       }
+      if (allTargets.length === 0) {
+        const fakeActionInfo: ActionInfo = {
+          ...actionInfoBase,
+          validity: ActionValidity.NO_TARGET,
+        };
+        result.push(fakeActionInfo);
+        continue;
+      }
       for (const arg of allTargets) {
-        if ((0, skillDef.filter)(this.state, skillInfo, arg)) {
-          const actionInfo: ActionInfo = {
-            type: "playCard",
-            who,
-            skill: skillInfo,
-            targets: arg.targets,
-            cost: skillDef.initiativeSkillConfig.requiredCost,
-            fast: !card.definition.tags.includes("action"),
-            willBeEffectless: false,
+        if (!(0, skillDef.filter)(this.state, skillInfo, arg)) {
+          const fakeActionInfo: ActionInfo = {
+            ...actionInfoBase,
+            validity: ActionValidity.CONDITION_NOT_MET,
           };
-          result.push(actionInfo);
+          result.push(fakeActionInfo);
+          continue;
         }
+        const actionInfo: ActionInfo = {
+          ...actionInfoBase,
+          targets: arg.targets,
+          validity: ActionValidity.VALID,
+        };
+        result.push(actionInfo);
       }
     }
 
@@ -977,36 +1029,34 @@ export class Game {
     result.push(
       ...player.characters
         .filter((ch) => ch.variables.alive && ch.id !== activeCh.id)
-        .map<SwitchActiveInfo>((ch) => ({
-          type: "switchActive",
+        .map((ch) => ({
+          type: "switchActive" as const,
           who,
           from: activeCh,
           to: ch,
           fromReaction: false,
-        }))
-        .map((s) => ({
-          ...s,
           fast: false,
           cost: VOID_1_DICE_REQUIREMENT,
+          autoSelectedDice: [],
+          validity: ActionValidity.VALID,
         })),
     );
 
     // Elemental Tuning
     const resultDiceType = elementOfCharacter(activeCh.definition);
     result.push(
-      ...player.hands
-        .filter((c) => !c.definition.tags.includes("noTuning"))
-        .map<ElementalTuningInfo>((c) => ({
-          type: "elementalTuning",
-          card: c,
-          who,
-          result: resultDiceType,
-        }))
-        .map((s) => ({
-          ...s,
-          fast: true,
-          cost: VOID_1_DICE_REQUIREMENT,
-        })),
+      ...player.hands.map((c) => ({
+        type: "elementalTuning" as const,
+        card: c,
+        who,
+        result: resultDiceType,
+        fast: true,
+        cost: VOID_1_DICE_REQUIREMENT,
+        autoSelectedDice: [],
+        validity: c.definition.tags.includes("noTuning")
+          ? ActionValidity.DISABLED
+          : ActionValidity.VALID,
+      })),
     );
 
     // Declare End
@@ -1015,10 +1065,19 @@ export class Game {
       who,
       fast: false,
       cost: EMPTY_DICE_REQUIREMENT,
+      autoSelectedDice: [],
+      validity: ActionValidity.VALID,
     });
+
     // Add preview and apply modifyAction
     const previewer = new ActionPreviewer(this.state, who);
-    return await Promise.all(result.map((a) => previewer.modifyAndPreview(a)));
+    return await Promise.all(
+      result.map((a) =>
+        previewer
+          .modifyAndPreview(a)
+          .then((a) => applyAutoSelectedDiceToAction(a, player)),
+      ),
+    );
   }
 
   private async rpcSwitchHands(who: 0 | 1) {

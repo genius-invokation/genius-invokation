@@ -37,6 +37,7 @@ import { SkillExecutor } from "./skill_executor";
 import { getActiveCharacterIndex, getEntityArea, type Writable } from "./utils";
 import { GiTcgPreviewAbortedError, StateMutator } from "./mutator";
 import {
+  ActionValidity,
   type ExposedMutation,
   type FlattenOneof,
   type PreviewData,
@@ -216,6 +217,12 @@ export class ActionPreviewer {
       this.originalState,
       actionInfo,
     );
+    if (actionInfo.validity !== ActionValidity.VALID) {
+      return {
+        ...actionInfo,
+        eventArg: eventArgReal,
+      };
+    }
     const ctx = new PreviewContext(this.originalState);
     await ctx.previewEvent("modifyAction0", eventArgPreCalc);
     await ctx.previewEvent("modifyAction1", eventArgPreCalc);

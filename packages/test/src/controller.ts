@@ -16,6 +16,7 @@
 import {
   Action,
   ActionResponse,
+  ActionValidity,
   ChooseActiveResponse,
   createRpcResponse,
   RpcMethod,
@@ -119,7 +120,8 @@ class IoController {
   skill(id: SkillHandle, ...targets: Ref[]): IoResultPromise {
     return IoResultPromise.create(this.controller, () => {
       const actions = this.listAvailableActions();
-      const chosenActionIndex = actions.findIndex(({ action }) => {
+      const chosenActionIndex = actions.findIndex(({ action, validity }) => {
+        if (validity !== ActionValidity.VALID) return false;
         if (action?.$case !== "useSkill") return false;
         if (action.value.skillDefinitionId !== id) return false;
         if (action.value.targetIds.length !== targets.length) return false;
@@ -153,7 +155,8 @@ class IoController {
         }
         cardId = card.id;
       }
-      const chosenActionIndex = actions.findIndex(({ action }) => {
+      const chosenActionIndex = actions.findIndex(({ action, validity }) => {
+        if (validity !== ActionValidity.VALID) return false;
         if (action?.$case !== "playCard") return false;
         if (action.value.cardId !== cardId) return false;
         if (action.value.targetIds.length !== targets.length) return false;
@@ -187,7 +190,8 @@ class IoController {
         }
         cardId = card.id;
       }
-      const chosenActionIndex = actions.findIndex(({ action }) => {
+      const chosenActionIndex = actions.findIndex(({ action, validity }) => {
+        if (validity !== ActionValidity.VALID) return false;
         if (action?.$case !== "elementalTuning") return false;
         return action.value.removedCardId === cardId;
       });
@@ -213,7 +217,8 @@ class IoController {
         }
         characterId = character.id;
       }
-      const chosenActionIndex = actions.findIndex(({ action }) => {
+      const chosenActionIndex = actions.findIndex(({ action, validity }) => {
+        if (validity !== ActionValidity.VALID) return false;
         if (action?.$case !== "switchActive") return false;
         return action.value.characterId === characterId;
       });
