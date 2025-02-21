@@ -124,12 +124,16 @@ export function getEntityPos(
 export function getHandCardBlurredPos(
   [height, width]: Size,
   opp: boolean,
+  showHands: boolean,
   totalCount: number,
   index: number,
   skillCount: number,
 ): Pos {
   if (opp) {
-    const y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT;
+    let y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT;
+    if (!showHands) {
+      y -= CARD_HEIGHT / 2 - 1;
+    }
     const areaX =
       width -
       OPP_HAND_CARD_RIGHT_OFFSET -
@@ -137,7 +141,10 @@ export function getHandCardBlurredPos(
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   } else {
-    const y = height - HAND_CARD_BLURRED_SHOW_HEIGHT;
+    let y = height - HAND_CARD_BLURRED_SHOW_HEIGHT;
+    if (!showHands) {
+      y += CARD_HEIGHT / 2 + 1;
+    }
     const halfWidth = width / 2;
     const totalHandCardWidth =
       (totalCount - 1) * HAND_CARD_BLURRED_SHOW_WIDTH + CARD_WIDTH;
@@ -171,7 +178,7 @@ export function getHandCardFocusedPos(
   hoveringIndex: number | null,
 ): Pos {
   const yBase = height - HAND_CARD_FOCUSED_SHOW_HEIGHT;
-  const y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
+  let y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
   const halfWidth = width / 2;
 
   const cardAreaCenter = halfWidth + HAND_CARD_FOCUSED_CENTER_X_OFFSET;
@@ -227,7 +234,7 @@ export function getPileHintPos(size: Size, opp: boolean) {
 
 export function getHandHintPos(size: Size, opp: boolean, value: number) {
   if (opp) {
-    const [x, y] = getHandCardBlurredPos(size, true, value, value - 1, 0);
+    const [x, y] = getHandCardBlurredPos(size, true, false, value, value - 1, 0);
     return {
       x: x - CARD_WIDTH / 2 - 3,
       y: y + CARD_HEIGHT + 2,

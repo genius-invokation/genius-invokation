@@ -23,6 +23,8 @@ import type {
   PreviewData,
   SwitchActiveAction,
 } from "@gi-tcg/typings";
+import type { DicePanelState } from "./components/DicePanel";
+import { checkDice } from "@gi-tcg/utils";
 
 export interface PlayCardActionStep {
   readonly type: "playCard";
@@ -104,7 +106,8 @@ export interface ActionState {
   showHands: boolean;
   hintText: string | null;
   alertText: string | null;
-  requiredDice: DiceRequirement[] | null;
+  dicePanel: DicePanelState;
+  showBackdrop: boolean;
   previewData: PreviewData[];
   step: StepActionFunction;
 }
@@ -120,20 +123,25 @@ function createDeclareEndActionState(
       { type: "clickDeclareEndButton" },
     ],
     realCosts: root.realCosts,
-    showHands: false,
+    showHands: true,
     hintText: "结束回合",
     alertText: null,
-    requiredDice: null,
+    dicePanel: "hidden",
+    showBackdrop: false,
     previewData: [],
-    step: (step) => {
-      if (step === CANCEL_ACTION_STEP) {
-        return { type: "newState", newState: root };
+    step: (step, dice) => {
+      if (
+        step.type === "clickDeclareEndButton" ||
+        step.type === "clickDeclareEndMarker"
+      ) {
+        return {
+          type: "actionCommitted",
+          chosenActionIndex: actionIndex,
+          usedDice: [],
+        };
+      } else {
+        return root.step(step, dice);
       }
-      return {
-        type: "actionCommitted",
-        chosenActionIndex: actionIndex,
-        usedDice: [],
-      };
     },
   };
 }
@@ -152,15 +160,21 @@ function createSwitchActiveActionState(
   const SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
   };
-  const CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
+  const OUTER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.characterId,
     hasOutline: false,
     isSelected: false,
   };
+  const INNER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
+    type: "clickEntity",
+    entityId: opt.action.characterId,
+    hasOutline: true,
+    isSelected: false,
+  };
   const CONFIRM_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
-    entityId: opt.action.characterDefinitionId,
+    entityId: opt.action.characterId,
     hasOutline: true,
     isSelected: true,
   };
@@ -170,20 +184,37 @@ function createSwitchActiveActionState(
     showHands: false,
     hintText: `切换出战角色为 ${getNameSync(opt.action.characterDefinitionId)}`,
     alertText: null,
-    requiredDice: null, // TODO
+    dicePanel: "visible",
+    showBackdrop: true,
     previewData: [], // TODO,
-    step: (step) => {
+    step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
       } else if (
         step === SWITCH_ACTIVE_BUTTON ||
         step === CONFIRM_CLICK_ACTION
       ) {
-        return {
-          type: "actionCommitted",
-          chosenActionIndex: opt.index,
-          usedDice: [], // TODO but how?
-        };
+        const diceReq = new Map(
+          root.realCosts.switchActive!.map(({ type, count }) => [
+            type as DiceType,
+            count,
+          ]),
+        );
+        if (checkDice(diceReq, dice)) {
+          return {
+            type: "actionCommitted",
+            chosenActionIndex: opt.index,
+            usedDice: dice as PbDiceType[],
+          };
+        } else {
+          return {
+            type: "newState",
+            newState: {
+              ...innerState,
+              alertText: "骰子不符合要求",
+            },
+          };
+        }
       } else if (step.type === "clickEntity") {
         return {
           type: "newState",
@@ -197,10 +228,11 @@ function createSwitchActiveActionState(
   const outerState: ActionState = {
     availableSteps: [SWITCH_ACTIVE_BUTTON],
     realCosts: root.realCosts,
-    showHands: false,
+    showHands: true,
     hintText: null,
     alertText: null,
-    requiredDice: null,
+    dicePanel: "hidden",
+    showBackdrop: false,
     previewData: [],
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -220,8 +252,8 @@ function createSwitchActiveActionState(
       }
     },
   };
-  opt.outerLevelStates.set(CHARACTER_CLICK_ACTION, outerState);
-  opt.innerLevelStates.set(CHARACTER_CLICK_ACTION, innerState);
+  opt.outerLevelStates.set(OUTER_CHARACTER_CLICK_ACTION, outerState);
+  opt.innerLevelStates.set(INNER_CHARACTER_CLICK_ACTION, innerState);
 }
 
 export function createActionState(actions: Action[]): ActionState {
@@ -236,7 +268,8 @@ export function createActionState(actions: Action[]): ActionState {
     alertText: null,
     hintText: null,
     previewData: [],
-    requiredDice: null,
+    dicePanel: "hidden",
+    showBackdrop: false,
     showHands: true,
     step: (step) => {
       return {

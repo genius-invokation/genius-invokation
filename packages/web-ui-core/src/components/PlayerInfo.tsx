@@ -38,7 +38,7 @@ const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
 export function PlayerInfo(props: PlayerInfoProps) {
   return (
     <div
-      class={`pointer-events-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
+      class={`pointer-events-none select-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
         props.class ?? ""
       }`}
       data-opp={!!props.opp}

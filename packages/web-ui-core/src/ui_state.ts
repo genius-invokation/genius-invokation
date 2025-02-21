@@ -30,14 +30,16 @@ export interface UiState {
 }
 
 export interface Transform {
-  readonly x: number;
-  readonly y: number;
-  readonly z: number;
-  readonly ry: number;
-  readonly rz: number;
+  x: number;
+  y: number;
+  z: number;
+  ry: number;
+  rz: number;
 }
 
-export const cssPropertyOfTransform = (x: Transform): Record<string, string> => ({
+export const cssPropertyOfTransform = (
+  x: Transform,
+): Record<string, string> => ({
   // "z-index": `${x.zIndex}`,
   transform: `translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem) 
     rotateY(${x.ry}deg) 

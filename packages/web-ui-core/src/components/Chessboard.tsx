@@ -94,6 +94,7 @@ import {
   type ActionStep,
   type ClickEntityActionStep,
 } from "../action";
+import { ChessboardBackdrop } from "./ChessboardBackdrop";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -204,6 +205,7 @@ interface CardInfoCalcContext {
   who: 0 | 1;
   size: Size;
   focusingHands: boolean;
+  showHands: boolean;
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
 }
@@ -292,7 +294,14 @@ function calcCardsInfo(
       }
       const [x, y] = isFocus
         ? getHandCardFocusedPos(size, totalHandCardCount, i, hoveringHandIndex)
-        : getHandCardBlurredPos(size, opp, totalHandCardCount, i, skillCount);
+        : getHandCardBlurredPos(
+            size,
+            opp,
+            ctx.showHands,
+            totalHandCardCount,
+            i,
+            skillCount,
+          );
       cards.push({
         id: card.id,
         data: card,
@@ -303,8 +312,7 @@ function calcCardsInfo(
           transform: {
             x,
             y,
-            z: z, //+ +(i === hoveringHandIndex),
-            // zIndex: 10 + i,
+            z,
             ry,
             rz: 0,
           },
@@ -405,6 +413,7 @@ function rerenderChildren(opt: {
   who: 0 | 1;
   size: Size;
   focusingHands: boolean;
+  showHands: boolean;
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   data: ChessboardData;
@@ -413,6 +422,7 @@ function rerenderChildren(opt: {
   const {
     size,
     focusingHands,
+    showHands,
     hoveringHand,
     draggingHand,
     data,
@@ -456,6 +466,7 @@ function rerenderChildren(opt: {
     who: opt.who,
     size,
     focusingHands,
+    showHands,
     hoveringHand,
     draggingHand,
   });
@@ -465,6 +476,7 @@ function rerenderChildren(opt: {
       who: opt.who,
       size,
       focusingHands,
+      showHands,
       hoveringHand,
       draggingHand,
     });
@@ -708,8 +720,12 @@ function rerenderChildren(opt: {
   for (const obj of [...characters, ...entities]) {
     obj.clickStep =
       availableSteps.find(
-        (step): step is ClickEntityActionStep => step.type === "clickEntity" && step.entityId === obj.id,
+        (step): step is ClickEntityActionStep =>
+          step.type === "clickEntity" && step.entityId === obj.id,
       ) ?? null;
+    if (obj.clickStep) {
+      obj.uiState.transform.z += 0.2;
+    }
   }
   for (const card of cards) {
     card.playStep =
@@ -787,6 +803,7 @@ export function Chessboard(props: ChessboardProps) {
           who: localProps.who,
           size: [height(), width()],
           focusingHands: getFocusingHands(),
+          showHands: props.actionState?.showHands ?? true,
           hoveringHand: getHoveringHand(),
           draggingHand: getDraggingHand(),
           data,
@@ -811,6 +828,7 @@ export function Chessboard(props: ChessboardProps) {
           who: localProps.who,
           size,
           focusingHands,
+          showHands: actionState?.showHands ?? true,
           hoveringHand,
           draggingHand,
           data: localProps.data,
@@ -834,6 +852,9 @@ export function Chessboard(props: ChessboardProps) {
       }
     }
   });
+
+  // DEBUG
+  createEffect(() => console.log(props.actionState));
 
   const [isShowCardHint, setShowCardHint] = createStore<
     Record<CardArea, number | null>
@@ -1138,6 +1159,7 @@ export function Chessboard(props: ChessboardProps) {
             />
           )}
         </Key>
+        <ChessboardBackdrop shown={props.actionState?.showBackdrop} />
       </div>
       <DeclareEndMarker
         class="absolute left-2 top-50% translate-y--50%"
@@ -1156,7 +1178,11 @@ export function Chessboard(props: ChessboardProps) {
       <SkillButtonGroup
         class="absolute bottom-2 right-2"
         skills={mySkills()}
-        switchActiveButton={localProps.actionState?.availableSteps.find((s) => s.type === "clickSwitchActiveButton") ?? null}
+        switchActiveButton={
+          localProps.actionState?.availableSteps.find(
+            (s) => s.type === "clickSwitchActiveButton",
+          ) ?? null
+        }
         switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
         onStepActionState={(s) => localProps.onStepActionState(s, [])} // TODO
         shown={!getFocusingHands() && !getDraggingHand()}

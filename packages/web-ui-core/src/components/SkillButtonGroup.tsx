@@ -37,7 +37,7 @@ function SkillButton(props: SkillButtonProps) {
         type="button"
         class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 b-3 disabled:opacity-50 hover:bg-yellow-700 active:bg-yellow-900 transition-all disabled:bg-yellow-700 flex items-center justify-center disabled:cursor-not-allowed"
         disabled={!props.clickable}
-        // onClick={() => clickable() && onClick(props.data.definitionId)}
+        onClick={() => props.onClick?.()}
       >
         <Switch>
           <Match when={typeof props.skillId === "number"}>
@@ -69,14 +69,16 @@ export interface SkillButtonGroupProps {
 }
 
 export function SkillButtonGroup(props: SkillButtonGroupProps) {
-  const skills = createMemo<SkillButtonInfo[]>(() => {
+  const skills = createMemo<SkillButtonProps[]>(() => {
     if (props.switchActiveButton) {
+      const step = props.switchActiveButton;
       return [
         {
           blurred: false,
           clickable: true,
           cost: props.switchActiveCost,
           skillId: "switchActive",
+          onClick: () => props.onStepActionState(step),
         },
       ];
     } else {

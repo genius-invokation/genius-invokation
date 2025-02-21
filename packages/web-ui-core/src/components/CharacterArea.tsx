@@ -26,7 +26,9 @@ import {
   createSignal,
   For,
   Index,
+  Match,
   Show,
+  Switch,
   untrack,
 } from "solid-js";
 import { Image } from "./Image";
@@ -322,11 +324,18 @@ export function CharacterArea(props: CharacterAreaProps) {
             </div>
           )}
         </Show> */}
-        <Show when={props.selecting}>
-          <div class="absolute inset-0 backface-hidden flex items-center justify-center">
-            <SelectingIcon />
-          </div>
-        </Show>
+        <Switch>
+          <Match when={props.clickStep?.isSelected}>
+            <div class="absolute inset-0 backface-hidden flex items-center justify-center text-5xl">
+              <span class="cursor-pointer">&#9989;</span>
+            </div>
+          </Match>
+          <Match when={props.selecting}>
+            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
+              <SelectingIcon />
+            </div>
+          </Match>
+        </Switch>
         <Show when={getDamage()}>
           {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>
