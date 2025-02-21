@@ -37,6 +37,7 @@ import { Damage } from "./Damage";
 import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { SelectingIcon } from "./SelectingIcon";
+import { ActionStepEntityUi } from "../action";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -291,7 +292,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         <div
           class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
           bool:data-triggered={props.triggered}
-          bool:data-clickable={props.clickStep?.hasOutline}
+          bool:data-clickable={props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined}
         >
           <Image
             imageId={data().definitionId}
@@ -325,7 +326,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           )}
         </Show> */}
         <Switch>
-          <Match when={props.clickStep?.isSelected}>
+          <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="absolute inset-0 backface-hidden flex items-center justify-center text-5xl">
               <span class="cursor-pointer">&#9989;</span>
             </div>

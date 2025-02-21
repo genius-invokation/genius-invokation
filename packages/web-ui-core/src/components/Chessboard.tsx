@@ -15,7 +15,9 @@
 
 import {
   DiceType,
+  PbDiceRequirement,
   PbPlayerStatus,
+  PbSkillInfo,
   type DamageType,
   type PbCardState,
   type PbCharacterState,
@@ -94,6 +96,8 @@ import {
   type ActionState,
   type ActionStep,
   type ClickEntityActionStep,
+  type ClickSkillButtonActionStep,
+  type ClickSwitchActiveButtonActionStep,
 } from "../action";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
 
@@ -123,6 +127,7 @@ export interface CharacterInfo {
   data: PbCharacterState;
   entities: StatusInfo[];
   combatStatus: StatusInfo[];
+  opp: boolean;
   active: boolean;
   triggered: boolean;
   uiState: CharacterUiState;
@@ -175,6 +180,13 @@ export interface NotificationBoxInfo {
   characterDefinitionId: number;
   skillDefinitionId?: number;
   skillType: PbSkillType | "overloaded" | null;
+}
+
+export interface SkillInfo {
+  id: number | "switchActive";
+  cost: PbDiceRequirement[];
+  realCost?: PbDiceRequirement[];
+  step: ClickSkillButtonActionStep | ClickSwitchActiveButtonActionStep | null;
 }
 
 export interface ChessboardData extends ParsedMutation {
@@ -657,6 +669,7 @@ function rerenderChildren(opt: {
           animation: CHARACTER_ANIMATION_NONE,
           onAnimationFinish: resolve,
         },
+        opp,
         active: isActive,
         combatStatus: isActive ? combatStatus : [],
         clickStep: null,
@@ -718,7 +731,20 @@ function rerenderChildren(opt: {
   ];
 
   // Apply steps to children
-  for (const obj of [...characters, ...entities]) {
+  for (const obj of characters) {
+    const isMyActive = obj.active && !obj.opp;
+    obj.clickStep =
+      availableSteps.find(
+        (step): step is ClickEntityActionStep =>
+          step.type === "clickEntity" &&
+          (step.entityId === obj.id ||
+            (step.entityId === "myActiveCharacter" && isMyActive)),
+      ) ?? null;
+    if (obj.clickStep) {
+      obj.uiState.transform.z += 0.2;
+    }
+  }
+  for (const obj of entities) {
     obj.clickStep =
       availableSteps.find(
         (step): step is ClickEntityActionStep =>
@@ -747,6 +773,24 @@ function rerenderChildren(opt: {
   };
 }
 
+type SelectingItem =
+  | {
+      type: "card";
+      info: CardInfo;
+    }
+  | {
+      type: "entity";
+      info: EntityInfo;
+    }
+  | {
+      type: "character";
+      info: CharacterInfo;
+    }
+  | {
+      type: "skill";
+      info: SkillInfo & { id: number };
+    };
+
 export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, [
     "who",
@@ -762,6 +806,27 @@ export function Chessboard(props: ChessboardProps) {
     includesImage: true,
     assetsApiEndPoint,
   });
+  const [selectingItem, setSelectingItem] = createSignal<SelectingItem | null>(
+    null,
+  );
+  createEffect(() => {
+    const item = selectingItem();
+    if (item === null) {
+      dataViewerController.hide();
+    } else if (item.type === "card") {
+      dataViewerController.showState("card", item.info.data);
+    } else if (item.type === "character") {
+      dataViewerController.showState(
+        "character",
+        item.info.data,
+        item.info.combatStatus.map((x) => x.data),
+      );
+    } else if (item.type === "entity") {
+      dataViewerController.showState(item.info.type, item.info.data);
+    } else if (item.type === "skill") {
+      dataViewerController.showSkill(item.info.id);
+    }
+  });
 
   const [height, setHeight] = createSignal(0);
   const [width, setWidth] = createSignal(0);
@@ -770,7 +835,6 @@ export function Chessboard(props: ChessboardProps) {
     setHeight(chessboardElement.clientHeight / unit);
     setWidth(chessboardElement.clientWidth / unit);
   };
-  const [selectingItem, setSelectingItem] = createSignal<number | null>(null);
 
   const [updateChildrenSignal, triggerUpdateChildren] =
     createSignal<UpdateSignal>({
@@ -883,7 +947,6 @@ export function Chessboard(props: ChessboardProps) {
           setDicePanelState(actionState.dicePanel);
         } else if (prevActionState) {
           // 退出行动时，取消所有的选择项
-          dataViewerController.hide();
           setSelectingItem(null);
           setDicePanelState("hidden");
         }
@@ -947,8 +1010,35 @@ export function Chessboard(props: ChessboardProps) {
   const myDice = createMemo(
     () => localProps.data.state.player[localProps.who].dice as DiceType[],
   );
-  const mySkills = createMemo(
-    () => localProps.data.state.player[localProps.who].initiativeSkill,
+  const findSkillStep = (
+    steps: ActionStep[],
+    id: SkillInfo["id"],
+  ): ClickSkillButtonActionStep | null => {
+    return (
+      steps.find(
+        (s): s is ClickSkillButtonActionStep =>
+          s.type === "clickSkillButton" && s.skillId === id,
+      ) ?? null
+    );
+  };
+  const mySkills = createMemo<SkillInfo[]>(() => {
+    const actionState = localProps.actionState;
+    const steps = actionState?.availableSteps ?? [];
+    const realCosts = actionState?.realCosts.skills;
+    return localProps.data.state.player[localProps.who].initiativeSkill.map(
+      (sk) => ({
+        id: sk.definitionId,
+        cost: sk.definitionCost,
+        realCost: realCosts?.get(sk.definitionId),
+        step: findSkillStep(steps, sk.definitionId),
+      }),
+    );
+  });
+  const switchActiveStep = createMemo(
+    () =>
+      localProps.actionState?.availableSteps.find(
+        (s) => s.type === "clickSwitchActiveButton",
+      ),
   );
 
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
@@ -1008,15 +1098,13 @@ export function Chessboard(props: ChessboardProps) {
           setFocusingHands(true);
           showCardHint("myHand");
           setSelectingItem(null);
-          dataViewerController.hide();
         }
         if (!doMove) {
           return;
         }
         yAdjust -= 3;
       }
-      dataViewerController.showState("card", cardInfo.data);
-      setSelectingItem(cardInfo.id);
+      setSelectingItem({ type: "card", info: cardInfo });
       currentTarget.setPointerCapture(e.pointerId);
       const unit = unitInPx();
       const originalX = cardInfo.uiState.transform.x;
@@ -1084,7 +1172,6 @@ export function Chessboard(props: ChessboardProps) {
       return null;
     });
     if (!getFocusingHands()) {
-      dataViewerController.hide();
       setSelectingItem(null);
     }
   };
@@ -1097,7 +1184,6 @@ export function Chessboard(props: ChessboardProps) {
       }
       setShowDeclareEndButton(false);
       setHoveringHand(null);
-      dataViewerController.hide();
       setSelectingItem(null);
       if (localProps.actionState) {
         localProps.onStepActionState(CANCEL_ACTION_STEP, []);
@@ -1115,12 +1201,7 @@ export function Chessboard(props: ChessboardProps) {
       setShowCardHint("myHand", null);
     }
     setShowDeclareEndButton(false);
-    dataViewerController.showState(
-      "character",
-      characterInfo.data,
-      characterInfo.combatStatus.map((st) => st.data),
-    );
-    setSelectingItem(characterInfo.id);
+    setSelectingItem({ type: "character", info: characterInfo });
     if (characterInfo.clickStep) {
       localProps.onStepActionState(
         characterInfo.clickStep,
@@ -1141,8 +1222,24 @@ export function Chessboard(props: ChessboardProps) {
       setShowCardHint("myHand", null);
     }
     setShowDeclareEndButton(false);
-    dataViewerController.showState(entityInfo.type, entityInfo.data);
-    setSelectingItem(entityInfo.id);
+    setSelectingItem({ type: "entity", info: entityInfo });
+  };
+
+  const onSkillClick = (sk: SkillInfo) => {
+    if (sk.id === "switchActive") {
+      const step = switchActiveStep();
+      if (step) {
+        localProps.onStepActionState(step, selectedDiceValue());
+      }
+    } else {
+      setSelectingItem({ type: "skill", info: { ...sk, id: sk.id } });
+      const step = localProps.actionState?.availableSteps.find(
+        (s) => s.type === "clickSkillButton" && s.skillId === sk.id,
+      );
+      if (step) {
+        localProps.onStepActionState(step, selectedDiceValue());
+      }
+    }
   };
 
   onMount(() => {
@@ -1174,7 +1271,7 @@ export function Chessboard(props: ChessboardProps) {
           {(character) => (
             <CharacterArea
               {...character()}
-              selecting={character().id === selectingItem()}
+              selecting={character().id === selectingItem()?.info.id}
               onClick={(e, t) => onCharacterAreaClick(e, t, character())}
             />
           )}
@@ -1187,7 +1284,8 @@ export function Chessboard(props: ChessboardProps) {
             <Card
               {...card()}
               selecting={
-                card().id === selectingItem() && card().kind !== "dragging"
+                card().id === selectingItem()?.info.id &&
+                card().kind !== "dragging"
               }
               realCost={props.actionState?.realCosts.cards.get(card().id)}
               // onClick={(e, t) => onCardClick(e, t, card())}
@@ -1206,7 +1304,7 @@ export function Chessboard(props: ChessboardProps) {
           {(entity) => (
             <Entity
               {...entity()}
-              selecting={entity().id === selectingItem()}
+              selecting={entity().id === selectingItem()?.info.id}
               onClick={(e, t) => onEntityClick(e, t, entity())}
             />
           )}
@@ -1244,15 +1342,9 @@ export function Chessboard(props: ChessboardProps) {
       <SkillButtonGroup
         class="absolute bottom-2 right-2"
         skills={mySkills()}
-        switchActiveButton={
-          localProps.actionState?.availableSteps.find(
-            (s) => s.type === "clickSwitchActiveButton",
-          ) ?? null
-        }
+        switchActiveButton={switchActiveStep() ?? null}
         switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
-        onStepActionState={(s) =>
-          localProps.onStepActionState(s, selectedDiceValue())
-        }
+        onClick={onSkillClick}
         shown={!getFocusingHands() && !getDraggingHand()}
       />
       <RoundAndPhaseNotification

@@ -16,6 +16,7 @@
 import { getNameSync } from "@gi-tcg/assets-manager";
 import {
   ActionValidity,
+  UseSkillAction,
   type Action,
   type DiceRequirement,
   type DiceType,
@@ -35,19 +36,30 @@ export interface ElementalTunningActionStep {
   readonly type: "elementalTunning";
   readonly cardId: number;
 }
+
+export enum ActionStepEntityUi {
+  None = 0,
+  Visible = 1,
+  Outlined = 2,
+  Selected = 3,
+}
+
 export interface ClickEntityActionStep {
   readonly type: "clickEntity";
-  readonly entityId: number;
-  readonly hasOutline: boolean;
-  readonly isSelected: boolean;
+  readonly entityId: number | "myActiveCharacter";
+  readonly ui: ActionStepEntityUi;
 }
 export interface ClickSkillButtonActionStep {
   readonly type: "clickSkillButton";
   readonly skillId: number;
+  readonly tooltipText?: string;
+  readonly isDisabled: boolean;
   readonly isFocused: boolean;
 }
 export interface ClickSwitchActiveButtonActionStep {
   readonly type: "clickSwitchActiveButton";
+  readonly tooltipText?: string;
+  readonly isDisabled: boolean;
   readonly isFocused: boolean;
 }
 export interface ClickDeclareEndActionStep {
@@ -102,13 +114,113 @@ export interface ActionState {
   availableSteps: ActionStep[];
   realCosts: RealCosts;
   showHands: boolean;
-  hintText: string | null;
-  alertText: string | null;
+  hintText?: string;
+  alertText?: string;
   dicePanel: DicePanelState;
   autoSelectedDice: DiceType[] | null;
   showBackdrop: boolean;
   previewData: PreviewData[];
   step: StepActionFunction;
+}
+
+interface CreateUseSkillActionStateOption {
+  skillStates: Map<ClickSkillButtonActionStep, ActionState>;
+  action: Action & { value: UseSkillAction };
+  index: number;
+}
+
+const validityText = (validity: ActionValidity): string | undefined => {
+  switch (validity) {
+    case ActionValidity.CONDITION_NOT_MET:
+      return "未满足使用条件";
+    case ActionValidity.NO_TARGET:
+      return "无可用目标";
+    case ActionValidity.DISABLED:
+      return "不可进行此操作";
+    case ActionValidity.NO_DICE:
+      return "骰子不足";
+    case ActionValidity.NO_ENERGY:
+      return "充能不足";
+  }
+};
+
+function createUseSkillActionState(
+  root: ActionState,
+  opt: CreateUseSkillActionStateOption,
+) {
+  const id = opt.action.value.skillDefinitionId;
+  const ok = opt.action.validity === ActionValidity.VALID;
+  if (opt.action.value.targetIds.length > 0) {
+    // TODO: do it later
+    return;
+  }
+  const ENTER_STEP: ClickSkillButtonActionStep = {
+    type: "clickSkillButton",
+    skillId: id,
+    tooltipText: validityText(opt.action.validity),
+    isDisabled: !ok,
+    isFocused: false,
+  };
+  const CONFIRM_TARGET_STEP: ClickEntityActionStep = {
+    type: "clickEntity",
+    entityId: opt.action.value.mainDamageTargetId ?? "myActiveCharacter",
+    ui: ActionStepEntityUi.Selected,
+  };
+  const CONFIRM_BUTTON_STEP: ClickSkillButtonActionStep = {
+    type: "clickSkillButton",
+    skillId: id,
+    isDisabled: !ok,
+    isFocused: true,
+  };
+  const resultState: ActionState = {
+    availableSteps: [
+      CANCEL_ACTION_STEP,
+      CONFIRM_TARGET_STEP,
+      CONFIRM_BUTTON_STEP,
+    ],
+    realCosts: root.realCosts,
+    showHands: false,
+    dicePanel: ok ? "visible" : "wrapped",
+    autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
+    showBackdrop: true,
+    previewData: [], // TODO,
+    step: (step, dice) => {
+      if (step === CANCEL_ACTION_STEP) {
+        return { type: "newState", newState: root };
+      } else if (step === CONFIRM_TARGET_STEP || step === CONFIRM_BUTTON_STEP) {
+        const diceReq = new Map(
+          root.realCosts.skills
+            .get(id)!
+            .map(({ type, count }) => [type as DiceType, count]),
+        );
+        if (checkDice(diceReq, dice)) {
+          return {
+            type: "actionCommitted",
+            chosenActionIndex: opt.index,
+            usedDice: dice as PbDiceType[],
+          };
+        } else {
+          return {
+            type: "newState",
+            newState: {
+              ...resultState,
+              autoSelectedDice: null,
+              alertText: "骰子不符合要求",
+            },
+          };
+        }
+      } else if (step.type === "clickSkillButton") {
+        return {
+          type: "newState",
+          newState: opt.skillStates.get(step)!,
+        };
+      } else {
+        console.error(step);
+        throw new Error("Unexpected step");
+      }
+    },
+  };
+  opt.skillStates.set(ENTER_STEP, resultState);
 }
 
 interface CreateSwitchActiveActionStateOption {
@@ -124,38 +236,40 @@ function createSwitchActiveActionState(
 ): void {
   const INNER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    isDisabled: false,
     isFocused: true,
   };
   const OUTER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    isDisabled: false,
     isFocused: false,
   };
   const OUTER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.value.characterId,
-    hasOutline: false,
-    isSelected: false,
+    ui: ActionStepEntityUi.None,
   };
   const INNER_CHARACTER_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.value.characterId,
-    hasOutline: true,
-    isSelected: false,
+    ui: ActionStepEntityUi.Outlined,
   };
   const CONFIRM_CLICK_ACTION: ClickEntityActionStep = {
     type: "clickEntity",
     entityId: opt.action.value.characterId,
-    hasOutline: true,
-    isSelected: true,
+    ui: ActionStepEntityUi.Selected,
   };
   const innerState: ActionState = {
-    availableSteps: [INNER_SWITCH_ACTIVE_BUTTON, CONFIRM_CLICK_ACTION],
+    availableSteps: [
+      CANCEL_ACTION_STEP,
+      INNER_SWITCH_ACTIVE_BUTTON,
+      CONFIRM_CLICK_ACTION,
+    ],
     realCosts: root.realCosts,
     showHands: false,
     hintText: `切换出战角色为 ${getNameSync(
       opt.action.value.characterDefinitionId,
     )}`,
-    alertText: null,
     dicePanel: "visible",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
@@ -198,16 +312,15 @@ function createSwitchActiveActionState(
           },
         };
       } else {
+        console.error(step);
         throw new Error("Unexpected step");
       }
     },
   };
   const outerState: ActionState = {
-    availableSteps: [OUTER_SWITCH_ACTIVE_BUTTON],
+    availableSteps: [CANCEL_ACTION_STEP, OUTER_SWITCH_ACTIVE_BUTTON],
     realCosts: root.realCosts,
     showHands: true,
-    hintText: null,
-    alertText: null,
     dicePanel: "hidden",
     autoSelectedDice: null,
     showBackdrop: false,
@@ -243,8 +356,6 @@ export function createActionState(actions: Action[]): ActionState {
   const root: ActionState = {
     availableSteps: [],
     realCosts,
-    alertText: null,
-    hintText: null,
     previewData: [],
     dicePanel: "hidden",
     autoSelectedDice: null,
@@ -267,13 +378,18 @@ export function createActionState(actions: Action[]): ActionState {
   const steps = new Map<ActionStep, ActionState>([[CANCEL_ACTION_STEP, root]]);
   const switchActiveInnerStates = new Map<ClickEntityActionStep, ActionState>();
   const switchActiveOuterStates = new Map<ClickEntityActionStep, ActionState>();
+  const useSkillStates = new Map<ClickSkillButtonActionStep, ActionState>();
   let declareEndIndex: number | null = null;
   for (let i = 0; i < actions.length; i++) {
     const { action, preview, requiredCost, validity } = actions[i];
     switch (action?.$case) {
       case "useSkill": {
         realCosts.skills.set(action.value.skillDefinitionId, requiredCost);
-        // TODO
+        createUseSkillActionState(root, {
+          skillStates: useSkillStates,
+          action: { value: action.value, ...actions[i] },
+          index: i,
+        });
         break;
       }
       case "playCard": {
@@ -309,18 +425,22 @@ export function createActionState(actions: Action[]): ActionState {
   }
   root.availableSteps.push(...steps.keys());
 
+  for (const [step, state] of useSkillStates.entries()) {
+    state.availableSteps.push(
+      ...useSkillStates.keys().filter((k) => k !== step),
+    );
+    steps.set(step, state);
+  }
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
     steps.set(step, state);
   }
   for (const [step, state] of switchActiveInnerStates.entries()) {
     state.availableSteps.push(
-      ...switchActiveInnerStates
-        .keys()
-        .filter((k) => k.entityId !== step.entityId),
+      ...switchActiveInnerStates.keys().filter((k) => k !== step),
     );
   }
-  root.availableSteps.push(...switchActiveOuterStates.keys());
+  root.availableSteps.push(...steps.keys());
   console.log(root);
   return root;
 }

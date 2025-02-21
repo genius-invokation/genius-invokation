@@ -43,7 +43,7 @@ export function DicePanel(props: DicePanelProps) {
   return (
     <>
       <div
-        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center bg-yellow-600 transition-right"
+        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center bg-yellow-700 transition-right"
         data-state={props.state}
       >
         <div

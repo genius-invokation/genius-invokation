@@ -13,38 +13,44 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PbDiceRequirement, PbSkillInfo } from "@gi-tcg/typings";
+import {
+  DiceType,
+  type PbDiceRequirement,
+  type PbSkillInfo,
+} from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import { createMemo, For, Match, Switch } from "solid-js";
-import type { ActionStep, ClickSwitchActiveButtonActionStep } from "../action";
+import type {
+  ClickSwitchActiveButtonActionStep,
+} from "../action";
+import type { SkillInfo } from "./Chessboard";
+import { Key } from "@solid-primitives/keyed";
 
-interface SkillButtonInfo {
-  skillId: number | "switchActive";
-  cost: PbDiceRequirement[];
-  clickable: boolean;
-  focused: boolean;
-}
-
-export interface SkillButtonProps extends SkillButtonInfo {
-  onClick?: () => void;
+export interface SkillButtonProps extends SkillInfo {
+  onClick?: (e: MouseEvent) => void;
 }
 
 function SkillButton(props: SkillButtonProps) {
+  const skillId = createMemo(() => props.id);
   return (
     <div class="w-12 flex flex-col items-center gap-1 group select-none">
       <button
         type="button"
-        class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 data-[focused]:bg-yellow-700 data-[focused]:b-yellow-400 b-3 disabled:opacity-50 hover:bg-yellow-700 data-[focused]:hover:bg-yellow-600 active:bg-yellow-600 transition-all disabled:bg-yellow-700 flex items-center justify-center disabled:cursor-not-allowed"
-        disabled={!props.clickable}
-        bool:data-focused={props.focused}
-        onClick={() => props.onClick?.()}
+        class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 data-[focused]:b-yellow-400 b-3 data-[focused]:shadow-[inset_0_0_4px_4px] shadow-yellow shadow-inset hover:bg-yellow-700 active:bg-yellow-600 data-[disabled]:cursor-not-allowed transition-all flex items-center justify-center group"
+        bool:data-disabled={!props.step || props.step.isDisabled}
+        bool:data-focused={props.step?.isFocused}
+        onClick={(e) => props.onClick?.(e)}
+        title={props.step ? props.step.tooltipText : '不是你的行动轮'}
       >
         <Switch>
-          <Match when={typeof props.skillId === "number"}>
-            <Image imageId={props.skillId as number} class="w-full" />
+          <Match when={typeof skillId() === "number"}>
+            <Image
+              imageId={skillId() as number}
+              class="w-full group-data-[disabled]:opacity-50"
+            />
           </Match>
-          <Match when={props.skillId === "switchActive"}>
+          <Match when={skillId() === "switchActive"}>
             &#128100;
             <span class="absolute right-0 bottom-0 text-sm">&#128257;</span>
           </Match>
@@ -62,33 +68,30 @@ function SkillButton(props: SkillButtonProps) {
 
 export interface SkillButtonGroupProps {
   class?: string;
-  skills: PbSkillInfo[];
+  skills: SkillInfo[];
   shown: boolean;
   switchActiveButton: ClickSwitchActiveButtonActionStep | null;
   switchActiveCost: PbDiceRequirement[];
-  onStepActionState: (step: ActionStep) => void;
+  onClick?: (skill: SkillInfo) => void;
 }
 
+const DEFAULT_SWITCH_ACTIVE_COST: PbDiceRequirement[] = [
+  { type: DiceType.Void, count: 1 },
+];
+
 export function SkillButtonGroup(props: SkillButtonGroupProps) {
-  const skills = createMemo<SkillButtonProps[]>(() => {
+  const skills = createMemo<SkillInfo[]>(() => {
     if (props.switchActiveButton) {
       const step = props.switchActiveButton;
-      return [
-        {
-          focused: step.isFocused,
-          clickable: true,
-          cost: props.switchActiveCost,
-          skillId: "switchActive",
-          onClick: () => props.onStepActionState(step),
-        },
-      ];
+      const skillInfo = {
+        id: "switchActive" as const,
+        step: step,
+        cost: DEFAULT_SWITCH_ACTIVE_COST,
+        realCost: props.switchActiveCost,
+      };
+      return [skillInfo];
     } else {
-      return props.skills.map((skill) => ({
-        focused: false, // TODO
-        clickable: false, // TODO
-        cost: skill.definitionCost,
-        skillId: skill.definitionId,
-      }));
+      return props.skills;
     }
   });
   return (
@@ -98,7 +101,17 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
       }`}
       bool:data-shown={props.shown}
     >
-      <For each={skills()}>{(skill) => <SkillButton {...skill} />}</For>
+      <Key each={skills()} by="id">
+        {(skill) => (
+          <SkillButton
+            {...skill()}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onClick?.(skill());
+            }}
+          />
+        )}
+      </Key>
     </div>
   );
 }
