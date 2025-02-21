@@ -18,6 +18,7 @@ import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
 import { SelectingIcon } from "./SelectingIcon";
+import { VariableDiff } from "./VariableDiff";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -39,12 +40,17 @@ export function Entity(props: EntityProps) {
       }}
     >
       <Image
-        class="absolute inset-0 rounded-lg b-white b-2"
+        class="absolute h-full w-full inset-0 rounded-lg b-white b-2"
         imageId={data().definitionId}
       />
       <Show when={data().hasUsagePerRound}>
-        <div
-          class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite"
+        <div class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite" />
+      </Show>
+      <Show when={props.preview && props.preview.newVariableValue !== null}>
+        <VariableDiff
+          class="absolute top-1 left-50% translate-x--50%"
+          oldValue={data().variableValue!}
+          newValue={props.preview!.newVariableValue!}
         />
       </Show>
       <Show when={props.selecting}>

@@ -18,6 +18,7 @@ import {
   PbDiceRequirement,
   PbPlayerStatus,
   PbSkillInfo,
+  PreviewData,
   type DamageType,
   type PbCardState,
   type PbCharacterState,
@@ -93,11 +94,15 @@ import {
 } from "./DeclareEndMarker";
 import {
   CANCEL_ACTION_STEP,
+  NO_PREVIEW,
   type ActionState,
   type ActionStep,
   type ClickEntityActionStep,
   type ClickSkillButtonActionStep,
   type ClickSwitchActiveButtonActionStep,
+  type ParsedPreviewData,
+  type PreviewingCharacterInfo,
+  type PreviewingEntityInfo,
 } from "../action";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
 
@@ -131,6 +136,7 @@ export interface CharacterInfo {
   active: boolean;
   triggered: boolean;
   uiState: CharacterUiState;
+  preview: PreviewingCharacterInfo | null;
   clickStep: ClickEntityActionStep | null;
 }
 
@@ -144,6 +150,8 @@ export interface StatusInfo {
 export interface EntityInfo extends StatusInfo {
   type: "support" | "summon";
   uiState: EntityUiState;
+  previewingNew: boolean;
+  preview: PreviewingEntityInfo | null;
   clickStep: ClickEntityActionStep | null;
 }
 
@@ -350,17 +358,25 @@ interface CalcEntitiesInfoResult {
 interface EntityInfoCalcContext {
   who: 0 | 1;
   size: Size;
+  previewData: ParsedPreviewData;
+  availableSteps: ActionStep[];
 }
 
 function calcEntitiesInfo(
   state: PbGameState,
-  { who, size }: EntityInfoCalcContext,
+  { who, size, previewData, availableSteps }: EntityInfoCalcContext,
 ): CalcEntitiesInfoResult[] {
   const result: CalcEntitiesInfoResult[] = [];
   const calcEntityInfo =
-    (opp: boolean, type: "support" | "summon") =>
+    (opp: boolean, type: "support" | "summon", previewingNew: boolean) =>
     (data: PbEntityState, index: number): EntityInfo => {
       const [x, y] = getEntityPos(size, opp, type, index);
+      const preview = previewData.entities.get(data.id) ?? null;
+      const clickStep =
+        availableSteps.find(
+          (step): step is ClickEntityActionStep =>
+            step.type === "clickEntity" && step.entityId === data.id,
+        ) ?? null;
       return {
         id: data.id,
         type,
@@ -373,12 +389,14 @@ function calcEntitiesInfo(
           transform: {
             x,
             y,
-            z: 0,
+            z: previewingNew || preview || clickStep ? 0.2 : 0,
             ry: 0,
             rz: 0,
           },
         },
-        clickStep: null,
+        previewingNew,
+        preview,
+        clickStep,
       };
     };
   const calcStatusInfo = (data: PbEntityState): StatusInfo => {
@@ -392,8 +410,18 @@ function calcEntitiesInfo(
   for (const who2 of [0, 1] as const) {
     const opp = who2 !== who;
     const player = state.player[who2];
-    const supports = player.support.map(calcEntityInfo(opp, "support"));
-    const summons = player.summon.map(calcEntityInfo(opp, "summon"));
+    const supports = player.support.map(calcEntityInfo(opp, "support", false));
+    supports.push(
+      ...(previewData.newEntities.get(`support${who2}`) ?? []).map(
+        calcEntityInfo(opp, "support", true),
+      ),
+    );
+    const summons = player.summon.map(calcEntityInfo(opp, "summon", false));
+    summons.push(
+      ...(previewData.newEntities.get(`summon${who2}`) ?? []).map(
+        calcEntityInfo(opp, "summon", true),
+      ),
+    );
     const combatStatuses = player.combatStatus.map(calcStatusInfo);
     const statuses = new Map<number, StatusInfo[]>();
     for (const ch of player.character) {
@@ -430,6 +458,7 @@ function rerenderChildren(opt: {
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   data: ChessboardData;
+  previewData: ParsedPreviewData;
   availableSteps: ActionStep[];
 }): ChessboardChildren {
   const {
@@ -439,6 +468,7 @@ function rerenderChildren(opt: {
     hoveringHand,
     draggingHand,
     data,
+    previewData,
     availableSteps,
   } = opt;
   // console.log(data);
@@ -565,11 +595,15 @@ function rerenderChildren(opt: {
   let currentEntities = calcEntitiesInfo(state, {
     who: opt.who,
     size,
+    previewData,
+    availableSteps,
   });
   if (data.disposingEntities.length > 0) {
     const previousEntities = calcEntitiesInfo(previousState, {
       who: opt.who,
       size,
+      previewData: NO_PREVIEW,
+      availableSteps: [],
     });
     const applyDiff = <T extends StatusInfo>(
       entities: T[],
@@ -642,6 +676,7 @@ function rerenderChildren(opt: {
       const entities =
         currentEntities[who].characterAreaEntities.get(ch.id) ?? [];
       const isActive = player.activeCharacterId === ch.id && !ch.defeated;
+      const isMyActive = !opp && isActive;
       const [x, y] = getCharacterAreaPos(
         size,
         opp,
@@ -650,6 +685,14 @@ function rerenderChildren(opt: {
         isActive,
       );
       const { promise, resolve } = Promise.withResolvers<void>();
+      const preview = previewData.characters.get(ch.id) ?? null;
+      const clickStep =
+        availableSteps.find(
+          (step): step is ClickEntityActionStep =>
+            step.type === "clickEntity" &&
+            (step.entityId === ch.id ||
+              (step.entityId === "myActiveCharacter" && isMyActive)),
+        ) ?? null;
       charactersMap.set(ch.id, {
         id: ch.id,
         data: ch,
@@ -661,7 +704,7 @@ function rerenderChildren(opt: {
           transform: {
             x,
             y,
-            z: 0,
+            z: clickStep || preview ? 0.2 : 0,
             ry: 0,
             rz: 0,
           },
@@ -671,8 +714,9 @@ function rerenderChildren(opt: {
         },
         opp,
         active: isActive,
+        preview,
         combatStatus: isActive ? combatStatus : [],
-        clickStep: null,
+        clickStep,
       });
       animationPromises.push(promise);
     }
@@ -731,19 +775,6 @@ function rerenderChildren(opt: {
   ];
 
   // Apply steps to children
-  for (const obj of characters) {
-    const isMyActive = obj.active && !obj.opp;
-    obj.clickStep =
-      availableSteps.find(
-        (step): step is ClickEntityActionStep =>
-          step.type === "clickEntity" &&
-          (step.entityId === obj.id ||
-            (step.entityId === "myActiveCharacter" && isMyActive)),
-      ) ?? null;
-    if (obj.clickStep) {
-      obj.uiState.transform.z += 0.2;
-    }
-  }
   for (const obj of entities) {
     obj.clickStep =
       availableSteps.find(
@@ -872,6 +903,7 @@ export function Chessboard(props: ChessboardProps) {
           hoveringHand: getHoveringHand(),
           draggingHand: getDraggingHand(),
           data,
+          previewData: props.actionState?.previewData ?? NO_PREVIEW,
           availableSteps: props.actionState?.availableSteps ?? [],
         });
         setChildren(newChildren);
@@ -897,6 +929,7 @@ export function Chessboard(props: ChessboardProps) {
           hoveringHand,
           draggingHand,
           data: localProps.data,
+          previewData: actionState?.previewData ?? NO_PREVIEW,
           availableSteps: actionState?.availableSteps ?? [],
         });
         setChildren(newChildren);
@@ -1207,8 +1240,6 @@ export function Chessboard(props: ChessboardProps) {
         characterInfo.clickStep,
         selectedDiceValue(),
       );
-    } else {
-      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
     }
   };
 

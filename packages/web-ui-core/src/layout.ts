@@ -98,6 +98,9 @@ export function getEntityPos(
   type: "summon" | "support",
   index: number,
 ) {
+  if (index >= 4) {
+    return [999, 999];
+  }
   const halfHeight = height / 2;
   const halfWidth = width / 2;
   const gapAroundEntityArea =

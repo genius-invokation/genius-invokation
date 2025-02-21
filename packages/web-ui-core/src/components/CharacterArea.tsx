@@ -38,6 +38,7 @@ import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { SelectingIcon } from "./SelectingIcon";
 import { ActionStepEntityUi } from "../action";
+import { VariableDiff } from "./VariableDiff";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -138,12 +139,7 @@ export function CharacterArea(props: CharacterAreaProps) {
   });
 
   const aura = createMemo((): [number, number] => {
-    const aura =
-      /* previewData().find(
-        (p) =>
-          p.modifyEntityVar?.entityId === props.data.id &&
-          p.modifyEntityVar?.variableName === "aura",
-      )?.modifyEntityVar?.variableValue ?? */ data().aura;
+    const aura = props.preview?.newAura ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
   const energy = createMemo(
@@ -207,7 +203,10 @@ export function CharacterArea(props: CharacterAreaProps) {
         props.onClick?.(e, e.currentTarget);
       }}
     >
-      <div class="h-5 flex flex-row items-end gap-2">
+      <div
+        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse"
+        bool:data-preview={props.preview?.newAura}
+      >
         <For each={aura()}>
           {(aura) => (
             <Show when={aura}>
@@ -223,7 +222,11 @@ export function CharacterArea(props: CharacterAreaProps) {
             <div class="absolute line-height-none">{data().health}</div>
           </div>
           <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
-            <EnergyBar current={energy()} total={data().maxEnergy} />
+            <EnergyBar
+              current={energy()}
+              preview={props.preview?.newEnergy ?? null}
+              total={data().maxEnergy}
+            />
             <Show when={technique()} keyed>
               {(et) => (
                 <div
@@ -238,15 +241,14 @@ export function CharacterArea(props: CharacterAreaProps) {
               )}
             </Show>
           </div>
-          {/* <Show when={previewHealthDiff()}>
-          {(diff) => {
-            return (
-              <div class="absolute z-2 top-5 left-50% translate-x--50% bg-white opacity-80 p-2 rounded-md">
-                {diff()}
-              </div>
-            );
-          }}
-        </Show> */}
+          <Show when={props.preview && props.preview.newHealth !== null}>
+            <VariableDiff
+              class="absolute top-3 left-50% translate-x--50%"
+              oldValue={data().health}
+              newValue={props.preview!.newHealth!}
+              defeated={props.preview?.defeated}
+            />
+          </Show>
           <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
             <Show when={weapon()} keyed>
               {(et) => (
@@ -292,7 +294,9 @@ export function CharacterArea(props: CharacterAreaProps) {
         <div
           class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
           bool:data-triggered={props.triggered}
-          bool:data-clickable={props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined}
+          bool:data-clickable={
+            props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
+          }
         >
           <Image
             imageId={data().definitionId}
@@ -350,7 +354,7 @@ export function CharacterArea(props: CharacterAreaProps) {
 
 interface EnergyBarProps {
   current: number;
-  preview?: number;
+  preview: number | null;
   total: number;
 }
 

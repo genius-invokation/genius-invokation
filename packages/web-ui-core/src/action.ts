@@ -16,6 +16,10 @@
 import { getNameSync } from "@gi-tcg/assets-manager";
 import {
   ActionValidity,
+  flattenPbOneof,
+  PbEntityArea,
+  PbEntityState,
+  Reaction,
   UseSkillAction,
   type Action,
   type DiceRequirement,
@@ -110,6 +114,140 @@ export interface RealCosts {
   switchActive: PbDiceRequirement[] | null;
 }
 
+export interface PreviewingCharacterInfo {
+  newHealth: number | null;
+  newEnergy: number | null;
+  reactions: Reaction[];
+  newAura: number | null;
+  newDefinitionId: number | null;
+  defeated: boolean;
+  active: boolean;
+}
+
+export interface PreviewingEntityInfo {
+  newVariableValue: number | null;
+  newDefinitionId: number | null;
+  disposed: boolean;
+}
+
+export interface ParsedPreviewData {
+  characters: Map<number, PreviewingCharacterInfo>;
+  entities: Map<number, PreviewingEntityInfo>;
+  newEntities: Map<`${"summon" | "support"}${0 | 1}`, PbEntityState[]>;
+}
+
+export const NO_PREVIEW: ParsedPreviewData = {
+  characters: new Map(),
+  entities: new Map(),
+  newEntities: new Map(),
+};
+
+function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
+  const result: ParsedPreviewData = {
+    characters: new Map(),
+    entities: new Map(),
+    newEntities: new Map(),
+  };
+  const newPreviewingCharacter = (): PreviewingCharacterInfo => ({
+    newHealth: null,
+    newEnergy: null,
+    reactions: [],
+    newAura: null,
+    newDefinitionId: null,
+    defeated: false,
+    active: false,
+  });
+  const newPreviewingEntity = (): PreviewingEntityInfo => ({
+    newVariableValue: null,
+    newDefinitionId: null,
+    disposed: false,
+  });
+  for (const data of previewData) {
+    const { $case, value } = data.mutation!;
+    outer: switch ($case) {
+      case "createEntity": {
+        let where: "support" | "summon";
+        const who = value.who as 0 | 1;
+        switch (value.where) {
+          case PbEntityArea.SUMMON: where = "summon"; break;
+          case PbEntityArea.SUPPORT: where = "support"; break;
+          default: break outer;
+        }
+        const key = `${where}${who}` as const;
+        if (!result.newEntities.has(key)) {
+          result.newEntities.set(key, []);
+        }
+        result.newEntities.get(key)!.push(value.entity!);
+        break;
+      }
+      case "modifyEntityVar": {
+        switch (value.variableName) {
+          case "health": {
+            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            info.newHealth = value.variableValue;
+            result.characters.set(value.entityId, info);
+            break;
+          }
+          case "aura": {
+            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            info.newAura = value.variableValue;
+            result.characters.set(value.entityId, info);
+            break;
+          }
+          case "energy": {
+            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            info.newEnergy = value.variableValue;
+            result.characters.set(value.entityId, info);
+            break;
+          }
+          case "alive": {
+            if (!value.variableValue) {
+              const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+              info.defeated = true;
+              result.characters.set(value.entityId, info);
+            }
+            break;
+          }
+          default: {
+            const info = result.entities.get(value.entityId) ?? newPreviewingEntity();
+            info.newVariableValue = value.variableValue;
+            result.entities.set(value.entityId, info);
+            break;
+          }
+        }
+        break;
+      }
+      case "elementalReaction": {
+        const info = result.characters.get(value.characterId) ?? newPreviewingCharacter();
+        info.reactions.push(value.reactionType as Reaction);
+        break;
+      }
+      case "removeEntity": {
+        const info = result.entities.get(value.entity!.id) ?? newPreviewingEntity();
+        info.disposed = true;
+        result.entities.set(value.entity!.id, info);
+        break;
+      }
+      case "switchActive": {
+        const info = result.characters.get(value.characterId) ?? newPreviewingCharacter();
+        info.active = true;
+        result.characters.set(value.characterId, info);
+        break;
+      }
+      case "transformDefinition": {
+        const info = result.entities.get(value.entityId) ?? newPreviewingEntity();
+        info.newDefinitionId = value.newEntityDefinitionId;
+        result.entities.set(value.entityId, info);
+        const info2 = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+        info2.newDefinitionId = value.newEntityDefinitionId;
+        result.characters.set(value.entityId, info2);
+        break;
+      }
+    }
+  }
+  return result;
+}
+
 export interface ActionState {
   availableSteps: ActionStep[];
   realCosts: RealCosts;
@@ -119,7 +257,7 @@ export interface ActionState {
   dicePanel: DicePanelState;
   autoSelectedDice: DiceType[] | null;
   showBackdrop: boolean;
-  previewData: PreviewData[];
+  previewData: ParsedPreviewData;
   step: StepActionFunction;
 }
 
@@ -183,7 +321,7 @@ function createUseSkillActionState(
     dicePanel: ok ? "visible" : "wrapped",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
-    previewData: [], // TODO,
+    previewData: parsePreviewData(opt.action.preview),
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
@@ -273,7 +411,7 @@ function createSwitchActiveActionState(
     dicePanel: "visible",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
-    previewData: [], // TODO,
+    previewData: parsePreviewData(opt.action.preview),
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
@@ -324,7 +462,7 @@ function createSwitchActiveActionState(
     dicePanel: "hidden",
     autoSelectedDice: null,
     showBackdrop: false,
-    previewData: [],
+    previewData: NO_PREVIEW,
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
@@ -356,7 +494,7 @@ export function createActionState(actions: Action[]): ActionState {
   const root: ActionState = {
     availableSteps: [],
     realCosts,
-    previewData: [],
+    previewData: NO_PREVIEW,
     dicePanel: "hidden",
     autoSelectedDice: null,
     showBackdrop: false,
@@ -381,7 +519,7 @@ export function createActionState(actions: Action[]): ActionState {
   const useSkillStates = new Map<ClickSkillButtonActionStep, ActionState>();
   let declareEndIndex: number | null = null;
   for (let i = 0; i < actions.length; i++) {
-    const { action, preview, requiredCost, validity } = actions[i];
+    const { action, requiredCost, validity } = actions[i];
     switch (action?.$case) {
       case "useSkill": {
         realCosts.skills.set(action.value.skillDefinitionId, requiredCost);
