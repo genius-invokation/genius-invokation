@@ -384,7 +384,6 @@ export function applyAutoSelectedDiceToAction(
       };
     }
   }
-  try {
   const autoSelectedDice = chooseDiceValue(actionInfo.cost, player.dice);
   const ok = checkDice(actionInfo.cost, autoSelectedDice);
   if (!ok) {
@@ -405,11 +404,7 @@ export function applyAutoSelectedDiceToAction(
   return {
     ...actionInfo,
     autoSelectedDice,
-  };} catch (e) {
-    console.error(e);
-    console.log({ dice: player.dice, req: actionInfo.cost });
-    throw e;
-  }
+  };
 }
 
 export function playSkillOfCard(
