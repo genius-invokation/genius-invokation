@@ -41,14 +41,16 @@ export const cssPropertyOfTransform = (
   x: Transform,
 ): Record<string, string> => ({
   // "z-index": `${x.zIndex}`,
-  transform: `translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem) 
+  transform: `var(--override-transform, translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem) 
     rotateY(${x.ry}deg) 
-    rotateZ(${x.rz}deg)`,
+    rotateZ(${x.rz}deg))`,
 });
 
 export interface CardStaticUiState extends StaticUiState {
   readonly type: "cardStatic";
   readonly transform: Transform;
+  // 当拖拽结束时，应用一个消失动画
+  readonly draggingEndAnimation: boolean;
 }
 
 export interface CardAnimatingUiState extends AnimatingUiState {

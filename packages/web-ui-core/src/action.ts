@@ -19,6 +19,7 @@ import {
   flattenPbOneof,
   PbEntityArea,
   PbEntityState,
+  PlayCardAction,
   Reaction,
   UseSkillAction,
   type Action,
@@ -35,6 +36,7 @@ import { checkDice } from "@gi-tcg/utils";
 export interface PlayCardActionStep {
   readonly type: "playCard";
   readonly cardId: number;
+  readonly playable: boolean;
 }
 export interface ElementalTunningActionStep {
   readonly type: "elementalTunning";
@@ -169,9 +171,14 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         let where: "support" | "summon";
         const who = value.who as 0 | 1;
         switch (value.where) {
-          case PbEntityArea.SUMMON: where = "summon"; break;
-          case PbEntityArea.SUPPORT: where = "support"; break;
-          default: break outer;
+          case PbEntityArea.SUMMON:
+            where = "summon";
+            break;
+          case PbEntityArea.SUPPORT:
+            where = "support";
+            break;
+          default:
+            break outer;
         }
         const key = `${where}${who}` as const;
         if (!result.newEntities.has(key)) {
@@ -183,33 +190,39 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
       case "modifyEntityVar": {
         switch (value.variableName) {
           case "health": {
-            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info =
+              result.characters.get(value.entityId) ?? newPreviewingCharacter();
             info.newHealth = value.variableValue;
             result.characters.set(value.entityId, info);
             break;
           }
           case "aura": {
-            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info =
+              result.characters.get(value.entityId) ?? newPreviewingCharacter();
             info.newAura = value.variableValue;
             result.characters.set(value.entityId, info);
             break;
           }
           case "energy": {
-            const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info =
+              result.characters.get(value.entityId) ?? newPreviewingCharacter();
             info.newEnergy = value.variableValue;
             result.characters.set(value.entityId, info);
             break;
           }
           case "alive": {
             if (!value.variableValue) {
-              const info = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+              const info =
+                result.characters.get(value.entityId) ??
+                newPreviewingCharacter();
               info.defeated = true;
               result.characters.set(value.entityId, info);
             }
             break;
           }
           default: {
-            const info = result.entities.get(value.entityId) ?? newPreviewingEntity();
+            const info =
+              result.entities.get(value.entityId) ?? newPreviewingEntity();
             info.newVariableValue = value.variableValue;
             result.entities.set(value.entityId, info);
             break;
@@ -218,27 +231,32 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         break;
       }
       case "elementalReaction": {
-        const info = result.characters.get(value.characterId) ?? newPreviewingCharacter();
+        const info =
+          result.characters.get(value.characterId) ?? newPreviewingCharacter();
         info.reactions.push(value.reactionType as Reaction);
         break;
       }
       case "removeEntity": {
-        const info = result.entities.get(value.entity!.id) ?? newPreviewingEntity();
+        const info =
+          result.entities.get(value.entity!.id) ?? newPreviewingEntity();
         info.disposed = true;
         result.entities.set(value.entity!.id, info);
         break;
       }
       case "switchActive": {
-        const info = result.characters.get(value.characterId) ?? newPreviewingCharacter();
+        const info =
+          result.characters.get(value.characterId) ?? newPreviewingCharacter();
         info.active = true;
         result.characters.set(value.characterId, info);
         break;
       }
       case "transformDefinition": {
-        const info = result.entities.get(value.entityId) ?? newPreviewingEntity();
+        const info =
+          result.entities.get(value.entityId) ?? newPreviewingEntity();
         info.newDefinitionId = value.newEntityDefinitionId;
         result.entities.set(value.entityId, info);
-        const info2 = result.characters.get(value.entityId) ?? newPreviewingCharacter();
+        const info2 =
+          result.characters.get(value.entityId) ?? newPreviewingCharacter();
         info2.newDefinitionId = value.newEntityDefinitionId;
         result.characters.set(value.entityId, info2);
         break;
@@ -252,6 +270,7 @@ export interface ActionState {
   availableSteps: ActionStep[];
   realCosts: RealCosts;
   showHands: boolean;
+  showSkillButtons: boolean;
   hintText?: string;
   alertText?: string;
   dicePanel: DicePanelState;
@@ -259,12 +278,6 @@ export interface ActionState {
   showBackdrop: boolean;
   previewData: ParsedPreviewData;
   step: StepActionFunction;
-}
-
-interface CreateUseSkillActionStateOption {
-  skillStates: Map<ClickSkillButtonActionStep, ActionState>;
-  action: Action & { value: UseSkillAction };
-  index: number;
 }
 
 const validityText = (validity: ActionValidity): string | undefined => {
@@ -281,6 +294,82 @@ const validityText = (validity: ActionValidity): string | undefined => {
       return "充能不足";
   }
 };
+
+interface CreatePlayCardActionStateOption {
+  cardSteps: Map<PlayCardActionStep, StepActionResult>;
+  action: Action & { value: PlayCardAction };
+  index: number;
+}
+
+function createPlayCardActionState(
+  root: ActionState,
+  opt: CreatePlayCardActionStateOption,
+) {
+  const id = opt.action.value.cardId;
+  const ok = opt.action.validity === ActionValidity.VALID;
+  if (!ok) {
+    // TODO
+    return;
+  }
+  const previewData = parsePreviewData(opt.action.preview);
+  if (opt.action.value.targetIds.length > 0) {
+    // TODO do it later
+    return;
+  }
+  const ENTER_STEP: PlayCardActionStep = {
+    type: "playCard",
+    cardId: id,
+    playable: ok,
+  };
+  if (
+    opt.action.autoSelectedDice.length === 0 &&
+    previewData.characters.size === 0
+  ) {
+    // 无费无预览时，直接提交
+    opt.cardSteps.set(ENTER_STEP, {
+      type: "actionCommitted",
+      chosenActionIndex: opt.index,
+      usedDice: [],
+    });
+    return;
+  }
+  const CONFIRM_BUTTON_STEP: ClickConfirmButtonActionStep = {
+    type: "clickConfirmButton",
+    confirmText: "确定",
+  };
+  const resultState: ActionState = {
+    availableSteps: [CANCEL_ACTION_STEP, CONFIRM_BUTTON_STEP],
+    realCosts: root.realCosts,
+    showHands: false,
+    showSkillButtons: false,
+    hintText: `打出手牌「${getNameSync(opt.action.value.cardDefinitionId)}」`,
+    dicePanel: opt.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
+    autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
+    showBackdrop: true,
+    previewData,
+    step: (step, dice) => {
+      if (step === CANCEL_ACTION_STEP) {
+        return { type: "newState", newState: root };
+      } else if (step === CONFIRM_BUTTON_STEP) {
+        return {
+          type: "actionCommitted",
+          chosenActionIndex: opt.index,
+          usedDice: dice as PbDiceType[],
+        };
+      } else {
+        console.error(step);
+        throw new Error("Unexpected step");
+      }
+    },
+  };
+  opt.cardSteps.set(ENTER_STEP, { type: "newState", newState: resultState });
+}
+
+interface CreateUseSkillActionStateOption {
+  skillStates: Map<ClickSkillButtonActionStep, ActionState>;
+  action: Action & { value: UseSkillAction };
+  index: number;
+}
 
 function createUseSkillActionState(
   root: ActionState,
@@ -318,6 +407,7 @@ function createUseSkillActionState(
     ],
     realCosts: root.realCosts,
     showHands: false,
+    showSkillButtons: true,
     dicePanel: ok ? "visible" : "wrapped",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
@@ -405,9 +495,10 @@ function createSwitchActiveActionState(
     ],
     realCosts: root.realCosts,
     showHands: false,
-    hintText: `切换出战角色为 ${getNameSync(
+    showSkillButtons: true,
+    hintText: `切换出战角色为「${getNameSync(
       opt.action.value.characterDefinitionId,
-    )}`,
+    )}」`,
     dicePanel: "visible",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
@@ -459,6 +550,7 @@ function createSwitchActiveActionState(
     availableSteps: [CANCEL_ACTION_STEP, OUTER_SWITCH_ACTIVE_BUTTON],
     realCosts: root.realCosts,
     showHands: true,
+    showSkillButtons: true,
     dicePanel: "hidden",
     autoSelectedDice: null,
     showBackdrop: false,
@@ -499,25 +591,24 @@ export function createActionState(actions: Action[]): ActionState {
     autoSelectedDice: null,
     showBackdrop: false,
     showHands: true,
+    showSkillButtons: true,
     step: (step) => {
-      if (step.type === "declareEnd") {
-        return {
-          type: "actionCommitted",
-          chosenActionIndex: declareEndIndex!,
-          usedDice: [],
-        };
-      }
-      return {
-        type: "newState",
-        newState: steps.get(step)!,
-      };
+      return steps.get(step)!;
     },
   };
-  const steps = new Map<ActionStep, ActionState>([[CANCEL_ACTION_STEP, root]]);
+  const steps = new Map<ActionStep, StepActionResult>([
+    [
+      CANCEL_ACTION_STEP,
+      {
+        type: "newState",
+        newState: root,
+      },
+    ],
+  ]);
+  const playCardSteps = new Map<PlayCardActionStep, StepActionResult>();
+  const useSkillStates = new Map<ClickSkillButtonActionStep, ActionState>();
   const switchActiveInnerStates = new Map<ClickEntityActionStep, ActionState>();
   const switchActiveOuterStates = new Map<ClickEntityActionStep, ActionState>();
-  const useSkillStates = new Map<ClickSkillButtonActionStep, ActionState>();
-  let declareEndIndex: number | null = null;
   for (let i = 0; i < actions.length; i++) {
     const { action, requiredCost, validity } = actions[i];
     switch (action?.$case) {
@@ -532,7 +623,11 @@ export function createActionState(actions: Action[]): ActionState {
       }
       case "playCard": {
         realCosts.cards.set(action.value.cardId, requiredCost);
-        // TODO
+        createPlayCardActionState(root, {
+          cardSteps: playCardSteps,
+          action: { value: action.value, ...actions[i] },
+          index: i,
+        });
         break;
       }
       case "switchActive": {
@@ -553,25 +648,31 @@ export function createActionState(actions: Action[]): ActionState {
         break;
       }
       case "declareEnd": {
-        root.availableSteps.push({
-          type: "declareEnd",
+        const DECLARE_END_STEP = {
+          type: "declareEnd" as const,
+        };
+        steps.set(DECLARE_END_STEP, {
+          type: "actionCommitted",
+          chosenActionIndex: i,
+          usedDice: [],
         });
-        declareEndIndex = i;
         break;
       }
     }
   }
-  root.availableSteps.push(...steps.keys());
 
+  for (const [step, stepResult] of playCardSteps.entries()) {
+    steps.set(step, stepResult);
+  }
   for (const [step, state] of useSkillStates.entries()) {
     state.availableSteps.push(
       ...useSkillStates.keys().filter((k) => k !== step),
     );
-    steps.set(step, state);
+    steps.set(step, { type: "newState", newState: state });
   }
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
-    steps.set(step, state);
+    steps.set(step, { type: "newState", newState: state });
   }
   for (const [step, state] of switchActiveInnerStates.entries()) {
     state.availableSteps.push(

@@ -13,20 +13,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export interface ChessboardBackdropProps {
-  shown?: boolean;
-  onClick?: (e: MouseEvent) => void;
+export interface ActionHintTextProps {
+  class?: string;
+  text?: string;
 }
 
-export function ChessboardBackdrop(props: ChessboardBackdropProps) {
+export function ActionHintText(props: ActionHintTextProps) {
   return (
     <div
-      class="absolute inset-0 translate-z-0.1 pointer-events-none data-[shown]:pointer-events-auto data-[shown]:bg-black/30 bg-black/0 transition-colors"
-      bool:data-shown={props.shown}
-      onClick={(e) => {
-        e.stopPropagation();
-        props.onClick?.(e);
-      }}
-    />
+      class={`w-192 h-0 data-[shown]:h-6 flex flex-row justify-center items-center bg-gradient-to-r from-yellow-600/0 via-yellow-600 to-yellow-600/0 text-white transition-height ${props.class ?? ''}`}
+      bool:data-shown={props.text}
+    >
+      {props.text}
+    </div>
   );
 }

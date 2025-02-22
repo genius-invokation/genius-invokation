@@ -17,8 +17,6 @@ import {
   DiceType,
   PbDiceRequirement,
   PbPlayerStatus,
-  PbSkillInfo,
-  PreviewData,
   type DamageType,
   type PbCardState,
   type PbCharacterState,
@@ -33,7 +31,6 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  For,
   on,
   onCleanup,
   onMount,
@@ -66,7 +63,6 @@ import {
   type CardUiState,
   type CharacterUiState,
   type EntityUiState,
-  type StaticUiState,
   type Transform,
 } from "../ui_state";
 import type { ParsedMutation } from "../mutations";
@@ -100,11 +96,16 @@ import {
   type ClickEntityActionStep,
   type ClickSkillButtonActionStep,
   type ClickSwitchActiveButtonActionStep,
+  type ElementalTunningActionStep,
   type ParsedPreviewData,
+  type PlayCardActionStep,
   type PreviewingCharacterInfo,
   type PreviewingEntityInfo,
 } from "../action";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
+import { ActionHintText } from "./ActionHintText";
+import { Button } from "./Button";
+import { ConfirmButton } from "./ConfirmButton";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -115,15 +116,15 @@ export interface CardInfo {
   uiState: CardUiState;
   enableShadow: boolean;
   enableTransition: boolean;
-  playStep: ActionStep | null;
-  tuneStep: ActionStep | null;
+  playStep: PlayCardActionStep | null;
+  tuneStep: ElementalTunningActionStep | null;
 }
 
 interface DraggingCardInfo {
   id: number;
   x: number;
   y: number;
-  moving: boolean;
+  status: "start" | "moving" | "end";
   updatePos: (e: PointerEvent) => Pos;
 }
 
@@ -229,13 +230,14 @@ interface CardInfoCalcContext {
   showHands: boolean;
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
+  availableSteps: ActionStep[];
 }
 
 function calcCardsInfo(
   state: PbGameState,
   ctx: CardInfoCalcContext,
 ): CardInfo[] {
-  const { who, size, focusingHands, hoveringHand } = ctx;
+  const { who, size, focusingHands, hoveringHand, availableSteps } = ctx;
   const cards: CardInfo[] = [];
   for (const who2 of [0, 1] as const) {
     const opp = who2 !== who;
@@ -253,6 +255,7 @@ function calcCardsInfo(
         uiState: {
           type: "cardStatic",
           isAnimating: false,
+          draggingEndAnimation: false,
           transform: {
             x,
             y,
@@ -288,8 +291,19 @@ function calcCardsInfo(
 
     for (let i = 0; i < totalHandCardCount; i++) {
       const card = handCard[i];
+      const playStep =
+        availableSteps.find(
+          (step): step is PlayCardActionStep =>
+            step.type === "playCard" && step.cardId === card.id,
+        ) ?? null;
+      const tuneStep =
+        availableSteps.find(
+          (step): step is ElementalTunningActionStep =>
+            step.type === "elementalTunning" && step.cardId === card.id,
+        ) ?? null;
+
       if (ctx.draggingHand?.id === card.id) {
-        const { x, y, moving } = ctx.draggingHand;
+        const { x, y, status } = ctx.draggingHand;
         cards.push({
           id: card.id,
           data: card,
@@ -305,11 +319,12 @@ function calcCardsInfo(
               ry: 0,
               rz: 0,
             },
+            draggingEndAnimation: status === "end",
           },
           enableShadow: true,
-          enableTransition: !moving,
-          playStep: null,
-          tuneStep: null,
+          enableTransition: status === "start",
+          playStep,
+          tuneStep,
         });
         continue;
       }
@@ -337,11 +352,12 @@ function calcCardsInfo(
             ry,
             rz: 0,
           },
+          draggingEndAnimation: false,
         },
         enableShadow: true,
-        enableTransition: true,
-        playStep: null,
-        tuneStep: null,
+        enableTransition: ctx.showHands,
+        playStep,
+        tuneStep,
       });
     }
   }
@@ -512,6 +528,7 @@ function rerenderChildren(opt: {
     showHands,
     hoveringHand,
     draggingHand,
+    availableSteps,
   });
 
   if (animatingCards.length > 0) {
@@ -522,6 +539,7 @@ function rerenderChildren(opt: {
       showHands,
       hoveringHand,
       draggingHand,
+      availableSteps: [],
     });
     const showingCards = Map.groupBy(animatingCards, (x) => x.delay);
     let totalDelayMs = 0;
@@ -774,28 +792,6 @@ function rerenderChildren(opt: {
     ...currentEntities[1].summons,
   ];
 
-  // Apply steps to children
-  for (const obj of entities) {
-    obj.clickStep =
-      availableSteps.find(
-        (step): step is ClickEntityActionStep =>
-          step.type === "clickEntity" && step.entityId === obj.id,
-      ) ?? null;
-    if (obj.clickStep) {
-      obj.uiState.transform.z += 0.2;
-    }
-  }
-  for (const card of cards) {
-    card.playStep =
-      availableSteps.find(
-        (step) => step.type === "playCard" && step.cardId === card.id,
-      ) ?? null;
-    card.tuneStep =
-      availableSteps.find(
-        (step) => step.type === "elementalTunning" && step.cardId === card.id,
-      ) ?? null;
-  }
-
   return {
     cards,
     characters,
@@ -951,11 +947,11 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
-  // DEBUG
   createEffect(
     on(
       () => props.actionState,
       (actionState, prevActionState) => {
+        // DEBUG
         console.log(actionState);
         if (actionState) {
           if (actionState.autoSelectedDice) {
@@ -1073,6 +1069,13 @@ export function Chessboard(props: ChessboardProps) {
         (s) => s.type === "clickSwitchActiveButton",
       ),
   );
+  const showSkillButtons = createMemo(() => {
+    if (localProps.actionState) {
+      return localProps.actionState.showSkillButtons;
+    } else {
+      return !getFocusingHands() && !getDraggingHand();
+    }
+  });
 
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
@@ -1149,7 +1152,7 @@ export function Chessboard(props: ChessboardProps) {
         id: cardInfo.id,
         x: originalX,
         y: originalY,
-        moving: false,
+        status: "start",
         updatePos: (e2) => {
           const x =
             originalX + ((e2.clientX - initialPointerX) / unit) * zRatio;
@@ -1171,25 +1174,26 @@ export function Chessboard(props: ChessboardProps) {
     currentTarget: HTMLElement,
     cardInfo: CardInfo,
   ) => {
-    setDraggingHand((dragging) => {
-      if (dragging?.id !== cardInfo.id) {
-        return dragging;
-      }
-      shouldMoveWhenHandBlurring?.resolve(true);
-      const size = [height(), width()] as Size;
-      const [x, y] = dragging.updatePos(e);
-      if (canToggleHandFocus()) {
-        const shouldFocusingHand = shouldFocusHandWhenDragging(size, y);
-        setFocusingHands(shouldFocusingHand);
-        setShowCardHint("myHand", null);
-      }
-      // console.log(x, y);
-      return {
-        ...dragging,
-        moving: true,
-        x,
-        y,
-      };
+    const dragging = getDraggingHand();
+    if (dragging?.id !== cardInfo.id) {
+      return;
+    }
+    if (dragging.status === "end") {
+      return;
+    }
+    shouldMoveWhenHandBlurring?.resolve(true);
+    const size = [height(), width()] as Size;
+    const [x, y] = dragging.updatePos(e);
+    if (canToggleHandFocus()) {
+      const shouldFocusingHand = shouldFocusHandWhenDragging(size, y);
+      setFocusingHands(shouldFocusingHand);
+      setShowCardHint("myHand", null);
+    }
+    setDraggingHand({
+      ...dragging,
+      status: "moving",
+      x,
+      y,
     });
   };
   const onCardPointerUp = (
@@ -1198,13 +1202,19 @@ export function Chessboard(props: ChessboardProps) {
     cardInfo: CardInfo,
   ) => {
     shouldMoveWhenHandBlurring?.resolve(false);
-    setDraggingHand((dragging) => {
-      if (dragging?.id !== cardInfo.id) {
-        return dragging;
-      }
-      return null;
-    });
-    if (!getFocusingHands()) {
+    const dragging = getDraggingHand();
+    const focusingHands = getFocusingHands();
+    if (dragging?.id !== cardInfo.id) {
+      return;
+    }
+    if (!focusingHands && cardInfo.playStep) {
+      localProps.onStepActionState(cardInfo.playStep, selectedDiceValue());
+      setDraggingHand({ ...dragging, status: "end" });
+      setTimeout(() => setDraggingHand(null), 200);
+    } else {
+      setDraggingHand(null);
+    }
+    if (!focusingHands) {
       setSelectingItem(null);
     }
   };
@@ -1348,8 +1358,15 @@ export function Chessboard(props: ChessboardProps) {
             />
           )}
         </Key>
-        <ChessboardBackdrop shown={props.actionState?.showBackdrop} />
+        <ChessboardBackdrop
+          shown={props.actionState?.showBackdrop}
+          onClick={onChessboardClick}
+        />
       </div>
+      <ActionHintText
+        class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+        text={localProps.actionState?.hintText}
+      />
       <DeclareEndMarker
         class="absolute left-2 top-50% translate-y--50%"
         {...declareEndMarkerProps()}
@@ -1376,7 +1393,16 @@ export function Chessboard(props: ChessboardProps) {
         switchActiveButton={switchActiveStep() ?? null}
         switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
         onClick={onSkillClick}
-        shown={!getFocusingHands() && !getDraggingHand()}
+        shown={showSkillButtons()}
+      />
+      <ConfirmButton
+        class="absolute top-80% left-50% translate-x--50%"
+        step={localProps.actionState?.availableSteps.find(
+          (s) => s.type === "clickConfirmButton",
+        )}
+        onClick={(step) => {
+          localProps.onStepActionState(step, selectedDiceValue());
+        }}
       />
       <RoundAndPhaseNotification
         who={localProps.who}

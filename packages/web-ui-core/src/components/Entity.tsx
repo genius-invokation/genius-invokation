@@ -19,6 +19,7 @@ import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
 import { SelectingIcon } from "./SelectingIcon";
 import { VariableDiff } from "./VariableDiff";
+import { ActionStepEntityUi } from "../action";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -29,11 +30,14 @@ export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
   return (
     <div
-      class="absolute left-0 top-0 h-18 w-15 transition-transform rounded-lg"
+      class="absolute left-0 top-0 h-18 w-15 transition-all rounded-lg data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200"
       style={cssPropertyOfTransform(props.uiState.transform)}
       bool:data-entering={props.animation === "entering"}
       bool:data-disposing={props.animation === "disposing"}
       bool:data-triggered={props.triggered}
+      bool:data-clickable={
+        props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
+      }
       onClick={(e) => {
         e.stopPropagation();
         props.onClick?.(e, e.currentTarget);

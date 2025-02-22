@@ -163,12 +163,15 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transition-ease-in-out touch-none transform-origin-tl"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d touch-none transform-origin-tl card"
       style={style()}
-      classList={{
-        "transition-transform": props.enableTransition,
-        "shadow-lg": props.enableShadow,
-      }}
+      bool:data-transition-transform={props.enableTransition}
+      bool:data-shadow={props.enableShadow}
+      bool:data-playable={props.playStep?.playable}
+      bool:data-dragging-end={
+        props.uiState.type === "cardStatic" &&
+        props.uiState.draggingEndAnimation
+      }
       onClick={(e) => {
         e.stopPropagation();
         props.onClick?.(e, e.currentTarget);
@@ -194,7 +197,7 @@ export function Card(props: CardProps) {
         props.onPointerDown?.(e, e.currentTarget);
       }}
     >
-      <div class="absolute h-full w-full backface-hidden opacity-[var(--gi-tcg-opacity)]">
+      <div class="absolute h-full w-full backface-hidden">
         <Image
           class="h-full w-full rounded-xl b-white b-3"
           imageId={props.data.definitionId}
@@ -206,12 +209,12 @@ export function Card(props: CardProps) {
         </div>
       </Show>
       <DiceCost
-        class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1 opacity-[var(--gi-tcg-opacity)]"
+        class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1"
         cost={data().definitionCost}
         size={36}
         realCost={realCost()}
       />
-      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded opacity-[var(--gi-tcg-opacity)]" />
+      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded" />
     </div>
   );
 }

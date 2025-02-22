@@ -28,6 +28,26 @@
       entity-triggered 0.5s both,
       entity-disposing 0.2s 0.5s both;
   }
+  .card {
+    --playable-shadow: 0 0 transparent;
+    box-shadow: var(--common-shadow), var(--playable-shadow);
+    transition-property: box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  .card[data-shadow] {
+    --common-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+  .card[data-playable] {
+    --playable-shadow: 0 0 5px 5px rgb(254 240 138);
+  }
+  .card[data-transition-transform] {
+    transition-property: box-shadow, transform;
+  }
+  .card[data-dragging-end] {
+    animation: card-dragging-end 0.2s both;
+  }
 }
 
 @keyframes entity-entering {
@@ -128,6 +148,20 @@
     opacity: 1;
     filter: none;
     box-shadow: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes card-dragging-end {
+  0% {
+    filter: none;
+  }
+  20% {
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px yellow;
+    opacity: 1;
   }
   100% {
     opacity: 0;
