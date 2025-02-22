@@ -1266,6 +1266,12 @@ export function Chessboard(props: ChessboardProps) {
     }
     setShowDeclareEndButton(false);
     setSelectingItem({ type: "entity", info: entityInfo });
+    if (entityInfo.clickStep) {
+      localProps.onStepActionState(
+        entityInfo.clickStep,
+        selectedDiceValue(),
+      );
+    }
   };
 
   const onSkillClick = (sk: SkillInfo) => {

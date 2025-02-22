@@ -48,9 +48,11 @@ export function getHintTextOfCardOrSkill(
     const data = getDataSync(definitionId) as SkillRawData | ActionCardRawData;
     console.log(data);
     if (data.type === "GCG_CARD_ASSIST") {
-      return ["需先选择一张支援牌弃置"];
+      return Array.from({ length: 2 }, () => "需先选择一张支援牌弃置");
     }
-    return data.targetList.map((x) => x.hintText);
+    const result = data.targetList.map((x) => x.hintText);
+    result.push(result.at(-1)!);
+    return result;
   } catch (e) {
     return Array.from({ length: targetLength }, () => `请选择使用目标`);
   }
@@ -521,9 +523,14 @@ function createPlayCardMultiStepState(
           node.value.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
         autoSelectedDice: null,
         showBackdrop: true,
-        previewData: NO_PREVIEW,
+        previewData: parsePreviewData(node.value.action.preview),
         step: (step, dice) => {
-          if (step === CLICK_CONFIRM_STEP || step === CLICK_ENTITY_STEP) {
+          if (step === CANCEL_ACTION_STEP) {
+            return { type: "newState", newState: root };
+          } else if (
+            step === CLICK_CONFIRM_STEP ||
+            step === CLICK_ENTITY_STEP
+          ) {
             const diceReq = new Map(
               node.value.action.requiredCost.map(({ type, count }) => [
                 type as DiceType,
@@ -553,6 +560,7 @@ function createPlayCardMultiStepState(
       return resultState;
     } else {
       const childrenStates = new Map<ClickEntityActionStep, ActionState>();
+      const autoSelectedDice = parentNode ? null : ctx.autoSelectedDice;
       const resultState: ActionState = {
         availableSteps: [CANCEL_ACTION_STEP],
         realCosts: root.realCosts,
@@ -560,7 +568,7 @@ function createPlayCardMultiStepState(
         showSkillButtons: false,
         hintText: hintTexts[0],
         dicePanel: "hidden",
-        autoSelectedDice: parentNode ? null : ctx.autoSelectedDice,
+        autoSelectedDice,
         showBackdrop: true,
         previewData: NO_PREVIEW,
         step: (step) => {
@@ -578,32 +586,37 @@ function createPlayCardMultiStepState(
         },
       };
 
-      const children = node.children.values().toArray();
-      if (children.length === 1 && children[0].type === "leaf") {
-        // 最后一层只有一个可用 target 时，直接步进到下一层
-        return createState(id, children[0], hintTexts, parentNode);
-      } else {
-        for (const [key, value] of node.children.entries()) {
-          const step: ClickEntityActionStep = {
-            type: "clickEntity",
-            entityId: key,
-            ui: ActionStepEntityUi.Outlined,
-          };
-          childrenStates.set(
-            step,
-            createState(key, value, hintTexts.slice(1), resultState),
-          );
-          resultState.availableSteps.push(step);
+      let isLastLevelBranch = false;
+      for (const [key, value] of node.children) {
+        if (value.type === "leaf") {
+          isLastLevelBranch = true;
         }
-        if (children[0].type === "leaf") {
-          for (const [key, state] of childrenStates) {
-            state.availableSteps.push(
-              ...childrenStates.keys().filter((k) => k !== key),
-            );
-          }
-        }
-        return resultState;
+        const step: ClickEntityActionStep = {
+          type: "clickEntity",
+          entityId: key,
+          ui: ActionStepEntityUi.Outlined,
+        };
+        childrenStates.set(
+          step,
+          createState(key, value, hintTexts.slice(1), resultState),
+        );
+        resultState.availableSteps.push(step);
       }
+      if (isLastLevelBranch) {
+        for (const [key, state] of childrenStates) {
+          state.availableSteps.push(
+            ...childrenStates.keys().filter((k) => k !== key),
+          );
+        }
+        if (childrenStates.size === 1) {
+          // 最后一层分支如果只有一个选项，直接自动选中
+          return {
+            ...childrenStates.values().next().value!,
+            autoSelectedDice,
+          };
+        }
+      }
+      return resultState;
     }
   };
   const step: PlayCardActionStep = {
@@ -612,7 +625,7 @@ function createPlayCardMultiStepState(
     playable: true,
   };
   console.log(ctx);
-  const hintTexts = getHintTextOfCardOrSkill(ctx.cardDefinitionId, 2);
+  const hintTexts = getHintTextOfCardOrSkill(ctx.cardDefinitionId, 3);
   const state = createState(id, ctx.node, hintTexts);
   return [step, state] as const;
 }
