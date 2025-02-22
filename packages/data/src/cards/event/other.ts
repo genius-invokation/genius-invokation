@@ -572,6 +572,10 @@ export const MasterOfWeaponry = card(332010)
       who: target.who,
       characterId: target.id,
     };
+    const targetOldWeapon = target.hasWeapon();
+    if (targetOldWeapon) {
+      c.dispose(targetOldWeapon);
+    }
     c.transferEntity(weapon.state, area);
   })
   .done();
@@ -595,6 +599,10 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
       who: target.who,
       characterId: target.id,
     };
+    const targetOldArtifact = target.hasArtifact();
+    if (targetOldArtifact) {
+      c.dispose(targetOldArtifact);
+    }
     c.transferEntity(artifact.state, area);
   })
   .done();
