@@ -21,9 +21,7 @@ import {
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import { createMemo, For, Match, Switch } from "solid-js";
-import type {
-  ClickSwitchActiveButtonActionStep,
-} from "../action";
+import type { ClickSwitchActiveButtonActionStep } from "../action";
 import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 
@@ -41,7 +39,7 @@ function SkillButton(props: SkillButtonProps) {
         bool:data-disabled={!props.step || props.step.isDisabled}
         bool:data-focused={props.step?.isFocused}
         onClick={(e) => props.onClick?.(e)}
-        title={props.step ? props.step.tooltipText : '不是你的行动轮'}
+        title={props.step ? props.step.tooltipText : "不是你的行动轮"}
       >
         <Switch>
           <Match when={typeof skillId() === "number"}>
@@ -52,7 +50,7 @@ function SkillButton(props: SkillButtonProps) {
           </Match>
           <Match when={skillId() === "switchActive"}>
             &#128100;
-            <span class="absolute right-0 bottom-0 text-sm">&#128257;</span>
+            <span class="absolute right-0 bottom-0 text-sm text-white">&#128472;</span>
           </Match>
         </Switch>
       </button>

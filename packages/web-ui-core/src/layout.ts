@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { DraggingCardInfo } from "./components/Chessboard";
+
 export type Size = [height: number, width: number];
 export type Pos = [x: number, y: number];
 
@@ -31,8 +33,8 @@ const EFFECTIVE_MAXIMUM_WIDTH = 240;
 
 const GADGET_HEIGHT = 6;
 
-const CARD_HEIGHT = 36;
-const CARD_WIDTH = 21;
+export const CARD_HEIGHT = 36;
+export const CARD_WIDTH = 21;
 
 const CHARACTER_AREA_HEIGHT = CARD_HEIGHT + 3 * GADGET_HEIGHT;
 const CHARACTER_AREA_WIDTH = CARD_WIDTH;
@@ -249,4 +251,18 @@ export function getHandHintPos(size: Size, opp: boolean, value: number) {
       y: y - 10,
     };
   }
+}
+
+export const TUNNING_AREA_WIDTH = 20;
+
+export function getTunningAreaPos(
+  [height, width]: Size,
+  draggingHand: DraggingCardInfo | null,
+) {
+  const tangent = (width / 2) / PERSPECTIVE;
+  let x = width - DRAGGING_Z * tangent;
+  if (draggingHand?.tuneStep) {
+    x -= TUNNING_AREA_WIDTH;
+  }
+  return [x, 0];
 }

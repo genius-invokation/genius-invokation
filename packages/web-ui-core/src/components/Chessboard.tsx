@@ -40,6 +40,7 @@ import {
 } from "solid-js";
 import debounce from "debounce";
 import {
+  CARD_WIDTH,
   DRAGGING_Z,
   FOCUSING_HANDS_Z,
   getCharacterAreaPos,
@@ -50,8 +51,10 @@ import {
   getPileHintPos,
   getPilePos,
   getShowingCardPos,
+  getTunningAreaPos,
   PERSPECTIVE,
   shouldFocusHandWhenDragging,
+  TUNNING_AREA_WIDTH,
   unitInPx,
   type Pos,
   type Size,
@@ -104,8 +107,8 @@ import {
 } from "../action";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
 import { ActionHintText } from "./ActionHintText";
-import { Button } from "./Button";
 import { ConfirmButton } from "./ConfirmButton";
+import { TuningArea } from "./TuningArea";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -120,11 +123,12 @@ export interface CardInfo {
   tuneStep: ElementalTunningActionStep | null;
 }
 
-interface DraggingCardInfo {
+export interface DraggingCardInfo {
   id: number;
   x: number;
   y: number;
   status: "start" | "moving" | "end";
+  tuneStep: ElementalTunningActionStep | null;
   updatePos: (e: PointerEvent) => Pos;
 }
 
@@ -328,16 +332,22 @@ function calcCardsInfo(
         });
         continue;
       }
-      const [x, y] = isFocus
-        ? getHandCardFocusedPos(size, totalHandCardCount, i, hoveringHandIndex)
-        : getHandCardBlurredPos(
-            size,
-            opp,
-            ctx.showHands,
-            totalHandCardCount,
-            i,
-            skillCount,
-          );
+      const [x, y] =
+        isFocus && ctx.showHands
+          ? getHandCardFocusedPos(
+              size,
+              totalHandCardCount,
+              i,
+              hoveringHandIndex,
+            )
+          : getHandCardBlurredPos(
+              size,
+              opp,
+              ctx.showHands,
+              totalHandCardCount,
+              i,
+              skillCount,
+            );
       cards.push({
         id: card.id,
         data: card,
@@ -355,7 +365,7 @@ function calcCardsInfo(
           draggingEndAnimation: false,
         },
         enableShadow: true,
-        enableTransition: ctx.showHands,
+        enableTransition: ctx.showHands, // FIX ME
         playStep,
         tuneStep,
       });
@@ -384,7 +394,12 @@ function calcEntitiesInfo(
 ): CalcEntitiesInfoResult[] {
   const result: CalcEntitiesInfoResult[] = [];
   const calcEntityInfo =
-    (opp: boolean, type: "support" | "summon", previewingNew: boolean, baseIndex = 0) =>
+    (
+      opp: boolean,
+      type: "support" | "summon",
+      previewingNew: boolean,
+      baseIndex = 0,
+    ) =>
     (data: PbEntityState, index: number): EntityInfo => {
       const [x, y] = getEntityPos(size, opp, type, index + baseIndex);
       const preview = previewData.entities.get(data.id) ?? null;
@@ -459,11 +474,17 @@ export interface CardCountHintInfo {
   transform: Transform;
 }
 
+export interface TunningAreaInfo {
+  cardHovering: boolean;
+  transform: Transform;
+}
+
 interface ChessboardChildren {
   characters: CharacterInfo[];
   cards: CardInfo[];
   entities: EntityInfo[];
   cardCountHints: CardCountHintInfo[];
+  tunningArea: TunningAreaInfo | null;
 }
 
 function rerenderChildren(opt: {
@@ -792,11 +813,26 @@ function rerenderChildren(opt: {
     ...currentEntities[1].summons,
   ];
 
+  const [tunningAreaX, tunningAreaY] = getTunningAreaPos(size, draggingHand);
+  const tunningArea: TunningAreaInfo = {
+    cardHovering: draggingHand
+      ? draggingHand.x + CARD_WIDTH > tunningAreaX
+      : false,
+    transform: {
+      x: tunningAreaX,
+      y: tunningAreaY,
+      z: 11.99,
+      ry: 0,
+      rz: 0,
+    },
+  };
+
   return {
     cards,
     characters,
     entities,
     cardCountHints,
+    tunningArea,
   };
 }
 
@@ -885,6 +921,7 @@ export function Chessboard(props: ChessboardProps) {
     cards: [],
     entities: [],
     cardCountHints: [],
+    tunningArea: null,
   });
 
   createEffect(
@@ -1155,6 +1192,7 @@ export function Chessboard(props: ChessboardProps) {
         x: originalX,
         y: originalY,
         status: "start",
+        tuneStep: cardInfo.tuneStep ?? null,
         updatePos: (e2) => {
           const x =
             originalX + ((e2.clientX - initialPointerX) / unit) * zRatio;
@@ -1207,6 +1245,12 @@ export function Chessboard(props: ChessboardProps) {
     const dragging = getDraggingHand();
     const focusingHands = getFocusingHands();
     if (dragging?.id !== cardInfo.id) {
+      return;
+    }
+    const [tunningAreaX] = getTunningAreaPos([0, width()], dragging);
+    if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
+      localProps.onStepActionState(cardInfo.tuneStep, selectedDiceValue());
+      setDraggingHand(null);
       return;
     }
     if (!focusingHands && cardInfo.playStep) {
@@ -1267,10 +1311,7 @@ export function Chessboard(props: ChessboardProps) {
     setShowDeclareEndButton(false);
     setSelectingItem({ type: "entity", info: entityInfo });
     if (entityInfo.clickStep) {
-      localProps.onStepActionState(
-        entityInfo.clickStep,
-        selectedDiceValue(),
-      );
+      localProps.onStepActionState(entityInfo.clickStep, selectedDiceValue());
     }
   };
 
@@ -1370,6 +1411,9 @@ export function Chessboard(props: ChessboardProps) {
           shown={props.actionState?.showBackdrop}
           onClick={onChessboardClick}
         />
+        <Show when={children().tunningArea}>
+          {(tunningArea) => <TuningArea {...tunningArea()} />}
+        </Show>
       </div>
       <ActionHintText
         class="absolute left-50% top-50% translate-x--50% translate-y--50%"
@@ -1391,6 +1435,7 @@ export function Chessboard(props: ChessboardProps) {
       <DicePanel
         dice={myDice()}
         selectedDice={selectedDice()}
+        disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
         onSelectDice={setSelectedDice}
         state={dicePanelState()}
         onStateChange={setDicePanelState}

@@ -20,6 +20,8 @@ import {
 } from "@gi-tcg/assets-manager";
 import {
   ActionValidity,
+  DiceType,
+  ElementalTuningAction,
   flattenPbOneof,
   PbEntityArea,
   PbEntityState,
@@ -28,7 +30,6 @@ import {
   UseSkillAction,
   type Action,
   type DiceRequirement,
-  type DiceType,
   type PbDiceRequirement,
   type PbDiceType,
   type PreviewData,
@@ -46,7 +47,6 @@ export function getHintTextOfCardOrSkill(
 ): string[] {
   try {
     const data = getDataSync(definitionId) as SkillRawData | ActionCardRawData;
-    console.log(data);
     if (data.type === "GCG_CARD_ASSIST") {
       return Array.from({ length: 2 }, () => "需先选择一张支援牌弃置");
     }
@@ -299,6 +299,7 @@ export interface ActionState {
   hintText?: string;
   alertText?: string;
   dicePanel: DicePanelState;
+  disabledDiceTypes?: DiceType[];
   autoSelectedDice: DiceType[] | null;
   showBackdrop: boolean;
   previewData: ParsedPreviewData;
@@ -320,30 +321,25 @@ const validityText = (validity: ActionValidity): string | undefined => {
   }
 };
 
-type TreeNode<T> =
+type ActionTreeNode<ActionT> =
   | {
       type: "branch";
-      children: Map<number, TreeNode<T>>;
+      children: Map<number, ActionTreeNode<ActionT>>;
     }
   | {
       type: "leaf";
-      value: T;
+      value: ActionTreeLeafValue<ActionT>;
     };
 
-type PlayCardMultiStepNode = TreeNode<{
-  action: Action & { value: PlayCardAction };
+type ActionTreeLeafValue<T> = {
+  action: Action & { value: T };
   index: number;
-}>;
-
-type UseSkillMultiStepNode = TreeNode<{
-  action: Action & { value: UseSkillAction };
-  index: number;
-}>;
+};
 
 function appendMultiStepNode<T>(
-  rootNode: TreeNode<T>,
+  rootNode: ActionTreeNode<T>,
   keys: number[],
-  value: T,
+  value: ActionTreeLeafValue<T>,
 ) {
   // create (keys.length - 1) branch nodes if needed, then add a final leaf node.
   let current = rootNode;
@@ -362,15 +358,16 @@ function appendMultiStepNode<T>(
   current.children.set(keys[keys.length - 1], { type: "leaf", value });
 }
 
-interface PlayCardMultiStepRootNodeContext {
-  node: PlayCardMultiStepNode;
+interface MultiStepRootNodeContext<T> {
+  isSkill: boolean;
+  node: ActionTreeNode<T>;
   autoSelectedDice: DiceType[];
-  cardDefinitionId: number;
+  cardOrSkillDefinitionId: number;
 }
 
 interface CreatePlayCardActionStateOption {
   cardSingleSteps: Map<PlayCardActionStep, () => StepActionResult>;
-  cardMultiSteps: Map<number, PlayCardMultiStepRootNodeContext>;
+  cardMultiSteps: Map<number, MultiStepRootNodeContext<PlayCardAction>>;
   action: Action & { value: PlayCardAction };
   index: number;
 }
@@ -400,9 +397,10 @@ function createPlayCardActionState(
   if (targetLength > 0) {
     if (!opt.cardMultiSteps.has(id)) {
       opt.cardMultiSteps.set(id, {
+        isSkill: false,
         node: { type: "branch", children: new Map() },
         autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
-        cardDefinitionId: opt.action.value.cardDefinitionId,
+        cardOrSkillDefinitionId: opt.action.value.cardDefinitionId,
       });
     }
     appendMultiStepNode(
@@ -488,14 +486,31 @@ function createPlayCardActionState(
   }));
 }
 
-function createPlayCardMultiStepState(
+function createMultiStepState<T>(
   root: ActionState,
   id: number,
-  ctx: PlayCardMultiStepRootNodeContext,
-) {
+  { isSkill, ...ctx }: MultiStepRootNodeContext<T>,
+): readonly [ActionStep, ActionState, ActionState[]] {
+  const allStates: ActionState[] = [];
+  // 起点操作
+  const enterStep: ActionStep = isSkill
+    ? {
+        type: "clickSkillButton",
+        isDisabled: false,
+        isFocused: false,
+        skillId: id,
+      }
+    : { type: "playCard", cardId: id, playable: true };
+  // 在多步选择内部，按下起点的行为
+  const innerEnterStep = isSkill
+    ? {
+        ...enterStep,
+        isFocused: true,
+      }
+    : enterStep;
   const createState = (
     id: number,
-    node: PlayCardMultiStepNode,
+    node: ActionTreeNode<T>,
     hintTexts: string[],
     parentNode?: ActionState,
   ): ActionState => {
@@ -512,15 +527,16 @@ function createPlayCardMultiStepState(
       const resultState: ActionState = {
         availableSteps: [
           CANCEL_ACTION_STEP,
+          innerEnterStep,
           CLICK_ENTITY_STEP,
           CLICK_CONFIRM_STEP,
         ],
         realCosts: root.realCosts,
         showHands: false,
-        showSkillButtons: false,
+        showSkillButtons: isSkill,
         hintText: hintTexts[0],
         dicePanel:
-          node.value.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
+          node.value.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
         autoSelectedDice: null,
         showBackdrop: true,
         previewData: parsePreviewData(node.value.action.preview),
@@ -529,7 +545,8 @@ function createPlayCardMultiStepState(
             return { type: "newState", newState: root };
           } else if (
             step === CLICK_CONFIRM_STEP ||
-            step === CLICK_ENTITY_STEP
+            step === CLICK_ENTITY_STEP ||
+            (isSkill && step === innerEnterStep)
           ) {
             const diceReq = new Map(
               node.value.action.requiredCost.map(({ type, count }) => [
@@ -552,26 +569,35 @@ function createPlayCardMultiStepState(
                 },
               };
             }
+          } else if (step === innerEnterStep) {
+            return {
+              type: "newState",
+              newState: {
+                ...resultState,
+                alertText: "请选择目标",
+              },
+            };
           } else {
             return parentNode!.step(step, dice);
           }
         },
       };
+      allStates.push(resultState);
       return resultState;
     } else {
       const childrenStates = new Map<ClickEntityActionStep, ActionState>();
       const autoSelectedDice = parentNode ? null : ctx.autoSelectedDice;
       const resultState: ActionState = {
-        availableSteps: [CANCEL_ACTION_STEP],
+        availableSteps: [CANCEL_ACTION_STEP, innerEnterStep],
         realCosts: root.realCosts,
         showHands: false,
-        showSkillButtons: false,
+        showSkillButtons: isSkill,
         hintText: hintTexts[0],
-        dicePanel: "hidden",
+        dicePanel: isSkill ? "wrapped" : "hidden",
         autoSelectedDice,
         showBackdrop: true,
         previewData: NO_PREVIEW,
-        step: (step) => {
+        step: (step, dice) => {
           if (step === CANCEL_ACTION_STEP) {
             return { type: "newState", newState: root };
           } else if (step.type === "clickEntity") {
@@ -579,9 +605,16 @@ function createPlayCardMultiStepState(
               type: "newState",
               newState: childrenStates.get(step)!,
             };
+          } else if (step === innerEnterStep) {
+            return {
+              type: "newState",
+              newState: {
+                ...resultState,
+                alertText: "请选择目标",
+              },
+            };
           } else {
-            console.error(step);
-            throw new Error("Unexpected step");
+            return root.step(step, dice);
           }
         },
       };
@@ -616,23 +649,19 @@ function createPlayCardMultiStepState(
           };
         }
       }
+      allStates.push(resultState);
       return resultState;
     }
   };
-  const step: PlayCardActionStep = {
-    type: "playCard",
-    cardId: id,
-    playable: true,
-  };
-  console.log(ctx);
-  const hintTexts = getHintTextOfCardOrSkill(ctx.cardDefinitionId, 3);
+  const hintTexts = getHintTextOfCardOrSkill(ctx.cardOrSkillDefinitionId, 3);
   const state = createState(id, ctx.node, hintTexts);
-  return [step, state] as const;
+  allStates.push(state);
+  return [enterStep, state, allStates];
 }
 
 interface CreateUseSkillActionStateOption {
   skillSingleStepStates: Map<ClickSkillButtonActionStep, ActionState>;
-  skillMultiSteps: Map<number, UseSkillMultiStepNode>;
+  skillMultiSteps: Map<number, MultiStepRootNodeContext<UseSkillAction>>;
   action: Action & { value: UseSkillAction };
   index: number;
 }
@@ -645,10 +674,15 @@ function createUseSkillActionState(
   const ok = opt.action.validity === ActionValidity.VALID;
   if (opt.action.value.targetIds.length > 0) {
     if (!opt.skillMultiSteps.has(id)) {
-      opt.skillMultiSteps.set(id, { type: "branch", children: new Map() });
+      opt.skillMultiSteps.set(id, {
+        isSkill: true,
+        node: { type: "branch", children: new Map() },
+        autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
+        cardOrSkillDefinitionId: opt.action.value.skillDefinitionId,
+      });
     }
     appendMultiStepNode(
-      opt.skillMultiSteps.get(id)!,
+      opt.skillMultiSteps.get(id)!.node,
       opt.action.value.targetIds,
       opt,
     );
@@ -710,23 +744,66 @@ function createUseSkillActionState(
             },
           };
         }
-      } else if (step.type === "clickSkillButton") {
-        return {
-          type: "newState",
-          newState: opt.skillSingleStepStates.get(step)!,
-        };
       } else {
-        console.error(step);
-        throw new Error("Unexpected step");
+        return root.step(step, dice);
       }
     },
   };
   opt.skillSingleStepStates.set(ENTER_STEP, resultState);
 }
 
-interface UseSkillMultiStepRootNodeContext {
-  node: UseSkillMultiStepNode;
-  autoSelectedDice: DiceType[];
+interface CreateElementalTunningActionStateOption {
+  action: Action & { value: ElementalTuningAction };
+  index: number;
+}
+
+function createElementalTunningActionState(
+  root: ActionState,
+  opt: CreateElementalTunningActionStateOption,
+): ActionState {
+  const CONFIRM_BUTTON_ACTION: ClickConfirmButtonActionStep = {
+    type: "clickConfirmButton",
+    confirmText: "元素调和",
+  };
+  const targetDice = opt.action.value.targetDice as DiceType;
+  const disabledDiceTypes = [DiceType.Omni, targetDice];
+  const resultState: ActionState = {
+    availableSteps: [CANCEL_ACTION_STEP, CONFIRM_BUTTON_ACTION],
+    realCosts: root.realCosts,
+    showHands: false,
+    showSkillButtons: false,
+    hintText: `调和为${"_冰水火雷风岩草"[targetDice]}元素骰子`,
+    dicePanel: "visible",
+    autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
+    disabledDiceTypes,
+    showBackdrop: true,
+    previewData: NO_PREVIEW,
+    step: (step, dice) => {
+      if (step === CANCEL_ACTION_STEP) {
+        return { type: "newState", newState: root };
+      } else if (step === CONFIRM_BUTTON_ACTION) {
+        if (dice.length === 1 && !disabledDiceTypes.includes(dice[0])) {
+          return {
+            type: "actionCommitted",
+            chosenActionIndex: opt.index,
+            usedDice: dice as PbDiceType[],
+          };
+        } else {
+          return {
+            type: "newState",
+            newState: {
+              ...resultState,
+              alertText: "请选择1个元素骰调和",
+            },
+          };
+        }
+      } else {
+        console.error(step);
+        throw new Error("Unexpected step");
+      }
+    },
+  };
+  return resultState;
 }
 
 interface CreateSwitchActiveActionStateOption {
@@ -889,13 +966,16 @@ export function createActionState(actions: Action[]): ActionState {
   >();
   const playCardMultiSteps = new Map<
     number,
-    PlayCardMultiStepRootNodeContext
+    MultiStepRootNodeContext<PlayCardAction>
   >();
   const useSkillSingleStepStates = new Map<
     ClickSkillButtonActionStep,
     ActionState
   >();
-  const useSkillMultiSteps = new Map<number, UseSkillMultiStepNode>();
+  const useSkillMultiSteps = new Map<
+    number,
+    MultiStepRootNodeContext<UseSkillAction>
+  >();
   const switchActiveInnerStates = new Map<ClickEntityActionStep, ActionState>();
   const switchActiveOuterStates = new Map<ClickEntityActionStep, ActionState>();
   for (let i = 0; i < actions.length; i++) {
@@ -935,7 +1015,18 @@ export function createActionState(actions: Action[]): ActionState {
         break;
       }
       case "elementalTuning": {
-        // TODO
+        if (validity !== ActionValidity.VALID) {
+          continue;
+        }
+        const step: ElementalTunningActionStep = {
+          type: "elementalTunning",
+          cardId: action.value.removedCardId,
+        };
+        const state = createElementalTunningActionState(root, {
+          action: { value: action.value, ...actions[i] },
+          index: i,
+        });
+        steps.set(step, () => ({ type: "newState", newState: state }));
         break;
       }
       case "declareEnd": {
@@ -953,18 +1044,33 @@ export function createActionState(actions: Action[]): ActionState {
   }
 
   for (const [id, node] of playCardMultiSteps) {
-    const [step, state] = createPlayCardMultiStepState(root, id, node);
+    const [step, state] = createMultiStepState(root, id, node);
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
   for (const [step, stepResult] of playCardSingleSteps.entries()) {
     steps.set(step, stepResult);
   }
+
+  const allUseSkillSingleSteps = useSkillSingleStepStates.keys().toArray();
   for (const [step, state] of useSkillSingleStepStates.entries()) {
     state.availableSteps.push(
-      ...useSkillSingleStepStates.keys().filter((k) => k !== step),
+      ...allUseSkillSingleSteps.filter((k) => k !== step),
     );
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
+  const allUseSkillMultipleSteps: ActionStep[] = [];
+  for (const [id, node] of useSkillMultiSteps) {
+    const [step, state, allStates] = createMultiStepState(root, id, node);
+    steps.set(step, () => ({ type: "newState", newState: state }));
+    for (const state of allStates) {
+      state.availableSteps.push(...allUseSkillSingleSteps);
+    }
+    allUseSkillMultipleSteps.push(step);
+  }
+  for (const state of useSkillSingleStepStates.values()) {
+    state.availableSteps.push(...allUseSkillMultipleSteps);
+  }
+
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
     steps.set(step, () => ({ type: "newState", newState: state }));

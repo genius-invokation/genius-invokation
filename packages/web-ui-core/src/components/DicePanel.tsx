@@ -21,6 +21,7 @@ export type DicePanelState = "hidden" | "wrapped" | "visible";
 
 export interface DicePanelProps {
   dice: DiceType[];
+  disabledDiceTypes: DiceType[];
   selectedDice: boolean[];
   onSelectDice: (selectedDice: boolean[]) => void;
   state: DicePanelState;
@@ -28,7 +29,10 @@ export interface DicePanelProps {
 }
 
 export function DicePanel(props: DicePanelProps) {
-  const toggleDice = (index: number) => {
+  const toggleDice = (dice: DiceType, index: number) => {
+    if (props.disabledDiceTypes.includes(dice)) {
+      return;
+    }
     const selectedDice = [...props.selectedDice];
     selectedDice[index] = !selectedDice[index];
     props.onSelectDice(selectedDice);
@@ -57,7 +61,7 @@ export function DicePanel(props: DicePanelProps) {
             <ul class="grid grid-cols-2 gap-x-1 gap-y-2">
               <Index each={props.dice}>
                 {(dice, index) => (
-                  <li onClick={() => toggleDice(index)}>
+                  <li onClick={() => toggleDice(dice(), index)}>
                     <Dice
                       type={dice()}
                       size={50}
@@ -82,7 +86,7 @@ export function DicePanel(props: DicePanelProps) {
             <Index each={props.dice}>
               {(dice, index) => (
                 <li
-                  onClick={() => props.state === "wrapped" && toggleDice(index)}
+                  onClick={() => props.state === "wrapped" && toggleDice(dice(), index)}
                 >
                   <Dice
                     type={dice()}
