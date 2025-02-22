@@ -15,13 +15,25 @@
 
 import {
   type CreateCardEM,
+  DamageType,
   PbCardArea,
-  PbCardState,
   type PbExposedMutation,
+  PbPhaseType,
+  PbPlayerFlag,
+  PbPlayerStatus,
+  PbRemoveCardReason,
+  PbSkillType,
+  Reaction,
   type RemoveCardEM,
   type TransferCardEM,
 } from "@gi-tcg/typings";
-import type { AnimatingCardInfo } from "./components/Chessboard";
+import type {
+  AnimatingCardInfo,
+  DamageInfo,
+  NotificationBoxInfo,
+  PlayingCardInfo,
+  ReactionInfo,
+} from "./components/Chessboard";
 
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
@@ -48,7 +60,28 @@ interface AnimatingCardWithDestination extends AnimatingCardInfo {
   destination: CardDestination | null;
 }
 
-export function parseMutations(mutations: PbExposedMutation[]) {
+export interface RoundAndPhaseNotificationInfo {
+  showRound: boolean;
+  who: 0 | 1 | null;
+  value: PbPhaseType | "action" | "declareEnd" | null;
+}
+
+export interface ParsedMutation {
+  roundAndPhase: RoundAndPhaseNotificationInfo;
+  playerStatus: (PbPlayerStatus | null)[];
+  animatingCards: AnimatingCardInfo[];
+  playingCard: PlayingCardInfo | null;
+  damages: DamageInfo[];
+  reactions: ReactionInfo[];
+  notificationBox: NotificationBoxInfo | null;
+  enteringEntities: number[];
+  triggeringEntities: number[];
+  disposingEntities: number[];
+}
+
+export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
+  const playerStatus: (PbPlayerStatus | null)[] = [null, null];
+  let playingCard: PlayingCardInfo | null = null;
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
   // 如果新的卡牌动画的 from 和之前的进出方向相反，则新的卡牌动画延迟一刻
@@ -60,12 +93,36 @@ export function parseMutations(mutations: PbExposedMutation[]) {
       delay: number;
     }
   >();
+
+  const damagesByTarget = new Map<number, DamageInfo[]>();
+  const reactionsByTarget = new Map<number, ReactionInfo[]>();
+  let notificationBox: NotificationBoxInfo | null = null;
+  const enteringEntities: number[] = [];
+  const triggeringEntities: number[] = [];
+  const disposingEntities: number[] = [];
+  const roundAndPhase: RoundAndPhaseNotificationInfo = {
+    showRound: false,
+    who: null,
+    value: null,
+  };
+
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
       case "createCard":
       case "transferCard":
       case "removeCard": {
         const card = mutation.value.card!;
+        let showing = card.definitionId !== 0;
+        if (mutation.$case === "removeCard") {
+          if ([PbRemoveCardReason.PLAY, PbRemoveCardReason.PLAY_NO_EFFECT].includes(mutation.value.reason)) {
+            playingCard = {
+              who: mutation.value.who as 0 | 1,
+              data: card,
+              noEffect: mutation.value.reason === PbRemoveCardReason.PLAY_NO_EFFECT,
+            };
+          }
+          showing = false;
+        }
         const source = getCardArea("from", mutation.value);
         const destination = getCardArea("to", mutation.value);
 
@@ -85,6 +142,7 @@ export function parseMutations(mutations: PbExposedMutation[]) {
             : 0;
           animatingCards.push({
             data: card,
+            showing,
             destination,
             delay: Math.max(sourceDelay, destinationDelay),
           });
@@ -101,8 +159,113 @@ export function parseMutations(mutations: PbExposedMutation[]) {
             });
           }
         }
+        break;
+      }
+      case "elementalReaction": {
+        const targetId = mutation.value.characterId;
+        if (!reactionsByTarget.has(targetId)) {
+          reactionsByTarget.set(targetId, []);
+        }
+        const targetReactions = reactionsByTarget.get(targetId)!;
+        targetReactions.push({
+          reactionType: mutation.value.reactionType as Reaction,
+          targetId,
+          delay: targetReactions.length,
+        });
+        break;
+      }
+      case "damage": {
+        const targetId = mutation.value.targetId;
+        if (!damagesByTarget.has(targetId)) {
+          damagesByTarget.set(targetId, []);
+        }
+        const targetDamages = damagesByTarget.get(targetId)!;
+        targetDamages.push({
+          damageType: mutation.value.damageType as DamageType,
+          value: mutation.value.value,
+          sourceId: mutation.value.sourceId,
+          targetId,
+          isSkillMainDamage: mutation.value.isSkillMainDamage,
+          delay: targetDamages.length,
+        });
+        break;
+      }
+      case "skillUsed": {
+        triggeringEntities.push(mutation.value.callerId);
+        if (mutation.value.skillType !== PbSkillType.TRIGGERED) {
+          notificationBox = {
+            type: "useSkill",
+            who: mutation.value.who as 0 | 1,
+            characterDefinitionId: mutation.value.callerDefinitionId,
+            skillDefinitionId: mutation.value.skillDefinitionId,
+            skillType: mutation.value.skillType,
+          };
+        }
+        break;
+      }
+      case "switchActive": {
+        notificationBox = {
+          type: "switchActive",
+          who: mutation.value.who as 0 | 1,
+          characterDefinitionId: mutation.value.characterDefinitionId,
+          skillDefinitionId: mutation.value.viaSkillDefinitionId,
+          skillType:
+            mutation.value.viaSkillDefinitionId === Reaction.Overloaded
+              ? "overloaded"
+              : null,
+        };
+        break;
+      }
+      case "createEntity": {
+        enteringEntities.push(mutation.value.entity!.id);
+        break;
+      }
+      case "removeEntity": {
+        const id = mutation.value.entity!.id;
+        if (enteringEntities.includes(id)) {
+          enteringEntities.splice(enteringEntities.indexOf(id), 1);
+        } else {
+          disposingEntities.push(id);
+        }
+        break;
+      }
+      case "playerStatusChange": {
+        playerStatus[mutation.value.who] = mutation.value.status;
+        if (mutation.value.status === PbPlayerStatus.ACTING) {
+          roundAndPhase.who = mutation.value.who as 0 | 1;
+          roundAndPhase.value = "action";
+        }
+        break;
+      }
+      case "setPlayerFlag": {
+        if (mutation.value.flagName === PbPlayerFlag.DECLARED_END) {
+          roundAndPhase.who = mutation.value.who as 0 | 1;
+          roundAndPhase.value = "declareEnd";
+        }
+        break;
+      }
+      case "stepRound": {
+        roundAndPhase.showRound = true;
+        break;
+      }
+      case "changePhase": {
+        if ([PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(mutation.value.newPhase)) {
+          roundAndPhase.value = mutation.value.newPhase;
+        }
+        break;
       }
     }
   }
-  return { animatingCards };
+  return {
+    roundAndPhase,
+    playerStatus,
+    playingCard,
+    animatingCards,
+    damages: damagesByTarget.values().toArray().flat(),
+    reactions: reactionsByTarget.values().toArray().flat(),
+    notificationBox,
+    enteringEntities,
+    triggeringEntities,
+    disposingEntities,
+  };
 }

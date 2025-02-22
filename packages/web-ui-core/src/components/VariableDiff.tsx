@@ -13,14 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createContext, useContext } from "solid-js";
+import { createMemo } from "solid-js";
 
-export interface UiContextValue {
-  assetsApiEndPoint?: string;
+export interface VariableDiffProps {
+  class?: string;
+  defeated?: boolean;
+  oldValue: number;
+  newValue: number;
 }
 
-export const UiContext = createContext<UiContextValue>({});
-
-export function useUiContext() {
-  return useContext(UiContext);
+export function VariableDiff(props: VariableDiffProps) {
+  const increase = createMemo(() => props.newValue >= props.oldValue);
+  return (
+    <div
+      class={`data-[increase=true]-bg-green-500 data-[increase=false]-bg-red-500 text-white font-bold h-8 min-w-10 rounded-4 line-height-none flex items-center justify-center ${
+        props.class ?? ""
+      }`}
+      data-increase={increase()}
+    >
+      <span>
+        {increase() ? "+" : "-"}
+        {Math.abs(props.newValue - props.oldValue)}
+      </span>
+    </div>
+  );
 }

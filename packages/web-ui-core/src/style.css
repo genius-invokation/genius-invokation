@@ -14,4 +14,156 @@
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
 
+  [data-entering] {
+    animation: entity-entering 0.5s both;
+  }
+  [data-triggered] {
+    animation: entity-triggered 0.5s both;
+  }
+  [data-disposing] {
+    animation: entity-disposing 0.2s both;
+  }
+  [data-triggered][data-disposing] {
+    animation:
+      entity-triggered 0.5s both,
+      entity-disposing 0.2s 0.5s both;
+  }
+  .card {
+    --playable-shadow: 0 0 transparent;
+    box-shadow: var(--common-shadow), var(--playable-shadow);
+    transition-property: box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  .card[data-shadow] {
+    --common-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+  .card[data-playable] {
+    --playable-shadow: 0 0 5px 5px rgb(254 240 138);
+  }
+  .card[data-transition-transform] {
+    transition-property: box-shadow, transform;
+  }
+  .card[data-playable][data-dragging-end] {
+    animation: card-dragging-end 0.2s both;
+  }
+}
+
+@keyframes entity-entering {
+  0% {
+    opacity: 0;
+    filter: brightness(1);
+  }
+  60% {
+    opacity: 1;
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px orange;
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes entity-triggered {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px orange;
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes entity-disposing {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes entity-highlight {
+  from {
+    box-shadow: none;
+  }
+  to {
+    box-shadow: 0 0 10px yellow inset;
+  }
+}
+
+@keyframes damage-text-enter {
+  50% {
+    scale: 200%;
+  }
+}
+
+@keyframes phase-notification {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes notification-box {
+  0% {
+    opacity: 0;
+    transform: translateX(var(--enter-offset));
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes playing-card {
+  0% {
+    opacity: 0;
+    filter: none;
+    box-shadow: none;
+  }
+  15% {
+    opacity: 1;
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px yellow;
+  }
+  85% {
+    opacity: 1;
+    filter: none;
+    box-shadow: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes card-dragging-end {
+  0% {
+    filter: none;
+  }
+  20% {
+    filter: brightness(1.5);
+    box-shadow: 0px 0px 15px 10px yellow;
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

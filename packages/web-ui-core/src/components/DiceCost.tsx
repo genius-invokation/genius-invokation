@@ -20,6 +20,7 @@ import { Dice, type DiceColor } from "./Dice";
 
 interface DiceCostProps extends ComponentProps<"div"> {
   cost: readonly PbDiceRequirement[];
+  size: number;
   realCost?: readonly PbDiceRequirement[];
 }
 
@@ -60,7 +61,7 @@ export function DiceCost(props: DiceCostProps) {
           <Dice
             type={type}
             text={type === DiceType.Legend ? "" : `${count}`}
-            size={35}
+            size={props.size}
             color={color}
           />
         )}

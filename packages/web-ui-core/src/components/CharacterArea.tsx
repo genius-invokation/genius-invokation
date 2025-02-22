@@ -13,52 +13,152 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, type PbCharacterState } from "@gi-tcg/typings";
+import {
+  DamageType,
+  PbEntityState,
+  PbEquipmentType,
+  type PbCharacterState,
+} from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
-import { For, Index, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Index,
+  Match,
+  Show,
+  Switch,
+  untrack,
+} from "solid-js";
 import { Image } from "./Image";
+import type { CharacterInfo, DamageInfo, StatusInfo } from "./Chessboard";
+import { Damage } from "./Damage";
+import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
+import { StatusGroup } from "./StatusGroup";
+import { SelectingIcon } from "./SelectingIcon";
+import { ActionStepEntityUi } from "../action";
+import { VariableDiff } from "./VariableDiff";
 
-export interface AttackingInfo {
+export interface DamageSourceAnimation {
+  type: "damageSource";
   targetX: number;
   targetY: number;
 }
 
-export interface CharacterAreaProps {
-  data: PbCharacterState;
-  x: number;
-  y: number;
-  z: number;
-  zIndex: number;
-  rz: number;
+export const DAMAGE_SOURCE_ANIMATION_DURATION = 800;
+export const DAMAGE_TARGET_ANIMATION_DELAY = 500;
+export const DAMAGE_TARGET_ANIMATION_DURATION = 200;
+
+export interface DamageTargetAnimation {
+  type: "damageTarget";
+  sourceX: number;
+  sourceY: number;
+}
+
+export const CHARACTER_ANIMATION_NONE = { type: "none" as const };
+
+export type CharacterAnimation =
+  | DamageSourceAnimation
+  | DamageTargetAnimation
+  | typeof CHARACTER_ANIMATION_NONE;
+
+export interface CharacterAreaProps extends CharacterInfo {
+  selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
-export function CharacterArea(props: CharacterAreaProps) {
-  // const { allDamages, previewData } = useEventContext();
-  // const damaged = () => allDamages().find((d) => d.targetId === props.data.id);
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const aura = (): [number, number] => {
-    const aura =
-      /* previewData().find(
-        (p) =>
-          p.modifyEntityVar?.entityId === props.data.id &&
-          p.modifyEntityVar?.variableName === "aura",
-      )?.modifyEntityVar?.variableValue ?? */ props.data.aura;
-    return [aura & 0xf, (aura >> 4) & 0xf];
+export function CharacterArea(props: CharacterAreaProps) {
+  let el!: HTMLDivElement;
+  const data = createMemo(() => props.data);
+
+  const [getDamage, setDamage] = createSignal<DamageInfo | null>(null);
+  const [showDamage, setShowDamage] = createSignal(false);
+
+  const renderDamages = async (delayMs: number, damages: DamageInfo[]) => {
+    await sleep(delayMs);
+    for (const damage of damages) {
+      setDamage(damage);
+      setShowDamage(true);
+      await sleep(500);
+      setShowDamage(false);
+      await sleep(100);
+    }
   };
-  const energy = () =>
-    /* previewData().find(
+
+  // createEffect(() => {
+  //   if (props.id === -500035) {
+  //     console.log(props.uiState.damages);
+  //   }
+  // });
+
+  createEffect(() => {
+    const {
+      damages,
+      animation: propAnimation,
+      transform,
+      onAnimationFinish,
+    } = props.uiState;
+
+    let damageDelay = 0;
+    const animations: Promise<void>[] = [];
+
+    if (propAnimation.type === "damageTarget") {
+      damageDelay = DAMAGE_TARGET_ANIMATION_DELAY;
+      const animation = el.animate([], {
+        delay: 0,
+        duration: DAMAGE_SOURCE_ANIMATION_DURATION,
+      });
+      animations.push(animation.finished.then(() => animation.cancel()));
+    } else if (propAnimation.type === "damageSource") {
+      const { targetX, targetY } = propAnimation;
+      const animation = el.animate(
+        [
+          {
+            offset: 0.5,
+            transform: `translate3d(${targetX / 4}rem, ${targetY / 4}rem, ${
+              1 / 4
+            }rem)`,
+          },
+        ],
+        {
+          delay: 0,
+          duration: DAMAGE_SOURCE_ANIMATION_DURATION,
+        },
+      );
+      animations.push(animation.finished.then(() => animation.cancel()));
+    }
+    const dmgRender = renderDamages(damageDelay, damages);
+    animations.push(dmgRender);
+
+    Promise.all(animations).then(() => {
+      onAnimationFinish?.();
+    });
+  });
+
+  const aura = createMemo((): [number, number] => {
+    const aura = props.preview?.newAura ?? data().aura;
+    return [aura & 0xf, (aura >> 4) & 0xf];
+  });
+  const energy = createMemo(
+    () =>
+      /* previewData().find(
       (p) =>
         p.modifyEntityVar?.entityId === props.data.id &&
         p.modifyEntityVar?.variableName === "energy",
-    )?.modifyEntityVar?.variableValue ?? */ props.data.energy;
-  const defeated = () =>
-    /* previewData().some(
+    )?.modifyEntityVar?.variableValue ?? */ data().energy,
+  );
+  const defeated = createMemo(
+    () =>
+      /* previewData().some(
       (p) =>
         p.modifyEntityVar?.entityId === props.data.id &&
         p.modifyEntityVar?.variableName === "alive" &&
         p.modifyEntityVar?.variableValue === 0,
-    ) || */ props.data.defeated;
+    ) || */ data().defeated,
+  );
 
   // const previewHealthDiff = () => {
   //   const previewHealth = previewData().find(
@@ -76,27 +176,37 @@ export function CharacterArea(props: CharacterAreaProps) {
   //   }
   // };
 
-  const statuses = () =>
-    props.data.entity.filter((et) => typeof et.equipment === "undefined");
-  const weapon = () =>
-    props.data.entity.find((et) => et.equipment === 1 /* weapon */);
-  const artifact = () =>
-    props.data.entity.find((et) => et.equipment === 2 /* artifact */);
-  const technique = () =>
-    props.data.entity.find((et) => et.equipment === 3 /* technique */);
-  const otherEquipments = () =>
-    props.data.entity.filter((et) => et.equipment === 0 /* other */);
+  const statuses = createMemo(() =>
+    props.entities.filter((et) => typeof et.data.equipment === "undefined"),
+  );
+  const weapon = createMemo(() =>
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.WEAPON),
+  );
+  const artifact = createMemo(() =>
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.ARTIFACT),
+  );
+  const technique = createMemo(() =>
+    props.entities.find(
+      (et) => et.data.equipment === PbEquipmentType.TECHNIQUE,
+    ),
+  );
+  const otherEquipments = createMemo(() =>
+    props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
+  );
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
-      style={{
-        "z-index": `${props.zIndex}`,
-        transform: `translate3d(${props.x / 4}rem, ${props.y / 4}rem, ${
-          props.z / 4
-        }rem) rotateY(0deg) rotateZ(${props.rz}deg)`,
+      style={cssPropertyOfTransform(props.uiState.transform)}
+      ref={el}
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onClick?.(e, e.currentTarget);
       }}
     >
-      <div class="h-5 flex flex-row items-end gap-2">
+      <div
+        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse"
+        bool:data-preview={props.preview?.newAura}
+      >
         <For each={aura()}>
           {(aura) => (
             <Show when={aura}>
@@ -106,77 +216,100 @@ export function CharacterArea(props: CharacterAreaProps) {
         </For>
       </div>
       <div class="h-36 w-21 relative">
-        <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
-          <WaterDrop />
-          <div class="absolute">{props.data.health}</div>
-        </div>
-        <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
-          <EnergyBar current={energy()} total={props.data.maxEnergy} />
-          <Show when={technique()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#129668;
-              </div>
-            )}
+        <Show when={!defeated()}>
+          <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
+            <WaterDrop />
+            <div class="absolute line-height-none">{data().health}</div>
+          </div>
+          <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
+            <EnergyBar
+              current={energy()}
+              preview={props.preview?.newEnergy ?? null}
+              total={data().maxEnergy}
+            />
+            <Show when={technique()} keyed>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
+                >
+                  &#129668;
+                </div>
+              )}
+            </Show>
+          </div>
+          <Show when={props.preview && props.preview.newHealth !== null}>
+            <VariableDiff
+              class="absolute top-3 left-50% translate-x--50%"
+              oldValue={data().health}
+              newValue={props.preview!.newHealth!}
+              defeated={props.preview?.defeated}
+            />
           </Show>
-
-        </div>
-        {/* <Show when={previewHealthDiff()}>
-          {(diff) => {
-            return (
-              <div class="absolute z-2 top-5 left-50% translate-x--50% bg-white opacity-80 p-2 rounded-md">
-                {diff()}
-              </div>
-            );
-          }}
-        </Show> */}
-        <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
-          <Show when={weapon()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x1F5E1;
-              </div>
-            )}
-          </Show>
-          <Show when={artifact()}>
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x1F451;
-              </div>
-            )}
-          </Show>
-          <Key each={otherEquipments()} by="id">
-            {(et) => (
-              <div
-                class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight=true]bg-yellow-200 border-solid border-1 border-yellow-800"
-                data-highlight={et().hasUsagePerRound}
-              >
-                &#x2728;
-              </div>
-            )}
-          </Key>
-        </div>
-        <div class="h-full w-full rounded-xl">
+          <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
+            <Show when={weapon()} keyed>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
+                >
+                  &#x1F5E1;
+                </div>
+              )}
+            </Show>
+            <Show when={artifact()} keyed>
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et.data.hasUsagePerRound}
+                  bool:data-entering={et.animation === "entering"}
+                  bool:data-disposing={et.animation === "disposing"}
+                  bool:data-triggered={et.triggered}
+                >
+                  &#x1F451;
+                </div>
+              )}
+            </Show>
+            <Key each={otherEquipments()} by="id">
+              {(et) => (
+                <div
+                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
+                  bool:data-highlight={et().data.hasUsagePerRound}
+                  bool:data-entering={et().animation === "entering"}
+                  bool:data-disposing={et().animation === "disposing"}
+                  bool:data-triggered={et().triggered}
+                >
+                  &#x2728;
+                </div>
+              )}
+            </Key>
+          </div>
+        </Show>
+        <div
+          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
+          bool:data-triggered={props.triggered}
+          bool:data-clickable={
+            props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
+          }
+        >
           <Image
-            imageId={props.data.definitionId}
-            class="h-full rounded-xl b-white b-solid b-3"
+            imageId={data().definitionId}
+            class="h-full rounded-xl b-white b-3"
             classList={{
-              "brightness-50": props.data.defeated,
+              "brightness-50": defeated(),
             }}
           />
         </div>
-        <div class="absolute z-3 hover:z-10 left-0 bottom-0 h-6 flex flex-row">
-          {/* <Key each={statuses()} by="id">{(st) => <Status data={st()} /> }</Key>*/}
-        </div>
+        <StatusGroup
+          class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
+          statuses={statuses()}
+        />
         <Show when={defeated()}>
           <div class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]">
             &#9760;
@@ -196,14 +329,32 @@ export function CharacterArea(props: CharacterAreaProps) {
             </div>
           )}
         </Show> */}
+        <Switch>
+          <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
+            <div class="absolute inset-0 backface-hidden flex items-center justify-center text-5xl">
+              <span class="cursor-pointer">&#9989;</span>
+            </div>
+          </Match>
+          <Match when={props.selecting}>
+            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
+              <SelectingIcon />
+            </div>
+          </Match>
+        </Switch>
+        <Show when={getDamage()}>
+          {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
+        </Show>
       </div>
+      <Show when={props.active}>
+        <StatusGroup class="h-6 w-20" statuses={props.combatStatus} />
+      </Show>
     </div>
   );
 }
 
 interface EnergyBarProps {
   current: number;
-  preview?: number;
+  preview: number | null;
   total: number;
 }
 
@@ -221,8 +372,8 @@ function EnergyBar(props: EnergyBarProps) {
           >
             <path
               d="M538.112 38.4c-15.36-44.544-39.936-44.544-55.296 0l-84.992 250.88c-14.848 44.544-64 93.184-108.032 108.544L40.448 482.816c-44.544 15.36-44.544 39.936 0 55.296l247.808 86.016c44.544 15.36 93.184 64.512 108.544 108.544l86.528 251.392c15.36 44.544 39.936 44.544 55.296 0l84.48-249.856c14.848-44.544 63.488-93.184 108.032-108.544l252.928-86.528c44.544-15.36 44.544-39.936 0-54.784l-248.832-83.968c-44.544-14.848-93.184-63.488-108.544-108.032-1.536-0.512-88.576-253.952-88.576-253.952z"
-              fill={i < props.current ? "yellow" : "white"}
-              stroke={i < props.current ? "#854d0e" : "black"}
+              fill={i < props.current ? "yellow" : "#e5e7eb"}
+              stroke={i < props.current ? "#854d0e" : "gray"}
               stroke-width="32"
             />
           </svg>
