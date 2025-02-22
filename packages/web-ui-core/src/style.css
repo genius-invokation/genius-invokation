@@ -45,7 +45,7 @@
   .card[data-transition-transform] {
     transition-property: box-shadow, transform;
   }
-  .card[data-dragging-end] {
+  .card[data-playable][data-dragging-end] {
     animation: card-dragging-end 0.2s both;
   }
 }

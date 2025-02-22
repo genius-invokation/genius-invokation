@@ -200,17 +200,11 @@ export function Dice(props: DiceProps) {
       <Switch>
         <Match when={merged.text}>
           <span
-            class="absolute text-outline"
+            class="absolute text-outline text-black data-[void]:text-white data-[color=increased]:text-red-500 data-[color=decreased]:text-green-500"
+            data-color={merged.color}
+            bool:data-void={merged.color === "normal" && merged.type === DiceType.Void}
             style={{
               "font-size": `${0.4 * merged.size}px`,
-              color:
-                merged.color === "increased"
-                  ? "red"
-                  : merged.color === "decreased"
-                    ? "green"
-                    : merged.type === 0
-                      ? "white"
-                      : "black",
             }}
           >
             {merged.text}

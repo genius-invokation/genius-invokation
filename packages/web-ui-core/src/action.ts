@@ -13,7 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { getNameSync } from "@gi-tcg/assets-manager";
+import {
+  getDataSync,
+  getNameSync,
+  prepareForSync,
+} from "@gi-tcg/assets-manager";
 import {
   ActionValidity,
   flattenPbOneof,
@@ -32,6 +36,21 @@ import {
 } from "@gi-tcg/typings";
 import type { DicePanelState } from "./components/DicePanel";
 import { checkDice } from "@gi-tcg/utils";
+import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
+
+prepareForSync();
+
+export function getHintTextOfCardOrSkill(
+  definitionId: number,
+  targetLength: number,
+): string[] {
+  try {
+    const data = getDataSync(definitionId) as SkillRawData | ActionCardRawData;
+    return data.targetList.map((x) => x.hintText);
+  } catch (e) {
+    return Array.from({ length: targetLength }, () => `请选择使用目标`);
+  }
+}
 
 export interface PlayCardActionStep {
   readonly type: "playCard";
@@ -296,7 +315,7 @@ const validityText = (validity: ActionValidity): string | undefined => {
 };
 
 interface CreatePlayCardActionStateOption {
-  cardSteps: Map<PlayCardActionStep, StepActionResult>;
+  cardSteps: Map<PlayCardActionStep, () => StepActionResult>;
   action: Action & { value: PlayCardAction };
   index: number;
 }
@@ -307,8 +326,19 @@ function createPlayCardActionState(
 ) {
   const id = opt.action.value.cardId;
   const ok = opt.action.validity === ActionValidity.VALID;
+  const ENTER_STEP: PlayCardActionStep = {
+    type: "playCard",
+    cardId: id,
+    playable: ok,
+  };
   if (!ok) {
-    // TODO
+    opt.cardSteps.set(ENTER_STEP, () => ({
+      type: "newState",
+      newState: {
+        ...root,
+        alertText: validityText(opt.action.validity),
+      },
+    }));
     return;
   }
   const previewData = parsePreviewData(opt.action.preview);
@@ -316,21 +346,16 @@ function createPlayCardActionState(
     // TODO do it later
     return;
   }
-  const ENTER_STEP: PlayCardActionStep = {
-    type: "playCard",
-    cardId: id,
-    playable: ok,
-  };
   if (
     opt.action.autoSelectedDice.length === 0 &&
     previewData.characters.size === 0
   ) {
     // 无费无预览时，直接提交
-    opt.cardSteps.set(ENTER_STEP, {
+    opt.cardSteps.set(ENTER_STEP, () => ({
       type: "actionCommitted",
       chosenActionIndex: opt.index,
       usedDice: [],
-    });
+    }));
     return;
   }
   const CONFIRM_BUTTON_STEP: ClickConfirmButtonActionStep = {
@@ -338,7 +363,7 @@ function createPlayCardActionState(
     confirmText: "确定",
   };
   const resultState: ActionState = {
-    availableSteps: [CANCEL_ACTION_STEP, CONFIRM_BUTTON_STEP],
+    availableSteps: [CANCEL_ACTION_STEP, ENTER_STEP, CONFIRM_BUTTON_STEP],
     realCosts: root.realCosts,
     showHands: false,
     showSkillButtons: false,
@@ -351,10 +376,34 @@ function createPlayCardActionState(
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
       } else if (step === CONFIRM_BUTTON_STEP) {
+        const diceReq = new Map(
+          root.realCosts.cards
+            .get(id)!
+            .map(({ type, count }) => [type as DiceType, count]),
+        );
+        if (checkDice(diceReq, dice)) {
+          return {
+            type: "actionCommitted",
+            chosenActionIndex: opt.index,
+            usedDice: dice as PbDiceType[],
+          };
+        } else {
+          return {
+            type: "newState",
+            newState: {
+              ...resultState,
+              autoSelectedDice: null,
+              alertText: "骰子不符合要求",
+            },
+          };
+        }
+      } else if (step === ENTER_STEP) {
         return {
-          type: "actionCommitted",
-          chosenActionIndex: opt.index,
-          usedDice: dice as PbDiceType[],
+          type: "newState",
+          newState: {
+            ...resultState,
+            autoSelectedDice: null,
+          },
         };
       } else {
         console.error(step);
@@ -362,7 +411,10 @@ function createPlayCardActionState(
       }
     },
   };
-  opt.cardSteps.set(ENTER_STEP, { type: "newState", newState: resultState });
+  opt.cardSteps.set(ENTER_STEP, () => ({
+    type: "newState",
+    newState: resultState,
+  }));
 }
 
 interface CreateUseSkillActionStateOption {
@@ -408,7 +460,7 @@ function createUseSkillActionState(
     realCosts: root.realCosts,
     showHands: false,
     showSkillButtons: true,
-    dicePanel: ok ? "visible" : "wrapped",
+    dicePanel: opt.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
     previewData: parsePreviewData(opt.action.preview),
@@ -499,7 +551,7 @@ function createSwitchActiveActionState(
     hintText: `切换出战角色为「${getNameSync(
       opt.action.value.characterDefinitionId,
     )}」`,
-    dicePanel: "visible",
+    dicePanel: opt.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
     autoSelectedDice: opt.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
     previewData: parsePreviewData(opt.action.preview),
@@ -593,19 +645,19 @@ export function createActionState(actions: Action[]): ActionState {
     showHands: true,
     showSkillButtons: true,
     step: (step) => {
-      return steps.get(step)!;
+      return steps.get(step)!();
     },
   };
-  const steps = new Map<ActionStep, StepActionResult>([
+  const steps = new Map<ActionStep, () => StepActionResult>([
     [
       CANCEL_ACTION_STEP,
-      {
+      () => ({
         type: "newState",
         newState: root,
-      },
+      }),
     ],
   ]);
-  const playCardSteps = new Map<PlayCardActionStep, StepActionResult>();
+  const playCardSteps = new Map<PlayCardActionStep, () => StepActionResult>();
   const useSkillStates = new Map<ClickSkillButtonActionStep, ActionState>();
   const switchActiveInnerStates = new Map<ClickEntityActionStep, ActionState>();
   const switchActiveOuterStates = new Map<ClickEntityActionStep, ActionState>();
@@ -651,11 +703,11 @@ export function createActionState(actions: Action[]): ActionState {
         const DECLARE_END_STEP = {
           type: "declareEnd" as const,
         };
-        steps.set(DECLARE_END_STEP, {
+        steps.set(DECLARE_END_STEP, () => ({
           type: "actionCommitted",
           chosenActionIndex: i,
           usedDice: [],
-        });
+        }));
         break;
       }
     }
@@ -668,11 +720,11 @@ export function createActionState(actions: Action[]): ActionState {
     state.availableSteps.push(
       ...useSkillStates.keys().filter((k) => k !== step),
     );
-    steps.set(step, { type: "newState", newState: state });
+    steps.set(step, () => ({ type: "newState", newState: state }));
   }
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
-    steps.set(step, { type: "newState", newState: state });
+    steps.set(step, () => ({ type: "newState", newState: state }));
   }
   for (const [step, state] of switchActiveInnerStates.entries()) {
     state.availableSteps.push(

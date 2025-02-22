@@ -25,7 +25,7 @@ export function Button(props: ButtonProps) {
   const ch = children(() => props.children);
   return (
     <button
-      class={`flex items-center justify-center px-4 h-8 rounded-4 b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none ${
+      class={`flex items-center justify-center px-8 h-10 text-lg font-bold rounded-5 b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none ${
         props.class ?? ""
       }`}
       onClick={(e) => props.onClick(e)}

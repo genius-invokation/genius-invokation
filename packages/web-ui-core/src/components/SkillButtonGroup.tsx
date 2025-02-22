@@ -60,7 +60,7 @@ function SkillButton(props: SkillButtonProps) {
         class="flex flex-row gap-2px"
         cost={props.cost}
         size={26}
-        // realCost={realCost()} // TODO
+        realCost={props.realCost}
       />
     </div>
   );
