@@ -384,9 +384,9 @@ function calcEntitiesInfo(
 ): CalcEntitiesInfoResult[] {
   const result: CalcEntitiesInfoResult[] = [];
   const calcEntityInfo =
-    (opp: boolean, type: "support" | "summon", previewingNew: boolean) =>
+    (opp: boolean, type: "support" | "summon", previewingNew: boolean, baseIndex = 0) =>
     (data: PbEntityState, index: number): EntityInfo => {
-      const [x, y] = getEntityPos(size, opp, type, index);
+      const [x, y] = getEntityPos(size, opp, type, index + baseIndex);
       const preview = previewData.entities.get(data.id) ?? null;
       const clickStep =
         availableSteps.find(
@@ -429,13 +429,13 @@ function calcEntitiesInfo(
     const supports = player.support.map(calcEntityInfo(opp, "support", false));
     supports.push(
       ...(previewData.newEntities.get(`support${who2}`) ?? []).map(
-        calcEntityInfo(opp, "support", true),
+        calcEntityInfo(opp, "support", true, supports.length),
       ),
     );
     const summons = player.summon.map(calcEntityInfo(opp, "summon", false));
     summons.push(
       ...(previewData.newEntities.get(`summon${who2}`) ?? []).map(
-        calcEntityInfo(opp, "summon", true),
+        calcEntityInfo(opp, "summon", true, summons.length),
       ),
     );
     const combatStatuses = player.combatStatus.map(calcStatusInfo);
@@ -1070,10 +1070,11 @@ export function Chessboard(props: ChessboardProps) {
       ),
   );
   const showSkillButtons = createMemo(() => {
+    const shown = !getFocusingHands() && !getDraggingHand();
     if (localProps.actionState) {
-      return localProps.actionState.showSkillButtons;
+      return shown && localProps.actionState.showSkillButtons;
     } else {
-      return !getFocusingHands() && !getDraggingHand();
+      return shown;
     }
   });
 
@@ -1122,6 +1123,7 @@ export function Chessboard(props: ChessboardProps) {
   ) => {
     setShowDeclareEndButton(false);
     if (cardInfo.kind === "myHand" && cardInfo.uiState.type === "cardStatic") {
+      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
       // 弥补收起手牌时选中由于 z 的差距而导致的视觉不连贯
       let yAdjust = 0;
       if (!getFocusingHands()) {
