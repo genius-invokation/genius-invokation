@@ -70,7 +70,7 @@ const EMPTY_GAME_STATE: PbGameState = {
 export interface ClientOption {
   onGiveUp?: () => void;
   rpc?: Partial<RpcDispatcher>;
-  assetsApiEndPoint?: string;
+  assetsApiEndpoint?: string;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
@@ -260,7 +260,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   };
 
   const Wrapper = (props: ComponentProps<"div">) => (
-    <UiContext.Provider value={{ assetsApiEndPoint: option.assetsApiEndPoint }}>
+    <UiContext.Provider value={{ assetsApiEndpoint: option.assetsApiEndpoint }}>
       <Chessboard
         who={who}
         data={data()}
@@ -272,7 +272,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         onSwitchHands={onSwitchHands}
         onSelectCard={onSelectCard}
         onGiveUp={onGiveUp}
-        class="h-0"
         {...props}
       />
     </UiContext.Provider>

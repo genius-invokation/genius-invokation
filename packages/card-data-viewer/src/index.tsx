@@ -24,7 +24,12 @@ import {
   type StateType,
 } from "./CardDataViewer";
 import { createSignal } from "solid-js";
-import type { PbCardState, PbCharacterState, PbEntityState } from "@gi-tcg/typings";
+import type {
+  PbCardState,
+  PbCharacterState,
+  PbEntityState,
+} from "@gi-tcg/typings";
+import { AssetsApiContext } from "./context";
 
 export interface RegisterResult {
   readonly CardDataViewer: () => JSX.Element;
@@ -44,7 +49,7 @@ export interface RegisterResult {
 }
 
 export interface CreateCardDataViewerOption {
-  assetsApiEndPoint?: string;
+  assetsApiEndpoint?: string;
   includesImage?: boolean;
 }
 
@@ -80,12 +85,15 @@ export function createCardDataViewer(
 
   return {
     CardDataViewer: () => (
-      <CardDataViewerContainer
-        shown={shown()}
-        inputs={inputs()}
-        includesImage={option.includesImage ?? false}
-        assetsApiEndPoint={option.assetsApiEndPoint}
-      />
+      <AssetsApiContext.Provider
+        value={{ assetsApiEndpoint: option.assetsApiEndpoint }}
+      >
+        <CardDataViewerContainer
+          shown={shown()}
+          inputs={inputs()}
+          includesImage={option.includesImage ?? false}
+        />
+      </AssetsApiContext.Provider>
     ),
     showCard: (id) => {
       showDef(id, "card");

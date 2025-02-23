@@ -25,4 +25,5 @@ import "./style.css";
 //   type StandaloneChessboardProps,
 //   type PlayerIOWithCancellation,
 // } from "./Chessboard.tsx";
-export { createClient } from "./client.tsx";
+export { StandaloneChessboard, type StandaloneChessboardProps } from "./standalone.tsx";
+export { createClient, type PlayerIOWithCancellation } from "./client.tsx";

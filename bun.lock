@@ -210,7 +210,7 @@
         "@gi-tcg/deck-builder": "workspace:*",
         "@gi-tcg/detail-log-viewer": "workspace:*",
         "@gi-tcg/utils": "workspace:*",
-        "@gi-tcg/webui-core": "workspace:*",
+        "@gi-tcg/web-ui-core": "workspace:*",
         "@vercel/analytics": "^1.2.0",
         "core-js": "3.38.1",
         "solid-js": "^1.9.4",

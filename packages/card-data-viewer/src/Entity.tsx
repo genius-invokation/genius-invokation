@@ -21,7 +21,6 @@ import {
   Match,
   Show,
   Switch,
-  type Setter,
 } from "solid-js";
 import type { ViewerInput } from "./CardDataViewer";
 import {
@@ -34,6 +33,7 @@ import type {
   ActionCardRawData,
   CharacterRawData,
   EntityRawData,
+  KeywordRawData,
   PlayCost,
   SkillRawData,
 } from "@gi-tcg/static-data";
@@ -41,29 +41,25 @@ import { PlayCostList } from "./PlayCost";
 import { Description } from "./Description";
 import { Tags } from "./Tags";
 import { TEXT_MAP } from "./text_map";
+import { useAssetsApi } from "./context";
 
 export interface CardDataProps {
   class?: string;
   input: ViewerInput;
-  assetsApiEndPoint?: string;
   includesImage: boolean;
   onRequestExplain?: (id: number) => void;
 }
 
 export function Character(props: CardDataProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<CharacterRawData>,
+    () => props.input.definitionId,
+    (defId) =>
+      getData(defId, { assetsApiEndpoint }) as Promise<CharacterRawData>,
   );
   const [image] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getImageUrl(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }),
+    () => props.input.definitionId,
+    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
   );
   return (
     <div class={props.class}>
@@ -118,19 +114,15 @@ export function Character(props: CardDataProps) {
 }
 
 export function ActionCard(props: CardDataProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<ActionCardRawData>,
+    () => props.input.definitionId,
+    (defId) =>
+      getData(defId, { assetsApiEndpoint }) as Promise<ActionCardRawData>,
   );
   const [image] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getImageUrl(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }),
+    () => props.input.definitionId,
+    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
   );
   return (
     <div class={props.class}>
@@ -187,19 +179,15 @@ interface ExpandableCardDataProps extends CardDataProps {
 }
 
 export function Skill(props: ExpandableCardDataProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<SkillRawData>,
+    () => props.input.definitionId,
+    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<SkillRawData>,
   );
+
   const [icon] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getImageUrl(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }),
+    () => props.input.definitionId,
+    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
   );
   const [skillTypeText, setSkillTypeText] = createSignal("");
   const [playCost, setPlayCost] = createSignal<PlayCost[]>([]);
@@ -261,19 +249,14 @@ export function Skill(props: ExpandableCardDataProps) {
 }
 
 export function Entity(props: ExpandableCardDataProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<EntityRawData>,
+    () => props.input.definitionId,
+    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<EntityRawData>,
   );
   const [icon] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getImageUrl(p.input.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }),
+    () => props.input.definitionId,
+    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
   );
   const [entityTypeText, setEntityTypeText] = createSignal("");
 
@@ -357,17 +340,14 @@ export function Entity(props: ExpandableCardDataProps) {
 export interface CardDefinitionProps {
   class?: string;
   definitionId: number;
-  assetsApiEndPoint?: string;
   includesImage: boolean;
 }
 
 export function Keyword(props: CardDefinitionProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<SkillRawData>,
+    () => props.definitionId,
+    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<KeywordRawData>,
   );
   return (
     <div class={props.class}>
@@ -407,19 +387,14 @@ export interface ReferenceProps extends CardDefinitionProps {
 }
 
 export function Reference(props: ReferenceProps) {
+  const { assetsApiEndpoint } = useAssetsApi();
   const [data] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getData(p.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }) as Promise<SkillRawData>,
+    () => props.definitionId,
+    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<SkillRawData>,
   );
   const [image] = createResource(
-    () => ({ ...props }),
-    (p) =>
-      getImageUrl(p.definitionId, {
-        assetsApiEndpoint: p.assetsApiEndPoint,
-      }),
+    () => props.definitionId,
+    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
   );
   return (
     <div>

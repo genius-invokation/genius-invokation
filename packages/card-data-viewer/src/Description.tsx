@@ -29,6 +29,7 @@ import {
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Reference } from "./Entity";
+import { useAssetsApi } from "./context";
 
 type DescriptionItem =
   | {
@@ -83,7 +84,6 @@ const descriptionToItems = (
 
 interface DamageDescriptionProps {
   dType: string | undefined;
-  assetsApiEndPoint?: string;
   onRequestExplain?: (id: number) => void;
 }
 
@@ -112,9 +112,9 @@ function DamageDescription(props: DamageDescriptionProps) {
     ].indexOf(props.dType);
   const keywordId = () => KEYWORD_ID_OFFSET + 100 + id();
   const text = () => getNameSync(keywordId());
-  const [url] = createResource(
-    () => [id(), { ...props }] as const,
-    ([id, p]) => getImageUrl(id, { assetsApiEndpoint: p.assetsApiEndPoint }),
+  const { assetsApiEndpoint } = useAssetsApi();
+  const [url] = createResource(id, (id) =>
+    getImageUrl(id, { assetsApiEndpoint }),
   );
   return (
     <>
@@ -136,7 +136,6 @@ export interface DescriptionProps {
   definitionId: number;
   description: string;
   keyMap?: Record<string, string>;
-  assetsApiEndPoint?: string;
   includesImage: boolean;
   fromSkill?: boolean;
   onRequestExplain?: (id: number) => void;
@@ -188,7 +187,6 @@ export function Description(props: DescriptionProps) {
                 {(item) => (
                   <DamageDescription
                     dType={item.dType}
-                    assetsApiEndPoint={props.assetsApiEndPoint}
                     onRequestExplain={props.onRequestExplain}
                   />
                 )}

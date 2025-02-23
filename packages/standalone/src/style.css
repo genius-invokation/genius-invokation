@@ -15,6 +15,10 @@ html {
   /* overflow: hidden; */
 }
 
+.gi-tcg-chessboard-new {
+  height: 36rem;
+}
+
 .title {
   flex-grow: 1;
   flex-shrink: 1;

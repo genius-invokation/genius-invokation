@@ -38,7 +38,6 @@ export type ViewerInput =
 
 export interface CardDataViewerProps {
   inputs: ViewerInput[];
-  assetsApiEndPoint?: string;
   includesImage: boolean;
 }
 

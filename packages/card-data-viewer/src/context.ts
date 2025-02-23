@@ -15,12 +15,5 @@
 
 import { createContext, useContext } from "solid-js";
 
-export interface UiContextValue {
-  assetsApiEndpoint?: string;
-}
-
-export const UiContext = createContext<UiContextValue>({});
-
-export function useUiContext() {
-  return useContext(UiContext);
-}
+export const AssetsApiContext = createContext<{ assetsApiEndpoint?: string }>({});
+export const useAssetsApi = () => useContext(AssetsApiContext);

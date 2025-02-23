@@ -25,11 +25,11 @@ import {
 } from "@gi-tcg/core";
 
 import {
-  StandaloneChessboard,
-  createPlayer,
+  createClient,
   PlayerIOWithCancellation,
-} from "@gi-tcg/webui-core";
-import "@gi-tcg/webui-core/style.css";
+  StandaloneChessboard,
+} from "@gi-tcg/web-ui-core";
+import "@gi-tcg/web-ui-core/style.css";
 import { For, Show, createSignal, onCleanup, onMount } from "solid-js";
 import { decode as decodeShareCode } from "@gi-tcg/utils";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
@@ -45,7 +45,7 @@ const CHILD_WHO = 0;
 const PARENT_WHO = 1;
 
 export function StandaloneParent(props: StandaloneParentProps) {
-  const [uiIo, Chessboard] = createPlayer(1, {
+  const [uiIo, Chessboard] = createClient(1, {
     onGiveUp: () => {
       game?.giveUp(PARENT_WHO);
     },
@@ -327,9 +327,9 @@ export function StandaloneParent(props: StandaloneParentProps) {
             </div>
             <StandaloneChessboard
               class="grayscale"
-              state={exposeState(viewingWho(), state().state)}
-              previewData={[]}
               who={viewingWho()}
+              state={exposeState(viewingWho(), state().state)}
+              mutations={[]}
             />
           </>
         )}

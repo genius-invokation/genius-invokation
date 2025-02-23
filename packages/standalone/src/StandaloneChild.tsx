@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createPlayer } from "@gi-tcg/webui-core";
+import { createClient } from "@gi-tcg/web-ui-core";
 import "@gi-tcg/webui-core/style.css";
 import { onCleanup, onMount } from "solid-js";
 
 export function StandaloneChild() {
-  const [uiIo, Chessboard] = createPlayer(0, {
+  const [uiIo, Chessboard] = createClient(0, {
     onGiveUp: () => {
       window.opener?.postMessage({
         giTcg: "1.0",

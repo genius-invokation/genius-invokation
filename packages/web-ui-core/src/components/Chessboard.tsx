@@ -239,11 +239,11 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   actionState: ActionState | null;
   viewType: ChessboardViewType;
   selectCardCandidates: number[];
-  onStepActionState: StepActionStateHandler;
-  onRerollDice: (dice: PbDiceType[]) => void;
-  onSwitchHands: (cardIds: number[]) => void;
-  onSelectCard: (cardDefId: number) => void;
-  onGiveUp: () => void;
+  onStepActionState?: StepActionStateHandler;
+  onRerollDice?: (dice: PbDiceType[]) => void;
+  onSwitchHands?: (cardIds: number[]) => void;
+  onSelectCard?: (cardDefId: number) => void;
+  onGiveUp?: () => void;
 }
 
 type MyHandState =
@@ -900,10 +900,10 @@ export function Chessboard(props: ChessboardProps) {
   ]);
   let chessboardElement!: HTMLDivElement;
 
-  const { assetsApiEndPoint } = useUiContext();
+  const { assetsApiEndpoint } = useUiContext();
   const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
     includesImage: true,
-    assetsApiEndPoint,
+    assetsApiEndpoint,
   });
   const [selectingItem, setSelectingItem] = createSignal<SelectingItem | null>(
     null,
@@ -1128,7 +1128,7 @@ export function Chessboard(props: ChessboardProps) {
             setShowDeclareEndButton(true);
           } else {
             setShowDeclareEndButton(false);
-            localProps.onStepActionState(canDeclareEnd, []);
+            localProps.onStepActionState?.(canDeclareEnd, []);
           }
         }
       },
@@ -1246,7 +1246,7 @@ export function Chessboard(props: ChessboardProps) {
   ) => {
     setShowDeclareEndButton(false);
     if (cardInfo.kind === "myHand" && cardInfo.uiState.type === "cardStatic") {
-      localProps.onStepActionState(CANCEL_ACTION_STEP, []);
+      localProps.onStepActionState?.(CANCEL_ACTION_STEP, []);
       // 弥补收起手牌时选中由于 z 的差距而导致的视觉不连贯
       let yAdjust = 0;
       if (!getFocusingHands()) {
@@ -1335,12 +1335,12 @@ export function Chessboard(props: ChessboardProps) {
     }
     const [tunningAreaX] = getTunningAreaPos([0, width()], dragging);
     if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
-      localProps.onStepActionState(cardInfo.tuneStep, selectedDiceValue());
+      localProps.onStepActionState?.(cardInfo.tuneStep, selectedDiceValue());
       setDraggingHand(null);
       return;
     }
     if (!focusingHands && cardInfo.playStep) {
-      localProps.onStepActionState(cardInfo.playStep, selectedDiceValue());
+      localProps.onStepActionState?.(cardInfo.playStep, selectedDiceValue());
       setDraggingHand({ ...dragging, status: "end" });
     } else {
       setDraggingHand(null);
@@ -1361,7 +1361,7 @@ export function Chessboard(props: ChessboardProps) {
       setHoveringHand(null);
       setSelectingItem(null);
       if (localProps.actionState) {
-        localProps.onStepActionState(CANCEL_ACTION_STEP, []);
+        localProps.onStepActionState?.(CANCEL_ACTION_STEP, []);
       }
     });
   };
@@ -1378,7 +1378,7 @@ export function Chessboard(props: ChessboardProps) {
     setShowDeclareEndButton(false);
     setSelectingItem({ type: "character", info: characterInfo });
     if (characterInfo.clickStep) {
-      localProps.onStepActionState(
+      localProps.onStepActionState?.(
         characterInfo.clickStep,
         selectedDiceValue(),
       );
@@ -1397,7 +1397,7 @@ export function Chessboard(props: ChessboardProps) {
     setShowDeclareEndButton(false);
     setSelectingItem({ type: "entity", info: entityInfo });
     if (entityInfo.clickStep) {
-      localProps.onStepActionState(entityInfo.clickStep, selectedDiceValue());
+      localProps.onStepActionState?.(entityInfo.clickStep, selectedDiceValue());
     }
   };
 
@@ -1405,7 +1405,7 @@ export function Chessboard(props: ChessboardProps) {
     if (sk.id === "switchActive") {
       const step = switchActiveStep();
       if (step) {
-        localProps.onStepActionState(step, selectedDiceValue());
+        localProps.onStepActionState?.(step, selectedDiceValue());
       }
     } else {
       setSelectingItem({ type: "skill", info: { ...sk, id: sk.id } });
@@ -1413,7 +1413,7 @@ export function Chessboard(props: ChessboardProps) {
         (s) => s.type === "clickSkillButton" && s.skillId === sk.id,
       );
       if (step) {
-        localProps.onStepActionState(step, selectedDiceValue());
+        localProps.onStepActionState?.(step, selectedDiceValue());
       }
     }
   };
@@ -1549,7 +1549,7 @@ export function Chessboard(props: ChessboardProps) {
           (s) => s.type === "clickConfirmButton",
         )}
         onClick={(step) => {
-          localProps.onStepActionState(step, selectedDiceValue());
+          localProps.onStepActionState?.(step, selectedDiceValue());
         }}
       />
       <RoundAndPhaseNotification
@@ -1573,7 +1573,7 @@ export function Chessboard(props: ChessboardProps) {
         selectedDice={selectedDice()}
         onSelectDice={setSelectedDice}
         onConfirm={() => {
-          localProps.onRerollDice(selectedDiceValue() as PbDiceType[]);
+          localProps.onRerollDice?.(selectedDiceValue() as PbDiceType[]);
           setSelectedDice([]);
         }}
       />
@@ -1584,14 +1584,14 @@ export function Chessboard(props: ChessboardProps) {
           dataViewerController.showCard(id);
         }}
         onConfirm={(id) => {
-          localProps.onSelectCard(id);
+          localProps.onSelectCard?.(id);
           dataViewerController.hide();
         }}
       />
       <SwitchHandsView
         viewType={localProps.viewType}
         onConfirm={() => {
-          localProps.onSwitchHands(switchedCards());
+          localProps.onSwitchHands?.(switchedCards());
           dataViewerController.hide();
         }}
       />
@@ -1606,7 +1606,7 @@ export function Chessboard(props: ChessboardProps) {
             title="放弃对局"
             onClick={() => {
               if (confirm("确定放弃对局吗？")) {
-                localProps.onGiveUp();
+                localProps.onGiveUp?.();
               }
             }}
           >
