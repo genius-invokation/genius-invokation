@@ -21,7 +21,7 @@ export interface ActionHintTextProps {
 export function ActionHintText(props: ActionHintTextProps) {
   return (
     <div
-      class={`w-192 h-0 data-[shown]:h-6 flex flex-row justify-center items-center bg-gradient-to-r from-yellow-600/0 via-yellow-600 to-yellow-600/0 text-white transition-height ${props.class ?? ''}`}
+      class={`w-192 h-0 data-[shown]:h-6 pointer-events-none flex flex-row justify-center items-center bg-gradient-to-r from-yellow-600/0 via-yellow-600 to-yellow-600/0 text-white transition-height ${props.class ?? ''}`}
       bool:data-shown={props.text}
     >
       {props.text}

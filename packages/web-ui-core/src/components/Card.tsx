@@ -163,7 +163,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d touch-none transform-origin-tl card"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d touch-none transform-origin-tl card data-[dragging-end]:pointer-events-none"
       style={style()}
       bool:data-transition-transform={props.enableTransition}
       bool:data-shadow={props.enableShadow}

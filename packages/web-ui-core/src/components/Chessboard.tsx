@@ -365,7 +365,7 @@ function calcCardsInfo(
           draggingEndAnimation: false,
         },
         enableShadow: true,
-        enableTransition: ctx.showHands, // FIX ME
+        enableTransition: true,
         playStep,
         tuneStep,
       });
@@ -1256,7 +1256,6 @@ export function Chessboard(props: ChessboardProps) {
     if (!focusingHands && cardInfo.playStep) {
       localProps.onStepActionState(cardInfo.playStep, selectedDiceValue());
       setDraggingHand({ ...dragging, status: "end" });
-      setTimeout(() => setDraggingHand(null), 200);
     } else {
       setDraggingHand(null);
     }
@@ -1272,6 +1271,7 @@ export function Chessboard(props: ChessboardProps) {
         setShowCardHint("myHand", null);
       }
       setShowDeclareEndButton(false);
+      setDraggingHand(null);
       setHoveringHand(null);
       setSelectingItem(null);
       if (localProps.actionState) {
