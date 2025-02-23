@@ -32,11 +32,11 @@ import {
   type ReactionInfo,
   type StepActionStateHandler,
 } from "./components/Chessboard";
-import type { PlayerIO, RpcResponsePayloadOf } from "@gi-tcg/core";
+import type { ChooseActiveResponse, PlayerIO, RpcResponsePayloadOf } from "@gi-tcg/core";
 import { AsyncQueue } from "./async_queue";
 import { parseMutations } from "./mutations";
 import { UiContext } from "./hooks/context";
-import { createActionState, type ActionState } from "./action";
+import { createActionState, createChooseActiveState, type ActionState } from "./action";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -112,9 +112,15 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     selectCard: async ({ candidateDefinitionIds }) => ({
       selectedDefinitionId: candidateDefinitionIds[0],
     }),
-    chooseActive: async ({ candidateIds }) => ({
-      activeCharacterId: candidateIds[0],
-    }),
+    chooseActive: async ({ candidateIds }) => {
+      const resolver = Promise.withResolvers<ChooseActiveResponse>();
+      actionResolvers.chooseActive = resolver;
+      const acState = createChooseActiveState(candidateIds);
+      setActionState(acState);
+      const response = await resolver.promise;
+      setActionState(null);
+      return response;
+    },
     rerollDice: async () => ({
       diceToReroll: [],
     }),
@@ -170,6 +176,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         break;
       }
       case "chooseActiveCommitted": {
+        actionResolvers.chooseActive?.resolve(result);
         break;
       }
     }

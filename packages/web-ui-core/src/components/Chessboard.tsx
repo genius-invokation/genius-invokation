@@ -1444,7 +1444,7 @@ export function Chessboard(props: ChessboardProps) {
         class="absolute bottom-2 right-2"
         skills={mySkills()}
         switchActiveButton={switchActiveStep() ?? null}
-        switchActiveCost={localProps.actionState?.realCosts.switchActive ?? []}
+        switchActiveCost={localProps.actionState?.realCosts.switchActive ?? null}
         onClick={onSkillClick}
         shown={showSkillButtons()}
       />

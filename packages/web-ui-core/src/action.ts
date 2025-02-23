@@ -1067,14 +1067,17 @@ export function createActionState(actions: Action[]): ActionState {
     }
   }
 
+  // 打出手牌，多步
   for (const [id, node] of playCardMultiSteps) {
     const [step, state] = createMultiStepState(root, id, node);
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
+  // 打出手牌，单步
   for (const [step, stepResult] of playCardSingleSteps.entries()) {
     steps.set(step, stepResult);
   }
 
+  // 使用技能，单步
   const allUseSkillSingleSteps = useSkillSingleStepStates.keys().toArray();
   for (const [step, state] of useSkillSingleStepStates.entries()) {
     state.availableSteps.push(
@@ -1082,6 +1085,7 @@ export function createActionState(actions: Action[]): ActionState {
     );
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
+  // 使用技能，多步 & 多步->单步跳转
   const allUseSkillMultipleSteps: ActionStep[] = [];
   for (const [id, node] of useSkillMultiSteps) {
     const [step, state, allStates] = createMultiStepState(root, id, node);
@@ -1091,21 +1095,123 @@ export function createActionState(actions: Action[]): ActionState {
     }
     allUseSkillMultipleSteps.push(step);
   }
+  // 使用技能，单步->多步跳转
   for (const state of useSkillSingleStepStates.values()) {
     state.availableSteps.push(...allUseSkillMultipleSteps);
   }
 
+  // 切人 & 外层跳转
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
+  // 切人内层跳转
   for (const [step, state] of switchActiveInnerStates.entries()) {
     state.availableSteps.push(
       ...switchActiveInnerStates.keys().filter((k) => k !== step),
     );
   }
+
   root.availableSteps.push(...steps.keys());
-  console.log({ useSkillMultiSteps, playCardMultiSteps });
   console.log(root);
+  return root;
+}
+
+export function createChooseActiveState(candidateIds: number[]): ActionState {
+  const NO_COST: RealCosts = {
+    cards: new Map(),
+    skills: new Map(),
+    switchActive: null,
+  };
+  const CLICK_SWITCH_ACTIVE: ClickSwitchActiveButtonActionStep = {
+    type: "clickSwitchActiveButton",
+    isDisabled: false,
+    isFocused: true,
+  };
+  const innerStates = new Map<ClickEntityActionStep, ActionState>();
+  const root: ActionState = {
+    availableSteps: [CANCEL_ACTION_STEP, CLICK_SWITCH_ACTIVE],
+    realCosts: NO_COST,
+    previewData: NO_PREVIEW,
+    dicePanel: "hidden",
+    autoSelectedDice: null,
+    showBackdrop: false,
+    showHands: true,
+    showSkillButtons: true,
+    hintText: "选择出战角色",
+    step: (step) => {
+      if (step === CANCEL_ACTION_STEP) {
+        return { type: "newState", newState: root };
+      } else if (step === CLICK_SWITCH_ACTIVE) {
+        return {
+          type: "newState",
+          newState: {
+            ...root,
+            alertText: "请选择出战角色",
+          },
+        };
+      } else if (step.type === "clickEntity") {
+        return {
+          type: "newState",
+          newState: innerStates.get(step)!,
+        };
+      } else {
+        console.error(step);
+        throw new Error("Unexpected step");
+      }
+    },
+  };
+  for (const id of candidateIds) {
+    const ENTER_ENTITY_CLICK: ClickEntityActionStep = {
+      type: "clickEntity",
+      entityId: id,
+      ui: ActionStepEntityUi.Outlined,
+    };
+    const CONFIRM_ENTITY_CLICK: ClickEntityActionStep = {
+      type: "clickEntity",
+      entityId: id,
+      ui: ActionStepEntityUi.Selected,
+    };
+    const innerState: ActionState = {
+      availableSteps: [
+        CANCEL_ACTION_STEP,
+        CLICK_SWITCH_ACTIVE,
+        CONFIRM_ENTITY_CLICK,
+      ],
+      realCosts: NO_COST,
+      previewData: NO_PREVIEW,
+      dicePanel: "hidden",
+      autoSelectedDice: null,
+      showBackdrop: false,
+      showHands: true,
+      showSkillButtons: true,
+      hintText: "选择出战角色",
+      step: (step, dice) => {
+        if (step === CANCEL_ACTION_STEP) {
+          return { type: "newState", newState: innerState };
+        } else if (
+          step === CLICK_SWITCH_ACTIVE ||
+          step === CONFIRM_ENTITY_CLICK
+        ) {
+          return {
+            type: "chooseActiveCommitted",
+            activeCharacterId: id,
+          };
+        } else if (step.type === "clickEntity") {
+          return {
+            type: "newState",
+            newState: innerStates.get(step)!,
+          };
+        } else {
+          return root.step(step, dice);
+        }
+      },
+    };
+    innerStates.set(ENTER_ENTITY_CLICK, innerState);
+    root.availableSteps.push(ENTER_ENTITY_CLICK);
+  }
+  for (const [step, state] of innerStates.entries()) {
+    state.availableSteps.push(...innerStates.keys().filter((k) => k !== step));
+  }
   return root;
 }

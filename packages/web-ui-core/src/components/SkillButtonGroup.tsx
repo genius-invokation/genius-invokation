@@ -20,12 +20,13 @@ import {
 } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
-import { createMemo, For, Match, Switch } from "solid-js";
+import { createMemo, For, Match, Show, Switch } from "solid-js";
 import type { ClickSwitchActiveButtonActionStep } from "../action";
 import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 
 export interface SkillButtonProps extends SkillInfo {
+  hideDiceCost?: boolean;
   onClick?: (e: MouseEvent) => void;
 }
 
@@ -50,16 +51,20 @@ function SkillButton(props: SkillButtonProps) {
           </Match>
           <Match when={skillId() === "switchActive"}>
             &#128100;
-            <span class="absolute right-0 bottom-0 text-sm text-white">&#128472;</span>
+            <span class="absolute right-0 bottom-0 text-sm text-white">
+              &#128472;
+            </span>
           </Match>
         </Switch>
       </button>
-      <DiceCost
-        class="flex flex-row gap-2px"
-        cost={props.cost}
-        size={26}
-        realCost={props.realCost}
-      />
+      <Show when={!props.hideDiceCost} fallback={<div class="h-4.5" />}>
+        <DiceCost
+          class="flex flex-row gap-2px"
+          cost={props.cost}
+          size={26}
+          realCost={props.realCost}
+        />
+      </Show>
     </div>
   );
 }
@@ -69,7 +74,7 @@ export interface SkillButtonGroupProps {
   skills: SkillInfo[];
   shown: boolean;
   switchActiveButton: ClickSwitchActiveButtonActionStep | null;
-  switchActiveCost: PbDiceRequirement[];
+  switchActiveCost: PbDiceRequirement[] | null;
   onClick?: (skill: SkillInfo) => void;
 }
 
@@ -85,7 +90,8 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
         id: "switchActive" as const,
         step: step,
         cost: DEFAULT_SWITCH_ACTIVE_COST,
-        realCost: props.switchActiveCost,
+        realCost: props.switchActiveCost ?? [],
+        hideDiceCost: props.switchActiveCost === null,
       };
       return [skillInfo];
     } else {

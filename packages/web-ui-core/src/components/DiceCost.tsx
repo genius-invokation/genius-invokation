@@ -25,7 +25,7 @@ interface DiceCostProps extends ComponentProps<"div"> {
 }
 
 export function DiceCost(props: DiceCostProps) {
-  const [local, restProps] = splitProps(props, ["cost", "realCost"]);
+  const [local, restProps] = splitProps(props, ["cost", "size", "realCost"]);
   const diceMap = () => {
     const costMap = new Map(
       local.cost.map(({ type, count }) => [type as DiceType, count]),
@@ -61,7 +61,7 @@ export function DiceCost(props: DiceCostProps) {
           <Dice
             type={type}
             text={type === DiceType.Legend ? "" : `${count}`}
-            size={props.size}
+            size={local.size}
             color={color}
           />
         )}
