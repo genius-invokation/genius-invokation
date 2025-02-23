@@ -105,6 +105,7 @@ export class SkillExecutor {
       {
         ...skillInfo,
         isPreview: this.config.preview,
+        logger: this.mutator.logger,
       },
       arg as any,
     );

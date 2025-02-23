@@ -72,14 +72,17 @@ function SkillButton(props: SkillButtonProps) {
           </Match>
         </Switch>
       </button>
-      <Show when={!props.hideDiceCost} fallback={<div class="h-4.5" />}>
+      <div
+        class="data-[hidden]:invisible"
+        bool:data-hidden={props.hideDiceCost}
+      >
         <DiceCost
           class="flex flex-row gap-2px"
           cost={props.cost}
           size={26}
           realCost={props.realCost}
         />
-      </Show>
+      </div>
     </div>
   );
 }

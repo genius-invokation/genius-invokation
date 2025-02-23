@@ -192,6 +192,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       : Meta["eventArgType"],
   ) {
     const mutatorConfig: MutatorConfig = {
+      logger: skillInfo.logger,
       onNotify: (opt) => this.onNotify(opt),
       onPause: () =>
         Promise.reject(

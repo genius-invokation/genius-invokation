@@ -59,6 +59,7 @@ import {
   normalizeCost,
 } from "../utils";
 import type { Mutation } from "./mutation";
+import type { IDetailLogger } from "../log";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -148,6 +149,8 @@ export interface SkillInfo {
    * 是否是预览中。部分技能会因是否为预览而采取不同的效果。
    */
   readonly isPreview: boolean;
+  /** @internal */
+  readonly logger?: IDetailLogger;
 }
 export interface InitiativeSkillInfo extends SkillInfo {
   readonly definition: InitiativeSkillDefinition;
