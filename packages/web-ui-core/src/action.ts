@@ -1134,7 +1134,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
     realCosts: NO_COST,
     previewData: NO_PREVIEW,
     dicePanel: "hidden",
-    autoSelectedDice: null,
+    autoSelectedDice: [],
     showBackdrop: false,
     showHands: true,
     showSkillButtons: true,

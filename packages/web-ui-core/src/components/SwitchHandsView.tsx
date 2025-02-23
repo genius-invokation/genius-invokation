@@ -13,21 +13,25 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo } from "solid-js";
-import type { TunningAreaInfo } from "./Chessboard";
-import { cssPropertyOfTransform } from "../ui_state";
+import { Show } from "solid-js";
+import { Button } from "./Button";
+import type { ChessboardViewType } from "./Chessboard";
 
-export interface TuningAreaProps extends TunningAreaInfo {}
+export interface SwitchHandsViewProps {
+  viewType: ChessboardViewType;
+  onConfirm: () => void;
+}
 
-export function TuningArea(props: TuningAreaProps) {
+export function SwitchHandsView(props: SwitchHandsViewProps) {
   return (
-    <div
-      class="absolute top-0 left-0 h-full w-20 invisible data-[shown]:visible transition-all bg-yellow-400/30 data-[card-hovering]:bg-yellow-400/60 flex items-center justify-center text-4xl text-yellow-500"
-      bool:data-shown={props.draggingHand?.tuneStep}
-      bool:data-card-hovering={props.cardHovering}
-      style={cssPropertyOfTransform(props.transform)}
-    >
-      &#128472;
-    </div>
+    <Show when={props.viewType === "switchHands"}>
+      <div class="absolute pointer-events-none inset-0 flex flex-col items-center">
+        <h3 class="absolute mt-30 font-bold text-3xl text-white">替换手牌</h3>
+        <div class="flex-grow" />
+        <Button class="mb-30 pointer-events-auto" onClick={props.onConfirm}>
+          确认
+        </Button>
+      </div>
+    </Show>
   );
 }

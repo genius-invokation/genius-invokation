@@ -33,7 +33,8 @@ export function DicePanel(props: DicePanelProps) {
     if (props.disabledDiceTypes.includes(dice)) {
       return;
     }
-    const selectedDice = [...props.selectedDice];
+    const rawSelectedDice = props.selectedDice;
+    const selectedDice = Array.from(props.dice, (_, i) => !!rawSelectedDice[i]);
     selectedDice[index] = !selectedDice[index];
     props.onSelectDice(selectedDice);
   };
@@ -61,7 +62,13 @@ export function DicePanel(props: DicePanelProps) {
             <ul class="grid grid-cols-2 gap-x-1 gap-y-2">
               <Index each={props.dice}>
                 {(dice, index) => (
-                  <li onClick={() => toggleDice(dice(), index)}>
+                  <li
+                    class="data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed"
+                    bool:data-disabled={props.disabledDiceTypes.includes(
+                      dice(),
+                    )}
+                    onClick={() => toggleDice(dice(), index)}
+                  >
                     <Dice
                       type={dice()}
                       size={50}
@@ -86,7 +93,9 @@ export function DicePanel(props: DicePanelProps) {
             <Index each={props.dice}>
               {(dice, index) => (
                 <li
-                  onClick={() => props.state === "wrapped" && toggleDice(dice(), index)}
+                  onClick={() =>
+                    props.state === "wrapped" && toggleDice(dice(), index)
+                  }
                 >
                   <Dice
                     type={dice()}

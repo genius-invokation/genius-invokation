@@ -114,14 +114,20 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         const card = mutation.value.card!;
         let showing = card.definitionId !== 0;
         if (mutation.$case === "removeCard") {
-          if ([PbRemoveCardReason.PLAY, PbRemoveCardReason.PLAY_NO_EFFECT].includes(mutation.value.reason)) {
+          if (
+            [
+              PbRemoveCardReason.PLAY,
+              PbRemoveCardReason.PLAY_NO_EFFECT,
+            ].includes(mutation.value.reason)
+          ) {
             playingCard = {
               who: mutation.value.who as 0 | 1,
               data: card,
-              noEffect: mutation.value.reason === PbRemoveCardReason.PLAY_NO_EFFECT,
+              noEffect:
+                mutation.value.reason === PbRemoveCardReason.PLAY_NO_EFFECT,
             };
+            showing = false;
           }
-          showing = false;
         }
         const source = getCardArea("from", mutation.value);
         const destination = getCardArea("to", mutation.value);
@@ -249,7 +255,11 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "changePhase": {
-        if ([PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(mutation.value.newPhase)) {
+        if (
+          [PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(
+            mutation.value.newPhase,
+          )
+        ) {
           roundAndPhase.value = mutation.value.newPhase;
         }
         break;

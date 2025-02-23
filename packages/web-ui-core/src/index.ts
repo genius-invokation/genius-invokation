@@ -26,4 +26,3 @@ import "./style.css";
 //   type PlayerIOWithCancellation,
 // } from "./Chessboard.tsx";
 export { createClient } from "./client.tsx";
-export { createWaitNotify } from "./utils.ts";

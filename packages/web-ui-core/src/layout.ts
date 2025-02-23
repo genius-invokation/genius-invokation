@@ -259,9 +259,9 @@ export function getTunningAreaPos(
   [height, width]: Size,
   draggingHand: DraggingCardInfo | null,
 ) {
-  const tangent = (width / 2) / PERSPECTIVE;
+  const tangent = width / 2 / PERSPECTIVE;
   let x = width - DRAGGING_Z * tangent;
-  if (draggingHand?.tuneStep) {
+  if (draggingHand?.status === "moving" && draggingHand.tuneStep) {
     x -= TUNNING_AREA_WIDTH;
   }
   return [x, 0];

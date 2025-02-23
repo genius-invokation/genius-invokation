@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createEffect, createMemo, Show } from "solid-js";
+import { createEffect, createMemo, Match, Show, Switch } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
 import { cssPropertyOfTransform, type CardAnimatingUiState } from "../ui_state";
@@ -22,7 +22,8 @@ import { SelectingIcon } from "./SelectingIcon";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
 
 export interface CardProps extends CardInfo {
-  selecting: boolean;
+  selected: boolean;
+  toBeSwitched: boolean;
   realCost?: PbDiceRequirement[];
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -203,11 +204,18 @@ export function Card(props: CardProps) {
           imageId={props.data.definitionId}
         />
       </div>
-      <Show when={props.selecting}>
-        <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-          <SelectingIcon />
-        </div>
-      </Show>
+      <Switch>
+        <Match when={props.toBeSwitched}>
+          <div class="absolute h-full w-full backface-hidden flex items-center justify-center text-8xl text-red-500 line-height-none">
+            &#8856;
+          </div>
+        </Match>
+        <Match when={props.selected}>
+          <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
+            <SelectingIcon />
+          </div>
+        </Match>
+      </Switch>
       <DiceCost
         class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1"
         cost={data().definitionCost}

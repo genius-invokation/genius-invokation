@@ -16,6 +16,8 @@
 import {
   DiceType,
   PbDiceRequirement,
+  PbDiceType,
+  PbPhaseType,
   PbPlayerStatus,
   type DamageType,
   type PbCardState,
@@ -109,13 +111,16 @@ import { ChessboardBackdrop } from "./ChessboardBackdrop";
 import { ActionHintText } from "./ActionHintText";
 import { ConfirmButton } from "./ConfirmButton";
 import { TuningArea } from "./TuningArea";
+import { RerollDiceView } from "./RerollDiceView";
+import { SelectCardView } from "./SelectCardView";
+import { SwitchHandsView } from "./SwitchHandsView";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
 export interface CardInfo {
   id: number;
   data: PbCardState;
-  kind: CardArea | "animating" | "dragging";
+  kind: CardArea | "switching" | "animating" | "dragging";
   uiState: CardUiState;
   enableShadow: boolean;
   enableTransition: boolean;
@@ -214,6 +219,14 @@ export type StepActionStateHandler = (
   selectedDice: DiceType[],
 ) => void;
 
+export type ChessboardViewType =
+  | "normal"
+  | "rerollDice"
+  | "switchHands"
+  | "selectCard"
+  | "rerollDiceEnd"
+  | "switchHandsEnd";
+
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
   /**
@@ -221,17 +234,28 @@ export interface ChessboardProps extends ComponentProps<"div"> {
    */
   data: ChessboardData;
   /**
-   * 从 rpc/action 或 rpc/switchActive 解析后的
+   * 从 rpc 解析后的状态
    */
   actionState: ActionState | null;
+  viewType: ChessboardViewType;
+  selectCardCandidates: number[];
   onStepActionState: StepActionStateHandler;
+  onRerollDice: (dice: PbDiceType[]) => void;
+  onSwitchHands: (cardIds: number[]) => void;
+  onSelectCard: (cardDefId: number) => void;
+  onGiveUp: () => void;
 }
+
+type MyHandState =
+  | "focusing" // 聚焦手牌显示
+  | "blurred" // 正常收起手牌
+  | "hidden" // 不显示手牌（行动中）
+  | "switching"; // 替换手牌中
 
 interface CardInfoCalcContext {
   who: 0 | 1;
   size: Size;
-  focusingHands: boolean;
-  showHands: boolean;
+  myHandState: MyHandState;
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   availableSteps: ActionStep[];
@@ -241,7 +265,7 @@ function calcCardsInfo(
   state: PbGameState,
   ctx: CardInfoCalcContext,
 ): CardInfo[] {
-  const { who, size, focusingHands, hoveringHand, availableSteps } = ctx;
+  const { who, size, myHandState, hoveringHand, availableSteps } = ctx;
   const cards: CardInfo[] = [];
   for (const who2 of [0, 1] as const) {
     const opp = who2 !== who;
@@ -282,9 +306,10 @@ function calcCardsInfo(
     const totalHandCardCount = handCard.length;
     const skillCount = player.initiativeSkill.length;
 
-    const isFocus = !opp && focusingHands;
-    const z = isFocus ? FOCUSING_HANDS_Z : 1;
-    const ry = isFocus ? 1 : opp ? 185 : 5;
+    const isFocus = !opp && myHandState === "focusing";
+    const isSwitching = !opp && myHandState === "switching";
+    const z = isSwitching ? DRAGGING_Z : isFocus ? FOCUSING_HANDS_Z : 1;
+    const ry = isFocus ? 1 : opp ? 181 : 1;
 
     let hoveringHandIndex: number | null = handCard.findIndex(
       (card) => card.id === hoveringHand?.id,
@@ -332,26 +357,30 @@ function calcCardsInfo(
         });
         continue;
       }
-      const [x, y] =
-        isFocus && ctx.showHands
-          ? getHandCardFocusedPos(
-              size,
-              totalHandCardCount,
-              i,
-              hoveringHandIndex,
-            )
-          : getHandCardBlurredPos(
-              size,
-              opp,
-              ctx.showHands,
-              totalHandCardCount,
-              i,
-              skillCount,
-            );
+      let x, y;
+      if (!opp && myHandState === "switching") {
+        [x, y] = getShowingCardPos(size, totalHandCardCount, i);
+      } else if (!opp && myHandState === "focusing") {
+        [x, y] = getHandCardFocusedPos(
+          size,
+          totalHandCardCount,
+          i,
+          hoveringHandIndex,
+        );
+      } else {
+        [x, y] = getHandCardBlurredPos(
+          size,
+          opp,
+          ctx.myHandState !== "hidden",
+          totalHandCardCount,
+          i,
+          skillCount,
+        );
+      }
       cards.push({
         id: card.id,
         data: card,
-        kind: opp ? "oppHand" : "myHand",
+        kind: opp ? "oppHand" : isSwitching ? "switching" : "myHand",
         uiState: {
           type: "cardStatic",
           isAnimating: false,
@@ -475,6 +504,7 @@ export interface CardCountHintInfo {
 }
 
 export interface TunningAreaInfo {
+  draggingHand: DraggingCardInfo | null;
   cardHovering: boolean;
   transform: Transform;
 }
@@ -490,8 +520,7 @@ interface ChessboardChildren {
 function rerenderChildren(opt: {
   who: 0 | 1;
   size: Size;
-  focusingHands: boolean;
-  showHands: boolean;
+  myHandState: MyHandState;
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   data: ChessboardData;
@@ -500,8 +529,7 @@ function rerenderChildren(opt: {
 }): ChessboardChildren {
   const {
     size,
-    focusingHands,
-    showHands,
+    myHandState,
     hoveringHand,
     draggingHand,
     data,
@@ -545,8 +573,7 @@ function rerenderChildren(opt: {
   const currentCards = calcCardsInfo(state, {
     who: opt.who,
     size,
-    focusingHands,
-    showHands,
+    myHandState,
     hoveringHand,
     draggingHand,
     availableSteps,
@@ -556,8 +583,7 @@ function rerenderChildren(opt: {
     const previousCards = calcCardsInfo(previousState, {
       who: opt.who,
       size,
-      focusingHands,
-      showHands,
+      myHandState,
       hoveringHand,
       draggingHand,
       availableSteps: [],
@@ -569,9 +595,12 @@ function rerenderChildren(opt: {
       .toArray()
       .toSorted((a, b) => a - b)) {
       const currentAnimatingCards = showingCards.get(d)!;
-      const currentShowingCards = currentAnimatingCards
-        .filter((card) => card.showing)
-        .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
+      const currentShowingCards =
+        myHandState === "switching"
+          ? []
+          : currentAnimatingCards
+              .filter((card) => card.showing)
+              .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
       let currentDurationMs = 0;
       for (const animatingCard of currentAnimatingCards) {
         const start = previousCards.find(
@@ -815,6 +844,7 @@ function rerenderChildren(opt: {
 
   const [tunningAreaX, tunningAreaY] = getTunningAreaPos(size, draggingHand);
   const tunningArea: TunningAreaInfo = {
+    draggingHand,
     cardHovering: draggingHand
       ? draggingHand.x + CARD_WIDTH > tunningAreaX
       : false,
@@ -859,7 +889,13 @@ export function Chessboard(props: ChessboardProps) {
     "who",
     "data",
     "actionState",
+    "viewType",
+    "selectCardCandidates",
     "onStepActionState",
+    "onRerollDice",
+    "onSwitchHands",
+    "onSelectCard",
+    "onGiveUp",
     "class",
   ]);
   let chessboardElement!: HTMLDivElement;
@@ -924,20 +960,37 @@ export function Chessboard(props: ChessboardProps) {
     tunningArea: null,
   });
 
+  const getHandState = (
+    focusing: boolean,
+    viewType: ChessboardViewType,
+    actionState: ActionState | null,
+  ): MyHandState => {
+    if (viewType === "switchHands" || viewType === "switchHandsEnd") {
+      return "switching";
+    } else if (actionState && !actionState.showHands) {
+      return "hidden";
+    } else {
+      return focusing ? "focusing" : "blurred";
+    }
+  };
+
   createEffect(
     on(
-      () => props.data,
+      () => localProps.data,
       (data) => {
         const newChildren = rerenderChildren({
           who: localProps.who,
           size: [height(), width()],
-          focusingHands: getFocusingHands(),
-          showHands: props.actionState?.showHands ?? true,
+          myHandState: getHandState(
+            getFocusingHands(),
+            localProps.viewType,
+            localProps.actionState,
+          ),
           hoveringHand: getHoveringHand(),
           draggingHand: getDraggingHand(),
           data,
-          previewData: props.actionState?.previewData ?? NO_PREVIEW,
-          availableSteps: props.actionState?.availableSteps ?? [],
+          previewData: localProps.actionState?.previewData ?? NO_PREVIEW,
+          availableSteps: localProps.actionState?.availableSteps ?? [],
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: true });
@@ -951,14 +1004,21 @@ export function Chessboard(props: ChessboardProps) {
         getFocusingHands,
         getHoveringHand,
         getDraggingHand,
-        () => props.actionState,
+        () => localProps.actionState,
+        () => localProps.viewType,
       ],
-      ([size, focusingHands, hoveringHand, draggingHand, actionState]) => {
+      ([
+        size,
+        focusingHands,
+        hoveringHand,
+        draggingHand,
+        actionState,
+        viewType,
+      ]) => {
         const newChildren = rerenderChildren({
           who: localProps.who,
           size,
-          focusingHands,
-          showHands: actionState?.showHands ?? true,
+          myHandState: getHandState(focusingHands, viewType, actionState),
           hoveringHand,
           draggingHand,
           data: localProps.data,
@@ -984,9 +1044,15 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
+  /**
+   * on actionState change:
+   * - set/unset selected dice
+   * - trigger alert
+   *
+   */
   createEffect(
     on(
-      () => props.actionState,
+      () => localProps.actionState,
       (actionState, prevActionState) => {
         // DEBUG
         console.log(actionState);
@@ -1015,10 +1081,15 @@ export function Chessboard(props: ChessboardProps) {
           // 退出行动时，取消所有的选择项
           setSelectingItem(null);
           setDicePanelState("hidden");
+          setSelectedDice([]);
         }
       },
     ),
   );
+
+  createEffect(() => {
+    setSelectingItem(null);
+  });
 
   const [isShowCardHint, setShowCardHint] = createStore<
     Record<CardArea, number | null>
@@ -1123,11 +1194,26 @@ export function Chessboard(props: ChessboardProps) {
     const selected = selectedDice();
     return myDice().filter((_, i) => selected[i]);
   };
-  // const onCardClick = (
-  //   e: MouseEvent,
-  //   currentTarget: HTMLElement,
-  //   cardInfo: CardInfo,
-  // ) => {};
+
+  const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
+
+  const onCardClick = (
+    e: MouseEvent,
+    currentTarget: HTMLElement,
+    cardInfo: CardInfo,
+  ) => {
+    if (cardInfo.kind === "switching") {
+      setSwitchedCards((c) => {
+        const index = c.indexOf(cardInfo.id);
+        if (index === -1) {
+          return [...c, cardInfo.id];
+        } else {
+          return c.filter((_, i) => i !== index);
+        }
+      });
+      setSelectingItem({ type: "card", info: cardInfo });
+    }
+  };
 
   const onCardPointerEnter = (
     e: PointerEvent,
@@ -1373,12 +1459,16 @@ export function Chessboard(props: ChessboardProps) {
           {(card) => (
             <Card
               {...card()}
-              selecting={
+              selected={
                 card().id === selectingItem()?.info.id &&
                 card().kind !== "dragging"
               }
-              realCost={props.actionState?.realCosts.cards.get(card().id)}
-              // onClick={(e, t) => onCardClick(e, t, card())}
+              toBeSwitched={
+                card().kind === "switching" &&
+                switchedCards().includes(card().id)
+              }
+              realCost={localProps.actionState?.realCosts.cards.get(card().id)}
+              onClick={(e, t) => onCardClick(e, t, card())}
               onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
               onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
               onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
@@ -1408,7 +1498,10 @@ export function Chessboard(props: ChessboardProps) {
           )}
         </Key>
         <ChessboardBackdrop
-          shown={props.actionState?.showBackdrop}
+          shown={
+            localProps.viewType === "switchHands" ||
+            localProps.actionState?.showBackdrop
+          }
           onClick={onChessboardClick}
         />
         <Show when={children().tunningArea}>
@@ -1444,7 +1537,9 @@ export function Chessboard(props: ChessboardProps) {
         class="absolute bottom-2 right-2"
         skills={mySkills()}
         switchActiveButton={switchActiveStep() ?? null}
-        switchActiveCost={localProps.actionState?.realCosts.switchActive ?? null}
+        switchActiveCost={
+          localProps.actionState?.realCosts.switchActive ?? null
+        }
         onClick={onSkillClick}
         shown={showSkillButtons()}
       />
@@ -1465,14 +1560,64 @@ export function Chessboard(props: ChessboardProps) {
         info={localProps.data.roundAndPhase}
       />
       <Show when={localProps.data.notificationBox} keyed>
-        {(data) => <NotificationBox opp={data.who !== props.who} data={data} />}
+        {(data) => (
+          <NotificationBox opp={data.who !== localProps.who} data={data} />
+        )}
       </Show>
       <Show when={localProps.data.playingCard} keyed>
-        {(data) => <PlayingCard opp={data.who !== props.who} {...data} />}
+        {(data) => <PlayingCard opp={data.who !== localProps.who} {...data} />}
       </Show>
+      <RerollDiceView
+        viewType={localProps.viewType}
+        dice={myDice()}
+        selectedDice={selectedDice()}
+        onSelectDice={setSelectedDice}
+        onConfirm={() => {
+          localProps.onRerollDice(selectedDiceValue() as PbDiceType[]);
+          setSelectedDice([]);
+        }}
+      />
+      <SelectCardView
+        viewType={localProps.viewType}
+        candidateIds={localProps.selectCardCandidates}
+        onClickCard={(id) => {
+          dataViewerController.showCard(id);
+        }}
+        onConfirm={(id) => {
+          localProps.onSelectCard(id);
+          dataViewerController.hide();
+        }}
+      />
+      <SwitchHandsView
+        viewType={localProps.viewType}
+        onConfirm={() => {
+          localProps.onSwitchHands(switchedCards());
+          dataViewerController.hide();
+        }}
+      />
       <div class="absolute inset-2 pointer-events-none">
         <CardDataViewer />
       </div>
+      <Show
+        when={localProps.data.state.phase === PbPhaseType.GAME_END}
+        fallback={
+          <button
+            class="absolute right-12 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+            title="放弃对局"
+            onClick={() => {
+              if (confirm("确定放弃对局吗？")) {
+                localProps.onGiveUp();
+              }
+            }}
+          >
+            &#10005;
+          </button>
+        }
+      >
+        <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+          {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+        </div>
+      </Show>
     </div>
   );
 }

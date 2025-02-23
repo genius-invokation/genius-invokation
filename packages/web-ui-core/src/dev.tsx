@@ -37,7 +37,7 @@ const deck0: DeckConfig = {
 const deck1: DeckConfig = {
   characters: [1709, 1201, 1608],
   cards: [
-    322008, 332037, 333006, 332004,
+    323008, 332003, 332040, 322008, 332037, 333006, 332004,
     312023, 312023, 332011, 321004, 321004, 321024,
     321024, 322018, 322018, 331202, 331202, 332004, 332004, 332006, 332006,
     332025, 332031, 332032, 332032, 332040, 332040, 333015, 333015,
@@ -74,6 +74,7 @@ function App() {
     game.players[0].config.allowTuningAnyDice = true;
     game.onIoError = console.error;
     game.start();
+    // game.giveUp
     Reflect.set(window, "game", game);
   });
 
