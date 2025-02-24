@@ -16,12 +16,11 @@
 /* @refresh reload */
 
 import "./index";
-import { batch, createSignal, onMount, Show, untrack } from "solid-js";
+import { onMount } from "solid-js";
 import { render } from "solid-js/web";
 
 import getData from "@gi-tcg/data";
-import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
-import { createPlayer } from "@gi-tcg/webui";
+import { Game, type DeckConfig } from "@gi-tcg/core";
 import { createClient } from "./client";
 
 const deck0: DeckConfig = {
@@ -46,10 +45,9 @@ const deck1: DeckConfig = {
 };
 
 function App() {
-  let cb0!: HTMLDivElement;
-  let cb1!: HTMLDivElement;
 
-  const [newIo1, NewChessboard] = createClient(1);
+  const [io0, Chessboard0] = createClient(0);
+  const [io1, Chessboard1] = createClient(1);
 
   onMount(() => {
     const state = Game.createInitialState({
@@ -57,19 +55,11 @@ function App() {
       decks: [deck0, deck1],
       // initialHandsCount: 10,
     });
-    const io0 = createPlayer(cb0, 0);
-    const io1 = createPlayer(cb1, 1);
 
     const game = new Game(state);
 
     game.players[0].io = io0;
-    game.players[1].io = {
-      ...newIo1,
-      notify: async (n) => {
-        io1.notify(n);
-        newIo1.notify(n);
-      },
-    };
+    game.players[1].io = io1;
     game.players[0].config.alwaysOmni = true;
     game.players[0].config.allowTuningAnyDice = true;
     game.onIoError = console.error;
@@ -79,13 +69,10 @@ function App() {
   });
 
   return (
-    <div class="min-w-180 flex flex-col gap-2">
-      <div ref={cb0} />
-      <details>
-        <div ref={cb1} />
-      </details>
-      <NewChessboard class="h-0" />
-    </div>
+    <>
+      <Chessboard0 />
+      <Chessboard1 />
+    </>
   );
 }
 

@@ -1,19 +1,19 @@
-# `@gi-tcg/webui-core` Web UI Core for Genius Invokation
+# `@gi-tcg/web-ui-core` Web UI Core for Genius Invokation
 
 > **Warning**
 >
-> This package is not designed for public use yet. You should make `solid-js` as a peer dependency to render things exported from this package. For more common scenario, use `@gi-tcg/webui` package instead.  
+> This package is not designed for public use yet. You should make `solid-js` as a peer dependency to render things exported from this package. For more common scenario, use `@gi-tcg/web-ui` package instead.  
 > This is an ESM-only package.
 
 ## Usage
 
 ```tsx
-import { createPlayer } from "@gi-tcg/webui-core";
-import "@gi-tcg/webui-core/style.css";
+import { createClient } from "@gi-tcg/web-ui-core";
+import "@gi-tcg/web-ui-core/style.css";
 
 function App() {
-  const [io0, Chessboard0] = createPlayer(0);
-  const [io1, Chessboard1] = createPlayer(1);
+  const [io0, Chessboard0] = createClient(0);
+  const [io1, Chessboard1] = createClient(1);
 
   const state = /* ... */
   const game = new Game(state);
@@ -22,7 +22,7 @@ function App() {
   
   onMount(() => {
     game.start();
-  })
+  });
 
   return (
     <>

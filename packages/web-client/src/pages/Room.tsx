@@ -25,8 +25,8 @@ import {
   onCleanup,
 } from "solid-js";
 import axios, { AxiosError } from "axios";
-import { PlayerIOWithCancellation, createPlayer } from "@gi-tcg/webui-core";
-import "@gi-tcg/webui-core/style.css";
+import { PlayerIOWithCancellation, createPlayer } from "@gi-tcg/legacy-web-ui-core";
+import "@gi-tcg/legacy-web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
 import { RpcMethod, RpcRequest } from "@gi-tcg/typings";
 

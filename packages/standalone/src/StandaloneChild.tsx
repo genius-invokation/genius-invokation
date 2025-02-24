@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { createClient } from "@gi-tcg/web-ui-core";
-import "@gi-tcg/webui-core/style.css";
+import "@gi-tcg/web-ui-core/style.css";
 import { onCleanup, onMount } from "solid-js";
 
 export function StandaloneChild() {

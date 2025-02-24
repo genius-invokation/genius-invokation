@@ -35,7 +35,6 @@
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/data": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
-    "@gi-tcg/webui": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",

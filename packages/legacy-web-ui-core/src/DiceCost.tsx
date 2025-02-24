@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { DiceType, PbDiceRequirement } from "@gi-tcg/typings";
-import { diceToMap } from "@gi-tcg/utils";
 import { ComponentProps, For, splitProps } from "solid-js";
 
 import { Dice, DiceColor } from "./Dice";

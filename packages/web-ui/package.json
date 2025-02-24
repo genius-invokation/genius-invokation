@@ -1,5 +1,5 @@
 {
-  "name": "@gi-tcg/webui",
+  "name": "@gi-tcg/web-ui",
   "version": "0.17.0",
   "description": "Web UI for Genius Invokation TCG",
   "type": "module",
@@ -15,7 +15,7 @@
   "devDependencies": {
     "solid-element": "^1.8.0",
     "solid-js": "^1.9.4",
-    "@gi-tcg/webui-core": "workspace:*",
+    "@gi-tcg/web-ui-core": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
