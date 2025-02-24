@@ -59,7 +59,7 @@ export function DeckBuilder(props: DeckBuilderProps) {
 
   const { CardDataViewer, showCard, showCharacter, hide } =
     createCardDataViewer({
-      assetsApiEndPoint: untrack(() => local.assetsApiEndpoint),
+      assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
     });
   const [cardDataViewerOffsetX, setCardDataViewerOffsetX] = createSignal(0);
   const [cardDataViewerOffsetY, setCardDataViewerOffsetY] = createSignal(0);

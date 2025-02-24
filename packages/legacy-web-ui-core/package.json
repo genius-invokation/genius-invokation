@@ -1,7 +1,7 @@
 {
-  "name": "@gi-tcg/webui-core",
+  "name": "@gi-tcg/legacy-web-ui-core",
   "version": "0.17.0",
-  "description": "Core component of @gi-tcg/webui",
+  "description": "Core Solid component of 'Legacy' Web UI",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {

@@ -6,8 +6,8 @@
   - `@gi-tcg/core` 核心逻辑与游戏流程
   - `@gi-tcg/data` 官方卡牌数据表示
 - **界面部分**
-  - `@gi-tcg/webui-core` 基于 Solid 的 Web 用户界面组件
-  - `@gi-tcg/webui` 基于 Web Component 的用户界面包装
+  - `@gi-tcg/web-ui-core` 基于 Solid 的 Web 用户界面组件
+  - `@gi-tcg/web-ui` 基于 Web Component 的用户界面包装
   - `@gi-tcg/deck-builder` Web 端组牌器组件
   - `@gi-tcg/detail-log-viewer` Web 端核心结算细节日志查看组件
   - `@gi-tcg/standalone` 用于调试的集成 Web 用户界面
@@ -101,10 +101,10 @@ bun dev
 
 定义卡牌数据被设计为“应当”非常简单的操作。请查阅 `@gi-tcg/data` 包的代码。参考文档位于 [data](./data/README.md)。
 
-编辑完成后，可使用 `@gi-tcg/webui-core` 库测试修改。具体来说，可以修改 `webui-core` 库的 `src/dev.tsx` 的 `PlayerConfig` 以包含需要测试的卡牌，并使用 Vite 预览对局。
+编辑完成后，可使用 `@gi-tcg/web-ui-core` 库测试修改。具体来说，可以修改 `web-ui-core` 库的 `src/dev.tsx` 的 `PlayerConfig` 以包含需要测试的卡牌，并使用 Vite 预览对局。
 
 ```sh
-cd packages/webui-core
+cd packages/web-ui-core
 # 编辑 src/dev.tsx
 bun dev # 查看效果
 ```
@@ -116,7 +116,7 @@ bun dev # 查看效果
 - [核心数据结构](./state.md)
 - [结算流程设计](./process.md)
 
-同样地，可以使用 `@gi-tcg/webui-core` 来测试核心的修改情况，流程与上节相同。
+同样地，可以使用 `@gi-tcg/web-ui-core` 来测试核心的修改情况，流程与上节相同。
 
 ### 例：修改前后端通信数据格式
 

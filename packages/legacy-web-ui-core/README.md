@@ -1,15 +1,15 @@
-# `@gi-tcg/webui-core` Web UI Core for Genius Invokation
+# `@gi-tcg/legacy-web-ui-core` (Deprecated) Web UI Core for Genius Invokation
 
 > **Warning**
 >
-> This package is not designed for public use yet. You should make `solid-js` as a peer dependency to render things exported from this package. For more common scenario, use `@gi-tcg/webui` package instead.  
+> This package is deprecated. Use `@gi-tcg/web-ui-core` instead.
 > This is an ESM-only package.
 
 ## Usage
 
 ```tsx
-import { createPlayer } from "@gi-tcg/webui-core";
-import "@gi-tcg/webui-core/style.css";
+import { createPlayer } from "@gi-tcg/legacy-web-ui-core";
+import "@gi-tcg/legacy-web-ui-core/style.css";
 
 function App() {
   const [io0, Chessboard0] = createPlayer(0);

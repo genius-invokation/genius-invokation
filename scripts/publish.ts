@@ -34,8 +34,8 @@ const packages = [
   "core",
   "data",
   "assets-manager",
-  "webui-core",
-  "webui",
+  "web-ui-core",
+  "web-ui",
 ];
 const VERSION = "0.17.0";
 

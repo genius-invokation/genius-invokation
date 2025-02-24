@@ -23,6 +23,7 @@ import {
   SwitchHandsResponse,
   SelectCardResponse,
   RerollDiceResponse,
+  PbPhaseType,
 } from "@gi-tcg/typings";
 import { createSignal, type ComponentProps, type JSX } from "solid-js";
 import {
@@ -60,9 +61,9 @@ const EMPTY_PLAYER_DATA: PbPlayerState = {
   legendUsed: false,
 };
 
-const EMPTY_GAME_STATE: PbGameState = {
+export const EMPTY_GAME_STATE: PbGameState = {
   currentTurn: 0,
-  phase: 0 /* PbPhaseType.PHASE_INIT_HANDS */,
+  phase: PbPhaseType.INIT_HANDS,
   roundNumber: 0,
   player: [EMPTY_PLAYER_DATA, EMPTY_PLAYER_DATA],
 };
