@@ -9,12 +9,6 @@ jobs:
     name: Sync main branch to beta repo
     runs-on: ubuntu-latest
     steps:
-      - run: >
-          curl -L 
-          -X POST 
-          -H "Accept: application/vnd.github+json" 
-          -H "Authorization: Bearer ${{ secrets.GH_PAT_BETA_REPO }}" 
-          -H "X-GitHub-Api-Version: 2022-11-28" 
-          https://api.github.com/repos/genius-invokation/genius-invokation-beta/merge-upstream 
-          -d '{"branch":"main"}'
-          --fail-with-body
+      - run: gh repo sync genius-invokation/genius-invokation-beta --source genius-invokation/genius-invokation
+        env:
+          GH_TOKEN: ${{ secrets.BETA_SYNC_TOKEN }}
