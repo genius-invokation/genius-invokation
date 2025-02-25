@@ -9,6 +9,11 @@ jobs:
     name: Sync main branch to beta repo
     runs-on: ubuntu-latest
     steps:
-      - run: gh repo sync genius-invokation/genius-invokation-beta --source genius-invokation/genius-invokation
-        env:
-          GH_TOKEN: ${{ secrets.BETA_SYNC_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BETA_TOKEN }}
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add beta ${{ secrets.BETA_REPO }}
+          git push --force --set-upstream beta main
