@@ -1,0 +1,14 @@
+name: 🔄 Sync main branch to beta repo
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  Sync:
+    name: Sync main branch to beta repo
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh repo sync genius-invokation/genius-invokation-beta --source genius-invokation/genius-invokation
+        env:
+          GH_TOKEN: ${{ secrets.BETA_SYNC_TOKEN }}
