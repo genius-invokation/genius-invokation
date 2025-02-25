@@ -10,14 +10,6 @@ jobs:
     name: Sync main branch to beta repo
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.BETA_TOKEN }}
-          # Must set fetch-depth to 0 to fetch all history for push
-          # Or can not push to the beta repo
-          fetch-depth: 0
-      - run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote add beta ${{ secrets.BETA_REPO }}
-          git push --force --set-upstream beta main
+      - run: gh repo sync genius-invokation/genius-invokation-beta --source genius-invokation/genius-invokation
+        env:
+          GH_TOKEN: ${{ secrets.BETA_TOKEN }}
