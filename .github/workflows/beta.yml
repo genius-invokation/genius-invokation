@@ -16,7 +16,7 @@ permissions:
 jobs:
   Build-Core:
     name: ⚙️ Build TypeScript Core
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       SERVER_HOST: gi.xqm32.org
       WEB_CLIENT_BASE_PATH: /beta/
