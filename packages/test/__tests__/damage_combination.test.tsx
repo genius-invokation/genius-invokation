@@ -38,6 +38,6 @@ test("damage combination", async () => {
   // 另一位的雷冰超导触发的后台穿透 +1
   c.expect(target).toHaveVariable({ health: 7 });
   // 伤害合并后，只触发一次老兵，不抽牌
-  c.expect(veteran).toHaveVariable({ triggered: 1 });
+  c.expect(veteran).toHaveVariable({ count: 1 });
   c.expect("my hands").toBeCount(0);
 });
