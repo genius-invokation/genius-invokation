@@ -728,16 +728,16 @@ export const VeteransVisage = card(312023)
   .since("v4.4.0")
   .costVoid(2)
   .artifact()
-  .variable("triggered", 0)
+  .variable("count", 0)
   .on("roundEnd")
-  .setVariable("triggered", 0)
+  .setVariable("count", 0)
   .on("damagedOrHealed")
   .do((c) => {
-    c.addVariable("triggered", 1);
-    const triggered = c.getVariable("triggered");
-    if (triggered === 1) {
+    c.addVariable("count", 1);
+    const v = c.getVariable("count");
+    if (v === 1) {
       c.generateDice(c.self.master().element(), 1);
-    } else if (triggered === 2) {
+    } else if (v === 2) {
       c.drawCards(1);
     }
   })
@@ -814,6 +814,8 @@ export const MarechausseeHunter = card(312024)
   .costVoid(3)
   .artifact()
   .variable("count", 0)
+  .on("roundEnd")
+  .setVariable("count", 0)
   .on("damagedOrHealed")
   .do((c) => {
     c.addVariable("count", 1);
