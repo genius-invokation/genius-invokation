@@ -17,6 +17,7 @@ import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
 import { PrismaService } from "../db/prisma.service";
 import axios from "axios";
 import { GET_USER_API_URL } from "../auth/auth.service";
+import type { UpdateUserDto } from "./users.controller";
 
 export interface UserInfo {
   id: number;
@@ -68,5 +69,13 @@ export class UsersService implements OnModuleInit {
       create: { id, ghToken },
       update: { ghToken },
     });
+  }
+
+  async update(id: number, update: UpdateUserDto) {
+    await this.prisma.user.update({
+      where: { id },
+      data: update,
+    });
+    return (await this.findById(id))!;
   }
 }

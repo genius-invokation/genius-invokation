@@ -19,10 +19,17 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
 } from "@nestjs/common";
 import { UsersService, type UserInfo } from "./users.service";
 import { User } from "../auth/user.decorator";
 import { Public } from "../auth/auth.guard";
+import { Length } from "class-validator";
+
+export class UpdateUserDto {
+  @Length(1, 64)
+  nickname?: string;
+}
 
 @Controller("users")
 export class UsersController {
@@ -48,5 +55,13 @@ export class UsersController {
       throw new NotFoundException();
     }
     return user;
+  }
+
+  @Patch("me")
+  async updateMe(
+    @User() userId: number,
+    update: UpdateUserDto,
+  ): Promise<UserInfo> {
+    return await this.users.update(userId, update);
   }
 }
