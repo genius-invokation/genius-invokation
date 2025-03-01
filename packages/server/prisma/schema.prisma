@@ -27,11 +27,12 @@ datasource db {
 }
 
 model User {
-  id              Int              @id
-  ghToken         String?
-  games           PlayerOnGames[]
-  createdAt       DateTime         @default(now())
-  decks           Deck[]
+  id        Int             @id
+  nickname  String?
+  ghToken   String?
+  games     PlayerOnGames[]
+  createdAt DateTime        @default(now())
+  decks     Deck[]
 }
 
 model Game {
