@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/main.ts",
-    "build": "bunx prisma generate",
+    "prisma:migrate": "bun prisma migrate prod",
+    "prisma:generate": "bun prisma generate",
+    "build": "bun run prisma:migrate && bun rn prisma:generate",
     "check": "tsc",
     "debug": "nest start --debug --watch",
     "app-name": "bun --print '(await import(\"@gi-tcg/config\")).IS_BETA?\"gi-tcg-beta\":\"gi-tcg\"'",
