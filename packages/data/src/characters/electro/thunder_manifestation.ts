@@ -13,7 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, CombatStatusHandle, StatusHandle } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, CombatStatusHandle, StatusHandle, customEvent } from "@gi-tcg/core/builder";
+
+const talentShouldDrawCard = customEvent("thunderManifestation/talentShouldDrawCard");
 
 /**
  * @id 124022
@@ -30,16 +32,12 @@ export const LightningRod: StatusHandle = status(124022)
     ].includes(e.source.definition.id))
   .increaseDamage(1)
   .dispose()
+  .on("damaged")
+  .emitCustomEvent(talentShouldDrawCard)
   .on("selfDispose")
   // 雷音权现对已带有雷鸣探知的角色造成伤害会弃置雷鸣探知
   // 但此行为也会触发天赋的抽牌
-  .do((c) => {
-    const oppTalent =c.$(`opp equipment with definition id ${GrievingEcho}`);
-    if (oppTalent && oppTalent.getVariable("usagePerRound")) {
-      c.drawCards(1, { who: "opp" });
-      c.setVariable("usagePerRound", 0, oppTalent.state);
-    }
-  })
+  .emitCustomEvent(talentShouldDrawCard)
   .done();
 
 /**
@@ -172,10 +170,7 @@ export const GrievingEcho = card(224021)
   .talent(ThunderManifestation)
   .on("enter")
   .useSkill(StrifefulLightning)
-  .on("damaged", (c, e) => {
-    const target = c.of(e.target);
-    return !target.isMine() && target.hasStatus(LightningRod);
-  })
+  .on(talentShouldDrawCard)
   .listenToAll()
   .usagePerRound(1)
   .drawCards(1)

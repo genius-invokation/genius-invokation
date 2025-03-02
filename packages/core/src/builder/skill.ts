@@ -37,6 +37,7 @@ import {
   type SkillInfoOfContextConstruction,
   ModifyHeal0EventArg,
   ModifyHeal1EventArg,
+  CustomEventEventArg,
 } from "../base/skill";
 import type {
   AnyState,
@@ -50,11 +51,7 @@ import {
   SkillContext,
   type TypedSkillContext,
 } from "./context/skill";
-import type {
-  ExEntityType,
-  ExtensionHandle,
-  SkillHandle,
-} from "./type";
+import type { ExEntityType, ExtensionHandle, SkillHandle } from "./type";
 import {
   type EntityArea,
   type EntityType,
@@ -84,14 +81,18 @@ import {
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
+import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 
-export type SkillBuilderMetaBase = Omit<ContextMetaBase, "readonly">;
+export type SkillBuilderMetaBase = Omit<
+  ContextMetaBase,
+  "readonly" | "shortcutReceiver"
+>;
 export type ReadonlyMetaOf<BM extends SkillBuilderMetaBase> = {
   [K in keyof SkillBuilderMetaBase]: BM[K];
-} & { readonly: true };
+} & { readonly: true; shortcutReceiver: unknown };
 export type WritableMetaOf<BM extends SkillBuilderMetaBase> = {
   [K in keyof SkillBuilderMetaBase]: BM[K];
-} & { readonly: false };
+} & { readonly: false; shortcutReceiver: unknown };
 
 export type SkillOperation<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<WritableMetaOf<Meta>>,
@@ -136,15 +137,15 @@ type InitiativeSkillBuilderMeta<
   associatedExtension: AssociatedExt;
 };
 
-export type TriggeredSkillBuilderMeta<
-  EventName extends DetailedEventNames,
+export type CreateSkillBuilderMeta<
+  EventArgType,
   CallerType extends ExEntityType,
   Vars extends string,
   AssociatedExt extends ExtensionHandle,
 > = {
   callerType: CallerType;
   callerVars: Vars;
-  eventArgType: DetailedEventArgOf<EventName>;
+  eventArgType: EventArgType;
   associatedExtension: AssociatedExt;
 };
 
@@ -412,7 +413,7 @@ const detailedEventDictionary = {
     return (
       // 大部分支援牌不触发自身的打出时；
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
-      // c.self.id !== e.card.id &&  
+      // c.self.id !== e.card.id &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
@@ -525,7 +526,10 @@ const detailedEventDictionary = {
   }),
   selectCard: defineDescriptor("onSelectCard", (c, e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
-  })
+  }),
+  customEvent: defineDescriptor("onCustomEvent", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.entity.id, r);
+  }),
 } satisfies Record<string, Descriptor<any>>;
 
 type OverrideEventArgType = {
@@ -540,7 +544,10 @@ type OverrideEventArgType = {
   decreaseHealed: Omit<ModifyHeal1EventArg, "damageInfo" | "value">;
 };
 
-type DetailedEventDictionary = typeof detailedEventDictionary;
+type DetailedEventDictionary = Omit<
+  typeof detailedEventDictionary,
+  "customEvent"
+>;
 export type DetailedEventNames = keyof DetailedEventDictionary;
 export type DetailedEventArgOf<E extends DetailedEventNames> =
   E extends keyof OverrideEventArgType
@@ -644,41 +651,60 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   }
 }
 
-// 找到所有返回 void 的方法
-type AvailablePropImpl<
-  Obj extends object,
-  K extends keyof Obj,
-> = Obj[K] extends (...args: any[]) => void
-  ? ReturnType<Obj[K]> extends void | { [ENABLE_SHORTCUT]: true }
-    ? K
-    : never
-  : never;
-type AvailablePropOf<Ctx extends object> = {
-  [K in keyof Ctx]: AvailablePropImpl<Ctx, K>;
+type EnableShortcutPropsOf<Ctx extends object> = {
+  [K in keyof Ctx]: Ctx[K] extends (...args: any[]) => infer R
+    ? R extends { [ENABLE_SHORTCUT]: true }
+      ? K
+      : never
+    : never;
 }[keyof Ctx];
 
-type SkillContextShortCutSource<Meta extends ContextMetaBase> =
-  TypedSkillContext<Omit<Meta, "readonly"> & { readonly: false }> &
-    Omit<Meta["eventArgType"], `_${string}`>;
-
-type SkillContextShortcutProps<Meta extends ContextMetaBase> = AvailablePropOf<
-  SkillContextShortCutSource<Meta>
+/** 所有允许 shortcut 调用的方法名 */
+type EnabledShortcutProps = EnableShortcutPropsOf<
+  TypedSkillContext<{
+    readonly: false;
+    eventArgType: unknown;
+    associatedExtension: never;
+    callerType: "character";
+    callerVars: never;
+    shortcutReceiver: {};
+  }>
 >;
 
-// 所有返回 void 的方法的参数类型
-type SkillContextShortcutArgs<
-  Meta extends ContextMetaBase,
-  K extends keyof SkillContextShortCutSource<Meta>,
-> = SkillContextShortCutSource<Meta>[K] extends (...args: infer Args) => void
-  ? Args
-  : never;
+type ShortcutSkillContext<Meta extends ContextMetaBase> = Pick<
+  TypedSkillContext<Meta>,
+  EnabledShortcutProps & keyof TypedSkillContext<Meta>
+>;
 
-// 带有直达方法的 Builder，使用 `enableShortcut` 生成
-export type BuilderWithShortcut<Original> = Original & {
-  [K in SkillContextShortcutProps<WritableMetaOf<ExtractBM<Original>>>]: (
-    ...args: SkillContextShortcutArgs<WritableMetaOf<ExtractBM<Original>>, K>
+type EventArgShortcutPropsOf<EventArgT> = {
+  [K in keyof EventArgT]: K extends `_${string}`
+    ? never
+    : EventArgT[K] extends (...args: any[]) => infer R
+      ? R extends void
+        ? K
+        : never
+      : never;
+}[keyof EventArgT];
+type EventArgShortcutParamsOf<
+  EventArgT,
+  K extends keyof EventArgT,
+> = EventArgT[K] extends (...args: infer P) => void ? P : never;
+
+type EventArgShortcut<Original> = {
+  [K in EventArgShortcutPropsOf<ExtractBM<Original>["eventArgType"]>]: (
+    ...args: EventArgShortcutParamsOf<ExtractBM<Original>["eventArgType"], K>
   ) => BuilderWithShortcut<Original>;
 };
+
+/**
+ * 带有 shortcut 的 builder，使用 `withShortcut` 生成。包括：
+ * - `Original` 原有 builder 的方法
+ * - `ShortcutSkillContext<...>` 对 SkillContext 的 shortcut
+ * - `EventArgShortcut<...>` 对 EventArgType 的 shortcut
+ */
+export type BuilderWithShortcut<Original> = Original &
+  ShortcutSkillContext<ShortcutMetaOf<Original>> &
+  EventArgShortcut<Original>;
 
 type ExtractBM<T> = T extends {
   [BUILDER_META_TYPE]: infer Meta extends SkillBuilderMetaBase;
@@ -686,13 +712,17 @@ type ExtractBM<T> = T extends {
   ? Meta
   : never;
 
+type ShortcutMetaOf<Builder> = {
+  [K in keyof SkillBuilderMetaBase]: ExtractBM<Builder>[K];
+} & { readonly: false; shortcutReceiver: BuilderWithShortcut<Builder> };
+
 /**
  * 为 Builder 添加直达 SkillContext 的函数，即可
  * `.do((c) => c.PROP(ARGS))`
  * 直接简写为
  * `.PROP(ARGS)`
  */
-export function enableShortcut<T extends SkillBuilder<any>>(
+export function withShortcut<T extends SkillBuilder<any>>(
   original: T,
 ): BuilderWithShortcut<T> {
   const proxy = new Proxy(original, {
@@ -724,18 +754,18 @@ export interface UsageOptions<Name extends string> extends VariableOptions {
 }
 
 export class TriggeredSkillBuilder<
-  EventName extends DetailedEventNames,
+  EventArgType,
   CallerType extends "character" | EntityType,
   CallerVars extends string,
   AssociatedExt extends ExtensionHandle,
   ParentFromCard extends boolean,
   ParentSnippets extends {},
 > extends SkillBuilder<
-  TriggeredSkillBuilderMeta<EventName, CallerType, CallerVars, AssociatedExt>
+  CreateSkillBuilderMeta<EventArgType, CallerType, CallerVars, AssociatedExt>
 > {
   constructor(
     id: number,
-    private readonly detailedEventName: EventName,
+    private readonly detailedEventName: DetailedEventNames | CustomEvent,
     private readonly parent: EntityBuilder<
       CallerType,
       CallerVars,
@@ -744,8 +774,8 @@ export class TriggeredSkillBuilder<
       ParentSnippets
     >,
     private readonly triggerFilter: SkillOperationFilter<
-      TriggeredSkillBuilderMeta<
-        EventName,
+      CreateSkillBuilderMeta<
+        EventArgType,
         CallerType,
         CallerVars,
         AssociatedExt
@@ -776,7 +806,7 @@ export class TriggeredSkillBuilder<
     opt?: UsageOptions<VarName>,
   ): BuilderWithShortcut<
     TriggeredSkillBuilder<
-      EventName,
+      EventArgType,
       CallerType,
       CallerVars | VarName,
       AssociatedExt,
@@ -841,12 +871,7 @@ export class TriggeredSkillBuilder<
   /** 调用之前在 `EntityBuilder` 中定义的“小程序” */
   declare callSnippet: CallSnippet<
     ParentSnippets,
-    {
-      callerType: CallerType;
-      callerVars: CallerVars;
-      eventArgType: DetailedEventArgOf<EventName>;
-      associatedExtension: AssociatedExt;
-    }
+    CreateSkillBuilderMeta<EventArgType, CallerType, CallerVars, AssociatedExt>
   >;
 
   private buildSkill() {
@@ -890,7 +915,11 @@ export class TriggeredSkillBuilder<
     }
     // 2. 基于 listenTo 的 filter
     const [triggerOn, filterDescriptor] =
-      detailedEventDictionary[this.detailedEventName];
+      detailedEventDictionary[
+        isCustomEvent(this.detailedEventName)
+          ? "customEvent"
+          : (this.detailedEventName as DetailedEventNames)
+      ];
     const listenTo = this._listenTo;
     this.filters.push(function (c, e) {
       const { area, state } = c.self;
@@ -900,7 +929,16 @@ export class TriggeredSkillBuilder<
         listenTo,
       });
     });
-    // 3. 定义技能时显式传入的 filter
+    // 3. 自定义事件：确保事件名一致
+    if (isCustomEvent(this.detailedEventName)) {
+      const customEvent = this.detailedEventName;
+      this.filters.push(function (c, e) {
+        return (
+          (e as unknown as CustomEventEventArg).customEvent === customEvent
+        );
+      });
+    }
+    // 4. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
     // 【构造技能定义并向父级实体添加】
@@ -922,27 +960,93 @@ export class TriggeredSkillBuilder<
     this.buildSkill();
     return this.parent;
   }
-  on<E extends DetailedEventNames>(
-    event: E,
-    filter?: SkillOperationFilter<{
-      eventArgType: DetailedEventArgOf<E>;
-      callerType: CallerType;
-      callerVars: CallerVars;
-      associatedExtension: AssociatedExt;
-    }>,
-  ) {
+
+  on<NewEventName extends DetailedEventNames>(
+    event: NewEventName,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        DetailedEventArgOf<NewEventName>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      DetailedEventArgOf<NewEventName>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      ParentFromCard,
+      ParentSnippets
+    >
+  >;
+  on<T = void>(
+    customEvent: CustomEvent<T>,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        CustomEventEventArg<T>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      CustomEventEventArg<T>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      ParentFromCard,
+      ParentSnippets
+    >
+  >;
+  on(event: any, filter?: any): unknown {
     this.buildSkill();
     return this.parent.on(event, filter);
   }
-  once<E extends DetailedEventNames>(
-    event: E,
-    filter?: SkillOperationFilter<{
-      eventArgType: DetailedEventArgOf<E>;
-      callerType: CallerType;
-      callerVars: CallerVars;
-      associatedExtension: AssociatedExt;
-    }>,
-  ) {
+
+  once<NewEventName extends DetailedEventNames>(
+    event: NewEventName,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        DetailedEventArgOf<NewEventName>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      DetailedEventArgOf<NewEventName>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      ParentFromCard,
+      ParentSnippets
+    >
+  >;
+  once<T = void>(
+    customEvent: CustomEvent<T>,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        CustomEventEventArg<T>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      CustomEventEventArg<T>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      ParentFromCard,
+      ParentSnippets
+    >
+  >;
+  once(event: any, filter?: any): unknown {
     this.buildSkill();
     return this.parent.once(event, filter);
   }
@@ -1349,5 +1453,5 @@ export class TechniqueBuilder<
 }
 
 export function skill(id: number) {
-  return enableShortcut(new InitiativeSkillBuilder(id));
+  return withShortcut(new InitiativeSkillBuilder(id));
 }

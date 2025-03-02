@@ -60,6 +60,7 @@ import {
 } from "../utils";
 import type { Mutation } from "./mutation";
 import type { IDetailLogger } from "../log";
+import type { CustomEvent } from "./custom_event";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -1188,6 +1189,21 @@ export class SelectCardEventArg extends PlayerEventArg {
   }
 }
 
+export class CustomEventEventArg<T = unknown> extends EntityEventArg {
+  constructor(
+    state: GameState,
+    entity: AnyState,
+    public readonly customEvent: CustomEvent<T>,
+    public readonly arg: T,
+  ) {
+    super(state, entity);
+  }
+
+  toString() {
+    return `${this.customEvent.name}, ${this.arg}`
+  }
+}
+
 export const EVENT_MAP = {
   onBattleBegin: EventArg,
   onRoundBegin: EventArg,
@@ -1235,6 +1251,8 @@ export const EVENT_MAP = {
 
   modifyZeroHealth: ZeroHealthEventArg,
   onRevive: CharacterEventArg,
+
+  onCustomEvent: CustomEventEventArg,
 } satisfies Record<string, new (...args: any[]) => EventArg>;
 
 export type EventMap = typeof EVENT_MAP;

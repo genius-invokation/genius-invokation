@@ -25,22 +25,23 @@ import {
   USAGE_PER_ROUND_VARIABLE_NAMES,
   type VariableConfig,
 } from "../base/entity";
-import type { SkillDefinition } from "../base/skill";
+import type { CustomEventEventArg, SkillDefinition } from "../base/skill";
 import {
   registerEntity,
   registerPassiveSkill,
   builderWeakRefs,
 } from "./registry";
 import {
-  enableShortcut,
+  withShortcut,
   TechniqueBuilder,
   TriggeredSkillBuilder,
   type BuilderWithShortcut,
   type DetailedEventNames,
   type SkillOperation,
   type SkillOperationFilter,
-  type TriggeredSkillBuilderMeta,
+  type CreateSkillBuilderMeta,
   type UsageOptions,
+  type DetailedEventArgOf,
 } from "./skill";
 import type {
   CardHandle,
@@ -60,6 +61,7 @@ import {
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 import type { TypedSkillContext } from "./context/skill";
+import type { CustomEvent } from "../base/custom_event";
 
 export interface AppendOptions {
   /** 重复创建时的累积值上限 */
@@ -192,7 +194,7 @@ export class EntityBuilder<
       FromCard,
       Snippets
     >;
-    return enableShortcut(
+    return withShortcut(
       new TechniqueBuilder<CallerVars, readonly [], AssociatedExt, FromCard>(
         id,
         self,
@@ -233,37 +235,91 @@ export class EntityBuilder<
   on<EventName extends DetailedEventNames>(
     event: EventName,
     filter?: SkillOperationFilter<
-      TriggeredSkillBuilderMeta<
-        EventName,
+      CreateSkillBuilderMeta<
+        DetailedEventArgOf<EventName>,
         CallerType,
         CallerVars,
         AssociatedExt
       >
     >,
-  ) {
-    return enableShortcut(
-      new TriggeredSkillBuilder<
-        EventName,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      DetailedEventArgOf<EventName>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      FromCard,
+      Snippets
+    >
+  >;
+  on<T = void>(
+    customEvent: CustomEvent<T>,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        CustomEventEventArg<T>,
         CallerType,
         CallerVars,
-        AssociatedExt,
-        FromCard,
-        Snippets
-      >(this.generateSkillId(), event, this, filter),
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      CustomEventEventArg<T>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      FromCard,
+      Snippets
+    >
+  >;
+  on(event: any, filter?: any): unknown {
+    return withShortcut(
+      new TriggeredSkillBuilder(this.generateSkillId(), event, this, filter),
     );
   }
-  once<EventName extends DetailedEventNames>(
-    event: EventName,
+
+  once<NewEventName extends DetailedEventNames>(
+    event: NewEventName,
     filter?: SkillOperationFilter<
-      TriggeredSkillBuilderMeta<
-        EventName,
+      CreateSkillBuilderMeta<
+        DetailedEventArgOf<NewEventName>,
         CallerType,
         CallerVars,
         AssociatedExt
       >
     >,
-  ) {
-    return this.on(event, filter).usage<never>(1, {
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      DetailedEventArgOf<NewEventName>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      FromCard,
+      Snippets
+    >
+  >;
+  once<T = void>(
+    customEvent: CustomEvent<T>,
+    filter?: SkillOperationFilter<
+      CreateSkillBuilderMeta<
+        CustomEventEventArg<T>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
+    >,
+  ): BuilderWithShortcut<
+    TriggeredSkillBuilder<
+      CustomEventEventArg<T>,
+      CallerType,
+      CallerVars,
+      AssociatedExt,
+      FromCard,
+      Snippets
+    >
+  >;
+  once(event: any, filter?: any): unknown {
+    return this.on(event, filter).usage(1, {
       visible: false,
     });
   }
@@ -488,7 +544,7 @@ export class EntityBuilder<
     target?: string,
   ): BuilderWithShortcut<
     TriggeredSkillBuilder<
-      "endPhase",
+      DetailedEventArgOf<"endPhase">,
       CallerType,
       CallerVars | "hintIcon",
       AssociatedExt,
@@ -549,6 +605,7 @@ export class EntityBuilder<
         callerVars: CallerVars;
         associatedExtension: AssociatedExt;
         eventArgType: NoInfer<CustomEventArgT>;
+        shortcutReceiver: undefined;
       }>,
       e: CustomEventArgT,
     ) => void,
@@ -571,6 +628,7 @@ export class EntityBuilder<
         callerVars: CallerVars;
         associatedExtension: AssociatedExt;
         eventArgType: NoInfer<CustomEventArgT>;
+        shortcutReceiver: undefined;
       }>,
       e: CustomEventArgT,
     ) => void,
