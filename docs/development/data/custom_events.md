@@ -17,10 +17,10 @@ const myEvent = customEvent("myEvent"); // 名称参数是可选的
 const lightingRod = status(124022)
   // [...]
   .on("damaged")
-  .emitEvent(myEvent)     // 声明域引发事件
+  .emitCustomEvent(myEvent)     // 声明域引发事件
   .on("selfDispose")
   .do((c) => {
-    c.emitEvent(myEvent); // 脚本域引发事件
+    c.emitCustomEvent(myEvent); // 脚本域引发事件
   })
   .done();
 ```
@@ -52,9 +52,9 @@ const myEventWithArg = customEvent<number>();
 
 const myEntity = status(100001)
   .on("damaged")
-  .emitEvent(myEventWithArg, 1)
+  .emitCustomEvent(myEventWithArg, 1)
   .on("selfDispose")
-  .emitEvent(myEventWithArg, 2)
+  .emitCustomEvent(myEventWithArg, 2)
   .done();
 ```
 
