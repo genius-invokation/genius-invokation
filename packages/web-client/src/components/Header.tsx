@@ -17,12 +17,11 @@ import { A, useNavigate } from "@solidjs/router";
 import { Show } from "solid-js";
 import { IS_BETA } from "@gi-tcg/config";
 import { getAvatarUrl } from "../utils";
-import { useGuestInfo } from "../guest";
-import { useAuth } from "../auth";
+import { useGuestContext, useAuthContext } from "../App";
 
 export function Header() {
   const navigate = useNavigate();
-  const { status, logout } = useAuth();
+  const { status, logout } = useAuthContext();
   return (
     <header class="fixed top-0 left-0 w-full flex flex-row h-16 bg-white z-200 px-4 shadow-md items-center gap-4">
       <div class="flex-grow flex items-end gap-2">

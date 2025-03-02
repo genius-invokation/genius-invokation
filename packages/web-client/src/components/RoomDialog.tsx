@@ -26,10 +26,9 @@ import { ToggleSwitch } from "./ToggleSwitch";
 import { DeckInfoProps } from "./DeckBriefInfo";
 import { roomIdToCode } from "../utils";
 import { useNavigate } from "@solidjs/router";
-import { useAuth } from "../auth";
 import { useVersionContext } from "../App";
 import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
-import { useGuestDecks, useGuestInfo } from "../guest";
+import { useGuestContext, useAuthContext } from "../App";
 
 function SelectableDeckInfo(
   props: DeckInfoProps & Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "id">,
@@ -111,9 +110,8 @@ const TIME_CONFIGS: TimeConfig[] = [
 ];
 
 export function RoomDialog(props: RoomDialogProps) {
-  const { status } = useAuth();
-  const [guestInfo, setGuestInfo] = useGuestInfo();
-  const [guestDecks] = useGuestDecks();
+  const { status } = useAuthContext();
+  const { guestInfo, setGuestInfo, guestDecks } = useGuestContext();
   const navigate = useNavigate();
   const editable = () => !props.joiningRoomInfo;
   let dialogEl: HTMLDialogElement;
@@ -372,10 +370,7 @@ export function RoomDialog(props: RoomDialogProps) {
           </div>
         </div>
         <div class="flex-shrink-0 flex flex-row justify-end gap-4">
-          <button
-            class="btn btn-ghost-red"
-            onClick={closeDialog}
-          >
+          <button class="btn btn-ghost-red" onClick={closeDialog}>
             取消
           </button>
           <button

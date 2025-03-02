@@ -19,8 +19,7 @@ import axios from "axios";
 import { A } from "@solidjs/router";
 import { DeckBriefInfo } from "../components/DeckBriefInfo";
 import { Deck } from "@gi-tcg/utils";
-import { useGuestDecks } from "../guest";
-import { useAuth } from "../auth";
+import { useGuestContext, useAuthContext } from "../App";
 
 export interface DeckInfo extends Deck {
   id: number;
@@ -42,7 +41,7 @@ export interface UseDecksResult {
 }
 
 export function useDecks(): UseDecksResult {
-  const { status } = useAuth();
+  const { status } = useAuthContext();
   const EMPTY = { count: 0, data: [] };
   const [userDecks, { refetch }] = createResource(
     () => axios.get<DecksResponse>("decks").then((res) => res.data),
@@ -50,7 +49,7 @@ export function useDecks(): UseDecksResult {
       initialValue: EMPTY,
     },
   );
-  const [guestDecks] = useGuestDecks();
+  const { guestDecks } = useGuestContext();
   return {
     decks: () => {
       const { type } = status();
@@ -67,7 +66,7 @@ export function useDecks(): UseDecksResult {
       }
     },
     loading: () => status().type === "user" && userDecks.loading,
-    error: () => status().type === "user" ? userDecks.error : void 0,
+    error: () => (status().type === "user" ? userDecks.error : void 0),
     refetch,
   };
 }
@@ -85,7 +84,9 @@ export function Decks() {
         </div>
         <Switch>
           <Match when={loading()}>正在加载中...</Match>
-          <Match when={error()}>加载失败：{error()?.message ?? String(error())}</Match>
+          <Match when={error()}>
+            加载失败：{error()?.message ?? String(error())}
+          </Match>
           <Match when={true}>
             <ul class="flex flex-row flex-wrap gap-3">
               <For

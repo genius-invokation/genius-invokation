@@ -15,12 +15,12 @@
 
 import { createSignal } from "solid-js";
 import { GITHUB_AUTH_REDIRECT_URL } from "../config";
-import { useAuth } from "../auth";
+import { useGuestContext, useAuthContext } from "../App";
 
 export function Login() {
   const CLIENT_ID = "Iv23liMGX6EkkrfUax8B";
   const REDIRECT_URL = encodeURIComponent(GITHUB_AUTH_REDIRECT_URL);
-  const { loginGuest } = useAuth();
+  const { loginGuest } = useAuthContext();
 
   const showGuestHint = () => {
     window.alert(`在游客模式下：

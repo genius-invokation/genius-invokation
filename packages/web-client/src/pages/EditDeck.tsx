@@ -27,15 +27,14 @@ import { decode, encode, type Deck } from "@gi-tcg/utils";
 import { useParams, useSearchParams } from "@solidjs/router";
 import { DeckBuilder } from "@gi-tcg/deck-builder";
 import "@gi-tcg/deck-builder/style.css";
-import { useGuestDecks } from "../guest";
+import { useGuestContext, useAuthContext } from "../App";
 import { DeckInfo } from "./Decks";
-import { useAuth } from "../auth";
 import { unwrap } from "solid-js/store";
 
 export function EditDeck() {
   const params = useParams();
-  const { status } = useAuth();
-  const [guestDecks, { addGuestDeck, updateGuestDeck }] = useGuestDecks();
+  const { status } = useAuthContext();
+  const { guestDecks, addGuestDeck, updateGuestDeck } = useGuestContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const isNew = params.id === "new";
   const deckId = Number(params.id);

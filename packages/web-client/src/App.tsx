@@ -14,12 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Route, Router } from "@solidjs/router";
-import {
-  createContext,
-  createResource,
-  Resource,
-  useContext,
-} from "solid-js";
+import { createContext, createResource, Resource, useContext } from "solid-js";
 import { Home } from "./pages/Home";
 import axios from "axios";
 import { User } from "./pages/User";
@@ -27,6 +22,8 @@ import { Decks } from "./pages/Decks";
 import { EditDeck } from "./pages/EditDeck";
 import { Room } from "./pages/Room";
 import { NotFound } from "./pages/NotFound";
+import { createGuest, CreateGuestResult } from "./guest";
+import { Auth, createAuth } from "./auth";
 
 export interface VersionContextValue {
   versionInfo: Resource<any>;
@@ -34,6 +31,12 @@ export interface VersionContextValue {
 
 const VersionContext = createContext<VersionContextValue>();
 export const useVersionContext = () => useContext(VersionContext)!;
+
+const GuestContext = createContext<CreateGuestResult>();
+export const useGuestContext = () => useContext(GuestContext)!;
+
+const AuthContext = createContext<Auth>();
+export const useAuthContext = () => useContext(AuthContext)!;
 
 function App() {
   const [versionInfo] = createResource(() =>
@@ -44,16 +47,20 @@ function App() {
   };
   return (
     <VersionContext.Provider value={versionContextValue}>
-      <div class="h-full w-full flex flex-row">
-        <Router base={import.meta.env.BASE_URL}>
-          <Route path="/" component={Home} />
-          <Route path="/user/:id" component={User} />
-          <Route path="/decks/:id" component={EditDeck} />
-          <Route path="/decks" component={Decks} />
-          <Route path="/rooms/:code" component={Room} />
-          <Route path="*" component={NotFound} />
-        </Router>
-      </div>
+      <GuestContext.Provider value={createGuest()}>
+        <AuthContext.Provider value={createAuth()}>
+          <div class="h-full w-full flex flex-row">
+            <Router base={import.meta.env.BASE_URL}>
+              <Route path="/" component={Home} />
+              <Route path="/user/:id" component={User} />
+              <Route path="/decks/:id" component={EditDeck} />
+              <Route path="/decks" component={Decks} />
+              <Route path="/rooms/:code" component={Room} />
+              <Route path="*" component={NotFound} />
+            </Router>
+          </div>
+        </AuthContext.Provider>
+      </GuestContext.Provider>
     </VersionContext.Provider>
   );
 }

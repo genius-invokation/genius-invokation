@@ -18,11 +18,11 @@ import { createResource, Switch, Match } from "solid-js";
 import { Layout } from "../layouts/Layout";
 import axios, { AxiosError } from "axios";
 import { UserInfo } from "../components/UserInfo";
-import { useAuth } from "../auth";
+import { useAuthContext } from "../App";
 
 export function User() {
   const params = useParams();
-  const { status: mine } = useAuth();
+  const { status: mine } = useAuthContext();
   const userId = Number(params.id);
   const [userInfo, { refetch }] = createResource(() =>
     axios.get(`users/${userId}`).then((res) => res.data),

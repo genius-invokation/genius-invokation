@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Accessor, createResource, createSignal } from "solid-js";
+import { Accessor, createResource, createSignal, Setter } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
 import type { DeckInfo } from "./pages/Decks";
 import type { Deck } from "@gi-tcg/utils";
@@ -30,34 +30,34 @@ export interface DeckWithName extends Deck {
   name: string;
 }
 
-export type GuestDeck = readonly [
-  Accessor<DeckInfo[]>,
-  {
-    addGuestDeck: (deck: DeckWithName) => Promise<DeckInfo>;
-    updateGuestDeck: (
-      id: number,
-      deck: Partial<DeckWithName>,
-    ) => Promise<DeckInfo>;
-    removeGuestDeck: (id: number) => Promise<void>;
-  },
-];
-
-const [guestInfo, setGuestInfo] = makePersisted(
-  createSignal<GuestInfo | null>(null),
-  { storage: localStorage },
-);
-
-export const useGuestInfo = () => [guestInfo, setGuestInfo] as const;
-
-const [guestDeck, setGuestDeck] = makePersisted(createStore<DeckInfo[]>([]), {
-  storage: localStorage,
-});
+export type CreateGuestResult = {
+  guestInfo: Accessor<GuestInfo | null>;
+  setGuestInfo: Setter<GuestInfo | null>;
+  guestDecks: Accessor<DeckInfo[]>;
+  addGuestDeck: (deck: DeckWithName) => Promise<DeckInfo>;
+  updateGuestDeck: (
+    id: number,
+    deck: Partial<DeckWithName>,
+  ) => Promise<DeckInfo>;
+  removeGuestDeck: (id: number) => Promise<void>;
+};
 
 type VersionResponse = Omit<DeckInfo, "id">;
 
-export const useGuestDecks = (): GuestDeck => [
-  () => guestDeck,
-  {
+export function createGuest(): CreateGuestResult {
+  const [guestInfo, setGuestInfo] = makePersisted(
+    createSignal<GuestInfo | null>(null),
+    { storage: localStorage },
+  );
+
+  const [guestDeck, setGuestDeck] = makePersisted(createStore<DeckInfo[]>([]), {
+    storage: localStorage,
+  });
+
+  return {
+    guestInfo,
+    setGuestInfo,
+    guestDecks: () => guestDeck,
     addGuestDeck: async (deck) => {
       const id = Date.now();
       const { data } = await axios.post<VersionResponse>("decks/version", deck);
@@ -94,5 +94,5 @@ export const useGuestDecks = (): GuestDeck => [
         }),
       );
     },
-  },
-];
+  };
+}

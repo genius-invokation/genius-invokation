@@ -15,7 +15,7 @@
 
 import { For, Show, createResource } from "solid-js";
 import { A } from "@solidjs/router";
-import { useAuth } from "../auth";
+import { useAuthContext } from "../App";
 import { getPlayerAvatarUrl, roomIdToCode } from "../utils";
 import type { PlayerInfo } from "../utils";
 
@@ -27,7 +27,7 @@ export interface RoomInfoProps {
 }
 
 export function RoomInfo(props: RoomInfoProps) {
-  const { status } = useAuth();
+  const { status } = useAuthContext();
   const insideRoom = () => props.players.some((p) => p.id === status()?.id);
   const code = () => roomIdToCode(props.id);
   const url = (playerId: string | number) => {

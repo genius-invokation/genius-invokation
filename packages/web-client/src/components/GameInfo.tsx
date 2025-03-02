@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Show } from "solid-js";
 import axios from "axios";
-import { useAuth } from "../auth";
+import { useGuestContext, useAuthContext } from "../App";
 
 dayjs.extend(relativeTime);
 
@@ -28,7 +28,7 @@ export interface GameInfoProps {
 }
 
 export function GameInfo(props: GameInfoProps) {
-  const { status } = useAuth();
+  const { status } = useAuthContext();
 
   const downloadLog = async () => {
     try {

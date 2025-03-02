@@ -13,9 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Accessor, createResource } from "solid-js";
-import { GuestInfo, useGuestInfo } from "./guest";
+import { Accessor, createResource, Setter } from "solid-js";
+import type { GuestInfo } from "./guest";
 import axios from "axios";
+import { useGuestContext } from "./App";
 
 export interface UserInfo {
   type: "user";
@@ -44,21 +45,21 @@ export interface Auth {
   readonly logout: () => Promise<void>;
 }
 
-const [user, { refetch: refetchUser }] = createResource<UserInfo | NotLogin>(
-  () =>
-    axios.get<UserInfo>("users/me").then(({ data }) =>
-      data
-        ? {
-            ...data,
-            type: "user",
-            name: data.name ?? data.login,
-          }
-        : NOT_LOGIN,
-    ),
-);
+export function createAuth(): Auth {
+  const [user, { refetch: refetchUser }] = createResource<UserInfo | NotLogin>(
+    () =>
+      axios.get<UserInfo>("users/me").then(({ data }) =>
+        data
+          ? {
+              ...data,
+              type: "user",
+              name: data.name ?? data.login,
+            }
+          : NOT_LOGIN,
+      ),
+  );
+  const { guestInfo, setGuestInfo } = useGuestContext();
 
-export const useAuth = (): Auth => {
-  const [guestInfo, setGuestInfo] = useGuestInfo();
   return {
     status: () => {
       return guestInfo() ?? (user.state === "ready" ? user() : NOT_LOGIN);
@@ -90,4 +91,4 @@ export const useAuth = (): Auth => {
       setGuestInfo(null);
     },
   };
-};
+}

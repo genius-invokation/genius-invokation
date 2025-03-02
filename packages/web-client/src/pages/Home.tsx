@@ -32,7 +32,7 @@ import { roomCodeToId } from "../utils";
 import { RoomInfo } from "../components/RoomInfo";
 import { useDecks } from "./Decks";
 import { Login } from "../components/Login";
-import { useAuth } from "../auth";
+import { useAuthContext } from "../App";
 
 export function Home() {
   const {
@@ -41,7 +41,7 @@ export function Home() {
     error: userError,
     refresh,
     logout,
-  } = useAuth();
+  } = useAuthContext();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams<{ token: string }>();
   const { decks, loading: decksLoading, error: decksError } = useDecks();

@@ -68,4 +68,4 @@ async function createServer() {
   app.listen(5173);
 }
 
-createServer();
+createServer().then(() => console.log("Listening on http://localhost:5173"));

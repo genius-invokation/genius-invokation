@@ -18,8 +18,7 @@ import axios, { AxiosError } from "axios";
 import { For, Show } from "solid-js";
 import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { DeckInfo } from "../pages/Decks";
-import { useGuestDecks } from "../guest";
-import { useAuth } from "../auth";
+import { useGuestContext, useAuthContext } from "../App";
 
 export interface DeckInfoProps extends DeckInfo {
   editable?: boolean;
@@ -28,8 +27,8 @@ export interface DeckInfoProps extends DeckInfo {
 
 export function DeckBriefInfo(props: DeckInfoProps) {
   const navigate = useNavigate();
-  const { status } = useAuth();
-  const [, { removeGuestDeck }] = useGuestDecks();
+  const { status } = useAuthContext();
+  const { removeGuestDeck } = useGuestContext();
 
   const viewDeck = (e: MouseEvent) => {
     e.stopPropagation();
