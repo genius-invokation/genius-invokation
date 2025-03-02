@@ -48,6 +48,7 @@ import {
   type SkillInfo,
   type SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
+  CustomEventEventArg,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -104,6 +105,7 @@ import { nextRandom } from "../../random";
 import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
+import type { CustomEvent } from "../../base/custom_event";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -544,6 +546,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       `Event ${event} (${arg.toString()}) emitted`,
     );
     this.eventAndRequests.push([event, arg] as EventAndRequest);
+  }
+
+  emitCustomEvent<T>(event: CustomEvent<T>, arg: T) {
+    this.emitEvent("onCustomEvent", this.state, this.callerState, event, arg);
   }
 
   abortPreview() {
