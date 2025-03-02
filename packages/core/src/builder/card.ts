@@ -39,7 +39,7 @@ import {
 import { registerCard } from "./registry";
 import {
   SkillBuilderWithCost,
-  enableShortcut,
+  withShortcut,
   type BuilderWithShortcut,
   type SkillOperation,
   type StrictInitiativeSkillEventArg,
@@ -539,5 +539,5 @@ export class CardBuilder<
 }
 
 export function card(id: number) {
-  return enableShortcut(new CardBuilder<readonly []>(id));
+  return withShortcut(new CardBuilder<readonly []>(id));
 }

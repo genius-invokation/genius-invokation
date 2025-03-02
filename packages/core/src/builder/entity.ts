@@ -32,7 +32,7 @@ import {
   builderWeakRefs,
 } from "./registry";
 import {
-  enableShortcut,
+  withShortcut,
   TechniqueBuilder,
   TriggeredSkillBuilder,
   type BuilderWithShortcut,
@@ -194,7 +194,7 @@ export class EntityBuilder<
       FromCard,
       Snippets
     >;
-    return enableShortcut(
+    return withShortcut(
       new TechniqueBuilder<CallerVars, readonly [], AssociatedExt, FromCard>(
         id,
         self,
@@ -273,19 +273,24 @@ export class EntityBuilder<
     >
   >;
   on(event: any, filter?: any): unknown {
-    return enableShortcut(
+    return withShortcut(
       new TriggeredSkillBuilder(this.generateSkillId(), event, this, filter),
     );
   }
 
-  once<EventName extends DetailedEventNames>(
-    event: EventName,
+  once<NewEventName extends DetailedEventNames>(
+    event: NewEventName,
     filter?: SkillOperationFilter<
-      CreateSkillBuilderMeta<EventName, CallerType, CallerVars, AssociatedExt>
+      CreateSkillBuilderMeta<
+        DetailedEventArgOf<NewEventName>,
+        CallerType,
+        CallerVars,
+        AssociatedExt
+      >
     >,
   ): BuilderWithShortcut<
     TriggeredSkillBuilder<
-      EventName,
+      DetailedEventArgOf<NewEventName>,
       CallerType,
       CallerVars,
       AssociatedExt,
@@ -600,6 +605,7 @@ export class EntityBuilder<
         callerVars: CallerVars;
         associatedExtension: AssociatedExt;
         eventArgType: NoInfer<CustomEventArgT>;
+        shortcutReceiver: undefined;
       }>,
       e: CustomEventArgT,
     ) => void,
@@ -622,6 +628,7 @@ export class EntityBuilder<
         callerVars: CallerVars;
         associatedExtension: AssociatedExt;
         eventArgType: NoInfer<CustomEventArgT>;
+        shortcutReceiver: undefined;
       }>,
       e: CustomEventArgT,
     ) => void,

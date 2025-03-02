@@ -1198,6 +1198,10 @@ export class CustomEventEventArg<T = unknown> extends EntityEventArg {
   ) {
     super(state, entity);
   }
+
+  toString() {
+    return `${this.customEvent.name}, ${this.arg}`
+  }
 }
 
 export const EVENT_MAP = {

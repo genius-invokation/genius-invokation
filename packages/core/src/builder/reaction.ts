@@ -15,7 +15,7 @@
 
 import { Reaction, DamageType } from "@gi-tcg/typings";
 import type { SkillDescription } from "../base/skill";
-import { SkillBuilder, enableShortcut } from "./skill";
+import { SkillBuilder, withShortcut } from "./skill";
 import type { TypedSkillContext } from "./context/skill";
 import type { CombatStatusHandle, StatusHandle, SummonHandle } from "./type";
 import type { SwirlableElement } from "../base/reaction";
@@ -51,6 +51,7 @@ type ReactionContextMeta = {
   eventArgType: ReactionDescriptionEventArg;
   callerType: any;
   associatedExtension: never;
+  shortcutReceiver: unknown;
 };
 
 type ReactionAction = (
@@ -92,7 +93,7 @@ function initialize() {
   }
 
   function reaction(reaction: Reaction) {
-    return enableShortcut(new ReactionBuilder(reaction)).do((c) => {
+    return withShortcut(new ReactionBuilder(reaction)).do((c) => {
       Reflect.set(c, CALLED_FROM_REACTION, reaction);
     });
   }

@@ -125,18 +125,7 @@ interface DrawCardsOpt {
   withDefinition?: CardHandle | null;
 }
 
-export const ENABLE_SHORTCUT = Symbol("enableShortcut");
-
-function returnWithEnableShortcut<T>(
-  value: T,
-): T & { [ENABLE_SHORTCUT]: true } {
-  Object.defineProperty(value, ENABLE_SHORTCUT, {
-    value: true,
-    writable: false,
-    enumerable: false,
-  });
-  return value as any;
-}
+export const ENABLE_SHORTCUT = Symbol("withShortcut");
 
 export interface HealOption {
   kind?: HealKind;
@@ -162,7 +151,15 @@ export type ContextMetaBase = {
   callerVars: string;
   callerType: ExEntityType;
   associatedExtension: ExtensionHandle;
+  shortcutReceiver: unknown;
 };
+
+type ShortcutReturn<
+  Meta extends ContextMetaBase,
+  T = void,
+> = Meta["shortcutReceiver"] extends {}
+  ? Meta["shortcutReceiver"] & { [ENABLE_SHORTCUT]: true }
+  : T;
 
 /**
  * 用于描述技能的上下文对象。
@@ -174,6 +171,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   private readonly eventAndRequests: EventAndRequest[] = [];
   private mainDamage: DamageInfo | null = null;
+
+  private enableShortcut(): ShortcutReturn<Meta>;
+  private enableShortcut<T>(value: T): ShortcutReturn<Meta, T>;
+  private enableShortcut(value?: unknown) {
+    return value;
+  }
 
   /**
    * 获取正在执行逻辑的实体的 `Character` 或 `Entity`。
@@ -470,8 +473,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
       ? (card: CardState) => {
-        return nextRandom(card.id) ^ this.state.iterators.random;
-      }
+          return nextRandom(card.id) ^ this.state.iterators.random;
+        }
       : (_: CardState) => 0;
     const sortData = new Map(
       player.hands.map(
@@ -548,17 +551,22 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.eventAndRequests.push([event, arg] as EventAndRequest);
   }
 
-  emitCustomEvent<T>(event: CustomEvent<T>, arg: T) {
+  emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
+  emitCustomEvent<T>(event: CustomEvent<T>, arg: T): ShortcutReturn<Meta>;
+  emitCustomEvent<T>(event: CustomEvent<T>, arg?: T) {
     this.emitEvent("onCustomEvent", this.state, this.callerState, event, arg);
+    return this.enableShortcut();
   }
 
   abortPreview() {
     if (this.isPreview) {
       throw new GiTcgPreviewAbortedError();
     }
+    return this.enableShortcut();
   }
 
   switchActive(target: CharacterTargetArg) {
+    const RET = this.enableShortcut();
     const targets = this.queryCoerceToCharacters(target);
     if (targets.length !== 1) {
       throw new GiTcgDataError(
@@ -569,10 +577,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const playerWho = switchToTarget.who;
     const from =
       this.state.players[playerWho].characters[
-      getActiveCharacterIndex(this.state.players[playerWho])
+        getActiveCharacterIndex(this.state.players[playerWho])
       ];
     if (from.id === switchToTarget.id) {
-      return;
+      return RET;
     }
     let immuneControlStatus: EntityState | undefined;
     if (
@@ -586,7 +594,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           switchToTarget.state,
         )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
       );
-      return;
+      return RET;
     }
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
@@ -607,6 +615,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       fromReaction: this.fromReaction !== null,
       to: switchToTarget.state,
     });
+    return RET;
   }
 
   gainEnergy(value: number, target: CharacterTargetArg) {
@@ -628,6 +637,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         value: targetState.variables.energy + finalValue,
       });
     }
+    return this.enableShortcut();
   }
 
   private doHeal(
@@ -714,6 +724,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     for (const t of targets) {
       this.doHeal(value, t.state, { kind });
     }
+    return this.enableShortcut();
   }
 
   /** 增加最大生命值 */
@@ -735,6 +746,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       // Do not write `targetState` here
       this.doHeal(value, t.state, { kind: "increaseMaxHealth" });
     }
+    return this.enableShortcut();
   }
 
   damage(
@@ -826,6 +838,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.doApply(t, damageInfo.type, damageInfo);
       }
     }
+    return this.enableShortcut();
   }
 
   /**
@@ -842,6 +855,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       this.doApply(ch, type);
     }
+    return this.enableShortcut();
   }
 
   private get fromReaction(): Reaction | null {
@@ -970,6 +984,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         opt,
       );
     }
+    return this.enableShortcut();
   }
   characterStatus(
     id: StatusHandle,
@@ -980,6 +995,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     for (const t of targets) {
       this.createEntity("status", id, t.area, opt);
     }
+    return this.enableShortcut();
   }
   combatStatus(
     id: CombatStatusHandle,
@@ -999,6 +1015,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         opt,
       );
     }
+    return this.enableShortcut();
   }
 
   transferEntity(target: EntityTargetArg, area: EntityArea) {
@@ -1025,6 +1042,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         where: area,
       });
     }
+    return this.enableShortcut();
   }
 
   dispose(target: EntityTargetArg = "@self") {
@@ -1047,6 +1065,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         oldState: entityState,
       });
     }
+    return this.enableShortcut();
   }
 
   // NOTICE: getVariable/setVariable/addVariable 应当将 caller 的严格版声明放在最后一个
@@ -1062,8 +1081,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
   }
 
-  setVariable(prop: string, value: number, target: AnyState): void;
-  setVariable(prop: Meta["callerVars"], value: number): void;
+  setVariable(
+    prop: string,
+    value: number,
+    target: AnyState,
+  ): ShortcutReturn<Meta>;
+  setVariable(prop: Meta["callerVars"], value: number): ShortcutReturn<Meta>;
   setVariable(prop: any, value: number, target?: AnyState) {
     target ??= this.callerState;
     this.assertNotCard(target);
@@ -1077,6 +1100,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       varName: prop,
       value: value,
     });
+    return this.enableShortcut();
   }
 
   private assertNotCard(
@@ -1087,13 +1111,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
   }
 
-  addVariable(prop: string, value: number, target: AnyState): void;
-  addVariable(prop: Meta["callerVars"], value: number): void;
+  addVariable(
+    prop: string,
+    value: number,
+    target: AnyState,
+  ): ShortcutReturn<Meta>;
+  addVariable(prop: Meta["callerVars"], value: number): ShortcutReturn<Meta>;
   addVariable(prop: any, value: number, target?: AnyState) {
     target ??= this.callerState;
     this.assertNotCard(target);
     const finalValue = value + target.variables[prop];
     this.setVariable(prop, finalValue, target);
+    return this.enableShortcut();
   }
 
   addVariableWithMax(
@@ -1101,28 +1130,31 @@ export class SkillContext<Meta extends ContextMetaBase> {
     value: number,
     maxLimit: number,
     target: AnyState,
-  ): void;
+  ): ShortcutReturn<Meta>;
   addVariableWithMax(
     prop: Meta["callerVars"],
     value: number,
     maxLimit: number,
-  ): void;
+  ): ShortcutReturn<Meta>;
   addVariableWithMax(
     prop: any,
     value: number,
     maxLimit: number,
     target?: AnyState,
   ) {
+    const RET = this.enableShortcut();
     target ??= this.callerState;
     this.assertNotCard(target);
     if (target.variables[prop] > maxLimit) {
       // 如果当前值已经超过可叠加的上限，则不再叠加
-      return;
+      return RET;
     }
     const finalValue = Math.min(maxLimit, value + target.variables[prop]);
     this.setVariable(prop, finalValue, target);
+    return RET;
   }
   consumeUsage(count = 1, target?: EntityState) {
+    const RET = this.enableShortcut();
     if (typeof target === "undefined") {
       if (this.callerState.definition.type === "character") {
         throw new GiTcgDataError(`Cannot consume usage of character`);
@@ -1130,7 +1162,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       target = this.callerState as EntityState;
     }
     if (!Reflect.has(target.definition.varConfigs, "usage")) {
-      return;
+      return RET;
     }
     const current = this.getVariable("usage", target);
     if (current > 0) {
@@ -1142,6 +1174,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.dispose(target);
       }
     }
+    return RET;
   }
   consumeUsagePerRound(count = 1) {
     if (!("usagePerRoundVariableName" in this.skillInfo.definition)) {
@@ -1155,13 +1188,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (current > 0) {
       this.addVariable(varName, -Math.min(count, current), this.callerState);
     }
+    return this.enableShortcut();
   }
 
   transformDefinition<DefT extends ExEntityType>(
     target: ExEntityState<DefT>,
     newDefId: HandleT<DefT>,
-  ): void;
-  transformDefinition(target: string, newDefId: number): void;
+  ): ShortcutReturn<Meta>;
+  transformDefinition(target: string, newDefId: number): ShortcutReturn<Meta>;
   transformDefinition(target: string | AnyState, newDefId: number) {
     if (typeof target === "string") {
       const entity = this.$(target);
@@ -1181,7 +1215,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Transform ${stringifyState(target)}'s definition to [${def.type}:${def.id
+      `Transform ${stringifyState(target)}'s definition to [${def.type}:${
+        def.id
       }]`,
     );
     this.mutate({
@@ -1190,6 +1225,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       newDefinition: def,
     });
     this.emitEvent("onTransformDefinition", this.state, target, def);
+    return this.enableShortcut();
   }
 
   swapCharacterPosition(a: CharacterTargetArg, b: CharacterTargetArg) {
@@ -1208,6 +1244,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who: character0[0].who,
       characters: [character0[0].state, character1[0].state],
     });
+    return this.enableShortcut();
   }
 
   absorbDice(strategy: "seq" | "diff", count: number): DiceType[] {
@@ -1266,9 +1303,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
     }
   }
-  convertDice(target: DiceType, count: number | "all", where: "my" | "opp" = "my") {
+  convertDice(
+    target: DiceType,
+    count: number | "all",
+    where: "my" | "opp" = "my",
+  ) {
     const player = where === "my" ? this.player : this.oppPlayer;
-    const who = where === "my" ? this.callerArea.who : flip(this.callerArea.who);
+    const who =
+      where === "my" ? this.callerArea.who : flip(this.callerArea.who);
     if (count === "all") {
       count = player.dice.length;
     }
@@ -1285,12 +1327,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who,
       value: finalDice,
     });
+    return this.enableShortcut();
   }
   generateDice(type: DiceType | "randomElement", count: number) {
     const maxCount = this.state.config.maxDiceCount - this.player.dice.length;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Generate ${count}${maxCount < count ? ` (only ${maxCount} due to limit)` : ""
+      `Generate ${count}${
+        maxCount < count ? ` (only ${maxCount} due to limit)` : ""
       } dice of ${typeof type === "string" ? type : `[dice:${type}]`}`,
     );
     count = Math.min(count, maxCount);
@@ -1331,6 +1375,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         d,
       );
     }
+    return this.enableShortcut();
   }
 
   createHandCard(cardId: CardHandle) {
@@ -1340,6 +1385,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     const events = this.mutator.createHandCard(this.callerArea.who, cardDef);
     this.events.push(...events);
+    return this.enableShortcut();
   }
 
   drawCards(count: number, opt: DrawCardsOpt = {}) {
@@ -1348,7 +1394,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
       myOrOpt === "my" ? this.callerArea.who : flip(this.callerArea.who);
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
-      `Player ${who} draw ${count} cards, ${withTag ? `(with tag ${withTag})` : ""
+      `Player ${who} draw ${count} cards, ${
+        withTag ? `(with tag ${withTag})` : ""
       }`,
     );
     const cards: CardState[] = [];
@@ -1400,6 +1447,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     for (const card of cards) {
       this.emitEvent("onHandCardInserted", this.state, who, card, "drawn");
     }
+    return this.enableShortcut();
   }
 
   private insertPileCards(
@@ -1525,6 +1573,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         }) as const,
     );
     this.insertPileCards(payloads, strategy, where);
+    return this.enableShortcut();
   }
   undrawCards(cards: CardState[], strategy: InsertPileStrategy) {
     const who = this.callerArea.who;
@@ -1599,6 +1648,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         "stolen",
       );
     }
+    return this.enableShortcut();
   }
 
   /** 弃置一张行动牌，并触发其“弃置时”效果。 */
@@ -1639,7 +1689,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   disposeMaxCostHands(count: number) {
     const disposed = this.maxCostHands(count, { useTieBreak: true });
     this.disposeCard(...disposed);
-    return returnWithEnableShortcut(disposed);
+    return this.enableShortcut(disposed);
   }
 
   /**
@@ -1664,6 +1714,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         // 不在此处弃置夜魂加持；在相应特技的 onConsumeNightsoul1 事件中处理
       }
     }
+    return this.enableShortcut();
   }
 
   setExtensionState(setter: Setter<Meta["associatedExtension"]["type"]>) {
@@ -1676,13 +1727,16 @@ export class SkillContext<Meta extends ContextMetaBase> {
       extensionId: this.skillInfo.associatedExtensionId!,
       newState,
     });
+    return this.enableShortcut();
   }
 
   switchCards() {
     this.emitEvent("requestSwitchHands", this.skillInfo, this.callerArea.who);
+    return this.enableShortcut();
   }
   rerollDice(times: number) {
     this.emitEvent("requestReroll", this.skillInfo, this.callerArea.who, times);
+    return this.enableShortcut();
   }
   triggerEndPhaseSkill(target: EntityState) {
     this.emitEvent(
@@ -1691,6 +1745,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.callerArea.who,
       target,
     );
+    return this.enableShortcut();
   }
   useSkill(skillId: SkillHandle) {
     this.emitEvent(
@@ -1699,6 +1754,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.callerArea.who,
       skillId,
     );
+    return this.enableShortcut();
   }
 
   private getCardsDefinition(cards: (CardHandle | CardDefinition)[]) {
@@ -1730,19 +1786,25 @@ export class SkillContext<Meta extends ContextMetaBase> {
         }
       }),
     });
+    return this.enableShortcut();
   }
   selectAndCreateHandCard(cards: (CardHandle | CardDefinition)[]) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "createHandCard",
       cards: this.getCardsDefinition(cards),
     });
+    return this.enableShortcut();
   }
-  selectAndPlay(cards: (CardHandle | CardDefinition)[], ...targets: (CharacterState | EntityState)[]) {
+  selectAndPlay(
+    cards: (CardHandle | CardDefinition)[],
+    ...targets: (CharacterState | EntityState)[]
+  ) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "requestPlayCard",
       cards: this.getCardsDefinition(cards),
-      targets
+      targets,
     });
+    return this.enableShortcut();
   }
 
   random<T>(items: readonly T[]): T {
@@ -1771,6 +1833,7 @@ type SkillContextMutativeProps =
   | "mutate"
   | "events"
   | "emitEvent"
+  | "emitCustomEvent"
   | "switchActive"
   | "gainEnergy"
   | "heal"
@@ -1815,5 +1878,5 @@ type SkillContextMutativeProps =
  */
 export type TypedSkillContext<Meta extends ContextMetaBase> =
   Meta["readonly"] extends true
-  ? Omit<SkillContext<Meta>, SkillContextMutativeProps | InternalProp>
-  : Omit<SkillContext<Meta>, InternalProp>;
+    ? Omit<SkillContext<Meta>, SkillContextMutativeProps | InternalProp>
+    : Omit<SkillContext<Meta>, InternalProp>;

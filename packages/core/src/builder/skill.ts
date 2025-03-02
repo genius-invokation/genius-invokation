@@ -81,15 +81,18 @@ import {
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
-import { isCustomEvent } from "../base/custom_event";
+import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 
-export type SkillBuilderMetaBase = Omit<ContextMetaBase, "readonly">;
+export type SkillBuilderMetaBase = Omit<
+  ContextMetaBase,
+  "readonly" | "shortcutReceiver"
+>;
 export type ReadonlyMetaOf<BM extends SkillBuilderMetaBase> = {
   [K in keyof SkillBuilderMetaBase]: BM[K];
-} & { readonly: true };
+} & { readonly: true; shortcutReceiver: unknown };
 export type WritableMetaOf<BM extends SkillBuilderMetaBase> = {
   [K in keyof SkillBuilderMetaBase]: BM[K];
-} & { readonly: false };
+} & { readonly: false; shortcutReceiver: unknown };
 
 export type SkillOperation<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<WritableMetaOf<Meta>>,
@@ -525,7 +528,7 @@ const detailedEventDictionary = {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   customEvent: defineDescriptor("onCustomEvent", (c, e, r) => {
-    return checkRelative(e.onTimeState, { who: e.who }, r);
+    return checkRelative(e.onTimeState, e.entity.id, r);
   }),
 } satisfies Record<string, Descriptor<any>>;
 
@@ -648,41 +651,60 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   }
 }
 
-// 找到所有返回 void 的方法
-type AvailablePropImpl<
-  Obj extends object,
-  K extends keyof Obj,
-> = Obj[K] extends (...args: any[]) => void
-  ? ReturnType<Obj[K]> extends void | { [ENABLE_SHORTCUT]: true }
-    ? K
-    : never
-  : never;
-type AvailablePropOf<Ctx extends object> = {
-  [K in keyof Ctx]: AvailablePropImpl<Ctx, K>;
+type EnableShortcutPropsOf<Ctx extends object> = {
+  [K in keyof Ctx]: Ctx[K] extends (...args: any[]) => infer R
+    ? R extends { [ENABLE_SHORTCUT]: true }
+      ? K
+      : never
+    : never;
 }[keyof Ctx];
 
-type SkillContextShortcutSource<Meta extends ContextMetaBase> =
-  TypedSkillContext<Omit<Meta, "readonly"> & { readonly: false }> &
-    Omit<Meta["eventArgType"], `_${string}`>;
-
-type SkillContextShortcutProps<Meta extends ContextMetaBase> = AvailablePropOf<
-  SkillContextShortcutSource<Meta>
+/** 所有允许 shortcut 调用的方法名 */
+type EnabledShortcutProps = EnableShortcutPropsOf<
+  TypedSkillContext<{
+    readonly: false;
+    eventArgType: unknown;
+    associatedExtension: never;
+    callerType: "character";
+    callerVars: never;
+    shortcutReceiver: {};
+  }>
 >;
 
-// 所有返回 void 的方法的参数类型
-type SkillContextShortcutArgs<
-  Meta extends ContextMetaBase,
-  K extends keyof SkillContextShortcutSource<Meta>,
-> = SkillContextShortcutSource<Meta>[K] extends (...args: infer Args) => void
-  ? Args
-  : never;
+type ShortcutSkillContext<Meta extends ContextMetaBase> = Pick<
+  TypedSkillContext<Meta>,
+  EnabledShortcutProps & keyof TypedSkillContext<Meta>
+>;
 
-// 带有直达方法的 Builder，使用 `enableShortcut` 生成
-export type BuilderWithShortcut<Original> = Original & {
-  [K in SkillContextShortcutProps<WritableMetaOf<ExtractBM<Original>>>]: (
-    ...args: SkillContextShortcutArgs<WritableMetaOf<ExtractBM<Original>>, K>
+type EventArgShortcutPropsOf<EventArgT> = {
+  [K in keyof EventArgT]: K extends `_${string}`
+    ? never
+    : EventArgT[K] extends (...args: any[]) => infer R
+      ? R extends void
+        ? K
+        : never
+      : never;
+}[keyof EventArgT];
+type EventArgShortcutParamsOf<
+  EventArgT,
+  K extends keyof EventArgT,
+> = EventArgT[K] extends (...args: infer P) => void ? P : never;
+
+type EventArgShortcut<Original> = {
+  [K in EventArgShortcutPropsOf<ExtractBM<Original>["eventArgType"]>]: (
+    ...args: EventArgShortcutParamsOf<ExtractBM<Original>["eventArgType"], K>
   ) => BuilderWithShortcut<Original>;
 };
+
+/**
+ * 带有 shortcut 的 builder，使用 `withShortcut` 生成。包括：
+ * - `Original` 原有 builder 的方法
+ * - `ShortcutSkillContext<...>` 对 SkillContext 的 shortcut
+ * - `EventArgShortcut<...>` 对 EventArgType 的 shortcut
+ */
+export type BuilderWithShortcut<Original> = Original &
+  ShortcutSkillContext<ShortcutMetaOf<Original>> &
+  EventArgShortcut<Original>;
 
 type ExtractBM<T> = T extends {
   [BUILDER_META_TYPE]: infer Meta extends SkillBuilderMetaBase;
@@ -690,13 +712,17 @@ type ExtractBM<T> = T extends {
   ? Meta
   : never;
 
+type ShortcutMetaOf<Builder> = {
+  [K in keyof SkillBuilderMetaBase]: ExtractBM<Builder>[K];
+} & { readonly: false; shortcutReceiver: BuilderWithShortcut<Builder> };
+
 /**
  * 为 Builder 添加直达 SkillContext 的函数，即可
  * `.do((c) => c.PROP(ARGS))`
  * 直接简写为
  * `.PROP(ARGS)`
  */
-export function enableShortcut<T extends SkillBuilder<any>>(
+export function withShortcut<T extends SkillBuilder<any>>(
   original: T,
 ): BuilderWithShortcut<T> {
   const proxy = new Proxy(original, {
@@ -1427,5 +1453,5 @@ export class TechniqueBuilder<
 }
 
 export function skill(id: number) {
-  return enableShortcut(new InitiativeSkillBuilder(id));
+  return withShortcut(new InitiativeSkillBuilder(id));
 }
