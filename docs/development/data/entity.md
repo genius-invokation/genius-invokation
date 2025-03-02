@@ -14,7 +14,7 @@ const FavoniusCathedral = card(321006)
   .done();
 ```
 
-[events](./events.md) 列出了目前定义的可用于 `.on` 的事件名称和含义。
+可用于 `.on` 的事件包括 [events](./events.md) 列出的标准事件，也可包含[用户自定义事件](./custom_events.md)。
 
 ## 触发条件
 

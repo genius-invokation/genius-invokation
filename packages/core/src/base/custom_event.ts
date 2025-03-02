@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class CustomEvent<T = unknown> {
-  #_guard!: T;
+  _typeGuard!: T;
   name: string;
   constructor(name?: string) {
     this.name = name ?? "";
