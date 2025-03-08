@@ -288,7 +288,7 @@ export const LunarCyclesUnending = card(226022)
   .since("v4.3.0")
   .costSame(2)
   .eventTalent([Azhdaha, AzhdahaCryo, AzhdahaHydro, AzhdahaPyro, AzhdahaElectro])
-  .characterStatus(StoneFacetsElementalCrystallization, "@master")
+  .characterStatus(StoneFacetsElementalCrystallization, "@targets.0")
   .do((c) => {
     const elements = new Set(c.$$(`my characters include defeated`).map((ch) => ch.element()))
     for (const element of elements) {
