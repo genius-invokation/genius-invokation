@@ -323,7 +323,7 @@ export class CardBuilder<
   private prepareTalent(
     ch: CharacterHandle | CharacterHandle[],
     requires: TalentRequirement,
-  ): `${string}character${string}` {
+  ): `${string} character ${string}` {
     this.tags("talent");
     let extraCond = "";
     if (requires === "action") {
