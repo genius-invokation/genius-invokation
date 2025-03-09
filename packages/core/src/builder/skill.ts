@@ -540,6 +540,7 @@ type OverrideEventArgType = {
   deductVoidDiceSkill: ModifyAction0EventArg<UseSkillInfo>;
   deductElementDiceSkill: ModifyAction1EventArg<UseSkillInfo>;
   deductOmniDiceSkill: ModifyAction2EventArg<UseSkillInfo>;
+  deductOmniDiceTechnique: ModifyAction2EventArg<UseSkillInfo>;
   cancelHealed: Omit<ModifyHeal0EventArg, "damageInfo" | "value">;
   decreaseHealed: Omit<ModifyHeal1EventArg, "damageInfo" | "value">;
 };
