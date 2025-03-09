@@ -27,6 +27,7 @@ import { getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
   zero?: "unknown" | "physic";
+  noAltText?: boolean;
 }
 
 export function Image(props: ImageProps) {
@@ -36,6 +37,7 @@ export function Image(props: ImageProps) {
     "width",
     "height",
     "zero",
+    "noAltText",
   ]);
   const { assetsApiEndpoint } = useUiContext();
   const [url] = createResource(
@@ -78,7 +80,7 @@ export function Image(props: ImageProps) {
       when={showImage()}
       fallback={
         <div {...(innerProps() as ComponentProps<"div">)}>
-          {innerProps().alt}
+          {local.noAltText ? "" : innerProps().alt}
         </div>
       }
     >
