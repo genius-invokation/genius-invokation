@@ -16,7 +16,8 @@
 import type { DiceType, ReadonlyDiceRequirement } from "@gi-tcg/typings";
 
 const VOID = 0;
-const OMNI = 8;
+const OMNI: typeof DiceType.Omni = 8;
+const ALIGNED: typeof DiceType.Aligned = 8;
 const ENERGY = 9;
 
 /**
@@ -33,8 +34,8 @@ export function chooseDice(
   const FAIL_RESULT = Array<boolean>(dice.length).fill(false);
   const result = [...FAIL_RESULT];
   // 需要同色骰子
-  if (required.has(OMNI)) {
-    const requiredCount = required.get(OMNI)!;
+  if (required.has(ALIGNED)) {
+    const requiredCount = required.get(ALIGNED)!;
     // 杂色骰子+万能骰子，凑够同色
     for (let i = dice.length - 1; i >= 0; i--) {
       if (dice[i] === OMNI) continue;
@@ -125,8 +126,8 @@ export function checkDice(
   chosen: readonly DiceType[],
 ): boolean {
   // 如果需要同色骰子
-  if (required.has(OMNI)) {
-    const requiredCount = required.get(OMNI)!;
+  if (required.has(ALIGNED)) {
+    const requiredCount = required.get(ALIGNED)!;
     // 检查个数
     if (requiredCount !== chosen.length) return false;
     const chosenMap = new Set<DiceType>(chosen);
