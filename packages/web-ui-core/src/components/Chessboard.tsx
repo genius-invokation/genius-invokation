@@ -130,6 +130,7 @@ export interface CardInfo {
 
 export interface DraggingCardInfo {
   id: number;
+  data: PbCardState;
   x: number;
   y: number;
   status: "start" | "moving" | "end";
@@ -332,29 +333,6 @@ function calcCardsInfo(
         ) ?? null;
 
       if (ctx.draggingHand?.id === card.id) {
-        const { x, y, status } = ctx.draggingHand;
-        cards.push({
-          id: card.id,
-          data: card,
-          kind: "dragging",
-          uiState: {
-            type: "cardStatic",
-            isAnimating: false,
-            transform: {
-              x,
-              y,
-              z: DRAGGING_Z,
-              // zIndex: 100,
-              ry: 0,
-              rz: 0,
-            },
-            draggingEndAnimation: status === "end",
-          },
-          enableShadow: true,
-          enableTransition: status === "start",
-          playStep,
-          tuneStep,
-        });
         continue;
       }
       let x, y;
@@ -399,6 +377,43 @@ function calcCardsInfo(
         tuneStep,
       });
     }
+  }
+
+  // Dragging
+  if (ctx.draggingHand) {
+    const { x, y, status, id, data } = ctx.draggingHand;
+    const playStep =
+      availableSteps.find(
+        (step): step is PlayCardActionStep =>
+          step.type === "playCard" && step.cardId === id,
+      ) ?? null;
+    const tuneStep =
+      availableSteps.find(
+        (step): step is ElementalTunningActionStep =>
+          step.type === "elementalTunning" && step.cardId === id,
+      ) ?? null;
+
+    cards.push({
+      id,
+      data,
+      kind: "dragging",
+      uiState: {
+        type: "cardStatic",
+        isAnimating: false,
+        transform: {
+          x,
+          y,
+          z: DRAGGING_Z,
+          ry: 0,
+          rz: 0,
+        },
+        draggingEndAnimation: status === "end",
+      },
+      enableShadow: true,
+      enableTransition: status === "start",
+      playStep,
+      tuneStep,
+    });
   }
   return cards;
 }
@@ -603,6 +618,9 @@ function rerenderChildren(opt: {
               .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
       let currentDurationMs = 0;
       for (const animatingCard of currentAnimatingCards) {
+        if (draggingHand?.id === animatingCard.data.id) {
+          continue;
+        }
         const start = previousCards.find(
           (card) => card.id === animatingCard.data.id,
         );
@@ -1079,7 +1097,8 @@ export function Chessboard(props: ChessboardProps) {
           setDicePanelState(actionState.dicePanel);
         } else if (prevActionState) {
           // 退出行动时，取消所有的选择项
-          setDraggingHand(null);
+          // 保持 draggingHand.status === "end" 以播放完整动画
+          // setDraggingHand(null);
           setSelectingItem(null);
           setDicePanelState("hidden");
           setSelectedDice([]);
@@ -1179,7 +1198,7 @@ export function Chessboard(props: ChessboardProps) {
       ),
   );
   const showSkillButtons = createMemo(() => {
-    const shown = !getFocusingHands() && !getDraggingHand();
+    const shown = !getFocusingHands() && getDraggingHand()?.status !== "moving";
     if (localProps.actionState) {
       return shown && localProps.actionState.showSkillButtons;
     } else {
@@ -1276,6 +1295,7 @@ export function Chessboard(props: ChessboardProps) {
       const zRatio = (PERSPECTIVE - DRAGGING_Z) / PERSPECTIVE;
       setDraggingHand({
         id: cardInfo.id,
+        data: cardInfo.data,
         x: originalX,
         y: originalY,
         status: "start",
@@ -1337,7 +1357,7 @@ export function Chessboard(props: ChessboardProps) {
     const [tunningAreaX] = getTunningAreaPos([0, width()], dragging);
     if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
       localProps.onStepActionState?.(cardInfo.tuneStep, selectedDiceValue());
-      setDraggingHand(null);
+      setDraggingHand({ ...dragging, status: "end" });
       return;
     }
     if (!focusingHands && cardInfo.playStep) {
