@@ -20,6 +20,7 @@ import { Image } from "./Image";
 import { SelectingIcon } from "./SelectingIcon";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -63,9 +64,23 @@ export function Entity(props: EntityProps) {
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
-        <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
-          {data().variableValue}
-        </div>
+        <WithDelicateUi
+          assetId={data().variableName === "usage" ? "UI_Gcg_DiceL_Round" : "UI_Gcg_DiceL_Count"}
+          fallback={
+            <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
+              {data().variableValue}
+            </div>
+          }
+        >
+          {(image) => (
+            <div class="w-8 h-8 absolute top--2 right--2">
+              {image}
+              <div class="absolute inset-0 flex items-center justify-center text-white font-bold text-stroke-0.5 text-stroke-black">
+                {data().variableValue}
+              </div>
+            </div>
+          )}
+        </WithDelicateUi>
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">

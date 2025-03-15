@@ -15,6 +15,7 @@
 
 import { Image } from "./Image";
 import type { PlayingCardInfo } from "./Chessboard";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface PlayingCardProps extends PlayingCardInfo {
   opp: boolean;
@@ -26,7 +27,27 @@ export function PlayingCard(props: PlayingCardProps) {
       class="absolute top-15 data-[opp=false]:left-15 data-[opp=true]:right-15 z-100 shadow-xl w-42 h-72 rounded-6 animate-[playing-card_700ms_both]"
       data-opp={props.opp}
     >
-      <Image class="h-full w-full rounded-6 b-white b-6" imageId={props.data.definitionId} />
+      <WithDelicateUi
+        assetId="UI_TeyvatCard_CardFrame_Common"
+        fallback={
+          <Image
+            class="h-full w-full rounded-6 b-white b-6"
+            imageId={props.data.definitionId}
+          />
+        }
+      >
+        {(frame) => (
+          <>
+            <Image
+              class="absolute inset-0 h-full w-full"
+              imageId={props.data.definitionId}
+            />
+            <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+              {frame}
+            </div>
+          </>
+        )}
+      </WithDelicateUi>
     </div>
   );
 }
