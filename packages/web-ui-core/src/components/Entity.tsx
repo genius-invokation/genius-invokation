@@ -48,7 +48,7 @@ export function Entity(props: EntityProps) {
         assetId="UI_TeyvatCard_CardFrame_Summon"
         fallback={
           <Image
-            class="absolute inset-0 h-full w-full p-1px rounded-lg b-white b-2"
+            class="absolute inset-0 h-full w-full rounded-lg b-white b-2"
             imageId={data().definitionId}
           />
         }

@@ -297,7 +297,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             fallback={
               <Image
                 imageId={data().definitionId}
-                class="h-full p-1px rounded-xl b-white b-3"
+                class="h-full rounded-xl b-white b-3"
               />
             }
           >
@@ -417,12 +417,12 @@ function Health(props: { value: number }) {
           >
             <path
               d="M926.2 609.8c0 227.2-187 414.2-414.2 414.2S97.8 837 97.8 609.8c0-226.2 173.3-395 295.7-552C423.5 19.3 467.8 0 512 0s88.5 19.3 118.5 57.8c122.4 157 295.7 325.8 295.7 552z"
-              fill="#ddc695"
+              fill="#ffffff" // "#ddc695"
               stroke="black"
               stroke-width="30"
             />
           </svg>
-          <div class="absolute line-height-none text-yellow-900 font-bold">{props.value}</div>
+          <div class="absolute line-height-none">{props.value}</div>
         </div>
       }
     >

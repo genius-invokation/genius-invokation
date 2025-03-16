@@ -48,6 +48,26 @@
   .card[data-dragging-end] {
     animation: card-dragging-end 0.2s both;
   }
+
+  .declare-end-marker-img {
+    background-image: var(--img-url);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .declare-end-marker-img-button {
+    background-color: transparent;
+    cursor: auto;
+  }
+  .declare-end-marker-img-button[data-clickable] {
+    cursor: pointer;
+  }
+  .declare-end-marker-img:has(.declare-end-marker-img-button:hover) {
+    background-image: var(--img-hover-url);
+  }
+  .declare-end-marker-img:has(.declare-end-marker-img-button:active) {
+    background-image: var(--img-active-url);
+  }
 }
 
 @keyframes entity-entering {

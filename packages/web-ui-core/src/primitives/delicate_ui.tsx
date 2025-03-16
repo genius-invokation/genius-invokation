@@ -18,20 +18,40 @@ import {
   createMemo,
   createResource,
   Show,
+  untrack,
   type JSX,
 } from "solid-js";
+import { useUiContext } from "../hooks/context";
 
-export interface WithDelicateUi {
-  assetId: string | string[];
-  fallback: JSX.Element;
-  children: (...assets: HTMLImageElement[]) => JSX.Element;
-}
+export type WithDelicateUiProps =
+  | {
+      dataUri?: false;
+      assetId: string | string[];
+      fallback: JSX.Element;
+      children: (...assets: HTMLImageElement[]) => JSX.Element;
+    }
+  | {
+      dataUri: true;
+      assetId: string | string[];
+      fallback: JSX.Element;
+      children: (...assets: string[]) => JSX.Element;
+    };
 
 const UI_ASSET_URL_BASE = `https://ui.assets.gi-tcg.guyutongxue.site/`;
 
-const assetsCache = new Map<string, HTMLImageElement>();
+const assetsImageCache = new Map<string, HTMLImageElement>();
+const assetsUriCache = new Map<string, string>();
 
-export function WithDelicateUi(props: WithDelicateUi) {
+/**
+ * 异步加载 `props.assetId` UI 素材。
+ *
+ * 当素材未加载时，渲染 `props.fallback`；加载完成后渲染 `props.children(img)`。
+ * 其中 `img` 是加载得到的 `HTMLImageElement` 或 Data URI。
+ * @param props
+ * @returns
+ */
+export function WithDelicateUi(props: WithDelicateUiProps) {
+  const { disableDelicateUi } = useUiContext();
   const assetId = createMemo(() => props.assetId);
   const assetUrls = createMemo(() => {
     const id = assetId();
@@ -39,29 +59,56 @@ export function WithDelicateUi(props: WithDelicateUi) {
       (id) => `${UI_ASSET_URL_BASE}${id}.webp`,
     );
   });
+  const useDataUri = untrack(() => props.dataUri);
   const [resource] = createResource(assetUrls, (urls) =>
     Promise.all(
       urls.map(
         (url) =>
-          new Promise<HTMLImageElement>((resolve, reject) => {
-            if (assetsCache.has(url)) {
-              resolve(assetsCache.get(url)!.cloneNode() as HTMLImageElement);
+          new Promise<HTMLImageElement | string>((resolve, reject) => {
+            if (disableDelicateUi) {
+              reject(null);
               return;
             }
-            const img = new Image();
-            img.src = url;
-            img.onload = () => {
-              assetsCache.set(url, img);
-              resolve(img);
-            };
-            img.onerror = () => reject(null);
+            if (useDataUri) {
+              if (assetsUriCache.has(url)) {
+                resolve(assetsUriCache.get(url)!);
+                return;
+              }
+              fetch(url)
+                .then((res) => res.blob())
+                .then((blob) => {
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const uri = reader.result as string;
+                    assetsUriCache.set(url, uri);
+                    resolve(uri);
+                  };
+                  reader.onerror = () => reject(null);
+                  reader.readAsDataURL(blob);
+                })
+                .catch(() => reject(null));
+            } else {
+              if (assetsImageCache.has(url)) {
+                resolve(
+                  assetsImageCache.get(url)!.cloneNode() as HTMLImageElement,
+                );
+                return;
+              }
+              const img = new Image();
+              img.src = url;
+              img.onload = () => {
+                assetsImageCache.set(url, img);
+                resolve(img);
+              };
+              img.onerror = () => reject(null);
+            }
           }),
       ),
     ),
   );
   return (
     <Show when={resource.state === "ready"} fallback={props.fallback}>
-      {props.children(...(resource() as HTMLImageElement[]))}
+      {props.children(...(resource() as any[]))}
     </Show>
   );
 }

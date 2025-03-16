@@ -47,7 +47,7 @@ const deck1: DeckConfig = {
 function App() {
 
   const [io0, Chessboard0] = createClient(0);
-  const [io1, Chessboard1] = createClient(1);
+  const [io1, Chessboard1] = createClient(1, { disableDelicateUi: true });
 
   onMount(() => {
     const state = Game.createInitialState({
