@@ -204,16 +204,16 @@ export function Card(props: CardProps) {
           assetId="UI_TeyvatCard_CardFrame_Common"
           fallback={
             <Image
-              class="h-full w-full rounded-xl b-white b-3"
-              imageId={props.data.definitionId}
+              class="h-full w-full rounded-xl p-1px b-white b-3"
+              imageId={data().definitionId}
             />
           }
         >
           {(frame) => (
             <>
               <Image
-                class="absolute inset-0 h-full w-full"
-                imageId={props.data.definitionId}
+                class="absolute inset-0 h-full w-full p-1px"
+                imageId={data().definitionId}
               />
               <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
                 {frame}

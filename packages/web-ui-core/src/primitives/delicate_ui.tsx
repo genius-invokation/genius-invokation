@@ -29,6 +29,8 @@ export interface WithDelicateUi {
 
 const UI_ASSET_URL_BASE = `https://ui.assets.gi-tcg.guyutongxue.site/`;
 
+const assetsCache = new Map<string, HTMLImageElement>();
+
 export function WithDelicateUi(props: WithDelicateUi) {
   const assetId = createMemo(() => props.assetId);
   const assetUrls = createMemo(() => {
@@ -37,15 +39,21 @@ export function WithDelicateUi(props: WithDelicateUi) {
       (id) => `${UI_ASSET_URL_BASE}${id}.webp`,
     );
   });
-  createEffect(() => console.log(assetUrls()));
   const [resource] = createResource(assetUrls, (urls) =>
     Promise.all(
       urls.map(
         (url) =>
           new Promise<HTMLImageElement>((resolve, reject) => {
+            if (assetsCache.has(url)) {
+              resolve(assetsCache.get(url)!.cloneNode() as HTMLImageElement);
+              return;
+            }
             const img = new Image();
             img.src = url;
-            img.onload = () => resolve(img);
+            img.onload = () => {
+              assetsCache.set(url, img);
+              resolve(img);
+            };
             img.onerror = () => reject(null);
           }),
       ),

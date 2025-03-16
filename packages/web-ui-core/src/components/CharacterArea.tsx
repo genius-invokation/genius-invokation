@@ -13,12 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  DamageType,
-  PbEntityState,
-  PbEquipmentType,
-  type PbCharacterState,
-} from "@gi-tcg/typings";
+import { PbEquipmentType } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
   createEffect,
@@ -32,13 +27,14 @@ import {
   untrack,
 } from "solid-js";
 import { Image } from "./Image";
-import type { CharacterInfo, DamageInfo, StatusInfo } from "./Chessboard";
+import type { CharacterInfo, DamageInfo } from "./Chessboard";
 import { Damage } from "./Damage";
-import { cssPropertyOfTransform, type CharacterUiState } from "../ui_state";
+import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { SelectingIcon } from "./SelectingIcon";
 import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -217,11 +213,8 @@ export function CharacterArea(props: CharacterAreaProps) {
       </div>
       <div class="h-36 w-21 relative">
         <Show when={!defeated()}>
-          <div class="absolute z-1 left--2 top--10px flex items-center justify-center">
-            <WaterDrop />
-            <div class="absolute line-height-none">{data().health}</div>
-          </div>
-          <div class="absolute z-1 left-18 top-2 flex flex-col gap-2">
+          <Health value={data().health} />
+          <div class="absolute z-1 right-1 top-3 translate-x-50% flex flex-col gap-1 items-center">
             <EnergyBar
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
@@ -292,19 +285,34 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow"
+          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow data-[defeated]:brightness-50"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
           }
+          bool:data-defeated={defeated()}
         >
-          <Image
-            imageId={data().definitionId}
-            class="h-full rounded-xl b-white b-3"
-            classList={{
-              "brightness-50": defeated(),
-            }}
-          />
+          <WithDelicateUi
+            assetId="UI_TeyvatCard_CardFrame_Common"
+            fallback={
+              <Image
+                imageId={data().definitionId}
+                class="h-full p-1px rounded-xl b-white b-3"
+              />
+            }
+          >
+            {(frame) => (
+              <>
+                <Image
+                  imageId={data().definitionId}
+                  class="absolute inset-0 h-full w-full p-1px"
+                />
+                <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+                  {frame}
+                </div>
+              </>
+            )}
+          </WithDelicateUi>
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
@@ -361,43 +369,71 @@ interface EnergyBarProps {
 function EnergyBar(props: EnergyBarProps) {
   return (
     <>
-      <Index each={Array(props.total).fill(0)}>
-        {(_, i) => (
-          <svg // 能量点
-            viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
+      <For each={Array.from({ length: props.total }, (_, i) => i)}>
+        {(i) => (
+          <WithDelicateUi
+            assetId={
+              i < props.current
+                ? "UI_TeyvatCard_LifeBg2"
+                : "UI_TeyvatCard_LifeBg3"
+            }
+            fallback={
+              <svg // 能量点
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+              >
+                <path
+                  d="M538.112 38.4c-15.36-44.544-39.936-44.544-55.296 0l-84.992 250.88c-14.848 44.544-64 93.184-108.032 108.544L40.448 482.816c-44.544 15.36-44.544 39.936 0 55.296l247.808 86.016c44.544 15.36 93.184 64.512 108.544 108.544l86.528 251.392c15.36 44.544 39.936 44.544 55.296 0l84.48-249.856c14.848-44.544 63.488-93.184 108.032-108.544l252.928-86.528c44.544-15.36 44.544-39.936 0-54.784l-248.832-83.968c-44.544-14.848-93.184-63.488-108.544-108.032-1.536-0.512-88.576-253.952-88.576-253.952z"
+                  fill={i < props.current ? "yellow" : "#e5e7eb"}
+                  stroke={i < props.current ? "#854d0e" : "gray"}
+                  stroke-width="32"
+                />
+              </svg>
+            }
           >
-            <path
-              d="M538.112 38.4c-15.36-44.544-39.936-44.544-55.296 0l-84.992 250.88c-14.848 44.544-64 93.184-108.032 108.544L40.448 482.816c-44.544 15.36-44.544 39.936 0 55.296l247.808 86.016c44.544 15.36 93.184 64.512 108.544 108.544l86.528 251.392c15.36 44.544 39.936 44.544 55.296 0l84.48-249.856c14.848-44.544 63.488-93.184 108.032-108.544l252.928-86.528c44.544-15.36 44.544-39.936 0-54.784l-248.832-83.968c-44.544-14.848-93.184-63.488-108.544-108.032-1.536-0.512-88.576-253.952-88.576-253.952z"
-              fill={i < props.current ? "yellow" : "#e5e7eb"}
-              stroke={i < props.current ? "#854d0e" : "gray"}
-              stroke-width="32"
-            />
-          </svg>
+            {(img) => <div class="h-4 children-h-full">{img}</div>}
+          </WithDelicateUi>
         )}
-      </Index>
+      </For>
     </>
   );
 }
 
-function WaterDrop() {
+function Health(props: { value: number }) {
   return (
-    <svg // 水滴
-      viewBox="0 0 1024 1024"
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="40"
+    <WithDelicateUi
+      assetId="UI_TeyvatCard_LifeBg_Common"
+      fallback={
+        <div class="absolute z-1 left--2 top--2.5 flex items-center justify-center">
+          <svg // 水滴
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="40"
+          >
+            <path
+              d="M926.2 609.8c0 227.2-187 414.2-414.2 414.2S97.8 837 97.8 609.8c0-226.2 173.3-395 295.7-552C423.5 19.3 467.8 0 512 0s88.5 19.3 118.5 57.8c122.4 157 295.7 325.8 295.7 552z"
+              fill="#ddc695"
+              stroke="black"
+              stroke-width="30"
+            />
+          </svg>
+          <div class="absolute line-height-none text-yellow-900 font-bold">{props.value}</div>
+        </div>
+      }
     >
-      <path
-        d="M926.2 609.8c0 227.2-187 414.2-414.2 414.2S97.8 837 97.8 609.8c0-226.2 173.3-395 295.7-552C423.5 19.3 467.8 0 512 0s88.5 19.3 118.5 57.8c122.4 157 295.7 325.8 295.7 552z"
-        fill="#ffffff"
-        stroke="black"
-        stroke-width="30"
-      />
-    </svg>
+      {(img) => (
+        <div class="absolute z-1 left--3 top--4 h-12 children-h-full">
+          {img}
+          <div class="absolute inset-0 h-full w-full pt-1 flex items-center justify-center line-height-none text-yellow-900 font-bold">
+            {props.value}
+          </div>
+        </div>
+      )}
+    </WithDelicateUi>
   );
 }

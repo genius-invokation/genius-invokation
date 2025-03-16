@@ -44,10 +44,27 @@ export function Entity(props: EntityProps) {
         props.onClick?.(e, e.currentTarget);
       }}
     >
-      <Image
-        class="absolute h-full w-full inset-0 rounded-lg b-white b-2"
-        imageId={data().definitionId}
-      />
+      <WithDelicateUi
+        assetId="UI_TeyvatCard_CardFrame_Summon"
+        fallback={
+          <Image
+            class="absolute inset-0 h-full w-full p-1px rounded-lg b-white b-2"
+            imageId={data().definitionId}
+          />
+        }
+      >
+        {(frame) => (
+          <>
+            <Image
+              class="absolute inset-0 h-full w-full p-1px rounded-lg"
+              imageId={data().definitionId}
+            />
+            <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+              {frame}
+            </div>
+          </>
+        )}
+      </WithDelicateUi>
       <Show when={data().hasUsagePerRound}>
         <div class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite" />
       </Show>
@@ -65,7 +82,11 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={typeof data().variableValue === "number"}>
         <WithDelicateUi
-          assetId={data().variableName === "usage" ? "UI_Gcg_DiceL_Round" : "UI_Gcg_DiceL_Count"}
+          assetId={
+            data().variableName === "usage"
+              ? "UI_Gcg_DiceL_Round"
+              : "UI_Gcg_DiceL_Count"
+          }
           fallback={
             <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
               {data().variableValue}
@@ -73,7 +94,7 @@ export function Entity(props: EntityProps) {
           }
         >
           {(image) => (
-            <div class="w-8 h-8 absolute top--2 right--2">
+            <div class="w-8 h-8 absolute top--3 right--3">
               {image}
               <div class="absolute inset-0 flex items-center justify-center text-white font-bold text-stroke-0.5 text-stroke-black">
                 {data().variableValue}
