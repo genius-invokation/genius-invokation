@@ -431,7 +431,7 @@ export function normalizeCost(req: DiceRequirement): DiceRequirement {
     req.delete(dice);
   }
   if (req.size === 0) {
-    req.set(DiceType.Omni, 0);
+    req.set(DiceType.Aligned, 0);
   }
   return req;
 }
