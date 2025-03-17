@@ -26,4 +26,6 @@ await Bun.build({
   ],
   plugins: [inlineFrontendPlugin],
   target: "bun",
+  conditions: ["bun", "es2015", "module", "import", "default"],
+  minify: true,
 });
