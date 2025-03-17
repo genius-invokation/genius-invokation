@@ -378,6 +378,7 @@
   },
   "patchedDependencies": {
     "importx@0.5.1": "patches/importx@0.5.1.patch",
+    "@prisma/client@5.20.0": "patches/@prisma%2Fclient@5.20.0.patch",
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
   },
   "overrides": {
