@@ -14,6 +14,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import inlineFrontendPlugin from "./bun_plugin_frontend";
+import simpleGit from "simple-git";
+
+const latestLog = await simpleGit().log({ maxCount: 1 });
 
 await Bun.build({
   entrypoints: [`${import.meta.dirname}/../src/main.ts`],
@@ -24,8 +27,14 @@ await Bun.build({
     "@nestjs/websockets",
     "@fastify/view",
   ],
+  define: {
+    "__LATEST_GIT_LOG__": JSON.stringify(latestLog),
+  },
   plugins: [inlineFrontendPlugin],
   target: "bun",
   conditions: ["bun", "es2015", "module", "import", "default"],
   minify: true,
+  naming: {
+    asset: `[name].[ext]`
+  }
 });
