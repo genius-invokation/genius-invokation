@@ -13,23 +13,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import path from "node:path";
+import mime from "mime";
 import type { FastifyInstance } from "fastify";
-import { fastifyStatic } from "@fastify/static";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
-
-const indexHtml = await Bun.file(path.join(import.meta.dirname, "../../web-client/dist/index.html")).text();
 
 export async function frontend(app: FastifyInstance) {
   if (process.env.NODE_ENV === "production") {
-    await app.register(fastifyStatic, {
-      root: path.join(import.meta.dirname, "../../web-client/dist"),
-      index: false,
-      prefix: WEB_CLIENT_BASE_PATH,
-      wildcard: false,
-    });
+    const { default: contents } = await import("@gi-tcg/web-client");
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
-    app.get(baseNoSuffix, (_req, reply) => {
+    for (const [filename, content] of Object.entries(contents)) {
+      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (req, reply) => {
+        reply.type(mime.getType(filename) ?? "text/plain").send(Buffer.from(content, "base64"));
+      });
+    }
+    const indexHtml = Buffer.from(contents["index.html"]!, "base64");
+    app.get(baseNoSuffix, (req, reply) => {
       reply.type("text/html").send(indexHtml);
     });
     app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {

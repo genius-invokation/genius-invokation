@@ -34,9 +34,9 @@ const app = await NestFactory.create<NestFastifyApplication>(
 app.useGlobalPipes(new ValidationPipe({ transform: true }));
 app.useGlobalFilters(new PrismaClientExceptionFilter(app.getHttpAdapter()));
 app.setGlobalPrefix(`${WEB_CLIENT_BASE_PATH}api`);
-app.register(frontend);
+await app.register(frontend);
 
-if (import.meta.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
   app.enableCors({ origin: "*" });
 }
 
