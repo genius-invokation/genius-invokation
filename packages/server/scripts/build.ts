@@ -26,6 +26,7 @@ await Bun.build({
     "@nestjs/microservices",
     "@nestjs/websockets",
     "@fastify/view",
+    "@fastify/static",
   ],
   define: {
     "__LATEST_GIT_LOG__": JSON.stringify(latestLog),
