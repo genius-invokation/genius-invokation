@@ -20,6 +20,7 @@ import { cssPropertyOfTransform, type CardAnimatingUiState } from "../ui_state";
 import type { CardInfo } from "./Chessboard";
 import { SelectingIcon } from "./SelectingIcon";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface CardProps extends CardInfo {
   selected: boolean;
@@ -199,16 +200,44 @@ export function Card(props: CardProps) {
       }}
     >
       <div class="absolute h-full w-full backface-hidden">
-        <Image
-          class="h-full w-full rounded-xl b-white b-3"
-          imageId={props.data.definitionId}
-        />
+        <WithDelicateUi
+          assetId="UI_TeyvatCard_CardFrame_Common"
+          fallback={
+            <Image
+              class="h-full w-full rounded-xl b-white b-3"
+              imageId={data().definitionId}
+            />
+          }
+        >
+          {(frame) => (
+            <>
+              <Image
+                class="absolute inset-0 h-full w-full p-1px"
+                imageId={data().definitionId}
+              />
+              <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+                {frame}
+              </div>
+            </>
+          )}
+        </WithDelicateUi>
       </div>
       <Switch>
         <Match when={props.toBeSwitched}>
-          <div class="absolute h-full w-full backface-hidden flex items-center justify-center text-8xl text-red-500 line-height-none">
-            &#8856;
-          </div>
+          <WithDelicateUi
+            assetId="UI_TeyvatCard_Select_ExchangeCard"
+            fallback={
+              <div class="absolute h-full w-full backface-hidden flex items-center justify-center text-8xl text-red-500 line-height-none">
+                &#8856;
+              </div>
+            }
+          >
+            {(image) => (
+              <div class="absolute h-full w-full backface-hidden flex items-center justify-center children-w-18">
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
         </Match>
         <Match when={props.selected}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center">

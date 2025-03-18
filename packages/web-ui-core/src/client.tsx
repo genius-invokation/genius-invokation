@@ -72,6 +72,7 @@ export interface ClientOption {
   onGiveUp?: () => void;
   rpc?: Partial<RpcDispatcher>;
   assetsApiEndpoint?: string;
+  disableDelicateUi?: boolean;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
@@ -263,7 +264,11 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   };
 
   const Wrapper = (props: ComponentProps<"div">) => (
-    <UiContext.Provider value={{ assetsApiEndpoint: option.assetsApiEndpoint }}>
+    <UiContext.Provider
+      value={{
+        ...option,
+      }}
+    >
       <Chessboard
         who={who}
         data={data()}

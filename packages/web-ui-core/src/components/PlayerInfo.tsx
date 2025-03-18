@@ -16,6 +16,7 @@
 import { DiceType, PbPlayerStatus } from "@gi-tcg/typings";
 import { Dice } from "./Dice";
 import { Show } from "solid-js";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface PlayerInfoProps {
   class?: string;
@@ -48,10 +49,21 @@ export function PlayerInfo(props: PlayerInfoProps) {
       </div>
       <div class="flex-grow-1" />
       <div class="flex flex-row gap-4 items-center">
-        <div
-          class="ml-1.75 h-6 w-6 b-gray-400 b-2 rounded-md rotate-45 bg-gradient-to-r from-purple-500 to-blue-500 data-[used]:bg-gray-300 data-[used]:bg-none"
-          bool:data-used={props.legendUsed}
-        />
+        <div class="ml-1.75">
+          <WithDelicateUi
+            assetId={
+              props.legendUsed ? "UI_Gcg_Esoteric_Bg" : "UI_Gcg_DiceL_Legend"
+            }
+            fallback={
+              <div
+                class="h-6 w-6 b-gray-400 b-2 rounded-md rotate-45 bg-gradient-to-r from-purple-500 to-blue-500 data-[used]:bg-gray-300 data-[used]:bg-none"
+                bool:data-used={props.legendUsed}
+              />
+            }
+          >
+            {(image) => <div class="h-8 w-8">{image}</div>}
+          </WithDelicateUi>
+        </div>
         <div
           class="opacity-0 data-[shown]:opacity-100 bg-yellow-100 text-yellow-800 py-1 px-3 rounded-xl transition-opacity"
           bool:data-shown={props.declaredEnd}

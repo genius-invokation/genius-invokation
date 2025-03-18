@@ -17,6 +17,7 @@ import { createContext, useContext } from "solid-js";
 
 export interface UiContextValue {
   assetsApiEndpoint?: string;
+  disableDelicateUi?: boolean;
 }
 
 export const UiContext = createContext<UiContextValue>({});

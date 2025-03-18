@@ -15,6 +15,7 @@
 
 import type { PbPhaseType } from "@gi-tcg/typings";
 import { Button } from "./Button";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface DeclareEndMarkerProps {
   class?: string;
@@ -37,14 +38,47 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
         props.class ?? ""
       }`}
     >
-      <div
-        class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
-        data-opp={props.opp}
-        onClick={onClick}
-        bool:data-clickable={props.markerClickable}
+      <WithDelicateUi
+        assetId={[
+          "UI_Gcg_Round_Button_01",
+          "UI_Gcg_Round_Button_02",
+          "UI_Gcg_Round_Button_03",
+          "UI_Gcg_Round_Button_04",
+        ]}
+        dataUri
+        fallback={
+          <div
+            class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
+            data-opp={props.opp}
+            onClick={onClick}
+            bool:data-clickable={props.markerClickable}
+          >
+            T{props.roundNumber}
+          </div>
+        }
       >
-        T{props.roundNumber}
-      </div>
+        {(opp, normal, hover, active) => (
+          <div
+            class="relative h-24 w-20 flex items-center justify-center declare-end-marker-img"
+            style={{
+              "--img-url": `url("${
+                props.opp ? opp : props.showButton ? hover : normal
+              }")`,
+              "--img-hover-url": `url("${props.opp ? opp : hover}")`,
+              "--img-active-url": `url("${props.opp ? opp : active}")`,
+            }}
+          >
+            <button
+              class="block pointer-events-auto h-12 w-12 rounded-full declare-end-marker-img-button data-[opp=true]:color-white"
+              data-opp={props.opp}
+              onClick={onClick}
+              bool:data-clickable={props.markerClickable}
+            >
+              T{props.roundNumber}
+            </button>
+          </div>
+        )}
+      </WithDelicateUi>
       <div
         class="opacity-0 data-[shown]:pointer-events-auto data-[shown]:opacity-100 transition-opacity"
         bool:data-shown={props.showButton}
