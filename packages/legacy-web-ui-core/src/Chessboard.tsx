@@ -807,14 +807,10 @@ function Chessboard(props: ChessboardProps) {
 
 export interface StandaloneChessboardProps extends ChessboardProps {
   assetsManager?: AssetsManager;
-  assetsAltText?: (id: number) => string;
 }
 
 export function StandaloneChessboard(props: StandaloneChessboardProps) {
-  const [local, restProps] = splitProps(props, [
-    "assetsManager",
-    "assetsAltText",
-  ]);
+  const [local, restProps] = splitProps(props, ["assetsManager"]);
 
   const contextValue = (): PlayerContextValue => ({
     allClickable: [],
