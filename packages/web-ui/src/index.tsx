@@ -49,7 +49,7 @@ const standaloneChessboardDefaultProps: StandaloneChessboardProps = {
   state: EMPTY_GAME_STATE,
   who: 0,
   mutations: [],
-  assetsApiEndpoint: void 0,
+  assetsManager: void 0,
 };
 
 customElement(

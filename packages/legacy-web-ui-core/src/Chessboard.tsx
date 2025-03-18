@@ -69,7 +69,7 @@ import { AsyncQueue } from "./async_queue";
 import { SelectCardView } from "./SelectCardView";
 import { MutationAnnouncer } from "./MutationAnnouncer";
 import { hintTexts } from "./CardDescription";
-import { getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
+import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -231,8 +231,7 @@ export interface PlayerContextValue {
   readonly allCosts: Readonly<Record<number, readonly PbDiceRequirement[]>>;
   readonly onClick: (id: number) => void;
   readonly setPrepareTuning: (value: boolean) => void;
-  readonly assetsApiEndpoint: string | undefined;
-  readonly assetsAltText: (id: number) => string | undefined;
+  readonly assetsManager: AssetsManager;
 }
 
 export interface EventContextValue {
@@ -253,8 +252,7 @@ export function useEventContext(): Readonly<EventContextValue> {
 export interface WebUiOption {
   onGiveUp?: () => void;
   alternativeAction?: AgentActions;
-  assetsApiEndpoint?: string;
-  assetsAltText?: (id: number) => string;
+  assetsManager?: AssetsManager;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
@@ -582,8 +580,7 @@ export function createPlayer(
     allCosts,
     onClick: notifyElementClicked,
     setPrepareTuning,
-    assetsApiEndpoint: opt.assetsApiEndpoint,
-    assetsAltText: opt.assetsAltText ?? getNameSync,
+    assetsManager: opt.assetsManager ?? DEFAULT_ASSETS_MANAGER,
   };
 
   const ChessboardWithIO = () => (
@@ -691,7 +688,7 @@ interface ChessboardProps extends ComponentProps<"div"> {
 }
 
 function Chessboard(props: ChessboardProps) {
-  const { assetsApiEndpoint } = usePlayerContext();
+  const { assetsManager } = usePlayerContext();
   const [local, restProps] = splitProps(props, [
     "class",
     "state",
@@ -733,7 +730,7 @@ function Chessboard(props: ChessboardProps) {
     console.log("CHESSBOARD MOUNTED");
     const prefetchedImages = [1, 2, 3, 4, 5, 6, 7];
     prefetchedImages.map((id) =>
-      getImageUrl(id, { assetsApiEndpoint, thumbnail: true }),
+      assetsManager.getImageUrl(id, { thumbnail: true }),
     );
   });
 
@@ -809,22 +806,17 @@ function Chessboard(props: ChessboardProps) {
 }
 
 export interface StandaloneChessboardProps extends ChessboardProps {
-  assetsApiEndpoint?: string;
-  assetsAltText?: (id: number) => string;
+  assetsManager?: AssetsManager;
 }
 
 export function StandaloneChessboard(props: StandaloneChessboardProps) {
-  const [local, restProps] = splitProps(props, [
-    "assetsApiEndpoint",
-    "assetsAltText",
-  ]);
+  const [local, restProps] = splitProps(props, ["assetsManager"]);
 
   const contextValue = (): PlayerContextValue => ({
     allClickable: [],
     allCosts: [],
     allSelected: [],
-    assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
-    assetsAltText: untrack(() => local.assetsAltText ?? getNameSync),
+    assetsManager: untrack(() => local.assetsManager) ?? DEFAULT_ASSETS_MANAGER,
     onClick: () => {},
     setPrepareTuning: () => {},
   });

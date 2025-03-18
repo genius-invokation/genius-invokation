@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { AssetsManager } from "@gi-tcg/assets-manager";
 import { createContext, useContext } from "solid-js";
 
-export const AssetsApiContext = createContext<{ assetsApiEndpoint?: string }>({});
-export const useAssetsApi = () => useContext(AssetsApiContext);
+export const AssetsContext = createContext<AssetsManager>();
+export const useAssetsManager = () => useContext(AssetsContext)!;

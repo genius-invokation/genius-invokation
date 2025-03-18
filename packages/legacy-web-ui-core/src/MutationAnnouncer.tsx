@@ -39,16 +39,13 @@ export interface MutationAnnouncerProps extends ComponentProps<"div"> {
 }
 
 export function MutationAnnouncer(props: MutationAnnouncerProps) {
-  const { assetsAltText } = usePlayerContext();
+  const { assetsManager } = usePlayerContext();
   const [local, restProps] = splitProps(props, ["state", "mutations", "who"]);
 
   const getSpells = () =>
     local.mutations?.map((m) =>
-      spellMutation(
-        flattenPbOneof(m.mutation!),
-        local.who,
-        local.state,
-        assetsAltText,
+      spellMutation(flattenPbOneof(m.mutation!), local.who, local.state, (s) =>
+        assetsManager.getNameSync(s),
       ),
     );
   const [mutationHintTexts, setMutationHintTexts] = createStore<string[]>([]);

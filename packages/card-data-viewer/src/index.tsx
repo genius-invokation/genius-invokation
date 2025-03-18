@@ -29,7 +29,11 @@ import type {
   PbCharacterState,
   PbEntityState,
 } from "@gi-tcg/typings";
-import { AssetsApiContext } from "./context";
+import { AssetsContext } from "./context";
+import {
+  type AssetsManager,
+  DEFAULT_ASSETS_MANAGER,
+} from "@gi-tcg/assets-manager";
 
 export interface RegisterResult {
   readonly CardDataViewer: () => JSX.Element;
@@ -49,7 +53,7 @@ export interface RegisterResult {
 }
 
 export interface CreateCardDataViewerOption {
-  assetsApiEndpoint?: string;
+  assetsManager?: AssetsManager;
   includesImage?: boolean;
 }
 
@@ -85,15 +89,15 @@ export function createCardDataViewer(
 
   return {
     CardDataViewer: () => (
-      <AssetsApiContext.Provider
-        value={{ assetsApiEndpoint: option.assetsApiEndpoint }}
+      <AssetsContext.Provider
+        value={option.assetsManager ?? DEFAULT_ASSETS_MANAGER}
       >
         <CardDataViewerContainer
           shown={shown()}
           inputs={inputs()}
           includesImage={option.includesImage ?? false}
         />
-      </AssetsApiContext.Provider>
+      </AssetsContext.Provider>
     ),
     showCard: (id) => {
       showDef(id, "card");

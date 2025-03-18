@@ -22,7 +22,6 @@ import {
   splitProps,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
-import { getImageUrl, getNameSync } from "@gi-tcg/assets-manager";
 
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
@@ -39,12 +38,11 @@ export function Image(props: ImageProps) {
     "zero",
     "noAltText",
   ]);
-  const { assetsApiEndpoint } = useUiContext();
+  const { assetsManager } = useUiContext();
   const [url] = createResource(
     () => local.imageId,
     (imageId) =>
-      getImageUrl(imageId, {
-        assetsApiEndpoint,
+      assetsManager.getImageUrl(imageId, {
         thumbnail: true,
       }),
   );
@@ -65,7 +63,9 @@ export function Image(props: ImageProps) {
       ...rest,
       class: `${rest.class ?? ""} ${classNames}`,
       src: url(),
-      alt: isUnknown() ? "" : getNameSync(local.imageId) ?? `${local.imageId}`,
+      alt: isUnknown()
+        ? ""
+        : assetsManager.getNameSync(local.imageId) ?? `${local.imageId}`,
       draggable: "false",
       style: {
         background: showImage() ? void 0 : "#e5e7eb",

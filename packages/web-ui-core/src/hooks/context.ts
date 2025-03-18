@@ -13,15 +13,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { AssetsManager } from "@gi-tcg/assets-manager";
 import { createContext, useContext } from "solid-js";
 
 export interface UiContextValue {
-  assetsApiEndpoint?: string;
+  assetsManager: AssetsManager;
   disableDelicateUi?: boolean;
 }
 
-export const UiContext = createContext<UiContextValue>({});
+export const UiContext = createContext<UiContextValue>();
 
 export function useUiContext() {
-  return useContext(UiContext);
+  return useContext(UiContext)!;
 }

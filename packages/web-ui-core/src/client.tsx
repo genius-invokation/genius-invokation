@@ -46,6 +46,7 @@ import {
   createChooseActiveState,
   type ActionState,
 } from "./action";
+import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -71,7 +72,7 @@ export const EMPTY_GAME_STATE: PbGameState = {
 export interface ClientOption {
   onGiveUp?: () => void;
   rpc?: Partial<RpcDispatcher>;
-  assetsApiEndpoint?: string;
+  assetsManager?: AssetsManager;
   disableDelicateUi?: boolean;
 }
 
@@ -85,6 +86,7 @@ export type Client = [
 ];
 
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
+  const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;
   const [data, setData] = createSignal<ChessboardData>({
     roundAndPhase: {
       showRound: false,
@@ -135,7 +137,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     action: async ({ action }) => {
       const resolver = Promise.withResolvers<ActionResponse>();
       actionResolvers.action = resolver;
-      const acState = createActionState(action);
+      const acState = createActionState(assetsManager, action);
       setActionState(acState);
       const response = await resolver.promise;
       setActionState(null);
@@ -267,6 +269,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     <UiContext.Provider
       value={{
         ...option,
+        assetsManager,
       }}
     >
       <Chessboard

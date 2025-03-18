@@ -22,6 +22,7 @@ import getData from "@gi-tcg/data";
 import { DetailLogEntry, Game, DeckConfig } from "@gi-tcg/core";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 import { createPlayer } from "./index";
+import { AssetsManager } from "@gi-tcg/assets-manager";
 
 const deck0: DeckConfig = {
   characters: [1314, 1709, 1203],
@@ -45,10 +46,11 @@ const deck1: DeckConfig = {
 };
 
 function App() {
-  const assetsApiEndpoint =
-    "https://beta.assets.gi-tcg.guyutongxue.site/api/v2";
-  const [io0, Chessboard0] = createPlayer(0, { assetsApiEndpoint });
-  const [io1, Chessboard1] = createPlayer(1, { assetsApiEndpoint });
+  const assetsManager = new AssetsManager({
+    apiEndpoint: "https://beta.assets.gi-tcg.guyutongxue.site/api/v2",
+  });
+  const [io0, Chessboard0] = createPlayer(0, { assetsManager });
+  const [io1, Chessboard1] = createPlayer(1, { assetsManager });
   const [detailLog, setDetailLog] = createSignal<readonly DetailLogEntry[]>([]);
 
   const state = Game.createInitialState({

@@ -21,7 +21,6 @@ import {
   untrack,
 } from "solid-js";
 import { usePlayerContext } from "./Chessboard";
-import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
@@ -29,15 +28,14 @@ export interface ImageProps extends ComponentProps<"img"> {
 
 export function Image(props: ImageProps) {
   const [local, rest] = splitProps(props, ["imageId", "width", "height"]);
-  const { assetsApiEndpoint, assetsAltText } = usePlayerContext();
+  const { assetsManager } = usePlayerContext();
   const placeholderUrl = () =>
     `https://placehold.jp/70x120.png?text=${encodeURIComponent(
-      assetsAltText(local.imageId) ?? local.imageId,
+      assetsManager.getNameSync(local.imageId) ?? local.imageId,
     )}`;
   const [url] = createResource(
     () =>
-      getImageUrl(local.imageId, {
-        assetsApiEndpoint,
+      assetsManager.getImageUrl(local.imageId, {
         thumbnail: true,
       }),
     {
@@ -50,7 +48,7 @@ export function Image(props: ImageProps) {
     ...rest,
     class: `${rest.class ?? ""} ${classNames}`,
     src: url(),
-    alt: assetsAltText(local.imageId) ?? `${local.imageId}`,
+    alt: assetsManager.getNameSync(local.imageId) ?? `${local.imageId}`,
     draggable: "false",
     style: {
       background: url.state === "ready" ? void 0 : "#e5e7eb",
