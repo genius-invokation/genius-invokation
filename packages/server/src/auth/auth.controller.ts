@@ -44,7 +44,7 @@ export class AuthController {
   async login(@Query() { code }: GitHubCallbackDto, @Res() res: FastifyReply) {
     const { accessToken } = await this.auth.login(code);
     const homepage = `${
-      import.meta.env.NODE_ENV === "production"
+      process.env.NODE_ENV === "production"
         ? SERVER_HOST
         : `http://localhost:5173`
     }${WEB_CLIENT_BASE_PATH}`;
