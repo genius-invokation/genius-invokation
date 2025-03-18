@@ -75,21 +75,19 @@ export const ParticularFieldFettersOfPhenomena = skill(17063)
     const duration = mirror ? c.getVariable("duration", mirror) : 0 ;
     const damageValue = 4 + duration;
     c.damage(DamageType.Dendro, damageValue);
-    if (duration > 0 && duration < 3) {
-      if (c.self.hasEquipment(Structuration)) {
-        c.self.addStatus(ChisellightMirror, {
-          overrideVariables: {
-            duration: 3
-          }
-        });
-        c.drawCards(1);
-      } else {
-        c.self.addStatus(ChisellightMirror, {
-          overrideVariables: {
-            duration: 3 - duration
-          }
-        });
-      }
+    if (duration >= 1 && c.self.hasEquipment(Structuration)) {
+      c.self.addStatus(ChisellightMirror, {
+        overrideVariables: {
+          duration: 3
+        }
+      });
+      c.drawCards(1);
+    } else {
+      c.self.addStatus(ChisellightMirror, {
+        overrideVariables: {
+          duration: 3 - duration
+        }
+      });
     }
   })
   .done();
