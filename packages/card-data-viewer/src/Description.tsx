@@ -13,11 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  getImageUrl,
-  getNameSync,
-  KEYWORD_ID_OFFSET,
-} from "@gi-tcg/assets-manager";
+import { KEYWORD_ID_OFFSET } from "@gi-tcg/assets-manager";
 import {
   createEffect,
   createMemo,
@@ -29,7 +25,7 @@ import {
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Reference } from "./Entity";
-import { useAssetsApi } from "./context";
+import { useAssetsManager } from "./context";
 
 type DescriptionItem =
   | {
@@ -111,11 +107,9 @@ function DamageDescription(props: DamageDescriptionProps) {
       "GCG_ELEMENT_DENDRO",
     ].indexOf(props.dType);
   const keywordId = () => KEYWORD_ID_OFFSET + 100 + id();
-  const text = () => getNameSync(keywordId());
-  const { assetsApiEndpoint } = useAssetsApi();
-  const [url] = createResource(id, (id) =>
-    getImageUrl(id, { assetsApiEndpoint }),
-  );
+  const text = () => assetsManager.getNameSync(keywordId());
+  const assetsManager = useAssetsManager();
+  const [url] = createResource(id, (id) => assetsManager.getImageUrl(id));
   return (
     <>
       <Show when={id() <= 7 && url()}>
@@ -143,6 +137,7 @@ export interface DescriptionProps {
 }
 
 export function Description(props: DescriptionProps) {
+  const assetsManager = useAssetsManager();
   const items = createMemo(() =>
     descriptionToItems(props.description, props.keyMap),
   );
@@ -197,7 +192,7 @@ export function Description(props: DescriptionProps) {
                     when={item.rType === "K"}
                     fallback={
                       <span class="text-black mx-1">
-                        {getNameSync(item.id) ?? item.id}
+                        {assetsManager.getNameSync(item.id) ?? item.id}
                       </span>
                     }
                   >
@@ -205,7 +200,7 @@ export function Description(props: DescriptionProps) {
                       class="text-black underline underline-1 underline-offset-3 cursor-pointer mx-1"
                       onClick={() => props.onRequestExplain?.(item.id)}
                     >
-                      {getNameSync(item.id)}
+                      {assetsManager.getNameSync(item.id)}
                     </span>
                   </Show>
                 )}

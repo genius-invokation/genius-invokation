@@ -23,7 +23,7 @@ import {
   createResource,
 } from "solid-js";
 import { Image } from "./Image";
-import { AnyData, getData } from "@gi-tcg/assets-manager";
+import { AnyData } from "@gi-tcg/assets-manager";
 import { usePlayerContext } from "./Chessboard";
 
 export type TypeKey =
@@ -43,9 +43,9 @@ export const hintTexts = new Map<number, string[]>();
 
 export function CardDescription(props: CardDescrptionProps) {
   const [local, rest] = splitProps(props, ["definitionId", "entityId", "type"]);
-  const { assetsApiEndpoint } = usePlayerContext();
+  const { assetsManager } = usePlayerContext();
   const [data] = createResource(() =>
-    getData(local.definitionId, { assetsApiEndpoint }),
+    assetsManager.getData(local.definitionId),
   );
   createEffect(() => {
     if (data.state === "ready") {

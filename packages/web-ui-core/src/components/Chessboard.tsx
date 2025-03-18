@@ -918,10 +918,10 @@ export function Chessboard(props: ChessboardProps) {
   ]);
   let chessboardElement!: HTMLDivElement;
 
-  const { assetsApiEndpoint } = useUiContext();
+  const { assetsManager } = useUiContext();
   const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
     includesImage: true,
-    assetsApiEndpoint,
+    assetsManager,
   });
   const [selectingItem, setSelectingItem] = createSignal<SelectingItem | null>(
     null,

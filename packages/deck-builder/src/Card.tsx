@@ -15,7 +15,6 @@
 
 import { Show, createResource, onCleanup } from "solid-js";
 import { useDeckBuilderContext } from "./DeckBuilder";
-import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface CardProps {
   id: number;
@@ -26,10 +25,9 @@ export interface CardProps {
 }
 
 export function Card(props: CardProps) {
-  const { assetsApiEndpoint, showCard } =
-    useDeckBuilderContext();
+  const { assetsManager, showCard } = useDeckBuilderContext();
   const [url] = createResource(() =>
-    getImageUrl(props.id, { assetsApiEndpoint, thumbnail: true }),
+    assetsManager.getImageUrl(props.id, { thumbnail: true }),
   );
   return (
     <div

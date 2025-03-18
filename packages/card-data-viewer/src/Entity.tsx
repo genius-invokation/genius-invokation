@@ -23,12 +23,7 @@ import {
   Switch,
 } from "solid-js";
 import type { ViewerInput } from "./CardDataViewer";
-import {
-  getData,
-  getImageUrl,
-  getNameSync,
-  KEYWORD_ID_OFFSET,
-} from "@gi-tcg/assets-manager";
+import { KEYWORD_ID_OFFSET } from "@gi-tcg/assets-manager";
 import type {
   ActionCardRawData,
   CharacterRawData,
@@ -41,7 +36,7 @@ import { PlayCostList } from "./PlayCost";
 import { Description } from "./Description";
 import { Tags } from "./Tags";
 import { TEXT_MAP } from "./text_map";
-import { useAssetsApi } from "./context";
+import { useAssetsManager } from "./context";
 
 export interface CardDataProps {
   class?: string;
@@ -51,15 +46,14 @@ export interface CardDataProps {
 }
 
 export function Character(props: CardDataProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) =>
-      getData(defId, { assetsApiEndpoint }) as Promise<CharacterRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<CharacterRawData>,
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
+    (defId) => assetsManager.getImageUrl(defId),
   );
   return (
     <div class={props.class}>
@@ -114,15 +108,14 @@ export function Character(props: CardDataProps) {
 }
 
 export function ActionCard(props: CardDataProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) =>
-      getData(defId, { assetsApiEndpoint }) as Promise<ActionCardRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<ActionCardRawData>,
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
+    (defId) => assetsManager.getImageUrl(defId),
   );
   return (
     <div class={props.class}>
@@ -179,15 +172,15 @@ interface ExpandableCardDataProps extends CardDataProps {
 }
 
 export function Skill(props: ExpandableCardDataProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<SkillRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>,
   );
 
   const [icon] = createResource(
     () => props.input.definitionId,
-    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
+    (defId) => assetsManager.getImageUrl(defId),
   );
   const [skillTypeText, setSkillTypeText] = createSignal("");
   const [playCost, setPlayCost] = createSignal<PlayCost[]>([]);
@@ -211,7 +204,8 @@ export function Skill(props: ExpandableCardDataProps) {
         </div>
         <div class="flex flex-col">
           <h3>
-            {getNameSync(props.input.definitionId) ?? props.input.definitionId}
+            {assetsManager.getNameSync(props.input.definitionId) ??
+              props.input.definitionId}
           </h3>
           <div class="h-5 flex flex-row items-center gap-1">
             <span class="text-xs">{skillTypeText()}</span>
@@ -249,14 +243,14 @@ export function Skill(props: ExpandableCardDataProps) {
 }
 
 export function Entity(props: ExpandableCardDataProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<EntityRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<EntityRawData>,
   );
   const [icon] = createResource(
     () => props.input.definitionId,
-    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
+    (defId) => assetsManager.getImageUrl(defId),
   );
   const [entityTypeText, setEntityTypeText] = createSignal("");
 
@@ -292,7 +286,8 @@ export function Entity(props: ExpandableCardDataProps) {
         </div>
         <div class="flex flex-col">
           <h3>
-            {getNameSync(props.input.definitionId) ?? props.input.definitionId}
+            {assetsManager.getNameSync(props.input.definitionId) ??
+              props.input.definitionId}
           </h3>
           <div class="h-5 flex flex-row items-center gap-1">
             <span class="text-xs">{entityTypeText()}</span>
@@ -344,17 +339,17 @@ export interface CardDefinitionProps {
 }
 
 export function Keyword(props: CardDefinitionProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.definitionId,
-    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<KeywordRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<KeywordRawData>,
   );
   return (
     <div class={props.class}>
       <h3>
         <span class="text-yellow-7">规则解释：</span>
         <span class="font-bold">
-          {getNameSync(props.definitionId) ?? props.definitionId}
+          {assetsManager.getNameSync(props.definitionId) ?? props.definitionId}
         </span>
       </h3>
       <Switch>
@@ -387,14 +382,14 @@ export interface ReferenceProps extends CardDefinitionProps {
 }
 
 export function Reference(props: ReferenceProps) {
-  const { assetsApiEndpoint } = useAssetsApi();
+  const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.definitionId,
-    (defId) => getData(defId, { assetsApiEndpoint }) as Promise<SkillRawData>,
+    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>,
   );
   const [image] = createResource(
     () => props.definitionId,
-    (defId) => getImageUrl(defId, { assetsApiEndpoint }),
+    (defId) => assetsManager.getImageUrl(defId),
   );
   return (
     <div>
@@ -407,7 +402,7 @@ export function Reference(props: ReferenceProps) {
       </Show>
       <h4 class="flex flex-row items-center justify-between">
         <span class="font-bold">
-          {getNameSync(props.definitionId) ?? props.definitionId}
+          {assetsManager.getNameSync(props.definitionId) ?? props.definitionId}
         </span>
         <Show when={data.state === "ready" && data()}>
           {(data) => (

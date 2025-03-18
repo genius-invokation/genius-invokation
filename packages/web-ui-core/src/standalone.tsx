@@ -18,10 +18,11 @@ import { createMemo, splitProps, untrack, type ComponentProps } from "solid-js";
 import { Chessboard, type ChessboardData } from "./components/Chessboard";
 import { UiContext } from "./hooks/context";
 import { parseMutations } from "./mutations";
+import { AssetsManager } from "@gi-tcg/assets-manager";
 
 export interface StandaloneChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
-  assetsApiEndpoint?: string;
+  assetsManager?: AssetsManager;
   state: PbGameState;
   mutations: PbExposedMutation[];
 }
@@ -29,7 +30,7 @@ export interface StandaloneChessboardProps extends ComponentProps<"div"> {
 export function StandaloneChessboard(props: StandaloneChessboardProps) {
   const [localProps, elProps] = splitProps(props, [
     "who",
-    "assetsApiEndpoint",
+    "assetsManager",
     "state",
     "mutations",
   ]);
@@ -45,7 +46,8 @@ export function StandaloneChessboard(props: StandaloneChessboardProps) {
   return (
     <UiContext.Provider
       value={{
-        assetsApiEndpoint: untrack(() => localProps.assetsApiEndpoint),
+        assetsManager:
+          untrack(() => localProps.assetsManager) ?? new AssetsManager(),
       }}
     >
       <Chessboard

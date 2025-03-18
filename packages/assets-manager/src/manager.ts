@@ -31,13 +31,9 @@ export type AnyData =
   | KeywordRawData
   | SkillRawData;
 
-interface CommonOptions {
-  assetsApiEndpoint?: string;
-}
+export interface GetDataOptions {}
 
-export interface GetDataOptions extends CommonOptions {}
-
-export interface GetImageOptions extends CommonOptions {
+export interface GetImageOptions {
   thumbnail?: boolean;
 }
 
@@ -46,21 +42,27 @@ export interface Progress {
   total: number;
 }
 
-export interface PrepareForSyncOptions extends CommonOptions {
+export interface PrepareForSyncOptions {
   includeImages?: boolean;
   imageProgressCallback?: (progress: Progress) => void;
 }
 
-export interface AssetsManagerOption {}
+export interface AssetsManagerOption {
+  apiEndpoint: string;
+}
 
 export class AssetsManager {
   private dataCacheSync = new Map<number, AnyData>();
   private dataCache = new Map<number, Promise<AnyData>>();
   private imageCacheSync = new Map<number, Blob>();
   private imageCache = new Map<number, Promise<Blob>>();
+  private readonly options: AssetsManagerOption;
 
-  constructor(option: AssetsManagerOption = {}) {
-    // TODO: option
+  constructor(options: Partial<AssetsManagerOption> = {}) {
+    this.options = {
+      apiEndpoint: DEFAULT_ASSET_API_ENDPOINT,
+      ...options,
+    };
   }
 
   async getData(id: number, options: GetDataOptions = {}): Promise<AnyData> {
@@ -73,9 +75,7 @@ export class AssetsManager {
     if (this.dataCache.has(id)) {
       return this.dataCache.get(id)!;
     }
-    const url = `${
-      options.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT
-    }/data/${id}`;
+    const url = `${this.options.apiEndpoint}/data/${id}`;
     const promise = fetch(url)
       .then((r) => r.json())
       .then((data) => {
@@ -93,9 +93,7 @@ export class AssetsManager {
     if (this.dataCache.has(id + KEYWORD_ID_OFFSET)) {
       return this.dataCache.get(id + KEYWORD_ID_OFFSET)!;
     }
-    const url = `${
-      options.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT
-    }/data/K${id}`;
+    const url = `${this.options.apiEndpoint}/data/K${id}`;
     const promise = fetch(url)
       .then((r) => r.json())
       .then((data) => {
@@ -113,9 +111,9 @@ export class AssetsManager {
     if (this.imageCache.has(id)) {
       return this.imageCache.get(id)!;
     }
-    const url = `${
-      options.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT
-    }/images/${id}${options.thumbnail ? "?thumb=1" : ""}`;
+    const url = `${this.options.apiEndpoint}/images/${id}${
+      options.thumbnail ? "?thumb=1" : ""
+    }`;
     const promise = fetch(url)
       .then((r) => r.blob())
       .then((blob) => {
@@ -138,11 +136,15 @@ export class AssetsManager {
     return getNameSync(id);
   }
 
+  private prepareSyncRequested = false;
   async prepareForSync(options: PrepareForSyncOptions = {}): Promise<void> {
-    const assetsApiEndpoint =
-      options?.assetsApiEndpoint ?? DEFAULT_ASSET_API_ENDPOINT;
-    const dataUrl = `${assetsApiEndpoint}/data`;
-    const imageUrl = `${assetsApiEndpoint}/images`;
+    if (this.prepareSyncRequested) {
+      return;
+    }
+    this.prepareSyncRequested = true;
+    const { apiEndpoint } = this.options;
+    const dataUrl = `${apiEndpoint}/data`;
+    const imageUrl = `${apiEndpoint}/images`;
     const dataPromise = fetch(dataUrl).then((r) => r.json());
     const imagePromise = options.includeImages
       ? fetch(imageUrl).then((r) => r.json())

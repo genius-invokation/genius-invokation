@@ -27,16 +27,17 @@ import { CurrentDeck } from "./CurrentDeck";
 import type { Deck } from "@gi-tcg/utils";
 import { v as ALL_VERSIONS } from "./data.json" /*  with { type: "json" } */;
 import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
+import { DEFAULT_ASSETS_MANAGER, type AssetsManager } from "@gi-tcg/assets-manager";
 
 export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  assetsApiEndpoint?: string;
+  assetsManager?: AssetsManager;
   deck?: Deck;
   version?: string;
   onChangeDeck?: (deck: Deck) => void;
 }
 
 interface DeckBuilderContextValue {
-  assetsApiEndpoint?: string;
+  assetsManager: AssetsManager;
   showCard: (
     e: MouseEvent,
     type: "actionCard" | "character",
@@ -54,12 +55,12 @@ const EMPTY_DECK: Deck = {
 };
 
 export function DeckBuilder(props: DeckBuilderProps) {
-  const [local, rest] = splitProps(props, ["assetsApiEndpoint", "class"]);
+  const [local, rest] = splitProps(props, ["assetsManager", "class"]);
   let container!: HTMLDivElement;
 
   const { CardDataViewer, showCard, showCharacter, hide } =
     createCardDataViewer({
-      assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
+      assetsManager: untrack(() => local.assetsManager),
     });
   const [cardDataViewerOffsetX, setCardDataViewerOffsetX] = createSignal(0);
   const [cardDataViewerOffsetY, setCardDataViewerOffsetY] = createSignal(0);
@@ -77,7 +78,7 @@ export function DeckBuilder(props: DeckBuilderProps) {
   return (
     <DeckBuilderContext.Provider
       value={{
-        assetsApiEndpoint: untrack(() => local.assetsApiEndpoint),
+        assetsManager: untrack(() => local.assetsManager) ?? DEFAULT_ASSETS_MANAGER,
         showCard: (e, type, id) => {
           const rect = (e.target as HTMLElement).getBoundingClientRect();
           const containerRect = container.getBoundingClientRect();

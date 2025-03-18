@@ -15,7 +15,6 @@
 
 import { createResource, Show } from "solid-js";
 import { useDeckBuilderContext } from "./DeckBuilder";
-import { getImageUrl } from "@gi-tcg/assets-manager";
 
 export interface DiceIconProps {
   id: number;
@@ -32,9 +31,9 @@ const CHARACTER_ELEMENT_NAME = {
 } as Record<number, string>;
 
 export function DiceIcon(props: DiceIconProps) {
-  const { assetsApiEndpoint } = useDeckBuilderContext();
+  const { assetsManager } = useDeckBuilderContext();
   const [url] = createResource(() =>
-    getImageUrl(props.id, { assetsApiEndpoint, thumbnail: true }),
+    assetsManager.getImageUrl(props.id, { thumbnail: true }),
   );
   return (
     <Show

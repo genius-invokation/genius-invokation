@@ -22,6 +22,7 @@ import { render } from "solid-js/web";
 import getData from "@gi-tcg/data";
 import { Game, type DeckConfig } from "@gi-tcg/core";
 import { createClient } from "./client";
+import { AssetsManager } from "@gi-tcg/assets-manager";
 
 const deck0: DeckConfig = {
   characters: [1214, 1403, 1203],
@@ -45,9 +46,11 @@ const deck1: DeckConfig = {
 };
 
 function App() {
-
-  const [io0, Chessboard0] = createClient(0);
-  const [io1, Chessboard1] = createClient(1, { disableDelicateUi: true });
+  const assetsManager = new AssetsManager({
+    apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v2`
+  });
+  const [io0, Chessboard0] = createClient(0, { assetsManager });
+  const [io1, Chessboard1] = createClient(1, { assetsManager, disableDelicateUi: true });
 
   onMount(() => {
     const state = Game.createInitialState({

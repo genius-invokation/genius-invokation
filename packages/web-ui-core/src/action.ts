@@ -14,22 +14,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  getDataSync,
-  getNameSync,
-  prepareForSync,
-} from "@gi-tcg/assets-manager";
-import {
   ActionValidity,
   DiceType,
   ElementalTuningAction,
-  flattenPbOneof,
   PbEntityArea,
   PbEntityState,
   PlayCardAction,
   Reaction,
   UseSkillAction,
   type Action,
-  type DiceRequirement,
   type PbDiceRequirement,
   type PbDiceType,
   type PreviewData,
@@ -38,15 +31,18 @@ import {
 import type { DicePanelState } from "./components/DicePanel";
 import { checkDice } from "@gi-tcg/utils";
 import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
-
-prepareForSync();
+import type { AssetsManager } from "@gi-tcg/assets-manager";
+import { useUiContext } from "./hooks/context";
 
 export function getHintTextOfCardOrSkill(
+  assetsManager: AssetsManager,
   definitionId: number,
   targetLength: number,
 ): string[] {
   try {
-    const data = getDataSync(definitionId) as SkillRawData | ActionCardRawData;
+    const data = assetsManager.getDataSync(definitionId) as
+      | SkillRawData
+      | ActionCardRawData;
     if (data.type === "GCG_CARD_ASSIST") {
       return Array.from({ length: 2 }, () => "需先选择一张支援牌弃置");
     }
@@ -372,6 +368,7 @@ function appendMultiStepNode<T>(
 
 /** 创建多步状态树时需使用到的上下文 */
 interface MultiStepRootNodeContext<T> {
+  assetsManager: AssetsManager;
   /** 是否是使用技能（否则为打出卡牌） */
   isSkill: boolean;
   /** 行动树根节点 */
@@ -383,6 +380,7 @@ interface MultiStepRootNodeContext<T> {
 }
 
 interface CreatePlayCardActionStateContext {
+  assetsManager: AssetsManager;
   // 单步打出（直接打出或者直接选骰）对应的 step 行为加入此 map
   cardSingleSteps: Map<PlayCardActionStep, () => StepActionResult>;
   // 多步打出对应的 context 加入此 map，后续构建成状态树
@@ -416,6 +414,7 @@ function createPlayCardActionState(
   if (targetLength > 0) {
     if (!ctx.cardMultiSteps.has(id)) {
       ctx.cardMultiSteps.set(id, {
+        assetsManager: ctx.assetsManager,
         isSkill: false,
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
@@ -455,7 +454,9 @@ function createPlayCardActionState(
     realCosts: root.realCosts,
     showHands: false,
     showSkillButtons: false,
-    hintText: `打出手牌「${getNameSync(ctx.action.value.cardDefinitionId)}」`,
+    hintText: `打出手牌「${ctx.assetsManager.getNameSync(
+      ctx.action.value.cardDefinitionId,
+    )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
     showBackdrop: true,
@@ -675,13 +676,18 @@ function createMultiStepState<T>(
       return resultState;
     }
   };
-  const hintTexts = getHintTextOfCardOrSkill(ctx.cardOrSkillDefinitionId, 3);
+  const hintTexts = getHintTextOfCardOrSkill(
+    ctx.assetsManager,
+    ctx.cardOrSkillDefinitionId,
+    3,
+  );
   const state = createState(id, ctx.node, hintTexts);
   allStates.push(state);
   return [enterStep, state, allStates];
 }
 
 interface CreateUseSkillActionStateContext {
+  assetsManager: AssetsManager;
   skillSingleStepStates: Map<ClickSkillButtonActionStep, ActionState>;
   skillMultiSteps: Map<number, MultiStepRootNodeContext<UseSkillAction>>;
   action: Action & { value: UseSkillAction };
@@ -697,6 +703,7 @@ function createUseSkillActionState(
   if (ctx.action.value.targetIds.length > 0) {
     if (!ctx.skillMultiSteps.has(id)) {
       ctx.skillMultiSteps.set(id, {
+        assetsManager: ctx.assetsManager,
         isSkill: true,
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
@@ -829,6 +836,7 @@ function createElementalTunningActionState(
 }
 
 interface CreateSwitchActiveActionStateContext {
+  assetsManager: AssetsManager;
   // 在根状态下，点击角色进入“显示切换出战按钮”的状态
   outerLevelStates: Map<ClickEntityActionStep, ActionState>;
   // 在“显示切换出战按钮”状态下，点击按钮/选中角色可提交行动；或点击其他角色切换目标
@@ -875,7 +883,7 @@ function createSwitchActiveActionState(
     realCosts: root.realCosts,
     showHands: false,
     showSkillButtons: true,
-    hintText: `切换出战角色为「${getNameSync(
+    hintText: `切换出战角色为「${ctx.assetsManager.getNameSync(
       ctx.action.value.characterDefinitionId,
     )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
@@ -956,7 +964,8 @@ function createSwitchActiveActionState(
   ctx.innerLevelStates.set(INNER_CHARACTER_CLICK_ACTION, innerState);
 }
 
-export function createActionState(actions: Action[]): ActionState {
+export function createActionState(assetsManager: AssetsManager, actions: Action[]): ActionState {
+  assetsManager.prepareForSync();
   const realCosts: RealCosts = {
     cards: new Map(),
     skills: new Map(),
@@ -1008,6 +1017,7 @@ export function createActionState(actions: Action[]): ActionState {
       case "useSkill": {
         realCosts.skills.set(action.value.skillDefinitionId, requiredCost);
         createUseSkillActionState(root, {
+          assetsManager,
           skillSingleStepStates: useSkillSingleStepStates,
           skillMultiSteps: useSkillMultiSteps,
           action: { value: action.value, ...actions[i] },
@@ -1018,6 +1028,7 @@ export function createActionState(actions: Action[]): ActionState {
       case "playCard": {
         realCosts.cards.set(action.value.cardId, requiredCost);
         createPlayCardActionState(root, {
+          assetsManager,
           cardSingleSteps: playCardSingleSteps,
           cardMultiSteps: playCardMultiSteps,
           action: { value: action.value, ...actions[i] },
@@ -1031,6 +1042,7 @@ export function createActionState(actions: Action[]): ActionState {
         }
         realCosts.switchActive = requiredCost;
         createSwitchActiveActionState(root, {
+          assetsManager,
           outerLevelStates: switchActiveOuterStates,
           innerLevelStates: switchActiveInnerStates,
           action: { value: action.value, ...actions[i] },

@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { AssetsManager } from "./manager";
+
 export {
   AssetsManager,
   type GetDataOptions,
@@ -22,4 +24,7 @@ export {
   type PrepareForSyncOptions,
   type AssetsManagerOption,
 } from "./manager";
+
+export const DEFAULT_ASSETS_MANAGER = new AssetsManager();
+
 export { KEYWORD_ID_OFFSET, getNameSync } from "./names";
