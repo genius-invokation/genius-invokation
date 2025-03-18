@@ -14,19 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export {
-  getData,
-  getImage,
-  getImageUrl,
+  AssetsManager,
   type GetDataOptions,
   type GetImageOptions,
   type AnyData,
-} from "./fetch";
-export {
-  prepareForSync,
-  type PrepareForSyncOptions,
   type Progress,
-  getDataSync,
-  getImageSync,
-  getImageUrlSync,
-} from "./sync";
+  type PrepareForSyncOptions,
+  type AssetsManagerOption,
+} from "./manager";
 export { KEYWORD_ID_OFFSET, getNameSync } from "./names";
