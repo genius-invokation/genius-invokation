@@ -13,10 +13,17 @@
     }
   },
   "scripts": {
+    "dev": "vite",
     "check": "tsc --noEmit",
     "build": "tsup"
   },
   "dependencies": {
     "@gi-tcg/data": "workspace:*"
+  },
+  "peerDependencies": {
+    "@gi-tcg/core": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^6.0.11"
   }
 }
