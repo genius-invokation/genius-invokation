@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { KEYWORD_ID_OFFSET } from "@gi-tcg/assets-manager";
 import {
   createEffect,
   createMemo,
@@ -70,7 +69,7 @@ const descriptionToItems = (
       const rType = segs[i][0];
       let id = Number(segs[i].substring(1));
       if (rType === "K") {
-        id += KEYWORD_ID_OFFSET;
+        id *= -1;
       }
       result.push({ type: "reference", rType, id });
     }
@@ -106,7 +105,7 @@ function DamageDescription(props: DamageDescriptionProps) {
       "GCG_ELEMENT_GEO",
       "GCG_ELEMENT_DENDRO",
     ].indexOf(props.dType);
-  const keywordId = () => KEYWORD_ID_OFFSET + 100 + id();
+  const keywordId = () => -(100 + id());
   const text = () => assetsManager.getNameSync(keywordId());
   const assetsManager = useAssetsManager();
   const [url] = createResource(id, (id) => assetsManager.getImageUrl(id));

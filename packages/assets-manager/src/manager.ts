@@ -22,7 +22,7 @@ import type {
   SkillRawData,
 } from "@gi-tcg/static-data";
 import { blobToDataUrl } from "./data_url";
-import { getNameSync, KEYWORD_ID_OFFSET } from "./names";
+import { getNameSync } from "./names";
 
 export type AnyData =
   | ActionCardRawData
@@ -66,8 +66,8 @@ export class AssetsManager {
   }
 
   async getData(id: number, options: GetDataOptions = {}): Promise<AnyData> {
-    if (id >= KEYWORD_ID_OFFSET) {
-      return this.getKeyword(id - KEYWORD_ID_OFFSET, options);
+    if (id < 0) {
+      return this.getKeyword(-id, options);
     }
     if (this.dataCacheSync.has(id)) {
       return this.dataCacheSync.get(id)!;
@@ -87,20 +87,20 @@ export class AssetsManager {
   }
 
   async getKeyword(id: number, options: GetDataOptions = {}): Promise<AnyData> {
-    if (this.dataCacheSync.has(id + KEYWORD_ID_OFFSET)) {
-      return this.dataCacheSync.get(id + KEYWORD_ID_OFFSET)!;
+    if (this.dataCacheSync.has(-id)) {
+      return this.dataCacheSync.get(-id)!;
     }
-    if (this.dataCache.has(id + KEYWORD_ID_OFFSET)) {
-      return this.dataCache.get(id + KEYWORD_ID_OFFSET)!;
+    if (this.dataCache.has(-id)) {
+      return this.dataCache.get(-id)!;
     }
     const url = `${this.options.apiEndpoint}/data/K${id}`;
     const promise = fetch(url)
       .then((r) => r.json())
       .then((data) => {
-        this.dataCacheSync.set(id + KEYWORD_ID_OFFSET, data);
+        this.dataCacheSync.set(-id, data);
         return data;
       });
-    this.dataCache.set(id + KEYWORD_ID_OFFSET, promise);
+    this.dataCache.set(-id, promise);
     return promise;
   }
 
