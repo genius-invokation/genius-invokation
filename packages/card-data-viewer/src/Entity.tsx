@@ -23,7 +23,6 @@ import {
   Switch,
 } from "solid-js";
 import type { ViewerInput } from "./CardDataViewer";
-import { KEYWORD_ID_OFFSET } from "@gi-tcg/assets-manager";
 import type {
   ActionCardRawData,
   CharacterRawData,
@@ -370,7 +369,7 @@ export function Keyword(props: CardDefinitionProps) {
       <p class="mt-2 text-xs font-mono text-yellow-6">
         DefID:{" "}
         <span class="select-text">
-          {props.definitionId - KEYWORD_ID_OFFSET}
+          {-props.definitionId}
         </span>
       </p>
     </div>

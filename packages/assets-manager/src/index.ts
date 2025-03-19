@@ -27,4 +27,4 @@ export {
 
 export const DEFAULT_ASSETS_MANAGER = new AssetsManager();
 
-export { KEYWORD_ID_OFFSET, getNameSync } from "./names";
+export { getNameSync } from "./names";
