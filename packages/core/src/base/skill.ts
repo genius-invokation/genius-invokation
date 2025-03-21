@@ -61,11 +61,12 @@ import {
 import type { Mutation } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
+import type { DefinitionId } from "@gi-tcg/utils";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
   readonly ownerType: EntityType | "character" | "card" | "extension";
-  readonly id: number;
+  readonly id: DefinitionId;
   readonly action: SkillDescription<Arg>;
   readonly filter: SkillActionFilter<Arg>;
   readonly usagePerRoundVariableName: UsagePerRoundVariableNames | null;

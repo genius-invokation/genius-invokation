@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { DefinitionId } from "@gi-tcg/utils";
 import type { SkillDefinition } from "./skill";
 import type { VersionInfo } from "./version";
 
@@ -20,7 +21,7 @@ export interface ExtensionDefinition {
   readonly __definition: "extensions",
   readonly version: VersionInfo;
   readonly type: "extension";
-  readonly id: number;
+  readonly id: DefinitionId;
   readonly description: string;
   readonly initialState: unknown;
   readonly skills: readonly SkillDefinition[];

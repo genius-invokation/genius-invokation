@@ -13,18 +13,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export * from "./dice";
-export * from "./sharing";
-export * from "./definition_id";
+export type DefinitionId = `${string}:${number}`
 
-export function flip(who: 0 | 1): 0 | 1 {
-  return (1 - who) as 0 | 1;
+export function defId(id: number, namespace: string): DefinitionId {
+  return `${namespace}:${id}`;
 }
 
-export const PAIR_SYMBOL: unique symbol = Symbol("pair");
-
-export function pair<T>(value: T): [T, T] {
-  const ret: [T, T] = [value, value];
-  Object.defineProperty(ret, PAIR_SYMBOL, { value: true });
-  return ret;
+export function parseDefId(defId: DefinitionId): [id: number, namespace: string] {
+  const [modName, id] = defId.split(":");
+  if (!id || isNaN(Number(id))) {
+    throw new Error(`Invalid definition id: ${defId}`);
+  }
+  return [Number(id), modName];
 }

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { DefinitionId } from "@gi-tcg/utils";
 import type { WeaponTag } from "./character";
 import type { DescriptionDictionary } from "./entity";
 import type { SkillDefinition } from "./skill";
@@ -49,7 +50,7 @@ export type InitiativeSkillTargetKind = readonly (
 export interface CardDefinition {
   readonly __definition: "cards";
   readonly type: "card";
-  readonly id: number;
+  readonly id: DefinitionId;
   readonly version: VersionInfo;
   readonly cardType: CardType;
   readonly obtainable: boolean;
