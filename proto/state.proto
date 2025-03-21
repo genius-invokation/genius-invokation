@@ -58,7 +58,7 @@ message PlayerState {
 
 message CharacterState {
   sint32 id = 1;
-  int32 definition_id = 2;
+  string definition_id = 2;
   repeated EntityState entity = 3;
   
   bool defeated = 51;
@@ -71,7 +71,7 @@ message CharacterState {
 
 message EntityState {
   sint32 id = 1;
-  int32 definition_id = 2;
+  string definition_id = 2;
   // 指示如何替换文本描述中的变量名 
   map<string, string> description_dictionary = 4;
   
@@ -101,13 +101,13 @@ enum EquipmentType {
 
 message CardState {
   sint32 id = 1;
-  int32 definition_id = 2;
+  string definition_id = 2;
   map<string, string> description_dictionary = 4;
   // 原本费用
   repeated DiceRequirement definition_cost = 5;
 }
 
 message SkillInfo {
-  int32 definition_id = 2;
+  string definition_id = 2;
   repeated DiceRequirement definition_cost = 5;
 }

@@ -75,8 +75,8 @@ message TransferCardEM {
 message SwitchActiveEM {
   int32 who = 1;
   sint32 character_id = 2;
-  int32 character_definition_id = 3;
-  optional int32 via_skill_definition_id = 4;
+  string character_definition_id = 3;
+  optional string via_skill_definition_id = 4;
 }
 
 enum RemoveCardReason {
@@ -133,14 +133,14 @@ message RemoveEntityEM {
 
 message ModifyEntityVarEM {
   sint32 entity_id = 2;
-  int32 entity_definition_id = 3;
+  string entity_definition_id = 3;
   string variable_name = 4;
   int32 variable_value = 5;
 }
 
 message TransformDefinitionEM {
   sint32 entity_id = 2;
-  int32 new_entity_definition_id = 3;
+  string new_entity_definition_id = 3;
 }
 
 message ResetDiceEM {
@@ -152,16 +152,16 @@ message DamageEM {
   DamageType damage_type = 1;
   int32 value = 2;
   sint32 target_id = 3;
-  int32 target_definition_id = 4;
+  string target_definition_id = 4;
   sint32 source_id = 5;
-  int32 source_definition_id = 6;
+  string source_definition_id = 6;
   bool is_skill_main_damage = 7;
 }
 
 message ElementalReactionEM {
   ReactionType reaction_type = 1;
   sint32 character_id = 3;
-  int32 character_definition_id = 4;
+  string character_definition_id = 4;
 }
 
 enum SkillType {
@@ -176,8 +176,8 @@ enum SkillType {
 // 使用或触发了技能
 message SkillUsedEM {
   sint32 caller_id = 1;
-  int32 caller_definition_id = 2;
-  int32 skill_definition_id = 3;
+  string caller_definition_id = 2;
+  string skill_definition_id = 3;
   SkillType skill_type = 4;
   int32 who = 5;
 }
@@ -200,9 +200,9 @@ message PlayerStatusChangeEM {
 message SwapCharacterPositionEM {
   int32 who = 1;
   sint32 character_0_id = 2;
-  int32 character_0_definition_id = 3;
+  string character_0_definition_id = 3;
   sint32 character_1_id = 4;
-  int32 character_1_definition_id = 5;
+  string character_1_definition_id = 5;
 }
 
 enum PlayerFlag {

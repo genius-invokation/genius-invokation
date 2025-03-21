@@ -46,14 +46,14 @@ message Action {
 message SwitchActiveAction {
   // 出站角色 id
   sint32 character_id = 2;
-  uint32 character_definition_id = 3;
+  string character_definition_id = 3;
 }
 
 // 打出手牌
 message PlayCardAction {
   // 手牌 id
   sint32 card_id = 2;
-  uint32 card_definition_id = 5;
+  string card_definition_id = 5;
   // 打出手牌目标 id 列表
   repeated sint32 target_ids = 3;
   bool will_be_effectless = 4;
@@ -62,7 +62,7 @@ message PlayCardAction {
 // 使用技能
 message UseSkillAction {
   // 技能定义 id
-  int32 skill_definition_id = 2;
+  string skill_definition_id = 2;
   // 使用技能目标 id 列表
   repeated sint32 target_ids = 3;
   optional sint32 main_damage_target_id = 4;

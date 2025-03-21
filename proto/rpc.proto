@@ -31,7 +31,7 @@ message ActionRequest {
 }
 
 message SelectCardRequest {
-  repeated int32 candidate_definition_ids = 1;
+  repeated string candidate_definition_ids = 1;
 }
 
 message Request {
@@ -63,7 +63,7 @@ message ActionResponse {
 }
 
 message SelectCardResponse {
-  sint32 selected_definition_id = 1;
+  string selected_definition_id = 1;
 }
 
 message Response {
