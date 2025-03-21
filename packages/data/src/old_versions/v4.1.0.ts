@@ -11,7 +11,7 @@ import { ClawAndThunder, Razor } from "../characters/electro/razor";
 import { Beidou, SummonerOfLightning, Tidecaller, TidecallerSurfEmbrace, Wavestrider } from "../characters/electro/beidou";
 import { KujouSara, SubjugationKoukouSendou } from "../characters/electro/kujou_sara";
 import { Cyno, PactswornPathclearer, SecretRiteChasmicSoulfarer } from "../characters/electro/cyno";
-import { BakeKurage } from "../characters/hydro/sangonomiya_kokomi";
+import { BakeKurage, TamakushiCasket } from "../characters/hydro/sangonomiya_kokomi";
 import { Amber, BaronBunny, ExplosivePuppet } from "../characters/pyro/amber";
 import { FavoniusBladework, GaleBlade } from "../characters/anemo/jean";
 import { SealOfApproval, Yanfei } from "../characters/pyro/yanfei";
@@ -333,7 +333,7 @@ const FeatherfallJudgment = card(214041)
  * 仪来羽衣存在期间，化海月造成的伤害+1。
  * （牌组中包含珊瑚宫心海，才能加入牌组）
  */
-const TamakushiCasket = 212051 as EquipmentHandle; // Keeps same
+const TamakushiCasketOld = TamakushiCasket; // Keeps same
 
 /**
  * @id 12053

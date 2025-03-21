@@ -24,7 +24,7 @@ import { character, skill, summon, status, card, DamageType, SkillHandle, Status
  */
 export const ScorpionBlessing = combatStatus(123032)
   .variableCanAppend("blessing", 1, Infinity)
-  .on("increaseTechniqueDamage", (c, e) => e.via.definition.id === 1230311)
+  .on("increaseTechniqueDamage", (c, e) => e.via.definition.id === `std:1230311`)
   .do((c, e) => {
     e.increaseDamage(c.getVariable("blessing"));
     c.dispose();
@@ -142,7 +142,7 @@ export const Scorpocalypse = card(223031)
   .talent(EremiteScorchingLoremaster)
   .on("enter")
   .useSkill(BlazingStrike)
-  .on("defeated", (c, e) => !c.of(e.target).isMine() && e.via.definition.id === 1230311)
+  .on("defeated", (c, e) => !c.of(e.target).isMine() && e.via.definition.id === `std:1230311`)
   .listenToAll()
   .createHandCard(SpiritOfOmenPyroScorpion)
   .on("roundEnd")

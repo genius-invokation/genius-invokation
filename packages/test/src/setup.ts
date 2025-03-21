@@ -209,7 +209,7 @@ function emptyPlayerState(): Draft<PlayerState> {
 function defaultCharacterDefs(data: GameData) {
   // 迪卢克，凯亚，砂糖
   const DEFAULT_CH_IDS = [1301, 1103, 1501];
-  return DEFAULT_CH_IDS.map((id) => data.characters.get(id)!);
+  return DEFAULT_CH_IDS.map((id) => data.characters.get(`std:${id}`)!);
 }
 
 export function setup(state: JSX.Element): TestController {

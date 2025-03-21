@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, card, DamageType, CardHandle, SummonHandle } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, card, DamageType, CardHandle, SummonHandle, DefinitionIdStr } from "@gi-tcg/core/builder";
 
 /**
  * @id 116091
@@ -97,7 +97,7 @@ export const FightingWithHerEyesShutTamoto = summon(116095)
   .endPhaseDamage(DamageType.Geo, 1)
   .usage(2)
   .on("increaseDamage", (c, e) =>
-    ([...DOLLS, Chiori] as number[]).includes(e.source.definition.id) && 
+    ([...DOLLS, Chiori] as DefinitionIdStr[]).includes(e.source.definition.id) && 
     e.type === DamageType.Geo)
   .usagePerRound(2)
   .increaseDamage(1)

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, card, DamageType, Aura } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, card, DamageType, Aura, DefinitionIdStr } from "@gi-tcg/core/builder";
 
 /**
  * @id 113101
@@ -150,7 +150,7 @@ export const ConclusiveOvation = card(213101)
   .on("enter")
   .useSkill(PropArrow)
   .on("increaseSkillDamage", (c, e) =>
-    [Lyney as number, GrinmalkinHat as number].includes(e.source.definition.id) && 
+    ([Lyney, GrinmalkinHat] as DefinitionIdStr[]).includes(e.source.definition.id) && 
     c.of(e.target).aura === Aura.Pyro)
   .usagePerRound(1)
   .increaseDamage(2)

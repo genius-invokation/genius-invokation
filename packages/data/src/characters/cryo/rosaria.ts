@@ -149,7 +149,7 @@ export const DivineRetribution = card(211131)
   .useSkill(RavagingConfession)
   .on("useSkill", (c, e) => e.skill.definition.id === RavagingConfession)
   .createHandCard(ChangingShifts)
-  .on("enterRelative", (c, e) => e.entity.id === StrikeWhereItHurts)
+  .on("enterRelative", (c, e) => e.entity.definition.id === StrikeWhereItHurts)
   .listenToPlayer()
   .createHandCard(ChangingShifts)
   .done();

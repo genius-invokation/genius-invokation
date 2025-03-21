@@ -9,8 +9,8 @@ QueryLang {
   identifier = ~reservedWord identifierName
   identifierName = identifierStart identifierPart*
 
-  identifierStart = letter | "$" | "_" 
-  identifierPart = identifierStart | digit
+  identifierStart = letter | "$" | "_"
+  identifierPart = identifierStart | "@" | digit
 
   reservedWord = keyword
   keyword = kwMy | kwOpp | kwAll | kwCharacter | kwSummon
@@ -34,6 +34,8 @@ QueryLang {
     | "0"  -- zero
   decimalDigit = "0".."9"
   nonZeroDigit = "1".."9"
+
+  definitionIdLiteral = (identifier ":")? numericLiteral
 
   kwMy = "my" ~identifierPart
   kwOpp = "opp" ~identifierPart
@@ -113,7 +115,7 @@ QueryLang {
   WithSpecifier = kwWith WithBody
 
   WithBody = kwId "="? Expression    -- id
-    | kwDefinition kwId "="? Expression -- defId
+    | kwDefinition kwId "="? definitionIdLiteral -- defId
     | kwTag TagSpecifier -- tag
     | PropertyName relativeOperator Expression -- prop
     

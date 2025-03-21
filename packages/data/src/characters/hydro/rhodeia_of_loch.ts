@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, card, DamageType, SummonHandle } from "@gi-tcg/core/builder";
+import { character, skill, summon, card, DamageType, SummonHandle, DefinitionIdStr } from "@gi-tcg/core/builder";
 
 /**
  * @id 122013
@@ -105,9 +105,9 @@ export const Surge = skill(22011)
   .damage(DamageType.Hydro, 1)
   .done();
 
-export const NORMAL_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptor, OceanicMimicFrog] as number[];
+export const NORMAL_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptor, OceanicMimicFrog] as DefinitionIdStr[];
 
-export const PREVIEW_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptorPreview, OceanicMimicFrogPreview] as number[];
+export const PREVIEW_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptorPreview, OceanicMimicFrogPreview] as DefinitionIdStr[];
 
 /**
  * @id 22012

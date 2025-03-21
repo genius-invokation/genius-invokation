@@ -1,5 +1,5 @@
 import { DamageType, EquipmentHandle, SkillHandle, card, character, skill, summon } from "@gi-tcg/core/builder";
-import { LiutianArchery, SacredCryoPearl, TrailOfTheQilin } from "../characters/cryo/ganyu";
+import { LiutianArchery, SacredCryoPearl, TrailOfTheQilin, UndividedHeart } from "../characters/cryo/ganyu";
 import { MirrorCage, Refraction, Refraction01 } from "../characters/hydro/mirror_maiden";
 import { SuperlativeSuperstrength } from "../characters/geo/arataki_itto";
 import { LithicGuard } from "../cards/equipment/weapon/pole";
@@ -13,7 +13,7 @@ import { LithicGuard } from "../cards/equipment/weapon/pole";
  * 装备有此牌的甘雨使用霜华矢时：如果此技能在本场对局中曾经被使用过，则其造成的冰元素伤害+1，并且改为对敌方后台角色造成3点穿透伤害。
  * （牌组中包含甘雨，才能加入牌组）
  */
-const UndividedHeart = 211011 as EquipmentHandle; // keep same
+const UndividedHeartOld = UndividedHeart; // keep same
 
 /**
  * @id 11013

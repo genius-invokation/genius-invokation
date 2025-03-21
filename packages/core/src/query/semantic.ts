@@ -415,7 +415,11 @@ const withCheckDict: QueryLangActionDict<boolean> = {
     return this.args.state.id === expr.evalExpr(this.args.state);
   },
   WithBody_defId(_kwDef, _kwId, _eq, expr) {
-    return this.args.state.definition.id === expr.evalExpr(this.args.state);
+    let defId = expr.sourceString;
+    if (expr.numChildren === 1) {
+      defId = `std:${defId}`;
+    }
+    return this.args.state.definition.id === defId;
   },
   WithBody_tag(_kw, tagSpec) {
     const tags = tagSpec.tagSpecifier(this.args.ctx);

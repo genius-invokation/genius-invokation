@@ -1,4 +1,4 @@
-import { card, status } from "@gi-tcg/core/builder";
+import { card, DefinitionIdStr, status } from "@gi-tcg/core/builder";
 import { StrifefulLightning, ThunderManifestation, ThunderingShacklesSummon } from "../characters/electro/thunder_manifestation";
 
 /**
@@ -46,10 +46,10 @@ const VourukashasGlow = card(312022)
 const LightningRod = status(124022)
   .until("v4.3.0")
   .unique()
-  .on("increaseDamaged", (c, e) => [
-      ThunderManifestation as number, 
-      ThunderingShacklesSummon as number
-    ].includes(e.source.definition.id))
+  .on("increaseDamaged", (c, e) => ([
+      ThunderManifestation, 
+      ThunderingShacklesSummon
+    ] as DefinitionIdStr[]).includes(e.source.definition.id))
   .usage(1, { autoDispose: false })
   .increaseDamage(1)
   .done();

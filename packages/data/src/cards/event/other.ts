@@ -1257,18 +1257,18 @@ export const CosanzeanasSupport = card(302208)
   .done();
 
 const MELUSINE_EVENT_CARDS = [
-  331102, // ElementalResonanceShatteringIce
-  331202, // ElementalResonanceSoothingWater
-  331302, // ElementalResonanceFerventFlames
-  331402, // ElementalResonanceHighVoltage
-  331502, // ElementalResonanceImpetuousWinds
-  331602, // ElementalResonanceEnduringRock
-  331702, // ElementalResonanceSprawlingGreenery
-  331801, // WindAndFreedom
-  331802, // StoneAndContracts
-  331803, // ThunderAndEternity
-  331804, // NatureAndWisdom
-  331805, // WaterAndJustice
+  ElementalResonanceShatteringIce,
+  ElementalResonanceSoothingWater,
+  ElementalResonanceFerventFlames,
+  ElementalResonanceHighVoltage,
+  ElementalResonanceImpetuousWinds,
+  ElementalResonanceEnduringRock,
+  ElementalResonanceSprawlingGreenery,
+  WindAndFreedom,
+  StoneAndContracts,
+  ThunderAndEternity,
+  NatureAndWisdom,
+  WaterAndJustice,
   // 331806, 
   // 331807, 
 ] as CardHandle[];

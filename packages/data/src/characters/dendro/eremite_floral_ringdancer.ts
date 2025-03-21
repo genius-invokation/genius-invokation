@@ -40,7 +40,7 @@ const ProliferatedOrganismBerserk = void 0; // PVE 从阿佩普那边挤过来�
  */
 export const SpiritserpentsBlessing = combatStatus(127033)
   .since("v5.1.0")
-  .on("increaseTechniqueDamage", (c, e) => e.via.definition.id === 1230311)
+  .on("increaseTechniqueDamage", (c, e) => e.via.definition.id === `std:1230311`)
   .usageCanAppend(1, Infinity)
   .increaseDamage(1)
   .done();

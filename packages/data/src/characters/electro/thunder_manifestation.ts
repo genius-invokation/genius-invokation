@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, CombatStatusHandle, StatusHandle, customEvent } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, CombatStatusHandle, StatusHandle, customEvent, DefinitionIdStr } from "@gi-tcg/core/builder";
 
 const talentShouldDrawCard = customEvent("thunderManifestation/talentShouldDrawCard");
 
@@ -27,8 +27,8 @@ const talentShouldDrawCard = customEvent("thunderManifestation/talentShouldDrawC
 export const LightningRod: StatusHandle = status(124022)
   .unique()
   .on("increaseDamaged", (c, e) => [
-      ThunderManifestation as number, 
-      ThunderingShacklesSummon as number
+      ThunderManifestation as DefinitionIdStr, 
+      ThunderingShacklesSummon as DefinitionIdStr
     ].includes(e.source.definition.id))
   .increaseDamage(1)
   .dispose()

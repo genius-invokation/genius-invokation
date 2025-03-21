@@ -45,4 +45,4 @@ export {
 } from "../base/custom_event";
 
 export { diceCostOfCard } from "../utils";
-export { flip, pair } from "@gi-tcg/utils";
+export { flip, pair, type DefinitionIdStr } from "@gi-tcg/utils";
