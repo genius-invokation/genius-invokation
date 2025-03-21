@@ -13,7 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { checkDice, type Deck, flip } from "@gi-tcg/utils";
+import {
+  checkDice,
+  type Deck,
+  type DefinitionIdStr,
+  flip,
+} from "@gi-tcg/utils";
 import {
   DiceType,
   type ExposedMutation,
@@ -117,7 +122,7 @@ function initPlayerState(
   idIter: IdIter,
 ): PlayerState {
   let initialPile: readonly CardDefinition[] = deck.cards.map((id) => {
-    const def = data.cards.get(id);
+    const def = data.cards.get(`std:${id}`);
     if (typeof def === "undefined") {
       throw new GiTcgDataError(`Unknown card id ${id}`);
     }
@@ -125,7 +130,7 @@ function initPlayerState(
   });
   const characterDefs: readonly CharacterDefinition[] = deck.characters.map(
     (id) => {
-      const def = data.characters.get(id);
+      const def = data.characters.get(`std:${id}`);
       if (typeof def === "undefined") {
         throw new GiTcgDataError(`Unknown character id ${id}`);
       }
@@ -1090,14 +1095,19 @@ export class Game {
     return diceToReroll;
   }
 
-  private async rpcSelectCard(who: 0 | 1, candidateDefinitionIds: number[]) {
+  private async rpcSelectCard(
+    who: 0 | 1,
+    candidateDefinitionIds: DefinitionIdStr[],
+  ) {
     const { selectedDefinitionId } = await this.rpc(who, "selectCard", {
       candidateDefinitionIds,
     });
-    if (!candidateDefinitionIds.includes(selectedDefinitionId)) {
+    if (
+      !candidateDefinitionIds.includes(selectedDefinitionId as DefinitionIdStr)
+    ) {
       throw new GiTcgIoError(who, `Selected card not in candidates`);
     }
-    return selectedDefinitionId;
+    return selectedDefinitionId as DefinitionIdStr;
   }
 
   private async switchActive(who: 0 | 1, to: CharacterState) {

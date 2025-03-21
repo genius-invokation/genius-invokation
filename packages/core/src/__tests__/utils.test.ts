@@ -41,7 +41,7 @@ test("sort dice", () => {
         variables: {} as never,
         definition: {
           __definition: "characters",
-          id: 1601,
+          id: `std:1601`,
           skills: [],
           tags: ["dendro"],
           type: "character",
@@ -58,7 +58,7 @@ test("sort dice", () => {
         variables: {} as never,
         definition: {
           __definition: "characters",
-          id: 1401,
+          id: `std:1401`,
           skills: [],
           tags: ["electro"],
           type: "character",

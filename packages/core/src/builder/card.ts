@@ -36,7 +36,7 @@ import {
   type SkillDefinition,
   type TriggeredSkillDefinition,
 } from "../base/skill";
-import { registerCard } from "./registry";
+import { createDIS, createSkillDIS, registerCard } from "./registry";
 import {
   SkillBuilderWithCost,
   withShortcut,
@@ -63,6 +63,7 @@ import {
   type VersionInfo,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
   callerType: "character";
@@ -77,7 +78,7 @@ export type TargetQuery =
   | `${string}support${string}`;
 export type TargetKindOfQuery<Q extends TargetQuery> = GuessedTypeOfQuery<Q>;
 
-const SATIATED_ID = 303300 as StatusHandle;
+const SATIATED_ID = `std:303300` satisfies DefinitionIdStr as StatusHandle;
 
 type TalentRequirement = "action" | "active" | "none";
 
@@ -117,7 +118,7 @@ export class CardBuilder<
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
   private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
 
-  constructor(private readonly cardId: number) {
+  constructor(private readonly cardId: DefinitionIdStr) {
     super(cardId);
   }
 
@@ -263,9 +264,9 @@ export class CardBuilder<
    * @returns 出战状态 builder
    */
   toCombatStatus(id: number, where: "my" | "opp" = "my") {
-    id ??= this.cardId;
+    const defId = createDIS(id);
     this.do((c) => {
-      c.combatStatus(id as CombatStatusHandle, where);
+      c.combatStatus(defId as CombatStatusHandle, where);
     }).done();
     const builder = new EntityBuilder<
       "combatStatus",
@@ -273,7 +274,7 @@ export class CardBuilder<
       never,
       true,
       never
-    >("combatStatus", id, this.id);
+    >("combatStatus", defId, this.id);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -286,13 +287,13 @@ export class CardBuilder<
    * @returns 状态 builder
    */
   toStatus(id: number, target: string) {
-    id ??= this.cardId;
+    const defId = createDIS(id);
     this.do((c) => {
-      c.characterStatus(id as StatusHandle, target);
+      c.characterStatus(defId as StatusHandle, target);
     }).done();
     const builder = new EntityBuilder<"status", never, never, true, never>(
       "status",
-      id,
+      defId,
       this.id,
     );
     builder._versionInfo = this._versionInfo;
@@ -444,7 +445,7 @@ export class CardBuilder<
         : this.buildAction<DisposeOrTuneCardEventArg>();
       const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
         type: "skill",
-        id: this.cardId + 0.02,
+        id: createSkillDIS(this.id, 2),
         ownerType: "card",
         triggerOn: "onDisposeOrTuneCard",
         initiativeSkillConfig: null,
@@ -470,7 +471,7 @@ export class CardBuilder<
       });
       const drawSkillDef: TriggeredSkillDefinition<"onHandCardInserted"> = {
         type: "skill",
-        id: this.cardId + 0.03,
+        id: createSkillDIS(this.id, 3),
         ownerType: "card",
         triggerOn: "onHandCardInserted",
         initiativeSkillConfig: null,
@@ -482,7 +483,7 @@ export class CardBuilder<
       };
       const skillDef: InitiativeSkillDefinition = {
         type: "skill",
-        id: this.cardId + 0.01,
+        id: createSkillDIS(this.id, 1),
         ownerType: "card",
         triggerOn: "initiative",
         initiativeSkillConfig: {
@@ -504,7 +505,7 @@ export class CardBuilder<
       const filter = this.buildFilter<InitiativeSkillEventArg>();
       const skillDef: InitiativeSkillDefinition = {
         type: "skill",
-        id: this.cardId + 0.01,
+        id: createSkillDIS(this.id, 1),
         ownerType: "card",
         triggerOn: "initiative",
         initiativeSkillConfig: {
@@ -539,5 +540,5 @@ export class CardBuilder<
 }
 
 export function card(id: number) {
-  return withShortcut(new CardBuilder<readonly []>(id));
+  return withShortcut(new CardBuilder<readonly []>(createDIS(id)));
 }

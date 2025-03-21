@@ -24,6 +24,7 @@ import type {
 } from "./entity";
 import type { GameData } from "../builder/registry";
 import type { ExtensionDefinition } from "./extension";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface GameConfig {
   readonly randomSeed: number;
@@ -81,7 +82,7 @@ export interface PlayerState {
    * 每回合使用技能列表。
    * 键为技能发起者的角色定义 id，值为该定义下使用过的技能 id 列表
    */
-  readonly roundSkillLog: ReadonlyMap<number, number[]>;
+  readonly roundSkillLog: ReadonlyMap<DefinitionIdStr, DefinitionIdStr[]>;
   readonly removedEntities: AnyState[];
 }
 

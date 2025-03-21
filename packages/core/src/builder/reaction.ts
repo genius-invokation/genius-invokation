@@ -20,14 +20,15 @@ import type { TypedSkillContext } from "./context/skill";
 import type { CombatStatusHandle, StatusHandle, SummonHandle } from "./type";
 import type { SwirlableElement } from "../base/reaction";
 import { builderWeakRefs } from "./registry";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export const CALLED_FROM_REACTION: unique symbol = Symbol();
 
-const Frozen = 106 as StatusHandle;
-const Crystallize = 111 as CombatStatusHandle;
-const BurningFlame = 115 as SummonHandle;
-const DendroCore = 116 as CombatStatusHandle;
-const CatalyzingField = 117 as CombatStatusHandle;
+const Frozen = `std:106` satisfies DefinitionIdStr as StatusHandle;
+const Crystallize = `std:111` satisfies DefinitionIdStr as CombatStatusHandle;
+const BurningFlame = `std:115` satisfies DefinitionIdStr as SummonHandle;
+const DendroCore = `std:116` satisfies DefinitionIdStr as CombatStatusHandle;
+const CatalyzingField = `std:117` satisfies DefinitionIdStr as CombatStatusHandle;
 
 export interface ReactionDescriptionEventArg {
   /** 元素反应发生于 */
@@ -84,7 +85,7 @@ function initialize() {
   // 且打包后比 SkillBuilder 出现的位置更早，则会发生错误
   class ReactionBuilder extends SkillBuilder<ReactionContextMeta> {
     constructor(private reaction: Reaction) {
-      super(reaction);
+      super(`std:${reaction}`);
       builderWeakRefs.add(new WeakRef(this));
     }
     done() {
@@ -140,7 +141,7 @@ function initialize() {
 
   reaction(Reaction.Bloom)
     .do((c, e) => {
-      if (!c.$(`${e.here} combat status with definition id 112081`)) {
+      if (!c.$(`${e.here} combat status with definition id std:112081`)) {
         // 如果没有金杯的丰馈（妮露），就生成草原核
         c.combatStatus(DendroCore, e.here);
       }

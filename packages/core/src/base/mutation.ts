@@ -16,7 +16,7 @@
 import { type Draft, produce, enableMapSet } from "immer";
 
 import { DiceType } from "@gi-tcg/typings";
-import { flip } from "@gi-tcg/utils";
+import { flip, type DefinitionIdStr } from "@gi-tcg/utils";
 import {
   type PhaseType,
   type CardState,
@@ -153,14 +153,14 @@ export interface SetPlayerFlagM {
 
 export interface MutateExtensionStateM {
   readonly type: "mutateExtensionState";
-  readonly extensionId: number;
+  readonly extensionId: DefinitionIdStr;
   readonly newState: unknown;
 }
 
 export interface PushRoundSkillLogM {
   readonly type: "pushRoundSkillLog";
   readonly caller: CharacterState;
-  readonly skillId: number;
+  readonly skillId: DefinitionIdStr;
 }
 export interface ClearRoundSkillLogM {
   readonly type: "clearRoundSkillLog";

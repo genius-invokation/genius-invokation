@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 import type { GameState } from "./base/state";
 import type { Version } from "./base/version";
 import type { GameData, GameDataGetter } from "./builder";
@@ -163,8 +164,8 @@ function deserializeImpl(
       }
       return restoredStore[v.$];
     }
-    if ("$$" in v && "id" in v && typeof v.id === "number" && isValidDefKey(v.$$)) {
-      return data[v.$$].get(v.id);
+    if ("$$" in v && "id" in v && typeof v.id === "string" && isValidDefKey(v.$$)) {
+      return data[v.$$].get(v.id as DefinitionIdStr);
     }
     if ("__type" in v) {
       if (v.__type === "map" && "entries" in v && Array.isArray(v.entries)) {

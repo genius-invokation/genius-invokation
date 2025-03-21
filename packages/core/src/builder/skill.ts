@@ -78,10 +78,11 @@ import {
   type Version,
   type VersionInfo,
 } from "../base/version";
-import { registerInitiativeSkill, builderWeakRefs } from "./registry";
+import { registerInitiativeSkill, builderWeakRefs, createDIS } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -561,7 +562,7 @@ const BUILDER_META_TYPE: unique symbol = Symbol();
 
 export function wrapSkillInfoWithExt(
   skillInfo: SkillInfo,
-  associatedExtensionId: number | null,
+  associatedExtensionId: DefinitionIdStr | null,
 ): SkillInfoOfContextConstruction {
   return { ...skillInfo, associatedExtensionId };
 }
@@ -571,11 +572,11 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
 
   protected operations: SkillOperation<Meta>[] = [];
   protected filters: SkillOperationFilter<Meta>[] = [];
-  protected associatedExtensionId: number | null = null;
+  protected associatedExtensionId: DefinitionIdStr | null = null;
   private applyIfFilter = false;
   private _ifFilter: SkillOperationFilter<Meta> = () => true;
 
-  constructor(protected readonly id: number) {
+  constructor(protected readonly id: DefinitionIdStr) {
     builderWeakRefs.add(new WeakRef(this));
   }
 
@@ -765,7 +766,7 @@ export class TriggeredSkillBuilder<
   CreateSkillBuilderMeta<EventArgType, CallerType, CallerVars, AssociatedExt>
 > {
   constructor(
-    id: number,
+    id: DefinitionIdStr,
     private readonly detailedEventName: DetailedEventNames | CustomEvent,
     private readonly parent: EntityBuilder<
       CallerType,
@@ -1099,7 +1100,7 @@ function generateTargetList(
   skillInfo: SkillInfo,
   known: AnyState[],
   targetQuery: string[],
-  associatedExtensionId: number | null,
+  associatedExtensionId: DefinitionIdStr | null,
 ): AnyState[][] {
   if (targetQuery.length === 0) {
     return [[]];
@@ -1126,7 +1127,7 @@ function generateTargetList(
 
 export function buildTargetGetter(
   targetQuery: string[],
-  associatedExtensionId: number | null,
+  associatedExtensionId: DefinitionIdStr | null,
 ): InitiativeSkillTargetGetter {
   return (state, skillInfo) => {
     const targetIdsList = generateTargetList(
@@ -1153,7 +1154,7 @@ export abstract class SkillBuilderWithCost<
     return buildTargetGetter(this._targetQueries, this.associatedExtensionId);
   }
 
-  constructor(skillId: number) {
+  constructor(skillId: DefinitionIdStr) {
     super(skillId);
   }
   protected _cost: DiceRequirement = new Map();
@@ -1207,7 +1208,7 @@ export class InitiativeSkillBuilder<
   protected _cost: DiceRequirement = new Map();
   private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   private _prepared = false;
-  constructor(private readonly skillId: number) {
+  constructor(private readonly skillId: DefinitionIdStr) {
     super(skillId);
   }
 
@@ -1326,7 +1327,7 @@ export class TechniqueBuilder<
   } | null = null;
 
   constructor(
-    id: number,
+    id: DefinitionIdStr,
     private readonly parent: EntityBuilder<
       "equipment",
       Vars,
@@ -1454,5 +1455,5 @@ export class TechniqueBuilder<
 }
 
 export function skill(id: number) {
-  return withShortcut(new InitiativeSkillBuilder(id));
+  return withShortcut(new InitiativeSkillBuilder(createDIS(id)));
 }

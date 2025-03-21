@@ -15,7 +15,7 @@
 
 import { Aura } from "@gi-tcg/typings";
 import type { CharacterTag } from "../base/character";
-import { registerCharacter, builderWeakRefs } from "./registry";
+import { registerCharacter, builderWeakRefs, createDIS } from "./registry";
 import type { CharacterHandle, PassiveSkillHandle, SkillHandle } from "./type";
 import { createVariable } from "./utils";
 import type { VariableConfig } from "../base/entity";
@@ -24,15 +24,16 @@ import {
   type VersionInfo,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export class CharacterBuilder {
   private readonly _tags: CharacterTag[] = [];
   private _maxHealth = 10;
   private _maxEnergy = 3;
   private _varConfigs: Record<number, VariableConfig> = {};
-  private readonly _skillIds: number[] = [];
+  private readonly _skillIds: DefinitionIdStr[] = [];
   private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
-  constructor(private readonly id: number) {
+  constructor(private readonly id: DefinitionIdStr) {
     builderWeakRefs.add(new WeakRef(this));
   }
 
@@ -87,5 +88,5 @@ export class CharacterBuilder {
 }
 
 export function character(id: number) {
-  return new CharacterBuilder(id);
+  return new CharacterBuilder(createDIS(id));
 }

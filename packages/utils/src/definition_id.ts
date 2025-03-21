@@ -13,13 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export type DefinitionId = `${string}:${number}`
+export type DefinitionIdStr = `${string}:${number}`
 
-export function defId(id: number, namespace: string): DefinitionId {
+export function definitionIdStr(id: number, namespace: string): DefinitionIdStr {
   return `${namespace}:${id}`;
 }
 
-export function parseDefId(defId: DefinitionId): [id: number, namespace: string] {
+export function parseDefinitionIdStr(defId: DefinitionIdStr): [id: number, namespace: string] {
   const [modName, id] = defId.split(":");
   if (!id || isNaN(Number(id))) {
     throw new Error(`Invalid definition id: ${defId}`);

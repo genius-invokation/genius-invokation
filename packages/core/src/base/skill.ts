@@ -61,12 +61,12 @@ import {
 import type { Mutation } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
-import type { DefinitionId } from "@gi-tcg/utils";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
   readonly ownerType: EntityType | "character" | "card" | "extension";
-  readonly id: DefinitionId;
+  readonly id: DefinitionIdStr;
   readonly action: SkillDescription<Arg>;
   readonly filter: SkillActionFilter<Arg>;
   readonly usagePerRoundVariableName: UsagePerRoundVariableNames | null;
@@ -190,7 +190,7 @@ export interface SkillInfoOfContextConstruction extends SkillInfo {
    * 当访问 setExtensionState 时操作的扩展点 id。
    * 在传入 SkillContext 时，由 SkillBuilder 指定好。
    */
-  readonly associatedExtensionId: number | null;
+  readonly associatedExtensionId: DefinitionIdStr | null;
 }
 
 export interface DamageInfo {
@@ -1322,7 +1322,7 @@ class UseSkillRequestArg extends RequestArg {
   constructor(
     requestBy: SkillInfo,
     public readonly who: 0 | 1,
-    public readonly requestingSkillId: number,
+    public readonly requestingSkillId: DefinitionIdStr,
   ) {
     super(requestBy);
   }

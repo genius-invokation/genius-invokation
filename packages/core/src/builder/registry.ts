@@ -27,6 +27,7 @@ import {
   getCorrectVersion,
 } from "../base/version";
 import { freeze } from "immer";
+import { definitionIdStr, parseDefinitionIdStr, type DefinitionIdStr } from "@gi-tcg/utils";
 
 /**
  * @internal
@@ -36,7 +37,20 @@ export const builderWeakRefs = new Set<WeakRef<any>>();
 
 let currentStore: DataStore | null = null;
 
-export function beginRegistration() {
+const DEFAULT_NAMESPACE = "std";
+let currentNamespace: string = DEFAULT_NAMESPACE;
+
+export const getCurrentNamespace = () => currentNamespace;
+export const createDIS = (id: number): DefinitionIdStr => definitionIdStr(id, currentNamespace);
+export const createSkillDIS = (baseDIS: DefinitionIdStr, offset: number, ratio = 0.01): DefinitionIdStr => {
+  const [id, namespace] = parseDefinitionIdStr(baseDIS);
+  return definitionIdStr(id + offset * ratio, namespace);
+}
+export const setCurrentNamespace = (namespace: string) => {
+  currentNamespace = namespace;
+};
+
+export function beginRegistration(namespace?: string) {
   if (currentStore !== null) {
     throw new GiTcgDataError("Already in registration");
   }
@@ -48,10 +62,11 @@ export function beginRegistration() {
     passiveSkills: new Map(),
     extensions: new Map(),
   };
+  setCurrentNamespace(namespace ?? DEFAULT_NAMESPACE);
 }
 
 interface CharacterEntry extends Omit<CharacterDefinition, "skills"> {
-  skillIds: readonly number[];
+  skillIds: readonly DefinitionIdStr[];
 }
 
 // interface EntityEntry extends Omit<EntityDefinition, "initiativeSkills"> {
@@ -60,7 +75,7 @@ interface CharacterEntry extends Omit<CharacterDefinition, "skills"> {
 
 interface CharacterPassiveSkillEntry {
   __definition: "passiveSkills";
-  id: number;
+  id: DefinitionIdStr;
   type: "passiveSkill";
   version: VersionInfo;
   varConfigs: Record<string, VariableConfig>;
@@ -69,7 +84,7 @@ interface CharacterPassiveSkillEntry {
 
 interface CharacterInitiativeSkillEntry {
   __definition: "initiativeSkills";
-  id: number;
+  id: DefinitionIdStr;
   type: "initiativeSkill";
   version: VersionInfo;
   skill: InitiativeSkillDefinition;
@@ -87,15 +102,15 @@ type DefinitionMap = {
 type RegisterCategory = keyof DefinitionMap;
 
 export type DataStore = {
-  [K in RegisterCategory]: Map<number, DefinitionMap[K][]>;
+  [K in RegisterCategory]: Map<DefinitionIdStr, DefinitionMap[K][]>;
 };
 
 export interface GameData {
   readonly version: Version;
-  readonly extensions: ReadonlyMap<number, ExtensionDefinition>;
-  readonly characters: ReadonlyMap<number, CharacterDefinition>;
-  readonly entities: ReadonlyMap<number, EntityDefinition>;
-  readonly cards: ReadonlyMap<number, CardDefinition>;
+  readonly extensions: ReadonlyMap<DefinitionIdStr, ExtensionDefinition>;
+  readonly characters: ReadonlyMap<DefinitionIdStr, CharacterDefinition>;
+  readonly entities: ReadonlyMap<DefinitionIdStr, EntityDefinition>;
+  readonly cards: ReadonlyMap<DefinitionIdStr, CardDefinition>;
 }
 
 function getCurrentStore(): DataStore {
@@ -171,19 +186,19 @@ function combineObject<T extends {}, U extends {}>(a: T, b: U): T & U {
 
 function selectVersion<T extends WithVersionInfo>(
   version: Version,
-  source: Map<number, T[]>,
-): Map<number, T>;
+  source: Map<DefinitionIdStr, T[]>,
+): Map<DefinitionIdStr, T>;
 function selectVersion<T extends WithVersionInfo, U>(
   version: Version,
-  source: Map<number, T[]>,
+  source: Map<DefinitionIdStr, T[]>,
   transformFn: (v: T) => U,
-): Map<number, U>;
+): Map<DefinitionIdStr, U>;
 function selectVersion<T extends WithVersionInfo>(
   version: Version,
-  source: Map<number, T[]>,
+  source: Map<DefinitionIdStr, T[]>,
   transformFn?: (v: T) => unknown,
-): Map<number, unknown> {
-  const result = new Map<number, unknown>();
+): Map<DefinitionIdStr, unknown> {
+  const result = new Map<DefinitionIdStr, unknown>();
   for (const [id, defs] of source) {
     const chosen = getCorrectVersion(defs, version);
     if (!chosen) {

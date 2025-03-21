@@ -403,7 +403,7 @@ export function exposeEntity(
   );
   return {
     id: e.id,
-    definitionId: e.id === 0 ? 0 : e.definition.id,
+    definitionId: e.id === 0 ? `std:0` : e.definition.id,
     variableValue: e.definition.visibleVarName
       ? e.variables[e.definition.visibleVarName] ?? void 0
       : void 0,
@@ -455,7 +455,7 @@ function exposeCard(
   return {
     id: c.id,
     descriptionDictionary,
-    definitionId: hide ? 0 : c.definition.id,
+    definitionId: hide ? `std:0` : c.definition.id,
     definitionCost,
   };
 }

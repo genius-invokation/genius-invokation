@@ -608,7 +608,7 @@ export class SkillExecutor {
                 characterId: arg.switchInfo.to.id,
                 characterDefinitionId: arg.switchInfo.to.definition.id,
                 viaSkillDefinitionId: arg.switchInfo.fromReaction
-                  ? Reaction.Overloaded
+                  ? `std:${Reaction.Overloaded}`
                   : arg.switchInfo.via?.definition.id,
               },
             ],

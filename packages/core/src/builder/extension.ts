@@ -7,10 +7,11 @@ import type {
   TriggeredSkillDefinition,
 } from "../base/skill";
 import { SkillContext } from "./context/skill";
-import { registerExtension, builderWeakRefs } from "./registry";
+import { registerExtension, builderWeakRefs, createDIS, createSkillDIS } from "./registry";
 import { wrapSkillInfoWithExt, type WritableMetaOf } from "./skill";
 import type { ExtensionHandle } from "./type";
 import { DEFAULT_VERSION_INFO } from "../base/version";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 type ExtensionBuilderMeta<
   ExtStateType extends object,
@@ -25,14 +26,12 @@ type ExtensionBuilderMeta<
 export class ExtensionBuilder<ExtStateType extends object> {
   private _skillNo = 0;
   private _skillList: TriggeredSkillDefinition[] = [];
-  public readonly id: number;
   private _description = "";
 
   constructor(
-    idHint: number,
+    public readonly id: DefinitionIdStr,
     private readonly initialState: ExtStateType,
   ) {
-    this.id = idHint + 50_000_000;
     builderWeakRefs.add(new WeakRef(this));
   }
 
@@ -43,7 +42,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
 
   private generateSkillId() {
     const thisSkillNo = ++this._skillNo;
-    return this.id + thisSkillNo / 100;
+    return createSkillDIS(this.id, thisSkillNo);
   }
 
   mutateWhen<E extends EventNames>(
@@ -94,5 +93,5 @@ export function extension<ExtStateType extends object>(
   idHint: number,
   initialState: ExtStateType,
 ) {
-  return new ExtensionBuilder(idHint, initialState);
+  return new ExtensionBuilder(createDIS(idHint + 50_000_000), initialState);
 }

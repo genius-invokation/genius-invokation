@@ -90,7 +90,7 @@ import {
   type ReactionDescriptionEventArg,
   getReactionDescription,
 } from "../reaction";
-import { flip } from "@gi-tcg/utils";
+import { flip, type DefinitionIdStr } from "@gi-tcg/utils";
 import { GiTcgDataError } from "../../error";
 import { DetailLogType } from "../../log";
 import {
@@ -452,7 +452,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * `characterId` 是定义 id 而非实体 id。
    */
   countOfSkill(characterId: CharacterHandle, skillId: SkillHandle): number;
-  countOfSkill(characterId?: number, skillId?: number): number {
+  countOfSkill(characterId?: DefinitionIdStr, skillId?: DefinitionIdStr): number {
     characterId ??= this.callerState.definition.id;
     skillId ??= this.skillInfo.definition.id;
     return (
@@ -924,7 +924,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     area?: EntityArea,
     opt: CreateEntityOptions = {},
   ): TypedEntity<Meta> | null {
-    const id2 = id as number;
+    const id2 = id as DefinitionIdStr;
     const def = this.state.data.entities.get(id2);
     if (typeof def === "undefined") {
       throw new GiTcgDataError(`Unknown entity definition id ${id2}`);
@@ -1195,8 +1195,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     target: ExEntityState<DefT>,
     newDefId: HandleT<DefT>,
   ): ShortcutReturn<Meta>;
-  transformDefinition(target: string, newDefId: number): ShortcutReturn<Meta>;
-  transformDefinition(target: string | AnyState, newDefId: number) {
+  transformDefinition(target: string, newDefId: DefinitionIdStr): ShortcutReturn<Meta>;
+  transformDefinition(target: string | AnyState, newDefId: DefinitionIdStr) {
     if (typeof target === "string") {
       const entity = this.$(target);
       if (entity) {
@@ -1759,7 +1759,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   private getCardsDefinition(cards: (CardHandle | CardDefinition)[]) {
     return cards.map((defOrId) => {
-      if (typeof defOrId === "number") {
+      if (typeof defOrId === "string") {
         const def = this.state.data.cards.get(defOrId);
         if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${defOrId}`);
@@ -1775,7 +1775,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "createEntity",
       cards: summons.map((defOrId) => {
-        if (typeof defOrId === "number") {
+        if (typeof defOrId === "string") {
           const def = this.state.data.entities.get(defOrId);
           if (!def) {
             throw new GiTcgDataError(`Unknown entity definition id ${defOrId}`);

@@ -30,6 +30,8 @@ import {
   registerEntity,
   registerPassiveSkill,
   builderWeakRefs,
+  createDIS,
+  createSkillDIS,
 } from "./registry";
 import {
   withShortcut,
@@ -62,6 +64,7 @@ import {
 } from "../base/version";
 import type { TypedSkillContext } from "./context/skill";
 import type { CustomEvent } from "../base/custom_event";
+import { type DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface AppendOptions {
   /** 重复创建时的累积值上限 */
@@ -121,21 +124,21 @@ export class EntityBuilder<
   private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
   private _visibleVarName: string | null = null;
-  _associatedExtensionId: number | null = null;
+  _associatedExtensionId: DefinitionIdStr | null = null;
   private _hintText: string | null = null;
   private readonly _descriptionDictionary: Writable<DescriptionDictionary> = {};
   _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   private _snippets = new Map<string, SkillOperation<any>>();
 
-  private generateSkillId() {
+  private generateSkillId(): DefinitionIdStr {
     const thisSkillNo = ++this._skillNo;
-    return this.id + thisSkillNo / 100;
+    return createSkillDIS(this.id, thisSkillNo);
   }
 
   constructor(
     public readonly _type: CallerType,
-    private readonly id: number,
-    private readonly fromCardId: number | null = null,
+    private readonly id: DefinitionIdStr,
+    private readonly fromCardId: DefinitionIdStr | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
   }
@@ -196,7 +199,7 @@ export class EntityBuilder<
     >;
     return withShortcut(
       new TechniqueBuilder<CallerVars, readonly [], AssociatedExt, FromCard>(
-        id,
+        createDIS(id),
         self,
       ),
     );
@@ -750,13 +753,13 @@ export type EntityBuilderPublic<
 >;
 
 export function summon(id: number): EntityBuilderPublic<"summon"> {
-  return new EntityBuilder("summon", id);
+  return new EntityBuilder("summon", createDIS(id));
 }
 
 export function status(id: number): EntityBuilderPublic<"status"> {
-  return new EntityBuilder("status", id);
+  return new EntityBuilder("status", createDIS(id));
 }
 
 export function combatStatus(id: number): EntityBuilderPublic<"combatStatus"> {
-  return new EntityBuilder("combatStatus", id);
+  return new EntityBuilder("combatStatus", createDIS(id));
 }

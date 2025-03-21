@@ -17,7 +17,7 @@ import { Aura } from "@gi-tcg/typings";
 import type { SkillDefinition } from "./skill";
 import type { VariableConfig } from "./entity";
 import type { VersionInfo } from "./version";
-import type { DefinitionId } from "@gi-tcg/utils";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export type ElementTag =
   | "cryo"
@@ -65,7 +65,7 @@ export type CharacterTag = ElementTag | WeaponTag | NationTag | ArkheTag;
 export interface CharacterDefinition {
   readonly __definition: "characters";
   readonly type: "character";
-  readonly id: DefinitionId;
+  readonly id: DefinitionIdStr;
   readonly version: VersionInfo;
   readonly tags: readonly CharacterTag[];
   readonly varConfigs: CharacterVariableConfigs;

@@ -29,6 +29,7 @@ import {
   stringifyEntityArea,
 } from "./base/entity";
 import type { CardDefinition } from "./base/card";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export class GiTcgPreviewAbortedError extends GiTcgCoreInternalError {
   constructor(message?: string) {
@@ -78,7 +79,7 @@ export interface MutatorConfig {
 
   readonly howToSwitchHands?: (who: 0 | 1) => Promise<number[]>;
   readonly howToReroll?: (who: 0 | 1) => Promise<number[]>;
-  readonly howToSelectCard?: (who: 0 | 1, cards: number[]) => Promise<number>;
+  readonly howToSelectCard?: (who: 0 | 1, cards: DefinitionIdStr[]) => Promise<DefinitionIdStr>;
   readonly howToChooseActive?: (
     who: 0 | 1,
     candidates: number[],
