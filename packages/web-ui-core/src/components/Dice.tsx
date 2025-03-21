@@ -213,7 +213,7 @@ export function Dice(props: DiceProps) {
         <Match when={merged.type >= 1 && merged.type <= 7}>
           <Image
             class="absolute"
-            imageId={merged.type}
+            imageId={`std:${merged.type}`}
             height={0.6 * merged.size}
             width={0.6 * merged.size}
           />

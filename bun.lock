@@ -17,6 +17,9 @@
     "packages/assets-manager": {
       "name": "@gi-tcg/assets-manager",
       "version": "0.17.0",
+      "dependencies": {
+        "@gi-tcg/utils": "workspace:*",
+      },
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",

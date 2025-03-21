@@ -21,6 +21,7 @@ import { SelectingIcon } from "./SelectingIcon";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -49,7 +50,7 @@ export function Entity(props: EntityProps) {
         fallback={
           <Image
             class="absolute inset-0 h-full w-full rounded-lg b-white b-2"
-            imageId={data().definitionId}
+            imageId={data().definitionId as DefinitionIdStr}
           />
         }
       >
@@ -57,7 +58,7 @@ export function Entity(props: EntityProps) {
           <>
             <Image
               class="absolute inset-0 h-full w-full p-1px rounded-lg"
-              imageId={data().definitionId}
+              imageId={data().definitionId as DefinitionIdStr}
             />
             <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
               {frame}
@@ -105,7 +106,7 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
-          <Image imageId={data().hintIcon!} class="h-4 w-4" />
+          <Image imageId={`std:${data().hintIcon!}`} class="h-4 w-4" />
           {data().hintText}
         </div>
       </Show>

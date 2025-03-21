@@ -34,12 +34,13 @@ import {
   type AssetsManager,
   DEFAULT_ASSETS_MANAGER,
 } from "@gi-tcg/assets-manager";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface RegisterResult {
   readonly CardDataViewer: () => JSX.Element;
-  readonly showCharacter: (id: number) => void;
-  readonly showSkill: (id: number) => void;
-  readonly showCard: (id: number) => void;
+  readonly showCharacter: (id: DefinitionIdStr) => void;
+  readonly showSkill: (id: DefinitionIdStr) => void;
+  readonly showCard: (id: DefinitionIdStr) => void;
   readonly showState: {
     (
       type: "character",
@@ -63,7 +64,7 @@ export function createCardDataViewer(
   const [shown, setShown] = createSignal(false);
   const [inputs, setInputs] = createSignal<ViewerInput[]>([]);
 
-  const showDef = (definitionId: number, type: StateType) => {
+  const showDef = (definitionId: DefinitionIdStr, type: StateType) => {
     setInputs([
       {
         from: "definitionId",
@@ -81,7 +82,7 @@ export function createCardDataViewer(
     from: "state",
     id: st.id,
     type,
-    definitionId: st.definitionId,
+    definitionId: st.definitionId as DefinitionIdStr,
     descriptionDictionary:
       "descriptionDictionary" in st ? st.descriptionDictionary : {},
     variableValue: "variableValue" in st ? st.variableValue : void 0,

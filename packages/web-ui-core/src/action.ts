@@ -29,14 +29,13 @@ import {
   type SwitchActiveAction,
 } from "@gi-tcg/typings";
 import type { DicePanelState } from "./components/DicePanel";
-import { checkDice } from "@gi-tcg/utils";
+import { checkDice, type DefinitionIdStr } from "@gi-tcg/utils";
 import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
 import type { AssetsManager } from "@gi-tcg/assets-manager";
-import { useUiContext } from "./hooks/context";
 
 export function getHintTextOfCardOrSkill(
   assetsManager: AssetsManager,
-  definitionId: number,
+  definitionId: DefinitionIdStr,
   targetLength: number,
 ): string[] {
   try {
@@ -78,7 +77,7 @@ export interface ClickEntityActionStep {
 }
 export interface ClickSkillButtonActionStep {
   readonly type: "clickSkillButton";
-  readonly skillId: number;
+  readonly skillId: DefinitionIdStr;
   readonly tooltipText?: string;
   readonly isDisabled: boolean;
   readonly isFocused: boolean;
@@ -133,7 +132,7 @@ type StepActionFunction = (
 
 export interface RealCosts {
   cards: Map<number, PbDiceRequirement[]>;
-  skills: Map<number, PbDiceRequirement[]>;
+  skills: Map<DefinitionIdStr, PbDiceRequirement[]>;
   switchActive: PbDiceRequirement[] | null;
 }
 
@@ -142,14 +141,14 @@ export interface PreviewingCharacterInfo {
   newEnergy: number | null;
   reactions: Reaction[];
   newAura: number | null;
-  newDefinitionId: number | null;
+  newDefinitionId: DefinitionIdStr | null;
   defeated: boolean;
   active: boolean;
 }
 
 export interface PreviewingEntityInfo {
   newVariableValue: number | null;
-  newDefinitionId: number | null;
+  newDefinitionId: DefinitionIdStr | null;
   disposed: boolean;
 }
 
@@ -274,11 +273,11 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
       case "transformDefinition": {
         const info =
           result.entities.get(value.entityId) ?? newPreviewingEntity();
-        info.newDefinitionId = value.newEntityDefinitionId;
+        info.newDefinitionId = value.newEntityDefinitionId as DefinitionIdStr;
         result.entities.set(value.entityId, info);
         const info2 =
           result.characters.get(value.entityId) ?? newPreviewingCharacter();
-        info2.newDefinitionId = value.newEntityDefinitionId;
+        info2.newDefinitionId = value.newEntityDefinitionId as DefinitionIdStr;
         result.characters.set(value.entityId, info2);
         break;
       }
@@ -376,7 +375,7 @@ interface MultiStepRootNodeContext<T> {
   /** 进行此行动自动选择的骰子 */
   autoSelectedDice: DiceType[];
   /** 用于提供 hintText 的定义 id */
-  cardOrSkillDefinitionId: number;
+  cardOrSkillDefinitionId: DefinitionIdStr;
 }
 
 interface CreatePlayCardActionStateContext {
@@ -418,7 +417,8 @@ function createPlayCardActionState(
         isSkill: false,
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
-        cardOrSkillDefinitionId: ctx.action.value.cardDefinitionId,
+        cardOrSkillDefinitionId: ctx.action.value
+          .cardDefinitionId as DefinitionIdStr,
       });
     }
     appendMultiStepNode(
@@ -455,7 +455,7 @@ function createPlayCardActionState(
     showHands: false,
     showSkillButtons: false,
     hintText: `打出手牌「${ctx.assetsManager.getNameSync(
-      ctx.action.value.cardDefinitionId,
+      ctx.action.value.cardDefinitionId as DefinitionIdStr,
     )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
@@ -511,7 +511,7 @@ function createPlayCardActionState(
  */
 function createMultiStepState<T>(
   root: ActionState,
-  id: number,
+  id: number | DefinitionIdStr,
   { isSkill, ...ctx }: MultiStepRootNodeContext<T>,
 ): readonly [ActionStep, ActionState, ActionState[]] {
   const allStates: ActionState[] = [];
@@ -521,9 +521,9 @@ function createMultiStepState<T>(
         type: "clickSkillButton",
         isDisabled: false,
         isFocused: false,
-        skillId: id,
+        skillId: id as DefinitionIdStr,
       }
-    : { type: "playCard", cardId: id, playable: true };
+    : { type: "playCard", cardId: id as number, playable: true };
   // 在多步选择内部，按下起点的行为
   const innerEnterStep = isSkill
     ? {
@@ -532,7 +532,7 @@ function createMultiStepState<T>(
       }
     : enterStep;
   const createState = (
-    id: number,
+    id: number | DefinitionIdStr,
     node: ActionTreeNode<T>,
     hintTexts: string[],
     parentNode?: ActionState,
@@ -544,7 +544,7 @@ function createMultiStepState<T>(
       };
       const CLICK_ENTITY_STEP: ClickEntityActionStep = {
         type: "clickEntity",
-        entityId: id,
+        entityId: id as number,
         ui: ActionStepEntityUi.Selected,
       };
       const resultState: ActionState = {
@@ -689,7 +689,10 @@ function createMultiStepState<T>(
 interface CreateUseSkillActionStateContext {
   assetsManager: AssetsManager;
   skillSingleStepStates: Map<ClickSkillButtonActionStep, ActionState>;
-  skillMultiSteps: Map<number, MultiStepRootNodeContext<UseSkillAction>>;
+  skillMultiSteps: Map<
+    DefinitionIdStr,
+    MultiStepRootNodeContext<UseSkillAction>
+  >;
   action: Action & { value: UseSkillAction };
   index: number;
 }
@@ -698,7 +701,7 @@ function createUseSkillActionState(
   root: ActionState,
   ctx: CreateUseSkillActionStateContext,
 ) {
-  const id = ctx.action.value.skillDefinitionId;
+  const id = ctx.action.value.skillDefinitionId as DefinitionIdStr;
   const ok = ctx.action.validity === ActionValidity.VALID;
   if (ctx.action.value.targetIds.length > 0) {
     if (!ctx.skillMultiSteps.has(id)) {
@@ -707,7 +710,8 @@ function createUseSkillActionState(
         isSkill: true,
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
-        cardOrSkillDefinitionId: ctx.action.value.skillDefinitionId,
+        cardOrSkillDefinitionId: ctx.action.value
+          .skillDefinitionId as DefinitionIdStr,
       });
     }
     appendMultiStepNode(
@@ -884,7 +888,7 @@ function createSwitchActiveActionState(
     showHands: false,
     showSkillButtons: true,
     hintText: `切换出战角色为「${ctx.assetsManager.getNameSync(
-      ctx.action.value.characterDefinitionId,
+      ctx.action.value.characterDefinitionId as DefinitionIdStr,
     )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
@@ -964,7 +968,10 @@ function createSwitchActiveActionState(
   ctx.innerLevelStates.set(INNER_CHARACTER_CLICK_ACTION, innerState);
 }
 
-export function createActionState(assetsManager: AssetsManager, actions: Action[]): ActionState {
+export function createActionState(
+  assetsManager: AssetsManager,
+  actions: Action[],
+): ActionState {
   assetsManager.prepareForSync();
   const realCosts: RealCosts = {
     cards: new Map(),
@@ -1006,7 +1013,7 @@ export function createActionState(assetsManager: AssetsManager, actions: Action[
     ActionState
   >();
   const useSkillMultiSteps = new Map<
-    number,
+    DefinitionIdStr,
     MultiStepRootNodeContext<UseSkillAction>
   >();
   const switchActiveInnerStates = new Map<ClickEntityActionStep, ActionState>();
@@ -1015,7 +1022,10 @@ export function createActionState(assetsManager: AssetsManager, actions: Action[
     const { action, requiredCost, validity } = actions[i];
     switch (action?.$case) {
       case "useSkill": {
-        realCosts.skills.set(action.value.skillDefinitionId, requiredCost);
+        realCosts.skills.set(
+          action.value.skillDefinitionId as DefinitionIdStr,
+          requiredCost,
+        );
         createUseSkillActionState(root, {
           assetsManager,
           skillSingleStepStates: useSkillSingleStepStates,

@@ -78,7 +78,7 @@ import {
 import { NotificationBox } from "./NotificationBox";
 import { Entity } from "./Entity";
 import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
-import { flip } from "@gi-tcg/utils";
+import { flip, type DefinitionIdStr } from "@gi-tcg/utils";
 import { DicePanel, type DicePanelState } from "./DicePanel";
 import { SkillButtonGroup } from "./SkillButtonGroup";
 import { createStore } from "solid-js/store";
@@ -196,13 +196,13 @@ export interface ReactionInfo {
 export interface NotificationBoxInfo {
   type: "useSkill" | "switchActive";
   who: 0 | 1;
-  characterDefinitionId: number;
-  skillDefinitionId?: number;
+  characterDefinitionId: DefinitionIdStr;
+  skillDefinitionId?: DefinitionIdStr;
   skillType: PbSkillType | "overloaded" | null;
 }
 
 export interface SkillInfo {
-  id: number | "switchActive";
+  id: DefinitionIdStr | "switchActive";
   cost: PbDiceRequirement[];
   realCost?: PbDiceRequirement[];
   step: ClickSkillButtonActionStep | ClickSwitchActiveButtonActionStep | null;
@@ -239,11 +239,11 @@ export interface ChessboardProps extends ComponentProps<"div"> {
    */
   actionState: ActionState | null;
   viewType: ChessboardViewType;
-  selectCardCandidates: number[];
+  selectCardCandidates: DefinitionIdStr[];
   onStepActionState?: StepActionStateHandler;
   onRerollDice?: (dice: PbDiceType[]) => void;
   onSwitchHands?: (cardIds: number[]) => void;
-  onSelectCard?: (cardDefId: number) => void;
+  onSelectCard?: (cardDefId: DefinitionIdStr) => void;
   onGiveUp?: () => void;
 }
 
@@ -301,9 +301,7 @@ function calcCardsInfo(
     }
 
     // Hand
-    const handCard = player.handCard.toSorted(
-      (a, b) => a.definitionId - b.definitionId,
-    );
+    const handCard = player.handCard.toSorted();
     const totalHandCardCount = handCard.length;
     const skillCount = player.initiativeSkill.length;
 
@@ -615,7 +613,9 @@ function rerenderChildren(opt: {
           ? []
           : currentAnimatingCards
               .filter((card) => card.showing)
-              .toSorted((x, y) => x.data.definitionId - y.data.definitionId);
+              .toSorted((x, y) =>
+                x.data.definitionId.localeCompare(y.data.definitionId),
+              );
       let currentDurationMs = 0;
       for (const animatingCard of currentAnimatingCards) {
         if (draggingHand?.id === animatingCard.data.id) {
@@ -899,7 +899,7 @@ type SelectingItem =
     }
   | {
       type: "skill";
-      info: SkillInfo & { id: number };
+      info: SkillInfo & { id: DefinitionIdStr };
     };
 
 export function Chessboard(props: ChessboardProps) {
@@ -1184,10 +1184,10 @@ export function Chessboard(props: ChessboardProps) {
     const realCosts = actionState?.realCosts.skills;
     return localProps.data.state.player[localProps.who].initiativeSkill.map(
       (sk) => ({
-        id: sk.definitionId,
+        id: sk.definitionId as DefinitionIdStr,
         cost: sk.definitionCost,
-        realCost: realCosts?.get(sk.definitionId),
-        step: findSkillStep(steps, sk.definitionId),
+        realCost: realCosts?.get(sk.definitionId as DefinitionIdStr),
+        step: findSkillStep(steps, sk.definitionId as DefinitionIdStr),
       }),
     );
   });

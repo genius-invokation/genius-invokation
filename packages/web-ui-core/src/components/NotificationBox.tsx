@@ -13,11 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { getNameSync } from "@gi-tcg/assets-manager";
 import type { NotificationBoxInfo } from "./Chessboard";
 import { Image } from "./Image";
 import { createEffect, Show } from "solid-js";
 import { PbSkillType } from "@gi-tcg/typings";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
+import { useUiContext } from "../hooks/context";
 
 export interface NotificationBoxProps {
   opp: boolean;
@@ -25,6 +26,7 @@ export interface NotificationBoxProps {
 }
 
 export function NotificationBox(props: NotificationBoxProps) {
+  const { assetsManager } = useUiContext();
   const typeText = (
     type: NotificationBoxInfo["skillType"],
   ): string | undefined => {
@@ -60,8 +62,8 @@ export function NotificationBox(props: NotificationBoxProps) {
           fallback={
             <>
               <h5 class="font-bold">
-                {getNameSync(
-                  Math.floor(props.data.skillDefinitionId as number),
+                {assetsManager.getNameSync(
+                  props.data.skillDefinitionId as DefinitionIdStr,
                 )}
               </h5>
               <p>{typeText(props.data.skillType)}</p>
@@ -70,10 +72,10 @@ export function NotificationBox(props: NotificationBoxProps) {
         >
           <h5 class="font-bold">
             {props.opp ? "对方" : "我方"}切换出战角色：
-            {getNameSync(props.data.characterDefinitionId)}
+            {assetsManager.getNameSync(props.data.characterDefinitionId)}
           </h5>
           <Show when={props.data.skillDefinitionId}>
-            <p>{getNameSync(props.data.characterDefinitionId)}</p>
+            <p>{assetsManager.getNameSync(props.data.characterDefinitionId)}</p>
           </Show>
           <Show when={props.data.skillType === "overloaded"}>
             <p>超载</p>

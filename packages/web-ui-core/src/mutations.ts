@@ -34,6 +34,7 @@ import type {
   PlayingCardInfo,
   ReactionInfo,
 } from "./components/Chessboard";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
@@ -112,7 +113,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
       case "transferCard":
       case "removeCard": {
         const card = mutation.value.card!;
-        let showing = card.definitionId !== 0;
+        let showing = card.definitionId !== `std:0`;
         if (mutation.$case === "removeCard") {
           if (
             [
@@ -202,8 +203,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           notificationBox = {
             type: "useSkill",
             who: mutation.value.who as 0 | 1,
-            characterDefinitionId: mutation.value.callerDefinitionId,
-            skillDefinitionId: mutation.value.skillDefinitionId,
+            characterDefinitionId: mutation.value.callerDefinitionId as DefinitionIdStr,
+            skillDefinitionId: mutation.value.skillDefinitionId as DefinitionIdStr,
             skillType: mutation.value.skillType,
           };
         }
@@ -213,10 +214,10 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         notificationBox = {
           type: "switchActive",
           who: mutation.value.who as 0 | 1,
-          characterDefinitionId: mutation.value.characterDefinitionId,
-          skillDefinitionId: mutation.value.viaSkillDefinitionId,
+          characterDefinitionId: mutation.value.characterDefinitionId as DefinitionIdStr,
+          skillDefinitionId: mutation.value.viaSkillDefinitionId as DefinitionIdStr,
           skillType:
-            mutation.value.viaSkillDefinitionId === Reaction.Overloaded
+            mutation.value.viaSkillDefinitionId === `std:${Reaction.Overloaded}`
               ? "overloaded"
               : null,
         };

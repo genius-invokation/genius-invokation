@@ -21,6 +21,7 @@ import type { CardInfo } from "./Chessboard";
 import { SelectingIcon } from "./SelectingIcon";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface CardProps extends CardInfo {
   selected: boolean;
@@ -205,7 +206,7 @@ export function Card(props: CardProps) {
           fallback={
             <Image
               class="h-full w-full rounded-xl b-white b-3"
-              imageId={data().definitionId}
+              imageId={data().definitionId as DefinitionIdStr}
             />
           }
         >
@@ -213,7 +214,7 @@ export function Card(props: CardProps) {
             <>
               <Image
                 class="absolute inset-0 h-full w-full p-1px"
-                imageId={data().definitionId}
+                imageId={data().definitionId as DefinitionIdStr}
               />
               <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
                 {frame}

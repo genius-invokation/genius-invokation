@@ -36,12 +36,13 @@ import { Description } from "./Description";
 import { Tags } from "./Tags";
 import { TEXT_MAP } from "./text_map";
 import { useAssetsManager } from "./context";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface CardDataProps {
   class?: string;
   input: ViewerInput;
   includesImage: boolean;
-  onRequestExplain?: (id: number) => void;
+  onRequestExplain?: (id: DefinitionIdStr) => void;
 }
 
 export function Character(props: CardDataProps) {
@@ -79,7 +80,7 @@ export function Character(props: CardDataProps) {
                       input={{
                         from: "definitionId",
                         type: "skill",
-                        definitionId: skill.id,
+                        definitionId: `std:${skill.id}`,
                       }}
                       asChild
                       class="b-yellow-3 b-1 rounded-md"
@@ -333,7 +334,7 @@ export function Entity(props: ExpandableCardDataProps) {
 
 export interface CardDefinitionProps {
   class?: string;
-  definitionId: number;
+  definitionId: DefinitionIdStr;
   includesImage: boolean;
 }
 
@@ -377,7 +378,7 @@ export function Keyword(props: CardDefinitionProps) {
 }
 
 export interface ReferenceProps extends CardDefinitionProps {
-  onAddReference?: (id: number) => void;
+  onAddReference?: (id: DefinitionIdStr) => void;
 }
 
 export function Reference(props: ReferenceProps) {

@@ -27,7 +27,7 @@ function App() {
       "character",
       {
         id: -500001,
-        definitionId: 1304,
+        definitionId: `std:1304`,
         aura: 0,
         defeated: false,
         health: 10,
@@ -37,7 +37,7 @@ function App() {
         entity: [
           {
             id: -500002,
-            definitionId: 312015,
+            definitionId: `std:312015`,
             hasUsagePerRound: false,
             variableName: "usage",
             variableValue: 3,
@@ -51,7 +51,7 @@ function App() {
       [
         {
           id: -500003,
-          definitionId: 111,
+          definitionId: `std:111`,
           variableName: "shield",
           variableValue: 1,
           hasUsagePerRound: true,
@@ -61,7 +61,7 @@ function App() {
     );
     showState("card", {
       id: -5000001,
-      definitionId: 330005,
+      definitionId: `std:330005`,
       definitionCost: [],
       descriptionDictionary: {
         "[T]": "2",

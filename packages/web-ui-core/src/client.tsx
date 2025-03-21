@@ -47,6 +47,7 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -108,7 +109,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const [actionState, setActionState] = createSignal<ActionState | null>(null);
   const [viewType, setViewType] = createSignal<ChessboardViewType>("normal");
   const [selectCardCandidates, setSelectCardCandidates] = createSignal<
-    number[]
+  DefinitionIdStr[]
   >([]);
 
   const uiQueue = new AsyncQueue();
@@ -163,7 +164,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     selectCard: async ({ candidateDefinitionIds }) => {
       const resolver = Promise.withResolvers<SelectCardResponse>();
       actionResolvers.selectCard = resolver;
-      setSelectCardCandidates(candidateDefinitionIds);
+      setSelectCardCandidates(candidateDefinitionIds as DefinitionIdStr[]);
       setViewType("selectCard");
       const result = await resolver.promise;
       setViewType("normal");
@@ -256,7 +257,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const onSwitchHands = (removedHandIds: number[]) => {
     actionResolvers.switchHands?.resolve({ removedHandIds });
   };
-  const onSelectCard = (selectedDefinitionId: number) => {
+  const onSelectCard = (selectedDefinitionId: DefinitionIdStr) => {
     actionResolvers.selectCard?.resolve({ selectedDefinitionId });
   };
 

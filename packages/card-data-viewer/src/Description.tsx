@@ -25,6 +25,7 @@ import {
 import { createStore, produce } from "solid-js/store";
 import { Reference } from "./Entity";
 import { useAssetsManager } from "./context";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 type DescriptionItem =
   | {
@@ -79,7 +80,7 @@ const descriptionToItems = (
 
 interface DamageDescriptionProps {
   dType: string | undefined;
-  onRequestExplain?: (id: number) => void;
+  onRequestExplain?: (id: DefinitionIdStr) => void;
 }
 
 const DAMAGE_COLORS = [
@@ -105,10 +106,10 @@ function DamageDescription(props: DamageDescriptionProps) {
       "GCG_ELEMENT_GEO",
       "GCG_ELEMENT_DENDRO",
     ].indexOf(props.dType);
-  const keywordId = () => -(100 + id());
+  const keywordId = () => `std:${-(100 + id())}` as const;
   const text = () => assetsManager.getNameSync(keywordId());
   const assetsManager = useAssetsManager();
-  const [url] = createResource(id, (id) => assetsManager.getImageUrl(id));
+  const [url] = createResource(id, (id) => assetsManager.getImageUrl(`std:${id}`));
   return (
     <>
       <Show when={id() <= 7 && url()}>
@@ -126,13 +127,13 @@ function DamageDescription(props: DamageDescriptionProps) {
 }
 
 export interface DescriptionProps {
-  definitionId: number;
+  definitionId: DefinitionIdStr;
   description: string;
   keyMap?: Record<string, string>;
   includesImage: boolean;
   fromSkill?: boolean;
-  onRequestExplain?: (id: number) => void;
-  onAddReference?: (defId: number) => void;
+  onRequestExplain?: (id: DefinitionIdStr) => void;
+  onAddReference?: (defId: DefinitionIdStr) => void;
 }
 
 export function Description(props: DescriptionProps) {
@@ -140,9 +141,9 @@ export function Description(props: DescriptionProps) {
   const items = createMemo(() =>
     descriptionToItems(props.description, props.keyMap),
   );
-  const [references, setReferences] = createStore<number[]>([]);
+  const [references, setReferences] = createStore<DefinitionIdStr[]>([]);
 
-  const addReference = (defId: number) => {
+  const addReference = (defId: DefinitionIdStr) => {
     setReferences(
       produce((prev) => {
         if (defId !== props.definitionId && !prev.includes(defId)) {
@@ -158,9 +159,9 @@ export function Description(props: DescriptionProps) {
       if (item.type !== "reference") {
         continue;
       } else if (item.rType === "S" && !props.fromSkill) {
-        addRefFn(item.id);
+        addRefFn(`std:${item.id}`);
       } else if (item.rType === "C") {
-        addRefFn(item.id);
+        addRefFn(`std:${item.id}`);
       }
     }
   });
@@ -191,15 +192,15 @@ export function Description(props: DescriptionProps) {
                     when={item.rType === "K"}
                     fallback={
                       <span class="text-black mx-1">
-                        {assetsManager.getNameSync(item.id) ?? item.id}
+                        {assetsManager.getNameSync(`std:${item.id}`) ?? item.id}
                       </span>
                     }
                   >
                     <span
                       class="text-black underline underline-1 underline-offset-3 cursor-pointer mx-1"
-                      onClick={() => props.onRequestExplain?.(item.id)}
+                      onClick={() => props.onRequestExplain?.(`std:${item.id}`)}
                     >
-                      {assetsManager.getNameSync(item.id)}
+                      {assetsManager.getNameSync(`std:${item.id}`)}
                     </span>
                   </Show>
                 )}

@@ -16,20 +16,21 @@
 import type { AnyState } from "@gi-tcg/core";
 import { createMemo, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { ActionCard, Character, Entity, Keyword, Skill } from "./Entity";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export type StateType = AnyState["definition"]["type"] | "skill" | "keyword";
 
 export type ViewerInput =
   | {
       from: "definitionId";
-      definitionId: number;
+      definitionId: DefinitionIdStr;
       type: StateType;
     }
   | {
       from: "state";
       id: number;
       type: StateType;
-      definitionId: number;
+      definitionId: DefinitionIdStr;
       variableValue?: number;
       descriptionDictionary: {
         [key: string]: string;
@@ -64,8 +65,8 @@ function CardDataViewer(props: CardDataViewerProps) {
     ...(grouped().status ?? []),
   ];
 
-  const [explainKeyword, setExplainKeyword] = createSignal<number | null>(null);
-  const onRequestExplain = (definitionId: number) => {
+  const [explainKeyword, setExplainKeyword] = createSignal<DefinitionIdStr | null>(null);
+  const onRequestExplain = (definitionId: DefinitionIdStr) => {
     setExplainKeyword((prev) => (prev === definitionId ? null : definitionId));
   };
 

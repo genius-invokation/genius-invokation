@@ -18,17 +18,18 @@ import { Button } from "./Button";
 import { Image } from "./Image";
 import { SelectingIcon } from "./SelectingIcon";
 import type { ChessboardViewType } from "./Chessboard";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface SelectCardViewProps {
   viewType: ChessboardViewType;
-  candidateIds: number[];
-  onClickCard: (id: number) => void;
-  onConfirm: (id: number) => void;
+  candidateIds: DefinitionIdStr[];
+  onClickCard: (id: DefinitionIdStr) => void;
+  onConfirm: (id: DefinitionIdStr) => void;
 }
 
 export function SelectCardView(props: SelectCardViewProps) {
   const [shown, setShown] = createSignal(true);
-  const [selectedId, setSelectedId] = createSignal<number | null>(null);
+  const [selectedId, setSelectedId] = createSignal<DefinitionIdStr | null>(null);
 
   return (
     <Show when={props.viewType === "selectCard"}>

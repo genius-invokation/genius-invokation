@@ -35,6 +35,7 @@ import { SelectingIcon } from "./SelectingIcon";
 import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -206,7 +207,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         <For each={aura()}>
           {(aura) => (
             <Show when={aura}>
-              <Image imageId={aura} class="h-5 w-5" />
+              <Image imageId={`std:${aura}`} class="h-5 w-5" />
             </Show>
           )}
         </For>
@@ -296,7 +297,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             assetId="UI_TeyvatCard_CardFrame_Common"
             fallback={
               <Image
-                imageId={data().definitionId}
+                imageId={data().definitionId as DefinitionIdStr}
                 class="h-full rounded-xl b-white b-3"
               />
             }
@@ -304,7 +305,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             {(frame) => (
               <>
                 <Image
-                  imageId={data().definitionId}
+                  imageId={data().definitionId as DefinitionIdStr}
                   class="absolute inset-0 h-full w-full p-1px"
                 />
                 <div class="absolute inset-0 h-full w-full children-h-full children-w-full">

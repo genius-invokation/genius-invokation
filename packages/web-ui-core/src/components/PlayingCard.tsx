@@ -16,6 +16,7 @@
 import { Image } from "./Image";
 import type { PlayingCardInfo } from "./Chessboard";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface PlayingCardProps extends PlayingCardInfo {
   opp: boolean;
@@ -32,7 +33,7 @@ export function PlayingCard(props: PlayingCardProps) {
         fallback={
           <Image
             class="h-full w-full rounded-6 b-white b-6"
-            imageId={props.data.definitionId}
+            imageId={props.data.definitionId as DefinitionIdStr}
           />
         }
       >
@@ -40,7 +41,7 @@ export function PlayingCard(props: PlayingCardProps) {
           <>
             <Image
               class="absolute inset-0 h-full w-full"
-              imageId={props.data.definitionId}
+              imageId={props.data.definitionId as DefinitionIdStr}
             />
             <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
               {frame}

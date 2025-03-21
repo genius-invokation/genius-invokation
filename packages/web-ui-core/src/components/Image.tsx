@@ -22,9 +22,10 @@ import {
   splitProps,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface ImageProps extends ComponentProps<"img"> {
-  imageId: number;
+  imageId: DefinitionIdStr;
   zero?: "unknown" | "physic";
   noAltText?: boolean;
 }
@@ -47,10 +48,10 @@ export function Image(props: ImageProps) {
       }),
   );
 
-  const isUnknown = () => local.imageId === 0 && local.zero === "unknown";
+  const isUnknown = () => local.imageId === `std:0` && local.zero === "unknown";
 
   const showImage = () => {
-    if (local.imageId === 0 && local.zero === "unknown") {
+    if (local.imageId === `std:0` && local.zero === "unknown") {
       return false;
     } else {
       return url.state === "ready";

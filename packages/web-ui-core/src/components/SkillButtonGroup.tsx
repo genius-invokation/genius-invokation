@@ -25,6 +25,7 @@ import type { ClickSwitchActiveButtonActionStep } from "../action";
 import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import type { DefinitionIdStr } from "@gi-tcg/utils";
 
 export interface SkillButtonProps extends SkillInfo {
   hideDiceCost?: boolean;
@@ -52,14 +53,14 @@ function SkillButton(props: SkillButtonProps) {
 
   const children = () => (
     <Switch>
-      <Match when={typeof skillId() === "number"}>
-        <Image
-          imageId={skillId() as number}
-          class="w-full group-data-[disabled]:opacity-50"
-        />
-      </Match>
       <Match when={skillId() === "switchActive"}>
         <SwitchActiveIcon />
+      </Match>
+      <Match when={true}>
+        <Image
+          imageId={skillId() as DefinitionIdStr}
+          class="w-full group-data-[disabled]:opacity-50"
+        />
       </Match>
     </Switch>
   );

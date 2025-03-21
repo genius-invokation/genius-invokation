@@ -21,6 +21,7 @@ import type {
   KeywordRawData,
   SkillRawData,
 } from "@gi-tcg/static-data";
+import { parseDefinitionIdStr, type DefinitionIdStr } from "@gi-tcg/utils";
 import { blobToDataUrl } from "./data_url";
 import { getNameSync } from "./names";
 
@@ -65,7 +66,11 @@ export class AssetsManager {
     };
   }
 
-  async getData(id: number, options: GetDataOptions = {}): Promise<AnyData> {
+  async getData(dis: DefinitionIdStr, options: GetDataOptions = {}): Promise<AnyData> {
+    const [id, ns] = parseDefinitionIdStr(dis);
+    if (ns !== "std") {
+      throw new Error(`not implemented for custom data`);
+    }
     if (id < 0) {
       return this.getKeyword(-id, options);
     }
@@ -104,7 +109,11 @@ export class AssetsManager {
     return promise;
   }
 
-  async getImage(id: number, options: GetImageOptions = {}): Promise<Blob> {
+  async getImage(dis: DefinitionIdStr, options: GetImageOptions = {}): Promise<Blob> {
+    const [id, ns] = parseDefinitionIdStr(dis);
+    if (ns !== "std") {
+      throw new Error(`not implemented for custom data`);
+    }
     if (this.imageCacheSync.has(id)) {
       return this.imageCacheSync.get(id)!;
     }
@@ -125,14 +134,18 @@ export class AssetsManager {
   }
 
   async getImageUrl(
-    id: number,
+    dis: DefinitionIdStr,
     options: GetImageOptions = {},
   ): Promise<string> {
-    const blob = await this.getImage(id, options);
+    const blob = await this.getImage(dis, options);
     return blobToDataUrl(blob);
   }
 
-  getNameSync(id: number) {
+  getNameSync(dis: DefinitionIdStr) {
+    const [id, ns] = parseDefinitionIdStr(dis);
+    if (ns !== "std") {
+      throw new Error(`not implemented for custom data`);
+    }
     return getNameSync(id);
   }
 
@@ -176,7 +189,8 @@ export class AssetsManager {
     await Promise.all(imagePromises);
   }
 
-  getDataSync(id: number): AnyData {
+  getDataSync(dis: DefinitionIdStr): AnyData {
+    const [id, ns] = parseDefinitionIdStr(dis);
     const data = this.dataCacheSync.get(id);
     if (!data) {
       throw new Error(`Data not found for ID ${id}`);
@@ -184,7 +198,8 @@ export class AssetsManager {
     return data;
   }
 
-  getImageSync(id: number): Blob {
+  getImageSync(dis: DefinitionIdStr): Blob {
+    const [id, ns] = parseDefinitionIdStr(dis);
     const image = this.imageCacheSync.get(id);
     if (!image) {
       throw new Error(`Image not found for ID ${id}`);
@@ -192,8 +207,8 @@ export class AssetsManager {
     return image;
   }
 
-  getImageUrlSync(id: number): string {
-    const image = this.getImageSync(id);
+  getImageUrlSync(dis: DefinitionIdStr): string {
+    const image = this.getImageSync(dis);
     return blobToDataUrl(image);
   }
 }
