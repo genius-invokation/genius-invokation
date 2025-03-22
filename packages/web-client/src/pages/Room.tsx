@@ -125,6 +125,7 @@ export function Room() {
 
   const onActionRequested = async (payload: ActionRequestPayload) => {
     setCurrentTimer(payload.timeout);
+    currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
     await new Promise((r) => setTimeout(r, 100)); // wait for UI notifications?
     const response = await playerIo()?.rpc(payload.request);
