@@ -133,13 +133,15 @@ export function Room() {
     }
     setCurrentTimer(null);
     try {
-      const { data } = await axios.post(
+      const reply = axios.post(
         `rooms/${id}/players/${playerId}/actionResponse`,
         {
           id: payload.id,
           response,
         },
       );
+      currentRpcId.value = null;
+      await reply;
     } catch (e) {
       if (e instanceof AxiosError) {
         alert(e.response?.data.message);
@@ -171,6 +173,7 @@ export function Room() {
   };
 
   const [currentTimer, setCurrentTimer] = createSignal<number | null>(null);
+  const currentRpcId: { value: number | null } = { value: null };
   let intervalId: number | null = null;
   const setTimer = () => {
     intervalId = window.setInterval(() => {
@@ -248,7 +251,9 @@ export function Room() {
             const payload = JSON.parse(value.data);
             switch (payload.type) {
               case "rpc": {
-                onActionRequested(payload);
+                if (payload.id !== currentRpcId.value) {
+                  onActionRequested(payload);
+                }
                 break;
               }
               default: {

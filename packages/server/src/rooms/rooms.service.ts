@@ -158,7 +158,7 @@ interface RpcResolver {
   resolve: (response: any) => void;
 }
 
-const pingInterval = interval(30 * 1000).pipe(
+const pingInterval = interval(15 * 1000).pipe(
   map((): SSEPing => ({ type: "ping" })),
 );
 
@@ -186,7 +186,9 @@ class Player implements PlayerIOWithError {
     }),
     this.rpcSseSource,
   ).pipe(
-    mergeWith(pingInterval), //
+    mergeWith(
+      pingInterval.pipe(map((payload) => this.currentAction() ?? payload)),
+    ),
     takeUntil(this.completeSubject),
   );
   constructor(public readonly playerInfo: PlayerInfo) {}
@@ -195,6 +197,7 @@ class Player implements PlayerIOWithError {
   private _rpcResolver: RpcResolver | null = null;
   private _timeoutConfig: RoomConfig | null = null;
   private _roundTimeout = Infinity;
+  private _mutationExtraTimeout = 0;
 
   setTimeoutConfig(config: RoomConfig) {
     this._timeoutConfig = config;
@@ -231,6 +234,7 @@ class Player implements PlayerIOWithError {
       type: "notification",
       data: notification,
     });
+    this._mutationExtraTimeout += 0.5 * notification.mutation.length;
   }
 
   private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
@@ -264,16 +268,19 @@ class Player implements PlayerIOWithError {
     // 当前回合剩余时间
     const roundTimeout = this._roundTimeout;
     // 本行动可用时间
-    let timeout: number;
+    let timeout = this._mutationExtraTimeout;
     // 行动结束后，计算新的回合剩余时间
     let setRoundTimeout: (remained: number) => void;
     if (request.request?.$case === "rerollDice") {
-      timeout = this._timeoutConfig?.rerollTime ?? Infinity;
-      setRoundTimeout = () => {};
+      timeout += this._timeoutConfig?.rerollTime ?? Infinity;
+      setRoundTimeout = () => {
+        this._mutationExtraTimeout = 0;
+      };
     } else {
-      timeout = roundTimeout + (this._timeoutConfig?.actionTime ?? Infinity);
+      timeout += roundTimeout + (this._timeoutConfig?.actionTime ?? Infinity);
       setRoundTimeout = (remain) => {
         this._roundTimeout = Math.min(roundTimeout, remain + 1);
+        this._mutationExtraTimeout = 0;
       };
     }
     const payload: SSERpc = { type: "rpc", id, timeout, request };
