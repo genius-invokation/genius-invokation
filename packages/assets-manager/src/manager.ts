@@ -23,6 +23,7 @@ import type {
 } from "@gi-tcg/static-data";
 import { blobToDataUrl } from "./data_url";
 import { getNameSync } from "./names";
+import type { CustomData } from "./mod";
 
 export type AnyData =
   | ActionCardRawData
@@ -49,6 +50,7 @@ export interface PrepareForSyncOptions {
 
 export interface AssetsManagerOption {
   apiEndpoint: string;
+  customData: CustomData[];
 }
 
 export class AssetsManager {
@@ -61,6 +63,7 @@ export class AssetsManager {
   constructor(options: Partial<AssetsManagerOption> = {}) {
     this.options = {
       apiEndpoint: DEFAULT_ASSET_API_ENDPOINT,
+      customData: [],
       ...options,
     };
   }

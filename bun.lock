@@ -96,6 +96,13 @@
         "prettier": "3.1.1",
       },
     },
+    "packages/custom-data-loader": {
+      "name": "@gi-tcg/custom-data-loader",
+      "version": "0.17.0-5-4-0",
+      "dependencies": {
+        "@gi-tcg/data": "workspace:*",
+      },
+    },
     "packages/data": {
       "name": "@gi-tcg/data",
       "version": "0.17.0-5-4-0",
@@ -756,6 +763,8 @@
     "@gi-tcg/config": ["@gi-tcg/config@workspace:packages/config"],
 
     "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core"],
+
+    "@gi-tcg/custom-data-loader": ["@gi-tcg/custom-data-loader@workspace:packages/custom-data-loader"],
 
     "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data"],
 
