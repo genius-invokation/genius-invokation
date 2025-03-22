@@ -17,6 +17,7 @@ import {
   DiceType,
   PbDiceRequirement,
   PbDiceType,
+  PbExposedMutation,
   PbPhaseType,
   PbPlayerStatus,
   type DamageType,
@@ -114,6 +115,7 @@ import { TuningArea } from "./TuningArea";
 import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
 import { SwitchHandsView } from "./SwitchHandsView";
+import { MutationViewer } from "./MutationViewer";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -978,6 +980,10 @@ export function Chessboard(props: ChessboardProps) {
     tunningArea: null,
   });
 
+  const [allMutations, setAllMutations] = createSignal<PbExposedMutation[][]>(
+    [],
+  );
+
   const getHandState = (
     focusing: boolean,
     viewType: ChessboardViewType,
@@ -1012,6 +1018,7 @@ export function Chessboard(props: ChessboardProps) {
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: true });
+        setAllMutations((prev) => [...prev, data.raw]);
       },
     ),
   );
@@ -1619,6 +1626,7 @@ export function Chessboard(props: ChessboardProps) {
       <div class="absolute inset-2 pointer-events-none">
         <CardDataViewer />
       </div>
+      <MutationViewer who={localProps.who} mutations={allMutations()} />
       <Show
         when={localProps.data.state.phase === PbPhaseType.GAME_END}
         fallback={

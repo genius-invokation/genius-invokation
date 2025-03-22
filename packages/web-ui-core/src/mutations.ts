@@ -67,6 +67,7 @@ export interface RoundAndPhaseNotificationInfo {
 }
 
 export interface ParsedMutation {
+  raw: PbExposedMutation[];
   roundAndPhase: RoundAndPhaseNotificationInfo;
   playerStatus: (PbPlayerStatus | null)[];
   animatingCards: AnimatingCardInfo[];
@@ -267,6 +268,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     }
   }
   return {
+    raw: mutations,
     roundAndPhase,
     playerStatus,
     playingCard,
