@@ -74,6 +74,9 @@ export const ParticularFieldFettersOfPhenomena = skill(17063)
     const mirror = c.self.hasStatus(ChisellightMirror);
     const duration = mirror ? c.getVariable("duration", mirror) : 0 ;
     const damageValue = 4 + duration;
+    if (mirror) {
+      c.dispose(mirror);
+    }
     c.damage(DamageType.Dendro, damageValue);
     if (duration >= 1 && c.self.hasEquipment(Structuration)) {
       c.self.addStatus(ChisellightMirror, {
