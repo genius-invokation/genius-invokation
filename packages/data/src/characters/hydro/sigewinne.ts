@@ -157,7 +157,7 @@ export const SuperSaturatedSyringing = skill(12133)
  */
 export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
   .type("passive") // 希格雯入场时：为所有我方角色附属 112136
-  .on("enter")
+  .on("battleBegin")
   .characterStatus(DetailedDiagnosisThoroughTreatmentStatus, "all my characters")
   .done();
 

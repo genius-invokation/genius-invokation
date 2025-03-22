@@ -16,18 +16,19 @@
 /* @refresh reload */
 
 import "./index";
-import { onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { render } from "solid-js/web";
 
 import getData from "@gi-tcg/data";
-import { Game, type DeckConfig } from "@gi-tcg/core";
+import { type DetailLogEntry, Game, type DeckConfig } from "@gi-tcg/core";
 import { createClient } from "./client";
 import { AssetsManager } from "@gi-tcg/assets-manager";
+import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 
 const deck0: DeckConfig = {
-  characters: [1214, 1403, 1203],
+  characters: [1213, 1403, 1203],
   cards: [
-    330005, 331801, 332042, 331802, 332006, 332042, 223041, 223041, 226031,
+    333006, 331202, 332042, 331802, 332006, 332042, 223041, 223041, 226031,
     226031, 312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004,
     321017, 321017, 322008, 322012, 322012, 322025, 332004, 332004, 332006,
     332032, 332032, 332041, 332041,
@@ -37,20 +38,25 @@ const deck0: DeckConfig = {
 const deck1: DeckConfig = {
   characters: [1709, 1201, 1608],
   cards: [
-    323008, 332003, 332040, 322008, 332037, 333006, 332004,
-    312023, 312023, 332011, 321004, 321004, 321024,
-    321024, 322018, 322018, 331202, 331202, 332004, 332004, 332006, 332006,
-    332025, 332031, 332032, 332032, 332040, 332040, 333015, 333015,
+    323008, 332003, 332040, 322008, 332037, 333006, 332004, 312023, 312023,
+    332011, 321004, 321004, 321024, 321024, 322018, 322018, 331202, 331202,
+    332004, 332004, 332006, 332006, 332025, 332031, 332032, 332032, 332040,
+    332040, 333015, 333015,
   ],
   noShuffle: import.meta.env.DEV,
 };
 
 function App() {
   const assetsManager = new AssetsManager({
-    apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v2`
+    apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v2`,
   });
   const [io0, Chessboard0] = createClient(0, { assetsManager });
-  const [io1, Chessboard1] = createClient(1, { assetsManager, disableDelicateUi: true });
+  const [io1, Chessboard1] = createClient(1, {
+    assetsManager,
+    disableDelicateUi: true,
+  });
+
+  const [logs, setLogs] = createSignal<DetailLogEntry[]>([]);
 
   onMount(() => {
     const state = Game.createInitialState({
@@ -66,6 +72,7 @@ function App() {
     game.players[0].config.alwaysOmni = true;
     game.players[0].config.allowTuningAnyDice = true;
     game.onIoError = console.error;
+    game.onPause = async () => setLogs([...game.detailLog]);
     game.start();
     // game.giveUp
     Reflect.set(window, "game", game);
@@ -75,6 +82,7 @@ function App() {
     <>
       <Chessboard0 />
       <Chessboard1 />
+      <DetailLogViewer logs={logs()} />
     </>
   );
 }
