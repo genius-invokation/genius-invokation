@@ -268,7 +268,7 @@ class Player implements PlayerIOWithError {
     // 当前回合剩余时间
     const roundTimeout = this._roundTimeout;
     // 本行动可用时间
-    let timeout = this._mutationExtraTimeout;
+    let timeout = Math.ceil(this._mutationExtraTimeout);
     // 行动结束后，计算新的回合剩余时间
     let setRoundTimeout: (remained: number) => void;
     if (request.request?.$case === "rerollDice") {
