@@ -159,6 +159,8 @@ export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
   .type("passive") // 希格雯入场时：为所有我方角色附属 112136
   .on("battleBegin")
   .characterStatus(DetailedDiagnosisThoroughTreatmentStatus, "all my characters")
+  .on("revive")
+  .characterStatus(DetailedDiagnosisThoroughTreatmentStatus, "all my characters")
   .done();
 
 /**
