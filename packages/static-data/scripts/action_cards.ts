@@ -13,6 +13,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import {
+  CARD_TYPE,
+  SKILL_ID,
+  CHOOSE_TARGET_LIST,
+  COST_LIST,
+  COST_TYPE,
+  COUNT,
+  DESC_ON_TABLE_2_TEXT_MAP_HASH,
+  DESC_ON_TABLE_TEXT_MAP_HASH,
+  DESC_TEXT_MAP_HASH,
+  ID,
+  IS_CAN_OBTAIN,
+  NAME_TEXT_MAP_HASH,
+  RELATED_CHARACTER_ID,
+  RELATED_CHARACTER_TAG_LIST,
+  SHARE_ID,
+  STORY_TITLE_TEXT_MAP_HASH,
+  TAG_LIST,
+  TARGET_CAMP,
+  TARGET_HINT_TEXT_MAP_HASH,
+  STORY_DESC_TEXT_MAP_HASH,
+  CARD_PREFAB_NAME,
+} from "./properties";
 import type { ChooseTarget, PlayCost } from "./skills";
 import {
   getDescriptionReplaced,
@@ -22,12 +45,9 @@ import {
   xcardview,
   xdeckcard,
   xcard,
-  propShareId,
-  propPlayingDescription2,
   xchoose,
 } from "./utils";
 import { getVersion } from "./version";
-
 
 export interface ActionCardRawData {
   id: number;
@@ -52,22 +72,23 @@ export interface ActionCardRawData {
 }
 
 export function collateActionCards(langCode: string) {
+  console.log("Collating action cards...");
   const locale = getLanguage(langCode);
   const english = getLanguage("EN");
   const result: ActionCardRawData[] = [];
   for (const obj of xcard) {
     if (
       !["GCG_CARD_EVENT", "GCG_CARD_MODIFY", "GCG_CARD_ASSIST"].includes(
-        obj.cardType,
+        obj[CARD_TYPE],
       )
     ) {
       continue;
     }
-    if (!locale[obj.nameTextMapHash]) {
+    if (!locale[obj[NAME_TEXT_MAP_HASH]]) {
       continue;
     }
 
-    const id = obj.id;
+    const id = obj[ID];
     if ([52, 53, 54, 17, 18].includes(Math.floor(id / 10000))) {
       // 热斗模式
       continue;
@@ -76,37 +97,37 @@ export function collateActionCards(langCode: string) {
       // 骗骗花就算了吧
       continue;
     }
-    const type = obj.cardType;
+    const type = obj[CARD_TYPE];
     const [name, englishName] = [locale, english].map((lc) =>
-      sanitizeName(lc[obj.nameTextMapHash] ?? ""),
+      sanitizeName(lc[obj[NAME_TEXT_MAP_HASH]] ?? ""),
     );
-    const obtainable = !!obj.isCanObtain;
-    const tags = obj.tagList.filter((e: string) => e !== "GCG_TAG_NONE");
+    const obtainable = !!obj[IS_CAN_OBTAIN];
+    const tags = obj[TAG_LIST].filter((e: string) => e !== "GCG_TAG_NONE");
 
-    const deckcardObj = xdeckcard.find((e) => e.id === obj.id);
+    const deckcardObj = xdeckcard.find((e) => e[ID] === id);
 
-    const shareId = deckcardObj?.[propShareId];
+    const shareId = deckcardObj?.[SHARE_ID];
     const sinceVersion = getVersion(shareId);
     const storyTitle = deckcardObj
-      ? locale[deckcardObj.storyTitleTextMapHash]
+      ? locale[deckcardObj[STORY_TITLE_TEXT_MAP_HASH]]
       : void 0;
     const storyText = deckcardObj
-      ? sanitizeDescription(locale[deckcardObj.storyDescTextMapHash])
+      ? sanitizeDescription(locale[deckcardObj[STORY_DESC_TEXT_MAP_HASH]])
       : void 0;
 
-    const relatedCharacterId = deckcardObj?.relatedCharacterId ?? null;
+    const relatedCharacterId = deckcardObj?.[RELATED_CHARACTER_ID] ?? null;
     const relatedCharacterTags =
-      deckcardObj?.relatedCharacterTagList?.filter(
+      deckcardObj?.[RELATED_CHARACTER_TAG_LIST]?.filter(
         (e: string) => e !== "GCG_TAG_NONE",
       ) ?? [];
 
-    const rawDescription = locale[obj.descTextMapHash] ?? "";
+    const rawDescription = locale[obj[DESC_TEXT_MAP_HASH]] ?? "";
     const descriptionReplaced = getDescriptionReplaced(rawDescription, locale);
     const description = sanitizeDescription(descriptionReplaced, true);
 
     const rawPlayingDescription: string | undefined =
-      locale[obj.descOnTableTextMapHash] ??
-      locale[obj[propPlayingDescription2]];
+      locale[obj[DESC_ON_TABLE_TEXT_MAP_HASH]] ??
+      locale[obj[DESC_ON_TABLE_2_TEXT_MAP_HASH]];
     let playingDescription: string | undefined = void 0;
     if (rawPlayingDescription) {
       const playingDescriptionReplaced = getDescriptionReplaced(
@@ -116,31 +137,29 @@ export function collateActionCards(langCode: string) {
       playingDescription = sanitizeDescription(playingDescriptionReplaced);
     }
 
-    const playCost = obj.costList
-      .filter((e: any) => e.count)
-      .map((e: any) => ({
-        type: e.costType,
-        count: e.count,
-      }));
+    const playCost = obj[COST_LIST].filter((e: any) => e[COUNT]).map(
+      (e: any) => ({
+        type: e[COST_TYPE],
+        count: e[COUNT],
+      }),
+    );
 
-    const cardPrefabName = xcardview.find(
-      (e) => e.id === obj.id,
-    )!.cardPrefabName;
+    const cardPrefabName = xcardview.find((e) => e[ID] === id)![CARD_PREFAB_NAME];
     const cardFace = `UI_${cardPrefabName}`;
 
     const targetList: ChooseTarget[] = [];
-    for (const target of obj.chooseTargetList ?? []) {
-      const chooseObj = xchoose.find((c) => c.id === target);
+    for (const target of obj[CHOOSE_TARGET_LIST] ?? []) {
+      const chooseObj = xchoose.find((c) => c[SKILL_ID] === target);
       if (!chooseObj) {
         continue;
       }
-      const rawHintText = locale[chooseObj.targetHintTextMapHash] ?? "";
+      const rawHintText = locale[chooseObj[TARGET_HINT_TEXT_MAP_HASH]] ?? "";
       const hintText = sanitizeDescription(rawHintText, true);
       targetList.push({
-        id: chooseObj.id,
-        type: chooseObj.cardType,
-        camp: chooseObj.targetCamp,
-        tags: chooseObj.tagList.filter((e: string) => e !== "GCG_TAG_NONE"),
+        id: chooseObj[SKILL_ID],
+        type: chooseObj[CARD_TYPE],
+        camp: chooseObj[TARGET_CAMP],
+        tags: chooseObj[TAG_LIST].filter((e: string) => e !== "GCG_TAG_NONE"),
         rawHintText,
         hintText,
       });

@@ -13,13 +13,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import {
+  CARD_PREFAB_NAME,
+  HP,
+  ID,
+  IS_CAN_OBTAIN,
+  IS_REMOVE_AFTER_DIE,
+  MAX_ENERGY,
+  NAME_TEXT_MAP_HASH,
+  SHARE_ID,
+  SKILL_LIST,
+  STORY_DESC_TEXT_MAP_HASH,
+  STORY_TITLE_TEXT_MAP_HASH,
+  TAG_LIST,
+  WANDERER_NAME_TEXT_MAP_HASH_VALUE,
+} from "./properties";
 import { collateSkill, type SkillRawData } from "./skills";
 import {
   getLanguage,
   sanitizeDescription,
   sanitizeName,
-  propShareId,
-  wandererNameTextMapHash,
   xcardview,
   xchar,
   xdeckcard,
@@ -79,51 +92,52 @@ const CARDFACE_TO_AVATAR_MAP = Object.fromEntries(
 export async function collateCharacters(
   langCode: string,
 ): Promise<CharacterRawData[]> {
+  console.log("Collating characters...");
   const locale = getLanguage(langCode);
   const english = getLanguage("EN");
   const result: CharacterRawData[] = [];
   for (const obj of xchar) {
-    if (obj.skillList.includes(80)) {
+    if (obj[SKILL_LIST].includes(80)) {
       continue;
     }
-    if (obj.isRemoveAfterDie) {
+    if (obj[IS_REMOVE_AFTER_DIE]) {
       continue;
     }
-    const obtainable = !!obj.isCanObtain;
-    const deckcardObj = xdeckcard.find((e) => e.id === obj.id);
-
-    let isWanderer = false;
-
-    const id = obj.id;
+    const id = obj[ID];
     if ([7, 8].includes(Math.floor(id / 1000))) {
       // 自走棋角色，别闹
       continue;
     }
 
-    if (locale[obj.nameTextMapHash].includes("ID(1)")) isWanderer = true;
+    const obtainable = !!obj[IS_CAN_OBTAIN];
+    const deckcardObj = xdeckcard.find((e) => e[ID] === id);
+
+    const isWanderer = locale[obj[NAME_TEXT_MAP_HASH]].includes("ID(1)");
 
     let nameTextMapHash = isWanderer
-      ? wandererNameTextMapHash
-      : obj.nameTextMapHash;
+      ? WANDERER_NAME_TEXT_MAP_HASH_VALUE
+      : obj[NAME_TEXT_MAP_HASH];
     const [name, englishName] = [locale, english].map((lc) =>
       sanitizeName(lc[nameTextMapHash]),
     );
 
-    const shareId = deckcardObj?.[propShareId];
+    const shareId = deckcardObj?.[SHARE_ID];
     const sinceVersion = getVersion(shareId);
     const storyTitle = deckcardObj
-      ? locale[deckcardObj.storyTitleTextMapHash]
+      ? locale[deckcardObj[STORY_TITLE_TEXT_MAP_HASH]]
       : void 0;
     const storyText = deckcardObj
-      ? sanitizeDescription(locale[deckcardObj.storyDescTextMapHash])
+      ? sanitizeDescription(locale[deckcardObj[STORY_DESC_TEXT_MAP_HASH]])
       : void 0;
 
-    const hp = obj.hp;
-    const maxEnergy = obj.maxEnergy;
+    const hp = obj[HP];
+    const maxEnergy = obj[MAX_ENERGY];
 
-    const tags: string[] = obj.tagList.filter((e: any) => e !== "GCG_TAG_NONE");
+    const tags: string[] = obj[TAG_LIST].filter(
+      (e: any) => e !== "GCG_TAG_NONE",
+    );
     const skills: SkillRawData[] = [];
-    for (const skillId of obj.skillList) {
+    for (const skillId of obj[SKILL_LIST]) {
       const data = await collateSkill(langCode, skillId);
       if (data) {
         skills.push(data);
@@ -131,9 +145,9 @@ export async function collateCharacters(
       skills.push();
     }
 
-    const cardPrefabName = xcardview.find(
-      (e) => e.id === obj.id,
-    )!.cardPrefabName;
+    const cardPrefabName = xcardview.find((e) => e[ID] === id)![
+      CARD_PREFAB_NAME
+    ];
     const cardFace = `UI_${cardPrefabName}`;
     const icon = cardFace.replace(
       /CardFace_Char_([a-zA-Z]+)_([a-zA-Z]+)$/,

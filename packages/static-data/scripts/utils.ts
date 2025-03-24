@@ -15,6 +15,7 @@
 
 import { config } from "./config";
 import { readJson } from "./json";
+import { ID, KEYWORD_ID, NAME_TEXT_MAP_HASH, SKILL_ID, TITLE_TEXT_MAP_HASH, TYPE } from "./properties";
 
 export type ExcelData = Record<string, any>[];
 
@@ -32,18 +33,6 @@ export function getLanguage(langCode: string): Locale {
   return getTextMap(langCode.toUpperCase());
 }
 
-export function getPropNameWithMatch(
-  excel: ExcelData,
-  idKey: string,
-  idVal: any,
-  propVal: any,
-): string {
-  const tmp = excel.find((e) => e[idKey] === idVal);
-  if (!tmp) throw new Error(`getPropNameWithMatch: Did not find value for key`);
-  return Object.entries(tmp).find(
-    (e) => e[1] === propVal || e[1][0] === propVal,
-  )![0];
-}
 export function sanitizeName(str: string) {
   str = str.split("|s")[0];
   if (str.includes("{NON_BREAK_SPACE}")) {
@@ -64,38 +53,11 @@ export const xdeckcard = getExcel("GCGDeckCardExcelConfigData");
 export const xcardview = getExcel("GCGCardViewExcelConfigData");
 export const xchoose = getExcel("GCGChooseExcelConfigData");
 
-export const wandererNameTextMapHash = xavatar.find(
-  (ele) => ele.id === 10000075,
-)!.nameTextMapHash;
-
-// GCGDeckCardExcelConfigData
-export const propShareId = getPropNameWithMatch(xdeckcard, "id", 1101, 1);
-
-// GCGCardExcelConfigData
-export const propPlayingDescription2 = getPropNameWithMatch(
-  xcard,
-  "id",
-  330005,
-  3076893924,
-);
-
-interface ReplacementDictionary {
-  baseElement?: string;
-  baseDamage?: number;
-}
-
 export function getDescriptionReplaced(
   description: string,
   locale: Locale,
   keyMap: Record<string, any> = {},
 ) {
-  const propKeywordId = getPropNameWithMatch(
-    xelement,
-    "type",
-    "GCG_ELEMENT_CRYO",
-    101,
-  );
-
   let ind = description.indexOf("$[");
   while (ind !== -1) {
     const strToReplace = description.substring(
@@ -121,13 +83,13 @@ export function getDescriptionReplaced(
             break;
 
           case "E": // ELEMENT
-            const element = keyMap.D__KEY__ELEMENT;
-            const keywordId = xelement.find((e) => e.type === element)![
-              propKeywordId
+            const element = keyMap.D__KEY__ELEMENT ?? "GCG_ELEMENT_PHYSIC"; // TODO
+            const keywordId = xelement.find((e) => e[TYPE] === element)![
+              KEYWORD_ID
             ];
             const elementTextMapHash = xkeyword.find(
-              (e) => e.id === keywordId,
-            )!.titleTextMapHash;
+              (e) => e[ID] === keywordId,
+            )![TITLE_TEXT_MAP_HASH];
             replacementText = locale[elementTextMapHash];
             break;
 
@@ -149,8 +111,8 @@ export function getDescriptionReplaced(
           description.substring(ind + 3, description.indexOf("]", ind)),
           10,
         );
-        const cardObj = xcard.find((e) => e.id === cardId)!;
-        const cardName = locale[cardObj.nameTextMapHash];
+        const cardObj = xcard.find((e) => e[ID] === cardId)!;
+        const cardName = locale[cardObj[NAME_TEXT_MAP_HASH]];
 
         replacementText = cardName;
         break;
@@ -160,8 +122,8 @@ export function getDescriptionReplaced(
           description.substring(ind + 3, description.indexOf("]", ind)),
           10,
         );
-        const keywordObj = xkeyword.find((e) => e.id === keywordId)!;
-        const keywordName = locale[keywordObj.titleTextMapHash];
+        const keywordObj = xkeyword.find((e) => e[ID] === keywordId)!;
+        const keywordName = locale[keywordObj[TITLE_TEXT_MAP_HASH]];
 
         replacementText = keywordName;
         break;
@@ -171,8 +133,8 @@ export function getDescriptionReplaced(
           description.substring(ind + 3, description.indexOf("]", ind)),
           10,
         );
-        const charObj = xchar.find((e) => e.id === charId)!;
-        const charName = locale[charObj.nameTextMapHash];
+        const charObj = xchar.find((e) => e[ID] === charId)!;
+        const charName = locale[charObj[NAME_TEXT_MAP_HASH]];
 
         replacementText = charName;
         break;
@@ -182,13 +144,13 @@ export function getDescriptionReplaced(
           description.substring(ind + 3, description.indexOf("]", ind)),
           10,
         );
-        const skillObj = xskill.find((e) => e.id === skillId)!;
+        const skillObj = xskill.find((e) => e[SKILL_ID] === skillId)!;
 
         if (skillObj === undefined) {
           console.log(`No skillObj found to replace in description:`);
           console.log("  " + description);
         } else {
-          const skillName = locale[skillObj.nameTextMapHash];
+          const skillName = locale[skillObj[NAME_TEXT_MAP_HASH]];
 
           replacementText = skillName;
         }
