@@ -136,5 +136,6 @@ export const DominanceOfEarth = card(216031)
       (e.source.definition.id === Zhongli || e.source.definition.type === "summon") && 
       c.self.master().health >= 7;
   })
+  .listenToPlayer()
   .increaseDamage(1)
   .done();
