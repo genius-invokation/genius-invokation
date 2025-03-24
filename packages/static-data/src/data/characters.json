@@ -33,6 +33,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -102,7 +103,7 @@
         "icon": "Skill_E_Ganyu_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Ganyu",
     "icon": "UI_Gcg_Char_AvatarIcon_Ganyu"
@@ -141,6 +142,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -229,6 +231,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -317,6 +320,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -405,6 +409,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -462,7 +467,6 @@
         "description": "【被动】此角色被切换为「出战角色」时，附属冰元素附魔。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Ayaka_02"
       }
     ],
@@ -505,6 +509,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -593,6 +598,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -681,6 +687,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -699,7 +706,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Qiqi_01"
       },
       {
@@ -766,6 +772,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -784,7 +791,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Layla_01"
       },
       {
@@ -999,8 +1005,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": [],
-        "keyMap": {}
+        "targetList": []
       },
       {
         "id": 11115,
@@ -1010,8 +1015,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": [],
-        "keyMap": {}
+        "targetList": []
       },
       {
         "id": 11116,
@@ -1022,7 +1026,6 @@
         "description": "本角色在本回合中受到伤害或治疗每累计到2次时：元素爆发少花费1个元素骰（最多少花费2个）。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_E_Wriothesley_01_HD"
       }
     ],
@@ -1067,6 +1070,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -1155,6 +1159,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -1286,7 +1291,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_E_Barbara_01_HD"
       }
     ],
@@ -1329,6 +1333,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -1475,7 +1480,6 @@
         "description": "【被动】此角色为出战角色，我方执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。（每回合1次）",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Mona_02"
       }
     ],
@@ -1518,6 +1522,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -1576,7 +1581,6 @@
         "description": "【被动】战斗开始时，初始附属远程状态。\n角色所附属的近战状态效果结束时，重新附属远程状态。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
       {
@@ -1588,7 +1592,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
       {
@@ -1600,7 +1603,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       }
     ],
@@ -1692,7 +1694,7 @@
         "icon": "Skill_E_Kokomi_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Kokomi",
     "icon": "UI_Gcg_Char_AvatarIcon_Kokomi"
@@ -1731,6 +1733,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -1819,6 +1822,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -1837,7 +1841,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Candace_01"
       },
       {
@@ -1919,6 +1922,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -2007,6 +2011,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -2064,7 +2069,6 @@
         "description": "【被动】战斗开始时，初始附属破局。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Yelan_03"
       }
     ],
@@ -2181,7 +2185,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_A_Catalyst_MD"
       }
     ],
@@ -2225,6 +2228,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -2243,7 +2247,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Furina_01"
       },
       {
@@ -2279,7 +2282,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_A_01"
       },
       {
@@ -2291,7 +2293,6 @@
         "description": "【被动】战斗开始时，生成手牌圣俗杂座。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Furina_03"
       }
     ],
@@ -2331,6 +2332,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -2349,7 +2351,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Furina_02"
       },
       {
@@ -2385,7 +2386,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_A_01"
       },
       {
@@ -2397,7 +2397,6 @@
         "description": "【被动】战斗开始时，生成手牌圣俗杂座。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Furina_03"
       }
     ],
@@ -2441,6 +2440,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -2468,7 +2468,6 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {},
         "icon": "Skill_S_Sigewinne_01"
       },
       {
@@ -2504,7 +2503,6 @@
         "description": "【被动】我方角色所附属的生命之契被完全移除后，该角色获得1点额外最大生命值。（对每名角色最多生效3次）\n我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Sigewinne_02"
       },
       {
@@ -2531,7 +2529,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_E_Sigewinne_01"
       },
       {
@@ -2543,11 +2540,10 @@
         "description": "【被动】我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Sigewinne_02"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Sigewinne",
     "icon": "UI_Gcg_Char_AvatarIcon_Sigewinne"
@@ -2614,7 +2610,6 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {},
         "icon": "Skill_S_Mualani_01"
       },
       {
@@ -2681,6 +2676,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -2769,6 +2765,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -2857,6 +2854,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -2945,6 +2943,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -2963,7 +2962,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Ambor_01"
       },
       {
@@ -3030,6 +3028,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -3048,7 +3047,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Yoimiya_01"
       },
       {
@@ -3204,6 +3202,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -3222,7 +3221,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Hutao_01"
       },
       {
@@ -3250,7 +3248,7 @@
         "icon": "Skill_E_Hutao_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Hutao",
     "icon": "UI_Gcg_Char_AvatarIcon_Hutao"
@@ -3379,6 +3377,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -3451,7 +3450,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Dehya_01"
       }
     ],
@@ -3496,6 +3494,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -3604,6 +3603,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -3692,6 +3692,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -3735,6 +3736,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 3
         },
         "icon": "Skill_E_Xinyan_01_HD"
@@ -3780,6 +3782,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -3837,7 +3840,6 @@
         "description": "【被动】敌方角色受到超载反应伤害后：生成手牌超量装药弹头（每回合1次）",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Chevreuse_02"
       },
       {
@@ -3895,6 +3897,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -3952,7 +3955,6 @@
         "description": "角色不会受到厄月将升以外的治疗。\n自身附属生命之契时：角色造成的物理伤害变为火元素伤害。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Arlecchino_02"
       },
       {
@@ -3964,7 +3966,6 @@
         "description": "角色不会受到厄月将升以外的治疗。\n自身附属生命之契时：角色造成的物理伤害变为火元素伤害。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Arlecchino_02"
       },
       {
@@ -3976,7 +3977,6 @@
         "description": "角色不会受到厄月将升以外的治疗。\n自身附属生命之契时：角色造成的物理伤害变为火元素伤害。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Arlecchino_02"
       }
     ],
@@ -4019,6 +4019,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -4107,6 +4108,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -4195,6 +4197,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -4283,6 +4286,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -4340,7 +4344,6 @@
         "description": "【被动】战斗开始时，初始附属启途誓使。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Cyno_03"
       }
     ],
@@ -4383,6 +4386,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -4402,6 +4406,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_S_Beidou_01"
@@ -4485,6 +4490,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -4573,6 +4579,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -4591,7 +4598,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Shougun_01"
       },
       {
@@ -4627,7 +4633,6 @@
         "description": "【被动】战斗开始时，初始附属诸愿百眼之轮。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Shougun_02"
       }
     ],
@@ -4689,7 +4694,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Yae_01"
       },
       {
@@ -4845,6 +4849,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -4933,6 +4938,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -4951,7 +4957,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Shinobu_01"
       },
       {
@@ -5019,6 +5024,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
         },
         "icon": "Skill_A_01"
@@ -5204,6 +5210,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -5246,11 +5253,10 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_E_Qin_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Qin",
     "icon": "UI_Gcg_Char_AvatarIcon_Qin"
@@ -5289,6 +5295,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -5338,7 +5345,7 @@
         "icon": "Skill_E_Venti_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Venti",
     "icon": "UI_Gcg_Char_AvatarIcon_Venti"
@@ -5377,6 +5384,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -5465,6 +5473,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -5522,7 +5531,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Kazuha_01"
       }
     ],
@@ -5653,6 +5661,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -5758,6 +5767,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -5846,6 +5856,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -6112,6 +6123,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -6161,7 +6173,7 @@
         "icon": "Skill_E_Noel_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Noel",
     "icon": "UI_Gcg_Char_AvatarIcon_Noel"
@@ -6200,6 +6212,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -6269,7 +6282,7 @@
         "icon": "Skill_E_Zhongli_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Zhongli",
     "icon": "UI_Gcg_Char_AvatarIcon_Zhongli"
@@ -6308,6 +6321,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -6326,7 +6340,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Albedo_01"
       },
       {
@@ -6393,6 +6406,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -6481,6 +6495,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -6569,6 +6584,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -6641,7 +6657,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Yunjin_01"
       }
     ],
@@ -6685,6 +6700,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -6742,7 +6758,6 @@
         "description": "【被动】敌方角色受到结晶反应伤害后：生成3张裂晶弹片，随机置入我方牌库中。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Navia_02"
       }
     ],
@@ -6785,6 +6800,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -6794,7 +6810,7 @@
         "name": "羽袖一触",
         "englishName": "Fluttering Hasode",
         "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "从3个<color=#FFFFFFFF>$[C116097]</color>中挑选1个召唤。",
+        "rawDescription": "从3个<color=#FFFFFFFF>$[C116097]</color>中<color=#FFFFFFFF>$[K59]</color>1个召唤。",
         "description": "从3个千织的自动制御人形中挑选1个召唤。",
         "playCost": [
           {
@@ -6804,6 +6820,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
         },
         "icon": "Skill_S_Chiori_01"
@@ -6839,6 +6856,101 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Chiori"
   },
   {
+    "id": 1610,
+    "shareId": 461,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "name": "卡齐娜",
+    "englishName": "Kachina",
+    "tags": [
+      "GCG_TAG_ELEMENT_GEO",
+      "GCG_TAG_WEAPON_POLE",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "斑金矿朴·卡齐娜",
+    "storyText": "眼泪与勇气熔铸出的宝石。",
+    "skills": [
+      {
+        "id": 16101,
+        "name": "嵴之啮咬",
+        "englishName": "Cragbiter",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_03"
+      },
+      {
+        "id": 16102,
+        "name": "出击，冲天转转！",
+        "englishName": "Go, Go Turbo Twirly!",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "自身附属<color=#FFFFFFFF>$[C116102]</color>，然后进入<color=#FFFFFFFF>$[C116104]</color>，并获得2点<color=#FFFFFFFF>「夜魂值」</color>。（角色进入<color=#FFFFFFFF>$[C116104]</color>后不可使用此技能）",
+        "description": "自身附属冲天转转，然后进入夜魂加持，并获得2点「夜魂值」。（角色进入夜魂加持后不可使用此技能）",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO"
+        }
+      },
+      {
+        "id": 16103,
+        "name": "现在，认真时间！",
+        "englishName": "Time to Get Serious!",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，生成<color=#FFFFFFFF>$[C116101]</color>。",
+        "description": "造成3点岩元素伤害，生成超级钻钻领域。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
+          "D__KEY__DAMAGE": 3
+        }
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 3,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Kachina",
+    "icon": "UI_Gcg_Char_AvatarIcon_Kachina"
+  },
+  {
     "id": 1701,
     "shareId": 47,
     "sinceVersion": "v3.3.0",
@@ -6872,6 +6984,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -6960,6 +7073,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_02"
@@ -7157,6 +7271,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_03"
@@ -7175,7 +7290,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Yaoyao_01"
       },
       {
@@ -7285,7 +7399,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_E_Baizhuer_01_HD"
       }
     ],
@@ -7328,6 +7441,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -7416,6 +7530,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_01"
@@ -7434,7 +7549,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "Skill_S_Momoka_01"
       },
       {
@@ -7501,6 +7615,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -7589,6 +7704,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_04"
@@ -7627,8 +7743,8 @@
         "name": "向伟大圣龙致意",
         "englishName": "Hail to the Almighty Dragonlord",
         "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，生成<color=#FFFFFFFF>$[C117093]</color>。",
-        "description": "造成1点草元素伤害，生成伟大圣龙阿乔。",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，召唤<color=#FFFFFFFF>$[C117093]</color>。",
+        "description": "造成1点草元素伤害，召唤伟大圣龙阿乔。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_DENDRO",
@@ -7654,14 +7770,129 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": [],
-        "keyMap": {}
+        "targetList": []
       }
     ],
     "hp": 10,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Kinich",
     "icon": "UI_Gcg_Char_AvatarIcon_Kinich"
+  },
+  {
+    "id": 1710,
+    "shareId": 462,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "name": "艾梅莉埃",
+    "englishName": "Emilie",
+    "tags": [
+      "GCG_TAG_ELEMENT_DENDRO",
+      "GCG_TAG_WEAPON_POLE",
+      "GCG_TAG_NATION_FONTAINE",
+      "GCG_TAG_ARKHE_OUSIA"
+    ],
+    "storyTitle": "千缕之踪·艾梅莉埃",
+    "storyText": "如香消，如雾散。",
+    "skills": [
+      {
+        "id": 17101,
+        "name": "逐影枪术·改",
+        "englishName": "Shadow-Hunting Spear (Custom)",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_03"
+      },
+      {
+        "id": 17102,
+        "name": "撷萃调香",
+        "englishName": "Fragrance Extraction",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "召唤<color=#FFFFFFFF>$[C117101]</color>。",
+        "description": "召唤柔灯之匣·一阶。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO"
+        }
+      },
+      {
+        "id": 17103,
+        "name": "香氛演绎",
+        "englishName": "Aromatic Explication",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。召唤<color=#FFFFFFFF>$[C117103]</color>。",
+        "description": "造成1点草元素伤害。召唤柔灯之匣·三阶。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 1
+        }
+      },
+      {
+        "id": 17104,
+        "name": "余薰",
+        "englishName": "Lingering Fragrance",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "<color=#FFFFFFFF>我方<color=#FFFFFFFF>$[C115]</color>入场时：</color>下次双方角色使用技能后，触发一次<color=#FFFFFFFF>$[C115]</color>的回合结束效果。（每回合2次）",
+        "description": "我方燃烧烈焰入场时：下次双方角色使用技能后，触发一次燃烧烈焰的回合结束效果。（每回合2次）",
+        "playCost": [],
+        "targetList": []
+      },
+      {
+        "id": 17105,
+        "name": "余薰",
+        "englishName": "Lingering Fragrance",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "<color=#FFFFFFFF>我方<color=#FFFFFFFF>$[C115]</color>入场时：</color>下次双方角色使用技能后，触发1次我方<color=#FFFFFFFF>$[C115]</color>的回合结束效果。（每回合2次）",
+        "description": "我方燃烧烈焰入场时：下次双方角色使用技能后，触发1次我方燃烧烈焰的回合结束效果。（每回合2次）",
+        "playCost": [],
+        "targetList": []
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Emilie",
+    "icon": "UI_Gcg_Char_AvatarIcon_Emilie"
   },
   {
     "id": 2101,
@@ -7844,7 +8075,6 @@
         "description": "【被动】战斗开始时，初始附属冰封的炽炎魔女。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_LaSignora_02"
       },
       {
@@ -7856,7 +8086,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_LaSignora_02"
       }
     ],
@@ -7957,7 +8186,6 @@
         "description": "【被动】战斗开始时，初始附属冰晶核心。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_EffigyIce_02"
       }
     ],
@@ -8000,6 +8228,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -8057,7 +8286,6 @@
         "description": "【被动】本角色使用技能后：对敌方出战角色附属可用次数为（本技能最终伤害值-2）的生命之契。（最多5层）",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_EscadronIce_02"
       }
     ],
@@ -8219,7 +8447,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Oceanid_02"
       },
       {
@@ -8236,7 +8463,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Oceanid_01"
       },
       {
@@ -8394,6 +8620,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -8451,7 +8678,6 @@
         "description": "【被动】战斗开始时，初始附属水之新生。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerHeraldWater_02"
       },
       {
@@ -8483,7 +8709,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_AbyssWater_02"
       },
       {
@@ -8495,7 +8720,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerHeraldWater_02"
       }
     ],
@@ -8538,6 +8762,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -8597,7 +8822,6 @@
         "description": "【被动】战斗开始时，生成深噬之域。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Ptahur_02"
       }
     ],
@@ -8641,6 +8865,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -8697,8 +8922,7 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": [],
-        "keyMap": {}
+        "targetList": []
       }
     ],
     "hp": 10,
@@ -8740,6 +8964,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -8797,7 +9022,6 @@
         "description": "【被动】战斗开始时，初始附属潜行。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_FatuusFire_02"
       }
     ],
@@ -8898,7 +9122,6 @@
         "description": "【被动】战斗开始时，初始附属火之新生。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       },
       {
@@ -8910,7 +9133,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       }
     ],
@@ -9011,7 +9233,6 @@
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }
     ],
@@ -9054,6 +9275,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -9096,7 +9318,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_E_HermitCrabPrimo_01_HD"
       },
       {
@@ -9108,7 +9329,6 @@
         "description": "【被动】战斗开始时：初始附属5层重甲蟹壳。\n我方执行任意行动后：如果我方场上存在重甲蟹壳以外的护盾状态或护盾出战状态，则将其全部移除；每移除1个，就使角色附属2层重甲蟹壳。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_HermitCrabPrimo_02"
       },
       {
@@ -9239,7 +9459,6 @@
         "description": "【被动】战斗开始时，初始附属雷晶核心。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_EffigyElectric_04"
       },
       {
@@ -9370,7 +9589,6 @@
         "description": "【被动】战斗开始时，在敌方场上生成雷霆探针。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Raijin_01"
       }
     ],
@@ -9413,6 +9631,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -9470,7 +9689,6 @@
         "description": "【被动】战斗开始时，本角色附属原海明珠。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_02"
       },
       {
@@ -9482,7 +9700,6 @@
         "description": "",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_01"
       }
     ],
@@ -9544,7 +9761,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_FatuusSummoner_01"
       },
       {
@@ -9627,6 +9843,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -9684,7 +9901,6 @@
         "description": "【被动】回合结束时，生成2张噬骸能量块，随机置入我方牌库顶部10张牌之中。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_ScorpionSacred_02"
       }
     ],
@@ -9785,7 +10001,6 @@
         "description": "【被动】战斗开始时，初始附属雷之新生。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerElectric_02"
       },
       {
@@ -9796,8 +10011,7 @@
         "rawDescription": "战斗开始时，初始附属<color=#FFFFFFFF>$[C124061]</color>。",
         "description": "战斗开始时，初始附属雷之新生。",
         "playCost": [],
-        "targetList": [],
-        "keyMap": {}
+        "targetList": []
       }
     ],
     "hp": 6,
@@ -9839,6 +10053,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -9857,7 +10072,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Ningyo_01"
       },
       {
@@ -9874,7 +10088,6 @@
           }
         ],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Ningyo_02"
       },
       {
@@ -9941,6 +10154,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10080,6 +10294,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10137,7 +10352,6 @@
         "description": "【被动】战斗开始时，生成6张噬骸能量块，均匀放入牌库。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_ChrysopeleaSacred_02"
       }
     ],
@@ -10181,6 +10395,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10200,6 +10415,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 3
         },
         "icon": "MonsterSkill_S_BruteRock_01"
@@ -10223,6 +10439,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 5
         },
         "icon": "MonsterSkill_E_BruteRock_01_HD"
@@ -10236,7 +10453,6 @@
         "description": "【被动】战斗开始时，初始附属岩盔和坚岩之力。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_BruteRock_02"
       }
     ],
@@ -10279,6 +10495,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10336,7 +10553,6 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10375,6 +10591,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10452,7 +10669,6 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10491,6 +10707,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10568,7 +10785,6 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10607,6 +10823,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10684,7 +10901,6 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10723,6 +10939,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10800,7 +11017,6 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10843,6 +11059,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10931,6 +11148,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -10988,7 +11206,6 @@
         "description": "【被动】战斗开始时，初始附属活化激能。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_FungusRaptor_02"
       }
     ],
@@ -11031,6 +11248,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -11088,7 +11306,6 @@
         "description": "【被动】战斗开始时，生成5张唤醒眷属，随机放入牌库。我方召唤4个增殖生命体后，此角色附属重燃的绿洲之心，并获得1点护盾。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_Apep_02"
       }
     ],
@@ -11131,6 +11348,7 @@
         ],
         "targetList": [],
         "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
         "icon": "Skill_A_00"
@@ -11188,7 +11406,6 @@
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
         "targetList": [],
-        "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }
     ],

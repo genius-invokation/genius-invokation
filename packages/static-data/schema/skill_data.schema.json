@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill Data",
+  "type": "object",
+  "patternProperties": {
+    "\\w*": {
+      "type": "object",
+      "title": "A keyMap of skill",
+      "properties": {
+        "D__KEY__DAMAGE": {
+          "type": "integer"
+        },
+        "D__KEY__ELEMENT": {
+          "enum": [
+            "GCG_ELEMENT_PHYSIC",
+            "GCG_ELEMENT_CRYO",
+            "GCG_ELEMENT_HYDRO",
+            "GCG_ELEMENT_PYRO",
+            "GCG_ELEMENT_ELECTRO",
+            "GCG_ELEMENT_ANEMO",
+            "GCG_ELEMENT_GEO",
+            "GCG_ELEMENT_DENDRO"
+          ]
+        }
+      },
+      "patternProperties": {
+        "D__KEY__DAMAGE_\\d": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "D__KEY__ELEMENT"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

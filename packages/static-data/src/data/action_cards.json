@@ -1839,8 +1839,8 @@
         "count": 2
       }
     ],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1314]</color>时，对该角色打出。使$[A1314]附属3层<color=#FFFFFFFF>$[C122]</color>。\\n装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。\\n（牌组中包含$[A1314]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出。使阿蕾奇诺附属3层生命之契。\n装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。\n（牌组中包含阿蕾奇诺，才能加入牌组）",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1314]</color>时，对该角色打出，使$[A1314]附属3层<color=#FFFFFFFF>$[C122]</color>。\\n装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。\\n（牌组中包含$[A1314]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出，使阿蕾奇诺附属3层生命之契。\n装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。\n（牌组中包含阿蕾奇诺，才能加入牌组）",
     "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。",
     "playingDescription": "装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Arlecchino"
@@ -3152,6 +3152,60 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Chiori"
   },
   {
+    "id": 116102,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "冲天转转",
+    "englishName": "Turbo Twirly",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。",
+    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Kachina"
+  },
+  {
+    "id": 216101,
+    "shareId": 463,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "夜域赐礼·团结炉心",
+    "englishName": "Night Realm's Gift: Heart of Unity",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11610,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>卡齐娜</color>",
+        "hintText": "装备给我方的卡齐娜"
+      }
+    ],
+    "relatedCharacterId": 1610,
+    "relatedCharacterTags": [],
+    "storyTitle": "卡齐娜·团结炉心",
+    "storyText": "「清退！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_GEO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）\\n（牌组中包含$[A1610]，才能加入牌组）",
+    "description": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）\n（牌组中包含卡齐娜，才能加入牌组）",
+    "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）",
+    "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kachina"
+  },
+  {
     "id": 217011,
     "shareId": 107,
     "sinceVersion": "v3.3.0",
@@ -3503,6 +3557,43 @@
     "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1709]</color>切换至前台或使用<color=#FFFFFFFF>$[S17092]</color>时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）",
     "playingDescription": "装备有此牌的基尼奇切换至前台或使用悬猎·游骋高狩时：若我方手牌不多于对方，则窃取1张原本元素骰费用最高的对方手牌，然后对手抓1张牌。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kinich"
+  },
+  {
+    "id": 217101,
+    "shareId": 464,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "茉洁香迹",
+    "englishName": "Marcotte Sillage",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11710,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>艾梅莉埃</color>",
+        "hintText": "装备给我方的艾梅莉埃"
+      }
+    ],
+    "relatedCharacterId": 1710,
+    "relatedCharacterTags": [],
+    "storyTitle": "艾梅莉埃·茉洁香迹",
+    "storyText": "「予我辉光。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_DENDRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "所附属角色造成的$[K100]变为$[K107]。\\n装备有此牌的<color=#FFFFFFFF>$[A1710]</color><color=#FFFFFFFF>普通攻击</color>后：我方最高等级的<color=#FFFFFFFF>「柔灯之匣」</color>立刻行动1次。（每回合1次）\\n（牌组中包含$[A1710]，才能加入牌组）",
+    "description": "所附属角色造成的物理伤害变为草元素伤害。\n装备有此牌的艾梅莉埃普通攻击后：我方最高等级的「柔灯之匣」立刻行动1次。（每回合1次）\n（牌组中包含艾梅莉埃，才能加入牌组）",
+    "rawPlayingDescription": "所附属角色造成的$[K100]变为$[K107]。\\n装备有此牌的<color=#FFFFFFFF>$[A1710]</color><color=#FFFFFFFF>普通攻击</color>后：我方最高等级的<color=#FFFFFFFF>「柔灯之匣」</color>立刻行动1次。（每回合1次）",
+    "playingDescription": "所附属角色造成的物理伤害变为草元素伤害。\n装备有此牌的艾梅莉埃普通攻击后：我方最高等级的「柔灯之匣」立刻行动1次。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Emilie"
   },
   {
     "id": 221011,
@@ -8296,6 +8387,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_RongyiLong"
   },
   {
+    "id": 313007,
+    "shareId": 465,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "浪船",
+    "englishName": "Waverider",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "浪船",
+    "storyText": "搭载有魔法武装的神奇水上载具，有它在侧，想必一切水域皆为坦途。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 5
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>入场时：</color>为我方附属角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n<color=#FFFFFFFF>附属角色切换至后台时：</color>此牌$[K3]+1。\\n$[K58]：$[S3130071]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "入场时：为我方附属角色提供2点护盾。\n附属角色切换至后台时：此牌可用次数+1。\n特技：浪船·迅击炮\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>入场时：</color>为我方附属角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n<color=#FFFFFFFF>附属角色切换至后台时：</color>此牌$[K3]+1。\\n$[K58]：$[S3130071]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "入场时：为我方附属角色提供2点护盾。\n附属角色切换至后台时：此牌可用次数+1。\n特技：浪船·迅击炮\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_LangChuan"
+  },
+  {
     "id": 321001,
     "shareId": 179,
     "sinceVersion": "v3.3.0",
@@ -8954,6 +9082,27 @@
     "rawDescription": "<color=#FFFFFFFF>我方$[K56]2张卡牌后：</color>我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
     "description": "我方舍弃2张卡牌后：我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_HuaYu"
+  },
+  {
+    "id": 321027,
+    "shareId": 466,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "「烟谜主」",
+    "englishName": "\"Masters of the Night-Wind\"",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「烟谜主」",
+    "storyText": "以各种神奇秘术闻名的部族，据说在那里能倾听寂静夜晚国度的回音。",
+    "playCost": [],
+    "rawDescription": "此牌初始具有4点<color=#FFFFFFFF>灵觉</color>。\\n<color=#FFFFFFFF>我方$[K59]后：</color><color=#FFFFFFFF>灵觉</color>-1。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若<color=#FFFFFFFF>灵觉</color>为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中$[K59]一个生成。",
+    "description": "此牌初始具有4点灵觉。\n我方挑选后：灵觉-1。\n行动阶段开始时：若灵觉为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中挑选一个生成。",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_YanmiZhu"
   },
   {
     "id": 322001,
@@ -10593,8 +10742,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "我方一名充能未满的角色获得1点$[K310]。（出战角色优先）\\n（牌组包含至少2个{SPRITE_PRESET#2104}<color=#FFACFFFF>雷元素</color>角色，才能加入牌组）",
-    "description": "我方一名充能未满的角色获得1点充能。（出战角色优先）\n（牌组包含至少2个雷元素角色，才能加入牌组）",
+    "rawDescription": "我方出战角色和下一名充能未满的角色获得1点$[K310]。\\n（牌组包含至少2个{SPRITE_PRESET#2104}<color=#FFACFFFF>雷元素</color>角色，才能加入牌组）",
+    "description": "我方出战角色和下一名充能未满的角色获得1点充能。\n（牌组包含至少2个雷元素角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Electric"
   },
   {
@@ -10632,16 +10781,7 @@
     "tags": [
       "GCG_TAG_RESONANCE"
     ],
-    "targetList": [
-      {
-        "id": 104,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "选择一个后台角色，切换到该角色",
-        "hintText": "选择一个后台角色，切换到该角色"
-      }
-    ],
+    "targetList": [],
     "relatedCharacterId": null,
     "relatedCharacterTags": [
       "GCG_TAG_ELEMENT_ANEMO",
@@ -10655,8 +10795,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "切换到目标角色，并生成1点$[K411]。\\n（牌组包含至少2个{SPRITE_PRESET#2105}<color=#80FFD7FF>风元素</color>角色，才能加入牌组）",
-    "description": "切换到目标角色，并生成1点万能元素。\n（牌组包含至少2个风元素角色，才能加入牌组）",
+    "rawDescription": "<color=#FFFFFFFF>我方下次执行「切换角色」行动时：</color>将此次切换视为「$[K2]」而非「$[K1]」，并且少花费1个元素骰。\\n我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。\\n（牌组包含至少2个{SPRITE_PRESET#2105}<color=#80FFD7FF>风元素</color>角色，才能加入牌组）",
+    "description": "我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」，并且少花费1个元素骰。\n我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。\n（牌组包含至少2个风元素角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Wind"
   },
   {
@@ -10708,8 +10848,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>本回合中，我方角色下一次造成$[K106]后：</color>如果我方存在提供「$[K6]」的出战状态，则为一个此类出战状态补充3点「$[K6]」。\\n（牌组包含至少2个{SPRITE_PRESET#2106}<color=#FFE699FF>岩元素</color>角色，才能加入牌组）",
-    "description": "本回合中，我方角色下一次造成岩元素伤害后：如果我方存在提供「护盾」的出战状态，则为一个此类出战状态补充3点「护盾」。\n（牌组包含至少2个岩元素角色，才能加入牌组）",
+    "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>3点$[K6]</color>。",
+    "description": "为我方出战角色提供3点护盾。",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Rock"
   },
   {
@@ -10761,8 +10901,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "本回合中，我方下一次引发元素反应时，造成的伤害+2。\\n使我方场上的<color=#FFFFFFFF>$[C115]、$[C116]和$[C117]</color>「$[K3]」+1。\\n（牌组包含至少2个{SPRITE_PRESET#2107}<color=#7EC236FF>草元素</color>角色，才能加入牌组）",
-    "description": "本回合中，我方下一次引发元素反应时，造成的伤害+2。\n使我方场上的燃烧烈焰、草原核和激化领域「可用次数」+1。\n（牌组包含至少2个草元素角色，才能加入牌组）",
+    "rawDescription": "若我方场上存在<color=#FFFFFFFF>$[C115]</color>/<color=#FFFFFFFF>$[C116]</color>/<color=#FFFFFFFF>$[C117]</color>，则对对方出战角色造成1点$[K103]/$[K102]/$[K104]。\\n（牌组包含至少2个{SPRITE_PRESET#2107}<color=#7EC236FF>草元素</color>角色，才能加入牌组）",
+    "description": "若我方场上存在燃烧烈焰/草原核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。\n（牌组包含至少2个草元素角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Grass"
   },
   {
@@ -11880,7 +12020,7 @@
         "count": 2
       }
     ],
-    "rawDescription": "如果我方存在相同元素类型的角色，则从3张「{SPRITE_PRESET#3104}场地」中挑选1张加入手牌；\\n如果我方存在相同武器类型的角色，则从3张「{SPRITE_PRESET#3102}道具」中挑选1张加入手牌；\\n如果我方存在相同所属势力的角色，则从3张「{SPRITE_PRESET#3101}料理」中挑选1张加入手牌。",
+    "rawDescription": "如果我方存在相同元素类型的角色，则从3张「{SPRITE_PRESET#3104}场地」中<color=#FFFFFFFF>$[K59]</color>1张加入手牌；\\n如果我方存在相同武器类型的角色，则从3张「{SPRITE_PRESET#3102}道具」中<color=#FFFFFFFF>$[K59]</color>1张加入手牌；\\n如果我方存在相同所属势力的角色，则从3张「{SPRITE_PRESET#3101}料理」中<color=#FFFFFFFF>$[K59]</color>1张加入手牌。",
     "description": "如果我方存在相同元素类型的角色，则从3张「场地」中挑选1张加入手牌；\n如果我方存在相同武器类型的角色，则从3张「道具」中挑选1张加入手牌；\n如果我方存在相同所属势力的角色，则从3张「料理」中挑选1张加入手牌。",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Caxie"
   },
@@ -11945,6 +12085,30 @@
     "rawDescription": "向双方牌组中放入2张<color=#FFFFFFFF>$[C332042]</color>，随后双方各抓2张牌。",
     "description": "向双方牌组中放入2张燃素充盈，随后双方各抓2张牌。",
     "cardFace": "UI_Gcg_CardFace_Event_Event_JifengLong"
+  },
+  {
+    "id": 332044,
+    "shareId": 467,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "以极限之名",
+    "englishName": "In the Name of the Extreme",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "以极限之名",
+    "storyText": "「放松身体，拥抱狂风！与伙伴们一同，去追寻那极限的影踪。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 4
+      }
+    ],
+    "rawDescription": "交换双方手牌，然后手牌较少的一方抓牌直到手牌数等同于手牌多的一方。",
+    "description": "交换双方手牌，然后手牌较少的一方抓牌直到手牌数等同于手牌多的一方。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_NiyeLong"
   },
   {
     "id": 333001,
@@ -12563,6 +12727,143 @@
     "rawDescription": "治疗目标角色1点，我方场上每有1个召唤物，则额外治疗1点。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
     "description": "治疗目标角色1点，我方场上每有1个召唤物，则额外治疗1点。\n（每回合每个角色最多食用1次「料理」）",
     "cardFace": "UI_Gcg_CardFace_Event_Food_WenQuan"
+  },
+  {
+    "id": 333020,
+    "shareId": 468,
+    "sinceVersion": "v5.5.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤",
+    "englishName": "Mystique Soup",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [
+      {
+        "id": 101,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择一个角色食用<color=#FFD780FF>料理</color>",
+        "hintText": "请选择一个角色食用料理"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "奇瑰之汤",
+    "storyText": "颗粒果制成的饮品。由烟谜主部族的某位萨满发明，最初是为了治病，随着时间流逝配方添添减减，如今已经成为了聚会时的常见饮品。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "从3个随机效果中<color=#FFFFFFFF>$[K59]</color>1个，对目标角色生效。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
+    "description": "从3个随机效果中挑选1个，对目标角色生效。\n（每回合每个角色最多食用1次「料理」）",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333021,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·疗愈",
+    "englishName": "Mystique Soup: Healing",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "治疗目标角色2点。",
+    "description": "治疗目标角色2点。",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333022,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·助佑",
+    "englishName": "Mystique Soup: Providence",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "本回合中，目标角色下次使用技能时少花费2个元素骰。",
+    "description": "本回合中，目标角色下次使用技能时少花费2个元素骰。",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333023,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·激愤",
+    "englishName": "Mystique Soup: Fury",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "本回合中，目标角色下一次造成的伤害+2。",
+    "description": "本回合中，目标角色下一次造成的伤害+2。",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333024,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·宁静",
+    "englishName": "Mystique Soup: Serenity",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "本回合中，目标角色下次受到的伤害-2。",
+    "description": "本回合中，目标角色下次受到的伤害-2。",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333025,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·安神",
+    "englishName": "Mystique Soup: Soothing",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "本回合中，目标我方角色受到的伤害-1。（最多生效3次）",
+    "description": "本回合中，目标我方角色受到的伤害-1。（最多生效3次）",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333026,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "奇瑰之汤·鼓舞",
+    "englishName": "Mystique Soup: Inspiration",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "目标角色获得1点额外最大生命值。",
+    "description": "目标角色获得1点额外最大生命值。",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
   },
   {
     "id": 421001,

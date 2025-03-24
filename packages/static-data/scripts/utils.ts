@@ -15,7 +15,14 @@
 
 import { config } from "./config";
 import { readJson } from "./json";
-import { ID, KEYWORD_ID, NAME_TEXT_MAP_HASH, SKILL_ID, TITLE_TEXT_MAP_HASH, TYPE } from "./properties";
+import {
+  ID,
+  KEYWORD_ID,
+  NAME_TEXT_MAP_HASH,
+  SKILL_ID,
+  TITLE_TEXT_MAP_HASH,
+  TYPE,
+} from "./properties";
 
 export type ExcelData = Record<string, any>[];
 
@@ -77,13 +84,25 @@ export function getDescriptionReplaced(
     switch (description[ind + 2]) {
       case "D": // D__KEY__DAMAGE or D__KEY__ELEMENT
         switch (description[ind + 10]) {
-          case "D": // DAMAGE
-            replacementText = String(keyMap[selectors[0]]);
-
+          case "D": {
+            // DAMAGE
+            const replacement = keyMap[selectors[0]];
+            if (!replacement) {
+              console.error(`${selectors[0]} missing on ${description}!!`);
+              replacementText = selectors[0];
+            } else {
+              replacementText = String(replacement);
+            }
             break;
+          }
 
-          case "E": // ELEMENT
-            const element = keyMap.D__KEY__ELEMENT ?? "GCG_ELEMENT_PHYSIC"; // TODO
+          case "E": { // ELEMENT
+            const element = keyMap.D__KEY__ELEMENT;
+            if (!element) {
+              replacementText = "D__KEY__ELEMENT";
+              console.error(`D__KEY__ELEMENT missing on ${description}!!`);
+              break;
+            }
             const keywordId = xelement.find((e) => e[TYPE] === element)![
               KEYWORD_ID
             ];
@@ -92,6 +111,7 @@ export function getDescriptionReplaced(
             )![TITLE_TEXT_MAP_HASH];
             replacementText = locale[elementTextMapHash];
             break;
+          }
 
           default:
             console.log(
