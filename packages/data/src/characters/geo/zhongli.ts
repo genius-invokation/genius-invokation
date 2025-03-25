@@ -111,7 +111,7 @@ export const PlanetBefall = skill(16034)
 export const Zhongli = character(1603)
   .since("v3.7.0")
   .tags("geo", "pole", "liyue")
-  .health(10)
+  .health(12)
   .energy(3)
   .skills(RainOfStone, DominusLapidis, DominusLapidisStrikingStone, PlanetBefall)
   .done();

@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardHandle, CharacterState, DamageType, DiceType, SkillHandle, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { CardHandle, CharacterState, DamageType, DiceType, Reaction, SkillHandle, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { BurningFlame, CatalyzingField, DendroCore } from "../../commons";
 
 /**
  * @id 303211
@@ -170,7 +171,7 @@ export const [ElementalResonanceFerventFlames] = card(331302)
  * @id 331402
  * @name 元素共鸣：强能之雷
  * @description
- * 我方一名充能未满的角色获得1点充能。（出战角色优先）
+ * 我方出战角色和下一名充能未满的角色获得1点充能。
  * （牌组包含至少2个雷元素角色，才能加入牌组）
  */
 export const ElementalResonanceHighVoltage = card(331402)
@@ -178,65 +179,122 @@ export const ElementalResonanceHighVoltage = card(331402)
   .costElectro(1)
   .tags("resonance")
   .filter((c) => c.$(`my characters with energy < maxEnergy`))
-  .gainEnergy(1, "my character with energy < maxEnergy limit 1")
+  .gainEnergy(1, "my active")
+  .gainEnergy(1, "my standby character with energy < maxEnergy limit 1")
+  .done();
+
+/**
+ * @id 303133
+ * @name 元素共鸣：迅捷之风（生效中）
+ * @description
+ * 我方下次执行「切换角色」行动时：少花费1个元素骰。
+ */
+export const ElementalResonanceImpetuousWindsInEffect01 = combatStatus(303133)
+  .once("deductOmniDiceSwitch")
+  .deductOmniCost(1)
+  .done();
+
+/**
+ * @id 303136
+ * @name 元素共鸣：迅捷之风（生效中）
+ * @description
+ * 我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。
+ */
+export const ElementalResonanceImpetuousWindsInEffect03 = combatStatus(303136)
+  .once("beforeFastSwitch")
+  .setFastAction()
+  .done();
+
+/**
+ * @id 303134
+ * @name 元素共鸣：迅捷之风（生效中）
+ * @description
+ * 我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。
+ */
+export const ElementalResonanceImpetuousWindsInEffect02 = combatStatus(303134)
+  .on("increaseDamage", (c, e) => (
+    ([
+      Reaction.SwirlCryo, 
+      Reaction.SwirlElectro, 
+      Reaction.SwirlHydro, 
+      Reaction.SwirlPyro
+    ] as (Reaction | null)[]).includes(e.damageInfo.fromReaction)) &&
+    !c.of(e.target).isMine())
+  .increaseDamage(1)
+  .on("reaction", (c, e) =>
+    e.reactionInfo.fromDamage && 
+    c.of(e.reactionInfo.fromDamage.source).who === c.self.who &&
+    e.relatedTo(DamageType.Anemo))
+  .listenToAll()
+  .dispose()
   .done();
 
 /**
  * @id 331502
  * @name 元素共鸣：迅捷之风
  * @description
- * 切换到目标角色，并生成1点万能元素。
+ * 我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」，并且少花费1个元素骰。
+ * 我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。
  * （牌组包含至少2个风元素角色，才能加入牌组）
  */
 export const ElementalResonanceImpetuousWinds = card(331502)
   .since("v3.3.0")
   .costAnemo(1)
   .tags("resonance")
-  .addTarget("my character")
-  .switchActive("@targets.0")
-  .generateDice(DiceType.Omni, 1)
+  .combatStatus(ElementalResonanceImpetuousWindsInEffect01)
+  .combatStatus(ElementalResonanceImpetuousWindsInEffect02)
+  .combatStatus(ElementalResonanceImpetuousWindsInEffect03)
+  .done();
+
+/**
+ * @id 303162
+ * @name 护盾
+ * @description
+ * 为我方出战角色提供3点护盾。
+ */
+export const Shield = combatStatus(303162)
+  .shield(3)
   .done();
 
 /**
  * @id 331602
  * @name 元素共鸣：坚定之岩
  * @description
- * 本回合中，我方角色下一次造成岩元素伤害后：如果我方存在提供「护盾」的出战状态，则为一个此类出战状态补充3点「护盾」。
- * （牌组包含至少2个岩元素角色，才能加入牌组）
+ * 为我方出战角色提供3点护盾。
  */
-export const [ElementalResonanceEnduringRock] = card(331602)
+export const ElementalResonanceEnduringRock = card(331602)
   .since("v3.3.0")
   .costGeo(1)
   .tags("resonance")
-  .toCombatStatus(303162)
-  .oneDuration()
-  .once("skillDamage", (c, e) => e.type === DamageType.Geo)
-  .do((c) => {
-    c.$("my combat statuses with tag (shield) limit 1")?.addVariable("shield", 3);
-  })
+  .combatStatus(Shield)
   .done();
 
 /**
  * @id 331702
  * @name 元素共鸣：蔓生之草
  * @description
- * 本回合中，我方下一次引发元素反应时，造成的伤害+2。
- * 使我方场上的燃烧烈焰、草原核和激化领域「可用次数」+1。
+ * 若我方场上存在燃烧烈焰/草原核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。
  * （牌组包含至少2个草元素角色，才能加入牌组）
  */
-export const [ElementalResonanceSprawlingGreenery] = card(331702)
+export const ElementalResonanceSprawlingGreenery = card(331702)
   .since("v3.3.0")
   .costDendro(1)
   .tags("resonance")
+  .filter((c) => c.$(`
+    my combat status with definition id ${DendroCore} or 
+    my combat status with definition id ${CatalyzingField} or
+    my summon with definition id ${BurningFlame}`))
   .do((c) => {
-    c.$("my summon with definition id 115")?.addVariable("usage", 1);
-    c.$("my combat statuses with definition id 116")?.addVariable("usage", 1);
-    c.$("my combat statuses with definition id 117")?.addVariable("usage", 1);
+    if (c.$(`my combat status with definition id ${DendroCore}`)) {
+      c.damage(DamageType.Hydro, 1, "opp active");
+    }
+    if (c.$(`my combat status with definition id ${CatalyzingField}`)) {
+      c.damage(DamageType.Electro, 1, "opp active");
+    }
+    if (c.$(`my summon with definition id ${BurningFlame}`)) {
+      c.damage(DamageType.Pyro, 1, "opp active");
+    }
   })
-  .toCombatStatus(303172)
-  .oneDuration()
-  .once("increaseDamage", (c, e) => e.getReaction())
-  .increaseDamage(2)
   .done();
 
 /**
@@ -1675,4 +1733,16 @@ export const LittleTepetlisaurTreasureHunterAtLarge = card(332043)
   .createPileCards(AbundantPhlogiston, 2, "random", "opp")
   .drawCards(2, { who: "my" })
   .drawCards(2, { who: "opp" })
+  .done();
+
+/**
+ * @id 332044
+ * @name 以极限之名
+ * @description
+ * 交换双方手牌，然后手牌较少的一方抓牌直到手牌数等同于手牌多的一方。
+ */
+export const InTheNameOfTheExtreme = card(332044)
+  .since("v5.5.0")
+  .costSame(4)
+  // TODO
   .done();

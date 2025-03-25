@@ -82,7 +82,7 @@ export const DandelionBreeze = skill(15023)
 export const Jean = character(1502)
   .since("v3.3.0")
   .tags("anemo", "sword", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(FavoniusBladework, GaleBlade, DandelionBreeze)
   .done();

@@ -202,7 +202,7 @@ export const DetailedDiagnosisThoroughTreatment03 = skill(12137)
 export const Sigewinne = character(1213)
   .since("v5.2.0")
   .tags("hydro", "bow", "fontaine", "pneuma")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention, 
     DetailedDiagnosisThoroughTreatment02, DetailedDiagnosisThoroughTreatment03)

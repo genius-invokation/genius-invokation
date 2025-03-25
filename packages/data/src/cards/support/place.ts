@@ -620,3 +620,17 @@ export const FlowerfeatherClan = card(321026)
   .setVariable("disposedCardCount", 0)
   .characterStatus(FlowerfeatherClanInEffect, "my next")
   .done();
+
+/**
+ * @id 321027
+ * @name 「烟谜主」
+ * @description
+ * 此牌初始具有4点灵觉。
+ * 我方挑选后：灵觉-1。
+ * 行动阶段开始时：若灵觉为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中挑选一个生成。
+ */
+export const MastersOfTheNightwind = card(321027)
+  .since("v5.5.0")
+  .support("place")
+  // TODO
+  .done();

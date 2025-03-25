@@ -96,7 +96,7 @@ export const SweepingTime = skill(16023)
 export const Noelle = character(1602)
   .since("v3.3.0")
   .tags("geo", "claymore", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(FavoniusBladeworkMaid, Breastplate, SweepingTime)
   .done();

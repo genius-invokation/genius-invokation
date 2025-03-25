@@ -116,7 +116,7 @@ export const CelestialShower = skill(11014)
 export const Ganyu = character(1101)
   .since("v3.3.0")
   .tags("cryo", "bow", "liyue")
-  .health(10)
+  .health(12)
   .energy(3)
   .skills(LiutianArchery, TrailOfTheQilin, FrostflakeArrow, CelestialShower)
   .done();

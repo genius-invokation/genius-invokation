@@ -101,7 +101,7 @@ export const SpiritSoother = skill(13073)
 export const HuTao = character(1307)
   .since("v3.7.0")
   .tags("pyro", "pole", "liyue")
-  .health(10)
+  .health(12)
   .energy(3)
   .skills(SecretSpearOfWangsheng, GuideToAfterlife, SpiritSoother)
   .done();

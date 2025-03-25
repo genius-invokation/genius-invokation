@@ -124,7 +124,7 @@ export const WindsGrandOde = skill(15033)
 export const Venti = character(1503)
   .since("v3.7.0")
   .tags("anemo", "bow", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(DivineMarksmanship, SkywardSonnet, WindsGrandOde)
   .done();
