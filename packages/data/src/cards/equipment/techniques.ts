@@ -133,7 +133,7 @@ const SpiritOfOmenPyroScorpion = void 0; // moved to eremite_scorching_loremaste
  * 特技：藤蔓锋鳞
  * 可用次数：2
  * （角色最多装备1个「特技」）
- * [1270321: 藤蔓锋鳞] (1*Void, 1*Energy) 造成1点草元素伤害。
+ * [1270321: 藤蔓锋鳞] (1*Same, 1*Energy) 造成1点草元素伤害。
  * [2270312: ] ()
  */
 const SpiritOfOmenDendroSpiritserpent = void 0; // moved to eremite_floral_ringdancer
@@ -271,4 +271,54 @@ export const Qucusaurus = card(313006)
   .costSame(1)
   .switchActive("my next")
   .characterStatus(Target, "opp active")
+  .done();
+
+/**
+ * @id 116102
+ * @name 冲天转转
+ * @description
+ * 附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。
+ * [1161021: 转转冲击] (1*Void) 附属角色消耗1点「夜魂值」，造成2点岩元素伤害，对敌方下一个后台角色造成1点穿透伤害。
+ * [1161022: ] ()
+ * [1161023: ] ()
+ * [1161024: ] ()
+ */
+const TurboTwirly = void 0; /* moved to kachina */
+
+/**
+ * @id 301304
+ * @name 浪船
+ * @description
+ * 提供2点护盾，保护所附属角色。
+ */
+const WaveriderShield = status(301304)
+  .shield(2)
+  .done();
+
+/**
+ * @id 313007
+ * @name 浪船
+ * @description
+ * 入场时：为我方附属角色提供2点护盾。
+ * 附属角色切换至后台时：此牌可用次数+1。
+ * 特技：浪船·迅击炮
+ * 可用次数：2
+ * （角色最多装备1个「特技」）
+ * [3130071: 浪船·迅击炮] (1*Same) 造成2点物理伤害。
+ * [3130072: ] () 附属角色切换至后台时，此牌可用次数+1。
+ * [3130073: ] () 使用时，生成2点护盾
+ */
+export const Waverider = card(313007)
+  .since("v5.5.0")
+  .costSame(5)
+  .technique()
+  .provideSkill(3130071)
+  .usage(2)
+  .costSame(1)
+  .damage(DamageType.Physical, 2)
+  .endProvide()
+  .on("enter")
+  .characterStatus(WaveriderShield, "@master")
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .addVariable("usage", 1)
   .done();

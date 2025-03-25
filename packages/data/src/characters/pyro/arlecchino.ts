@@ -138,7 +138,7 @@ export const TheBalemoonAloneMayKnowPassive03 = skill(13147)
  * @id 1314
  * @name 阿蕾奇诺
  * @description
- * 
+ * 繁星晦暗，厄月孤存。
  */
 export const Arlecchino = character(1314)
   .since("v5.4.0")
@@ -152,7 +152,7 @@ export const Arlecchino = character(1314)
  * @id 213141
  * @name 所有的仇与债皆由我偿…
  * @description
- * 战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出。使阿蕾奇诺附属3层生命之契。
+ * 战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出，使阿蕾奇诺附属3层生命之契。
  * 装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。
  * （牌组中包含阿蕾奇诺，才能加入牌组）
  */

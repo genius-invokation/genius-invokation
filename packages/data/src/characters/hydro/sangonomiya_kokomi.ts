@@ -111,7 +111,7 @@ export const NereidsAscension = skill(12053)
 export const SangonomiyaKokomi = character(1205)
   .since("v3.5.0")
   .tags("hydro", "catalyst", "inazuma")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(TheShapeOfWater, KuragesOath, NereidsAscension)
   .done();
