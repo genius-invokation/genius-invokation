@@ -286,6 +286,16 @@ export const Qucusaurus = card(313006)
 const TurboTwirly = void 0; /* moved to kachina */
 
 /**
+ * @id 301304
+ * @name 浪船
+ * @description
+ * 提供2点护盾，保护所附属角色。
+ */
+const WaveriderShield = status(301304)
+  .shield(2)
+  .done();
+
+/**
  * @id 313007
  * @name 浪船
  * @description
@@ -302,5 +312,13 @@ export const Waverider = card(313007)
   .since("v5.5.0")
   .costSame(5)
   .technique()
-  // TODO
+  .provideSkill(3130071)
+  .usage(2)
+  .costSame(1)
+  .damage(DamageType.Physical, 2)
+  .endProvide()
+  .on("enter")
+  .characterStatus(WaveriderShield, "@master")
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .addVariable("usage", 1)
   .done();

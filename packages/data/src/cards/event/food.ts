@@ -371,20 +371,6 @@ export const HotSpringOclock = card(333019)
   .done();
 
 /**
- * @id 333020
- * @name 奇瑰之汤
- * @description
- * 从3个随机效果中挑选1个，对目标角色生效。
- * （每回合每个角色最多食用1次「料理」）
- */
-export const MystiqueSoup = card(333020)
-  .since("v5.5.0")
-  .costSame(1)
-  .tags("food")
-  // TODO
-  .done();
-
-/**
  * @id 333021
  * @name 奇瑰之汤·疗愈
  * @description
@@ -392,8 +378,9 @@ export const MystiqueSoup = card(333020)
  */
 export const MystiqueSoupHealing = card(333021)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .heal(2, "@targets.0")
   .done();
 
 /**
@@ -402,10 +389,14 @@ export const MystiqueSoupHealing = card(333021)
  * @description
  * 本回合中，目标角色下次使用技能时少花费2个元素骰。
  */
-export const MystiqueSoupProvidence = card(333022)
+export const [MystiqueSoupProvidence] = card(333022)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .toStatus(303317, "@targets.0")
+  .oneDuration()
+  .once("deductOmniDiceSkill")
+  .deductOmniCost(2)
   .done();
 
 /**
@@ -414,10 +405,14 @@ export const MystiqueSoupProvidence = card(333022)
  * @description
  * 本回合中，目标角色下一次造成的伤害+2。
  */
-export const MystiqueSoupFury = card(333023)
+export const [MystiqueSoupFury] = card(333023)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .toStatus(303318, "@targets.0")
+  .oneDuration()
+  .once("increaseSkillDamage")
+  .increaseDamage(2)
   .done();
 
 /**
@@ -426,10 +421,14 @@ export const MystiqueSoupFury = card(333023)
  * @description
  * 本回合中，目标角色下次受到的伤害-2。
  */
-export const MystiqueSoupSerenity = card(333024)
+export const [MystiqueSoupSerenity] = card(333024)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .toStatus(303319, "@targets.0")
+  .oneDuration()
+  .once("decreaseDamaged")
+  .decreaseDamage(2)
   .done();
 
 /**
@@ -438,10 +437,15 @@ export const MystiqueSoupSerenity = card(333024)
  * @description
  * 本回合中，目标我方角色受到的伤害-1。（最多生效3次）
  */
-export const MystiqueSoupSoothing = card(333025)
+export const [MystiqueSoupSoothing] = card(333025)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .toStatus(303320, "@targets.0")
+  .oneDuration()
+  .on("decreaseDamaged")
+  .usage(3)
+  .decreaseDamage(1)
   .done();
 
 /**
@@ -452,6 +456,25 @@ export const MystiqueSoupSoothing = card(333025)
  */
 export const MystiqueSoupInspiration = card(333026)
   .since("v5.5.0")
-  .tags("food")
-  // TODO
+  .food()
+  .unobtainable()
+  .increaseMaxHealth(1, "@targets.0")
+  .done();
+
+/**
+ * @id 333020
+ * @name 奇瑰之汤
+ * @description
+ * 从3个随机效果中挑选1个，对目标角色生效。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const MystiqueSoup = card(333020)
+  .since("v5.5.0")
+  .costSame(1)
+  .food({ satiatedTarget: "not any" })
+  .do((c, e) => {
+    const allCards = [MystiqueSoupHealing, MystiqueSoupProvidence, MystiqueSoupFury, MystiqueSoupSerenity, MystiqueSoupSoothing, MystiqueSoupInspiration];
+    const candidates = c.randomSubset(allCards, 3);
+    c.selectAndPlay(candidates, e.targets[0]);
+  })
   .done();

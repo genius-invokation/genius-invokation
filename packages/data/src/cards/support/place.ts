@@ -632,5 +632,17 @@ export const FlowerfeatherClan = card(321026)
 export const MastersOfTheNightwind = card(321027)
   .since("v5.5.0")
   .support("place")
-  // TODO
+  .variable("intuition", 4)
+  .on("selectCard")
+  .do((c) => {
+    const newValue = Math.max(0, c.getVariable("intuition") - 1);
+    c.setVariable("intuition", newValue);
+  })
+  .on("actionPhase", (c) => c.getVariable("intuition") === 0)
+  .do((c) => {
+    const cards = c.allCardDefinitions("support").filter((card) => diceCostOfCard(card) === 2);
+    const candidates = c.randomSubset(cards, 3);
+    c.selectAndPlay(candidates);
+    c.dispose();
+  })
   .done();

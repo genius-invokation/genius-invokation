@@ -13,7 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, customEvent } from "@gi-tcg/core/builder";
+
+const TurboTwirlyTriggered = customEvent("turboTwirlyTriggered");
 
 /**
  * @id 116103
@@ -24,7 +26,22 @@ import { character, skill, summon, status, combatStatus, card, DamageType } from
  */
 export const TurboTwirlyLetItRip = summon(116103)
   .since("v5.5.0")
-  // TODO
+  .hintIcon(DamageType.Geo)
+  .hintText("1")
+  .on("endPhase")
+  .usage(1)
+  .do((c) => {
+    const field = c.$(`my combat status with definition id ${TurboDrillField}`);
+    if (field) {
+      c.damage(DamageType.Geo, 2);
+      c.damage(DamageType.Piercing, 2, "opp next");
+      c.consumeUsage(1, field.state);
+    } else {
+      c.damage(DamageType.Geo, 1);
+      c.damage(DamageType.Piercing, 1, "opp next");
+    }
+    c.emitCustomEvent(TurboTwirlyTriggered);
+  })
   .done();
 
 /**
@@ -35,7 +52,7 @@ export const TurboTwirlyLetItRip = summon(116103)
  */
 export const NightsoulsBlessing = status(116104)
   .since("v5.5.0")
-  // TODO
+  .nightsoulsBlessing(2)
   .done();
 
 /**
@@ -50,7 +67,27 @@ export const NightsoulsBlessing = status(116104)
  */
 export const TurboTwirly = card(116102)
   .since("v5.5.0")
-  // TODO
+  .unobtainable()
+  .nightsoulTechnique()
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .consumeNightsoul("@master")
+  .summon(TurboTwirlyLetItRip)
+  .emitCustomEvent(TurboTwirlyTriggered)
+  .endOn()
+  .provideSkill(1161021)
+  .costVoid(1)
+  .consumeNightsoul("@master")
+  .do((c) => {
+    const field = c.$(`my combat status with definition id ${TurboDrillField}`);
+    if (field) {
+      c.damage(DamageType.Geo, 3);
+      c.damage(DamageType.Piercing, 2, "opp next");
+      c.consumeUsage(1, field.state);
+    } else {
+      c.damage(DamageType.Geo, 2);
+      c.damage(DamageType.Piercing, 1, "opp next");
+    }
+  })
   .done();
 
 /**
@@ -62,7 +99,7 @@ export const TurboTwirly = card(116102)
  */
 export const TurboDrillField = combatStatus(116101)
   .since("v5.5.0")
-  // TODO
+  .usage(3)
   .done();
 
 /**
@@ -75,7 +112,7 @@ export const Cragbiter = skill(16101)
   .type("normal")
   .costGeo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -87,7 +124,15 @@ export const Cragbiter = skill(16101)
 export const GoGoTurboTwirly = skill(16102)
   .type("elemental")
   .costGeo(2)
-  // TODO
+  .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
+  .do((c) => {
+    c.self.equip(TurboTwirly);
+    c.characterStatus(NightsoulsBlessing, "@self", {
+      overrideVariables: {
+        nightsoul: 2
+      }
+    });
+  })
   .done();
 
 /**
@@ -100,7 +145,8 @@ export const TimeToGetSerious = skill(16103)
   .type("burst")
   .costGeo(3)
   .costEnergy(3)
-  // TODO
+  .damage(DamageType.Geo, 3)
+  .combatStatus(TurboDrillField)
   .done();
 
 /**
@@ -127,6 +173,8 @@ export const Kachina = character(1610)
 export const NightRealmsGiftHeartOfUnity = card(216101)
   .since("v5.5.0")
   .costGeo(1)
-  .talent(Kachina)
-  // TODO
+  .talent(Kachina, "none")
+  .on(TurboTwirlyTriggered)
+  .usagePerRound(2)
+  .drawCards(1)
   .done();
