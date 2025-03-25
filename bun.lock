@@ -267,7 +267,6 @@
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",
-        "yaml": "^2.7.0",
       },
     },
     "packages/test": {

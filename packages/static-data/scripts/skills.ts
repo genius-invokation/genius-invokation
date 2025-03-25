@@ -33,7 +33,6 @@ import {
   COST_TYPE,
   COUNT,
   DESC_TEXT_MAP_HASH,
-  ID,
   NAME_TEXT_MAP_HASH,
   SKILL_ICON_HASH,
   SKILL_JSON,
@@ -42,11 +41,7 @@ import {
   TARGET_HINT_TEXT_MAP_HASH,
   SKILL_TAG_LIST,
 } from "./properties";
-// @ts-expect-error no typing for .yml
-import skillDataText from "./skill_data.yml" with { type: "text" };
-import { parse } from "yaml";
-
-const tcgSkillKeyMap = parse(skillDataText);
+import tcgSkillKeyMap from "./skill_data.toml";
 
 export interface PlayCost {
   type: string;

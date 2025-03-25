@@ -1,0 +1,1228 @@
+#:schema ../schema/skill_data.schema.json
+
+[Effect_Damage_Physic_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 1
+
+[Effect_Damage_Physic_2]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+[Effect_Damage_Physic_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 3
+
+[Effect_Damage_Physic_5]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 5
+
+# 甘雨 - 山泽麟迹
+[Char_Skill_11012]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 甘雨 - 霜华矢
+[Char_Skill_11013]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 甘雨 - 降众天华
+[Char_Skill_11014]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 迪奥娜 - 猫爪冻冻
+[Char_Skill_11022]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 迪奥娜 - 最烈特调
+[Char_Skill_11023]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 凯亚 - 霜袭
+[Char_Skill_11032]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 凯亚 - 凛冽轮舞
+[Char_Skill_11033]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 重云 - 重华叠霜
+[Char_Skill_11042]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 重云 - 云开星落
+[Effect_Damage_Ice_7]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 7
+
+# 神里绫华 - 神里流·冰华
+[Effect_Damage_Ice_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 神里绫华 - 神里流·霜灭
+[Char_Skill_11053]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 4
+
+# 优菈 - 西风剑术·宗室
+[Char_Skill_11061]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 优菈 - 冰潮的涡旋
+[Char_Skill_11062]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 优菈 - 凝浪之光剑
+[Char_Skill_11063]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 申鹤 - 仰灵威召将役咒
+[Char_Skill_11072]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 申鹤 - 神女遣灵真诀
+[Char_Skill_11073]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 七七 - 仙法·救苦度厄
+[Char_Skill_11083]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 莱依拉 - 星流摇床之梦
+[Char_Skill_11093]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 夏洛蒂 - 冷色摄影律
+[Effect_Damage_Ice_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 夏洛蒂 - 取景·冰点构图法
+[Char_Skill_11102]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 夏洛蒂 - 定格·全方位确证
+[Char_Skill_11103]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 莱欧斯利 - 冰牙突驰
+[Char_Skill_11112]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 莱欧斯利 - 黑金狼噬
+[Char_Skill_11113]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 菲米尼 - 浮冰增压
+[Char_Skill_11122]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 菲米尼 - 猎影潜袭
+[Char_Skill_11123]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 4
+
+# 罗莎莉亚 - 噬罪的告解
+[Char_Skill_11132]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 罗莎莉亚 - 终命的圣礼
+[Char_Skill_11133]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 芭芭拉 - 水之浅唱
+[Effect_Damage_Water_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 芭芭拉 - 演唱，开始♪
+[Char_Skill_12012]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 行秋 - 画雨笼山
+[Char_Skill_12022]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 行秋 - 裁雨留虹
+[Char_Skill_12023]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 莫娜 - 水中幻愿
+[Char_Skill_12032]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 莫娜 - 星命定轨
+[Char_Skill_12033]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 4
+
+# 达达利亚 - 断雨
+[Char_Skill_12041]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 达达利亚 - 魔王武装·狂澜
+[Char_Skill_12042]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 达达利亚 - 极恶技·尽灭闪
+[Char_Skill_12043]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE_5 = 5
+D__KEY__DAMAGE = 7
+
+# 珊瑚宫心海 - 海月之誓
+[Char_Skill_12052]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+
+# 珊瑚宫心海 - 海人化羽
+[Char_Skill_12053]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 神里绫人 - 神里流·镜花
+[Char_Skill_12062]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 神里绫人 - 神里流·水囿
+[Char_Skill_12063]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 坎蒂丝 - 圣仪·灰鸰衒潮
+[Char_Skill_12073]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 坎蒂丝 - 苍鹭震击
+[Char_Skill_12074]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 妮露 - 七域舞步
+[Char_Skill_12082]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 妮露 - 浮莲舞步·远梦聆泉
+[Char_Skill_12083]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 夜兰 - 萦络纵命索
+[Effect_Damage_Water_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 夜兰 - 渊图玲珑骰
+[Char_Skill_12093]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 那维莱特 - 如水从平
+[Char_Skill_12101]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 那维莱特 - 泪水啊，我必偿还
+[Char_Skill_12102]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 那维莱特 - 潮水啊，我已归来
+[Char_Skill_12103]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 那维莱特 - 衡平推裁
+[Char_Skill_12104]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 芙宁娜 - 独舞之邀
+[Char_Skill_12111]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 芙宁娜 - 万众狂欢
+[Char_Skill_12113]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 芙宁娜 - 独舞之邀
+[Char_Skill_12121]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 希格雯 - 过饱和心意注射
+[Char_Skill_12133]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 希格雯 - 满满心意药剂冲击
+[Char_Skill_12135]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 玛拉妮 - 爆瀑飞弹
+[Char_Skill_12143]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 2
+
+# 迪卢克 - 逆焰之刃
+[Char_Skill_13012]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 迪卢克 - 黎明
+[Char_Skill_13013]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 8
+
+# 香菱 - 锅巴出击
+[Char_Skill_13022]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 香菱 - 旋火轮
+[Char_Skill_13023]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 班尼特 - 热情过载
+[Effect_Damage_Fire_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 班尼特 - 美妙旅程
+[Char_Skill_13033]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 安柏 - 箭雨
+[Char_Skill_13043]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 宵宫 - 琉金云间草
+[Char_Skill_13053]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 可莉 - 砰砰
+[Effect_Damage_Fire_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 可莉 - 蹦蹦炸弹
+[Char_Skill_13062]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 可莉 - 轰轰火花
+[Char_Skill_13063]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 胡桃 - 往生秘传枪法
+[Char_Skill_13071]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 胡桃 - 安神秘法
+[Char_Skill_13073]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 4
+
+# 烟绯 - 丹书立约
+[Char_Skill_13082]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 烟绯 - 凭此结契
+[Char_Skill_13083]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 迪希雅 - 熔铁流狱
+[Char_Skill_13092]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 迪希雅 - 炎啸狮子咬
+[Char_Skill_13093]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 林尼 - 迫牌易位式
+[Char_Skill_13101]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 林尼 - 隐具魔术箭
+[Char_Skill_13102]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 林尼 - 眩惑光戏法
+[Char_Skill_13103]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 林尼 - 大魔术·灵迹巡游
+[Char_Skill_13104]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 托马 - 烈烧佑命之侍护
+[Char_Skill_13112]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 托马 - 真红炽火之大铠
+[Char_Skill_13113]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 辛焱 - 热情拂扫
+[Char_Skill_13122]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 辛焱 - 叛逆刮弦
+[Char_Skill_13123]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 3
+
+# 夏沃蕾 - 近迫式急促拦射
+[Char_Skill_13132]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 夏沃蕾 - 圆阵掷弹爆轰术
+[Char_Skill_13133]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 夏沃蕾 - 近迫式急促拦射
+[Char_Skill_13135]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 阿蕾奇诺 - 斩首之邀
+[Char_Skill_13141]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 阿蕾奇诺 - 万相化灰
+[Char_Skill_13142]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 阿蕾奇诺 - 厄月将升
+[Char_Skill_13143]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 4
+
+# 菲谢尔 - 夜巡影翼
+[Char_Skill_14012]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 菲谢尔 - 至夜幻现
+[Char_Skill_14013]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 4
+
+# 雷泽 - 利爪与苍雷
+[Char_Skill_14022]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 雷泽 - 雷牙
+[Char_Skill_14023]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 刻晴 - 星斗归位
+[Char_Skill_14032]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 刻晴 - 天街巡游
+[Char_Skill_14033]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 4
+
+# 赛诺 - 秘仪·律渊渡魂
+[Effect_Damage_Elec_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 赛诺 - 圣仪·煟煌随狼行
+[Effect_Damage_Elec_4]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 4
+
+# 北斗 - 捉浪
+[Char_Skill_14052]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 北斗 - 斫雷
+[Char_Skill_14053]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 北斗 - 踏潮
+[Char_Skill_14054]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 九条裟罗 - 鸦羽天狗霆雷召咒
+[Char_Skill_14062]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 九条裟罗 - 煌煌千道镇式
+[Char_Skill_14063]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 雷电将军 - 奥义·梦想真说
+[Char_Skill_14073]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 八重神子 - 狐灵食罪式
+[Effect_Damage_Elec_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 八重神子 - 大密法·天狐显真
+[Char_Skill_14083]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 4
+
+# 丽莎 - 指尖雷暴
+[Char_Skill_14091]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 丽莎 - 苍雷
+[Char_Skill_14092]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 丽莎 - 蔷薇的雷光
+[Char_Skill_14093]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 多莉 - 镇灵之灯·烦恼解决炮
+[Char_Skill_14102]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 多莉 - 卡萨扎莱宫的无微不至
+[Char_Skill_14103]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 久岐忍 - 御咏鸣神刈山祭
+[Char_Skill_14113]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 4
+
+# 克洛琳德 - 狩夜之巡
+[Char_Skill_14122]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+
+# 克洛琳德 - 残光将终
+[Char_Skill_14123]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 砂糖 - 简式风灵作成
+[Effect_Damage_Wind_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 砂糖 - 风灵作成·陆叁零捌
+[Char_Skill_15012]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 砂糖 - 禁·风灵作成·柒伍同构贰型
+[Char_Skill_15013]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 琴 - 风压剑
+[Char_Skill_15022]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 温迪 - 高天之歌
+[Char_Skill_15032]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 温迪 - 风神之诗
+[Char_Skill_15033]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 魈 - 风轮两立
+[Effect_Damage_Wind_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 魈 - 靖妖傩舞
+[Char_Skill_15043]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 4
+
+# 枫原万叶 - 我流剑术
+[Char_Skill_15051]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 枫原万叶 - 千早振
+[Char_Skill_15052]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 枫原万叶 - 万叶之一刀
+[Char_Skill_15053]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 流浪者 - 行幡鸣弦
+[Char_Skill_15061]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 流浪者 - 羽画·风姿华歌
+[Char_Skill_15062]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 流浪者 - 狂言·式乐五番
+[Char_Skill_15063]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 7
+
+# 早柚 - 呜呼流·风隐急进
+[Char_Skill_15072]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 早柚 - 呜呼流·影貉缭乱
+[Char_Skill_15073]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 早柚 - 风风轮舞踢
+[Char_Skill_15074]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 琳妮特 - 谜影障身法
+[Char_Skill_15082]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 琳妮特 - 魔术·运变惊奇
+[Char_Skill_15083]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 珐露珊 - 迴身箭术
+[Char_Skill_15091]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 2
+
+# 珐露珊 - 非想风天
+[Char_Skill_15092]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 珐露珊 - 抟风秘道
+[Char_Skill_15093]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 闲云 - 清风散花词
+[Char_Skill_15101]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 闲云 - 朝起鹤云
+[Char_Skill_15102]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 闲云 - 暮集竹星
+[Char_Skill_15103]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 凝光 - 千金掷
+[Effect_Damage_Rock_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 凝光 - 璇玑屏
+[Char_Skill_16012]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 2
+
+# 凝光 - 天权崩玉
+[Char_Skill_16013]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 6
+
+# 诺艾尔 - 护心铠
+[Char_Skill_16022]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 诺艾尔 - 大扫除
+[Char_Skill_16023]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 4
+
+# 钟离 - 地心
+[Char_Skill_16032]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 钟离 - 地心·磐礴
+[Char_Skill_16033]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 钟离 - 天星
+[Char_Skill_16034]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 4
+
+# 阿贝多 - 诞生式·大地之潮
+[Char_Skill_16043]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 4
+
+# 荒泷一斗 - 魔杀绝技·赤牛发破！
+[Char_Skill_16052]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 荒泷一斗 - 最恶鬼王·一斗轰临！！
+[Char_Skill_16053]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 4
+
+# 五郎 - 犬坂吠吠方圆阵
+[Char_Skill_16062]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 2
+
+# 五郎 - 兽牙逐突形胜战法
+[Char_Skill_16063]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 2
+
+# 云堇 - 旋云开相
+[Char_Skill_16072]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 云堇 - 破嶂见旌仪
+[Char_Skill_16073]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 云堇 - 长枪开相
+[Char_Skill_16074]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 2
+
+# 娜维娅 - 典仪式晶火
+[Char_Skill_16082]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 娜维娅 - 如霰澄天的鸣礼
+[Char_Skill_16083]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 千织 - 羽袖一触
+[Char_Skill_16092]
+D__KEY__ELEMENT = "GCG_ELEMENT_PHYSIC"
+D__KEY__DAMAGE = 1
+
+# 千织 - 二刀之形·比翼
+[Effect_Damage_Rock_5]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 5
+
+# 柯莱 - 拂花偈叶
+[Char_Skill_17012]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 3
+
+# 柯莱 - 猫猫秘宝
+[Char_Skill_17013]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 提纳里 - 识果种雷
+[Char_Skill_17022]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 提纳里 - 造生缠藤箭
+[Char_Skill_17023]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 纳西妲 - 行相
+[Effect_Damage_Grass_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 1
+
+# 纳西妲 - 所闻遍计
+[Char_Skill_17032]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 纳西妲 - 所闻遍计·真如
+[Char_Skill_17033]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 3
+
+# 纳西妲 - 心景幻成
+[Char_Skill_17034]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 瑶瑶 - 玉颗珊珊月中落
+[Char_Skill_17043]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 1
+
+# 白术 - 太素诊要
+[Char_Skill_17052]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 1
+
+# 艾尔海森 - 共相·理式摹写
+[Char_Skill_17062]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 艾尔海森 - 殊境·显象缚结
+[Char_Skill_17063]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 绮良良 - 秘法·惊喜特派
+[Char_Skill_17073]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 卡维 - 画则巧施
+[Char_Skill_17082]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 卡维 - 繁绘隅穹
+[Char_Skill_17083]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 3
+
+# 基尼奇 - 悬猎·游骋高狩
+[Char_Skill_17092]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 2
+
+# 基尼奇 - 向伟大圣龙致意
+[Char_Skill_17093]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 1
+
+# 愚人众·冰萤术士 - 雾虚摇唤
+[Char_Skill_21012]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 愚人众·冰萤术士 - 冰枝白花
+[Char_Skill_21013]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 5
+
+# 「女士」 - 凛冽之刺
+[Char_Skill_21022]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 「女士」 - 红莲冰茧
+[Char_Skill_21023]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 4
+
+# 无相之冰 - 冰锥迸射
+[Char_Skill_21031]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 1
+
+# 无相之冰 - 圆舞冰环
+[Char_Skill_21032]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 无相之冰 - 冰棱轰坠
+[Char_Skill_21033]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+# 愚人众·霜役人 - 掠袭之刺
+[Char_Skill_21043]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 4
+
+# 焚尽的炽炎魔女 - 烬灭之鞭
+[Char_Skill_63012]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 2
+
+# 焚尽的炽炎魔女 - 燃焰旋织
+[Char_Skill_63013]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 6
+
+# 焚尽的炽炎魔女 - 红莲旋火
+[Char_Skill_63014]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 纯水精灵·洛蒂娅 - 潮涌与激流
+[Char_Skill_22014]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE_2 = 6
+D__KEY__DAMAGE_3 = 7
+D__KEY__DAMAGE = 4
+
+# 愚人众·藏镜仕女 - 潋波绽破
+[Char_Skill_22022]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 愚人众·藏镜仕女 - 粼镜折光
+[Effect_Damage_Water_5]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 5
+
+# 深渊使徒·激流 - 洄涡锋刃
+[Char_Skill_22032]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 深渊使徒·激流 - 激流强震
+[Char_Skill_22033]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 吞星之鲸 - 迸落星雨
+[Char_Skill_22042]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE_2 = 1
+D__KEY__DAMAGE_3 = 2
+D__KEY__DAMAGE_5 = 4
+
+# 吞星之鲸 - 横噬鲸吞
+[Char_Skill_22043]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 1
+
+# 丘丘水行游侠 - 狂澜镰击
+[Char_Skill_22052]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 丘丘水行游侠 - 浮泡攻势
+[Char_Skill_22053]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 愚人众·火之债务处理人 - 伺机而动
+[Char_Skill_23012]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 愚人众·火之债务处理人 - 焚毁之锋
+[Effect_Damage_Fire_5]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 5
+
+# 深渊咏者·渊火 - 天陨预兆
+[Char_Skill_23023]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 镀金旅团·炽沙叙事人 - 烧蚀之光
+[Char_Skill_23031]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 镀金旅团·炽沙叙事人 - 炎晶迸击
+[Char_Skill_23032]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 镀金旅团·炽沙叙事人 - 厄灵苏醒·炎之魔蝎
+[Char_Skill_23033]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 铁甲熔火帝皇 - 烈焰燃绽
+[Char_Skill_23042]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 铁甲熔火帝皇 - 炽烈轰破
+[Char_Skill_23046]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 1
+
+# 铁甲熔火帝皇 - 帝王甲胄
+[Char_Skill_23047]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 无相之雷 - 猜拳三连击
+[Char_Skill_24012]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 无相之雷 - 雳霆镇锁
+[Char_Skill_24013]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 无相之雷 - 猜拳三连击·剪刀
+[Char_Skill_24015]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 雷音权现 - 雷墙倾轧
+[Char_Skill_24023]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 雷音权现 - 轰雷禁锢
+[Char_Skill_24024]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 千年珍珠骏麟 - 霰舞鱼群
+[Char_Skill_24032]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 千年珍珠骏麟 - 原海古雷
+[Char_Skill_24033]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 愚人众·雷萤术士 - 霆雷之护
+[Char_Skill_24043]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 1
+
+# 愚人众·雷萤术士 - 霆电迸发
+[Char_Skill_24044]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 2
+
+# 圣骸毒蝎 - 蝎尾锥刺
+[Char_Skill_24052]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 圣骸毒蝎 - 雷锥散射
+[Char_Skill_24053]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 深渊咏者·紫电 - 秘渊虚霆
+[Char_Skill_24062]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 深渊咏者·紫电 - 狂迸骇雷
+[Char_Skill_24063]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 魔偶剑鬼 - 机巧伪天狗抄
+[Effect_Damage_Wind_4]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 4
+
+# 特瓦林 - 暴风轰击
+[Char_Skill_25022]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 特瓦林 - 风龙涤流
+[Char_Skill_25023]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 特瓦林 - 终天闭幕曲
+[Char_Skill_25024]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 5
+
+# 特瓦林 - 长延涤流
+[Char_Skill_25025]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+# 特瓦林 - 终幕涤流
+[Char_Skill_25026]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 圣骸飞蛇 - 盘绕风引
+[Char_Skill_25032]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 3
+
+# 圣骸飞蛇 - 错落风涡
+[Char_Skill_25033]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 2
+
+# 若陀龙王 - 磅礴之气
+[Char_Skill_26022]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 若陀龙王 - 山崩毁阵
+[Effect_Damage_Rock_4]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 4
+
+# 若陀龙王 - 霜刺破袭
+[Char_Skill_66013]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 3
+
+# 若陀龙王 - 洪流重斥
+[Char_Skill_66023]
+D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
+D__KEY__DAMAGE = 3
+
+# 若陀龙王 - 炽焰重斥
+[Char_Skill_66033]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 3
+
+# 若陀龙王 - 霆雷破袭
+[Char_Skill_66043]
+D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
+D__KEY__DAMAGE = 3
+
+# 黄金王兽 - 兽境轰召
+[Char_Skill_26032]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 1
+
+# 黄金王兽 - 黄金侵绞
+[Char_Skill_26033]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 翠翎恐蕈 - 不稳定孢子云
+[Effect_Damage_Grass_3]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 3
+
+# 翠翎恐蕈 - 尾羽豪放
+[Char_Skill_27013]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 阿佩普的绿洲守望者 - 生命流束
+[Char_Skill_27022]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE_2 = 2
+
+# 阿佩普的绿洲守望者 - 终景迸落
+[Char_Skill_27023]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE_2 = 4
+
+# 镀金旅团·叶轮舞者 - 蔓延旋舞
+[Char_Skill_27032]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE_3 = 3
+
+# 镀金旅团·叶轮舞者 - 厄灵苏醒·草之灵蛇
+[Char_Skill_27033]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 4
+
+# 卡齐娜 - 出击，冲天转转！
+[Char_Skill_16102]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+
+# 卡齐娜 - 转转冲击
+[Char_Skill_16102_Ex_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 2
+
+# 卡齐娜 - 现在，认真时间！
+[Char_Skill_16103]
+D__KEY__ELEMENT = "GCG_ELEMENT_GEO"
+D__KEY__DAMAGE = 3
+
+# 艾梅莉埃 - 撷萃调香
+[Char_Skill_17102]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+
+# 艾梅莉埃 - 香氛演绎
+[Char_Skill_17103]
+D__KEY__ELEMENT = "GCG_ELEMENT_DENDRO"
+D__KEY__DAMAGE = 1
