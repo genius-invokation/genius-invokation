@@ -44,12 +44,11 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
     const chId = skillId.slice(0, 4)
     const body = await doFetch(chId);
     if (!body) {
-      console.warn(`Failed to fetch ${chId}`);
       return;
     }
     skillObj = body.data.talent[skillId];
     if (!skillObj) {
-      console.warn(`We do not found skill ${skillId} on character ${chId}`);
+      console.error(`We do not found skill ${skillId} on character ${chId}`);
       return;
     }
   } else if (skillId.length === 7) {
@@ -59,7 +58,6 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
       const cardId = skillId.slice(0, 6);
       const body = await doFetch(cardId);
       if (!body) {
-        console.warn(`Failed to fetch ${cardId}`);
         return;
       }
       skillObj = body.data.dictionary[`S${skillId}`];
@@ -68,20 +66,19 @@ export async function getSkillIcon(skillId: number | string, iconHash?: number |
       const chId = skillId.slice(1, 5);
       const body = await doFetch(chId);
       if (!body) {
-        console.warn(`Failed to fetch ${chId}`);
         return;
       }
       skillObj = body.data.dictionary[`S${skillId}`];
     } else {
-      console.warn(`${skillId} is not a recognizable id, for now.`);
+      console.error(`${skillId} is not a recognizable id, for now.`);
       return;
     }
   } else {
-    console.warn(`${skillId} is not a recognizable id, for now.`);
+    console.error(`${skillId} is not a recognizable id, for now.`);
     return;
   }
   if (!skillObj?.icon) {
-    console.warn(`No icon provided for ${skillId}`);
+    console.error(`No icon provided for ${skillId}`);
     return;
   }
 

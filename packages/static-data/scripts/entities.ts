@@ -14,19 +14,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { readJson } from "./json";
+import {
+  BUFF_ICON_HASH,
+  CARD_PREFAB_NAME,
+  CARD_TYPE,
+  DESC_ON_TABLE_2_TEXT_MAP_HASH,
+  DESC_ON_TABLE_TEXT_MAP_HASH,
+  DESC_TEXT_MAP_HASH,
+  HINT_TYPE,
+  ID,
+  IS_HIDDEN,
+  NAME_TEXT_MAP_HASH,
+  SKILL_LIST,
+  STATE_BUFF_TYPE,
+  TAG_LIST,
+  TOKEN_TO_SHOW,
+} from "./properties";
 import { collateSkill, type SkillRawData } from "./skills";
 import {
   getExcel,
   getLanguage,
-  getPropNameWithMatch,
   sanitizeDescription,
   getDescriptionReplaced,
   sanitizeName,
   xcardview,
-  propPlayingDescription2,
+  xcard,
 } from "./utils";
-
-const xcard = getExcel("GCGCardExcelConfigData");
 
 export interface EntityRawData {
   id: number;
@@ -59,6 +72,7 @@ function getBuffIconFileName(iconHash?: number | bigint): string | undefined {
 }
 
 export async function collateEntities(langCode: string) {
+  console.log("Collating entities...");
   const locale = getLanguage(langCode);
   const english = getLanguage("EN");
   const result: EntityRawData[] = [];
@@ -70,19 +84,19 @@ export async function collateEntities(langCode: string) {
         "GCG_CARD_ONSTAGE", // 出战状态
         "GCG_CARD_SUMMON", // 召唤物
         "GCG_CARD_ASSIST", // 支援牌
-      ].includes(obj.cardType)
+      ].includes(obj[CARD_TYPE])
     ) {
       // GCG_CARD_EVENT
       // console.log(obj.cardType);
       continue;
     }
-    const hidden = !!obj.isHidden;
+    const hidden = !!obj[IS_HIDDEN];
 
-    if (!locale[obj.nameTextMapHash]) {
+    if (!locale[obj[NAME_TEXT_MAP_HASH]]) {
       continue;
     }
 
-    const id = obj.id;
+    const id = obj[ID];
     if ([50, 51, 52, 53, 54, 17, 18].includes(Math.floor(id / 10000))) {
       // 热斗模式
       continue;
@@ -91,19 +105,19 @@ export async function collateEntities(langCode: string) {
       // 骗骗花就算了吧
       continue;
     }
-    const type = obj.cardType;
+    const type = obj[CARD_TYPE];
     const [name, englishName] = [locale, english].map((lc) =>
-      sanitizeName(lc[obj.nameTextMapHash] ?? ""),
+      sanitizeName(lc[obj[NAME_TEXT_MAP_HASH]] ?? ""),
     );
     if (name === "") {
       continue;
     }
 
-    const tags = obj.tagList.filter((e: any) => e !== "GCG_TAG_NONE");
+    const tags = obj[TAG_LIST].filter((e: any) => e !== "GCG_TAG_NONE");
     const skills: SkillRawData[] = [];
     // 当这是一张特技装备时，查找特技的技能定义
     if (tags.includes("GCG_TAG_VEHICLE")) {
-      for (const skillId of obj.skillList) {
+      for (const skillId of obj[SKILL_LIST]) {
         const data = await collateSkill(langCode, skillId);
         if (data) {
           skills.push(data);
@@ -111,13 +125,13 @@ export async function collateEntities(langCode: string) {
       }
     }
 
-    const rawDescription = locale[obj.descTextMapHash] ?? "";
+    const rawDescription = locale[obj[DESC_TEXT_MAP_HASH]] ?? "";
     const descriptionReplaced = getDescriptionReplaced(rawDescription, locale);
     const description = sanitizeDescription(descriptionReplaced, true);
 
     const rawPlayingDescription: string | undefined =
-      locale[obj.descOnTableTextMapHash] ??
-      locale[obj[propPlayingDescription2]];
+      locale[obj[DESC_ON_TABLE_TEXT_MAP_HASH]] ??
+      locale[obj[DESC_ON_TABLE_2_TEXT_MAP_HASH]];
     let playingDescription: string | undefined = void 0;
     if (rawPlayingDescription) {
       const playingDescriptionReplaced = getDescriptionReplaced(
@@ -127,16 +141,23 @@ export async function collateEntities(langCode: string) {
       playingDescription = sanitizeDescription(playingDescriptionReplaced);
     }
 
-    const buffType = obj.stateBuffType;
-    const hintType = obj.hintType;
-    const shownToken = obj.tokenToShow;
-    const buffIcon = getBuffIconFileName(obj.buffIconHash);
-    if (obj.buffIconHash && !buffIcon) {
+    const buffType =
+      obj[STATE_BUFF_TYPE] === "GCG_STATE_BUFF_NONE"
+        ? void 0
+        : obj[STATE_BUFF_TYPE];
+    const hintType =
+      obj[HINT_TYPE] === "GCG_HINT_INVALID" ? void 0 : obj[HINT_TYPE];
+    const shownToken =
+      obj[TOKEN_TO_SHOW] === "GCG_TOKEN_NONE" ? void 0 : obj[TOKEN_TO_SHOW];
+    const buffIcon = getBuffIconFileName(obj[BUFF_ICON_HASH]);
+    if (obj[BUFF_ICON_HASH] && !buffIcon) {
       console.warn(
-        `Entity ${id} ${name}'s icon (${obj.buffIconHash}) file name is missing now`,
+        `Entity ${id} ${name}'s icon (${obj[BUFF_ICON_HASH]}) file name is missing now`,
       );
     }
-    const buffIconHash = obj.buffIconHash ? String(obj.buffIconHash) : void 0;
+    const buffIconHash = obj[BUFF_ICON_HASH]
+      ? String(obj[BUFF_ICON_HASH])
+      : void 0;
 
     const data: EntityRawData = {
       id,
@@ -158,9 +179,9 @@ export async function collateEntities(langCode: string) {
     };
 
     if (type === "GCG_CARD_SUMMON") {
-      const cardPrefabName = xcardview.find(
-        (e) => e.id === obj.id,
-      )!.cardPrefabName;
+      const cardPrefabName = xcardview.find((e) => e[ID] === id)![
+        CARD_PREFAB_NAME
+      ];
       data.cardFace = `UI_${cardPrefabName}`;
     }
     result.push(data);

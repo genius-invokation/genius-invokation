@@ -68,7 +68,7 @@ export function getDescriptionReplacedHakushin(
       }
     }
     switch (value) {
-      case "GCG_ELEMENT_VOID":
+      case "GCG_ELEMENT_PHYSIC":
         value = "物理伤害";
         break;
       case "GCG_ELEMENT_CRYO":

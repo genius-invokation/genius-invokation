@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { DESC_TEXT_MAP_HASH, ID, TITLE_TEXT_MAP_HASH } from "./properties";
 import {
   getDescriptionReplaced,
   getExcel,
@@ -32,14 +33,15 @@ export interface KeywordRawData {
 }
 
 export function collateKeywords(langCode: string) {
+  console.log("Collating keywords...");
   const locale = getLanguage(langCode);
   const english = getLanguage("EN");
   const result: KeywordRawData[] = [];
   for (const obj of xkey) {
-    const id = obj.id;
-		const rawName = locale[obj.titleTextMapHash];
+    const id = obj[ID];
+		const rawName = locale[obj[TITLE_TEXT_MAP_HASH]];
     const name = sanitizeDescription(rawName, true);
-    const rawDescription = locale[obj.descTextMapHash] ?? "";
+    const rawDescription = locale[obj[DESC_TEXT_MAP_HASH]] ?? "";
     const descriptionReplaced = getDescriptionReplaced(rawDescription, locale);
     const description = sanitizeDescription(descriptionReplaced, true);
 
