@@ -57,7 +57,7 @@ export interface SkillRawData {
   description: string;
   playCost: PlayCost[];
   targetList: ChooseTarget[];
-  keyMap: Record<string, any>;
+  keyMap?: Record<string, any>;
   icon?: string;
 }
 
