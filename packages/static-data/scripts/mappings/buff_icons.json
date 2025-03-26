@@ -146,5 +146,9 @@
   "8398308115074674601": "UI_Gcg_Buff_Nightsoul_Grass",
   "3308744404490074116": "UI_Gcg_Buff_Kinich_S",
   "4125516403550515652": "UI_Gcg_Buff_Kinich_E",
-  "6552315636754208809": "UI_Gcg_Debuff_Common_Countered01"
+  "6552315636754208809": "UI_Gcg_Debuff_Common_Countered01",
+  "4730368055557500692": "UI_Gcg_Buff_Kachina_S",
+  "1216184163607234978": "UI_Gcg_Buff_Vehicle_Kachina",
+  "1771263630888988054": "UI_Gcg_Buff_Nightsoul_Rock",
+  "8286186731443484050": "UI_Gcg_Buff_Vehicle_Waverider"
 }

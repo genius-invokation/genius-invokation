@@ -4598,6 +4598,7 @@
     "description": "我方冲天转转造成的岩元素伤害+1，造成的穿透伤害+1。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Kachina_S",
     "buffIconHash": "4730368055557500692"
   },
   {
@@ -4626,7 +4627,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
-        }
+        },
+        "icon": "Skill_S_Kachina_04"
       },
       {
         "id": 1161022,
@@ -4662,6 +4664,7 @@
     "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。",
     "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Kachina",
     "buffIconHash": "1216184163607234978"
   },
   {
@@ -4692,6 +4695,7 @@
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Nightsoul_Rock",
     "buffIconHash": "1771263630888988054"
   },
   {
@@ -10657,7 +10661,8 @@
             "count": 1
           }
         ],
-        "targetList": []
+        "targetList": [],
+        "icon": "Btn_Vehicle_Skiff_CannonFire_Big"
       },
       {
         "id": 3130072,
@@ -10686,6 +10691,7 @@
     "playingDescription": "入场时：为我方附属角色提供2点护盾。\n附属角色切换至后台时：此牌可用次数+1。\n特技：浪船·迅击炮\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Waverider",
     "buffIconHash": "8286186731443484050"
   },
   {

@@ -6919,7 +6919,8 @@
         ],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO"
-        }
+        },
+        "icon": "Skill_S_Kachina_01"
       },
       {
         "id": 16103,
@@ -6942,7 +6943,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 3
-        }
+        },
+        "icon": "Skill_E_Kachina_01_HD"
       }
     ],
     "hp": 10,
@@ -7843,7 +7845,8 @@
         ],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO"
-        }
+        },
+        "icon": "Skill_S_Emilie_01"
       },
       {
         "id": 17103,
@@ -7866,7 +7869,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 1
-        }
+        },
+        "icon": "Skill_E_Emilie_01_HD"
       },
       {
         "id": 17104,
@@ -7876,7 +7880,8 @@
         "rawDescription": "<color=#FFFFFFFF>我方<color=#FFFFFFFF>$[C115]</color>入场时：</color>下次双方角色使用技能后，触发一次<color=#FFFFFFFF>$[C115]</color>的回合结束效果。（每回合2次）",
         "description": "我方燃烧烈焰入场时：下次双方角色使用技能后，触发一次燃烧烈焰的回合结束效果。（每回合2次）",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "icon": "Skill_S_Emilie_02"
       },
       {
         "id": 17105,
@@ -7886,7 +7891,8 @@
         "rawDescription": "<color=#FFFFFFFF>我方<color=#FFFFFFFF>$[C115]</color>入场时：</color>下次双方角色使用技能后，触发1次我方<color=#FFFFFFFF>$[C115]</color>的回合结束效果。（每回合2次）",
         "description": "我方燃烧烈焰入场时：下次双方角色使用技能后，触发1次我方燃烧烈焰的回合结束效果。（每回合2次）",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "icon": "Skill_S_Emilie_02"
       }
     ],
     "hp": 10,
