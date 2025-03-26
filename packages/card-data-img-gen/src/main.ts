@@ -48,6 +48,7 @@ const cluster: Cluster<void, void> = await Cluster.launch({
   maxConcurrency: CONCURRENCY,
   puppeteer,
   timeout: 60_000,
+  retryLimit: 3,
   puppeteerOptions: {
     executablePath,
     defaultViewport: {
@@ -89,8 +90,10 @@ console.log("Running tasks...");
 const progress = new SingleBar({ noTTYOutput: true }, Presets.shades_classic);
 progress.start(tasks.length, 0);
 
-cluster.on("taskerror", (err) => {
-  console.log(`Error: ${err.message}`);
+cluster.on("taskerror", (err, data, willRetry) => {
+  if (!willRetry) {
+    console.log(`Error: ${err.message}`);
+  }
 });
 
 for (const task of tasks) {
