@@ -198,7 +198,7 @@ export function Skill(props: ExpandableCardDataProps) {
       <summary class="flex flex-row items-center gap-2 cursor-pointer rounded-md group-not-open:bg-yellow-2 transition-colors">
         <div class="w-12 h-12">
           <Show when={icon()}>
-            {(icon) => <img src={icon()} class="w-full h-full" />}
+            {(icon) => <img src={icon()} class="w-full h-full skill-icon" />}
           </Show>
         </div>
         <div class="flex flex-col">

@@ -93,7 +93,7 @@ export class AssetsManager {
     if (this.dataCache.has(-id)) {
       return this.dataCache.get(-id)!;
     }
-    const url = `${this.options.apiEndpoint}/data/K${id}`;
+    const url = `${this.options.apiEndpoint}/data/${-id}`;
     const promise = fetch(url)
       .then((r) => r.json())
       .then((data) => {

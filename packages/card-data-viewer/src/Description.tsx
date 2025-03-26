@@ -96,7 +96,7 @@ const DAMAGE_COLORS = [
 function DamageDescription(props: DamageDescriptionProps) {
   const id = () =>
     [
-      void 0,
+      "GCG_ELEMENT_PHYSIC",
       "GCG_ELEMENT_CRYO",
       "GCG_ELEMENT_HYDRO",
       "GCG_ELEMENT_PYRO",
@@ -104,6 +104,7 @@ function DamageDescription(props: DamageDescriptionProps) {
       "GCG_ELEMENT_ANEMO",
       "GCG_ELEMENT_GEO",
       "GCG_ELEMENT_DENDRO",
+      void 0,
     ].indexOf(props.dType);
   const keywordId = () => -(100 + id());
   const text = () => assetsManager.getNameSync(keywordId());

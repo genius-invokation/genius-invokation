@@ -76,7 +76,7 @@ function App() {
     //   variableValue: 2,
     // });
     // showCard(212111);
-    // showCharacter(1510);
+    showCharacter(1610);
     // showSkill(12111);
   });
   return <CardDataViewer />;
