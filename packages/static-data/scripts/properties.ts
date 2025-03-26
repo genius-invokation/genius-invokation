@@ -4,12 +4,10 @@ import {
   xskill,
   xelement,
   xkeyword,
-  xavatar,
   xdeckcard,
   xcardview,
   xchoose,
   type ExcelData,
-  getExcel,
 } from "./utils";
 
 function match(
@@ -20,9 +18,8 @@ function match(
 ): string {
   const tmp = excel.find((e) => e[idKey] === idVal);
   if (!tmp) throw new Error(`getPropNameWithMatch: Did not find value for key`);
-  const entry = Object.entries(tmp).find(
-    ([key, value]) =>
-      value === expected || (typeof expected === "function" && expected(value)),
+  const entry = Object.entries(tmp).find(([key, value]) =>
+    typeof expected === "function" ? expected(value) : value == expected,
   );
   if (!entry) {
     throw new Error(
@@ -73,7 +70,9 @@ export const COST_LIST = match(
   xcard,
   ID,
   211011,
-  (s) => Array.isArray(s) && Object.values(s[0]).includes("GCG_COST_DICE_CRYO"),
+  (s) =>
+    Array.isArray(s) &&
+    Object.values(s[0] ?? {}).includes("GCG_COST_DICE_CRYO"),
 );
 export const STATE_BUFF_TYPE = match(xcard, ID, 111031, "GCG_STATE_BUFF_CRYO");
 export const HINT_TYPE = match(xcard, ID, 111031, "GCG_HINT_CRYO");
@@ -81,8 +80,10 @@ export const TOKEN_TO_SHOW = match(xcard, ID, 111031, "GCG_TOKEN_LIFE");
 export const BUFF_ICON_HASH = match(xcard, ID, 111031, 3032486446292491317n);
 export const IS_HIDDEN = match(xcard, ID, 112044, true); // 断流
 
-const icicle = xcard.find((e) => e[ID] === 111031)!; // 寒冰之棱
-export const COST_TYPE = Object.keys(icicle[COST_LIST][0])[0]; // { "XXX": "GCG_COST_INVALID" }
+const ganyuTalent = xcard.find((e) => e[ID] === 211011)!;
+export const COST_TYPE = (ganyuTalent[COST_LIST] as object[])
+  .flatMap((v) => Object.entries(v))
+  .find(([k, v]) => typeof v === "string")![0];
 
 // GCGChooseExcelConfigData
 export const SKILL_ID = match(xchoose, CARD_TYPE, "GCG_CARD_CHARACTER", 101); // 料理 hint
@@ -101,8 +102,18 @@ export const SKILL_TAG_LIST = match(
   11011,
   (s) => Array.isArray(s) && s[0] === "GCG_SKILL_TAG_A",
 );
-export const SKILL_JSON = match(xskill, SKILL_ID, 11011, "Effect_Damage_Physic_2");
-export const SKILL_ICON_HASH = match(xskill, SKILL_ID, 11011, 2636861745786031653n);
+export const SKILL_JSON = match(
+  xskill,
+  SKILL_ID,
+  11011,
+  "Effect_Damage_Physic_2",
+);
+export const SKILL_ICON_HASH = match(
+  xskill,
+  SKILL_ID,
+  11011,
+  2636861745786031653n,
+);
 
 const normalSkill = xskill.find((e) => e[SKILL_ID] === 11011)!; // Character_A_Normal
 export const COUNT = Object.entries(normalSkill[COST_LIST][0]).find(
@@ -134,17 +145,15 @@ export const CARD_PREFAB_NAME = match(
 export const TITLE_TEXT_MAP_HASH = match(xkeyword, ID, 1, 2540223917);
 
 // GCGElementExcelConfigData
-const xActivityFilmfestSniperPreview = getExcel(
-  "ActivityFilmfestSniperPreviewExcelConfigData",
-);
-export const TYPE = match(
-  xActivityFilmfestSniperPreview,
-  ID,
-  1,
-  "SNIPER_PREVIEW_GADGET",
-);
-export const KEYWORD_ID = match(xelement, TYPE, "GCG_ELEMENT_CRYO", 101);
+const elementEntries = xelement.flatMap((e) => Object.entries(e));
+export const TYPE = elementEntries.find(([k, v]) => v === "GCG_ELEMENT_CRYO")![0];
+export const KEYWORD_ID = elementEntries.find(([k, v]) => v === 101)![0];
 
-export const WANDERER_NAME_TEXT_MAP_HASH_VALUE = xavatar.find(
-  (ele) => ele[ID] === 10000075,
-)![NAME_TEXT_MAP_HASH];
+for (const e of xelement) {
+  if (!e[TYPE]) {
+    e[TYPE] = "GCG_ELEMENT_PHYSIC";
+  }
+}
+
+// Just hardcode it.
+export const WANDERER_NAME_TEXT_MAP_HASH_VALUE = `3230559562`;

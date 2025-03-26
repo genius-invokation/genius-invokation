@@ -115,7 +115,7 @@ export function collateActionCards(langCode: string) {
       ? sanitizeDescription(locale[deckcardObj[STORY_DESC_TEXT_MAP_HASH]])
       : void 0;
 
-    const relatedCharacterId = deckcardObj?.[RELATED_CHARACTER_ID] ?? null;
+    const relatedCharacterId = deckcardObj?.[RELATED_CHARACTER_ID] || null;
     const relatedCharacterTags =
       deckcardObj?.[RELATED_CHARACTER_TAG_LIST]?.filter(
         (e: string) => e !== "GCG_TAG_NONE",
