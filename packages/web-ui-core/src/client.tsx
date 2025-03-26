@@ -88,6 +88,7 @@ export type Client = [
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;
   const [data, setData] = createSignal<ChessboardData>({
+    raw: [],
     roundAndPhase: {
       showRound: false,
       who: null,
