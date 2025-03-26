@@ -12,7 +12,8 @@
 
 - 完全开源（主体使用 AGPLv3.0 or later）
 - 核心实现了目前最接近官方的结算规则
-- 截止 5.3 版本为止的全部卡牌定义
+- 截止 ![原神版本](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgi.xqm32.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=%E5%8E%9F%E7%A5%9E
+) 为止的全部卡牌定义
   - 定义格式简介明了、清晰易读
   - 易于维护
 - 全部旧版本卡牌（平衡性调整前）的定义
