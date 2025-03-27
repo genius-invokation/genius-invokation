@@ -104,6 +104,10 @@ export async function generateCards() {
       // 莫名其妙的元素附魔系列？
       continue;
     }
+    if (Math.floor(card.id / 100000) === 1) {
+      // 角色衍生物，不列出
+      continue;
+    }
     if (card.tags.includes("GCG_TAG_TALENT")) {
       continue;
     }

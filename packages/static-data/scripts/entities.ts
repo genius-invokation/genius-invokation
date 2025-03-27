@@ -97,6 +97,10 @@ export async function collateEntities(langCode: string) {
     }
 
     const id = obj[ID];
+    if ([40, 42].includes(Math.floor(id / 10000))) {
+      // PvE & 热斗大概是
+      continue;
+    }
     if ([50, 51, 52, 53, 54, 17, 18].includes(Math.floor(id / 10000))) {
       // 热斗模式
       continue;

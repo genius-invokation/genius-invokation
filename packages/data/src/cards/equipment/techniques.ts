@@ -17,30 +17,6 @@ import { CardDefinition } from "@gi-tcg/core";
 import { card, DamageType, status, StatusHandle } from "@gi-tcg/core/builder";
 
 /**
- * @id 115102
- * @name 竹星
- * @description
- * 特技：仙力助推
- * 可用次数：2
- * （角色最多装备1个「特技」）
- * [1151021: 仙力助推] (1*Same) 治疗所附属角色2点，并使其下次普通攻击视为下落攻击，伤害+1，并且技能结算后造成1点风元素伤害。
- */
-const Starwicker = void 0; // moved to xianyun
-
-/**
- * @id 122051
- * @name 水泡史莱姆
- * @description
- * 特技：水泡战法
- * 可用次数：2
- * （角色最多装备1个「特技」）
- * [1220511: 水泡战法] (1*Same) （需准备1个行动轮）造成1点水元素伤害，敌方出战角色附属水泡围困。
- * [1220512: 水泡封锁] () 造成1点水元素伤害，敌方出战角色附属水泡围困。
- * [1220513: 水泡封锁] () 造成1点水元素伤害，敌方出战角色附属水泡围困。
- */
-const MistBubbleSlime = void 0; // moved to hydro_hilichurl_rogue
-
-/**
  * @id 313001
  * @name 异色猎刀鳐
  * @description
@@ -114,31 +90,6 @@ export const Koholasaurus = card(313003)
   .done();
 
 /**
- * @id 123031
- * @name 厄灵·炎之魔蝎
- * @description
- * 所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）
- * 特技：炙烧攻势
- * 可用次数：1
- * （角色最多装备1个「特技」）
- * [1230311: 炙烧攻势] (2*Same) 造成2点火元素伤害。
- * [1230312: ] ()
- */
-const SpiritOfOmenPyroScorpion = void 0; // moved to eremite_scorching_loremaster
-
-/**
- * @id 127032
- * @name 厄灵·草之灵蛇
- * @description
- * 特技：藤蔓锋鳞
- * 可用次数：2
- * （角色最多装备1个「特技」）
- * [1270321: 藤蔓锋鳞] (1*Same, 1*Energy) 造成1点草元素伤害。
- * [2270312: ] ()
- */
-const SpiritOfOmenDendroSpiritserpent = void 0; // moved to eremite_floral_ringdancer
-
-/**
  * @id 301301
  * @name 掘进的收获
  * @description
@@ -197,20 +148,6 @@ export const Iktomisaurus = card(313005)
     c.selectAndCreateHandCard(candidates);
   })
   .done();
-
-/**
- * @id 112142
- * @name 咬咬鲨鱼
- * @description
- * 双方切换角色后，且玛拉妮为出战角色时：消耗1点「夜魂值」，使敌方出战角色附属啃咬目标。
- * 特技：鲨鲨冲浪板
- * 所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。
- * [1121421: ] ()
- * [1121422: 鲨鲨冲浪板] (1*Hydro) 切换到上一个我方角色，使敌方出战角色附属1层啃咬目标。（若我方后台角色均被击倒，则额外消耗1点「夜魂值」）
- * [1121423: ] ()
- */
-const BiteyShark = void 0; /* moved to mualani */
-
 
 /**
  * @id 301302
@@ -272,18 +209,6 @@ export const Qucusaurus = card(313006)
   .switchActive("my next")
   .characterStatus(Target, "opp active")
   .done();
-
-/**
- * @id 116102
- * @name 冲天转转
- * @description
- * 附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。
- * [1161021: 转转冲击] (1*Void) 附属角色消耗1点「夜魂值」，造成2点岩元素伤害，对敌方下一个后台角色造成1点穿透伤害。
- * [1161022: ] ()
- * [1161023: ] ()
- * [1161024: ] ()
- */
-const TurboTwirly = void 0; /* moved to kachina */
 
 /**
  * @id 301304

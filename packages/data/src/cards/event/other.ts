@@ -1113,23 +1113,6 @@ export const UnderwaterTreasureHunt = card(332031)
   .done();
 
 /**
- * @id 112113
- * @name 圣俗杂座
- * @description
- * 在「始基力：荒性」和「始基力：芒性」之中，切换芙宁娜的形态。
- * 如果我方场上存在沙龙成员或众水的歌者，也切换其形态。
- */
-const SeatsSacredAndSecular = void 0; // moved to Furina
-
-/**
- * @id 127021
- * @name 唤醒眷属
- * @description
- * 打出此牌或舍弃此牌时：召唤一个独立的增殖生命体。
- */
-const AwakenMyKindred = void 0; // moved to 酸菜龙
-
-/**
  * @id 124053
  * @name 噬骸能量块
  * @description
@@ -1243,23 +1226,6 @@ export const TheShowBegins = card(332035)
   .convertDice(DiceType.Omni, "all")
   .drawCards(4)
   .done();
-
-/**
- * @id 113131
- * @name 超量装药弹头
- * @description
- * 战斗行动：对敌方「出战角色」造成1点火元素伤害。
- * 此牌被舍弃时：对敌方「出战角色」造成1点火元素伤害。
- */
-const OverchargedBall = void 0; // move to chevreuse
-
-/**
- * @id 116081
- * @name 裂晶弹片
- * @description
- * 对敌方「出战角色」造成1点物理伤害，抓1张牌。
- */
-const CrystalShrapnel = void 0; // move to navia
 
 /**
  * @id 302206
@@ -1653,30 +1619,6 @@ export const EremiteTeatime = card(332040)
     }
   })
   .done();
-
-/**
- * @id 112131
- * @name 激愈水球·大
- * @description
- * 抓到此牌时：治疗我方出战角色3点。生成1张激愈水球·中，将其置于对方牌库顶部第2张牌的位置。
- */
-const LargeBolsteringBubblebalm = void 0;
-
-/**
- * @id 112132
- * @name 激愈水球·中
- * @description
- * 抓到此牌时：对所在阵营的出战角色造成2点水元素伤害。生成1张激愈水球·小，将其置于对方牌库顶部。
- */
-const MediumBolsteringBubblebalm = void 0;
-
-/**
- * @id 112133
- * @name 激愈水球·小
- * @description
- * 抓到此牌时：治疗所有我方角色1点，生成源水之滴。
- */
-const SmallBolsteringBubblebalm = void 0;
 
 /**
  * @id 332041
