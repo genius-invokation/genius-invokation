@@ -47,11 +47,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: standalone-frontend
+          path: dist
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - name: Deploy to Vercel
-        run: >
-          bunx vercel deploy
-          --prod
-          --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          cd dist
+          bunx vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
