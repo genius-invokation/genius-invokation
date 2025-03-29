@@ -108,14 +108,8 @@ export const SurfsharkWavebreaker: SkillHandle = skill(12142)
   .type("elemental")
   .costHydro(2)
   .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
-  .do((c) => {
-    c.self.equip(BiteyShark);
-    c.characterStatus(NightsoulsBlessing, "@self", {
-      overrideVariables: {
-        nightsoul: 2,
-      },
-    });
-  })
+  .equip(BiteyShark, "@self")
+  .gainNightsoul("@self", 2)
   .done();
 
 /**
@@ -144,6 +138,7 @@ export const Mualani = character(1214)
   .health(10)
   .energy(2)
   .skills(CoolingTreatment, SurfsharkWavebreaker, BoomsharkaLaka)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**

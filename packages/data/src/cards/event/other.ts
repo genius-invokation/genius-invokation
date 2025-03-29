@@ -1648,10 +1648,7 @@ export const [AbundantPhlogiston] = card(332042)
   .oneDuration()
   .once("consumeNightsoul")
   .do((c, e) => {
-    const st = c.$(`status with tag (nightsoulsBlessing)`);
-    if (st) {
-      st.addVariable("nightsoul", 1);
-    }
+    c.gainNightsoul(e.character, 1);
   })
   .done();
 

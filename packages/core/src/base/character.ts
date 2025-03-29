@@ -15,7 +15,7 @@
 
 import { Aura } from "@gi-tcg/typings";
 import type { SkillDefinition } from "./skill";
-import type { VariableConfig } from "./entity";
+import type { EntityDefinition, VariableConfig } from "./entity";
 import type { VersionInfo } from "./version";
 
 export type ElementTag =
@@ -69,6 +69,7 @@ export interface CharacterDefinition {
   readonly tags: readonly CharacterTag[];
   readonly varConfigs: CharacterVariableConfigs;
   readonly skills: readonly SkillDefinition[];
+  readonly associatedNightsoulsBlessing: EntityDefinition | null;
 }
 
 export interface CharacterVariableConfigs {

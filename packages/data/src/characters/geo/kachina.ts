@@ -125,14 +125,8 @@ export const GoGoTurboTwirly = skill(16102)
   .type("elemental")
   .costGeo(2)
   .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
-  .do((c) => {
-    c.self.equip(TurboTwirly);
-    c.characterStatus(NightsoulsBlessing, "@self", {
-      overrideVariables: {
-        nightsoul: 2
-      }
-    });
-  })
+  .equip(TurboTwirly, "@self")
+  .gainNightsoul("@self", 2)
   .done();
 
 /**
@@ -161,6 +155,7 @@ export const Kachina = character(1610)
   .health(10)
   .energy(3)
   .skills(Cragbiter, GoGoTurboTwirly, TimeToGetSerious)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**

@@ -16,7 +16,12 @@
 import { Aura } from "@gi-tcg/typings";
 import type { CharacterTag } from "../base/character";
 import { registerCharacter, builderWeakRefs } from "./registry";
-import type { CharacterHandle, PassiveSkillHandle, SkillHandle } from "./type";
+import type {
+  CharacterHandle,
+  PassiveSkillHandle,
+  SkillHandle,
+  StatusHandle,
+} from "./type";
 import { createVariable } from "./utils";
 import type { VariableConfig } from "../base/entity";
 import {
@@ -31,6 +36,7 @@ export class CharacterBuilder {
   private _maxEnergy = 3;
   private _varConfigs: Record<number, VariableConfig> = {};
   private readonly _skillIds: number[] = [];
+  private _associatedNightsoulsBlessingId: number | null = null;
   private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   constructor(private readonly id: number) {
     builderWeakRefs.add(new WeakRef(this));
@@ -64,6 +70,11 @@ export class CharacterBuilder {
     return this;
   }
 
+  associateNightsoul(nightsoulsBlessing: StatusHandle) {
+    this._associatedNightsoulsBlessingId = nightsoulsBlessing;
+    return this;
+  }
+
   done(): CharacterHandle {
     registerCharacter({
       __definition: "characters",
@@ -81,6 +92,7 @@ export class CharacterBuilder {
         maxEnergy: createVariable(this._maxEnergy),
       },
       skillIds: this._skillIds,
+      associatedNightsoulsBlessingId: this._associatedNightsoulsBlessingId,
     });
     return this.id as CharacterHandle;
   }

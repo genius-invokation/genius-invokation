@@ -50,8 +50,10 @@ export function beginRegistration() {
   };
 }
 
-interface CharacterEntry extends Omit<CharacterDefinition, "skills"> {
+interface CharacterEntry
+  extends Omit<CharacterDefinition, "skills" | "associatedNightsoulsBlessing"> {
   skillIds: readonly number[];
+  associatedNightsoulsBlessingId: number | null;
 }
 
 // interface EntityEntry extends Omit<EntityDefinition, "initiativeSkills"> {
@@ -203,34 +205,48 @@ export function endRegistration(): GameDataGetter {
       extensions: selectVersion(version, store.extensions),
       entities: selectVersion(version, store.entities),
       cards: selectVersion(version, store.cards),
-      characters: selectVersion(version, store.characters, (correctCh) => {
-        const initiativeSkills = correctCh.skillIds
-          .map((id) => store.initiativeSkills.get(id))
-          .filter((e) => !!e)
-          .map((e) => getCorrectVersion(e, version))
-          .filter((e) => !!e);
-        const passiveSkills = correctCh.skillIds
-          .map((id) => store.passiveSkills.get(id))
-          .filter((e) => !!e)
-          .map((e) => getCorrectVersion(e, version))
-          .filter((e) => !!e);
-        const passiveSkillVarConfigs = passiveSkills.reduce(
-          (acc, { varConfigs }) => combineObject(acc, varConfigs),
-          <Record<string, VariableConfig>>{},
-        );
-        const skills: readonly SkillDefinition[] = [
-          ...initiativeSkills.map((e) => e.skill),
-          ...passiveSkills.flatMap((e) => e.skills),
-        ];
-        return {
-          ...correctCh,
-          varConfigs: combineObject(
-            correctCh.varConfigs,
-            passiveSkillVarConfigs,
-          ),
-          skills,
-        };
-      }),
+      characters: selectVersion(
+        version,
+        store.characters,
+        (correctCh): CharacterDefinition => {
+          const initiativeSkills = correctCh.skillIds
+            .map((id) => store.initiativeSkills.get(id))
+            .filter((e) => !!e)
+            .map((e) => getCorrectVersion(e, version))
+            .filter((e) => !!e);
+          const passiveSkills = correctCh.skillIds
+            .map((id) => store.passiveSkills.get(id))
+            .filter((e) => !!e)
+            .map((e) => getCorrectVersion(e, version))
+            .filter((e) => !!e);
+          const associatedNightsoulsBlessing =
+            correctCh.associatedNightsoulsBlessingId
+              ? getCorrectVersion(
+                  store.entities.get(
+                    correctCh.associatedNightsoulsBlessingId,
+                  ) ?? [],
+                  version,
+                ) ?? null
+              : null;
+          const passiveSkillVarConfigs = passiveSkills.reduce(
+            (acc, { varConfigs }) => combineObject(acc, varConfigs),
+            <Record<string, VariableConfig>>{},
+          );
+          const skills: readonly SkillDefinition[] = [
+            ...initiativeSkills.map((e) => e.skill),
+            ...passiveSkills.flatMap((e) => e.skills),
+          ];
+          return {
+            ...correctCh,
+            varConfigs: combineObject(
+              correctCh.varConfigs,
+              passiveSkillVarConfigs,
+            ),
+            skills,
+            associatedNightsoulsBlessing,
+          };
+        },
+      ),
     };
     return freeze(data);
   };
