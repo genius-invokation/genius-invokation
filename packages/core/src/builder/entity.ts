@@ -487,7 +487,7 @@ export class EntityBuilder<
     );
   }
 
-  prepare(skill: SkillHandle, hintCount?: number) {
+  prepare(skill: SkillHandle | "normal", hintCount?: number) {
     if (this._type !== "status") {
       throw new GiTcgDataError("Only status can have prepare skill");
     }
@@ -504,7 +504,7 @@ export class EntityBuilder<
       >
     )
       .on("replaceAction")
-      .useSkill(skill)
+      .useSkill(skill, { asPrepared: true })
       .dispose()
       .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
       .dispose()

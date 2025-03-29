@@ -176,7 +176,7 @@ export function initiativeSkillsOfPlayer(
     ...activeCh.definition.skills
       .filter(
         (sk): sk is InitiativeSkillDefinition =>
-          sk.triggerOn === "initiative" && !sk.initiativeSkillConfig.prepared,
+          sk.triggerOn === "initiative" && !sk.initiativeSkillConfig.hidden,
       )
       .map((sk) => ({
         caller: activeCh,
