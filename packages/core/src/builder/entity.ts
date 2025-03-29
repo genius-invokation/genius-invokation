@@ -504,7 +504,7 @@ export class EntityBuilder<
       >
     )
       .on("replaceAction")
-      .useSkill(skill)
+      .useSkill(skill, { asPrepared: true })
       .dispose()
       .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
       .dispose()

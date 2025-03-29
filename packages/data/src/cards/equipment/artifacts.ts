@@ -980,6 +980,6 @@ export const DemonwarriorsFeatherMask = card(312032)
   .since("v5.3.0")
   .costVoid(2)
   .artifact()
-  .on("useTechinque")
+  .on("useTechnique")
   .gainEnergy(1, "@master")
   .done();

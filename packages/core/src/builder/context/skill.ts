@@ -49,6 +49,7 @@ import {
   type SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
   CustomEventEventArg,
+  type UseSkillRequestOption,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -347,6 +348,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         requestBy: null,
         charged: false,
         plunging: false,
+        prepared: false,
         isPreview: this.skillInfo.isPreview,
       }),
     );
@@ -1747,12 +1749,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     return this.enableShortcut();
   }
-  useSkill(skillId: SkillHandle) {
+  useSkill(skillId: SkillHandle, option: UseSkillRequestOption = {}) {
     this.emitEvent(
       "requestUseSkill",
       this.skillInfo,
       this.callerArea.who,
       skillId,
+      option,
     );
     return this.enableShortcut();
   }

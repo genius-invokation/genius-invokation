@@ -123,7 +123,7 @@ export interface InitiativeSkillConfig {
   readonly computed$costSize: number;
   readonly computed$diceCostSize: number;
   readonly gainEnergy: boolean;
-  readonly prepared: boolean;
+  readonly hidden: boolean;
   readonly getTarget: InitiativeSkillTargetGetter;
 }
 
@@ -146,6 +146,8 @@ export interface SkillInfo {
   readonly charged: boolean;
   /** 下落攻击 */
   readonly plunging: boolean;
+  /** 准备技能 */
+  readonly prepared: boolean;
   /**
    * 是否是预览中。部分技能会因是否为预览而采取不同的效果。
    */
@@ -179,6 +181,7 @@ export function defineSkillInfo(init: InitSkillInfo): SkillInfo {
     requestBy: null,
     charged: false,
     plunging: false,
+    prepared: false,
     isPreview: false,
     ...init,
   };
@@ -292,7 +295,7 @@ export interface EnterEventInfo {
 
 export class EventArg {
   _currentSkillInfo: SkillInfo | null = null;
-  constructor(public readonly onTimeState: GameState) { }
+  constructor(public readonly onTimeState: GameState) {}
 
   protected get caller(): AnyState {
     if (this._currentSkillInfo === null) {
@@ -891,8 +894,9 @@ export class ModifyDamage0EventArg extends ModifyDamageEventArgBase {
   changeDamageType(type: Exclude<DamageType, typeof DamageType.Heal>) {
     this._log += `${stringifyState(
       this.caller,
-    )} change damage type from [damage:${super.damageInfo.type
-      }] to [damage:${type}].\n`;
+    )} change damage type from [damage:${
+      super.damageInfo.type
+    }] to [damage:${type}].\n`;
     if (this._newDamageType !== null) {
       console?.warn("Potential error: damage type already changed");
       console?.trace();
@@ -917,8 +921,9 @@ export class ModifyDamageByReactionEventArg extends ModifyDamageEventArgBase {
       case Reaction.Vaporize:
       case Reaction.Overloaded:
         this._increased += 2;
-        this._log += `${damageInfo.log ?? ""
-          }Reaction (${reaction}) increase damage by 2\n`;
+        this._log += `${
+          damageInfo.log ?? ""
+        }Reaction (${reaction}) increase damage by 2\n`;
         break;
       case Reaction.Superconduct:
       case Reaction.ElectroCharged:
@@ -1014,7 +1019,7 @@ export class EnterEventArg extends EntityEventArg {
   }
 }
 
-export class DisposeEventArg extends EntityEventArg<EntityState> { }
+export class DisposeEventArg extends EntityEventArg<EntityState> {}
 
 export class DisposeOrTuneCardEventArg extends EntityEventArg<CardState> {
   constructor(
@@ -1183,7 +1188,7 @@ export class SelectCardEventArg extends PlayerEventArg {
   constructor(
     state: GameState,
     who: 0 | 1,
-    public readonly selectInfo: SelectCardInfo
+    public readonly selectInfo: SelectCardInfo,
   ) {
     super(state, who);
   }
@@ -1200,7 +1205,7 @@ export class CustomEventEventArg<T = unknown> extends EntityEventArg {
   }
 
   toString() {
-    return `${this.customEvent.name}, ${this.arg}`
+    return `${this.customEvent.name}, ${this.arg}`;
   }
 }
 
@@ -1269,7 +1274,7 @@ export type InlineEventNames =
 export type EventArgOf<E extends EventNames> = InstanceType<EventMap[E]>;
 
 class RequestArg {
-  constructor(public readonly via: SkillInfo) { }
+  constructor(public readonly via: SkillInfo) {}
 }
 
 class SwitchHandsRequestArg extends RequestArg {
@@ -1283,19 +1288,19 @@ class SwitchHandsRequestArg extends RequestArg {
 
 export type SelectCardInfo =
   | {
-    readonly type: "createHandCard";
-    readonly cards: readonly CardDefinition[];
-  }
+      readonly type: "createHandCard";
+      readonly cards: readonly CardDefinition[];
+    }
   | {
-    readonly type: "createEntity";
-    readonly cards: readonly EntityDefinition[];
-  }
+      readonly type: "createEntity";
+      readonly cards: readonly EntityDefinition[];
+    }
   | {
-    readonly type: "requestPlayCard";
-    readonly cards: readonly CardDefinition[];
-    /** 使用手牌的目标 */
-    readonly targets: AnyState[];
-  };
+      readonly type: "requestPlayCard";
+      readonly cards: readonly CardDefinition[];
+      /** 使用手牌的目标 */
+      readonly targets: AnyState[];
+    };
 
 class SelectCardRequestArg extends RequestArg {
   constructor(
@@ -1317,11 +1322,17 @@ class RerollRequestArg extends RequestArg {
   }
 }
 
+export interface UseSkillRequestOption {
+  // 该技能是否将作为“准备技能”打出
+  asPrepared?: boolean;
+}
+
 class UseSkillRequestArg extends RequestArg {
   constructor(
     requestBy: SkillInfo,
     public readonly who: 0 | 1,
     public readonly requestingSkillId: number,
+    public readonly requestOption: UseSkillRequestOption,
   ) {
     super(requestBy);
   }
@@ -1406,16 +1417,19 @@ export type SkillDefinition =
 
 export function stringifyDamageInfo(damage: DamageInfo | HealInfo): string {
   if (damage.type === DamageType.Heal) {
-    let result = `${stringifyState(damage.source)} heal ${damage.value
-      } to ${stringifyState(damage.target)}, via skill [skill:${damage.via.definition.id
-      }]`;
+    let result = `${stringifyState(damage.source)} heal ${
+      damage.value
+    } to ${stringifyState(damage.target)}, via skill [skill:${
+      damage.via.definition.id
+    }]`;
     result += ` (${damage.healKind})`;
     return result;
   } else {
-    let result = `${stringifyState(damage.source)} deal ${damage.value
-      } [damage:${damage.type}] to ${stringifyState(
-        damage.target,
-      )}, via skill [skill:${damage.via.definition.id}]`;
+    let result = `${stringifyState(damage.source)} deal ${
+      damage.value
+    } [damage:${damage.type}] to ${stringifyState(
+      damage.target,
+    )}, via skill [skill:${damage.via.definition.id}]`;
     return result;
   }
 }

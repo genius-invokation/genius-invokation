@@ -560,6 +560,7 @@ export class SkillExecutor {
           requestBy: arg.via,
           charged,
           plunging,
+          prepared: arg.requestOption.asPrepared ?? false,
         });
         await this.handleEvent([
           "onBeforeUseSkill",

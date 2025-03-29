@@ -421,20 +421,28 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.prepared
+      !e.skill.prepared
     );
   }),
-  useTechinque: defineDescriptor("onUseSkill", (c, e, r) => {
+  useTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
-      e.isSkillType("technique")
+      e.isSkillType("technique") &&
+      !e.skill.prepared
     );
   }),
   useSkillOrTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
-      !e.skill.definition.initiativeSkillConfig.prepared
+      !e.skill.prepared
+    );
+  }),
+  usePreparedSkill: defineDescriptor("onUseSkill", (c, e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      isCharacterInitiativeSkill(e.skill) &&
+      e.skill.prepared
     );
   }),
   declareEnd: defineDescriptor("onAction", (c, e, r) => {
@@ -1295,7 +1303,7 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
-          prepared: this._prepared,
+          hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
         triggerOn: "initiative",
@@ -1432,7 +1440,7 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
-        prepared: false,
+        hidden: false,
         getTarget: this.buildTargetGetter(),
       },
       filter: this.buildFilter(),
