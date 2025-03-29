@@ -212,7 +212,9 @@ export class CardBuilder<
    * 所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。
    */
   nightsoulTechnique() {
-    return this.technique()
+    return this
+      .unobtainable()
+      .technique()
       .on("consumeNightsoulFinal")
       .do((c) => {
         const st = c.$(`status with tags (nightsoulsBlessing) at @master`);

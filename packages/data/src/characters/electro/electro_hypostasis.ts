@@ -95,7 +95,6 @@ export const RockpaperscissorsComboScissors = skill(24015)
   .type("elemental")
   .prepared()
   .damage(DamageType.Electro, 2)
-  .characterStatus(RockpaperscissorsComboPaperStatus)
   .done();
 
 /**
@@ -105,7 +104,9 @@ export const RockpaperscissorsComboScissors = skill(24015)
  * 本角色将在下次行动时，直接使用技能：猜拳三连击·剪刀。
  */
 export const RockpaperscissorsComboScissorsStatus = status(124011)
-  .prepare(RockpaperscissorsComboScissors)
+  .prepare(RockpaperscissorsComboScissors, {
+    nextStatus: RockpaperscissorsComboPaperStatus
+  })
   .done();
 
 /**

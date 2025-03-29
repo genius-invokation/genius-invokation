@@ -50,6 +50,7 @@ import type {
   HandleT,
   PassiveSkillHandle,
   SkillHandle,
+  StatusHandle,
 } from "./type";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../error";
 import { createVariable, createVariableCanAppend } from "./utils";
@@ -62,6 +63,7 @@ import {
 } from "../base/version";
 import type { TypedSkillContext } from "./context/skill";
 import type { CustomEvent } from "../base/custom_event";
+import type { CreateEntityOptions } from "../mutator";
 
 export interface AppendOptions {
   /** 重复创建时的累积值上限 */
@@ -107,6 +109,12 @@ type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
 
 export const DEFAULT_SNIPPET_NAME = "default" as const;
 export type DefaultCustomEventArg = { readonly _default: unique symbol };
+
+export interface PrepareOption {
+  hintCount?: number;
+  nextStatus?: StatusHandle;
+  nextStatusCreateOpt?: CreateEntityOptions;
+}
 
 export class EntityBuilder<
   CallerType extends "character" | EntityType,
@@ -487,12 +495,12 @@ export class EntityBuilder<
     );
   }
 
-  prepare(skill: SkillHandle | "normal", hintCount?: number) {
+  prepare(skill: SkillHandle | "normal", opt: PrepareOption = {}) {
     if (this._type !== "status") {
       throw new GiTcgDataError("Only status can have prepare skill");
     }
-    if (hintCount) {
-      this.variable("preparingSkillHintCount", hintCount);
+    if (opt.hintCount) {
+      this.variable("preparingSkillHintCount", opt.hintCount);
     }
     return (
       this as unknown as EntityBuilderPublic<
@@ -504,7 +512,12 @@ export class EntityBuilder<
       >
     )
       .on("replaceAction")
-      .useSkill(skill, { asPrepared: true })
+      .do(function (c) {
+        c.useSkill(skill, { asPrepared: true });
+        if (opt.nextStatus) {
+          c.characterStatus(opt.nextStatus, "@master", opt.nextStatusCreateOpt);
+        }
+      })
       .dispose()
       .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
       .dispose()
