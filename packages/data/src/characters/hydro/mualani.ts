@@ -144,6 +144,7 @@ export const Mualani = character(1214)
   .health(10)
   .energy(2)
   .skills(CoolingTreatment, SurfsharkWavebreaker, BoomsharkaLaka)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**

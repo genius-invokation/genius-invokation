@@ -164,6 +164,7 @@ export const Kinich = character(1709)
   .health(10)
   .energy(2)
   .skills(NightsunStyle, CanopyHunterRidingHigh, HailToTheAlmightyDragonlord)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**

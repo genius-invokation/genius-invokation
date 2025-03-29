@@ -161,6 +161,7 @@ export const Kachina = character(1610)
   .health(10)
   .energy(3)
   .skills(Cragbiter, GoGoTurboTwirly, TimeToGetSerious)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
