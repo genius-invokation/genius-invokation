@@ -82,6 +82,7 @@ import type {
   StatusHandle,
   SummonHandle,
   TypedExEntity,
+  EquipmentHandle,
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
@@ -999,6 +1000,17 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     return this.enableShortcut();
   }
+  equip(
+    id: EquipmentHandle,
+    target: CharacterTargetArg = "@self",
+    opt: CreateEntityOptions = {},
+  ) {
+    const targets = this.queryCoerceToCharacters(target);
+    for (const t of targets) {
+      this.createEntity("equipment", id, t.area, opt);
+    }
+    return this.enableShortcut();
+  }
   combatStatus(
     id: CombatStatusHandle,
     where: "my" | "opp" = "my",
@@ -1695,7 +1707,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   /**
-   * 消耗 `count` 点夜魂值
+   * `target` 消耗 `count` 点夜魂值
+   * @param target
    * @param count
    */
   consumeNightsoul(target: CharacterTargetArg, count = 1) {
@@ -1715,6 +1728,30 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.emitEvent("onConsumeNightsoul1", this.state, t.state, info);
         // 不在此处弃置夜魂加持；在相应特技的 onConsumeNightsoul1 事件中处理
       }
+    }
+    return this.enableShortcut();
+  }
+
+  /**
+   * `target` 获得 `count` 点夜魂值（但不超过该角色关联的夜魂值上限）
+   * @param target
+   * @param count
+   */
+  gainNightsoul(target: CharacterTargetArg, count = 1) {
+    const targets = this.queryCoerceToCharacters(target);
+    for (const t of targets) {
+      if (!t.definition.associatedNightsoulsBlessing) {
+        continue;
+      }
+      this.characterStatus(
+        t.definition.associatedNightsoulsBlessing.id as StatusHandle,
+        t.state,
+        {
+          overrideVariables: {
+            nightsoul: count,
+          },
+        },
+      );
     }
     return this.enableShortcut();
   }
@@ -1862,6 +1899,7 @@ type SkillContextMutativeProps =
   | "summon"
   | "combatStatus"
   | "characterStatus"
+  | "equip"
   | "dispose"
   | "transferEntity"
   | "setVariable"
@@ -1870,6 +1908,7 @@ type SkillContextMutativeProps =
   | "consumeUsage"
   | "consumeUsagePerRound"
   | "consumeNightsoul"
+  | "gainNightsoul"
   | "transformDefinition"
   | "absorbDice"
   | "convertDice"

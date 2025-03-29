@@ -196,6 +196,9 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
       ) ?? null
     );
   }
+  hasNightsoulsBlessing() {
+    return this.state.entities.find((v) => v.definition.tags.includes("nightsoulsBlessing"));
+  }
 
   $$<const Q extends string>(arg: Q) {
     return this.skillContext.$$(`(${arg}) at (with id ${this._id})`);
