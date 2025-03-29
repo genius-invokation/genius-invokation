@@ -1749,7 +1749,22 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     return this.enableShortcut();
   }
-  useSkill(skillId: SkillHandle, option: UseSkillRequestOption = {}) {
+  useSkill(skill: SkillHandle | "normal", option: UseSkillRequestOption = {}) {
+    const RET = this.enableShortcut();
+    let skillId: number;
+    if (skill === "normal") {
+      const normalSkill = this.$("my active")!.definition.skills.find(
+        (sk) => sk.initiativeSkillConfig?.skillType === "normal",
+      );
+      if (normalSkill) {
+        skillId = normalSkill.id;
+      } else {
+        this.mutator.log(DetailLogType.Other, `No normal skill found`);
+        return RET;
+      }
+    } else {
+      skillId = skill;
+    }
     this.emitEvent(
       "requestUseSkill",
       this.skillInfo,
@@ -1757,7 +1772,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       skillId,
       option,
     );
-    return this.enableShortcut();
+    return RET;
   }
 
   private getCardsDefinition(cards: (CardHandle | CardDefinition)[]) {
