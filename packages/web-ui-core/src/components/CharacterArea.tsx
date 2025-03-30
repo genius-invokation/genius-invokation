@@ -236,7 +236,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
           <Show when={props.preview && props.preview.newHealth !== null}>
             <VariableDiff
-              class="absolute top-3 left-50% translate-x--50%"
+              class="absolute z-5 top-3 left-50% translate-x--50%"
               oldValue={data().health}
               newValue={props.preview!.newHealth!}
               defeated={props.preview?.defeated}

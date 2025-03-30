@@ -70,7 +70,7 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={props.preview && props.preview.newVariableValue !== null}>
         <VariableDiff
-          class="absolute top-1 left-50% translate-x--50%"
+          class="absolute z-5 top-1 left-50% translate-x--50%"
           oldValue={data().variableValue!}
           newValue={props.preview!.newVariableValue!}
         />
