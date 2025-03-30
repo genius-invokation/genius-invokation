@@ -28,3 +28,10 @@ export {
 export const DEFAULT_ASSETS_MANAGER = new AssetsManager();
 
 export { getNameSync } from "./names";
+export type {
+  CustomActionCard,
+  CustomCharacter,
+  CustomData,
+  CustomEntity,
+  CustomSkill,
+} from "./custom_data";

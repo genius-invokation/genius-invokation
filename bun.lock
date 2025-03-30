@@ -102,10 +102,16 @@
       "dependencies": {
         "@gi-tcg/data": "workspace:*",
       },
+      "devDependencies": {
+        "vite": "^6.0.11",
+      },
+      "peerDependencies": {
+        "@gi-tcg/core": "workspace:*",
+      },
     },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.17.0-5-4-0",
+      "version": "0.17.0-5-5-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",

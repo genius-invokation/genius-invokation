@@ -23,7 +23,7 @@ import type {
 } from "@gi-tcg/static-data";
 import { blobToDataUrl } from "./data_url";
 import { getNameSync } from "./names";
-import type { CustomData } from "./mod";
+import type { CustomData } from "./custom_data";
 
 export type AnyData =
   | ActionCardRawData
