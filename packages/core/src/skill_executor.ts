@@ -601,6 +601,10 @@ export class SkillExecutor {
         }
       } else {
         if (name === "onSwitchActive") {
+          // 处理切人时额外的操作：
+          // - 通知前端
+          // - 设置下落攻击 flag
+          // TODO: 问题：可否将这类逻辑移动到 Mutator 中，直接在 switchActive 内处理？
           this.mutator.notify({
             mutations: [
               {
@@ -613,6 +617,12 @@ export class SkillExecutor {
                   : arg.switchInfo.via?.definition.id,
               },
             ],
+          });
+          this.mutate({
+            type: "setPlayerFlag",
+            who: arg.switchInfo.who,
+            flagName: "canPlunging",
+            value: true,
           });
         }
         using l = this.mutator.subLog(
