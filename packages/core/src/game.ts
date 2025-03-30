@@ -811,16 +811,17 @@ export class Game {
         new ActionEventArg(this.state, actionInfo),
       );
       if (!actionInfo.fast) {
+        // 如果这次战斗行动不是切人，那么取消下落攻击设置
+        this.mutate({
+          type: "setPlayerFlag",
+          who,
+          flagName: "canPlunging",
+          value: actionInfo.type === "switchActive",
+        });
         this.mutate({
           type: "switchTurn",
         });
       }
-      this.mutate({
-        type: "setPlayerFlag",
-        who,
-        flagName: "canPlunging",
-        value: actionInfo.type === "switchActive",
-      });
     }
     if (
       this.state.players[0].declaredEnd &&
@@ -854,38 +855,24 @@ export class Game {
       }
     }
     await this.handleEvent("onRoundEnd", new EventArg(this.state));
-    this.mutate({
-      type: "setPlayerFlag",
-      who: 0,
-      flagName: "hasDefeated",
-      value: false,
-    });
-    this.mutate({
-      type: "setPlayerFlag",
-      who: 1,
-      flagName: "hasDefeated",
-      value: false,
-    });
-    this.mutate({
-      type: "setPlayerFlag",
-      who: 0,
-      flagName: "declaredEnd",
-      value: false,
-    });
-    this.mutate({
-      type: "setPlayerFlag",
-      who: 1,
-      flagName: "declaredEnd",
-      value: false,
-    });
-    this.mutate({
-      type: "clearRoundSkillLog",
-      who: 0,
-    });
-    this.mutate({
-      type: "clearRoundSkillLog",
-      who: 1,
-    });
+    for (const who of [0, 1] as const) {
+      for (const flagName of [
+        "hasDefeated",
+        "canPlunging",
+        "declaredEnd",
+      ] as const) {
+        this.mutate({
+          type: "setPlayerFlag",
+          who,
+          flagName,
+          value: false,
+        });
+      }
+      this.mutate({
+        type: "clearRoundSkillLog",
+        who,
+      });
+    }
     this.mutate({
       type: "stepRound",
     });
