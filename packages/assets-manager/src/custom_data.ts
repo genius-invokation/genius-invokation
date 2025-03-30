@@ -8,7 +8,7 @@ export interface CustomActionCard {
   obtainable: boolean;
   type: CardType;
   tags: CardTag[];
-  playCost: DiceRequirement[];
+  playCost: DiceRequirement;
 }
 
 export interface CustomCharacter {
@@ -27,8 +27,9 @@ export interface CustomSkill {
   id: number;
   name: string;
   rawDescription: string;
-  type: CommonSkillType;
-  playCost: DiceRequirement[];
+  skillIconUrl: string;
+  type: CommonSkillType | "passive";
+  playCost: DiceRequirement;
 }
 
 export interface CustomEntity {
@@ -36,9 +37,10 @@ export interface CustomEntity {
   name: string;
   rawDescription: string;
   type: EntityType;
-  buffIcon?: string;
+  buffIconUrl: string;
   // tags: EntityTag[];
   // hidden: boolean;
+  skills: CustomSkill[];
 }
 
 export interface CustomData {

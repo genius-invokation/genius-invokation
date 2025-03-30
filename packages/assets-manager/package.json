@@ -3,6 +3,9 @@
   "version": "0.17.0",
   "type": "module",
   "description": "Manage assets of GI-TCG for Web app",
+  "dependencies": {
+    "@gi-tcg/typings": "workspace:*"
+  },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
     "@gi-tcg/static-data": "workspace:*"

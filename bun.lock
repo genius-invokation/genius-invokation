@@ -103,6 +103,7 @@
         "@gi-tcg/data": "workspace:*",
       },
       "devDependencies": {
+        "@gi-tcg/assets-manager": "workspace:*",
         "vite": "^6.0.11",
       },
       "peerDependencies": {
