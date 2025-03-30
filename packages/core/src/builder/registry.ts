@@ -199,6 +199,7 @@ function selectVersion<T extends WithVersionInfo>(
 
 export function endRegistration(): GameDataGetter {
   const store = getCurrentStore();
+  currentStore = null;
   return (version = CURRENT_VERSION): GameData => {
     const data: GameData = {
       version,
