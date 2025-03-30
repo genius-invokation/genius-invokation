@@ -24,7 +24,7 @@ export class CustomDataLoader {
       const ctx = new BuilderContext(() => this.nextId++);
       const param = ctx.beginRegistration();
       fn(param);
-      console.log(ctx.endRegistration());
+      console.log(ctx.endRegistration()());
     }
     return this;
   }
@@ -39,9 +39,9 @@ export class CustomDataLoader {
     throw "unimplemented";
   }
 }
-setInterval(() => {
-  const loader = new CustomDataLoader();
-  loader.loadMod(`
+
+const loader = new CustomDataLoader();
+loader.loadMod(`
 const { card, DamageType } = BuilderContext;
 
 const MyCard = card("掀翻牌桌")
@@ -49,4 +49,3 @@ const MyCard = card("掀翻牌桌")
   .damage(DamageType.Piercing, 10, "all opp character")
   .done();
 `);
-});
