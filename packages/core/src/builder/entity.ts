@@ -511,6 +511,7 @@ export class EntityBuilder<
         Snippets
       >
     )
+      .tags("preparingSkill")
       .on("replaceAction")
       .do(function (c) {
         c.useSkill(skill, { asPrepared: true });

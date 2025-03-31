@@ -22,6 +22,7 @@ export type EntityTag =
   | "disableSkill" // 禁用技能（仅角色状态）
   | "immuneControl" // 免疫冻结石化眩晕，禁用效果切人（仅角色状态）
   | "shield" // 护盾
+  | "preparingSkill" // 角色将准备技能（仅角色状态）
   | "eventEffectless" // 禁用事件牌效果（仅出战状态）
   | "normalAsPlunging" // 普通攻击视为下落攻击
   | "nightsoulsBlessing" // 夜魂加持（仅角色状态）
