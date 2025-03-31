@@ -24,7 +24,10 @@
     "@gi-tcg/core": "workspace:*"
   },
   "devDependencies": {
+    "@gi-tcg/assets-manager": "workspace:*",
+    "monaco-editor": "^0.52.2",
+    "solid-js": "^1.9.4",
     "vite": "^6.0.11",
-    "@gi-tcg/assets-manager": "workspace:*"
+    "vite-plugin-solid": "^2.11.1"
   }
 }

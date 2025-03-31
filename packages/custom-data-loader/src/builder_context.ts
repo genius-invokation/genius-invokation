@@ -112,7 +112,7 @@ export class BuilderContext {
     };
   }
   endRegistration() {
-    const data = endRegistration()();
+    const gameData = endRegistration()();
     const customData: CustomData = {
       actionCards: [],
       characters: [],
@@ -130,7 +130,7 @@ export class BuilderContext {
         playCost: new Map(skill.initiativeSkillConfig?.requiredCost),
       };
     };
-    for (const [id, ch] of data.characters) {
+    for (const [id, ch] of gameData.characters) {
       const name = this.names.get(ch.id) ?? "";
       customData.characters.push({
         id,
@@ -144,7 +144,7 @@ export class BuilderContext {
         skills: ch.skills.map(parseSkill),
       });
     }
-    for (const [id, card] of data.cards) {
+    for (const [id, card] of gameData.cards) {
       const name = this.names.get(card.id) ?? "";
       customData.actionCards.push({
         id,
@@ -159,7 +159,7 @@ export class BuilderContext {
         ),
       });
     }
-    for (const [id, et] of data.entities) {
+    for (const [id, et] of gameData.entities) {
       const name = this.names.get(id) ?? "";
       customData.entities.push({
         id,
@@ -170,6 +170,6 @@ export class BuilderContext {
         skills: et.skills.map(parseSkill),
       });
     }
-    return { data, customData };
+    return { gameData, customData };
   }
 }
