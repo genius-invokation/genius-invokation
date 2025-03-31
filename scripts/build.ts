@@ -61,8 +61,13 @@ for await (const pkgPath of new Glob("packages/*").scan({ onlyFiles: false })) {
     continue;
   }
   const packageJson = await Bun.file(packageJsonPath).json();
-  const { name, scripts, dependencies, devDependencies }: PackageJson =
-    packageJson;
+  const {
+    name,
+    scripts,
+    dependencies,
+    peerDependencies,
+    devDependencies,
+  }: PackageJson = packageJson;
   if (!name?.startsWith("@gi-tcg/")) {
     continue;
   }
@@ -75,7 +80,7 @@ for await (const pkgPath of new Glob("packages/*").scan({ onlyFiles: false })) {
   if (scripts?.["build:noTyping"]) {
     buildNoTypingCommand = `bun run build:noTyping`;
   }
-  const deps = { ...dependencies, ...devDependencies };
+  const deps = { ...dependencies, ...peerDependencies, ...devDependencies };
   for (const [depName, depVersion] of Object.entries(deps)) {
     if (depVersion?.startsWith("workspace:*")) {
       depGraphEdges.push([name, depName]);
