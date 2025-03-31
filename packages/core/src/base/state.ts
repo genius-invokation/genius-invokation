@@ -30,6 +30,11 @@ import type {
 } from "./entity";
 import type { GameData } from "../builder/registry";
 import type { ExtensionDefinition } from "./extension";
+import type {
+  SkillDefinition,
+  InitiativeSkillDefinition,
+  TriggeredSkillDefinition,
+} from "./skill";
 
 export interface GameConfig {
   readonly randomSeed: number;
@@ -142,4 +147,7 @@ export type {
   CardType,
   CardTag,
   ExtensionDefinition,
+  SkillDefinition,
+  InitiativeSkillDefinition,
+  TriggeredSkillDefinition,
 };

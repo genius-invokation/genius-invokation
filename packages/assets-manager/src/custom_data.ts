@@ -37,7 +37,7 @@ export interface CustomEntity {
   name: string;
   rawDescription: string;
   type: EntityType;
-  buffIconUrl: string;
+  cardFaceOrBuffIconUrl: string;
   // tags: EntityTag[];
   // hidden: boolean;
   skills: CustomSkill[];

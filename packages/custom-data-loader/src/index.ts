@@ -24,7 +24,8 @@ export class CustomDataLoader {
       const ctx = new BuilderContext(() => this.nextId++);
       const param = ctx.beginRegistration();
       fn(param);
-      console.log(ctx.endRegistration()());
+      const { data, customData } = ctx.endRegistration();
+      console.log(customData);
     }
     return this;
   }

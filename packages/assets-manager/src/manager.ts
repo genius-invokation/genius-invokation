@@ -250,7 +250,7 @@ export class AssetsManager {
         hidden: false,
       };
       this.dataCacheSync.set(et.id, data);
-      this.customDataImageUrls.set(et.id, et.buffIconUrl);
+      this.customDataImageUrls.set(et.id, et.cardFaceOrBuffIconUrl);
     }
   }
 
