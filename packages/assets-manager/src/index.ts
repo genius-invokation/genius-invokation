@@ -35,3 +35,8 @@ export type {
   CustomEntity,
   CustomSkill,
 } from "./custom_data";
+export type {
+  DeckData,
+  DeckDataActionCardInfo,
+  DeckDataCharacterInfo,
+} from "./deck_data";

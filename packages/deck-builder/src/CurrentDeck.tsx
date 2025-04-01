@@ -16,31 +16,32 @@
 import { For, Index, Show, createEffect } from "solid-js";
 import type { AllCardsProps } from "./AllCards";
 import { Card } from "./Card";
-import {
-  c as characters,
-  a as actionCards,
-} from "./data.json" /*  with { type: "json" } */;
 import { createStore, produce } from "solid-js/store";
-import { CHARACTER_CARDS } from "./AllCharacterCards";
-import { ACTION_CARDS } from "./AllActionCards";
-
-type Character = (typeof characters)[0];
-type ActionCard = (typeof actionCards)[0];
+import type {
+  DeckDataActionCardInfo,
+  DeckDataCharacterInfo,
+} from "@gi-tcg/assets-manager";
 
 export function CurrentDeck(props: AllCardsProps) {
   const [current, setCurrent] = createStore({
-    characters: Array.from({ length: 3 }, () => null) as (Character | null)[],
-    cards: Array.from({ length: 30 }, () => null) as (ActionCard | null)[],
+    characters: Array.from(
+      { length: 3 },
+      () => null,
+    ) as (DeckDataCharacterInfo | null)[],
+    cards: Array.from(
+      { length: 30 },
+      () => null,
+    ) as (DeckDataActionCardInfo | null)[],
   });
 
   createEffect(() => {
     const selectedChs = props.deck.characters
-      .map((id) => CHARACTER_CARDS[id])
-      .filter((ch): ch is Character => typeof ch !== "undefined");
+      .map((id) => props.characters.get(id))
+      .filter((ch): ch is DeckDataCharacterInfo => typeof ch !== "undefined");
     const selectedAcs = props.deck.cards
-      .map((id) => ACTION_CARDS[id])
-      .filter((ac): ac is ActionCard => typeof ac !== "undefined")
-      .toSorted((a, b) => a.i - b.i);
+      .map((id) => props.actionCards.get(id))
+      .filter((ac): ac is DeckDataActionCardInfo => typeof ac !== "undefined")
+      .toSorted((a, b) => a.id - b.id);
     setCurrent(
       produce((prev) => {
         for (let i = 0; i < 3; i++) {
@@ -58,8 +59,8 @@ export function CurrentDeck(props: AllCardsProps) {
     props.onChangeDeck?.({
       ...props.deck,
       characters: current.characters
-        .filter((ch): ch is Character => ch !== null)
-        .map((ch) => ch.i),
+        .filter((ch): ch is DeckDataCharacterInfo => ch !== null)
+        .map((ch) => ch.id),
     });
   };
   const removeActionCard = (idx: number) => {
@@ -67,8 +68,8 @@ export function CurrentDeck(props: AllCardsProps) {
     props.onChangeDeck?.({
       ...props.deck,
       cards: current.cards
-        .filter((ac): ac is ActionCard => ac !== null)
-        .map((ac) => ac.i),
+        .filter((ac): ac is DeckDataActionCardInfo => ac !== null)
+        .map((ac) => ac.id),
     });
   };
 
@@ -80,7 +81,7 @@ export function CurrentDeck(props: AllCardsProps) {
             {(ch, idx) => (
               <li
                 class="w-[75px] aspect-ratio-[7/12] relative group"
-                data-warn={ch && ch.v > props.version}
+                data-warn={ch && ch.version > props.version}
                 onClick={() => ch && removeCharacter(idx())}
               >
                 <Show
@@ -91,7 +92,7 @@ export function CurrentDeck(props: AllCardsProps) {
                 >
                   {(ch) => (
                     <>
-                      <Card id={ch().i} type="character" name={ch().n} />
+                      <Card id={ch().id} type="character" name={ch().name} />
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
                         &#9888;
                       </div>
@@ -112,7 +113,7 @@ export function CurrentDeck(props: AllCardsProps) {
             {(ac, idx) => (
               <li
                 class="w-[50px] aspect-ratio-[7/12] relative group"
-                data-warn={ac && ac.v > props.version}
+                data-warn={ac && ac.version > props.version}
                 onClick={() => ac && removeActionCard(idx())}
               >
                 <Show
@@ -123,7 +124,7 @@ export function CurrentDeck(props: AllCardsProps) {
                 >
                   {(ac) => (
                     <>
-                      <Card id={ac().i} type="actionCard" name={ac().n} />
+                      <Card id={ac().id} type="actionCard" name={ac().name} />
                       <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl group-data-[warn=true]:block hidden pointer-events-none">
                         &#9888;
                       </div>

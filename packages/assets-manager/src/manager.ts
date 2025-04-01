@@ -23,7 +23,7 @@ import type {
   SkillRawData,
 } from "@gi-tcg/static-data";
 import { blobToDataUrl } from "./data_url";
-import { getNameSync } from "./names";
+import { getAllNamesSync, getNameSync } from "./names";
 import type { CustomData, CustomSkill } from "./custom_data";
 import type {
   CardTag,
@@ -34,6 +34,7 @@ import type {
   EntityType,
 } from "@gi-tcg/core";
 import { DiceType } from "@gi-tcg/typings";
+import { getDeckData, type DeckData } from "./deck_data";
 
 export type AnyData =
   | ActionCardRawData
@@ -68,6 +69,7 @@ export class AssetsManager {
   private readonly dataCache = new Map<number, Promise<AnyData>>();
   private readonly imageCacheSync = new Map<number, Blob>();
   private readonly imageCache = new Map<number, Promise<Blob>>();
+  private readonly customDataNames = new Map<number, string>();
   private readonly customDataImageUrls = new Map<number, string>();
   private readonly options: AssetsManagerOption;
 
@@ -197,6 +199,7 @@ export class AssetsManager {
           targetList: [],
         };
         this.dataCacheSync.set(skill.id, data);
+        this.customDataNames.set(skill.id, skill.name);
         this.customDataImageUrls.set(skill.id, skill.skillIconUrl);
         skills.push(data);
       }
@@ -216,6 +219,7 @@ export class AssetsManager {
         skills: setupSkill(ch.skills),
       };
       this.dataCacheSync.set(ch.id, data);
+      this.customDataNames.set(ch.id, ch.name);
       this.customDataImageUrls.set(ch.id, ch.cardFaceUrl);
     }
     for (const ac of data.actionCards) {
@@ -235,6 +239,7 @@ export class AssetsManager {
         relatedCharacterTags: [],
       };
       this.dataCacheSync.set(ac.id, data);
+      this.customDataNames.set(ac.id, ac.name);
       this.customDataImageUrls.set(ac.id, ac.cardFaceUrl);
     }
     for (const et of data.entities) {
@@ -250,6 +255,7 @@ export class AssetsManager {
         hidden: false,
       };
       this.dataCacheSync.set(et.id, data);
+      this.customDataNames.set(et.id, et.name);
       this.customDataImageUrls.set(et.id, et.cardFaceOrBuffIconUrl);
     }
   }
@@ -324,52 +330,59 @@ export class AssetsManager {
   }
 
   getNameSync(id: number) {
-    return getNameSync(id);
+    return this.customDataNames.get(id) ?? getNameSync(id);
   }
 
-  private prepareSyncRequested = false;
   async prepareForSync(options: PrepareForSyncOptions = {}): Promise<void> {
-    if (this.prepareSyncRequested) {
-      return;
+    if (this.preparedSyncData) {
+      return this.preparedSyncData;
     }
-    this.prepareSyncRequested = true;
-    const { apiEndpoint } = this.options;
-    const dataUrl = `${apiEndpoint}/data`;
-    const imageUrl = `${apiEndpoint}/images`;
-    const dataPromise = fetch(dataUrl).then((r) => r.json());
-    const imagePromise = options.includeImages
-      ? fetch(imageUrl).then((r) => r.json())
-      : {};
-    const [data, images] = (await Promise.all([dataPromise, imagePromise])) as [
-      AnyData[],
-      Record<string, string>,
-    ];
-
-    // Data
-    for (const d of data) {
-      if (!this.dataCacheSync.has(d.id)) {
-        this.dataCacheSync.set(d.id, d);
+    await this.prepareSyncData();
+    if (options.includeImages) {
+      if (this.preparedSyncImages) {
+        return this.preparedSyncImages;
       }
+      await this.prepareSyncImages(options.imageProgressCallback);
     }
+  }
 
-    // Images
-    const imageUrls = [
-      ...Object.keys(images).map(
-        (id) =>
-          [Number(id), `${DEFAULT_ASSET_API_ENDPOINT}/images/${id}`] as const,
-      ),
-      ...this.customDataImageUrls.entries(),
-    ];
-    const total = imageUrls.length;
-    let current = 0;
-    const imagePromises = imageUrls.map(async ([id, url]) => {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      this.imageCacheSync.set(Number(id), blob);
-      current++;
-      options.imageProgressCallback?.({ current, total });
-    });
-    await Promise.all(imagePromises);
+  private preparedSyncData: Promise<void> | undefined;
+  private prepareSyncData() {
+    return (this.preparedSyncData ??= (async () => {
+      const dataUrl = `${this.options.apiEndpoint}/data`;
+      const data = await fetch(dataUrl).then((r) => r.json());
+      // Data
+      for (const d of data) {
+        if (!this.dataCacheSync.has(d.id)) {
+          this.dataCacheSync.set(d.id, d);
+        }
+      }
+    })());
+  }
+
+  private preparedSyncImages: Promise<void> | undefined;
+  private prepareSyncImages(progressCallback?: (progress: Progress) => void) {
+    return (this.preparedSyncImages ??= (async () => {
+      const imageUrl = `${this.options.apiEndpoint}/images`;
+      const images = await fetch(imageUrl).then((r) => r.json());
+      const imageUrls = [
+        ...Object.keys(images).map(
+          (id) =>
+            [Number(id), `${DEFAULT_ASSET_API_ENDPOINT}/images/${id}`] as const,
+        ),
+        ...this.customDataImageUrls.entries(),
+      ];
+      const total = imageUrls.length;
+      let current = 0;
+      const imagePromises = imageUrls.map(async ([id, url]) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        this.imageCacheSync.set(Number(id), blob);
+        current++;
+        progressCallback?.({ current, total });
+      });
+      await Promise.all(imagePromises);
+    })());
   }
 
   getDataSync(id: number): AnyData {
@@ -391,5 +404,18 @@ export class AssetsManager {
   getImageUrlSync(id: number): string {
     const image = this.getImageSync(id);
     return blobToDataUrl(image);
+  }
+
+  async getDeckData(): Promise<DeckData> {
+    await this.prepareForSync();
+    const characters = this.dataCacheSync
+      .values()
+      .filter((data: any) => data.category === "characters")
+      .toArray() as CharacterRawData[];
+    const actionCards = this.dataCacheSync
+      .values()
+      .filter((data: any) => data.category === "action_cards")
+      .toArray() as ActionCardRawData[];
+    return getDeckData(characters, actionCards);
   }
 }

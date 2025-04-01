@@ -16,10 +16,10 @@
 import { createSignal, Index, Show } from "solid-js";
 import { AllCharacterCards } from "./AllCharacterCards";
 import { AllActionCards } from "./AllActionCards";
-import { v as ALL_VERSIONS } from "./data.json" /*  with { type: "json" } */;
 import type { Deck } from "@gi-tcg/utils";
+import type { DeckData } from "@gi-tcg/assets-manager";
 
-export interface AllCardsProps {
+export interface AllCardsProps extends DeckData {
   deck: Deck;
   version: number;
   versionSpecified?: boolean;
@@ -52,7 +52,7 @@ export function AllCards(props: AllCardsProps) {
           when={!props.versionSpecified}
           fallback={
             <span class="text-gray-500">
-              当前仅显示 {ALL_VERSIONS[props.version]} 及更低版本
+              当前仅显示 {props.allVersions[props.version]} 及更低版本
             </span>
           }
         >
@@ -61,7 +61,7 @@ export function AllCards(props: AllCardsProps) {
             value={props.version}
             onChange={(e) => props.onSetVersion?.(Number(e.target.value))}
           >
-            <Index each={ALL_VERSIONS}>
+            <Index each={props.allVersions}>
               {(versionStr, index) => (
                 <option value={index}>{versionStr()}</option>
               )}

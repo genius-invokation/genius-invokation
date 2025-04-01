@@ -21,13 +21,18 @@ import {
   untrack,
   createSignal,
   createEffect,
+  Show,
+  createResource,
 } from "solid-js";
 import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
 import type { Deck } from "@gi-tcg/utils";
-import { v as ALL_VERSIONS } from "./data.json" /*  with { type: "json" } */;
 import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
-import { DEFAULT_ASSETS_MANAGER, type AssetsManager } from "@gi-tcg/assets-manager";
+import {
+  DEFAULT_ASSETS_MANAGER,
+  type AssetsManager,
+  type DeckData,
+} from "@gi-tcg/assets-manager";
 
 export interface DeckBuilderProps extends JSX.HTMLAttributes<HTMLDivElement> {
   assetsManager?: AssetsManager;
@@ -58,6 +63,10 @@ export function DeckBuilder(props: DeckBuilderProps) {
   const [local, rest] = splitProps(props, ["assetsManager", "class"]);
   let container!: HTMLDivElement;
 
+  const [deckData] = createResource(() => {
+    return (local.assetsManager ?? DEFAULT_ASSETS_MANAGER).getDeckData();
+  });
+
   const { CardDataViewer, showCard, showCharacter, hide } =
     createCardDataViewer({
       assetsManager: untrack(() => local.assetsManager),
@@ -65,20 +74,26 @@ export function DeckBuilder(props: DeckBuilderProps) {
   const [cardDataViewerOffsetX, setCardDataViewerOffsetX] = createSignal(0);
   const [cardDataViewerOffsetY, setCardDataViewerOffsetY] = createSignal(0);
 
-  const [version, setVersion] = createSignal(ALL_VERSIONS.length - 1);
+  const [version, setVersion] = createSignal(0);
+  const allVersions = () => deckData()?.allVersions;
   const versionSpecified = () =>
-    !!props.version && ALL_VERSIONS.includes(props.version);
+    !!props.version && allVersions()?.includes(props.version);
 
   createEffect(() => {
-    if (versionSpecified()) {
-      setVersion(ALL_VERSIONS.indexOf(props.version!));
+    if (deckData.state === "ready") {
+      if (versionSpecified()) {
+        setVersion(deckData().allVersions.indexOf(props.version!));
+      } else {
+        setVersion(deckData().allVersions.length - 1);
+      }
     }
   });
 
   return (
     <DeckBuilderContext.Provider
       value={{
-        assetsManager: untrack(() => local.assetsManager) ?? DEFAULT_ASSETS_MANAGER,
+        assetsManager:
+          untrack(() => local.assetsManager) ?? DEFAULT_ASSETS_MANAGER,
         showCard: (e, type, id) => {
           const rect = (e.target as HTMLElement).getBoundingClientRect();
           const containerRect = container.getBoundingClientRect();
@@ -108,19 +123,23 @@ export function DeckBuilder(props: DeckBuilderProps) {
           {...rest}
           onClick={() => hide()}
         >
-          <AllCards
-            version={version()}
-            versionSpecified={versionSpecified()}
-            deck={props.deck ?? EMPTY_DECK}
-            onChangeDeck={props.onChangeDeck}
-            onSetVersion={setVersion}
-          />
+          <Show when={deckData.state === "ready"} fallback="Loading...">
+            <AllCards
+              version={version()}
+              versionSpecified={versionSpecified()}
+              deck={props.deck ?? EMPTY_DECK}
+              onChangeDeck={props.onChangeDeck}
+              onSetVersion={setVersion}
+              {...deckData()!}
+            />
+          </Show>
           <div class="b-r-1 b-gray" />
           <div />
           <CurrentDeck
             version={version()}
             deck={props.deck ?? EMPTY_DECK}
             onChangeDeck={props.onChangeDeck}
+            {...deckData()!}
           />
         </div>
         <div

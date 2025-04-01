@@ -14,42 +14,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { For, Show, createSignal } from "solid-js";
-import {
-  T as tagMap,
-  c as characters,
-} from "./data.json" /*  with { type: "json" } */;
 import { Card } from "./Card";
 import type { AllCardsProps } from "./AllCards";
 import { DiceIcon } from "./DiceIcon";
 import { Key } from "@solid-primitives/keyed";
+import type { DeckDataCharacterInfo } from "@gi-tcg/assets-manager";
 
 const CHARACTER_ELEMENT_TYPES = {
-  1: tagMap.indexOf("GCG_TAG_ELEMENT_CRYO"),
-  2: tagMap.indexOf("GCG_TAG_ELEMENT_HYDRO"),
-  3: tagMap.indexOf("GCG_TAG_ELEMENT_PYRO"),
-  4: tagMap.indexOf("GCG_TAG_ELEMENT_ELECTRO"),
-  5: tagMap.indexOf("GCG_TAG_ELEMENT_ANEMO"),
-  6: tagMap.indexOf("GCG_TAG_ELEMENT_GEO"),
-  7: tagMap.indexOf("GCG_TAG_ELEMENT_DENDRO"),
-};
-
-export const CHARACTER_CARDS = Object.fromEntries(
-  characters.map((ch) => [ch.i, ch] as const),
-);
-type Character = (typeof characters)[0];
+  1: "GCG_TAG_ELEMENT_CRYO",
+  2: "GCG_TAG_ELEMENT_HYDRO",
+  3: "GCG_TAG_ELEMENT_PYRO",
+  4: "GCG_TAG_ELEMENT_ELECTRO",
+  5: "GCG_TAG_ELEMENT_ANEMO",
+  6: "GCG_TAG_ELEMENT_GEO",
+  7: "GCG_TAG_ELEMENT_DENDRO",
+} as Record<number, string>;
 
 export function AllCharacterCards(props: AllCardsProps) {
-  const [chTag, setChTag] = createSignal<number | null>(0);
-  const shown = (ch: Character) => {
+  const [chTag, setChTag] = createSignal<number | null>(null);
+  const shown = (ch: DeckDataCharacterInfo) => {
     const tag = chTag();
-    return ch.v <= props.version && (tag === null || ch.t.includes(tag));
+    return (
+      ch.version <= props.version &&
+      (tag === null || ch.tags.includes(CHARACTER_ELEMENT_TYPES[tag]))
+    );
   };
 
-  const toggleChTag = (tagIdx: number) => {
-    if (chTag() === tagIdx) {
+  const toggleChTag = (tag: number) => {
+    if (chTag() === tag) {
       setChTag(null);
     } else {
-      setChTag(tagIdx);
+      setChTag(tag);
     }
   };
 
@@ -84,8 +79,8 @@ export function AllCharacterCards(props: AllCardsProps) {
         <For each={Object.entries(CHARACTER_ELEMENT_TYPES)}>
           {([imgIdx, tagIdx]) => (
             <button
-              onClick={() => toggleChTag(tagIdx)}
-              data-selected={chTag() === tagIdx}
+              onClick={() => toggleChTag(Number(imgIdx))}
+              data-selected={chTag() === Number(imgIdx)}
               class="data-[selected=true]:bg-black w-5 h-5"
             >
               <DiceIcon id={Number(imgIdx)} />
@@ -94,22 +89,22 @@ export function AllCharacterCards(props: AllCardsProps) {
         </For>
       </div>
       <ul class="flex-grow overflow-auto flex flex-row flex-wrap gap-2">
-        <Key each={characters} by="i">
+        <Key each={props.characters.values().toArray()} by="id">
           {(ch) => (
             <li
               class="hidden data-[shown=true]-block relative cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-60 data-[disabled=true]:filter-none hover:brightness-110 transition-all"
               data-shown={shown(ch())}
-              data-disabled={fullCharacters() && !selected(ch().i)}
-              onClick={() => toggleCharacter(ch().i)}
+              data-disabled={fullCharacters() && !selected(ch().id)}
+              onClick={() => toggleCharacter(ch().id)}
             >
               <div class="w-[60px]">
                 <Card
-                  id={ch().i}
+                  id={ch().id}
                   type="character"
-                  name={ch().n}
-                  selected={selected(ch().i)}
+                  name={ch().name}
+                  selected={selected(ch().id)}
                 />
-                <Show when={selected(ch().i)}>
+                <Show when={selected(ch().id)}>
                   <div class="absolute left-1/2 top-1/2 translate-x--1/2 translate-y--1/2 text-2xl z-1 pointer-events-none">
                     &#9989;
                   </div>
