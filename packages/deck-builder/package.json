@@ -18,9 +18,8 @@
     "dev": "bunx --bun vite",
     "preview": "bunx --bun vite preview",
     "check": "tsc --noEmit",
-    "build:data": "bun scripts/export_data.ts",
     "build:vite": "bunx --bun vite build",
-    "build": "bun build:data && bun build:vite"
+    "build": "bun build:vite"
   },
   "peerDependencies": {
     "solid-js": "^1.9.4"

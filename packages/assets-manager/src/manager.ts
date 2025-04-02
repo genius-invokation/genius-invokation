@@ -207,6 +207,8 @@ export class AssetsManager {
     };
     for (const ch of data.characters) {
       const data: CharacterRawData = {
+        // @ts-expect-error
+        category: "characters",
         id: ch.id,
         name: ch.name,
         englishName: "",
@@ -224,6 +226,8 @@ export class AssetsManager {
     }
     for (const ac of data.actionCards) {
       const data: ActionCardRawData = {
+        // @ts-expect-error
+        category: "action_cards",
         id: ac.id,
         type: CARD_TYPE_MAP[ac.type],
         name: ac.name,
@@ -244,6 +248,8 @@ export class AssetsManager {
     }
     for (const et of data.entities) {
       const data: EntityRawData = {
+        // @ts-expect-error
+        category: "entities",
         id: et.id,
         type: ENTITY_TYPE_MAP[et.type],
         name: et.name,

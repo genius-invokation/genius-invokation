@@ -20,8 +20,23 @@ import {
 import * as originalBuilderExport from "@gi-tcg/core/builder";
 import { SkillDefinition } from "@gi-tcg/core";
 
+function b64EncodeUnicode(str: string) {
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      return String.fromCharCode(parseInt(p1, 16));
+    }),
+  );
+}
+
 function placeholderImageUrl(name: string) {
-  return `https://placehold.co/360x210?text=${encodeURIComponent(name)}`;
+  return `data:image/svg+xml;base64,${b64EncodeUnicode(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="210" height="360">
+      <rect width="210" height="360" fill="#ddd" />
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="32" fill="#333">
+        ${name}
+      </text>
+    </svg>
+  `)}`;
 }
 
 export class BuilderContext {

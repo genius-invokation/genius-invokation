@@ -23,6 +23,8 @@ import {
   createEffect,
   Show,
   createResource,
+  Switch,
+  Match,
 } from "solid-js";
 import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
@@ -123,16 +125,26 @@ export function DeckBuilder(props: DeckBuilderProps) {
           {...rest}
           onClick={() => hide()}
         >
-          <Show when={deckData.state === "ready"} fallback="Loading...">
-            <AllCards
-              version={version()}
-              versionSpecified={versionSpecified()}
-              deck={props.deck ?? EMPTY_DECK}
-              onChangeDeck={props.onChangeDeck}
-              onSetVersion={setVersion}
-              {...deckData()!}
-            />
-          </Show>
+          <Switch>
+            <Match when={deckData.loading}>
+              <div class="flex-grow">Loading cards...</div>
+            </Match>
+            <Match when={deckData.error}>
+              <div class="flex-grow">Load data errored!</div>
+            </Match>
+            <Match when={deckData()}>
+              {(deckData) => (
+                <AllCards
+                  version={version()}
+                  versionSpecified={versionSpecified()}
+                  deck={props.deck ?? EMPTY_DECK}
+                  onChangeDeck={props.onChangeDeck}
+                  onSetVersion={setVersion}
+                  {...deckData()!}
+                />
+              )}
+            </Match>
+          </Switch>
           <div class="b-r-1 b-gray" />
           <div />
           <CurrentDeck

@@ -15,7 +15,7 @@
 
 import * as monaco from "monaco-editor";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-import { Show, createEffect, createSignal, onMount } from "solid-js";
+import { Show, createEffect, createSignal, on, onMount } from "solid-js";
 import { CustomDataLoader } from "..";
 import { render } from "solid-js/web";
 
@@ -155,6 +155,14 @@ const MyCard = card("掀翻牌桌")
     
     gameInstance.start();
   };
+
+  createEffect(on(code, () => {
+    setStep1Complete(false);
+  }));
+
+  createEffect(on([deck1, deck2], () => {
+    setStep2Complete(false);
+  }));
 
   return (
     <div class="app">

@@ -29,8 +29,8 @@ export function getDeckData(
   characters: CharacterRawData[],
   actionCards: ActionCardRawData[],
 ): DeckData {
-  const chs = characters.filter((ch) => typeof ch.shareId !== "undefined");
-  const acs = actionCards.filter((ac) => typeof ac.shareId !== "undefined");
+  const chs = characters.filter((ch) => ch.obtainable);
+  const acs = actionCards.filter((ac) => ac.obtainable);
 
   const allTags = [...new Set([...chs, ...acs].flatMap((x) => x.tags))];
 
