@@ -1,0 +1,33 @@
+{
+  "name": "@gi-tcg/custom-data-loader",
+  "version": "0.17.0+gi-5-4-0",
+  "description": "Provides an easy way to load your custom data for GI-TCG",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "bun": "./src/index.ts",
+      "development": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "check": "tsc --noEmit",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@gi-tcg/data": "workspace:*"
+  },
+  "peerDependencies": {
+    "@gi-tcg/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@gi-tcg/assets-manager": "workspace:*",
+    "monaco-editor": "^0.52.2",
+    "solid-js": "^1.9.4",
+    "vite": "^6.0.11",
+    "vite-plugin-solid": "^2.11.1"
+  }
+}

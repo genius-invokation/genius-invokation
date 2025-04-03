@@ -44,5 +44,5 @@ export {
   createCustomEvent as customEvent,
 } from "../base/custom_event";
 
-export { diceCostOfCard } from "../utils";
+export { playSkillOfCard, diceCostOfCard } from "../utils";
 export { flip, pair } from "@gi-tcg/utils";

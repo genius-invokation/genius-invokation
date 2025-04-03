@@ -17,6 +17,9 @@
     "packages/assets-manager": {
       "name": "@gi-tcg/assets-manager",
       "version": "0.17.0",
+      "dependencies": {
+        "@gi-tcg/typings": "workspace:*",
+      },
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -96,9 +99,26 @@
         "prettier": "3.1.1",
       },
     },
+    "packages/custom-data-loader": {
+      "name": "@gi-tcg/custom-data-loader",
+      "version": "0.17.0-5-4-0",
+      "dependencies": {
+        "@gi-tcg/data": "workspace:*",
+      },
+      "devDependencies": {
+        "@gi-tcg/assets-manager": "workspace:*",
+        "monaco-editor": "^0.52.2",
+        "solid-js": "^1.9.4",
+        "vite": "^6.0.11",
+        "vite-plugin-solid": "^2.11.1",
+      },
+      "peerDependencies": {
+        "@gi-tcg/core": "workspace:*",
+      },
+    },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.17.0-5-4-0",
+      "version": "0.17.0-5-5-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -756,6 +776,8 @@
     "@gi-tcg/config": ["@gi-tcg/config@workspace:packages/config"],
 
     "@gi-tcg/core": ["@gi-tcg/core@workspace:packages/core"],
+
+    "@gi-tcg/custom-data-loader": ["@gi-tcg/custom-data-loader@workspace:packages/custom-data-loader"],
 
     "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data"],
 
@@ -1944,6 +1966,8 @@
     "mnemonist": ["mnemonist@0.39.6", "", { "dependencies": { "obliterator": "^2.0.1" } }, "sha512-A/0v5Z59y63US00cRSLiloEIw3t5G+MiKz4BhX21FI+YBJXBOGW0ohFxTxO08dsOYlzxo87T7vGfZKYp2bcAWA=="],
 
     "module-details-from-path": ["module-details-from-path@1.0.3", "", {}, "sha512-ySViT69/76t8VhE1xXHK6Ch4NcDd26gx0MzKXLO+F7NOtnqH68d9zF94nT8ZWSxXh8ELOERsnJO/sWt1xZYw5A=="],
+
+    "monaco-editor": ["monaco-editor@0.52.2", "", {}, "sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ=="],
 
     "mrmime": ["mrmime@2.0.0", "", {}, "sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw=="],
 

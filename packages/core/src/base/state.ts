@@ -15,15 +15,26 @@
 
 import { DiceType } from "@gi-tcg/typings";
 
-import type { CardDefinition } from "./card";
-import type { CharacterDefinition, CharacterVariableConfigs } from "./character";
+import type { CardDefinition, CardType, CardTag } from "./card";
+import type {
+  CharacterDefinition,
+  CharacterTag,
+  CharacterVariableConfigs,
+} from "./character";
 import type {
   EntityDefinition,
+  EntityTag,
+  EntityType,
   EntityVariableConfigs,
   VariableOfConfig,
 } from "./entity";
 import type { GameData } from "../builder/registry";
 import type { ExtensionDefinition } from "./extension";
+import type {
+  SkillDefinition,
+  InitiativeSkillDefinition,
+  TriggeredSkillDefinition,
+} from "./skill";
 
 export interface GameConfig {
   readonly randomSeed: number;
@@ -125,10 +136,18 @@ export function stringifyState(st: AnyState): string {
   return `[${type}:${st.definition.id}](${st.id})`;
 }
 
-export {
-  type GameData,
-  type CharacterDefinition,
-  type EntityDefinition,
-  type CardDefinition,
-  type ExtensionDefinition,
+export type {
+  GameData,
+  CharacterDefinition,
+  CharacterTag,
+  EntityDefinition,
+  EntityType,
+  EntityTag,
+  CardDefinition,
+  CardType,
+  CardTag,
+  ExtensionDefinition,
+  SkillDefinition,
+  InitiativeSkillDefinition,
+  TriggeredSkillDefinition,
 };

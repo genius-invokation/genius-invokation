@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <title>gi-tcg custom data loader ui</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      #root {
+        min-height: 100vh;
+        width: 100vw;
+      }
+      .app {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .tabs {
+        display: flex;
+        height: 3rem;
+        width: 100%;
+        background-color: #f0f0f0;
+        border-bottom: 1px solid #ccc;
+        position: fixed;
+        z-index: 9999;
+      }
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-right: 2px;
+        background-color: #e0e0e0;
+        border-radius: 5px 5px 0 0;
+      }
+      .tab.active {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-bottom: none;
+      }
+      .tab.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .content {
+        margin-top: 3rem;
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: clip;
+      }
+      /* 标签内容的显示和隐藏 */
+      .tab-content {
+        display: none;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+      }
+      .tab-content.active {
+        display: flex;
+      }
+      .editor {
+        flex: 1;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      button:not(.gi-tcg-chessboard-new *) {
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      .deck-preview {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .game-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 1rem;
+      }
+      .game-board {
+        flex: 1;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+      }
+      dialog {
+        width: 80%;
+        height: 80%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+      }
+      dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .dialog-content {
+        height: calc(100% - 50px);
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .gi-tcg-deck-builder {
+        min-height: 0;
+      }
+      .gi-tcg-chessboard-new {
+        height: 0;
+      }
+      .dialog-buttons {
+        text-align: left;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/dev.tsx"></script>
+  </body>
+</html>

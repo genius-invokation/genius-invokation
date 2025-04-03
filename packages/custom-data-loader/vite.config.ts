@@ -13,30 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { AssetsManager } from "./manager";
+import { defineConfig } from "vite";
+import solid from "vite-plugin-solid";
 
-export {
-  AssetsManager,
-  type GetDataOptions,
-  type GetImageOptions,
-  type AnyData,
-  type Progress,
-  type PrepareForSyncOptions,
-  type AssetsManagerOption,
-} from "./manager";
-
-export const DEFAULT_ASSETS_MANAGER = new AssetsManager();
-
-export { getNameSync } from "./names";
-export type {
-  CustomActionCard,
-  CustomCharacter,
-  CustomData,
-  CustomEntity,
-  CustomSkill,
-} from "./custom_data";
-export type {
-  DeckData,
-  DeckDataActionCardInfo,
-  DeckDataCharacterInfo,
-} from "./deck_data";
+export default defineConfig({
+  esbuild: {
+    target: "es2022"
+  },
+  plugins: [solid()],
+});

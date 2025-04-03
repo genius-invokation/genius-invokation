@@ -251,7 +251,7 @@ export function Card(props: CardProps) {
         size={36}
         realCost={realCost()}
       />
-      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4 rounded" />
+      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
     </div>
   );
 }
