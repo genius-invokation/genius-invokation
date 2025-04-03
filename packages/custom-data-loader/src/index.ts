@@ -84,13 +84,3 @@ export class CustomDataLoader {
     return this.customData;
   }
 }
-
-const loader = new CustomDataLoader();
-loader.loadMod(`
-const { card, DamageType } = BuilderContext;
-
-const MyCard = card("掀翻牌桌")
-  .description("大人时代变了！")
-  .damage(DamageType.Piercing, 10, "all opp character")
-  .done();
-`);

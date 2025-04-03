@@ -15,6 +15,7 @@
 
 import * as monaco from "monaco-editor";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import runtimeDts from "../dist/runtime.d.ts?raw";
 
 import {
   Show,
@@ -49,7 +50,11 @@ monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
 monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
   target: monaco.languages.typescript.ScriptTarget.ESNext,
   allowNonTsExtensions: true,
+  strict: true,
+  skipLibCheck: true,
 });
+const libUri = "ts:runtime.d.ts";
+monaco.languages.typescript.javascriptDefaults.addExtraLib(runtimeDts, libUri);
 
 const root = document.querySelector("#root")!;
 
@@ -82,7 +87,7 @@ const App = () => {
   const [step2Complete, setStep2Complete] = createSignal(false);
 
   // 步骤1：Mod代码编辑器
-  const [code, setCode] = createSignal(`// 在这里编写你的mod代码
+  const [code, setCode] = createSignal(`{
 // 在这里编写你的mod代码
 const { card, character, combatStatus, status, summon, skill, extension, DamageType } = BuilderContext;
 
@@ -104,7 +109,6 @@ const ElementalSkill = skill("战技")
   .damage(DamageType.Cryo, 2)
   .done();
 
-
 const BurstSkill = skill("爆发")
   .type("elemental")
   .description("造成3点冰元素伤害")
@@ -115,7 +119,7 @@ const MyCharacter = character("银狼")
   .image("https://b0.bdstatic.com/f93f5ab0e2d0848b09255837758ea2ee.jpg@h_1280")
   .skills(NormalSkill, ElementalSkill, BurstSkill)
   .done();
-`);
+}`);
 
   // 步骤2：卡组构建器
   const [deck0, setDeck0] = createSignal<Deck>({ cards: [], characters: [] });
