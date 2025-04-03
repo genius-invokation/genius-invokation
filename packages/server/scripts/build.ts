@@ -13,20 +13,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pm2 from "pm2";
-import { promisify } from "node:util";
-import { $ } from "bun";
+import inlineFrontendPlugin from "./bun_plugin_frontend";
+import simpleGit from "simple-git";
 
-const appName = (await $`bun run app-name`.text()).trim();
+const latestLog = await simpleGit().log({ maxCount: 1 });
 
-await promisify(pm2.connect.bind(pm2))();
-await using _ = {
-  async [Symbol.asyncDispose]() {
-    await promisify(pm2.disconnect.bind(pm2))();
+await Bun.build({
+  entrypoints: [`${import.meta.dirname}/../src/main.ts`],
+  outdir: `${import.meta.dirname}/../dist`,
+  external: [
+    "@nestjs/platform-express",
+    "@nestjs/microservices",
+    "@nestjs/websockets",
+    "@fastify/view",
+    "@fastify/static",
+  ],
+  define: {
+    "__LATEST_GIT_LOG__": JSON.stringify(latestLog),
+  },
+  plugins: [inlineFrontendPlugin],
+  target: "bun",
+  conditions: ["bun", "es2015", "module", "import", "default"],
+  minify: true,
+  naming: {
+    asset: `[name].[ext]`
   }
-}
-const processes = await promisify(pm2.list.bind(pm2))();
-
-const server = processes.find((p) => p.name === appName);
-
-console.log(server?.pm2_env?.status ?? "stopped");
+});
