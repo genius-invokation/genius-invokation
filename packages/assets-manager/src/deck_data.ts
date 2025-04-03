@@ -36,7 +36,7 @@ export function getDeckData(
 
   const allTypes = [...new Set([...acs.map((ac) => ac.type)])];
   const allVersions = [
-    ...new Set([...chs, ...acs].map((x) => x.sinceVersion!)),
+    ...new Set([...chs, ...acs].map((x) => x.sinceVersion ?? "v3.3.0")),
   ].toSorted();
 
   return {
