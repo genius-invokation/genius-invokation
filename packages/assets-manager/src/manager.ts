@@ -331,6 +331,9 @@ export class AssetsManager {
     id: number,
     options: GetImageOptions = {},
   ): Promise<string> {
+    if (this.customDataImageUrls.has(id)) {
+      return this.customDataImageUrls.get(id)!;
+    }
     const blob = await this.getImage(id, options);
     return blobToDataUrl(blob);
   }

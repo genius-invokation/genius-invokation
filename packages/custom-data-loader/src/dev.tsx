@@ -65,15 +65,12 @@ const MonacoEditor = (props: MonacoEditorProps) => {
     editor = monaco.editor.create(container, {
       language: "javascript",
       automaticLayout: true,
+      value: props.code,
     });
     editor.onDidChangeModelContent((e) => {
       const code = editor?.getValue() ?? "";
       props.onCodeChange?.(code);
     });
-  });
-
-  createEffect(() => {
-    editor?.setValue(props.code ?? "");
   });
   return <div class="editor" ref={container}></div>;
 };
@@ -86,11 +83,37 @@ const App = () => {
 
   // 步骤1：Mod代码编辑器
   const [code, setCode] = createSignal(`// 在这里编写你的mod代码
+// 在这里编写你的mod代码
 const { card, character, combatStatus, status, summon, skill, extension, DamageType } = BuilderContext;
 
 const MyCard = card("掀翻牌桌")
-  .description("大人时代变了！")
+  .description("对地方全体角色造成10点穿透伤害")
   .damage(DamageType.Piercing, 10, "all opp character")
+  .done();
+
+const NormalSkill = skill("普攻")
+  .type("normal")
+  .description("造成1点物理伤害")
+  .damage(DamageType.Physical, 1)
+  .done();
+
+
+const ElementalSkill = skill("战技")
+  .type("elemental")
+  .description("造成2点冰元素伤害")
+  .damage(DamageType.Cryo, 2)
+  .done();
+
+
+const BurstSkill = skill("爆发")
+  .type("elemental")
+  .description("造成3点冰元素伤害")
+  .damage(DamageType.Cryo, 3)
+  .done();
+
+const MyCharacter = character("银狼")
+  .image("https://b0.bdstatic.com/f93f5ab0e2d0848b09255837758ea2ee.jpg@h_1280")
+  .skills(NormalSkill, ElementalSkill, BurstSkill)
   .done();
 `);
 
@@ -166,8 +189,12 @@ const MyCard = card("掀翻牌桌")
 
     const gameInstance = new Game(initState);
 
-    const [io0, Chessboard0] = createClient(0, { assetsManager: assetsManager() });
-    const [io1, Chessboard1] = createClient(1, { assetsManager: assetsManager() });
+    const [io0, Chessboard0] = createClient(0, {
+      assetsManager: assetsManager(),
+    });
+    const [io1, Chessboard1] = createClient(1, {
+      assetsManager: assetsManager(),
+    });
     setChessboard0(() => Chessboard0);
     setChessboard1(() => Chessboard1);
     gameInstance.players[0].io = io0;
@@ -219,15 +246,15 @@ const MyCard = card("掀翻牌桌")
       {/* 选项卡内容 */}
       <div class="content">
         {/* 步骤1：Mod代码编辑器 */}
-        <Show when={activeTab() === 0}>
+        <div class={`tab-content ${activeTab() === 0 ? "active" : ""}`}>
           <MonacoEditor code={code()} onCodeChange={setCode} />
           <div class="button-container">
             <button onClick={loadMod}>继续</button>
           </div>
-        </Show>
+        </div>
 
         {/* 步骤2：卡组构建器 */}
-        <Show when={activeTab() === 1}>
+        <div class={`tab-content ${activeTab() === 1 ? "active" : ""}`}>
           {" "}
           <div class="deck-buttons">
             <button onClick={() => setDeck1(deck0())}>复制：先手→后手</button>
@@ -319,21 +346,15 @@ const MyCard = card("掀翻牌桌")
               </button>
             </div>
           </dialog>
-        </Show>
+        </div>
 
         {/* 步骤3：游戏界面 */}
-        <Show when={activeTab() === 2}>
+        <div class={`tab-content ${activeTab() === 2 ? "active" : ""}`}>
           <div class="game-container">
-            <div class="game-board">
-              <h3>玩家 1</h3>
-              <Dynamic component={chessboard0()} />
-            </div>
-            <div class="game-board">
-              <h3>玩家 2</h3>
-              <Dynamic component={chessboard1()} />
-            </div>
+            <Dynamic component={chessboard0()} />
+            <Dynamic component={chessboard1()} />
           </div>
-        </Show>
+        </div>
       </div>
     </div>
   );
