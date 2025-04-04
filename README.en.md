@@ -11,7 +11,7 @@ https://gi-tcg.guyutongxue.site
 
 - Fully open source (main body uses AGPLv3.0 or later)
 - The core implementations try to be the closest to the official rules
-- Full card definitions as of ![Version of Genshin Impact](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgi.xqm32.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=%E5%8E%9F%E7%A5%9E)
+- Full card definitions as of ![Version of Genshin Impact](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgi.xqm32.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=Genshin%20Impact)
   - Definition format is concise and easy to read
   - Easy maintenance
 - Definition of all old version cards (before balance adjustments)
