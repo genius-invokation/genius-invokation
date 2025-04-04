@@ -62,6 +62,7 @@ const DeepDevourersDomain = combatStatus(122041)
         if (narwhal) {
           for (let i = 0; i < extraMaxHealth; i++) {
             narwhal.addStatus(AnomalousAnatomy);
+            c.increaseMaxHealth(1, narwhal.state);
           }
         }
         c.setVariable("cardCount", 0);
