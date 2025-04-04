@@ -1,6 +1,6 @@
 # シチセイショウカンシミュレーター
 
-[中文版](./README.md) [English Version](./README.en.md)
+[中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
 https://gi-tcg.vercel.app または https://gi-tcg.guyutongxue.site でお試しください。
 
@@ -16,15 +16,15 @@ https://gi-tcg.vercel.app または https://gi-tcg.guyutongxue.site でお試し
 - フロントエンド機能：
   - ゲーム可視化とローカルシミュレーション
   - 履歴の追跡（リプレイ）と途中再開
-  - 対戦のインポート/エクスポート
+  - ゲームのインポート/エクスポート
   - 決済詳細ログの確認
-- [対戦プラットフォーム](https://gi.xqm32.org)（公開テスト中、[@xqm32](https://github.com/xqm32)様のサーバー提供に感謝）
+- [対戦プラットフォーム(中国語版のみ)](https://gi.xqm32.org)（公開テスト中、[@xqm32](https://github.com/xqm32)様のサーバー提供に感謝）
 - 複数プログラミング言語のサポート
   - [C/C++](./packages/cbinding/)
   - [Python](./packages/pybinding/)
   - [C#](./packages/csbinding/)
   - 今後さらに多くの言語に対応予定…
-- ~テストサーバーの新カード先行公開~
+- ~ベータサーバーの新カード先行公開~
 - 現在も**多くのバグ**があり、さらなるテストが必要です
 
 ## [開発について](./docs/development/README.md)

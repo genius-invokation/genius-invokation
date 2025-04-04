@@ -6,7 +6,7 @@
 
 # 七圣召唤模拟器
 
-[English Version](./README.en.md) [日本語版](./README.jp.md)
+[中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
 可访问 https://gi-tcg.vercel.app 或 https://gi-tcg.guyutongxue.site 试用。
 
