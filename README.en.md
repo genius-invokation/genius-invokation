@@ -21,7 +21,7 @@ https://gi-tcg.guyutongxue.site
   - Historical retrospective (replay) and mid-game continuation
   - Game import and export
   - View details logs of settlement
-- [Battle Platform (Chinese Version only)](https://gi.xqm32.org)In public beta, thanks to [@xqm32](https://github.com/xqm32) for server support）
+- [Battle Platform (Chinese Version only)](https://gi.xqm32.org) (In public beta, thanks to [@xqm32](https://github.com/xqm32) for server support)
 - Cross Programming Language Support
   - [C/C++](./packages/cbinding/)
   - [Python](./packages/pybinding/)
