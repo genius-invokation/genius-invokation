@@ -7,7 +7,7 @@ https://gi-tcg.vercel.app
 https://gi-tcg.guyutongxue.site
 
 
-## Characteristics of This Project
+## Features of This Project
 
 - Fully open source (main body uses AGPLv3.0 or later)
 - The core implementations try to be the closest to the official rules
