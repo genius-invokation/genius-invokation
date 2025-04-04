@@ -1,4 +1,4 @@
-# シチセイショウカンシミュレーター
+# 七聖召喚シミュレーター
 
 [中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
