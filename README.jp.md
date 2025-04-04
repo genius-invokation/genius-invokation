@@ -1,6 +1,6 @@
 [中文版](./README.md) [English Version](./README.en.md)
 
-# 七聖召喚シミュレーター
+# シチセイショウカンシミュレーター
 
 https://gi-tcg.vercel.app または https://gi-tcg.guyutongxue.site でお試しください。
 
