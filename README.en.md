@@ -1,6 +1,6 @@
-[中文版](./README.md) [日本語版](./README.jp.md)
-
 # Genius Invokation TCG Simulator
+
+[中文版](./README.md) [日本語版](./README.jp.md)
 
 There are samples in following links
 https://gi-tcg.vercel.app
