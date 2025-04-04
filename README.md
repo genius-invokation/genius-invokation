@@ -31,7 +31,7 @@ https://gi-tcg.guyutongxue.site
   - [Python](./packages/pybinding/)
   - [C#](./packages/csbinding/)
   - Coming Soon…
-- ~测试服卡牌抢先看 Sneak peeks at the beta cards~~
+- ~测试服卡牌抢先看 Sneak peeks at the beta cards~
 - 目前**仍有很多 bug**，需要更多测试 Currently **there are still a lot of bugs**, need more testing
 
 ## [关于开发 About Development](./docs/development/README.md)
