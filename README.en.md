@@ -1,9 +1,3 @@
-<center>
-
-![logo](./docs/images/logo.png)
-
-</center>
-
 [中文版](./README.md) [日本語版](./README.jp.md)
 
 # Genius Invokation TCG Simulator
