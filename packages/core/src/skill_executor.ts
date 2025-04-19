@@ -87,6 +87,15 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return [];
     }
+    const { who } = getEntityArea(this.state, skillInfo.caller.id);
+    if (skillInfo.plunging) {
+      this.mutate({
+        type: "setPlayerFlag",
+        who,
+        flagName: "canPlunging",
+        value: false,
+      });
+    }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
       `Using skill [skill:${skillInfo.definition.id}]${
@@ -138,7 +147,7 @@ export class SkillExecutor {
       if (skillDef.initiativeSkillConfig || newState !== oldState) {
         prependMutations.push({
           $case: "skillUsed",
-          who: getEntityArea(oldState, skillInfo.caller.id).who,
+          who,
           callerId: skillInfo.caller.id,
           callerDefinitionId: skillInfo.caller.definition.id,
           skillDefinitionId: skillDef.id,
