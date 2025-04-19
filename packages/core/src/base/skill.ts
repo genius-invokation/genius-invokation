@@ -1019,9 +1019,9 @@ export class EnterEventArg extends EntityEventArg {
   }
 }
 
-export class DisposeEventArg extends EntityEventArg<EntityState> {}
+export class DisposeEventArg<T extends AnyState = EntityState> extends EntityEventArg<T> {}
 
-export class DisposeOrTuneCardEventArg extends EntityEventArg<CardState> {
+export class DisposeOrTuneCardEventArg extends DisposeEventArg<CardState> {
   constructor(
     state: GameState,
     public readonly card: CardState,

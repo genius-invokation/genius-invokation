@@ -49,7 +49,8 @@ test("sort dice", () => {
           version: {
             predicate: "until",
             version: "v3.3.0"
-          }
+          },
+          associatedNightsoulsBlessing: null,
         }
       },
       {
@@ -66,7 +67,8 @@ test("sort dice", () => {
           version: {
             predicate: "until",
             version: "v3.3.0"
-          }
+          },
+          associatedNightsoulsBlessing: null,
         }
       }
     ],
