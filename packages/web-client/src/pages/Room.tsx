@@ -25,16 +25,10 @@ import {
   onCleanup,
 } from "solid-js";
 import axios, { AxiosError } from "axios";
-import {
-  PlayerIOWithCancellation,
-  createPlayer,
-} from "@gi-tcg/legacy-web-ui-core";
-import "@gi-tcg/legacy-web-ui-core/style.css";
 import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
-import { RpcMethod, RpcRequest } from "@gi-tcg/typings";
-import { createClient } from "@gi-tcg/web-ui-core";
-import { makePersisted } from "@solid-primitives/storage";
+import type { RpcRequest } from "@gi-tcg/typings";
+import { createClient, PlayerIOWithCancellation } from "@gi-tcg/web-ui-core";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -61,15 +55,6 @@ export function Room() {
   const [loading, setLoading] = createSignal(true);
   const [failed, setFailed] = createSignal<null | string>(null);
   const [chessboard, setChessboard] = createSignal<JSX.Element>();
-
-  const [isLegacyUi, setLegacyUi] = makePersisted(createSignal(true), {
-    storage: sessionStorage,
-  });
-
-  const toggleLegacyUi = () => {
-    setLegacyUi((prev) => !prev);
-    window.location.reload();
-  };
 
   const reportStreamError = async (e: Error) => {
     if (e instanceof AxiosError) {
@@ -107,19 +92,11 @@ export function Room() {
       }
     };
     if (payload) {
-      if (isLegacyUi()) {
-        const [io, Ui] = createPlayer(payload.who, {
-          onGiveUp,
-        });
-        setChessboard(<Ui />);
-        setPlayerIo(io);
-      } else {
-        const [io, Ui] = createClient(payload.who, {
-          onGiveUp,
-        });
-        setChessboard(<Ui class="h-0" />);
-        setPlayerIo(io);
-      }
+      const [io, Ui] = createClient(payload.who, {
+        onGiveUp,
+      });
+      setChessboard(<Ui class="h-0" />);
+      setPlayerIo(io);
     }
   });
 
@@ -295,9 +272,6 @@ export function Room() {
                 <i class="i-mdi-link-variant" />
               </button>
             </Show>
-            <button class="btn btn-link" onClick={toggleLegacyUi}>
-              切换至{isLegacyUi() ? "新" : "旧"}版界面
-            </button>
           </div>
           <div>
             <Show when={initialized()}>
