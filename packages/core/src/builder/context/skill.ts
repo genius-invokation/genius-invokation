@@ -769,7 +769,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       const targetState = t.state;
       let isSkillMainDamage = false;
       if (
-        isCharacterInitiativeSkill(this.skillInfo) &&
+        isCharacterInitiativeSkill(this.skillInfo, true) &&
         !this.fromReaction &&
         !this.mainDamage &&
         type !== DamageType.Piercing
