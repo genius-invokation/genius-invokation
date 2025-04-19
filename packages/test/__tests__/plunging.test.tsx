@@ -13,27 +13,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { ref, setup, State, Card, Support, Character, Equipment, Summon } from "#test";
+import { ref, setup, State, Card, Support, Character, Equipment, Summon, DeclaredEnd } from "#test";
+import { SkillHandle } from "@gi-tcg/core/builder";
 import { PlungingStrike } from "@gi-tcg/data/internal/cards/event/other";
-import { Albedo, DescentOfDivinity, SolarIsotoma } from "@gi-tcg/data/internal/characters/geo/albedo";
+import { Albedo, DescentOfDivinity, FavoniusBladeworkWeiss, SolarIsotoma } from "@gi-tcg/data/internal/characters/geo/albedo";
+import { BiteyShark, Mualani } from "@gi-tcg/data/internal/characters/hydro/mualani";
 import { test } from "bun:test";
 
-test("plunging triggered by PlungingStrike on Albedo", async () => {
+test("plunging triggered by a in-skill-switch to Albedo", async () => {
   const target = ref();
   const albedo = ref();
   const c = setup(
     <State>
+      <DeclaredEnd opp />
       <Character opp ref={target} />
-      <Character my active />
+
       <Character my def={Albedo} ref={albedo}>
         <Equipment def={DescentOfDivinity} />
       </Character>
-      <Card my def={PlungingStrike} />
+      <Character my active def={Mualani}>
+        <Equipment def={BiteyShark} />
+      </Character>
+
       <Summon my def={SolarIsotoma} />
     </State>,
   );
-  await c.me.card(PlungingStrike, albedo);
+  await c.me.skill(1121422 as SkillHandle);
   c.expect("my active").toBe(albedo);
-  // 阿贝多天赋：阳华在场时伤害+1
+  await c.me.skill(FavoniusBladeworkWeiss);
+  // 阿贝多天赋：阳华在场时下落攻击伤害+1
   c.expect(target).toHaveVariable({ health: 7 });
 });
