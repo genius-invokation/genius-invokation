@@ -32,7 +32,7 @@ import {
   UseSkillEventArg,
   ZeroHealthEventArg,
 } from "./base/skill";
-import { type CharacterState, stringifyState } from "./base/state";
+import { type AnyState, type CharacterState, stringifyState } from "./base/state";
 import {
   Aura,
   DamageType,
@@ -443,7 +443,7 @@ export class SkillExecutor {
     const callerAndSkills: CallerAndTriggeredSkill[] = [];
     // 对于弃置事件，额外地使被弃置的实体本身也能响应
     if (arg instanceof DisposeEventArg) {
-      const caller = arg.entity;
+      const caller = arg.entity as AnyState;
       const onDisposeSkills = caller.definition.skills.filter(
         (sk): sk is TriggeredSkillDefinition => sk.triggerOn === name,
       );
