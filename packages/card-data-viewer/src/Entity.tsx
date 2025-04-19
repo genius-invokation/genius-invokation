@@ -148,9 +148,7 @@ export function ActionCard(props: CardDataProps) {
                       : {}
                   }
                   definitionId={props.input.definitionId}
-                  description={
-                    data().rawPlayingDescription ?? data().rawDescription
-                  }
+                  description={data().rawDescription}
                   onRequestExplain={props.onRequestExplain}
                 />
               </div>
@@ -367,10 +365,7 @@ export function Keyword(props: CardDefinitionProps) {
         </Match>
       </Switch>
       <p class="mt-2 text-xs font-mono text-yellow-6">
-        DefID:{" "}
-        <span class="select-text">
-          {-props.definitionId}
-        </span>
+        DefID: <span class="select-text">{-props.definitionId}</span>
       </p>
     </div>
   );
