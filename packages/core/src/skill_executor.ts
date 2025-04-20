@@ -32,7 +32,7 @@ import {
   UseSkillEventArg,
   ZeroHealthEventArg,
 } from "./base/skill";
-import { type CharacterState, stringifyState } from "./base/state";
+import { type AnyState, type CharacterState, stringifyState } from "./base/state";
 import {
   Aura,
   DamageType,
@@ -87,6 +87,15 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return [];
     }
+    const { who } = getEntityArea(this.state, skillInfo.caller.id);
+    if (skillInfo.plunging) {
+      this.mutate({
+        type: "setPlayerFlag",
+        who,
+        flagName: "canPlunging",
+        value: false,
+      });
+    }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
       `Using skill [skill:${skillInfo.definition.id}]${
@@ -138,7 +147,7 @@ export class SkillExecutor {
       if (skillDef.initiativeSkillConfig || newState !== oldState) {
         prependMutations.push({
           $case: "skillUsed",
-          who: getEntityArea(oldState, skillInfo.caller.id).who,
+          who,
           callerId: skillInfo.caller.id,
           callerDefinitionId: skillInfo.caller.definition.id,
           skillDefinitionId: skillDef.id,
@@ -434,7 +443,7 @@ export class SkillExecutor {
     const callerAndSkills: CallerAndTriggeredSkill[] = [];
     // 对于弃置事件，额外地使被弃置的实体本身也能响应
     if (arg instanceof DisposeEventArg) {
-      const caller = arg.entity;
+      const caller = arg.entity as AnyState;
       const onDisposeSkills = caller.definition.skills.filter(
         (sk): sk is TriggeredSkillDefinition => sk.triggerOn === name,
       );

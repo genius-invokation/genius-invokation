@@ -811,13 +811,6 @@ export class Game {
         new ActionEventArg(this.state, actionInfo),
       );
       if (!actionInfo.fast) {
-        // 如果这次战斗行动不是切人，那么取消下落攻击设置
-        this.mutate({
-          type: "setPlayerFlag",
-          who,
-          flagName: "canPlunging",
-          value: actionInfo.type === "switchActive",
-        });
         this.mutate({
           type: "switchTurn",
         });
