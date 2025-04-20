@@ -41,17 +41,14 @@ export const ScopeOutSoftSpots = combatStatus(111131)
   .usageCanAppend(1, Infinity)
   .do((c) => {
     const usage = c.getVariable("usage");
+    let consumedUsage = 1;
     const buf = Array.from({ length: 10 }, (_, i) => i < usage);
     const take = c.random(buf);
     if (take) {
       c.combatStatus(StrikeWhereItHurts);
-      const newUsage = Math.floor(usage / 2);
-      if (newUsage) {
-        c.setVariable("usage", newUsage);
-      } else {
-        c.dispose();
-      }
+      consumedUsage += Math.ceil(usage / 2);
     }
+    c.consumeUsage(consumedUsage);
   })
   .done();
 
