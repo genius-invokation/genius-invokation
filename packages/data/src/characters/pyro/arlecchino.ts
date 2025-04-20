@@ -129,7 +129,7 @@ export const TheBalemoonAloneMayKnowPassive03 = skill(13147)
     const bond = c.self.hasStatus(BondOfLife);
     if (bond) {
       e.decreaseDamage(1)
-      c.addVariable("usage", -1, bond);
+      c.consumeUsage(1, bond);
     }
   })
   .done();
