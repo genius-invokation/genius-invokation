@@ -72,7 +72,6 @@ export const TurboTwirly = card(116102)
   .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
   .consumeNightsoul("@master")
   .summon(TurboTwirlyLetItRip)
-  .emitCustomEvent(TurboTwirlyTriggered)
   .endOn()
   .provideSkill(1161021)
   .costVoid(1)
@@ -87,6 +86,7 @@ export const TurboTwirly = card(116102)
       c.damage(DamageType.Geo, 2);
       c.damage(DamageType.Piercing, 1, "opp next");
     }
+    c.emitCustomEvent(TurboTwirlyTriggered);
   })
   .done();
 
@@ -170,6 +170,7 @@ export const NightRealmsGiftHeartOfUnity = card(216101)
   .costGeo(1)
   .talent(Kachina, "none")
   .on(TurboTwirlyTriggered)
+  .listenToPlayer()
   .usagePerRound(2)
   .drawCards(1)
   .done();
