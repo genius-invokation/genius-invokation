@@ -170,6 +170,7 @@ export const NightRealmsGiftHeartOfUnity = card(216101)
   .costGeo(1)
   .talent(Kachina, "none")
   .on(TurboTwirlyTriggered)
+  .listenToPlayer()
   .usagePerRound(2)
   .drawCards(1)
   .done();
