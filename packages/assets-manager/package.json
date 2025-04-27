@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
+    "@gi-tcg/core": "workspace:*",
     "@gi-tcg/static-data": "workspace:*"
   },
   "main": "./dist/index.js",

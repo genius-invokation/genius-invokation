@@ -140,19 +140,23 @@ export function DeckBuilder(props: DeckBuilderProps) {
                   deck={props.deck ?? EMPTY_DECK}
                   onChangeDeck={props.onChangeDeck}
                   onSetVersion={setVersion}
-                  {...deckData()!}
+                  {...deckData()}
                 />
               )}
             </Match>
           </Switch>
           <div class="b-r-1 b-gray" />
           <div />
-          <CurrentDeck
-            version={version()}
-            deck={props.deck ?? EMPTY_DECK}
-            onChangeDeck={props.onChangeDeck}
-            {...deckData()!}
-          />
+          <Show when={deckData()}>
+            {(deckData) => (
+              <CurrentDeck
+                version={version()}
+                deck={props.deck ?? EMPTY_DECK}
+                onChangeDeck={props.onChangeDeck}
+                {...deckData()}
+              />
+            )}
+          </Show>
         </div>
         <div
           class="absolute right-0 bottom-0 pointer-events-none z-50"
