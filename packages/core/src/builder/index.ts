@@ -19,8 +19,7 @@ export { card } from "./card";
 export { summon, status, combatStatus } from "./entity";
 export { extension } from "./extension";
 export {
-  beginRegistration,
-  endRegistration,
+  Registry,
   type GameData,
   type GameDataGetter,
 } from "./registry";

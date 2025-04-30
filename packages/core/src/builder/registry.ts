@@ -28,27 +28,75 @@ import {
 } from "../base/version";
 import { freeze } from "immer";
 
+export class Registry {
+  private readonly dataStore: DataStore;
+  constructor() {
+    this.dataStore = {
+      characters: new Map(),
+      entities: new Map(),
+      cards: new Map(),
+      initiativeSkills: new Map(),
+      passiveSkills: new Map(),
+      extensions: new Map(),
+    };
+  }
+  
+  begin(): IRegistrationScope {
+    return new RegistrationScope(this.dataStore);
+  }
+}
+
+export interface IRegistrationScope {
+  begin: () => void;
+  end: () => void;
+  [Symbol.dispose]: () => void;
+}
+
+class RegistrationScope implements IRegistrationScope {
+  private static current: RegistrationScope | null = null;
+
+  constructor(private readonly dataStore: DataStore) {
+    this.begin();
+  }
+
+  static register<C extends RegisterCategory>(
+    type: C,
+    value: DefinitionMap[C],
+  ) {
+    if (RegistrationScope.current === null) {
+      throw new GiTcgDataError("Not in registration");
+    }
+    const store = RegistrationScope.current.dataStore[type];
+    if (!store.has(value.id)) {
+      store.set(value.id, []);
+    }
+    store.get(value.id)!.push(value);
+  }
+
+  begin() {
+    if (RegistrationScope.current !== null && RegistrationScope.current !== this) {
+      throw new GiTcgDataError("Already in registration");
+    }
+    RegistrationScope.current = this;
+  }
+
+  end() {
+    if (RegistrationScope.current !== this) {
+      throw new GiTcgDataError("Not in this registration");
+    }
+    RegistrationScope.current = null;
+  }
+
+  [Symbol.dispose]() {
+    this.end();
+  }
+}
+
 /**
  * @internal
  * 用于检查构造完数据后是否存在泄漏的（被引用的）builder
  */
 export const builderWeakRefs = new Set<WeakRef<any>>();
-
-let currentStore: DataStore | null = null;
-
-export function beginRegistration() {
-  if (currentStore !== null) {
-    throw new GiTcgDataError("Already in registration");
-  }
-  currentStore = {
-    characters: new Map(),
-    entities: new Map(),
-    cards: new Map(),
-    initiativeSkills: new Map(),
-    passiveSkills: new Map(),
-    extensions: new Map(),
-  };
-}
 
 interface CharacterEntry
   extends Omit<CharacterDefinition, "skills" | "associatedNightsoulsBlessing"> {
@@ -100,64 +148,23 @@ export interface GameData {
   readonly cards: ReadonlyMap<number, CardDefinition>;
 }
 
-function getCurrentStore(): DataStore {
-  if (currentStore === null) {
-    throw new GiTcgDataError("Not in registration");
-  }
-  return currentStore;
-}
-
-function register<C extends RegisterCategory>(
-  type: C,
-  value: DefinitionMap[C],
-) {
-  const store = getCurrentStore()[type];
-  if (!store.has(value.id)) {
-    store.set(value.id, []);
-  }
-  const allVersions = store.get(value.id)!;
-  if (
-    value.version.predicate === "since" &&
-    allVersions.some(
-      (obj) => "version" in obj && obj.version.predicate === "since",
-    )
-  ) {
-    throw new GiTcgDataError(
-      `Duplicate since version definition for ${type} id ${value.id}`,
-    );
-  } else {
-    if (
-      allVersions.some(
-        (obj) =>
-          "version" in obj &&
-          obj.version.predicate === "until" &&
-          obj.version.version === value.version.version,
-      )
-    ) {
-      throw new GiTcgDataError(
-        `Duplicate until version definition for ${type} id ${value.id}`,
-      );
-    }
-  }
-  allVersions.push(value);
-}
 export function registerCharacter(value: CharacterEntry) {
-  register("characters", value);
+  RegistrationScope.register("characters", value);
 }
 export function registerEntity(value: EntityDefinition) {
-  register("entities", value);
+  RegistrationScope.register("entities", value);
 }
 export function registerPassiveSkill(value: CharacterPassiveSkillEntry) {
-  register("passiveSkills", value);
+  RegistrationScope.register("passiveSkills", value);
 }
 export function registerInitiativeSkill(value: CharacterInitiativeSkillEntry) {
-  register("initiativeSkills", value);
+  RegistrationScope.register("initiativeSkills", value);
 }
 export function registerCard(value: CardDefinition) {
-  register("cards", value);
+  RegistrationScope.register("cards", value);
 }
 export function registerExtension(value: ExtensionDefinition) {
-  register("extensions", value);
+  RegistrationScope.register("extensions", value);
 }
 
 export type GameDataGetter = (version?: Version) => GameData;
@@ -197,58 +204,3 @@ function selectVersion<T extends WithVersionInfo>(
   return result;
 }
 
-export function endRegistration(): GameDataGetter {
-  const store = getCurrentStore();
-  currentStore = null;
-  return (version = CURRENT_VERSION): GameData => {
-    const data: GameData = {
-      version,
-      extensions: selectVersion(version, store.extensions),
-      entities: selectVersion(version, store.entities),
-      cards: selectVersion(version, store.cards),
-      characters: selectVersion(
-        version,
-        store.characters,
-        (correctCh): CharacterDefinition => {
-          const initiativeSkills = correctCh.skillIds
-            .map((id) => store.initiativeSkills.get(id))
-            .filter((e) => !!e)
-            .map((e) => getCorrectVersion(e, version))
-            .filter((e) => !!e);
-          const passiveSkills = correctCh.skillIds
-            .map((id) => store.passiveSkills.get(id))
-            .filter((e) => !!e)
-            .map((e) => getCorrectVersion(e, version))
-            .filter((e) => !!e);
-          const associatedNightsoulsBlessing =
-            correctCh.associatedNightsoulsBlessingId
-              ? getCorrectVersion(
-                  store.entities.get(
-                    correctCh.associatedNightsoulsBlessingId,
-                  ) ?? [],
-                  version,
-                ) ?? null
-              : null;
-          const passiveSkillVarConfigs = passiveSkills.reduce(
-            (acc, { varConfigs }) => combineObject(acc, varConfigs),
-            <Record<string, VariableConfig>>{},
-          );
-          const skills: readonly SkillDefinition[] = [
-            ...initiativeSkills.map((e) => e.skill),
-            ...passiveSkills.flatMap((e) => e.skills),
-          ];
-          return {
-            ...correctCh,
-            varConfigs: combineObject(
-              correctCh.varConfigs,
-              passiveSkillVarConfigs,
-            ),
-            skills,
-            associatedNightsoulsBlessing,
-          };
-        },
-      ),
-    };
-    return freeze(data);
-  };
-}
