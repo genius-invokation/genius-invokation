@@ -539,9 +539,12 @@ export const StageTepetl = card(321023)
   .do((c, e) => {
     const isMine = e.who === c.self.who;
     const player = isMine ? c.player : c.oppPlayer;
-    const delta = isMine ? 1 : -1;
     if (!player.initialPile.some((card) => card.id === e.card.definition.id)) {
-      c.addVariable("attention", delta);
+      if (isMine) {
+        c.addVariable("attention", 1);
+      } else if (c.getVariable("attention") > 0) {
+        c.addVariable("attention", -1);
+      }
     }
   })
   .on("actionPhase")
