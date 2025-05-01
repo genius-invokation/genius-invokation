@@ -259,6 +259,7 @@ export const GandharvaVille = card(321014)
   .costSame(1)
   .support("place")
   .on("beforeAction", (c) => c.player.dice.length === 0)
+  .usage(3)
   .usagePerRound(1)
   .generateDice(DiceType.Omni, 1)
   .done();
