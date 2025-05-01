@@ -870,10 +870,10 @@ export const [Pankration] = card(332023)
   })
   .done();
 
-const LyresongIsFirstExtension = extension(332024, { first: pair(false) })
+const LyresongIsFirstExtension = extension(332024, { first: pair(true) })
   .description("打出琴音之诗前该方该轮次未打出过其他行动牌")
-  .mutateWhen("onRoundEnd", (c) => c.first = pair(false))
-  .mutateWhen("onPlayCard", (c, e) => c.first[e.who] = true)
+  .mutateWhen("onRoundEnd", (c) => c.first = pair(true))
+  .mutateWhen("onPlayCard", (c, e) => c.first[e.who] = false)
   .done();
 
 /**
