@@ -115,5 +115,6 @@ export const RockinInAFlamingWorld = card(213121)
   .on("enter")
   .useSkill(DanceOnFire)
   .on("increaseSkillDamage", (c) => c.player.hands.length <= 1)
+  .usagePerRound(1)
   .increaseDamage(2)
   .done();
