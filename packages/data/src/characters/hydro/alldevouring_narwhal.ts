@@ -66,7 +66,7 @@ export const DarkShadow = summon(122043)
  */
 export const AnomalousAnatomy = status(122042)
   .variableCanAppend("extraMaxHealth", 1, Infinity)
-  .on("dispose")
+  .on("selfDispose")
   .do((c) => {
     c.mutate({
       type: "modifyEntityVar",
