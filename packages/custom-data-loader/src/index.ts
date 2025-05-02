@@ -79,8 +79,11 @@ export class CustomDataLoader {
         },
       });
       const param = ctx.beginRegistration();
-      fn(param);
-      ctx.endRegistration();
+      try {
+        fn(param);
+      } finally {
+        ctx.endRegistration();
+      }
     }
     return this;
   }

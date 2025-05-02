@@ -25,6 +25,8 @@ import {
 } from "@gi-tcg/core/builder";
 import * as originalBuilderExport from "@gi-tcg/core/builder";
 
+const DISABLED_BUILDER_METHODS = ["since", "until", "setVersionInfo"];
+
 export class BuilderContext {
   constructor(
     private readonly registry: originalBuilderExport.Registry,
@@ -66,6 +68,9 @@ export class BuilderContext {
 
       const result = new Proxy(builder, {
         get(target, prop) {
+          if (DISABLED_BUILDER_METHODS.includes(prop as string)) {
+            throw new Error(`Method ${String(prop)} is disabled`);
+          }
           if (Reflect.has(extraSetters2, prop)) {
             return Reflect.get(extraSetters2, prop);
           } else {

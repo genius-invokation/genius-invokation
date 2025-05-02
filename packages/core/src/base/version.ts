@@ -69,11 +69,11 @@ export namespace GiTcg {
 export type VersionMetadata = GiTcg.VersionMetadata;
 
 export type VersionInfo = {
-  [K in keyof GiTcg.VersionMetadata]: {
+  [K in keyof VersionMetadata]: {
     readonly from: K;
-    readonly value: GiTcg.VersionMetadata[K];
+    readonly value: VersionMetadata[K];
   };
-}[keyof GiTcg.VersionMetadata];
+}[keyof VersionMetadata];
 
 export interface WithVersionInfo {
   readonly version: VersionInfo;
