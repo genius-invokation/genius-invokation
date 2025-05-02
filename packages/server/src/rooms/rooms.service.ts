@@ -584,7 +584,7 @@ export class RoomsService {
     const roomConfig: CreateRoomConfig = {
       hostWho,
       randomSeed: params.randomSeed,
-      gameVersion: params.gameVersion
+      gameVersion: typeof params.gameVersion === "number"
         ? VERSIONS[params.gameVersion]!
         : CURRENT_VERSION,
       initTotalActionTime: params.initTotalActionTime ?? 45,
