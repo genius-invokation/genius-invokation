@@ -40,6 +40,31 @@ export const ParametricTransformer = card(323001)
   })
   .done();
 
+  /**
+ * @id 323001
+ * @name 参量质变仪_实体牌
+ * @description
+ * 双方角色使用技能后：如果造成了元素伤害，此牌累积1个「质变进度」。如果此牌已累积3个「质变进度」，则弃置此牌并生成3个不同的基础元素骰。
+ */
+export const ParametricTransformerPhysical = card(323001)
+.since("physicalSet1")
+.costVoid(2)
+.support("item")
+.associateExtension(SkillDamageAndReactionExtension)
+.variable("progress", 0)
+.on("useSkill", (c) => c.getExtensionState().hasElementalDamage)
+.listenToAll()
+.do((c) => {
+  c.addVariable("progress", 1);
+  if (c.getVariable("progress") >= 3) {
+    c.generateDice("randomElementForPhysical", 3);
+    c.dispose();
+    return;
+  }
+})
+.done();
+
+
 /**
  * @id 323002
  * @name 便携营养袋

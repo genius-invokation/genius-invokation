@@ -1343,7 +1343,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     });
     return this.enableShortcut();
   }
-  generateDice(type: DiceType | "randomElement", count: number) {
+  generateDice(type: DiceType | "randomElement" | "randomElementForPhysical", count: number) {
     const maxCount = this.state.config.maxDiceCount - this.player.dice.length;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
@@ -1367,6 +1367,21 @@ export class SkillContext<Meta extends ContextMetaBase> {
         const generated = this.random(diceTypes);
         insertedDice.push(generated);
         diceTypes.splice(diceTypes.indexOf(generated), 1);
+      }
+    } else if (type === "randomElementForPhysical") {
+      const diceTypes = [
+        DiceType.Anemo,
+        DiceType.Cryo,
+        DiceType.Dendro,
+        DiceType.Electro,
+        DiceType.Geo,
+        DiceType.Hydro,
+        DiceType.Pyro,
+        DiceType.Omni,
+      ];
+      for (let i = 0; i < count; i++) {
+        const generated = this.random(diceTypes);
+        insertedDice.push(generated);
       }
     } else {
       insertedDice = new Array<DiceType>(count).fill(type);
