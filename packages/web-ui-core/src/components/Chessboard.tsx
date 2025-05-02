@@ -1601,8 +1601,9 @@ export function Chessboard(props: ChessboardProps) {
         selectedDice={selectedDice()}
         onSelectDice={setSelectedDice}
         onConfirm={() => {
-          localProps.onRerollDice?.(selectedDiceValue() as PbDiceType[]);
+          const dice = selectedDiceValue() as PbDiceType[];
           setSelectedDice([]);
+          localProps.onRerollDice?.(dice);
         }}
       />
       <SelectCardView
@@ -1619,7 +1620,9 @@ export function Chessboard(props: ChessboardProps) {
       <SwitchHandsView
         viewType={localProps.viewType}
         onConfirm={() => {
-          localProps.onSwitchHands?.(switchedCards());
+          const cards = switchedCards();
+          setSwitchedCards([]);
+          localProps.onSwitchHands?.(cards);
           dataViewerController.hide();
         }}
       />
