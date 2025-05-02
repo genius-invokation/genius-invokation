@@ -21,7 +21,6 @@ export { extension } from "./extension";
 export {
   Registry,
   type GameData,
-  type GameDataGetter,
 } from "./registry";
 export type {
   CardHandle,

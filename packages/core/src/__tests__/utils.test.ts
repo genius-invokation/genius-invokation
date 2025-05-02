@@ -47,11 +47,14 @@ test("sort dice", () => {
           type: "character",
           varConfigs: {} as never,
           version: {
-            predicate: "until",
-            version: "v3.3.0"
+            from: "official",
+            value: {
+              predicate: "until",
+              version: "v3.3.0",
+            },
           },
           associatedNightsoulsBlessing: null,
-        }
+        },
       },
       {
         id: -2,
@@ -65,12 +68,15 @@ test("sort dice", () => {
           type: "character",
           varConfigs: {} as never,
           version: {
-            predicate: "until",
-            version: "v3.3.0"
+            from: "official",
+            value: {
+              predicate: "until",
+              version: "v3.3.0",
+            },
           },
           associatedNightsoulsBlessing: null,
-        }
-      }
+        },
+      },
     ],
     hands: [],
     pile: [],
@@ -90,4 +96,4 @@ test("sort dice", () => {
   };
   const sorted = sortDice(playerState, shuffled);
   expect(sorted).toEqual(dice);
-})
+});

@@ -22,11 +22,14 @@ import { GiTcgDataError } from "../error";
 import {
   CURRENT_VERSION,
   type Version,
+  type VersionMetadata,
   type VersionInfo,
-  type WithVersionInfo,
-  getCorrectVersion,
 } from "../base/version";
 import { freeze } from "immer";
+
+type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
+  items: T[],
+) => T | null;
 
 export class Registry {
   private readonly dataStore: DataStore;
@@ -40,9 +43,65 @@ export class Registry {
       extensions: new Map(),
     };
   }
-  
+
   begin(): IRegistrationScope {
     return new RegistrationScope(this.dataStore);
+  }
+
+  resolve(...resolvers: VersionResolver[]): GameData {
+    const applyResolvers = <C extends RegisterCategory, R = DefinitionMap[C]>(
+      category: C,
+      transformFn?: (value: DefinitionMap[C]) => R,
+    ): Map<number, R> => {
+      const source = this.dataStore[category];
+      const result = new Map<number, R>();
+      for (const [id, defs] of source) {
+        let chosen: DefinitionMap[C] | null = null;
+        for (const resolver of resolvers) {
+          chosen = resolver(defs);
+          if (chosen) {
+            break;
+          }
+        }
+        if (!chosen) {
+          continue;
+        }
+        result.set(id, transformFn?.(chosen) ?? (chosen as R));
+      }
+      return result;
+    };
+    const extensions = applyResolvers("extensions");
+    const initiativeSkills = applyResolvers("initiativeSkills");
+    const passiveSkills = applyResolvers("passiveSkills");
+    const entities = applyResolvers("entities");
+    const cards = applyResolvers("cards");
+    const characters = applyResolvers(
+      "characters",
+      (chEntry): CharacterDefinition => {
+        const skills = chEntry.skillIds
+          .map(
+            (id) => initiativeSkills.get(id) ?? passiveSkills.get(id),
+          )
+          .flatMap((x) =>
+            x ? (x.type === "initiativeSkill" ? [x.skill] : x.skills) : [],
+          );
+        const nightsoulsId = chEntry.associatedNightsoulsBlessingId;
+        const associatedNightsoulsBlessing = nightsoulsId
+          ? entities.get(nightsoulsId) ?? null
+          : null;
+        return {
+          ...chEntry,
+          skills,
+          associatedNightsoulsBlessing,
+        };
+      },
+    );
+    return freeze<GameData>({
+      extensions,
+      entities,
+      cards,
+      characters,
+    });
   }
 }
 
@@ -74,7 +133,10 @@ class RegistrationScope implements IRegistrationScope {
   }
 
   begin() {
-    if (RegistrationScope.current !== null && RegistrationScope.current !== this) {
+    if (
+      RegistrationScope.current !== null &&
+      RegistrationScope.current !== this
+    ) {
       throw new GiTcgDataError("Already in registration");
     }
     RegistrationScope.current = this;
@@ -141,7 +203,6 @@ export type DataStore = {
 };
 
 export interface GameData {
-  readonly version: Version;
   readonly extensions: ReadonlyMap<number, ExtensionDefinition>;
   readonly characters: ReadonlyMap<number, CharacterDefinition>;
   readonly entities: ReadonlyMap<number, EntityDefinition>;
@@ -166,41 +227,3 @@ export function registerCard(value: CardDefinition) {
 export function registerExtension(value: ExtensionDefinition) {
   RegistrationScope.register("extensions", value);
 }
-
-export type GameDataGetter = (version?: Version) => GameData;
-
-function combineObject<T extends {}, U extends {}>(a: T, b: U): T & U {
-  const combined = { ...a, ...b };
-  const overlappingKeys = Object.keys(a).filter((key) => key in b);
-  if (overlappingKeys.length > 0) {
-    throw new Error(`Properties ${overlappingKeys.join(", ")} are overlapping`);
-  }
-  return combined;
-}
-
-function selectVersion<T extends WithVersionInfo>(
-  version: Version,
-  source: Map<number, T[]>,
-): Map<number, T>;
-function selectVersion<T extends WithVersionInfo, U>(
-  version: Version,
-  source: Map<number, T[]>,
-  transformFn: (v: T) => U,
-): Map<number, U>;
-function selectVersion<T extends WithVersionInfo>(
-  version: Version,
-  source: Map<number, T[]>,
-  transformFn?: (v: T) => unknown,
-): Map<number, unknown> {
-  const result = new Map<number, unknown>();
-  for (const [id, defs] of source) {
-    const chosen = getCorrectVersion(defs, version);
-    if (!chosen) {
-      continue;
-    }
-    const transformed = transformFn ? transformFn(chosen) : chosen;
-    result.set(id, transformed);
-  }
-  return result;
-}
-

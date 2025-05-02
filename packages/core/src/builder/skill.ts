@@ -77,6 +77,7 @@ import {
   DEFAULT_VERSION_INFO,
   type Version,
   type VersionInfo,
+  type VersionMetadata,
 } from "../base/version";
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
@@ -1213,19 +1214,24 @@ export class InitiativeSkillBuilder<
   private _skillType: SkillType = "normal";
   private _gainEnergy = true;
   protected _cost: DiceRequirement = new Map();
-  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   private _prepared = false;
   constructor(private readonly skillId: number) {
     super(skillId);
   }
 
-  since(version: Version) {
-    this._versionInfo = { predicate: "since", version };
+  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
+  setVersionInfo<From extends keyof VersionMetadata>(
+    from: From,
+    value: VersionMetadata[From],
+  ) {
+    this._versionInfo = { from, value };
     return this;
   }
+  since(version: Version) {
+    return this.setVersionInfo("official", { predicate: "since", version });
+  }
   until(version: Version) {
-    this._versionInfo = { predicate: "until", version };
-    return this;
+    return this.setVersionInfo("official", { predicate: "until", version });
   }
 
   associateExtension<NewExtT>(ext: ExtensionHandle<NewExtT>) {

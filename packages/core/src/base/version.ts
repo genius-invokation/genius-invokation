@@ -55,10 +55,21 @@ const lastVersionIndex = (VERSIONS.length - 1) as LastVersionIndex;
 
 export const CURRENT_VERSION = VERSIONS[lastVersionIndex];
 
-export interface VersionInfo {
+export interface OfficialVersionData {
   readonly predicate: "since" | "until";
   readonly version: Version;
 }
+
+export interface VersionMetadata {
+  official: OfficialVersionData;
+}
+
+export type VersionInfo = {
+  [K in keyof VersionMetadata]: {
+    readonly from: K;
+    readonly value: VersionMetadata[K];
+  };
+}[keyof VersionMetadata];
 
 export interface WithVersionInfo {
   readonly version: VersionInfo;
@@ -72,28 +83,40 @@ export function versionCompare(a: Version, b: Version) {
   return versionIdxMap[a] - versionIdxMap[b];
 }
 
-export function getCorrectVersion<T extends WithVersionInfo>(
+export function resolveStandardVersion<T extends WithVersionInfo>(
   candidates: readonly T[],
-  version: Version,
-): T | undefined {
-  const since = candidates.find((c) => c.version.predicate === "since");
+  requiredVersion: Version,
+): T | null {
+  const since = candidates.find(
+    ({ version }) =>
+      version.from === "official" && version.value.predicate === "since",
+  );
   const until = candidates
     .filter(
-      (c) =>
-        c.version.predicate === "until" &&
-        versionCompare(c.version.version, version) >= 0,
+      ({ version }) =>
+        version.from === "official" &&
+        version.value.predicate === "until" &&
+        versionCompare(version.value.version, requiredVersion) >= 0,
     )
-    .toSorted((a, b) => versionCompare(a.version.version, b.version.version));
-  if (!since || versionCompare(since.version.version, version) > 0) {
-    return;
+    .toSorted((a, b) =>
+      versionCompare(a.version.value.version, b.version.value.version),
+    );
+  if (
+    !since ||
+    versionCompare(since.version.value.version, requiredVersion) > 0
+  ) {
+    return null;
   }
   if (until.length === 0) {
     return since;
   }
-  return until[0];
+  return until[0] ?? null;
 }
 
 export const DEFAULT_VERSION_INFO: VersionInfo = {
-  predicate: "since",
-  version: INIT_VERSION,
+  from: "official",
+  value: {
+    predicate: "since",
+    version: INIT_VERSION,
+  },
 };

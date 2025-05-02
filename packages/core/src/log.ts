@@ -14,8 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { GameState } from "./base/state";
-import type { Version } from "./base/version";
-import type { GameData, GameDataGetter } from "./builder";
+import type { GameData } from "./builder";
 import { CORE_VERSION } from "./index";
 
 export interface GameStateLogEntry {
@@ -95,9 +94,8 @@ interface SerializedLogEntry {
   r: boolean;
 }
 
-interface SerializedLog {
+export interface SerializedLog {
   v: string;  // 模拟核心库版本
-  gv: string; // 游戏版本
   store: any[];
   log: SerializedLogEntry[];
 }
@@ -121,7 +119,6 @@ export function serializeGameStateLog(
   }
   return {
     v: CORE_VERSION,
-    gv: log[0].state.data.version,
     store: store.map(({ value }) => value),
     log: logResult,
   };
@@ -199,12 +196,11 @@ function deserializeImpl(
 }
 
 export function deserializeGameStateLog(
-  dataGetter: GameDataGetter,
-  { store, log, v, gv }: SerializedLog,
+  data: GameData,
+  { store, log }: SerializedLog,
 ): GameStateLogEntry[] {
   const restoredStore: Record<number, any> = {};
   const result: GameStateLogEntry[] = [];
-  const data = dataGetter(gv as Version);
   for (const entry of log) {
     const restoredState = deserializeImpl(data, store, restoredStore, entry.s);
     result.push({
