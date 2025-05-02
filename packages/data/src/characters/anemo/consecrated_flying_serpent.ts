@@ -110,9 +110,9 @@ export const ImmortalRemnantsAnemo = skill(25034)
  * 【被动】战斗开始时，生成6张噬骸能量块，均匀放入牌库。
  */
 export const SquallDrawCardsCounter = skill(25035)
-  .type("passive")
+  .type("passive") // keep for v4.7.0
   .variable("elementalSkillDrawCardsCount", 0)
-  .on("battleBegin")
+  .on("roundEnd")
   .setVariable("elementalSkillDrawCardsCount", 0)
   .done();
 
