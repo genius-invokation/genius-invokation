@@ -19,9 +19,10 @@ import { registry, scope } from "./begin";
 import "./commons";
 
 scope.end();
+registry.freeze();
 
 export { registry };
 
-export default (version: Version) => {
+export default (version?: Version) => {
   return registry.resolve((x) => resolveStandardVersion(x, version))
 };

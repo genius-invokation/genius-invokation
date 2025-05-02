@@ -29,7 +29,7 @@ export { type Mutation } from "./base/mutation";
 export { type CommonSkillType } from "./base/skill";
 export {
   type Version,
-  type VersionMetadata,
+  type GiTcg,
   type VersionInfo,
   VERSIONS,
   CURRENT_VERSION,

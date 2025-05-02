@@ -21,6 +21,9 @@ export { extension } from "./extension";
 export {
   Registry,
   type GameData,
+  type OnResolvedCallback,
+  type VersionResolver,
+  type IRegistrationScope,
 } from "./registry";
 export type {
   CardHandle,

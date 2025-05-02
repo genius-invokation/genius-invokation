@@ -60,16 +60,20 @@ export interface OfficialVersionData {
   readonly version: Version;
 }
 
-export interface VersionMetadata {
-  official: OfficialVersionData;
+export namespace GiTcg {
+  export interface VersionMetadata {
+    official: OfficialVersionData;
+  }
 }
 
+export type VersionMetadata = GiTcg.VersionMetadata;
+
 export type VersionInfo = {
-  [K in keyof VersionMetadata]: {
+  [K in keyof GiTcg.VersionMetadata]: {
     readonly from: K;
-    readonly value: VersionMetadata[K];
+    readonly value: GiTcg.VersionMetadata[K];
   };
-}[keyof VersionMetadata];
+}[keyof GiTcg.VersionMetadata];
 
 export interface WithVersionInfo {
   readonly version: VersionInfo;
@@ -85,7 +89,7 @@ export function versionCompare(a: Version, b: Version) {
 
 export function resolveStandardVersion<T extends WithVersionInfo>(
   candidates: readonly T[],
-  requiredVersion: Version,
+  requiredVersion: Version = CURRENT_VERSION,
 ): T | null {
   const since = candidates.find(
     ({ version }) =>

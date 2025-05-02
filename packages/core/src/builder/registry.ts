@@ -27,12 +27,15 @@ import {
 } from "../base/version";
 import { freeze } from "immer";
 
-type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
+export type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
   items: T[],
 ) => T | null;
+export type OnResolvedCallback = (entry: DefinitionMap[RegisterCategory]) => void;
 
 export class Registry {
   private readonly dataStore: DataStore;
+  private freezed = false;
+
   constructor() {
     this.dataStore = {
       characters: new Map(),
@@ -44,7 +47,29 @@ export class Registry {
     };
   }
 
+  clone() {
+    const newRegistry = new Registry();
+    for (const [category, store] of Object.entries(this.dataStore)) {
+      const newStore = new Map<number, DefinitionMap[RegisterCategory][]>();
+      for (const [id, defs] of store) {
+        newStore.set(id, [...defs]);
+      }
+      (newRegistry.dataStore as Record<string, Map<number, unknown[]>>)[
+        category
+      ] = newStore;
+    }
+    return newRegistry;
+  }
+
+  freeze() {
+    this.freezed = true;
+    freeze(this.dataStore);
+  }
+
   begin(): IRegistrationScope {
+    if (this.freezed) {
+      throw new GiTcgDataError("Registry is frozen");
+    }
     return new RegistrationScope(this.dataStore);
   }
 
@@ -79,9 +104,7 @@ export class Registry {
       "characters",
       (chEntry): CharacterDefinition => {
         const skills = chEntry.skillIds
-          .map(
-            (id) => initiativeSkills.get(id) ?? passiveSkills.get(id),
-          )
+          .map((id) => initiativeSkills.get(id) ?? passiveSkills.get(id))
           .flatMap((x) =>
             x ? (x.type === "initiativeSkill" ? [x.skill] : x.skills) : [],
           );

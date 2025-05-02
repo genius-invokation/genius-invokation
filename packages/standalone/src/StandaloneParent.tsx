@@ -156,7 +156,9 @@ export function StandaloneParent(props: StandaloneParentProps) {
 
   const exportLog = () => {
     const logs = serializeGameStateLog(stateLog());
-    const blob = new Blob([JSON.stringify(logs)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify({ ...logs, gv: props.version })], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

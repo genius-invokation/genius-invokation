@@ -163,4 +163,5 @@ import "./old_versions/v5.2.0";
 import "./old_versions/v5.3.0";
 import "./old_versions/v5.4.0";
 
+export * from "./end";
 export { default } from "./end";
