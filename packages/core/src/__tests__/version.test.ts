@@ -35,7 +35,7 @@ test("find version", () => {
       },
     },
   ];
-  expect(resolveStandardVersion(versions, "v3.3.0")).toBeUndefined();
+  expect(resolveStandardVersion(versions, "v3.3.0")).toBeNull();
   expect(resolveStandardVersion(versions, "v3.5.0")?.id).toBe(400);
   expect(resolveStandardVersion(versions, "v4.0.0")?.id).toBe(400);
   expect(resolveStandardVersion(versions, "v4.1.0")?.id).toBe(410);
