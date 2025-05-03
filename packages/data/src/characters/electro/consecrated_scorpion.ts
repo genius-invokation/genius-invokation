@@ -27,6 +27,7 @@ export const ThunderboreTrap = combatStatus(124052)
   .usage(0)
   .on("useSkill")
   .damage(DamageType.Electro, 2, "my active")
+  .consumeUsage()
   .done();
 
 /**
