@@ -73,37 +73,6 @@ export const Timaeus = card(322003)
   .done();
 
 /**
- * @id 322003
- * @name 蒂玛乌斯_实体牌
- * @description
- * 入场时：此牌具有2个「合成材料」。  
- * 结束阶段：此牌增加1个「合成材料」。  
- * 打出「圣遗物」手牌时：如可能，则支付等同于「圣遗物」总费用数量的「合成材料」，以免费装备此「圣遗物」。
- * （每回合1次）  
- * 触发上述效果后：抓1张牌。（整场牌局限制1次）
- */
-
-export const TimaeusPhysical = card(322003)
-  .since("physicalSet1")
-  .costSame(2)
-  .support("ally")
-  .variable("material", 2)
-  .on("endPhase")
-  .addVariable("material", 1)
-  .on("deductAllDiceCard", (c, e) => e.hasCardTag("artifact") && 
-  c.getVariable("material") >= e.diceCostSize())
-  .usagePerRound(1)
-  .do((c, e) => {
-    c.addVariable("material", -e.diceCostSize());
-    e.deductAllCost();
-  })
-  .on("deductAllDiceCard", (c, e) => e.hasCardTag("artifact") && 
-  c.getVariable("material") >= e.diceCostSize())
-  .usage(1, { autoDispose: false, visible: false })
-  .drawCards(1)
-  .done();
-
-/**
  * @id 322004
  * @name 瓦格纳
  * @description
@@ -111,8 +80,6 @@ export const TimaeusPhysical = card(322003)
  * 结束阶段：此牌补充1个「锻造原胚」。
  * 打出「武器」手牌时：如可能，则支付等同于「武器」总费用数量的「锻造原胚」，以免费装备此「武器」。（每回合1次）
  */
-
-
 export const Wagner = card(322004)
   .since("v3.3.0")
   .costSame(2)
@@ -137,34 +104,6 @@ export const Wagner = card(322004)
   .done();
 
 /**
- * @id 322004
- * @name 瓦格纳_实体牌
- * @description
- * 入场时：此牌具有2个「锻造原胚」。  
- * 结束阶段：此牌增加1个「锻造原胚」。  
- * 打出「武器」手牌时：如可能，则支付等同于「武器」总费用数量的「锻造原胚」，以免费装备此「武器」。（每回合1次）  
- * 触发上述效果后：抓1张牌。（整场牌局限制1次）
- */
-
-export const WagnerPhysical = card(322004)
-  .since("physicalSet1")
-  .costSame(2)
-  .support("ally")
-  .variable("material", 2)
-  .on("endPhase")
-  .addVariable("material", 1)
-  .on("deductAllDiceCard", (c, e) => e.hasCardTag("weapon") && c.getVariable("material") >= e.diceCostSize())
-  .usagePerRound(1)
-  .do((c, e) => {
-    c.addVariable("material", -e.diceCostSize());
-    e.deductAllCost();
-  })
-  .on("deductAllDiceCard", (c, e) => e.hasCardTag("weapon") && c.getVariable("material") >= e.diceCostSize())
-  .usage(1, { autoDispose: false, visible: false })
-  .drawCards(1)
-  .done();
-
-/**
  * @id 322005
  * @name 卯师傅
  * @description
@@ -178,25 +117,6 @@ export const ChefMao = card(322005)
   .on("playCard", (c, e) => e.hasCardTag("food"))
   .usagePerRound(1)
   .generateDice("randomElement", 1)
-  .on("playCard", (c, e) => e.hasCardTag("food"))
-  .usage(1, { autoDispose: false, visible: false })
-  .drawCards(1, { withTag: "food" })
-  .done();
-  
-/**
- * @id 322005
- * @name 卯师傅_实体牌
- * @description
- * 打出「料理」事件牌后：生成1个随机基础元素骰。（每回合1次）
- * 打出「料理」事件牌后：从牌组中随机抽取1张「料理」事件牌。（整场牌局限制1次）
- */
-export const ChefMaoPhysical = card(322005)
-  .since("physicalSet1")
-  .costSame(1)
-  .support("ally")
-  .on("playCard", (c, e) => e.hasCardTag("food"))
-  .usagePerRound(1)
-  .generateDice("randomElementForPhysical", 1)
   .on("playCard", (c, e) => e.hasCardTag("food"))
   .usage(1, { autoDispose: false, visible: false })
   .drawCards(1, { withTag: "food" })
