@@ -131,6 +131,13 @@
         "@gi-tcg/core": "workspace:*",
       },
     },
+    "packages/data-code-analyzer": {
+      "name": "@gi-tcg/data-code-analyzer",
+      "devDependencies": {
+        "@gi-tcg/data": "workspace:*",
+        "typescript": "^5.6.2",
+      },
+    },
     "packages/data-vscode-ext": {
       "name": "@gi-tcg/data-vscode-ext",
       "version": "0.0.1",
@@ -775,6 +782,8 @@
     "@gi-tcg/custom-data-loader": ["@gi-tcg/custom-data-loader@workspace:packages/custom-data-loader"],
 
     "@gi-tcg/data": ["@gi-tcg/data@workspace:packages/data"],
+
+    "@gi-tcg/data-code-analyzer": ["@gi-tcg/data-code-analyzer@workspace:packages/data-code-analyzer"],
 
     "@gi-tcg/data-vscode-ext": ["@gi-tcg/data-vscode-ext@workspace:packages/data-vscode-ext"],
 
@@ -2811,6 +2820,8 @@
     "@fastify/send/mime": ["mime@3.0.0", "", { "bin": { "mime": "cli.js" } }, "sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A=="],
 
     "@fastify/static/glob": ["glob@10.4.2", "", { "dependencies": { "foreground-child": "^3.1.0", "jackspeak": "^3.1.2", "minimatch": "^9.0.4", "minipass": "^7.1.2", "package-json-from-dist": "^1.0.0", "path-scurry": "^1.11.1" }, "bin": { "glob": "dist/esm/bin.mjs" } }, "sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w=="],
+
+    "@gi-tcg/data-code-analyzer/typescript": ["typescript@5.7.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw=="],
 
     "@gi-tcg/data-vscode-ext/typescript": ["typescript@5.7.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw=="],
 
