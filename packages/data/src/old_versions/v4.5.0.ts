@@ -120,8 +120,9 @@ const SeedDispensary = card(323005)
   .support("item")
   .on("deductOmniDiceCard", (c, e) => e.originalDiceCostSize() === 1 &&
     ["equipment", "support"].includes(e.action.skill.caller.definition.cardType))
-  .deductOmniCost(1)
+  .usagePerRound(1)
   .usage(2)
+  .deductOmniCost(1)
   .done();
 
 /**
