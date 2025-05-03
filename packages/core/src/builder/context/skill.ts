@@ -133,6 +133,11 @@ export interface HealOption {
   kind?: HealKind;
 }
 
+export interface GenerateDiceOption {
+  randomIncludeOmni?: boolean;
+  randomAllowDuplicate?: boolean;
+}
+
 type InsertPilePayload =
   | Omit<CreateCardM, "targetIndex" | "who">
   | Omit<TransferCardM, "targetIndex" | "who">;
@@ -1343,8 +1348,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
     });
     return this.enableShortcut();
   }
-  generateDice(type: DiceType | "randomElement" | "randomElementForPhysical", count: number) {
+  generateDice(type: DiceType | "randomElement" , count: number, option: GenerateDiceOption = {}) {
     const maxCount = this.state.config.maxDiceCount - this.player.dice.length;
+    const {
+      randomIncludeOmni = false,
+      randomAllowDuplicate = false
+    } = option;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
       `Generate ${count}${
@@ -1363,25 +1372,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DiceType.Hydro,
         DiceType.Pyro,
       ];
-      for (let i = 0; i < count; i++) {
-        const generated = this.random(diceTypes);
-        insertedDice.push(generated);
-        diceTypes.splice(diceTypes.indexOf(generated), 1);
+      if (randomIncludeOmni) { 
+        diceTypes.push(DiceType.Omni);
       }
-    } else if (type === "randomElementForPhysical") {
-      const diceTypes = [
-        DiceType.Anemo,
-        DiceType.Cryo,
-        DiceType.Dendro,
-        DiceType.Electro,
-        DiceType.Geo,
-        DiceType.Hydro,
-        DiceType.Pyro,
-        DiceType.Omni,
-      ];
       for (let i = 0; i < count; i++) {
         const generated = this.random(diceTypes);
         insertedDice.push(generated);
+        if (!randomAllowDuplicate) {
+          diceTypes.splice(diceTypes.indexOf(generated), 1);
+        }
       }
     } else {
       insertedDice = new Array<DiceType>(count).fill(type);
