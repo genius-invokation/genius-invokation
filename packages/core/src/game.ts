@@ -260,10 +260,6 @@ export class Game {
     return this.state.config;
   }
 
-  get gameVersion(): Version {
-    return this.state.data.version;
-  }
-
   get detailLog() {
     return this.logger.getLogs();
   }

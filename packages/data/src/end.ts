@@ -13,9 +13,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { GameDataGetter, endRegistration } from "@gi-tcg/core/builder";
+import { resolveStandardVersion, type Version } from "@gi-tcg/core";
+import { registry, scope } from "./begin";
 
 import "./commons";
 
-export const result: GameDataGetter = endRegistration();
-export default result;
+scope.end();
+registry.freeze();
+
+export { registry };
+
+export default (version?: Version) => {
+  return registry.resolve((x) => resolveStandardVersion(x, version))
+};

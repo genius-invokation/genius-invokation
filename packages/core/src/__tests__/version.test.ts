@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { type WithVersionInfo, getCorrectVersion } from "../base/version";
+import { resolveStandardVersion, type WithVersionInfo } from "../base/version";
 import "../utils";
 
 test("find version", () => {
@@ -7,30 +7,39 @@ test("find version", () => {
     {
       id: 999,
       version: {
-        predicate: "since",
-        version: "v3.5.0",
+        from: "official",
+        value: {
+          predicate: "since",
+          version: "v3.5.0",
+        },
       },
     },
     {
       id: 400,
       version: {
-        predicate: "until",
-        version: "v4.0.0",
+        from: "official",
+        value: {
+          predicate: "until",
+          version: "v4.0.0",
+        },
       },
     },
     {
       id: 410,
       version: {
-        predicate: "until",
-        version: "v4.1.0",
+        from: "official",
+        value: {
+          predicate: "until",
+          version: "v4.1.0",
+        },
       },
     },
   ];
-  expect(getCorrectVersion(versions, "v3.3.0")).toBeUndefined();
-  expect(getCorrectVersion(versions, "v3.5.0")?.id).toBe(400);
-  expect(getCorrectVersion(versions, "v4.0.0")?.id).toBe(400);
-  expect(getCorrectVersion(versions, "v4.1.0")?.id).toBe(410);
-  expect(getCorrectVersion(versions, "v4.2.0")?.id).toBe(999);
+  expect(resolveStandardVersion(versions, "v3.3.0")).toBeNull();
+  expect(resolveStandardVersion(versions, "v3.5.0")?.id).toBe(400);
+  expect(resolveStandardVersion(versions, "v4.0.0")?.id).toBe(400);
+  expect(resolveStandardVersion(versions, "v4.1.0")?.id).toBe(410);
+  expect(resolveStandardVersion(versions, "v4.2.0")?.id).toBe(999);
 });
 
 test("sortedBy", () => {

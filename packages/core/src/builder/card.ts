@@ -61,6 +61,7 @@ import { costSize, diceCostSize, normalizeCost, type Writable } from "../utils";
 import {
   type Version,
   type VersionInfo,
+  type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 
@@ -115,19 +116,24 @@ export class CardBuilder<
     DisposeCardBuilderMeta<AssociatedExt>
   > | null = null;
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
-  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
 
   constructor(private readonly cardId: number) {
     super(cardId);
   }
 
-  since(version: Version) {
-    this._versionInfo = { predicate: "since", version };
+  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
+  setVersionInfo<From extends keyof VersionMetadata>(
+    from: From,
+    value: VersionMetadata[From],
+  ) {
+    this._versionInfo = { from, value };
     return this;
   }
+  since(version: Version) {
+    return this.setVersionInfo("official", { predicate: "since", version });
+  }
   until(version: Version) {
-    this._versionInfo = { predicate: "until", version };
-    return this;
+    return this.setVersionInfo("official", { predicate: "until", version });
   }
 
   /** 此定义未被使用。 */

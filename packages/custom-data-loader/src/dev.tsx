@@ -138,10 +138,11 @@ const MyCharacter = character("银狼")
     try {
       const loader = new CustomDataLoader();
       loader.loadMod(code());
-      setGameData(loader.getData());
+      const [gameData, customData] = loader.done();
+      setGameData(gameData);
 
       const am = new AssetsManager({
-        customData: loader.getCustomData(),
+        customData: [customData],
       });
       setAssetsManager(am);
       am.prepareForSync();

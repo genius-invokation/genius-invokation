@@ -70,7 +70,8 @@ export function App() {
           const contents = event.target?.result as string;
           try {
             const logs = JSON.parse(contents);
-            resolve(deserializeGameStateLog(getData, logs));
+            const version = logs.gv;
+            resolve(deserializeGameStateLog(getData(version), logs));
           } catch (error) {
             reject(error);
           }

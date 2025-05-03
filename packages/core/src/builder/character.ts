@@ -27,6 +27,7 @@ import type { VariableConfig } from "../base/entity";
 import {
   type Version,
   type VersionInfo,
+  type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 
@@ -37,18 +38,23 @@ export class CharacterBuilder {
   private _varConfigs: Record<number, VariableConfig> = {};
   private readonly _skillIds: number[] = [];
   private _associatedNightsoulsBlessingId: number | null = null;
-  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   constructor(private readonly id: number) {
     builderWeakRefs.add(new WeakRef(this));
   }
 
-  since(version: Version) {
-    this._versionInfo = { predicate: "since", version };
+  private _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
+  setVersionInfo<From extends keyof VersionMetadata>(
+    from: From,
+    value: VersionMetadata[From],
+  ) {
+    this._versionInfo = { from, value };
     return this;
   }
+  since(version: Version) {
+    return this.setVersionInfo("official", { predicate: "since", version });
+  }
   until(version: Version) {
-    this._versionInfo = { predicate: "until", version };
-    return this;
+    return this.setVersionInfo("official", { predicate: "until", version });
   }
 
   tags(...tags: CharacterTag[]) {

@@ -59,6 +59,7 @@ import type { EntityState, GameState } from "../base/state";
 import {
   type Version,
   type VersionInfo,
+  type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 import type { TypedSkillContext } from "./context/skill";
@@ -132,7 +133,6 @@ export class EntityBuilder<
   _associatedExtensionId: number | null = null;
   private _hintText: string | null = null;
   private readonly _descriptionDictionary: Writable<DescriptionDictionary> = {};
-  _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
   private _snippets = new Map<string, SkillOperation<any>>();
 
   private generateSkillId() {
@@ -148,13 +148,20 @@ export class EntityBuilder<
     builderWeakRefs.add(new WeakRef(this));
   }
 
-  since(version: Version) {
-    this._versionInfo = { predicate: "since", version };
+  /** @internal */
+  public _versionInfo: VersionInfo = DEFAULT_VERSION_INFO;
+  setVersionInfo<From extends keyof VersionMetadata>(
+    from: From,
+    value: VersionMetadata[From],
+  ) {
+    this._versionInfo = { from, value };
     return this;
   }
+  since(version: Version) {
+    return this.setVersionInfo("official", { predicate: "since", version });
+  }
   until(version: Version) {
-    this._versionInfo = { predicate: "until", version };
-    return this;
+    return this.setVersionInfo("official", { predicate: "until", version });
   }
 
   replaceDescription(

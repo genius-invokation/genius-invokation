@@ -22,33 +22,166 @@ import { GiTcgDataError } from "../error";
 import {
   CURRENT_VERSION,
   type Version,
+  type VersionMetadata,
   type VersionInfo,
-  type WithVersionInfo,
-  getCorrectVersion,
 } from "../base/version";
 import { freeze } from "immer";
+
+export type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
+  items: T[],
+) => T | null;
+export type OnResolvedCallback = (entry: DefinitionMap[RegisterCategory]) => void;
+
+export class Registry {
+  private readonly dataStore: DataStore;
+  private freezed = false;
+
+  constructor() {
+    this.dataStore = {
+      characters: new Map(),
+      entities: new Map(),
+      cards: new Map(),
+      initiativeSkills: new Map(),
+      passiveSkills: new Map(),
+      extensions: new Map(),
+    };
+  }
+
+  clone() {
+    const newRegistry = new Registry();
+    for (const [category, store] of Object.entries(this.dataStore)) {
+      const newStore = new Map<number, DefinitionMap[RegisterCategory][]>();
+      for (const [id, defs] of store) {
+        newStore.set(id, [...defs]);
+      }
+      (newRegistry.dataStore as Record<string, Map<number, unknown[]>>)[
+        category
+      ] = newStore;
+    }
+    return newRegistry;
+  }
+
+  freeze() {
+    this.freezed = true;
+    freeze(this.dataStore);
+  }
+
+  begin(): IRegistrationScope {
+    if (this.freezed) {
+      throw new GiTcgDataError("Registry is frozen");
+    }
+    return new RegistrationScope(this.dataStore);
+  }
+
+  resolve(...resolvers: VersionResolver[]): GameData {
+    const applyResolvers = <C extends RegisterCategory, R = DefinitionMap[C]>(
+      category: C,
+      transformFn?: (value: DefinitionMap[C]) => R,
+    ): Map<number, R> => {
+      const source = this.dataStore[category];
+      const result = new Map<number, R>();
+      for (const [id, defs] of source) {
+        let chosen: DefinitionMap[C] | null = null;
+        for (const resolver of resolvers) {
+          chosen = resolver(defs);
+          if (chosen) {
+            break;
+          }
+        }
+        if (!chosen) {
+          continue;
+        }
+        result.set(id, transformFn?.(chosen) ?? (chosen as R));
+      }
+      return result;
+    };
+    const extensions = applyResolvers("extensions");
+    const initiativeSkills = applyResolvers("initiativeSkills");
+    const passiveSkills = applyResolvers("passiveSkills");
+    const entities = applyResolvers("entities");
+    const cards = applyResolvers("cards");
+    const characters = applyResolvers(
+      "characters",
+      (chEntry): CharacterDefinition => {
+        const skills = chEntry.skillIds
+          .map((id) => initiativeSkills.get(id) ?? passiveSkills.get(id))
+          .flatMap((x) =>
+            x ? (x.type === "initiativeSkill" ? [x.skill] : x.skills) : [],
+          );
+        const nightsoulsId = chEntry.associatedNightsoulsBlessingId;
+        const associatedNightsoulsBlessing = nightsoulsId
+          ? entities.get(nightsoulsId) ?? null
+          : null;
+        return {
+          ...chEntry,
+          skills,
+          associatedNightsoulsBlessing,
+        };
+      },
+    );
+    return freeze<GameData>({
+      extensions,
+      entities,
+      cards,
+      characters,
+    });
+  }
+}
+
+export interface IRegistrationScope {
+  begin: () => void;
+  end: () => void;
+  [Symbol.dispose]: () => void;
+}
+
+class RegistrationScope implements IRegistrationScope {
+  private static current: RegistrationScope | null = null;
+
+  constructor(private readonly dataStore: DataStore) {
+    this.begin();
+  }
+
+  static register<C extends RegisterCategory>(
+    type: C,
+    value: DefinitionMap[C],
+  ) {
+    if (RegistrationScope.current === null) {
+      throw new GiTcgDataError("Not in registration");
+    }
+    const store = RegistrationScope.current.dataStore[type];
+    if (!store.has(value.id)) {
+      store.set(value.id, []);
+    }
+    store.get(value.id)!.push(value);
+  }
+
+  begin() {
+    if (
+      RegistrationScope.current !== null &&
+      RegistrationScope.current !== this
+    ) {
+      throw new GiTcgDataError("Already in registration");
+    }
+    RegistrationScope.current = this;
+  }
+
+  end() {
+    if (RegistrationScope.current !== this) {
+      throw new GiTcgDataError("Not in this registration");
+    }
+    RegistrationScope.current = null;
+  }
+
+  [Symbol.dispose]() {
+    this.end();
+  }
+}
 
 /**
  * @internal
  * 用于检查构造完数据后是否存在泄漏的（被引用的）builder
  */
 export const builderWeakRefs = new Set<WeakRef<any>>();
-
-let currentStore: DataStore | null = null;
-
-export function beginRegistration() {
-  if (currentStore !== null) {
-    throw new GiTcgDataError("Already in registration");
-  }
-  currentStore = {
-    characters: new Map(),
-    entities: new Map(),
-    cards: new Map(),
-    initiativeSkills: new Map(),
-    passiveSkills: new Map(),
-    extensions: new Map(),
-  };
-}
 
 interface CharacterEntry
   extends Omit<CharacterDefinition, "skills" | "associatedNightsoulsBlessing"> {
@@ -93,162 +226,27 @@ export type DataStore = {
 };
 
 export interface GameData {
-  readonly version: Version;
   readonly extensions: ReadonlyMap<number, ExtensionDefinition>;
   readonly characters: ReadonlyMap<number, CharacterDefinition>;
   readonly entities: ReadonlyMap<number, EntityDefinition>;
   readonly cards: ReadonlyMap<number, CardDefinition>;
 }
 
-function getCurrentStore(): DataStore {
-  if (currentStore === null) {
-    throw new GiTcgDataError("Not in registration");
-  }
-  return currentStore;
-}
-
-function register<C extends RegisterCategory>(
-  type: C,
-  value: DefinitionMap[C],
-) {
-  const store = getCurrentStore()[type];
-  if (!store.has(value.id)) {
-    store.set(value.id, []);
-  }
-  const allVersions = store.get(value.id)!;
-  if (
-    value.version.predicate === "since" &&
-    allVersions.some(
-      (obj) => "version" in obj && obj.version.predicate === "since",
-    )
-  ) {
-    throw new GiTcgDataError(
-      `Duplicate since version definition for ${type} id ${value.id}`,
-    );
-  } else {
-    if (
-      allVersions.some(
-        (obj) =>
-          "version" in obj &&
-          obj.version.predicate === "until" &&
-          obj.version.version === value.version.version,
-      )
-    ) {
-      throw new GiTcgDataError(
-        `Duplicate until version definition for ${type} id ${value.id}`,
-      );
-    }
-  }
-  allVersions.push(value);
-}
 export function registerCharacter(value: CharacterEntry) {
-  register("characters", value);
+  RegistrationScope.register("characters", value);
 }
 export function registerEntity(value: EntityDefinition) {
-  register("entities", value);
+  RegistrationScope.register("entities", value);
 }
 export function registerPassiveSkill(value: CharacterPassiveSkillEntry) {
-  register("passiveSkills", value);
+  RegistrationScope.register("passiveSkills", value);
 }
 export function registerInitiativeSkill(value: CharacterInitiativeSkillEntry) {
-  register("initiativeSkills", value);
+  RegistrationScope.register("initiativeSkills", value);
 }
 export function registerCard(value: CardDefinition) {
-  register("cards", value);
+  RegistrationScope.register("cards", value);
 }
 export function registerExtension(value: ExtensionDefinition) {
-  register("extensions", value);
-}
-
-export type GameDataGetter = (version?: Version) => GameData;
-
-function combineObject<T extends {}, U extends {}>(a: T, b: U): T & U {
-  const combined = { ...a, ...b };
-  const overlappingKeys = Object.keys(a).filter((key) => key in b);
-  if (overlappingKeys.length > 0) {
-    throw new Error(`Properties ${overlappingKeys.join(", ")} are overlapping`);
-  }
-  return combined;
-}
-
-function selectVersion<T extends WithVersionInfo>(
-  version: Version,
-  source: Map<number, T[]>,
-): Map<number, T>;
-function selectVersion<T extends WithVersionInfo, U>(
-  version: Version,
-  source: Map<number, T[]>,
-  transformFn: (v: T) => U,
-): Map<number, U>;
-function selectVersion<T extends WithVersionInfo>(
-  version: Version,
-  source: Map<number, T[]>,
-  transformFn?: (v: T) => unknown,
-): Map<number, unknown> {
-  const result = new Map<number, unknown>();
-  for (const [id, defs] of source) {
-    const chosen = getCorrectVersion(defs, version);
-    if (!chosen) {
-      continue;
-    }
-    const transformed = transformFn ? transformFn(chosen) : chosen;
-    result.set(id, transformed);
-  }
-  return result;
-}
-
-export function endRegistration(): GameDataGetter {
-  const store = getCurrentStore();
-  currentStore = null;
-  return (version = CURRENT_VERSION): GameData => {
-    const data: GameData = {
-      version,
-      extensions: selectVersion(version, store.extensions),
-      entities: selectVersion(version, store.entities),
-      cards: selectVersion(version, store.cards),
-      characters: selectVersion(
-        version,
-        store.characters,
-        (correctCh): CharacterDefinition => {
-          const initiativeSkills = correctCh.skillIds
-            .map((id) => store.initiativeSkills.get(id))
-            .filter((e) => !!e)
-            .map((e) => getCorrectVersion(e, version))
-            .filter((e) => !!e);
-          const passiveSkills = correctCh.skillIds
-            .map((id) => store.passiveSkills.get(id))
-            .filter((e) => !!e)
-            .map((e) => getCorrectVersion(e, version))
-            .filter((e) => !!e);
-          const associatedNightsoulsBlessing =
-            correctCh.associatedNightsoulsBlessingId
-              ? getCorrectVersion(
-                  store.entities.get(
-                    correctCh.associatedNightsoulsBlessingId,
-                  ) ?? [],
-                  version,
-                ) ?? null
-              : null;
-          const passiveSkillVarConfigs = passiveSkills.reduce(
-            (acc, { varConfigs }) => combineObject(acc, varConfigs),
-            <Record<string, VariableConfig>>{},
-          );
-          const skills: readonly SkillDefinition[] = [
-            ...initiativeSkills.map((e) => e.skill),
-            ...passiveSkills.flatMap((e) => e.skills),
-          ];
-          return {
-            ...correctCh,
-            varConfigs: combineObject(
-              correctCh.varConfigs,
-              passiveSkillVarConfigs,
-            ),
-            skills,
-            associatedNightsoulsBlessing,
-          };
-        },
-      ),
-    };
-    return freeze(data);
-  };
+  RegistrationScope.register("extensions", value);
 }

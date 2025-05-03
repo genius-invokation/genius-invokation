@@ -16,7 +16,8 @@
     "dev": "vite",
     "check": "tsc --noEmit",
     "build:runtime_types": "dts-bundle-generator src/runtime.ts -o dist/runtime.d.ts --inline-declare-global",
-    "build": "tsup"
+    "build:ts": "tsup",
+    "build": "bun run build:ts && bun run build:runtime_types"
   },
   "dependencies": {
     "@gi-tcg/data": "workspace:*"

@@ -14,25 +14,47 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  CardDefinition,
-  CharacterDefinition,
-  EntityDefinition,
-  ExtensionDefinition,
   GameData,
+  resolveStandardVersion,
+  SkillDefinition,
   Version,
 } from "@gi-tcg/core";
-import type { CustomData } from "@gi-tcg/assets-manager";
+import type { CustomData, CustomSkill } from "@gi-tcg/assets-manager";
 
-import getOfficialData from "@gi-tcg/data";
+import getOfficialData, { registry as baseRegistry } from "@gi-tcg/data";
+import { playSkillOfCard } from "@gi-tcg/core/builder";
 import { BuilderContext } from "./builder_context";
 
 export { getOfficialData };
 
+declare const btoa: (str: string) => string;
+function b64EncodeUnicode(str: string) {
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      return String.fromCharCode(parseInt(p1, 16));
+    }),
+  );
+}
+
+function placeholderImageUrl(name: string) {
+  return `data:image/svg+xml;base64,${b64EncodeUnicode(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="210" height="360">
+      <rect width="210" height="360" fill="#ddd" />
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="32" fill="#333">
+        ${name}
+      </text>
+    </svg>
+  `)}`;
+}
+
 export class CustomDataLoader {
   private version?: Version;
+  private registry = baseRegistry.clone();
   private nextId = 10_000_000;
-  private customGameData: GameData[] = [];
-  private customData: CustomData[] = [];
+
+  private names = new Map<number, string>();
+  private descriptions = new Map<number, string>();
+  private images = new Map<number, string>();
 
   constructor() {}
 
@@ -44,43 +66,100 @@ export class CustomDataLoader {
   loadMod(...sources: string[]): this {
     for (const src of sources) {
       const fn = new Function("BuilderContext", `"use strict";` + src);
-      const ctx = new BuilderContext(() => this.nextId++);
+      const ctx = new BuilderContext(this.registry, {
+        stepId: () => this.nextId++,
+        registerName: (id, name) => {
+          this.names.set(id, name);
+        },
+        registerDescription: (id, desc) => {
+          this.descriptions.set(id, desc);
+        },
+        registerImage: (id, url) => {
+          this.images.set(id, url);
+        },
+      });
       const param = ctx.beginRegistration();
-      fn(param);
-      const { gameData, customData } = ctx.endRegistration();
-      this.customGameData.push(gameData);
-      this.customData.push(customData);
+      try {
+        fn(param);
+      } finally {
+        ctx.endRegistration();
+      }
     }
     return this;
   }
 
-  getData(): GameData {
-    const data = getOfficialData(this.version);
-    const result = {
-      version: data.version,
-      characters: new Map<number, CharacterDefinition>(),
-      cards: new Map<number, CardDefinition>(),
-      entities: new Map<number, EntityDefinition>(),
-      extensions: new Map<number, ExtensionDefinition>(),
-    } satisfies GameData;
-    for (const gameData of [data, ...this.customGameData]) {
-      for (const [key, value] of gameData.characters) {
-        result.characters.set(key, value);
+  done(): [GameData, CustomData] {
+    const gameData = this.registry.resolve(
+      (items) => resolveStandardVersion(items, this.version),
+      (items) =>
+        items.find((item) => item.version.from === "customData") ?? null,
+    );
+    const customData: CustomData = {
+      actionCards: [],
+      characters: [],
+      entities: [],
+    };
+    const parseSkill = (skill: SkillDefinition): CustomSkill => {
+      const name = this.names.get(skill.id) ?? "";
+      const skillType = skill.initiativeSkillConfig?.skillType ?? "passive";
+      return {
+        id: skill.id,
+        type: skillType === "playCard" ? "passive" : skillType,
+        name,
+        rawDescription: this.descriptions.get(skill.id) ?? "",
+        skillIconUrl: this.images.get(skill.id) ?? "",
+        playCost: new Map(skill.initiativeSkillConfig?.requiredCost),
+      };
+    };
+    for (const [id, ch] of gameData.characters) {
+      if (ch.version.from !== "customData") {
+        continue;
       }
-      for (const [key, value] of gameData.cards) {
-        result.cards.set(key, value);
-      }
-      for (const [key, value] of gameData.entities) {
-        result.entities.set(key, value);
-      }
-      for (const [key, value] of gameData.extensions) {
-        result.extensions.set(key, value);
-      }
+      const name = this.names.get(ch.id) ?? "";
+      customData.characters.push({
+        id,
+        name,
+        rawDescription: this.descriptions.get(id) ?? "",
+        cardFaceUrl: this.images.get(id) ?? placeholderImageUrl(name),
+        obtainable: true,
+        hp: ch.varConfigs.maxHealth.initialValue,
+        maxEnergy: ch.varConfigs.maxEnergy.initialValue,
+        tags: [...ch.tags],
+        skills: ch.skills.map(parseSkill),
+      });
     }
-    return result;
-  }
-
-  getCustomData(): CustomData[] {
-    return this.customData;
+    for (const [id, card] of gameData.cards) {
+      if (card.version.from !== "customData") {
+        continue;
+      }
+      const name = this.names.get(card.id) ?? "";
+      customData.actionCards.push({
+        id,
+        name,
+        type: card.cardType,
+        rawDescription: this.descriptions.get(id) ?? "",
+        cardFaceUrl: this.images.get(id) ?? placeholderImageUrl(name),
+        obtainable: card.obtainable,
+        tags: [...card.tags],
+        playCost: new Map(
+          playSkillOfCard(card).initiativeSkillConfig.requiredCost,
+        ),
+      });
+    }
+    for (const [id, et] of gameData.entities) {
+      if (et.version.from !== "customData") {
+        continue;
+      }
+      const name = this.names.get(id) ?? "";
+      customData.entities.push({
+        id,
+        type: et.type,
+        name,
+        rawDescription: this.descriptions.get(et.id) ?? "",
+        cardFaceOrBuffIconUrl: this.images.get(id) ?? placeholderImageUrl(name),
+        skills: et.skills.map(parseSkill),
+      });
+    }
+    return [gameData, customData];
   }
 }

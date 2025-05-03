@@ -468,7 +468,10 @@ class Room {
   }
 
   getStateLog() {
-    return serializeGameStateLog(this.stateLog);
+    return {
+      ...serializeGameStateLog(this.stateLog),
+      gv: this.config.gameVersion,
+    };
   }
 
   getRoomInfo(): RoomInfo {
@@ -736,7 +739,7 @@ export class RoomsService {
       const winnerId = winnerWho === null ? null : playerIds[winnerWho]!;
       this.games.addGame({
         coreVersion: Room.CORE_VERSION,
-        gameVersion: game.gameVersion,
+        gameVersion: room.config.gameVersion,
         data: JSON.stringify(room.getStateLog()),
         winnerId,
         playerIds,
