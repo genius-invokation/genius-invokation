@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "build:data": "bun scripts/generate_names.ts",
+    "build:data": "bun scripts/generate_names.ts && bun scripts/generate_deck_data.ts",
     "build:ts": "tsup",
     "build": "bun run build:data && bun run build:ts"
   }

@@ -34,7 +34,8 @@ import type {
   EntityType,
 } from "@gi-tcg/core";
 import { DiceType } from "@gi-tcg/typings";
-import { getDeckData, type DeckData } from "./deck_data";
+import { getDeckData, getStaticDeckData, type DeckData } from "./deck_data";
+import { DEFAULT_ASSETS_MANAGER } from "./index";
 
 export type AnyData =
   | ActionCardRawData
@@ -416,6 +417,9 @@ export class AssetsManager {
   }
 
   async getDeckData(): Promise<DeckData> {
+    if (this === DEFAULT_ASSETS_MANAGER) {
+      return getStaticDeckData();
+    }
     await this.prepareForSync();
     const characters = this.dataCacheSync
       .values()
