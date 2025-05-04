@@ -23,11 +23,8 @@ import {
   JSX,
   createEffect,
   onCleanup,
-  createResource,
-  Switch,
-  Match,
 } from "solid-js";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError } from "axios";
 import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
 import type { RpcRequest } from "@gi-tcg/typings";
@@ -45,69 +42,6 @@ interface ActionRequestPayload {
   timeout: number;
   request: RpcRequest;
 }
-
-const SSE_RECONNECT_TIMEOUT = 30 * 1000;
-
-const createReconnectSse = <T,>(
-  url: string,
-  onPayload: (payload: T) => void,
-  onError?: (e: Error) => void,
-) => {
-  let reconnectTimeout: Timer | null = null;
-  const abortController = new AbortController();
-
-  const resetReconnectTimer = () => {
-    if (reconnectTimeout) {
-      clearTimeout(reconnectTimeout);
-    }
-    reconnectTimeout = setTimeout(() => {
-      console.warn("No data received, reconnecting...");
-      abortController.abort();
-      connect();
-    }, SSE_RECONNECT_TIMEOUT);
-  };
-
-  const connect = () => {
-    axios
-      .get(url, {
-        headers: {
-          Accept: "text/event-stream",
-        },
-        responseType: "stream",
-        signal: abortController.signal,
-        adapter: "fetch",
-      })
-      .then(async (response) => {
-        console.log(`${url} CONNECTED`);
-        const data: ReadableStream = response.data;
-        const reader = data.pipeThrough(new EventSourceStream()).getReader();
-
-        resetReconnectTimer(); // Start the timer after connection is established
-
-        for (;;) {
-          const { value, done } = await reader.read();
-          if (done) {
-            break;
-          }
-          resetReconnectTimer(); // Reset the timer on receiving data
-          const payload = JSON.parse(value.data);
-          onPayload(payload);
-        }
-
-        if (reconnectTimeout) {
-          clearTimeout(reconnectTimeout);
-        }
-      })
-      .catch((error) => {
-        if (reconnectTimeout) {
-          clearTimeout(reconnectTimeout);
-        }
-        onError?.(error);
-      });
-  };
-
-  return [connect];
-};
 
 export function Room() {
   const params = useParams();
@@ -135,7 +69,6 @@ export function Room() {
         if (initialized()) {
           alert(message);
         } else {
-          setLoading(false);
           setFailed(message);
         }
         console.error(value);
@@ -219,9 +152,9 @@ export function Room() {
 
   const [currentTimer, setCurrentTimer] = createSignal<number | null>(null);
   const currentRpcId: { value: number | null } = { value: null };
-  let actionTimerIntervalId: number | null = null;
-  const setActionTimer = () => {
-    actionTimerIntervalId = window.setInterval(() => {
+  let intervalId: number | null = null;
+  const setTimer = () => {
+    intervalId = window.setInterval(() => {
       const current = currentTimer();
       if (typeof current === "number") {
         setCurrentTimer(current - 1);
@@ -232,87 +165,91 @@ export function Room() {
       }
     }, 1000);
   };
-  const cleanActionTimer = () => {
-    if (actionTimerIntervalId) {
-      window.clearInterval(actionTimerIntervalId);
-    }
-  };
-
-  const [roomInfo] = createResource(() =>
-    axios.get<{ status: string }>(`rooms/${id}`).then((res) => res.data),
-  );
-
-  const [fetchNotification] = createReconnectSse(
-    `rooms/${id}/players/${playerId}/notification`,
-    (payload: any) => {
-      setLoading(false);
-      switch (payload.type) {
-        case "initialized": {
-          setInitialized(payload);
-          break;
-        }
-        case "notification": {
-          playerIo()?.notify(payload.data);
-          break;
-        }
-        default: {
-          console.log("%c%s", "color: green", payload);
-          break;
-        }
-      }
-    },
-    reportStreamError,
-  );
-  const [fetchAction] = createReconnectSse(
-    `rooms/${id}/players/${playerId}/actionRequest`,
-    (payload: any) => {
-      switch (payload.type) {
-        case "rpc": {
-          if (payload.id !== currentRpcId.value) {
-            onActionRequested(payload);
-          }
-          break;
-        }
-        default: {
-          console.log("%c%s", "color: red", payload);
-          break;
-        }
-      }
-    },
-    reportStreamError,
-  );
-
-  const downloadGameLog = async () => {
-    try {
-      const { data } = await axios.get(`rooms/${id}/gameLog`);
-      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `gameLog.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      a.remove();
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        alert(e.response?.data.message);
-      }
-      console.error(e);
+  const cleanTimer = () => {
+    if (intervalId) {
+      window.clearInterval(intervalId);
     }
   };
 
   onMount(() => {
-    fetchNotification();
+    axios
+      .get(`rooms/${id}/players/${playerId}/notification`, {
+        headers: {
+          Accept: "text/event-stream",
+        },
+        responseType: "stream",
+        adapter: "fetch",
+      })
+      .then(async (response) => {
+        console.log("notification CONNECTED");
+        const data: ReadableStream = response.data;
+        const reader = data.pipeThrough(new EventSourceStream()).getReader();
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+            break;
+          }
+          const payload = JSON.parse(value.data);
+          setLoading(false);
+          switch (payload.type) {
+            case "initialized": {
+              setInitialized(payload);
+              break;
+            }
+            case "notification": {
+              playerIo()?.notify(payload.data);
+              break;
+            }
+            default: {
+              console.log("%c%s", "color: green", value.data);
+              break;
+            }
+          }
+        }
+      })
+      .catch(reportStreamError);
     if (action) {
-      fetchAction();
+      axios
+        .get(`rooms/${id}/players/${playerId}/actionRequest`, {
+          headers: {
+            Accept: "text/event-stream",
+          },
+          responseType: "stream",
+          adapter: "fetch",
+        })
+        .then(async (response) => {
+          console.log("actionRequest CONNECTED");
+          const data: ReadableStream = response.data;
+          const reader = data.pipeThrough(new EventSourceStream()).getReader();
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) {
+              break;
+            }
+            const payload = JSON.parse(value.data);
+            switch (payload.type) {
+              case "rpc": {
+                if (payload.id !== currentRpcId.value) {
+                  onActionRequested(payload);
+                }
+                break;
+              }
+              default: {
+                console.log("%c%s", "color: red", value.data);
+                break;
+              }
+            }
+          }
+        })
+        .catch(reportStreamError);
     }
-    setActionTimer();
+    setTimer();
   });
 
   onCleanup(() => {
     setInitialized();
     setPlayerIo();
-    cleanActionTimer();
+    cleanTimer();
   });
 
   return (
@@ -340,61 +277,34 @@ export function Room() {
             <Show when={initialized()}>
               {(payload) => (
                 <>
-                  <span>{payload().myPlayerInfo.name}（您）</span>
+                  <span>{payload().myPlayerInfo.name}</span>
                   <span class="font-bold"> VS </span>
                   <span>{payload().oppPlayerInfo.name}</span>
-                  <span>，您是{payload().who === 0 ? "先手" : "后手"}</span>
+                  <span>（您是：{payload().who === 0 ? "先手" : "后手"}）</span>
                 </>
               )}
             </Show>
           </div>
         </div>
-        <Switch>
-          <Match when={loading() || roomInfo.loading}>
-            <div class="mb-3 alert alert-outline-info">房间加载中……</div>
-          </Match>
-          <Match when={roomInfo.state === "ready" && roomInfo()}>
-            {(info) => (
-              <Switch>
-                <Match when={!initialized() && info().status === "waiting"}>
-                  <div class="mb-3 alert alert-outline-info">
-                    等待对手加入房间……
+        <Show when={!failed()} fallback={<div>加载房间失败！{failed()}</div>}>
+          <Show when={initialized()} fallback={<div>等待对手加入房间…</div>}>
+            <div class="relative">
+              <Show when={currentTimer()}>
+                {(time) => (
+                  <div class="absolute top-0 left-[50%] translate-x-[-50%] bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29">
+                    {Math.max(Math.floor(time() / 60), 0)
+                      .toString()
+                      .padStart(2, "0")}{" "}
+                    :{" "}
+                    {Math.max(time() % 60, 0)
+                      .toString()
+                      .padStart(2, "0")}
                   </div>
-                </Match>
-                <Match when={info().status === "finished"}>
-                  <div class="mb-3 alert alert-outline-info">
-                    此房间的对局已结束。
-                    <button class="btn btn-soft-info" onClick={downloadGameLog}>
-                      下载日志
-                    </button>
-                  </div>
-                </Match>
-              </Switch>
-            )}
-          </Match>
-          <Match when={failed()}>
-            <div class="mb-3 alert alert-outline-error">
-              加载房间失败！{failed()}
+                )}
+              </Show>
+              {chessboard()}
             </div>
-          </Match>
-        </Switch>
-        <Show when={initialized()}>
-          <div class="relative">
-            <Show when={currentTimer()}>
-              {(time) => (
-                <div class="absolute top-0 left-[50%] translate-x-[-50%] bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29">
-                  {Math.max(Math.floor(time() / 60), 0)
-                    .toString()
-                    .padStart(2, "0")}{" "}
-                  :{" "}
-                  {Math.max(time() % 60, 0)
-                    .toString()
-                    .padStart(2, "0")}
-                </div>
-              )}
-            </Show>
-            {chessboard()}
-          </div>
+          </Show>
         </Show>
       </div>
     </Layout>

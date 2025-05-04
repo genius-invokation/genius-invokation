@@ -180,17 +180,6 @@ export class RoomsController {
     return room;
   }
 
-  @Get(":roomId/gameLog")
-  getRoomGameLog(
-    @UserOrGuest() playerId: number | string | null,
-    @Param("roomId", ParseIntPipe) roomId: number,
-  ) {
-    if (playerId === null) {
-      throw new UnauthorizedException();
-    }
-    return this.rooms.getRoomGameLog(playerId, roomId);
-  }
-
   @Delete(":roomId")
   deleteRoom(
     @UserOrGuest() playerId: number | string | null,
