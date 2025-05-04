@@ -133,6 +133,10 @@ export interface HealOption {
   kind?: HealKind;
 }
 
+export interface DisposeOption {
+  noTriggerEvent?: boolean;
+}
+
 export interface GenerateDiceOption {
   randomIncludeOmni?: boolean;
   randomAllowDuplicate?: boolean;
@@ -1064,7 +1068,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  dispose(target: EntityTargetArg = "@self") {
+  dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
     const targets = this.queryOrOf(target);
     for (const t of targets) {
       this.assertNotCard(t.state);
@@ -1078,7 +1082,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Dispose ${stringifyState(entityState)}`,
       );
-      this.emitEvent("onDispose", this.state, entityState as EntityState);
+      if (!option.noTriggerEvent) {
+        // 对于“转移回手牌”的操作，不会触发 onDispose
+        this.emitEvent("onDispose", this.state, entityState as EntityState);
+      }
       this.mutate({
         type: "removeEntity",
         oldState: entityState,
@@ -1363,7 +1370,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     count = Math.min(count, maxCount);
     let insertedDice: DiceType[] = [];
     if (type === "randomElement") {
-      const diceTypes = [
+      const diceTypes: DiceType[] = [
         DiceType.Anemo,
         DiceType.Cryo,
         DiceType.Dendro,
