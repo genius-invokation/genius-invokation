@@ -87,7 +87,7 @@ export function versionCompare(a: Version, b: Version) {
   return versionIdxMap[a] - versionIdxMap[b];
 }
 
-export function resolveStandardVersion<T extends WithVersionInfo>(
+export function resolveOfficialVersion<T extends WithVersionInfo>(
   candidates: readonly T[],
   requiredVersion: Version = CURRENT_VERSION,
 ): T | null {

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { resolveStandardVersion, type Version } from "@gi-tcg/core";
+import { resolveOfficialVersion, type Version } from "@gi-tcg/core";
 import { registry, scope } from "./begin";
 
 import "./commons";
@@ -24,5 +24,5 @@ registry.freeze();
 export { registry };
 
 export default (version?: Version) => {
-  return registry.resolve((x) => resolveStandardVersion(x, version))
+  return registry.resolve((x) => resolveOfficialVersion(x, version))
 };
