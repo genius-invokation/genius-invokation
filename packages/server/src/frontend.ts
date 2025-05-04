@@ -32,7 +32,7 @@ export async function frontend(app: FastifyInstance) {
     app.get(baseNoSuffix, (_req, reply) => {
       reply.type("text/html").send(indexHtml);
     });
-    app.get(`${baseNoSuffix}/*`, (_req, reply) => {
+    app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {
       reply.type("text/html").send(indexHtml);
     });
   }
