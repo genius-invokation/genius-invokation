@@ -507,14 +507,12 @@ export const Jeht = card(322022)
   .do((c) => {
     c.setVariable("experience", Math.min(c.getExtensionState().disposedSupportCount[c.self.who], 6));
   })
-  .on("useSkill", (c, e) => e.isSkillType("burst"))
-  .do((c) => {
-    const exp = c.getVariable("experience");
-    if (exp >= 6) {
-      c.characterStatus(SandsAndDream, "my active");
-      c.dispose();
-    }
-  })
+  .on("useSkill", (c, e) =>
+    e.isSkillType("burst") &&
+    !c.of<"character">(e.skillCaller).hasStatus(SandsAndDream) && // 多个婕德不重复触发
+    c.getVariable("experience") >= 6)
+  .characterStatus(SandsAndDream, "my active")
+  .dispose()
   .done();
 
 const DamageTypeCountExtension = extension(322023, { damages: pair(new Set<DamageType>()) })
