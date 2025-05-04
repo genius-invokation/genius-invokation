@@ -237,6 +237,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     }
     this.skillContext.createEntity("equipment", equipment, this._area, opt);
   }
+  /** 不触发 onDispose */ 
   removeArtifact(): EntityState | null {
     const entity = this.state.entities.find((v) =>
       v.definition.tags.includes("artifact"),
@@ -244,9 +245,10 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     if (!entity) {
       return null;
     }
-    this.skillContext.dispose(entity);
+    this.skillContext.dispose(entity, { noTriggerEvent: true });
     return entity;
   }
+  /** 不触发 onDispose */ 
   removeWeapon(): EntityState | null {
     const entity = this.state.entities.find((v) =>
       v.definition.tags.includes("weapon"),
@@ -254,7 +256,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     if (!entity) {
       return null;
     }
-    this.skillContext.dispose(entity);
+    this.skillContext.dispose(entity, { noTriggerEvent: true });
     return entity;
   }
   loseEnergy(count = 1): number {
