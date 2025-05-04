@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { resolveStandardVersion, type WithVersionInfo } from "../base/version";
+import { resolveOfficialVersion, type WithVersionInfo } from "../base/version";
 import "../utils";
 
 test("find version", () => {
@@ -35,11 +35,11 @@ test("find version", () => {
       },
     },
   ];
-  expect(resolveStandardVersion(versions, "v3.3.0")).toBeNull();
-  expect(resolveStandardVersion(versions, "v3.5.0")?.id).toBe(400);
-  expect(resolveStandardVersion(versions, "v4.0.0")?.id).toBe(400);
-  expect(resolveStandardVersion(versions, "v4.1.0")?.id).toBe(410);
-  expect(resolveStandardVersion(versions, "v4.2.0")?.id).toBe(999);
+  expect(resolveOfficialVersion(versions, "v3.3.0")).toBeNull();
+  expect(resolveOfficialVersion(versions, "v3.5.0")?.id).toBe(400);
+  expect(resolveOfficialVersion(versions, "v4.0.0")?.id).toBe(400);
+  expect(resolveOfficialVersion(versions, "v4.1.0")?.id).toBe(410);
+  expect(resolveOfficialVersion(versions, "v4.2.0")?.id).toBe(999);
 });
 
 test("sortedBy", () => {

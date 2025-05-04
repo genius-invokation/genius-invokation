@@ -33,7 +33,7 @@ export {
   type VersionInfo,
   VERSIONS,
   CURRENT_VERSION,
-  resolveStandardVersion,
+  resolveOfficialVersion,
 } from "./base/version";
 export { executeQueryOnState } from "./query";
 export { type PlayerIO, exposeState } from "./io";
