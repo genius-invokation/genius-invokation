@@ -80,7 +80,7 @@ interface RoomConfig extends Partial<GameConfig> {
   rerollTime: number; // defaults 40
   roundTotalActionTime: number; // defaults 60
   actionTime: number; // defaults 25
-  watchable: boolean; // defaults false
+  watchable: boolean; // defaults true
   private: boolean; // defaults false
   allowGuest: boolean; // defaults true
   gameVersion: Version; // defaults latest
@@ -334,10 +334,16 @@ class Player implements PlayerIOWithError {
 
 type GameStopHandler = (room: Room, game: InternalGame | null) => void;
 
+enum RoomStatus {
+  Waiting = "waiting",
+  Playing = "playing",
+  Finished = "finished",
+}
+
 interface RoomInfo {
   id: number;
   config: RoomConfig;
-  started: boolean;
+  status: RoomStatus;
   watchable: boolean;
   players: PlayerInfo[];
 }
@@ -378,8 +384,14 @@ class Room {
   getPlayers(): Player[] {
     return this.players.filter((player): player is Player => player !== null);
   }
-  get started() {
-    return this.game !== null;
+  get status(): RoomStatus {
+    if (!this.game) {
+      return RoomStatus.Waiting;
+    }
+    if (this.terminated) {
+      return RoomStatus.Finished;
+    }
+    return RoomStatus.Playing;
   }
 
   setHost(player: Player) {
@@ -456,6 +468,7 @@ class Room {
   }
 
   stop() {
+    this.terminated = true;
     this.players[0]?.complete();
     this.players[1]?.complete();
     for (const cb of this.onStopHandlers) {
@@ -478,7 +491,7 @@ class Room {
     return {
       id: this.id,
       config: this.config,
-      started: this.started,
+      status: this.status,
       watchable: this.config.watchable,
       players: this.getPlayers().map((player) => player.playerInfo),
     };
@@ -522,6 +535,9 @@ export class RoomsService {
 
   currentRoom(playerId: PlayerId) {
     for (const room of this.rooms.values()) {
+      if (room.status === RoomStatus.Finished) {
+        continue;
+      }
       if (
         room.getPlayers().some((player) => player.playerInfo.id === playerId)
       ) {
@@ -622,7 +638,11 @@ export class RoomsService {
     this.rooms.set(roomId, room);
     this.roomIdPool.shift();
 
-    room.onStop(() => {
+    room.onStop(async (room) => {
+      const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
+      if (room.status === RoomStatus.Finished) {
+        await Bun.sleep(keepRoomDuration);
+      }
       this.rooms.delete(room.id);
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
@@ -634,7 +654,7 @@ export class RoomsService {
     // 闲置五分钟后删除房间
     setTimeout(
       () => {
-        if (!room.started) {
+        if (room.status === RoomStatus.Waiting) {
           room.stop();
         }
       },
@@ -648,8 +668,8 @@ export class RoomsService {
     if (!room) {
       throw new NotFoundException(`Room ${roomId} not found`);
     }
-    if (room.started) {
-      throw new ConflictException(`Room ${roomId} already started`);
+    if (room.status !== RoomStatus.Waiting) {
+      throw new ConflictException(`${roomId} has status ${room.status}, while only waiting room can be deleted`);
     }
     if (room.getHost()?.playerInfo.id !== playerId) {
       throw new UnauthorizedException(`You are not the host of room ${roomId}`);
@@ -693,8 +713,8 @@ export class RoomsService {
     if (!room) {
       throw new NotFoundException(`Room ${roomId} not found`);
     }
-    if (room.started) {
-      throw new ConflictException(`Room ${roomId} already started`);
+    if (room.status !== RoomStatus.Waiting) {
+      throw new ConflictException(`Room ${roomId} is not waiting`);
     }
     if (playerInfo.isGuest && !room.config.allowGuest) {
       throw new UnauthorizedException(`Room ${roomId} does not allow guest`);
@@ -756,9 +776,29 @@ export class RoomsService {
     return room.getRoomInfo();
   }
 
+  getRoomGameLog(playerId: PlayerId, roomId: number) {
+    const room = this.rooms.get(roomId);
+    if (!room) {
+      throw new NotFoundException(`Room not found`);
+    }
+    if (room.status !== RoomStatus.Finished) {
+      throw new ConflictException(`Room ${roomId} is not finished`);
+    }
+    if (room.config.watchable || room.getPlayers().some((p) => p.playerInfo.id === playerId)) {
+      return room.getStateLog();
+    } else {
+      throw new UnauthorizedException(
+        `Room ${roomId} is not watchable, and you are not in the room`,
+      );
+    }
+  }
+
   getAllRooms(guest: boolean): RoomInfo[] {
     const result: RoomInfo[] = [];
     for (const room of this.rooms.values()) {
+      if (room.status === RoomStatus.Finished) {
+        continue;
+      }
       if (room.config.private) {
         continue;
       }
