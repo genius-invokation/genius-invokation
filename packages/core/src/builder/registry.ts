@@ -30,7 +30,9 @@ import { freeze } from "immer";
 export type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
   items: T[],
 ) => T | null;
-export type OnResolvedCallback = (entry: DefinitionMap[RegisterCategory]) => void;
+export type OnResolvedCallback = (
+  entry: DefinitionMap[RegisterCategory],
+) => void;
 
 export class Registry {
   private readonly dataStore: DataStore;
@@ -103,17 +105,27 @@ export class Registry {
     const characters = applyResolvers(
       "characters",
       (chEntry): CharacterDefinition => {
-        const skills = chEntry.skillIds
-          .map((id) => initiativeSkills.get(id) ?? passiveSkills.get(id))
-          .flatMap((x) =>
-            x ? (x.type === "initiativeSkill" ? [x.skill] : x.skills) : [],
-          );
+        const skills: SkillDefinition[] = [];
+        let varConfigs = { ...chEntry.varConfigs };
+        for (const skillId of chEntry.skillIds) {
+          const initiativeSkill = initiativeSkills.get(skillId);
+          if (initiativeSkill) {
+            skills.push(initiativeSkill.skill);
+            continue;
+          }
+          const passiveSkill = passiveSkills.get(skillId);
+          if (passiveSkill) {
+            varConfigs = combineObject(varConfigs, passiveSkill.varConfigs);
+            skills.push(...passiveSkill.skills);
+          }
+        }
         const nightsoulsId = chEntry.associatedNightsoulsBlessingId;
         const associatedNightsoulsBlessing = nightsoulsId
           ? entities.get(nightsoulsId) ?? null
           : null;
         return {
           ...chEntry,
+          varConfigs,
           skills,
           associatedNightsoulsBlessing,
         };
@@ -182,6 +194,15 @@ class RegistrationScope implements IRegistrationScope {
  * 用于检查构造完数据后是否存在泄漏的（被引用的）builder
  */
 export const builderWeakRefs = new Set<WeakRef<any>>();
+
+function combineObject<T extends {}, U extends {}>(a: T, b: U): T & U {
+  const combined = { ...a, ...b };
+  const overlappingKeys = Object.keys(a).filter((key) => key in b);
+  if (overlappingKeys.length > 0) {
+    throw new Error(`Properties ${overlappingKeys.join(", ")} are overlapping`);
+  }
+  return combined;
+}
 
 interface CharacterEntry
   extends Omit<CharacterDefinition, "skills" | "associatedNightsoulsBlessing"> {
