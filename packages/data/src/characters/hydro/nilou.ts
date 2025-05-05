@@ -46,14 +46,11 @@ export const BountifulCore = summon(112082)
  * @description
  * 结束阶段：对所附属角色造成2点水元素伤害。
  * 可用次数：1
- * @outdated
- * 结束阶段：对所附属角色造成3点水元素伤害。
- * 可用次数：1
  */
 export const LingeringAeon = status(112083)
   .on("endPhase")
   .usage(1)
-  .damage(DamageType.Hydro, 3, "@master")
+  .damage(DamageType.Hydro, 2, "@master")
   .done();
 
 /**
@@ -104,15 +101,13 @@ export const DanceOfHaftkarsvar = skill(12082)
  * @name 浮莲舞步·远梦聆泉
  * @description
  * 造成2点水元素伤害，目标及下一个角色附属永世流沔。
- * @outdated
- * 造成2点水元素伤害，目标角色附属永世流沔。
  */
 export const DanceOfAbzendegiDistantDreamsListeningSpring = skill(12083)
   .type("burst")
   .costHydro(3)
   .costEnergy(2)
   .damage(DamageType.Hydro, 2)
-  .characterStatus(LingeringAeon, "opp active")
+  .characterStatus(LingeringAeon, "opp active or opp next")
   .done();
 
 /**

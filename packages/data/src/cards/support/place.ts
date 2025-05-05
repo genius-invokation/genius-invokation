@@ -652,6 +652,20 @@ export const MastersOfTheNightwind = card(321027)
   .done();
 
 /**
+ * @id 301025
+ * @name 锻炼
+ * @description
+ * 自身层数到达3时，治疗所附属角色1点；若自身层数等于5，则所附属角色造成的伤害+1。（可叠加，最多叠加到5层）
+ */
+export const Exercise = status(301025)
+  .variableCanAppend("layer", 2, 5)
+  .on("enter", (c, e) => (e.overridden?.variables.layer ?? 0) < 3 && c.getVariable("layer") >= 3)
+  .heal(1, "@master")
+  .on("increaseSkillDamage", (c) => c.getVariable("layer") === 5)
+  .increaseDamage(1)
+  .done();
+
+/**
  * @id 321028
  * @name 「沃陆之邦」
  * @description
@@ -663,5 +677,17 @@ export const CollectiveOfPlenty = card(321028)
   .since("v5.6.0")
   .costVoid(3)
   .support("place")
-  // TODO
+  .on("enterRelative", (c, e) =>
+    e.entity.definition.type === "status" && 
+    e.entity.definition.tags.includes("preparingSkill"))
+  .do((c, e) => {
+    const ch = c.of<"status">(e.entity).master();
+    c.characterStatus(Exercise, ch.state, {
+      overrideVariables: {
+        layer: 3
+      }
+    });
+  })
+  .on("switchActive")
+  .characterStatus(Exercise, "@event.switchTo")
   .done();

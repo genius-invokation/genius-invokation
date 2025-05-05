@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, customEvent } from "@gi-tcg/core/builder";
 
 /**
  * @id 114131
@@ -24,7 +24,15 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const TwilightMeditation = status(114131)
   .since("v5.6.0")
-  // TODO
+  .duration(2)
+  .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
+  .deductVoidCost(1)
+  .on("modifySkillDamageType", (c, e) => e.viaSkillType("normal") && e.type === DamageType.Physical)
+  .changeDamageType(DamageType.Electro)
+  .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
+  .increaseDamage(1)
+  .on("skillDamage", (c, e) => e.viaSkillType("normal"))
+  .damage(DamageType.Piercing, 1, "opp character order by health limit 1")
   .done();
 
 /**
@@ -36,7 +44,9 @@ export const TwilightMeditation = status(114131)
  */
 export const ThunderConvergence = status(114132)
   .since("v5.6.0")
-  // TODO
+  .once("skillReaction")
+  .listenToPlayer()
+  .gainEnergy(1, "@master")
   .done();
 
 /**
@@ -49,7 +59,8 @@ export const RoyalReedArchery = skill(14131)
   .type("normal")
   .costElectro(1)
   .costVoid(2)
-  // TODO
+  .noEnergy()
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -61,7 +72,9 @@ export const RoyalReedArchery = skill(14131)
 export const AncientRiteTheThunderingSands = skill(14132)
   .type("elemental")
   .costElectro(2)
-  // TODO
+  .apply(DamageType.Electro, "opp active")
+  .switchActive("my next")
+  .characterStatus(ThunderConvergence, "@self")
   .done();
 
 /**
@@ -74,8 +87,11 @@ export const SecretRiteTwilightShadowpiercer = skill(14133)
   .type("burst")
   .costElectro(3)
   .costEnergy(4)
-  // TODO
+  .damage(DamageType.Electro, 3)
+  .characterStatus(TwilightMeditation, "@self")
   .done();
+
+const energyLost = customEvent();
 
 /**
  * @id 14134
@@ -86,7 +102,15 @@ export const SecretRiteTwilightShadowpiercer = skill(14133)
  */
 export const BlackKitesEnigma = skill(14134)
   .type("passive")
-  // TODO
+  .on("useSkill", (c, e) => e.isSkillType("normal"))
+  .do((c) => {
+    const energy = c.self.energy;
+    if (energy) {
+      c.self.loseEnergy(energy);
+      c.damage(DamageType.Piercing, energy + 1, "opp character order by health limit 1");
+      c.emitCustomEvent(energyLost);
+    }
+  })
   .done();
 
 /**
@@ -114,6 +138,10 @@ export const Sethos = character(1413)
 export const PylonOfTheSojourningSunTemple = card(214131)
   .since("v5.6.0")
   .costElectro(1)
-  .talent(Sethos)
-  // TODO
+  .talent(Sethos, "none")
+  .on("enter")
+  .gainEnergy(1, "@master")
+  .on(energyLost)
+  .usagePerRound(1)
+  .gainEnergy(1, "@master")
   .done();

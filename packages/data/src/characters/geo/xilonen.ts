@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, combatStatus, DiceType } from "@gi-tcg/core/builder";
 
 /**
  * @id 116111
@@ -23,7 +23,72 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const NightsoulsBlessing = status(116111)
   .since("v5.6.0")
-  // TODO
+  .nightsoulsBlessing(2)
+  .done();
+
+/**
+ * @id 216113
+ * @name 受到的岩元素伤害增加
+ * @description
+ * 我方受到的岩元素伤害增加1点。
+ * 持续回合：1
+ */
+export const GeoDMGBonus = combatStatus(216113)
+  .duration(1)
+  .on("increaseDamaged", (c, e) => e.type === DamageType.Geo)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 216114
+ * @name 受到的水元素伤害增加
+ * @description
+ * 我方受到的水元素伤害增加1点。
+ * 持续回合：1
+ */
+export const HydroDMGBonus = combatStatus(216114)
+  .duration(1)
+  .on("increaseDamaged", (c, e) => e.type === DamageType.Hydro)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 216115
+ * @name 受到的火元素伤害增加
+ * @description
+ * 我方受到的火元素伤害增加1点。
+ * 持续回合：1
+ */
+export const PyroDMGBonus = combatStatus(216115)
+  .duration(1)
+  .on("increaseDamaged", (c, e) => e.type === DamageType.Pyro)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 216116
+ * @name 受到的冰元素伤害增加
+ * @description
+ * 我方受到的冰元素伤害增加1点。
+ * 持续回合：1
+ */
+export const CryoDMGBonus = combatStatus(216116)
+  .duration(1)
+  .on("increaseDamaged", (c, e) => e.type === DamageType.Cryo)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 216117
+ * @name 受到的雷元素伤害增加
+ * @description
+ * 我方受到的雷元素伤害增加1点。
+ * 持续回合：1
+ */
+export const ElectroDMGBonus = combatStatus(216117)
+  .duration(1)
+  .on("increaseDamaged", (c, e) => e.type === DamageType.Electro)
+  .increaseDamage(1)
   .done();
 
 /**
@@ -34,7 +99,7 @@ export const NightsoulsBlessing = status(116111)
  */
 export const SourceSampleGeo = status(116113)
   .since("v5.6.0")
-  // TODO
+  .variable("layer", 1)
   .done();
 
 /**
@@ -45,7 +110,7 @@ export const SourceSampleGeo = status(116113)
  */
 export const SourceSampleHydro = status(116114)
   .since("v5.6.0")
-  // TODO
+  .variable("layer", 1)
   .done();
 
 /**
@@ -56,7 +121,7 @@ export const SourceSampleHydro = status(116114)
  */
 export const SourceSamplePyro = status(116115)
   .since("v5.6.0")
-  // TODO
+  .variable("layer", 1)
   .done();
 
 /**
@@ -67,7 +132,7 @@ export const SourceSamplePyro = status(116115)
  */
 export const SourceSampleCryo = status(116116)
   .since("v5.6.0")
-  // TODO
+  .variable("layer", 1)
   .done();
 
 /**
@@ -78,7 +143,7 @@ export const SourceSampleCryo = status(116116)
  */
 export const SourceSampleElectro = status(116117)
   .since("v5.6.0")
-  // TODO
+  .variable("layer", 1)
   .done();
 
 /**
@@ -95,7 +160,15 @@ export const SourceSampleElectro = status(116117)
  */
 export const CombatBladingGear = card(116112)
   .since("v5.6.0")
-  // TODO
+  .unobtainable()
+  .nightsoulTechnique()
+  .on("modifySkillDamageType", (c, e) => e.type === DamageType.Physical)
+  .changeDamageType(DamageType.Geo)
+  .endOn()
+  .provideSkill(1161121)
+  .costVoid(2)
+  .consumeNightsoul("@master")
+  .drawCards(3)
   .done();
 
 /**
@@ -108,7 +181,13 @@ export const EhecatlsRoar = skill(16111)
   .type("normal")
   .costGeo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
+  .if((c) => c.self.hasStatus(NightsoulsBlessing))
+  .characterStatus(NightsoulsBlessing, "@self", {
+    overrideVariables: {
+      nightsoul: 1
+    }
+  })
   .done();
 
 /**
@@ -121,7 +200,9 @@ export const EhecatlsRoar = skill(16111)
 export const YohualsScratch = skill(16112)
   .type("elemental")
   .costGeo(2)
-  // TODO
+  .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
+  .equip(CombatBladingGear)
+  .gainNightsoul("@self", 1)
   .done();
 
 /**
@@ -134,9 +215,43 @@ export const OcelotlicuePoint = skill(16113)
   .type("burst")
   .costGeo(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Geo, 2)
+  .do((c) => {
+    let healCount = 1;
+    let drawCount = 1;
+    for (const [type, def] of Object.entries(sampleMap)) {
+      const st = c.$(`my status with definition id ${def}`);
+      if (st) {
+        if (def === SourceSampleGeo) {
+          drawCount += st.getVariable("layer");
+        } else {
+          healCount += st.getVariable("layer");
+        }
+      }
+    }
+    c.heal(healCount, `my characters order by health - maxHealth limit 1`);
+    c.drawCards(drawCount);
+  })
   .done();
 
+const sampleMap = {
+  [DiceType.Geo]: SourceSampleGeo,
+  [DiceType.Hydro]: SourceSampleHydro,
+  [DiceType.Pyro]: SourceSamplePyro,
+  [DiceType.Cryo]: SourceSampleCryo,
+  [DiceType.Electro]: SourceSampleElectro,
+} as const;
+
+const dmgBonusMap = {
+  [DiceType.Geo]: GeoDMGBonus,
+  [DiceType.Hydro]: HydroDMGBonus,
+  [DiceType.Pyro]: PyroDMGBonus,
+  [DiceType.Cryo]: CryoDMGBonus,
+  [DiceType.Electro]: ElectroDMGBonus,
+} as const;
+
+type SampleType = keyof typeof sampleMap;
+  
 /**
  * @id 16114
  * @name 「源音采样」
@@ -145,7 +260,42 @@ export const OcelotlicuePoint = skill(16113)
  */
 export const SourceSample = skill(16114)
   .type("passive")
-  // TODO
+  .defineSnippet("initSamples", (c) => {
+    const sampleCount = Object.fromEntries(
+      Object.keys(sampleMap).map((k) => [k, 0])
+    ) as Record<SampleType, number>;
+    sampleCount[DiceType.Geo] = 3;
+    const elements = new Set(c.$$(`my characters includes defeated`).map((ch) => ch.element()));
+    for (const e of elements) {
+      if (e !== DiceType.Geo && e in sampleCount) {
+        sampleCount[e as SampleType]++;
+        sampleCount[DiceType.Geo]--;
+      }
+    }
+    for (const [element, layer] of Object.entries(sampleCount)) {
+      if (layer > 0) {
+        c.characterStatus(sampleMap[Number(element) as SampleType], "@self", {
+          overrideVariables: { layer }
+        })
+      }
+    }
+  })
+  .on("battleBegin")
+  .callSnippet("initSamples")
+  .on("revive")
+  .callSnippet("initSamples")
+  .on("actionPhase")
+  .do((c) => {
+    const nightsoul = c.self.hasStatus(NightsoulsBlessing);
+    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") >= 2) {
+      for (const [type, def] of Object.entries(sampleMap)) {
+        if (c.$(`my status with definition id ${def}`)) {
+          c.combatStatus(dmgBonusMap[Number(type) as SampleType], "opp");
+        }
+      }
+      c.consumeNightsoul("@self", 2);
+    }
+  })
   .done();
 
 /**
@@ -160,6 +310,7 @@ export const Xilonen = character(1611)
   .health(10)
   .energy(2)
   .skills(EhecatlsRoar, YohualsScratch, OcelotlicuePoint, SourceSample)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
@@ -174,6 +325,14 @@ export const Xilonen = character(1611)
 export const TourOfTepeilhuitl = card(216111)
   .since("v5.6.0")
   .costGeo(2)
+  .filter((c) => {
+    const ch = c.$(`my character with definition id ${Xilonen}`);
+    return ch && !ch.hasNightsoulsBlessing();
+  })
   .talent(Xilonen)
-  // TODO
+  .on("enter")
+  .useSkill(YohualsScratch)
+  .on("switchActive", (c, e) => c.of(e.switchInfo.to).hasNightsoulsBlessing())
+  .usagePerRound(2)
+  .gainNightsoul("@event.switchTo", 1)
   .done();
