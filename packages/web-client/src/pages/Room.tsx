@@ -54,7 +54,7 @@ const createReconnectSse = <T,>(
   onError?: (e: Error) => void,
 ) => {
   let reconnectTimeout: Timer | null = null;
-  const abortController = new AbortController();
+  let abortController: AbortController | null = null;
 
   const resetReconnectTimer = () => {
     if (reconnectTimeout) {
@@ -62,12 +62,13 @@ const createReconnectSse = <T,>(
     }
     reconnectTimeout = setTimeout(() => {
       console.warn("No data received, reconnecting...");
-      abortController.abort();
+      abortController?.abort();
       connect();
     }, SSE_RECONNECT_TIMEOUT);
   };
 
   const connect = () => {
+    abortController = new AbortController();
     axios
       .get(url, {
         headers: {

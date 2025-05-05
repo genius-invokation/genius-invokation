@@ -53,13 +53,16 @@ import {
   Observable,
   Subject,
   concat,
+  connect,
   defer,
   filter,
   interval,
   map,
   mergeWith,
   of,
+  share,
   startWith,
+  take,
   takeUntil,
 } from "rxjs";
 import { createGuestId, DeckVerificationError, verifyDeck } from "../utils";
@@ -325,6 +328,8 @@ class Player implements PlayerIOWithError {
     this.notificationSse$ = this.notificationSseSource.pipe(
       filter((data): data is SSEPayload => data !== null),
       startWith(initializePayload),
+      mergeWith(pingInterval),
+      takeUntil(this.completeSubject),
     );
   }
   complete() {
