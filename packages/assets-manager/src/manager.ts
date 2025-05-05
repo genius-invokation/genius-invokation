@@ -34,7 +34,8 @@ import type {
   EntityType,
 } from "@gi-tcg/core";
 import { DiceType } from "@gi-tcg/typings";
-import { getDeckData, getStaticDeckData, type DeckData } from "./deck_data";
+import { getDeckData, type DeckData } from "./deck_data";
+import { getStaticDeckData } from "./static_deck_data";
 import { DEFAULT_ASSETS_MANAGER } from "./index";
 
 export type AnyData =
