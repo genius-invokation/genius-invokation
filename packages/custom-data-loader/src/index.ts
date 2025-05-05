@@ -15,7 +15,7 @@
 
 import {
   GameData,
-  resolveStandardVersion,
+  resolveOfficialVersion,
   SkillDefinition,
   Version,
 } from "@gi-tcg/core";
@@ -90,7 +90,7 @@ export class CustomDataLoader {
 
   done(): [GameData, CustomData] {
     const gameData = this.registry.resolve(
-      (items) => resolveStandardVersion(items, this.version),
+      (items) => resolveOfficialVersion(items, this.version),
       (items) =>
         items.find((item) => item.version.from === "customData") ?? null,
     );
