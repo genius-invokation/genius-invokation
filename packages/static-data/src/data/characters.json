@@ -791,6 +791,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Layla_01"
       },
       {
@@ -1291,6 +1292,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_E_Barbara_01_HD"
       }
     ],
@@ -1480,6 +1482,7 @@
         "description": "【被动】此角色为出战角色，我方执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。（每回合1次）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Mona_02"
       }
     ],
@@ -1581,6 +1584,7 @@
         "description": "【被动】战斗开始时，初始附属远程状态。\n角色所附属的近战状态效果结束时，重新附属远程状态。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
       {
@@ -1592,6 +1596,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Tartaglia_02"
       },
       {
@@ -1952,8 +1957,8 @@
         "name": "浮莲舞步·远梦聆泉",
         "englishName": "Dance of Abzendegi: Distant Dreams, Listening Spring",
         "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，目标角色附属<color=#FFFFFFFF>$[C112083]</color>。",
-        "description": "造成2点水元素伤害，目标角色附属永世流沔。",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，目标及下一个角色附属<color=#FFFFFFFF>$[C112083]</color>。",
+        "description": "造成2点水元素伤害，目标及下一个角色附属永世流沔。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_HYDRO",
@@ -2069,6 +2074,7 @@
         "description": "【被动】战斗开始时，初始附属破局。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Yelan_03"
       }
     ],
@@ -2185,6 +2191,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_A_Catalyst_MD"
       }
     ],
@@ -2282,6 +2289,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_A_01"
       },
       {
@@ -2386,6 +2394,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_A_01"
       },
       {
@@ -2540,6 +2549,7 @@
         "description": "【被动】我方切换到本角色时：如果我方场上存在源水之滴，则使其可用次数-1，本角色获得1点充能。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Sigewinne_02"
       }
     ],
@@ -2610,6 +2620,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "keyMap": {},
         "icon": "Skill_S_Mualani_01"
       },
       {
@@ -3450,6 +3461,9 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC"
+        },
         "icon": "Skill_S_Dehya_01"
       }
     ],
@@ -3840,6 +3854,7 @@
         "description": "【被动】敌方角色受到超载反应伤害后：生成手牌超量装药弹头（每回合1次）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Chevreuse_02"
       },
       {
@@ -3966,6 +3981,7 @@
         "description": "角色不会受到厄月将升以外的治疗。\n自身附属生命之契时：角色造成的物理伤害变为火元素伤害。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Arlecchino_02"
       },
       {
@@ -4344,6 +4360,7 @@
         "description": "【被动】战斗开始时，初始附属启途誓使。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Cyno_03"
       }
     ],
@@ -4633,6 +4650,7 @@
         "description": "【被动】战斗开始时，初始附属诸愿百眼之轮。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Shougun_02"
       }
     ],
@@ -4694,6 +4712,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Yae_01"
       },
       {
@@ -4957,6 +4976,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Shinobu_01"
       },
       {
@@ -5053,7 +5073,8 @@
           }
         ],
         "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO"
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
+          "D__KEY__DAMAGE_4": 4
         },
         "icon": "Skill_S_Clorinde_01"
       },
@@ -5086,6 +5107,105 @@
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Clorinde",
     "icon": "UI_Gcg_Char_AvatarIcon_Clorinde"
+  },
+  {
+    "id": 1413,
+    "shareId": 469,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "name": "赛索斯",
+    "englishName": "Sethos",
+    "tags": [
+      "GCG_TAG_ELEMENT_ELECTRO",
+      "GCG_TAG_WEAPON_BOW",
+      "GCG_TAG_NATION_SUMERU"
+    ],
+    "storyTitle": "衡明知度·赛索斯",
+    "storyText": "沙海来客，慧心慧业。",
+    "skills": [
+      {
+        "id": 14131,
+        "name": "王家苇箭术",
+        "englishName": "Royal Reed Archery",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_02"
+      },
+      {
+        "id": 14132,
+        "name": "古仪·鸣砂掣雷",
+        "englishName": "Ancient Rite: The Thundering Sands",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "敌方出战角色$[K204]，我方切换到下一个角色。自身附属<color=#FFFFFFFF>$[C114132]</color>。",
+        "description": "敌方出战角色附着雷元素，我方切换到下一个角色。自身附属轰雷凝集。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO"
+        }
+      },
+      {
+        "id": 14133,
+        "name": "秘仪·瞑光贯影",
+        "englishName": "Secret Rite: Twilight Shadowpiercer",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，自身附属<color=#FFFFFFFF>$[C114131]</color>。",
+        "description": "造成3点雷元素伤害，自身附属寂想瞑影。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 4
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
+          "D__KEY__DAMAGE": 3
+        }
+      },
+      {
+        "id": 14134,
+        "name": "黑鸢的密喻",
+        "englishName": "Black Kite's Enigma",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "自身「普通攻击」不会获得$[K310]。\\n自身「普通攻击」后：如可能，消耗全部$[K310]，对生命值最低的敌方造成等额+1的$[K5]。",
+        "description": "自身「普通攻击」不会获得充能。\n自身「普通攻击」后：如可能，消耗全部充能，对生命值最低的敌方造成等额+1的穿透伤害。",
+        "playCost": [],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC"
+        }
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 4,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Sethos",
+    "icon": "UI_Gcg_Char_AvatarIcon_Sethos"
   },
   {
     "id": 1501,
@@ -5253,6 +5373,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_E_Qin_01_HD"
       }
     ],
@@ -6657,6 +6778,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Yunjin_01"
       }
     ],
@@ -6758,6 +6880,7 @@
         "description": "【被动】敌方角色受到结晶反应伤害后：生成3张裂晶弹片，随机置入我方牌库中。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Navia_02"
       }
     ],
@@ -6820,7 +6943,6 @@
         ],
         "targetList": [],
         "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
         },
         "icon": "Skill_S_Chiori_01"
@@ -6917,9 +7039,6 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO"
-        },
         "icon": "Skill_S_Kachina_01"
       },
       {
@@ -6951,6 +7070,113 @@
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Kachina",
     "icon": "UI_Gcg_Char_AvatarIcon_Kachina"
+  },
+  {
+    "id": 1611,
+    "shareId": 470,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "name": "希诺宁",
+    "englishName": "Xilonen",
+    "tags": [
+      "GCG_TAG_ELEMENT_GEO",
+      "GCG_TAG_WEAPON_SWORD",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "焮火铸魂·希诺宁",
+    "storyText": "嵴锋荡响，铄石显金",
+    "skills": [
+      {
+        "id": 16111,
+        "name": "锐锋攫猎",
+        "englishName": "Ehecatl's Roar",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。若自身附属<color=#FFFFFFFF>$[C116111]</color>，则恢复1点「夜魂值」。",
+        "description": "造成2点物理伤害。若自身附属夜魂加持，则恢复1点「夜魂值」。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_01"
+      },
+      {
+        "id": 16112,
+        "name": "音火锻淬",
+        "englishName": "Yohual's Scratch",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "本角色附属<color=#FFFFFFFF>$[C116112]</color>，进入<color=#FFFFFFFF>$[C116111]</color>并获得1点<color=#FFFFFFFF>「夜魂值」</color>。（角色进入<color=#FFFFFFFF>$[C116111]</color>后不可使用此技能）\\n（附属<color=#FFFFFFFF>$[C116112]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1161121]</color>）",
+        "description": "本角色附属刃轮装束，进入夜魂加持并获得1点「夜魂值」。（角色进入夜魂加持后不可使用此技能）\n（附属刃轮装束的角色可以使用特技：高速腾跃）",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
+          "D__KEY__DAMAGE": 1
+        }
+      },
+      {
+        "id": 16113,
+        "name": "豹烈律动！",
+        "englishName": "Ocelotlicue Point!",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，抓1张牌，并且治疗我方受伤最多的角色1点。每层<color=#FFFFFFFF>$[C116113]</color>额外抓1张牌，每层其他属性的<color=#FFFFFFFF>「源音采样」</color>额外治疗1点。",
+        "description": "造成2点岩元素伤害，抓1张牌，并且治疗我方受伤最多的角色1点。每层「源音采样」·岩额外抓1张牌，每层其他属性的「源音采样」额外治疗1点。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
+          "D__KEY__DAMAGE": 2
+        }
+      },
+      {
+        "id": 16114,
+        "name": "「源音采样」",
+        "englishName": "Source Sample",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】战斗开始时，初始生成3层<color=#FFFFFFFF>$[C116113]</color>，若我方存在火、水、冰、雷的角色，则将1层<color=#FFFFFFFF>$[C116113]</color>转化为对应元素的<color=#FFFFFFFF>「源音采样」</color>。",
+        "description": "【被动】战斗开始时，初始生成3层「源音采样」·岩，若我方存在火、水、冰、雷的角色，则将1层「源音采样」·岩转化为对应元素的「源音采样」。",
+        "playCost": [],
+        "targetList": [],
+        "keyMap": {}
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Xilonen",
+    "icon": "UI_Gcg_Char_AvatarIcon_Xilonen"
   },
   {
     "id": 1701,
@@ -7843,9 +8069,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO"
-        },
+        "keyMap": {},
         "icon": "Skill_S_Emilie_01"
       },
       {
@@ -7881,6 +8105,7 @@
         "description": "我方燃烧烈焰入场时：下次双方角色使用技能后，触发一次燃烧烈焰的回合结束效果。（每回合2次）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Emilie_02"
       },
       {
@@ -8081,6 +8306,7 @@
         "description": "【被动】战斗开始时，初始附属冰封的炽炎魔女。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_LaSignora_02"
       },
       {
@@ -8192,6 +8418,7 @@
         "description": "【被动】战斗开始时，初始附属冰晶核心。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_EffigyIce_02"
       }
     ],
@@ -8292,6 +8519,7 @@
         "description": "【被动】本角色使用技能后：对敌方出战角色附属可用次数为（本技能最终伤害值-2）的生命之契。（最多5层）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_EscadronIce_02"
       }
     ],
@@ -8493,6 +8721,7 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE_2": 6,
           "D__KEY__DAMAGE_3": 7,
+          "D__KEY__DAMAGE_4": 8,
           "D__KEY__DAMAGE": 4
         },
         "icon": "MonsterSkill_E_Oceanid_01_HD"
@@ -8726,6 +8955,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerHeraldWater_02"
       }
     ],
@@ -8791,6 +9021,7 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE_2": 1,
           "D__KEY__DAMAGE_3": 2,
+          "D__KEY__DAMAGE_4": 3,
           "D__KEY__DAMAGE_5": 4
         },
         "icon": "MonsterSkill_S_Ptahur_01"
@@ -8828,6 +9059,7 @@
         "description": "【被动】战斗开始时，生成深噬之域。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Ptahur_02"
       }
     ],
@@ -9028,6 +9260,7 @@
         "description": "【被动】战斗开始时，初始附属潜行。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_FatuusFire_02"
       }
     ],
@@ -9128,6 +9361,7 @@
         "description": "【被动】战斗开始时，初始附属火之新生。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       },
       {
@@ -9139,6 +9373,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerDeaconFire_02"
       }
     ],
@@ -9239,6 +9474,7 @@
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }
     ],
@@ -9324,6 +9560,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_E_HermitCrabPrimo_01_HD"
       },
       {
@@ -9465,6 +9702,7 @@
         "description": "【被动】战斗开始时，初始附属雷晶核心。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_EffigyElectric_04"
       },
       {
@@ -9595,6 +9833,7 @@
         "description": "【被动】战斗开始时，在敌方场上生成雷霆探针。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Raijin_01"
       }
     ],
@@ -9695,6 +9934,7 @@
         "description": "【被动】战斗开始时，本角色附属原海明珠。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_02"
       },
       {
@@ -9706,6 +9946,7 @@
         "description": "",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_SeaHorsePrimo_01"
       }
     ],
@@ -10007,6 +10248,7 @@
         "description": "【被动】战斗开始时，初始附属雷之新生。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_InvokerElectric_02"
       },
       {
@@ -10017,7 +10259,8 @@
         "rawDescription": "战斗开始时，初始附属<color=#FFFFFFFF>$[C124061]</color>。",
         "description": "战斗开始时，初始附属雷之新生。",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "keyMap": {}
       }
     ],
     "hp": 6,
@@ -10459,6 +10702,7 @@
         "description": "【被动】战斗开始时，初始附属岩盔和坚岩之力。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_BruteRock_02"
       }
     ],
@@ -10559,6 +10803,7 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10675,6 +10920,7 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10791,6 +11037,7 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -10907,6 +11154,7 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -11023,6 +11271,7 @@
         "description": "【被动】战斗开始时，初始附属磐岩百相·元素汲取。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_Dahaka_07"
       }
     ],
@@ -11212,6 +11461,7 @@
         "description": "【被动】战斗开始时，初始附属活化激能。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_FungusRaptor_02"
       }
     ],
@@ -11412,6 +11662,7 @@
         "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_EremiteOracle_02"
       }
     ],

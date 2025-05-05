@@ -221,7 +221,7 @@
     "englishName": "Catalyzing Field",
     "tags": [],
     "skills": [],
-    "rawDescription": "每层使得我方造成的$[K104]或$[K107]+1。",
+    "rawDescription": "每层使得我方造成的$[K154]或$[K157]+1。",
     "description": "每层使得我方造成的雷元素伤害或草元素伤害+1。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
@@ -249,7 +249,7 @@
     "englishName": "Perpetual Burn",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>每层对附属角色造成1点$[K103]。（可叠加，没有上限）。\\n<color=#FFFFFFFF>结束阶段：</color>层数减半。",
+    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>每层对附属角色造成1点$[K153]。（可叠加，没有上限）。\\n<color=#FFFFFFFF>结束阶段：</color>层数减半。",
     "description": "附属角色使用技能后：每层对附属角色造成1点火元素伤害。（可叠加，没有上限）。\n结束阶段：层数减半。",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
@@ -395,7 +395,7 @@
     "englishName": "Electro DMG Bonus",
     "tags": [],
     "skills": [],
-    "rawDescription": "我方角色和召唤物本回合造成的<color=#FFFFFFFF>$[K104]</color>增加。（扩散伤害除外）",
+    "rawDescription": "我方角色和召唤物本回合造成的<color=#FFFFFFFF>$[K154]</color>增加。（扩散伤害除外）",
     "description": "我方角色和召唤物本回合造成的雷元素伤害增加。（扩散伤害除外）",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -409,8 +409,8 @@
     "englishName": "Stormstream",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>每层对附属角色造成1点$[K5]。（可叠加，没有上限）\\n<color=#FFFFFFFF>结束阶段：</color>层数减半。",
-    "description": "附属角色使用技能后：每层对附属角色造成1点穿透伤害。（可叠加，没有上限）\n结束阶段：层数减半。",
+    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>每层对附属角色造成1点$[K5]。（可叠加，没有上限）",
+    "description": "附属角色使用技能后：每层对附属角色造成1点穿透伤害。（可叠加，没有上限）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
@@ -457,6 +457,262 @@
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
+  },
+  {
+    "id": 150,
+    "type": "GCG_CARD_STATE",
+    "name": "冻伤",
+    "englishName": "Frostbite",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "每层降低1点攻击力，附属角色下次使用技能后移除。\\n每层提高1点下次受到的<color=#FFFFFFFF>$[K150]</color>。（可叠加，没有上限）",
+    "description": "每层降低1点攻击力，附属角色下次使用技能后移除。\n每层提高1点下次受到的物理伤害。（可叠加，没有上限）",
+    "buffType": "GCG_STATE_BUFF_NEGATIVE",
+    "shownToken": "GCG_TOKEN_ABC_ATK_DOWN",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Frozen",
+    "buffIconHash": "12264513684180671654"
+  },
+  {
+    "id": 151,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "草原核",
+    "englishName": "Dendro Core",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>触发绽放反应时：</color>对随机敌方造成自身层数三分之一的$[K5]。\\n<color=#FFFFFFFF>我方造成$[K153]后：</color>对敌方全体造成自身层数的$[K153]，然后消灭自身。\\n<color=#FFFFFFFF>我方造成$[K154]后：</color>对敌方生命值最低2名角色造成自身层数的$[K5]，然后消灭自身。\\n（可叠加，没有上限）",
+    "description": "触发绽放反应时：对随机敌方造成自身层数三分之一的穿透伤害。\n我方造成火元素伤害后：对敌方全体造成自身层数的火元素伤害，然后消灭自身。\n我方造成雷元素伤害后：对敌方生命值最低2名角色造成自身层数的穿透伤害，然后消灭自身。\n（可叠加，没有上限）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Reaction_116",
+    "buffIconHash": "3150306063293112355"
+  },
+  {
+    "id": 152,
+    "type": "GCG_CARD_STATE",
+    "name": "攻击力增加",
+    "englishName": "ATK Bonus",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "每层增加1点攻击力，附属角色下次使用技能后移除。",
+    "description": "每层增加1点攻击力，附属角色下次使用技能后移除。",
+    "shownToken": "GCG_TOKEN_ABC_ATK_BASE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
+    "buffIconHash": "1717076279127341445"
+  },
+  {
+    "id": 153,
+    "type": "GCG_CARD_STATE",
+    "name": "免疫伤害",
+    "englishName": "Immune to Damage",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "每层使得角色下次受到的伤害为0（可叠加，没有上限）。",
+    "description": "每层使得角色下次受到的伤害为0（可叠加，没有上限）。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Barrier",
+    "buffIconHash": "3200411659709162179"
+  },
+  {
+    "id": 154,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：冰",
+    "englishName": "Elemental Infusion: Cryo",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K151]。",
+    "description": "所附属角色造成的物理伤害变为冰元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Ice",
+    "buffIconHash": "10999086512073142945"
+  },
+  {
+    "id": 155,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：水",
+    "englishName": "Elemental Infusion: Hydro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K152]。",
+    "description": "所附属角色造成的物理伤害变为水元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Water",
+    "buffIconHash": "12663029804863493750"
+  },
+  {
+    "id": 156,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：火",
+    "englishName": "Elemental Infusion: Pyro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K153]。",
+    "description": "所附属角色造成的物理伤害变为火元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Fire",
+    "buffIconHash": "14897886812770199489"
+  },
+  {
+    "id": 157,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：雷",
+    "englishName": "Elemental Infusion: Electro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K154]。",
+    "description": "所附属角色造成的物理伤害变为雷元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Elec",
+    "buffIconHash": "11385781541522232135"
+  },
+  {
+    "id": 158,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：风",
+    "englishName": "Elemental Infusion: Anemo",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K155]。",
+    "description": "所附属角色造成的物理伤害变为风元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Wind",
+    "buffIconHash": "4010929770888314899"
+  },
+  {
+    "id": 159,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：岩",
+    "englishName": "Elemental Infusion: Geo",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K156]。",
+    "description": "所附属角色造成的物理伤害变为岩元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Rock",
+    "buffIconHash": "11353914616627406301"
+  },
+  {
+    "id": 160,
+    "type": "GCG_CARD_STATE",
+    "name": "元素附魔：草",
+    "englishName": "Elemental Infusion: Dendro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色造成的$[K150]变为$[K157]。",
+    "description": "所附属角色造成的物理伤害变为草元素伤害。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Element_Enchant_Grass",
+    "buffIconHash": "10037574082875714184"
+  },
+  {
+    "id": 161,
+    "type": "GCG_CARD_STATE",
+    "name": "普通技能蓄力+1",
+    "englishName": "Normal Skill Charges +1",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "角色释放普通攻击和元素战技需要额外$[K61]1次（可叠加）",
+    "description": "角色释放普通攻击和元素战技需要额外蓄力1次（可叠加）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
+    "id": 162,
+    "type": "GCG_CARD_STATE",
+    "name": "受伤降低",
+    "englishName": "DMG Reduction",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "每层降低1点受到的伤害（可叠加）",
+    "description": "每层降低1点受到的伤害（可叠加）",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Barrier",
+    "buffIconHash": "3200411659709162179"
+  },
+  {
+    "id": 163,
+    "type": "GCG_CARD_STATE",
+    "name": "额外行动",
+    "englishName": "Extra Action",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "自身行动后，获得1次$[K63]。（可叠加）",
+    "description": "自身行动后，获得1次额外行动。（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "7334936479476959908"
+  },
+  {
+    "id": 164,
+    "type": "GCG_CARD_STATE",
+    "name": "下落攻击",
+    "englishName": "Plunging Attack",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色下次切换至前台，或回合开始在前台时，对敌方前台造成$[K150]，伤害量等同于自身层数。",
+    "description": "所附属角色下次切换至前台，或回合开始在前台时，对敌方前台造成物理伤害，伤害量等同于自身层数。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
+    "id": 165,
+    "type": "GCG_CARD_STATE",
+    "name": "免疫伤害",
+    "englishName": "Immune to Damage",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "下次受到的伤害为0（可叠加）",
+    "description": "下次受到的伤害为0（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Barrier",
+    "buffIconHash": "3200411659709162179"
+  },
+  {
+    "id": 166,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "免疫伤害",
+    "englishName": "Immune to Damage",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "下次受到的伤害为0（可叠加）",
+    "description": "下次受到的伤害为0（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Barrier",
+    "buffIconHash": "3200411659709162179"
+  },
+  {
+    "id": 167,
+    "type": "GCG_CARD_STATE",
+    "name": "元素精通提高",
+    "englishName": "Increased Elemental Mastery",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "每层提高1点我方$[K62]（可叠加）",
+    "description": "每层提高1点我方元素精通（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "13971917967596833106"
+  },
+  {
+    "id": 168,
+    "type": "GCG_CARD_STATE",
+    "name": "额外行动次数提高",
+    "englishName": "Increased Extra Actions",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "附属角色+1$[K63]（可叠加）",
+    "description": "附属角色+1额外行动（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "7334936479476959908"
   },
   {
     "id": 100001,
@@ -1556,7 +1812,9 @@
     "type": "GCG_CARD_STATE",
     "name": "苍鹭震击",
     "englishName": "Heron Strike",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S12074]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：苍鹭震击。",
@@ -1617,8 +1875,8 @@
     "englishName": "Lingering Aeon",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>对所附属角色造成3点$[K102]。\\n<color=#FFFFFFFF>$[K3]：1</color>",
-    "description": "结束阶段：对所附属角色造成3点水元素伤害。\n可用次数：1",
+    "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>对所附属角色造成2点$[K102]。\\n<color=#FFFFFFFF>$[K3]：1</color>",
+    "description": "结束阶段：对所附属角色造成2点水元素伤害。\n可用次数：1",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
@@ -1711,7 +1969,9 @@
     "type": "GCG_CARD_STATE",
     "name": "衡平推裁",
     "englishName": "Equitable Judgment",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S12104]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：衡平推裁。",
@@ -1847,7 +2107,9 @@
     "type": "GCG_CARD_STATE",
     "name": "满满心意药剂冲击",
     "englishName": "Medical Intervention of Pure Intention",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S12135]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：满满心意药剂冲击。",
@@ -1950,6 +2212,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Mualani_03"
       },
       {
@@ -2403,7 +2666,9 @@
     "type": "GCG_CARD_STATE",
     "name": "炽炎狮子·炽鬃拳",
     "englishName": "Blazing Lioness: Flame-Mane's Fist",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S13094]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：炽鬃拳。",
@@ -2417,7 +2682,9 @@
     "type": "GCG_CARD_STATE",
     "name": "炽炎狮子·焚落踢",
     "englishName": "Blazing Lioness: Incineration Drive",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S13095]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：焚落踢。",
@@ -2960,7 +3227,9 @@
     "type": "GCG_CARD_STATE",
     "name": "踏潮",
     "englishName": "Wavestrider",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S14054]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：踏潮。",
@@ -3333,6 +3602,51 @@
     "description": "战斗行动：我方出战角色为克洛琳德时，装备此牌。\n克洛琳德装备此牌后，立刻使用一次狩夜之巡。\n我方角色引发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)\n（牌组中包含克洛琳德，才能加入牌组）",
     "rawPlayingDescription": "我方角色引发$[K214]后:本回合$[A1412]下次造成的伤害+1。(可叠加，最多叠加到+3)",
     "playingDescription": "我方角色引发雷元素相关反应后:本回合克洛琳德下次造成的伤害+1。(可叠加，最多叠加到+3)",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Talent",
+    "buffIconHash": "3410616192897341730"
+  },
+  {
+    "id": 114131,
+    "type": "GCG_CARD_STATE",
+    "name": "寂想瞑影",
+    "englishName": "Twilight Meditation",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>所附属角色使用普通攻击时：</color>造成的$[K100]变为$[K104]，伤害+1，少花费1个$[K309]，并且对敌方生命值最低的角色造成1点$[K5]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
+    "description": "所附属角色使用普通攻击时：造成的物理伤害变为雷元素伤害，伤害+1，少花费1个无色元素，并且对敌方生命值最低的角色造成1点穿透伤害。\n持续回合：2",
+    "buffType": "GCG_STATE_BUFF_ELECTRO",
+    "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "hidden": false,
+    "buffIconHash": "14965258367551053254"
+  },
+  {
+    "id": 114132,
+    "type": "GCG_CARD_STATE",
+    "name": "轰雷凝集",
+    "englishName": "Thunder Convergence",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方角色引发$[K214]后:</color>所附属角色获得1点$[K310]。\\n<color=#FFFFFFFF>$[K3]：1</color>",
+    "description": "我方角色引发雷元素相关反应后:所附属角色获得1点充能。\n可用次数：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
+    "id": 214131,
+    "type": "GCG_CARD_MODIFY",
+    "name": "巡日塔门书",
+    "englishName": "Pylon of the Sojourning Sun Temple",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "skills": [],
+    "rawDescription": "我方<color=#FFFFFFFF>$[A1413]</color>获得1点$[K310]。\\n我方$[A1413]因<color=#FFFFFFFF>$[S14134]</color>扣除$[K310]后，获得1点$[K310]。（每回合1次）\\n（牌组中包含$[A1413]，才能加入牌组）",
+    "description": "我方赛索斯获得1点充能。\n我方赛索斯因黑鸢的密喻扣除充能后，获得1点充能。（每回合1次）\n（牌组中包含赛索斯，才能加入牌组）",
+    "rawPlayingDescription": "我方$[A1413]因<color=#FFFFFFFF>$[S14134]</color>扣除$[K310]后，获得1点$[K310]。（每回合1次）",
+    "playingDescription": "我方赛索斯因黑鸢的密喻扣除充能后，获得1点充能。（每回合1次）",
+    "shownToken": "GCG_TOKEN_COUNTER_2",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -3739,7 +4053,9 @@
     "type": "GCG_CARD_STATE",
     "name": "风风轮",
     "englishName": "Fuufuu Windwheel",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S15074]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：风风轮舞踢。",
@@ -3978,6 +4294,7 @@
           }
         ],
         "targetList": [],
+        "keyMap": {},
         "icon": "Skill_S_Liuyun_04"
       }
     ],
@@ -4361,7 +4678,9 @@
     "type": "GCG_CARD_STATE",
     "name": "长枪开相",
     "englishName": "Spear Flourish",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S16074]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：长枪开相。",
@@ -4661,8 +4980,8 @@
         "targetList": []
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。",
-    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。",
+    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。\\n$[K58]：$[S1161021]\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116104]</color>。",
+    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。\n特技：转转冲击\n（角色最多装备1个「特技」）\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Kachina",
     "buffIconHash": "1216184163607234978"
@@ -4715,6 +5034,241 @@
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
+  },
+  {
+    "id": 116111,
+    "type": "GCG_CARD_STATE",
+    "name": "夜魂加持",
+    "englishName": "Nightsoul's Blessing",
+    "tags": [
+      "GCG_TAG_NYX_STATE"
+    ],
+    "skills": [],
+    "rawDescription": "所附属角色可累积<color=#FFFFFFFF>「夜魂值」</color>。（最多累积到2点）",
+    "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
+    "buffType": "GCG_STATE_BUFF_GEO",
+    "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Nightsoul_Rock",
+    "buffIconHash": "1771263630888988054"
+  },
+  {
+    "id": 116112,
+    "type": "GCG_CARD_MODIFY",
+    "name": "刃轮装束",
+    "englishName": "Combat Blading Gear",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 1161121,
+        "name": "高速腾跃",
+        "englishName": "High-Speed Leap",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "附属角色消耗1点<color=#FFFFFFFF>「夜魂值」</color>，抓3张牌。",
+        "description": "附属角色消耗1点「夜魂值」，抓3张牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "keyMap": {}
+      },
+      {
+        "id": 1161122,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": []
+      },
+      {
+        "id": 1161123,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": []
+      },
+      {
+        "id": 1161124,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": []
+      }
+    ],
+    "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
+    "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "hidden": false,
+    "buffIconHash": "109313225968952660"
+  },
+  {
+    "id": 116113,
+    "type": "GCG_CARD_STATE",
+    "name": "「源音采样」·岩",
+    "englishName": "Source Sample: Geo",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216113]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的岩元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "12347441073172741799"
+  },
+  {
+    "id": 116114,
+    "type": "GCG_CARD_STATE",
+    "name": "「源音采样」·水",
+    "englishName": "Source Sample: Hydro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216114]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的水元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "1540385361181519710"
+  },
+  {
+    "id": 116115,
+    "type": "GCG_CARD_STATE",
+    "name": "「源音采样」·火",
+    "englishName": "Source Sample: Pyro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216115]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的火元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "17361273181820187726"
+  },
+  {
+    "id": 116116,
+    "type": "GCG_CARD_STATE",
+    "name": "「源音采样」·冰",
+    "englishName": "Source Sample: Cryo",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216116]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的冰元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "3026383335067153380"
+  },
+  {
+    "id": 116117,
+    "type": "GCG_CARD_STATE",
+    "name": "「源音采样」·雷",
+    "englishName": "Source Sample: Electro",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216117]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的雷元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "18268791121792179358"
+  },
+  {
+    "id": 216111,
+    "type": "GCG_CARD_MODIFY",
+    "name": "丛山锻火驰行",
+    "englishName": "Tour of Tepeilhuitl",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "skills": [],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）",
+    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Talent",
+    "buffIconHash": "3410616192897341730"
+  },
+  {
+    "id": 216113,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "受到的岩元素伤害增加",
+    "englishName": "Take Extra Geo DMG",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方受到的$[K106]增加1点。\\n<color=#FFFFFFFF>$[K4]：1</color>",
+    "description": "我方受到的岩元素伤害增加1点。\n持续回合：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Debuff_Common_Element_Rock",
+    "buffIconHash": "7577843364903102504"
+  },
+  {
+    "id": 216114,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "受到的水元素伤害增加",
+    "englishName": "Take Extra Hydro DMG",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方受到的$[K102]增加1点。\\n<color=#FFFFFFFF>$[K4]：1</color>",
+    "description": "我方受到的水元素伤害增加1点。\n持续回合：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Debuff_Common_Element_Water",
+    "buffIconHash": "15123132551692814955"
+  },
+  {
+    "id": 216115,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "受到的火元素伤害增加",
+    "englishName": "Take Extra Pyro DMG",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方受到的$[K103]增加1点。\\n<color=#FFFFFFFF>$[K4]：1</color>",
+    "description": "我方受到的火元素伤害增加1点。\n持续回合：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Debuff_Common_Element_Fire",
+    "buffIconHash": "6240999780642787685"
+  },
+  {
+    "id": 216116,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "受到的冰元素伤害增加",
+    "englishName": "Take Extra Cryo DMG",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方受到的$[K101]增加1点。\\n<color=#FFFFFFFF>$[K4]：1</color>",
+    "description": "我方受到的冰元素伤害增加1点。\n持续回合：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Debuff_Common_Element_Ice",
+    "buffIconHash": "17354387950982528195"
+  },
+  {
+    "id": 216117,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "受到的雷元素伤害增加",
+    "englishName": "Take Extra Electro DMG",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方受到的$[K104]增加1点。\\n<color=#FFFFFFFF>$[K4]：1</color>",
+    "description": "我方受到的雷元素伤害增加1点。\n持续回合：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Debuff_Common_Element_Elec",
+    "buffIconHash": "16339330682102443781"
   },
   {
     "id": 117011,
@@ -5527,7 +6081,8 @@
     "name": "红莲的旋风",
     "englishName": "Encarmine Vortex",
     "tags": [
-      "GCG_TAG_SHEILD"
+      "GCG_TAG_SHEILD",
+      "GCG_TAG_PREPARE_SKILL"
     ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>造成3点$[K103]，移除$[K6]</color>。\\n准备技能期间：提供3点$[K6]，保护所附属的角色。",
@@ -5851,7 +6406,9 @@
     "type": "GCG_CARD_STATE",
     "name": "涟锋旋刃",
     "englishName": "Rippling Blades",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S22035]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：涟锋旋刃。",
@@ -6065,6 +6622,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
+          "D__KEY__DAMAGE": 1
+        },
         "icon": "MonsterSkill_S_HilistrayWater_02"
       },
       {
@@ -6076,6 +6637,10 @@
         "description": "造成1点水元素伤害，敌方出战角色附属水泡围困。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
+          "D__KEY__DAMAGE": 1
+        },
         "icon": "MonsterSkill_S_HilistrayWater_02"
       },
       {
@@ -6087,6 +6652,7 @@
         "description": "造成1点水元素伤害，敌方出战角色附属水泡围困。",
         "playCost": [],
         "targetList": [],
+        "keyMap": {},
         "icon": "MonsterSkill_S_HilistrayWater_02"
       }
     ],
@@ -6120,7 +6686,9 @@
     "type": "GCG_CARD_STATE",
     "name": "水泡封锁（准备中）",
     "englishName": "Mist Bubble Lockdown (Preparing)",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S1220512]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：水泡封锁。",
@@ -6332,6 +6900,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 2
+        },
         "icon": "MonsterSkill_S_EremiteOracle_03"
       },
       {
@@ -6435,7 +7007,9 @@
     "type": "GCG_CARD_STATE",
     "name": "积蓄烈威",
     "englishName": "Accruing Power",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S23046]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：炽烈轰破。",
@@ -6478,7 +7052,9 @@
     "type": "GCG_CARD_STATE",
     "name": "猜拳三连击·剪刀",
     "englishName": "Rock-Paper-Scissors Combo: Scissors",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S24015]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：猜拳三连击·剪刀。",
@@ -6491,7 +7067,9 @@
     "type": "GCG_CARD_STATE",
     "name": "猜拳三连击·布",
     "englishName": "Rock-Paper-Scissors Combo: Paper",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S24016]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：猜拳三连击·布。",
@@ -6747,7 +7325,9 @@
     "type": "GCG_CARD_STATE",
     "name": "霆电迸发",
     "englishName": "Surging Thunder",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S24044]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：霆电迸发。",
@@ -6998,7 +7578,9 @@
     "type": "GCG_CARD_STATE",
     "name": "风龙吐息",
     "englishName": "Dvalin's Sigh",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S25025]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：长延涤流。",
@@ -7012,7 +7594,9 @@
     "type": "GCG_CARD_STATE",
     "name": "风龙吐息",
     "englishName": "Dvalin's Sigh",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S25026]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：终幕涤流。",
@@ -7461,6 +8045,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 2
+        },
         "icon": "MonsterSkill_S_EremiteGrass_02"
       },
       {
@@ -7534,7 +8122,9 @@
     "type": "GCG_CARD_STATE",
     "name": "居合·吐纳",
     "englishName": "Iai: Breathing",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30034]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·前。",
@@ -7563,7 +8153,9 @@
     "type": "GCG_CARD_STATE",
     "name": "高频旋击·预备态势",
     "englishName": "High-Frequency Whirling Assault: Preparatory Posture",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30045]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：高频旋击。",
@@ -7577,7 +8169,9 @@
     "type": "GCG_CARD_STATE",
     "name": "超速旋击·预备态势",
     "englishName": "Hyperspeed Whirling Assault: Preparatory Posture",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30046]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：超速旋击。",
@@ -7779,7 +8373,9 @@
     "type": "GCG_CARD_STATE",
     "name": "蓄力重击·完备",
     "englishName": "Charged Attack: Prep Complete",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S31065]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：蓄势猛击·倾力一击。",
@@ -7911,7 +8507,9 @@
     "type": "GCG_CARD_STATE",
     "name": "水光轮斩·完备",
     "englishName": "Refractory Whirling Hew: Prep Complete",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S32065]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：环舞连斩·先攻。",
@@ -7925,7 +8523,9 @@
     "type": "GCG_CARD_STATE",
     "name": "水光旋舞·完备",
     "englishName": "Refractory Whirling Dance: Prep Complete",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S32066]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：环舞连斩·定势。",
@@ -8055,7 +8655,9 @@
     "type": "GCG_CARD_STATE",
     "name": "居合·纳刀",
     "englishName": "Iai: Sheathed",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33036]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·焚风。",
@@ -8083,7 +8685,9 @@
     "type": "GCG_CARD_STATE",
     "name": "警棍追击",
     "englishName": "Tailing Truncheon",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33075]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：警棍追打。",
@@ -8097,7 +8701,9 @@
     "type": "GCG_CARD_STATE",
     "name": "长点射·校准射线",
     "englishName": "Long-Range Fire: Calibrated Shot",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33085]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：组合射击·轻弹连射。",
@@ -8111,7 +8717,9 @@
     "type": "GCG_CARD_STATE",
     "name": "爆发射击·校准射线",
     "englishName": "Burst Fire: Calibrated Shot",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33086]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：组合射击·重弹侵彻。",
@@ -8166,7 +8774,9 @@
     "type": "GCG_CARD_STATE",
     "name": "居合·纳刀",
     "englishName": "Iai: Sheathed",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S34016]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·霆息。",
@@ -8251,7 +8861,8 @@
     "name": "盾牌格挡",
     "englishName": "Shield Block",
     "tags": [
-      "GCG_TAG_SHEILD"
+      "GCG_TAG_SHEILD",
+      "GCG_TAG_PREPARE_SKILL"
     ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S34085]</color>。\\n<color=#FFFFFFFF>准备$[S34085]期间：</color>提供2点$[K6]，保护所此角色。",
@@ -8338,7 +8949,9 @@
     "type": "GCG_CARD_STATE",
     "name": "聚风屏障",
     "englishName": "Stormwind Barrier",
-    "tags": [],
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S35025]</color>。\\n<color=#FFFFFFFF>准备$[S35025]期间：</color>提供2点$[K6]，保护所附属角色；如果所附属角色受到了<color=#80C0FFFF>{SPRITE_PRESET#2102}水</color>/<color=#FF9999FF>{SPRITE_PRESET#2103}火</color>/<color=#99FFFFFF>{SPRITE_PRESET#2101}冰</color>/<color=#FFACFFFF>{SPRITE_PRESET#2104}雷</color>元素伤害，就使所准备的$[S35025]造成的伤害+1，并且转换为对应的元素类型。",
     "description": "本角色将在下次行动时，直接使用技能：逆风奉还拳。\n准备逆风奉还拳期间：提供2点护盾，保护所附属角色；如果所附属角色受到了水/火/冰/雷元素伤害，就使所准备的逆风奉还拳造成的伤害+1，并且转换为对应的元素类型。",
@@ -10358,6 +10971,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
         "icon": "Skill_Diving_Slash"
       }
     ],
@@ -10393,6 +11010,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 1
+        },
         "icon": "Btn_Natsaurus_Hookwalker_ElementalArt_Free"
       },
       {
@@ -10447,6 +11068,7 @@
             "hintText": "选择一个召唤物，结算回合结束效果"
           }
         ],
+        "keyMap": {},
         "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01"
       },
       {
@@ -10501,6 +11123,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "keyMap": {},
         "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l"
       }
     ],
@@ -10545,6 +11168,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "keyMap": {},
         "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt"
       }
     ],
@@ -10627,6 +11251,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "keyMap": {},
         "icon": "Btn_Natsaurus_Flamingo_ElementalArt"
       }
     ],
@@ -10662,6 +11287,10 @@
           }
         ],
         "targetList": [],
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
         "icon": "Btn_Vehicle_Skiff_CannonFire_Big"
       },
       {
@@ -10672,7 +11301,8 @@
         "rawDescription": "附属角色切换至后台时，此牌可用次数+1。",
         "description": "附属角色切换至后台时，此牌可用次数+1。",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "keyMap": {}
       },
       {
         "id": 3130073,
@@ -10693,6 +11323,49 @@
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Waverider",
     "buffIconHash": "8286186731443484050"
+  },
+  {
+    "id": 313008,
+    "type": "GCG_CARD_MODIFY",
+    "name": "突角龙",
+    "englishName": "Tatankasaurus",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 3130081,
+        "name": "昂扬状态",
+        "englishName": "Spirited State",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "附属角色$[K53]2次「普通攻击」。",
+        "description": "附属角色准备技能2次「普通攻击」。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 3
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "keyMap": {}
+      }
+    ],
+    "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：昂扬状态\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：昂扬状态\n可用次数：2",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "13973771076860340647"
   },
   {
     "id": 301301,
@@ -10724,6 +11397,36 @@
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
+  },
+  {
+    "id": 301303,
+    "type": "GCG_CARD_STATE",
+    "name": "突角龙（生效中）",
+    "englishName": "Tatankasaurus (In Effect)",
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
+    "skills": [],
+    "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>普通攻击</color>。",
+    "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "13973771076860340647"
+  },
+  {
+    "id": 301305,
+    "type": "GCG_CARD_STATE",
+    "name": "突角龙（生效中）",
+    "englishName": "Tatankasaurus (In Effect)",
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
+    "skills": [],
+    "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>普通攻击</color>。",
+    "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "13973771076860340647"
   },
   {
     "id": 301304,
@@ -11205,6 +11908,62 @@
     "description": "此牌初始具有4点灵觉。\n我方挑选后：灵觉-1。\n行动阶段开始时：若灵觉为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中挑选一个生成。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false
+  },
+  {
+    "id": 321028,
+    "type": "GCG_CARD_ASSIST",
+    "name": "「沃陆之邦」",
+    "englishName": "\"Collective of Plenty\"",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方角色准备技能时：</color>此角色获得3点<color=#FFFFFFFF>$[C301025]</color>。\\n<color=#FFFFFFFF>我方角色切换为出战角色后：</color>此角色获得2点<color=#FFFFFFFF>$[C301025]</color>。\\n（当锻炼层数到达3点时，治疗对应角色1点；当锻炼层数到达5点时，对应角色所造成的伤害+1）",
+    "description": "我方角色准备技能时：此角色获得3点锻炼。\n我方角色切换为出战角色后：此角色获得2点锻炼。\n（当锻炼层数到达3点时，治疗对应角色1点；当锻炼层数到达5点时，对应角色所造成的伤害+1）",
+    "hidden": false
+  },
+  {
+    "id": 301025,
+    "type": "GCG_CARD_STATE",
+    "name": "锻炼",
+    "englishName": "Workout",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "自身层数到达3时，治疗所附属角色1点；若自身层数等于5，则所附属角色造成的伤害+1。（可叠加，最多叠加到5层）",
+    "description": "自身层数到达3时，治疗所附属角色1点；若自身层数等于5，则所附属角色造成的伤害+1。（可叠加，最多叠加到5层）",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
+    "id": 301026,
+    "type": "GCG_CARD_STATE",
+    "name": "护盾",
+    "englishName": "Shield",
+    "tags": [
+      "GCG_TAG_SHEILD"
+    ],
+    "skills": [],
+    "rawDescription": "提供1点$[K6]，保护所附属角色。",
+    "description": "提供1点护盾，保护所附属角色。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Shield",
+    "buffIconHash": "3779803221919782355"
+  },
+  {
+    "id": 301027,
+    "type": "GCG_CARD_STATE",
+    "name": "锻炼",
+    "englishName": "Workout",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "",
+    "description": "",
+    "hidden": true,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
   },
   {
     "id": 322001,
@@ -12470,6 +13229,19 @@
     "buffIconHash": "10756566743744805222"
   },
   {
+    "id": 303239,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "困困冥想术（生效中）",
+    "englishName": "Art of Sleepy Meditation (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方下次打出不属于初始卡组的牌费用-2。",
+    "description": "我方下次打出不属于初始卡组的牌费用-2。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
     "id": 303300,
     "type": "GCG_CARD_STATE",
     "name": "饱腹",
@@ -12745,6 +13517,20 @@
     "skills": [],
     "rawDescription": "本回合中，该我方角色受到的伤害-1。（最多生效3次）",
     "description": "本回合中，该我方角色受到的伤害-1。（最多生效3次）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
+    "id": 303321,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "纵声欢唱（生效中）",
+    "englishName": "Sing Your Heart Out (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "下次切换角色少花费1个$[K309]。",
+    "description": "下次切换角色少花费1个无色元素。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",

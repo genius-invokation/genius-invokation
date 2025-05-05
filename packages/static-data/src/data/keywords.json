@@ -119,6 +119,41 @@
     "description": "直到整轮对局结束前，此效果持续生效。"
   },
   {
+    "id": 61,
+    "rawName": "<color=#FFFFFFFF>蓄力</color>",
+    "name": "蓄力",
+    "rawDescription": "完成对应次数的蓄力行动后，才能释放对应技能。",
+    "description": "完成对应次数的蓄力行动后，才能释放对应技能。"
+  },
+  {
+    "id": 62,
+    "rawName": "{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>",
+    "name": "元素精通",
+    "rawDescription": "每点元素精通使得敌方受到的元素反应中<color=#FFCC33>特定效果</color>提升1倍。",
+    "description": "每点元素精通使得敌方受到的元素反应中特定效果提升1倍。"
+  },
+  {
+    "id": 63,
+    "rawName": "<color=#FFFFFFFF>额外行动</color>",
+    "name": "额外行动",
+    "rawDescription": "角色不会因为额外行动而获得充能。",
+    "description": "角色不会因为额外行动而获得充能。"
+  },
+  {
+    "id": 64,
+    "rawName": "<color=#FFFFFFFF>角色等级</color>",
+    "name": "角色等级",
+    "rawDescription": "重复获取角色可以提高其角色等级，提高角色等级可以强化角色属性。",
+    "description": "重复获取角色可以提高其角色等级，提高角色等级可以强化角色属性。"
+  },
+  {
+    "id": 65,
+    "rawName": "<color=#FFFFFFFF>角色等阶</color>",
+    "name": "角色等阶",
+    "rawDescription": "角色等级达到2，4，7时，会突破等阶。\\n突破后可以获得天赋选择或是技能效果提升。",
+    "description": "角色等级达到2，4，7时，会突破等阶。\n突破后可以获得天赋选择或是技能效果提升。"
+  },
+  {
     "id": 100,
     "rawName": "{SPRITE_PRESET#2100}<color=#FFFFFFFF>物理伤害</color>",
     "name": "物理伤害",
@@ -133,25 +168,11 @@
     "description": "附着冰元素，可发生元素反应：\n融化：本伤害+2\n超导：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\n冻结：本伤害+1，使目标本回合无法行动（受到物理或火元素伤害后提前解除，但是伤害+2）"
   },
   {
-    "id": 151,
-    "rawName": "{SPRITE_PRESET#2101}<color=#99FFFFFF>冰元素伤害</color>",
-    "name": "冰元素伤害",
-    "rawDescription": "附着{SPRITE_PRESET#2101}冰元素，可发生元素反应：\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2103}<color=#FFFFFFFF>融化</color>：本伤害+2\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超导</color>：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2102}<color=#FFFFFFFF>冻结</color>：本伤害+1，使目标下次行动攻击力-2",
-    "description": "附着冰元素，可发生元素反应：\n融化：本伤害+2\n超导：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\n冻结：本伤害+1，使目标下次行动攻击力-2"
-  },
-  {
     "id": 102,
     "rawName": "{SPRITE_PRESET#2102}<color=#80C0FFFF>水元素伤害</color>",
     "name": "水元素伤害",
     "rawDescription": "附着{SPRITE_PRESET#2102}水元素，可发生元素反应：\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害+2\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2101}<color=#FFFFFFFF>冻结</color>：本伤害+1，使目标本回合无法行动（受到物理或火元素伤害后提前解除，但是伤害+2）\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：本伤害+1，生成使下次火元素或雷元素伤害+2的[<color=#FFFFFFFF>草原核</color>]",
     "description": "附着水元素，可发生元素反应：\n蒸发：本伤害+2\n感电：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\n冻结：本伤害+1，使目标本回合无法行动（受到物理或火元素伤害后提前解除，但是伤害+2）\n绽放：本伤害+1，生成使下次火元素或雷元素伤害+2的[草原核]"
-  },
-  {
-    "id": 152,
-    "rawName": "{SPRITE_PRESET#2102}<color=#80C0FFFF>水元素伤害</color>",
-    "name": "水元素伤害",
-    "rawDescription": "附着{SPRITE_PRESET#2102}水元素，可发生元素反应：\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害+2\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2101}<color=#FFFFFFFF>冻结</color>：本伤害+1，使目标下次行动攻击力-2\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：本伤害+1，生成使下次火元素或雷元素伤害+2的[<color=#FFFFFFFF>草原核</color>]",
-    "description": "附着水元素，可发生元素反应：\n蒸发：本伤害+2\n感电：本伤害+1，对目标以外的所有敌方角色造成1点穿透伤害\n冻结：本伤害+1，使目标下次行动攻击力-2\n绽放：本伤害+1，生成使下次火元素或雷元素伤害+2的[草原核]"
   },
   {
     "id": 103,
@@ -187,6 +208,62 @@
     "name": "草元素伤害",
     "rawDescription": "附着{SPRITE_PRESET#2107}草元素，可发生元素反应：\\n{SPRITE_PRESET#2107}{SPRITE_PRESET#2102}<color=#FFFFFFFF>绽放</color>：本伤害+1，生成使下次火元素或雷元素伤害+2的[<color=#FFFFFFFF>草原核</color>]\\n{SPRITE_PRESET#2107}{SPRITE_PRESET#2103}<color=#FFFFFFFF>燃烧</color>：本伤害+1，生成回合结束时造成1点火元素伤害的[<color=#FFFFFFFF>燃烧烈焰</color>]（可用次数1，最多叠加到2）\\n{SPRITE_PRESET#2107}{SPRITE_PRESET#2104}<color=#FFFFFFFF>原激化</color>：本伤害+1，生成使下2次草元素或雷元素伤害+1的[<color=#FFFFFFFF>激化领域</color>]",
     "description": "附着草元素，可发生元素反应：\n绽放：本伤害+1，生成使下次火元素或雷元素伤害+2的[草原核]\n燃烧：本伤害+1，生成回合结束时造成1点火元素伤害的[燃烧烈焰]（可用次数1，最多叠加到2）\n原激化：本伤害+1，生成使下2次草元素或雷元素伤害+1的[激化领域]"
+  },
+  {
+    "id": 150,
+    "rawName": "{SPRITE_PRESET#2100}<color=#FFFFFFFF>物理伤害</color>",
+    "name": "物理伤害",
+    "rawDescription": "物理伤害不会附着元素，也不会发生元素反应。",
+    "description": "物理伤害不会附着元素，也不会发生元素反应。"
+  },
+  {
+    "id": 151,
+    "rawName": "{SPRITE_PRESET#2101}<color=#99FFFFFF>冰元素伤害</color>",
+    "name": "冰元素伤害",
+    "rawDescription": "附着{SPRITE_PRESET#2101}冰元素，可发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2103}<color=#FFFFFFFF>融化</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超导</color>：所有敌方角色附属<color=#FFCC33>1</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2102}<color=#FFFFFFFF>冻结</color>：目标附属<color=#FFCC33>4</color>层<color=#FFFFFFFF>冻伤</color>",
+    "description": "附着冰元素，可发生元素反应\n每点元素精通使特定效果提升1倍。\n融化：本伤害翻倍，每8点元素精通额外翻1倍\n超导：所有敌方角色附属1层冻伤\n冻结：目标附属4层冻伤"
+  },
+  {
+    "id": 152,
+    "rawName": "{SPRITE_PRESET#2102}<color=#80C0FFFF>水元素伤害</color>",
+    "name": "水元素伤害",
+    "rawDescription": "附着{SPRITE_PRESET#2102}水元素，可发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：所有敌方角色受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2102}<color=#FFFFFFFF>冻结</color>：目标附属<color=#FFCC33>4</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：生成<color=#FFCC33>1</color>层<color=#FFFFFFFF>草原核</color>",
+    "description": "附着水元素，可发生元素反应\n每点元素精通使特定效果提升1倍。\n蒸发：本伤害翻倍，每8点元素精通额外翻1倍\n感电：所有敌方角色受到1点穿透伤害\n冻结：目标附属4层冻伤\n绽放：生成1层草原核"
+  },
+  {
+    "id": 153,
+    "rawName": "{SPRITE_PRESET#2103}<color=#FF9999FF>火元素伤害</color>",
+    "name": "火元素伤害",
+    "rawDescription": "附着{SPRITE_PRESET#2103}火元素，可发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2103}<color=#FFFFFFFF>融化</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超载</color>：伤害+<color=#FFCC33>1</color>，目标切换到上一个角色，他们交换位置并受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2107}<color=#FFFFFFFF>燃烧</color>：目标附属<color=#FFCC33>1</color>层[<color=#FFFFFFFF>持续燃烧</color>]",
+    "description": "附着火元素，可发生元素反应\n每点元素精通使特定效果提升1倍。\n蒸发：本伤害翻倍，每8点元素精通额外翻1倍\n融化：本伤害翻倍，每8点元素精通额外翻1倍\n超载：伤害+1，目标切换到上一个角色，他们交换位置并受到1点穿透伤害\n燃烧：目标附属1层[持续燃烧]"
+  },
+  {
+    "id": 154,
+    "rawName": "{SPRITE_PRESET#2104}<color=#FFACFFFF>雷元素伤害</color>",
+    "name": "雷元素伤害",
+    "rawDescription": "附着{SPRITE_PRESET#2104}雷元素，可发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超载</color>：伤害+<color=#FFCC33>1</color>，目标切换到上一个角色，他们交换位置并受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超导</color>：所有敌方角色附属<color=#FFCC33>1</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：所有敌方角色受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2107}<color=#FFFFFFFF>原激化</color>：生成2层[<color=#FFFFFFFF>激化领域</color>]，最多叠加<color=#FFCC33>2</color>层",
+    "description": "附着雷元素，可发生元素反应\n每点元素精通使特定效果提升1倍。\n超载：伤害+1，目标切换到上一个角色，他们交换位置并受到1点穿透伤害\n超导：所有敌方角色附属1层冻伤\n感电：所有敌方角色受到1点穿透伤害\n原激化：生成2层[激化领域]，最多叠加2层"
+  },
+  {
+    "id": 155,
+    "rawName": "{SPRITE_PRESET#2105}<color=#80FFD7FF>风元素伤害</color>",
+    "name": "风元素伤害",
+    "rawDescription": "和已附着的元素发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2101}<color=#FFFFFFFF>扩散（冰）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点冰元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2102}<color=#FFFFFFFF>扩散（水）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点水元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2103}<color=#FFFFFFFF>扩散（火）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点火元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2104}<color=#FFFFFFFF>扩散（雷）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点雷元素伤害",
+    "description": "和已附着的元素发生元素反应\n每点元素精通使特定效果提升1倍。\n扩散（冰）：伤害+1，对目标以外的所有敌方角色造成1点冰元素伤害\n扩散（水）：伤害+1，对目标以外的所有敌方角色造成1点水元素伤害\n扩散（火）：伤害+1，对目标以外的所有敌方角色造成1点火元素伤害\n扩散（雷）：伤害+1，对目标以外的所有敌方角色造成1点雷元素伤害"
+  },
+  {
+    "id": 156,
+    "rawName": "{SPRITE_PRESET#2106}<color=#FFE699FF>岩元素伤害</color>",
+    "name": "岩元素伤害",
+    "rawDescription": "和已附着的元素发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2101}<color=#FFFFFFFF>结晶（冰）</color>：生成<color=#FFCC33>3</color>点护盾。\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2102}<color=#FFFFFFFF>结晶（水）</color>：生成<color=#FFCC33>3</color>点护盾。\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2103}<color=#FFFFFFFF>结晶（火）</color>：生成<color=#FFCC33>3</color>点护盾。\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2104}<color=#FFFFFFFF>结晶（雷）</color>：生成<color=#FFCC33>3</color>点护盾。",
+    "description": "和已附着的元素发生元素反应\n每点元素精通使特定效果提升1倍。\n结晶（冰）：生成3点护盾。\n结晶（水）：生成3点护盾。\n结晶（火）：生成3点护盾。\n结晶（雷）：生成3点护盾。"
+  },
+  {
+    "id": 157,
+    "rawName": "{SPRITE_PRESET#2107}<color=#7EC236FF>草元素伤害</color>",
+    "name": "草元素伤害",
+    "rawDescription": "附着{SPRITE_PRESET#2107}草元素，可发生元素反应\\n每点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>使<color=#FFCC33>特定效果</color>提升1倍。\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：生成<color=#FFCC33>1</color>层<color=#FFFFFFFF>草原核</color>\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2107}<color=#FFFFFFFF>燃烧</color>：目标附属<color=#FFCC33>1</color>层[<color=#FFFFFFFF>持续燃烧</color>]\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2107}<color=#FFFFFFFF>原激化</color>：生成2层[<color=#FFFFFFFF>激化领域</color>]，最多叠加<color=#FFCC33>2</color>层",
+    "description": "附着草元素，可发生元素反应\n每点元素精通使特定效果提升1倍。\n绽放：生成1层草原核\n燃烧：目标附属1层[持续燃烧]\n原激化：生成2层[激化领域]，最多叠加2层"
   },
   {
     "id": 111,
@@ -313,6 +390,55 @@
     "name": "草元素相关反应",
     "rawDescription": "{SPRITE_PRESET#2107}{SPRITE_PRESET#2102}<color=#FFFFFFFF>绽放</color>：本伤害+1，生成使下次火元素或雷元素伤害+2的[<color=#FFFFFFFF>草原核</color>]\\n{SPRITE_PRESET#2107}{SPRITE_PRESET#2103}<color=#FFFFFFFF>燃烧</color>：本伤害+1，生成回合结束时造成1点火元素伤害的[<color=#FFFFFFFF>燃烧烈焰</color>]（可用次数1，最多叠加到2）\\n{SPRITE_PRESET#2107}{SPRITE_PRESET#2104}<color=#FFFFFFFF>原激化</color>：本伤害+1，生成使下2次草元素或雷元素伤害+1的[<color=#FFFFFFFF>激化领域</color>]",
     "description": "绽放：本伤害+1，生成使下次火元素或雷元素伤害+2的[草原核]\n燃烧：本伤害+1，生成回合结束时造成1点火元素伤害的[燃烧烈焰]（可用次数1，最多叠加到2）\n原激化：本伤害+1，生成使下2次草元素或雷元素伤害+1的[激化领域]"
+  },
+  {
+    "id": 261,
+    "rawName": "<color=#99FFFFFF>{SPRITE_PRESET#2101}冰元素相关反应</color>",
+    "name": "冰元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2101}{SPRITE_PRESET#2103}<color=#FFFFFFFF>融化</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超导</color>：所有敌方角色附属<color=#FFCC33>1</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2102}<color=#FFFFFFFF>冻结</color>：目标附属<color=#FFCC33>4</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2106}<color=#FFFFFFFF>结晶（冰）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2105}<color=#FFFFFFFF>扩散（冰）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点冰元素伤害",
+    "description": "融化：本伤害翻倍，每8点元素精通额外翻1倍\n超导：所有敌方角色附属1层冻伤\n冻结：目标附属4层冻伤\n结晶（冰）：生成3点护盾\n扩散（冰）：伤害+1，对目标以外的所有敌方角色造成1点冰元素伤害"
+  },
+  {
+    "id": 262,
+    "rawName": "<color=#80C0FFFF>{SPRITE_PRESET#2102}水元素相关反应</color>",
+    "name": "水元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：所有敌方角色受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2102}<color=#FFFFFFFF>冻结</color>：目标附属<color=#FFCC33>4</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：生成<color=#FFCC33>1</color>层<color=#FFFFFFFF>草原核</color>\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2106}<color=#FFFFFFFF>结晶（水）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2105}<color=#FFFFFFFF>扩散（水）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点水元素伤害",
+    "description": "蒸发：本伤害翻倍，每8点元素精通额外翻1倍\n感电：所有敌方角色受到1点穿透伤害\n冻结：目标附属4层冻伤\n绽放：生成1层草原核\n结晶（水）：生成3点护盾\n扩散（水）：伤害+1，对目标以外的所有敌方角色造成1点水元素伤害"
+  },
+  {
+    "id": 263,
+    "rawName": "<color=#FF9999FF>{SPRITE_PRESET#2103}火元素相关反应</color>",
+    "name": "火元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2102}{SPRITE_PRESET#2103}<color=#FFFFFFFF>蒸发</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2103}<color=#FFFFFFFF>融化</color>：本伤害翻倍，每8点{SPRITE_PRESET#1113}<color=#FFFFFFFF>元素精通</color>额外翻1倍\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超载</color>：伤害+<color=#FFCC33>1</color>，目标切换到上一个角色，他们交换位置并受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2107}<color=#FFFFFFFF>燃烧</color>：目标附属<color=#FFCC33>1</color>层[<color=#FFFFFFFF>持续燃烧</color>]\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2106}<color=#FFFFFFFF>结晶（火）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2105}<color=#FFFFFFFF>扩散（火）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点火元素伤害",
+    "description": "蒸发：本伤害翻倍，每8点元素精通额外翻1倍\n融化：本伤害翻倍，每8点元素精通额外翻1倍\n超载：伤害+1，目标切换到上一个角色，他们交换位置并受到1点穿透伤害\n燃烧：目标附属1层[持续燃烧]\n结晶（火）：生成3点护盾\n扩散（火）：伤害+1，对目标以外的所有敌方角色造成1点火元素伤害"
+  },
+  {
+    "id": 264,
+    "rawName": "<color=#FFACFFFF>{SPRITE_PRESET#2104}雷元素相关反应</color>",
+    "name": "雷元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2103}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超载</color>：伤害+<color=#FFCC33>1</color>，目标切换到上一个角色，他们交换位置并受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2101}{SPRITE_PRESET#2104}<color=#FFFFFFFF>超导</color>：所有敌方角色附属<color=#FFCC33>1</color>层<color=#FFFFFFFF>冻伤</color>\\n{SPRITE_PRESET#2102}{SPRITE_PRESET#2104}<color=#FFFFFFFF>感电</color>：所有敌方角色受到<color=#FFCC33>1</color>点穿透伤害\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2107}<color=#FFFFFFFF>原激化</color>：生成2层[<color=#FFFFFFFF>激化领域</color>]，最多叠加<color=#FFCC33>2</color>层\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2106}<color=#FFFFFFFF>结晶（雷）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2105}<color=#FFFFFFFF>扩散（雷）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点雷元素伤害",
+    "description": "超载：伤害+1，目标切换到上一个角色，他们交换位置并受到1点穿透伤害\n超导：所有敌方角色附属1层冻伤\n感电：所有敌方角色受到1点穿透伤害\n原激化：生成2层[激化领域]，最多叠加2层\n结晶（雷）：生成3点护盾\n扩散（雷）：伤害+1，对目标以外的所有敌方角色造成1点雷元素伤害"
+  },
+  {
+    "id": 265,
+    "rawName": "<color=#80FFD7FF>{SPRITE_PRESET#2105}风元素相关反应</color>",
+    "name": "风元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2105}{SPRITE_PRESET#2101}<color=#FFFFFFFF>扩散（冰）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点冰元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2102}<color=#FFFFFFFF>扩散（水）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点水元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2103}<color=#FFFFFFFF>扩散（火）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点火元素伤害\\n{SPRITE_PRESET#2105}{SPRITE_PRESET#2104}<color=#FFFFFFFF>扩散（雷）</color>：伤害+<color=#FFCC33>1</color>，对目标以外的所有敌方角色造成1点雷元素伤害",
+    "description": "扩散（冰）：伤害+1，对目标以外的所有敌方角色造成1点冰元素伤害\n扩散（水）：伤害+1，对目标以外的所有敌方角色造成1点水元素伤害\n扩散（火）：伤害+1，对目标以外的所有敌方角色造成1点火元素伤害\n扩散（雷）：伤害+1，对目标以外的所有敌方角色造成1点雷元素伤害"
+  },
+  {
+    "id": 266,
+    "rawName": "<color=#FFE699FF>{SPRITE_PRESET#2106}岩元素相关反应</color>",
+    "name": "岩元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2106}{SPRITE_PRESET#2101}<color=#FFFFFFFF>结晶（冰）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2102}<color=#FFFFFFFF>结晶（水）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2103}<color=#FFFFFFFF>结晶（火）</color>：生成<color=#FFCC33>3</color>点护盾\\n{SPRITE_PRESET#2106}{SPRITE_PRESET#2104}<color=#FFFFFFFF>结晶（雷）</color>：生成<color=#FFCC33>3</color>点护盾",
+    "description": "结晶（冰）：生成3点护盾\n结晶（水）：生成3点护盾\n结晶（火）：生成3点护盾\n结晶（雷）：生成3点护盾"
+  },
+  {
+    "id": 267,
+    "rawName": "<color=#7EC236FF>{SPRITE_PRESET#2107}草元素相关反应</color>",
+    "name": "草元素相关反应",
+    "rawDescription": "{SPRITE_PRESET#2102}{SPRITE_PRESET#2107}<color=#FFFFFFFF>绽放</color>：生成<color=#FFCC33>1</color>层<color=#FFFFFFFF>草原核</color>\\n{SPRITE_PRESET#2103}{SPRITE_PRESET#2107}<color=#FFFFFFFF>燃烧</color>：目标附属<color=#FFCC33>1</color>层[<color=#FFFFFFFF>持续燃烧</color>]\\n{SPRITE_PRESET#2104}{SPRITE_PRESET#2107}<color=#FFFFFFFF>原激化</color>：生成2层[<color=#FFFFFFFF>激化领域</color>]，最多叠加<color=#FFCC33>2</color>层",
+    "description": "绽放：生成1层草原核\n燃烧：目标附属1层[持续燃烧]\n原激化：生成2层[激化领域]，最多叠加2层"
   },
   {
     "id": 301,
