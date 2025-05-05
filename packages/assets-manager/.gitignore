@@ -26,3 +26,4 @@ temp
 *.sw?
 
 src/names.json
+src/deck_data.json
