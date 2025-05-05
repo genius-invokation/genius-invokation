@@ -422,28 +422,21 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.prepared
+      !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
   useTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
-      !e.skill.prepared
+      !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
   useSkillOrTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
-      !e.skill.prepared
-    );
-  }),
-  usePreparedSkill: defineDescriptor("onUseSkill", (c, e, r) => {
-    return (
-      checkRelative(e.onTimeState, e.callerArea, r) &&
-      isCharacterInitiativeSkill(e.skill) &&
-      e.skill.prepared
+      !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
   declareEnd: defineDescriptor("onAction", (c, e, r) => {
