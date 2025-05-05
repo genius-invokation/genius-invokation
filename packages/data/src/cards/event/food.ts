@@ -131,6 +131,9 @@ export const [MushroomPizza] = card(333007)
  * @id 333008
  * @name 兽肉薄荷卷
  * @description
+ * 目标角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。
+ * （每回合每个角色最多食用1次「料理」）
+ * @outdated
  * 目标角色在本回合结束前，之后三次「普通攻击」都少花费1个无色元素。
  * （每回合每个角色最多食用1次「料理」）
  */
@@ -477,4 +480,18 @@ export const MystiqueSoup = card(333020)
     const candidates = c.randomSubset(allCards, 3);
     c.selectAndPlay(candidates, e.targets[0]);
   })
+  .done();
+
+/**
+ * @id 333027
+ * @name 纵声欢唱
+ * @description
+ * 所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const SingYourHeartOut = card(333027)
+  .since("v5.6.0")
+  .costVoid(3)
+  .tags("food")
+  // TODO
   .done();

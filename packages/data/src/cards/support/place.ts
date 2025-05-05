@@ -650,3 +650,18 @@ export const MastersOfTheNightwind = card(321027)
     c.dispose();
   })
   .done();
+
+/**
+ * @id 321028
+ * @name 「沃陆之邦」
+ * @description
+ * 我方角色准备技能时：此角色获得3点锻炼。
+ * 我方角色切换为出战角色后：此角色获得2点锻炼。
+ * （当锻炼层数到达3点时，治疗对应角色1点；当锻炼层数到达5点时，对应角色所造成的伤害+1）
+ */
+export const CollectiveOfPlenty = card(321028)
+  .since("v5.6.0")
+  .costVoid(3)
+  .support("place")
+  // TODO
+  .done();

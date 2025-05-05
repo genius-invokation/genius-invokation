@@ -261,6 +261,9 @@ export const Shield = combatStatus(303162)
  * @name 元素共鸣：坚定之岩
  * @description
  * 为我方出战角色提供3点护盾。
+ * （牌组包含至少2个岩元素角色，才能加入牌组）
+ * @outdated
+ * 为我方出战角色提供3点护盾。
  */
 export const ElementalResonanceEnduringRock = card(331602)
   .since("v3.3.0")
@@ -273,6 +276,9 @@ export const ElementalResonanceEnduringRock = card(331602)
  * @id 331702
  * @name 元素共鸣：蔓生之草
  * @description
+ * 若我方场上存在燃烧烈焰/草原核或丰穰之核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。
+ * （牌组包含至少2个草元素角色，才能加入牌组）
+ * @outdated
  * 若我方场上存在燃烧烈焰/草原核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。
  * （牌组包含至少2个草元素角色，才能加入牌组）
  */
@@ -1687,4 +1693,17 @@ export const InTheNameOfTheExtreme = card(332044)
       c.drawCards(oppHandsCount - myHandsCount, { who: "my" });
     }
   })
+  .done();
+
+/**
+ * @id 332045
+ * @name 困困冥想术
+ * @description
+ * 从随机3张特技牌中挑选1张。
+ * 我方下次打出不属于初始卡组的牌少花费2个元素骰。
+ */
+export const ArtOfSleepyMeditation = card(332045)
+  .since("v5.6.0")
+  .costSame(1)
+  // TODO
   .done();

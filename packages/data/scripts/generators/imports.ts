@@ -45,6 +45,7 @@ import "./begin";
 
 ${imports}
 
+export * from "./end";
 export { default } from "./end";
 `,
   );

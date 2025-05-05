@@ -44,6 +44,9 @@ export const BountifulCore = summon(112082)
  * @id 112083
  * @name 永世流沔
  * @description
+ * 结束阶段：对所附属角色造成2点水元素伤害。
+ * 可用次数：1
+ * @outdated
  * 结束阶段：对所附属角色造成3点水元素伤害。
  * 可用次数：1
  */
@@ -100,6 +103,8 @@ export const DanceOfHaftkarsvar = skill(12082)
  * @id 12083
  * @name 浮莲舞步·远梦聆泉
  * @description
+ * 造成2点水元素伤害，目标及下一个角色附属永世流沔。
+ * @outdated
  * 造成2点水元素伤害，目标角色附属永世流沔。
  */
 export const DanceOfAbzendegiDistantDreamsListeningSpring = skill(12083)
