@@ -124,7 +124,18 @@ export const Tenshukaku = card(321007)
   .since("v3.7.0")
   .costSame(2)
   .support("place")
-  .on("actionPhase", (c) => new Set(c.player.dice).size >= 5)
+  .on("actionPhase", (c) => {
+    let omniCount = 0;
+    const nonOmniDice = new Set<DiceType>();
+    for (const d of c.player.dice) {
+      if (d === DiceType.Omni) {
+        omniCount++;
+      } else {
+        nonOmniDice.add(d);
+      }
+    }
+    return omniCount + nonOmniDice.size >= 5;
+  })
   .generateDice(DiceType.Omni, 1)
   .done();
 
