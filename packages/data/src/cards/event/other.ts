@@ -15,6 +15,7 @@
 
 import { CardHandle, CharacterState, DamageType, DiceType, Reaction, SkillHandle, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore } from "../../commons";
+import { BountifulCore } from "../../characters/hydro/nilou";
 
 /**
  * @id 303211
@@ -261,6 +262,7 @@ export const Shield = combatStatus(303162)
  * @name 元素共鸣：坚定之岩
  * @description
  * 为我方出战角色提供3点护盾。
+ * （牌组包含至少2个岩元素角色，才能加入牌组）
  */
 export const ElementalResonanceEnduringRock = card(331602)
   .since("v3.3.0")
@@ -273,7 +275,7 @@ export const ElementalResonanceEnduringRock = card(331602)
  * @id 331702
  * @name 元素共鸣：蔓生之草
  * @description
- * 若我方场上存在燃烧烈焰/草原核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。
+ * 若我方场上存在燃烧烈焰/草原核或丰穰之核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。
  * （牌组包含至少2个草元素角色，才能加入牌组）
  */
 export const ElementalResonanceSprawlingGreenery = card(331702)
@@ -282,10 +284,11 @@ export const ElementalResonanceSprawlingGreenery = card(331702)
   .tags("resonance")
   .filter((c) => c.$(`
     my combat status with definition id ${DendroCore} or 
+    my summon with definition id ${BountifulCore} or
     my combat status with definition id ${CatalyzingField} or
     my summon with definition id ${BurningFlame}`))
   .do((c) => {
-    if (c.$(`my combat status with definition id ${DendroCore}`)) {
+    if (c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)) {
       c.damage(DamageType.Hydro, 1, "opp active");
     }
     if (c.$(`my combat status with definition id ${CatalyzingField}`)) {
@@ -940,7 +943,7 @@ export const [TheBoarPrincess] = card(332025)
   .on("dispose", (c, e) => e.entity.definition.type === "equipment")
   .generateDice(DiceType.Omni, 1)
   .consumeUsage()
-  .on("enter", (c, e) => e.overridden && e.entity.definition.type === "equipment")
+  .on("enterRelative", (c, e) => e.overridden && e.entity.definition.type === "equipment")
   .generateDice(DiceType.Omni, 1)
   .consumeUsage()
   .done();
@@ -1686,5 +1689,33 @@ export const InTheNameOfTheExtreme = card(332044)
     } else if (oppHandsCount > myHandsCount) {
       c.drawCards(oppHandsCount - myHandsCount, { who: "my" });
     }
+  })
+  .done();
+
+/**
+ * @id 303239
+ * @name 困困冥想术（生效中）
+ * @description
+ * 我方下次打出不属于初始卡组的牌费用-2。
+ */
+export const ArtOfSleepyMeditationInEffect = combatStatus(303239)
+  .once("deductOmniDiceCard", (c, e) => !c.isInInitialPile(e.action.skill.caller))
+  .deductOmniCost(2)
+  .done();
+
+/**
+ * @id 332045
+ * @name 困困冥想术
+ * @description
+ * 从随机3张特技牌中挑选1张。
+ * 我方下次打出不属于初始卡组的牌少花费2个元素骰。
+ */
+export const ArtOfSleepyMeditation = card(332045)
+  .since("v5.6.0")
+  .costSame(1)
+  .do((c) => {
+    const candidates = c.randomSubset(c.allCardDefinitions("technique"), 3);
+    c.selectAndCreateHandCard(candidates);
+    c.combatStatus(ArtOfSleepyMeditationInEffect);
   })
   .done();

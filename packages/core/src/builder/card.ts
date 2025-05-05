@@ -82,10 +82,20 @@ const SATIATED_ID = 303300 as StatusHandle;
 
 type TalentRequirement = "action" | "active" | "none";
 
-interface FoodOption {
-  satiatedTarget?: string;
-  extraTargetRestraint?: string;
+export interface FoodOption {
+  /** 只允许对受伤角色打出 */
+  injuredOnly?: boolean;
+  /** 指定后不附着饱腹状态 */
+  noSatiated?: boolean;
 }
+export interface CombatFoodOption {
+  /**
+   * - `existsNot`: 存在无饱腹角色时可打出（默认值）
+   * - `allNot`: 所有角色都没有饱腹状态时可打出
+   */
+  satiatedFilter?: "existsNot" | "allNot";
+}
+
 type CardArea = { readonly who: 0 | 1 };
 type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
   st: GameState,
@@ -380,18 +390,30 @@ export class CardBuilder<
     return this;
   }
 
-  // 增加 food 标签，增加目标（我方非饱腹角色）
-  food(opt?: FoodOption) {
-    this._satiatedTarget = opt?.satiatedTarget ?? "@targets.0";
-    const defaultTarget =
-      "my characters and not has status with definition id = 303300";
-    let target;
-    if (opt?.extraTargetRestraint) {
-      target = `(${defaultTarget}) and (${opt.extraTargetRestraint})`;
-    } else {
-      target = defaultTarget;
+  /** 增加 food 标签；设置目标为我方非饱腹角色 */
+  food(opt: FoodOption = {}) {
+    this._satiatedTarget = "@targets.0";
+    let targetFilter =
+      "(my characters and not has status with definition id 303300)";
+    if (opt?.injuredOnly) {
+      targetFilter += ` and (characters with health < maxHealth)`;
     }
-    return this.tags("food").addTarget(target as "character");
+    return this.tags("food").addTarget(targetFilter as "characters");
+  }
+
+  /**
+   * 增加 food 标签。通常为剩余没有饱腹的角色附着效果，使用如下 query 获得这些角色：  
+   * `my characters and not has status with definition id ${Satiated}`
+   */
+  combatFood(opt: CombatFoodOption = {}) {
+    this._satiatedTarget = "my characters and not has status with definition id 303300";
+    const satiatedFilter = opt.satiatedFilter ?? "existsNot";
+    if (satiatedFilter === "allNot") {
+      this.filter((c) => !c.$("my characters has status with definition id 303300"));
+    } else if (satiatedFilter === "existsNot") {
+      this.filter((c) => c.$("my characters and not has status with definition id 303300"));
+    }
+    return this.tags("food");
   }
 
   doSameWhenDisposed() {

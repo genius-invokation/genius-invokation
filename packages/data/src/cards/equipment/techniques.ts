@@ -247,3 +247,45 @@ export const Waverider = card(313007)
   .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
   .addVariable("usage", 1)
   .done();
+
+/**
+ * @id 301305
+ * @name 突角龙（生效中）
+ * @description
+ * 本角色将在下次行动时，直接使用技能：普通攻击。
+ */
+export const TatankasaurusStatus02 = status(301305)
+  .prepare("normal", { hintCount: 1 })
+  .done();
+
+/**
+ * @id 301303
+ * @name 突角龙（生效中）
+ * @description
+ * 本角色将在下次行动时，直接使用技能：普通攻击。
+ */
+export const TatankasaurusStatus01 = status(301303)
+  .prepare("normal", {
+    hintCount: 2,
+    nextStatus: TatankasaurusStatus02,
+  })
+  .done();
+
+/**
+ * @id 313008
+ * @name 突角龙
+ * @description
+ * 特技：昂扬状态
+ * 可用次数：2
+ * （角色最多装备1个「特技」）
+ * [3130081: 昂扬状态] (3*Void) 附属角色准备技能2次「普通攻击」。
+ */
+export const Tatankasaurus = card(313008)
+  .since("v5.6.0")
+  .costVoid(4)
+  .technique()
+  .provideSkill(3130081)
+  .usage(2)
+  .costVoid(3)
+  .characterStatus(TatankasaurusStatus01, "@master")
+  .done();

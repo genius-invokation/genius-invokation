@@ -29,7 +29,7 @@ function match(
   return entry[0];
 }
 
-export const ID = `ELKKIAIGOBK`;
+export const ID = `id`;
 
 // GCGCharExcelConfigData
 export const NAME_TEXT_MAP_HASH = match(xchar, ID, 1101, 3061219907);

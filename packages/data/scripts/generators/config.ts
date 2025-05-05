@@ -16,13 +16,24 @@
 import path from "node:path";
 import { IS_BETA, BETA_VERSION } from "@gi-tcg/config";
 import { existsSync } from "node:fs";
+import { VERSIONS } from "@gi-tcg/core";
+import { version } from "../../package.json" with { type: "json" };
 
-export const OLD_VERSION = "v5.4.0";
-export const NEW_VERSION: string = IS_BETA ? BETA_VERSION : "v5.5.0";
+export const OLD_VERSION = VERSIONS.at(-2)!;
+export const NEW_VERSION: string = IS_BETA ? BETA_VERSION : VERSIONS.at(-1)!;
 export const SAVE_OLD_CODES = !IS_BETA;
 
 if (SAVE_OLD_CODES && existsSync(path.resolve(import.meta.dirname, `../../src/old_versions/${OLD_VERSION}`))) {
   throw new Error("Old version already exists; you may forgot to update (OLD|NEW)_VERSION at scripts/generators/config.ts .");
+}
+
+const giIndex = version.indexOf("gi-");
+const packageJsonVersion = "v" + version.substring(giIndex + 3).replace(/-/g, ".");
+
+if (!IS_BETA && packageJsonVersion !== NEW_VERSION) {
+  throw new Error(
+    `New version in @gi-tcg/data's package.json (${packageJsonVersion}) does not match the latest version defined in @gi-tcg/core (${NEW_VERSION}).`,
+  );
 }
 
 export const BASE_PATH = path.resolve(

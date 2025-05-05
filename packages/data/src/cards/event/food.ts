@@ -91,7 +91,7 @@ export const [NorthernSmokedChicken] = card(333004)
  */
 export const SweetMadame = card(333005)
   .since("v3.3.0")
-  .food({ extraTargetRestraint: "with health < maxHealth" })
+  .food({ injuredOnly: true })
   .heal(1, "@targets.0")
   .done();
 
@@ -105,7 +105,7 @@ export const SweetMadame = card(333005)
 export const MondstadtHashBrown = card(333006)
   .since("v3.3.0")
   .costSame(1)
-  .food({ extraTargetRestraint: "with health < maxHealth" })
+  .food({ injuredOnly: true })
   .heal(2, "@targets.0")
   .done();
 
@@ -119,7 +119,7 @@ export const MondstadtHashBrown = card(333006)
 export const [MushroomPizza] = card(333007)
   .since("v3.3.0")
   .costSame(1)
-  .food({ extraTargetRestraint: "with health < maxHealth" })
+  .food({ injuredOnly: true })
   .heal(1, "@targets.0")
   .toStatus(303305, "@targets.0")
   .duration(2)
@@ -131,7 +131,7 @@ export const [MushroomPizza] = card(333007)
  * @id 333008
  * @name 兽肉薄荷卷
  * @description
- * 目标角色在本回合结束前，之后三次「普通攻击」都少花费1个无色元素。
+ * 目标角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。
  * （每回合每个角色最多食用1次「料理」）
  */
 export const [MintyMeatRolls] = card(333008)
@@ -200,8 +200,8 @@ export const [SashimiPlatter] = card(333010)
 export const [TandooriRoastChicken] = card(333011)
   .since("v3.7.0")
   .costVoid(2)
-  .food({ satiatedTarget: "all my characters" })
-  .toStatus(303309, "all my characters")
+  .combatFood()
+  .toStatus(303309, `my characters and not has status with definition id ${Satiated}`)
   .oneDuration()
   .once("increaseSkillDamage", (c, e) => e.viaSkillType("elemental"))
   .increaseDamage(2)
@@ -217,8 +217,8 @@ export const [TandooriRoastChicken] = card(333011)
 export const [ButterCrab] = card(333012)
   .since("v3.7.0")
   .costVoid(2)
-  .food({ satiatedTarget: "all my characters" })
-  .toStatus(303310, "all my characters")
+  .combatFood()
+  .toStatus(303310, `my characters and not has status with definition id ${Satiated}`)
   .oneDuration()
   .once("decreaseDamaged")
   .decreaseDamage(2)
@@ -234,8 +234,8 @@ export const [ButterCrab] = card(333012)
 export const [FishAndChips] = card(333013)
   .since("v4.3.0")
   .costVoid(2)
-  .food({ satiatedTarget: "all my characters" })
-  .toStatus(303311, "all my characters")
+  .combatFood()
+  .toStatus(303311, `my characters and not has status with definition id ${Satiated}`)
   .oneDuration()
   .once("deductOmniDiceSkill")
   .deductOmniCost(1)
@@ -251,7 +251,7 @@ export const [FishAndChips] = card(333013)
 export const [MatsutakeMeatRolls] = card(333014)
   .since("v4.4.0")
   .costSame(2)
-  .food({ extraTargetRestraint: "with health < maxHealth" })
+  .food({ injuredOnly: true })
   .heal(2, "@targets.0")
   .toStatus(303312, "@targets.0")
   .on("endPhase")
@@ -269,7 +269,7 @@ export const [MatsutakeMeatRolls] = card(333014)
 export const [RainbowMacarons, RainbowMacaronsInEffect] = card(333015)
   .since("v4.6.0")
   .costVoid(2)
-  .food({ extraTargetRestraint: "with health < maxHealth" })
+  .food({ injuredOnly: true })
   .heal(1, "@targets.0")
   .toStatus(303313, "@targets.0")
   .on("damaged")
@@ -471,10 +471,28 @@ export const MystiqueSoupInspiration = card(333026)
 export const MystiqueSoup = card(333020)
   .since("v5.5.0")
   .costSame(1)
-  .food({ satiatedTarget: "not any" })
+  .food({ noSatiated: true })
   .do((c, e) => {
     const allCards = [MystiqueSoupHealing, MystiqueSoupProvidence, MystiqueSoupFury, MystiqueSoupSerenity, MystiqueSoupSoothing, MystiqueSoupInspiration];
     const candidates = c.randomSubset(allCards, 3);
     c.selectAndPlay(candidates, e.targets[0]);
   })
+  .done();
+
+/**
+ * @id 333027
+ * @name 纵声欢唱
+ * @description
+ * 所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const [SingYourHeartOut] = card(333027)
+  .since("v5.6.0")
+  .costVoid(3)
+  .food({ satiatedTarget: "all my characters" })
+  .drawCards(3)
+  .toCombatStatus(303321)
+  .on("deductOmniDiceSwitch")
+  .usage(2)
+  .deductOmniCost(1)
   .done();

@@ -2349,6 +2349,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Clorinde"
   },
   {
+    "id": 214131,
+    "shareId": 471,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "巡日塔门书",
+    "englishName": "Pylon of the Sojourning Sun Temple",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11413,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>赛索斯</color>",
+        "hintText": "装备给我方的赛索斯"
+      }
+    ],
+    "relatedCharacterId": 1413,
+    "relatedCharacterTags": [],
+    "storyTitle": "赛索斯·巡日塔门书",
+    "storyText": "「阿赫玛尔的遗荣！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ELECTRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "我方<color=#FFFFFFFF>$[A1413]</color>获得1点$[K310]。\\n我方$[A1413]因<color=#FFFFFFFF>$[S14134]</color>扣除$[K310]后，获得1点$[K310]。（每回合1次）\\n（牌组中包含$[A1413]，才能加入牌组）",
+    "description": "我方赛索斯获得1点充能。\n我方赛索斯因黑鸢的密喻扣除充能后，获得1点充能。（每回合1次）\n（牌组中包含赛索斯，才能加入牌组）",
+    "rawPlayingDescription": "我方$[A1413]因<color=#FFFFFFFF>$[S14134]</color>扣除$[K310]后，获得1点$[K310]。（每回合1次）",
+    "playingDescription": "我方赛索斯因黑鸢的密喻扣除充能后，获得1点充能。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Sethos"
+  },
+  {
     "id": 215011,
     "shareId": 96,
     "sinceVersion": "v3.3.0",
@@ -3164,8 +3201,8 @@
     "relatedCharacterId": null,
     "relatedCharacterTags": [],
     "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。",
-    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。",
+    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。\\n$[K58]：$[S1161021]\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116104]</color>。",
+    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。\n特技：转转冲击\n（角色最多装备1个「特技」）\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
     "cardFace": "UI_Gcg_CardFace_Summon_Kachina"
   },
   {
@@ -3204,6 +3241,61 @@
     "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）",
     "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kachina"
+  },
+  {
+    "id": 116112,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "刃轮装束",
+    "englishName": "Combat Blading Gear",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
+    "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Xilonen"
+  },
+  {
+    "id": 216111,
+    "shareId": 472,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "丛山锻火驰行",
+    "englishName": "Tour of Tepeilhuitl",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11611,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>希诺宁</color>",
+        "hintText": "装备给出战中的希诺宁"
+      }
+    ],
+    "relatedCharacterId": 1611,
+    "relatedCharacterTags": [],
+    "storyTitle": "希诺宁·丛山锻火驰行",
+    "storyText": "「沸腾吧，山之血！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_GEO",
+        "count": 2
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）",
+    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Xilonen"
   },
   {
     "id": 217011,
@@ -8424,6 +8516,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_LangChuan"
   },
   {
+    "id": 313008,
+    "shareId": 473,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "突角龙",
+    "englishName": "Tatankasaurus",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "突角龙·昂扬疾驰",
+    "storyText": "在疾驰的突角龙面前，浑厚的冲撞岩皆不足为惧，水面与液态燃素之上亦如坦途。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 4
+      }
+    ],
+    "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：昂扬状态\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：昂扬状态\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_TujiaoLong"
+  },
+  {
     "id": 321001,
     "shareId": 179,
     "sinceVersion": "v3.3.0",
@@ -9103,6 +9232,32 @@
     "rawDescription": "此牌初始具有4点<color=#FFFFFFFF>灵觉</color>。\\n<color=#FFFFFFFF>我方$[K59]后：</color><color=#FFFFFFFF>灵觉</color>-1。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若<color=#FFFFFFFF>灵觉</color>为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中$[K59]一个生成。",
     "description": "此牌初始具有4点灵觉。\n我方挑选后：灵觉-1。\n行动阶段开始时：若灵觉为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中挑选一个生成。",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_YanmiZhu"
+  },
+  {
+    "id": 321028,
+    "shareId": 474,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "「沃陆之邦」",
+    "englishName": "\"Collective of Plenty\"",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「沃陆之邦」",
+    "storyText": "以肌肉与力量为美的部族，据说那里几乎人人都有保持健身的习惯。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>我方角色准备技能时：</color>此角色获得3点<color=#FFFFFFFF>$[C301025]</color>。\\n<color=#FFFFFFFF>我方角色切换为出战角色后：</color>此角色获得2点<color=#FFFFFFFF>$[C301025]</color>。\\n（当锻炼层数到达3点时，治疗对应角色1点；当锻炼层数到达5点时，对应角色所造成的伤害+1）",
+    "description": "我方角色准备技能时：此角色获得3点锻炼。\n我方角色切换为出战角色后：此角色获得2点锻炼。\n（当锻炼层数到达3点时，治疗对应角色1点；当锻炼层数到达5点时，对应角色所造成的伤害+1）",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_Woluzhibang"
   },
   {
     "id": 322001,
@@ -10848,8 +11003,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>3点$[K6]</color>。",
-    "description": "为我方出战角色提供3点护盾。",
+    "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>3点$[K6]</color>。\\n（牌组包含至少2个{SPRITE_PRESET#2106}<color=#FFE699FF>岩元素</color>角色，才能加入牌组）",
+    "description": "为我方出战角色提供3点护盾。\n（牌组包含至少2个岩元素角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Rock"
   },
   {
@@ -10901,8 +11056,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "若我方场上存在<color=#FFFFFFFF>$[C115]</color>/<color=#FFFFFFFF>$[C116]</color>/<color=#FFFFFFFF>$[C117]</color>，则对对方出战角色造成1点$[K103]/$[K102]/$[K104]。\\n（牌组包含至少2个{SPRITE_PRESET#2107}<color=#7EC236FF>草元素</color>角色，才能加入牌组）",
-    "description": "若我方场上存在燃烧烈焰/草原核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。\n（牌组包含至少2个草元素角色，才能加入牌组）",
+    "rawDescription": "若我方场上存在<color=#FFFFFFFF>$[C115]</color>/<color=#FFFFFFFF>$[C116]</color>或<color=#FFFFFFFF>$[C112082]</color>/<color=#FFFFFFFF>$[C117]</color>，则对对方出战角色造成1点$[K103]/$[K102]/$[K104]。\\n（牌组包含至少2个{SPRITE_PRESET#2107}<color=#7EC236FF>草元素</color>角色，才能加入牌组）",
+    "description": "若我方场上存在燃烧烈焰/草原核或丰穰之核/激化领域，则对对方出战角色造成1点火元素伤害/水元素伤害/雷元素伤害。\n（牌组包含至少2个草元素角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_ResonanceA_Grass"
   },
   {
@@ -12111,6 +12266,30 @@
     "cardFace": "UI_Gcg_CardFace_Event_Event_NiyeLong"
   },
   {
+    "id": 332045,
+    "shareId": 475,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "困困冥想术",
+    "englishName": "Art of Sleepy Meditation",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "困困冥想术",
+    "storyText": "「所谓冥想…喂！冥想可不是让你睡觉的！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "从随机3张特技牌中<color=#FFFFFFFF>$[K59]</color>1张。\\n我方下次打出不属于初始卡组的牌少花费2个元素骰。",
+    "description": "从随机3张特技牌中挑选1张。\n我方下次打出不属于初始卡组的牌少花费2个元素骰。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_MingshiLong"
+  },
+  {
     "id": 333001,
     "shareId": 265,
     "sinceVersion": "v3.3.0",
@@ -12371,8 +12550,8 @@
         "count": 1
       }
     ],
-    "rawDescription": "目标角色在本回合结束前，之后三次<color=#FFFFFFFF>「普通攻击」</color>都少花费1个$[K309]。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
-    "description": "目标角色在本回合结束前，之后三次「普通攻击」都少花费1个无色元素。\n（每回合每个角色最多食用1次「料理」）",
+    "rawDescription": "目标角色在本回合结束前，之后3次<color=#FFFFFFFF>「普通攻击」</color>都少花费1个$[K309]。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
+    "description": "目标角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。\n（每回合每个角色最多食用1次「料理」）",
     "cardFace": "UI_Gcg_CardFace_Event_Food_Bohejuan"
   },
   {
@@ -12864,5 +13043,31 @@
     "rawDescription": "目标角色获得1点额外最大生命值。",
     "description": "目标角色获得1点额外最大生命值。",
     "cardFace": "UI_Gcg_CardFace_Event_Food_MingShi"
+  },
+  {
+    "id": 333027,
+    "shareId": 476,
+    "sinceVersion": "v5.6.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "纵声欢唱",
+    "englishName": "Sing Your Heart Out",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "纵声欢唱",
+    "storyText": "风味清凉的润喉糖。据说是花羽会部族润喉护嗓的秘密武器，吃下它去纵声欢唱吧！不过小心不要贪多哦，否则过量的糖分也可能会让喉咙沙哑。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "所有我方角色获得<color=#FFFFFFFF>$[C303300]</color>，抓3张牌，下2次切换角色少花费1个元素骰。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
+    "description": "所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。\n（每回合每个角色最多食用1次「料理」）",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_Rongyi"
   }
 ]
