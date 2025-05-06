@@ -148,7 +148,7 @@ export interface SkillButtonGroupProps {
   skills: SkillInfo[];
   shown: boolean;
   switchActiveButton: ClickSwitchActiveButtonActionStep | null;
-  switchActiveCost: PbDiceRequirement[] | null;
+  switchActiveCost: Map<number, PbDiceRequirement[]> | null;
   onClick?: (skill: SkillInfo) => void;
 }
 
@@ -160,12 +160,13 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
   const skills = createMemo<SkillInfo[]>(() => {
     if (props.switchActiveButton) {
       const step = props.switchActiveButton;
+      const realCost = props.switchActiveCost?.get(step.targetCharacterId ?? 0);
       const skillInfo = {
         id: "switchActive" as const,
         step: step,
         cost: DEFAULT_SWITCH_ACTIVE_COST,
-        realCost: props.switchActiveCost ?? [],
-        hideDiceCost: props.switchActiveCost === null,
+        realCost: realCost ?? [],
+        hideDiceCost: !realCost,
       };
       return [skillInfo];
     } else {

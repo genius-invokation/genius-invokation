@@ -251,7 +251,7 @@ export class StateMutator {
     const swapInCards = removedHands.map((id) => {
       const card = player().hands.find((c) => c.id === id);
       if (typeof card === "undefined") {
-        throw new GiTcgDataError(`Unknown card id ${id}`);
+        throw new GiTcgIoError(who, `switchHands return unknown card ${id}`);
       }
       return card;
     });
