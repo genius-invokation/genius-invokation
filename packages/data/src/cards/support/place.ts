@@ -473,7 +473,7 @@ export const CentralLaboratoryRuins = card(321021)
  * 角色造成的伤害+1。
  * 持续回合：2
  */
-export const StadiumOfTheSacredFlameInEffect = combatStatus(301023)
+export const StadiumOfTheSacredFlameInEffect = status(301023)
   .duration(2)
   .on("increaseSkillDamage")
   .increaseDamage(1)
@@ -507,7 +507,7 @@ export const StadiumOfTheSacredFlame = card(321022)
         break;
       }
       case 6: {
-        c.combatStatus(StadiumOfTheSacredFlameInEffect);
+        c.characterStatus(StadiumOfTheSacredFlameInEffect, "my active");
         c.dispose();
         break;
       }
