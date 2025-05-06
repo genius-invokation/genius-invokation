@@ -85,6 +85,7 @@ export interface ClickSkillButtonActionStep {
 }
 export interface ClickSwitchActiveButtonActionStep {
   readonly type: "clickSwitchActiveButton";
+  readonly targetCharacterId: number | null;
   readonly tooltipText?: string;
   readonly isDisabled: boolean;
   readonly isFocused: boolean;
@@ -134,7 +135,7 @@ type StepActionFunction = (
 export interface RealCosts {
   cards: Map<number, PbDiceRequirement[]>;
   skills: Map<number, PbDiceRequirement[]>;
-  switchActive: PbDiceRequirement[] | null;
+  switchActive: Map<number, PbDiceRequirement[]>;
 }
 
 export interface PreviewingCharacterInfo {
@@ -851,11 +852,13 @@ function createSwitchActiveActionState(
 ): void {
   const INNER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    targetCharacterId: ctx.action.value.characterId,
     isDisabled: false,
     isFocused: true,
   };
   const OUTER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    targetCharacterId: ctx.action.value.characterId,
     isDisabled: false,
     isFocused: false,
   };
@@ -897,8 +900,9 @@ function createSwitchActiveActionState(
         step === INNER_SWITCH_ACTIVE_BUTTON ||
         step === CONFIRM_CLICK_ACTION
       ) {
+        const realCost = root.realCosts.switchActive.get(ctx.action.value.characterId)!;
         const diceReq = new Map(
-          root.realCosts.switchActive!.map(({ type, count }) => [
+          realCost.map(({ type, count }) => [
             type as DiceType,
             count,
           ]),
@@ -969,7 +973,7 @@ export function createActionState(assetsManager: AssetsManager, actions: Action[
   const realCosts: RealCosts = {
     cards: new Map(),
     skills: new Map(),
-    switchActive: null,
+    switchActive: new Map(),
   };
   const root: ActionState = {
     availableSteps: [],
@@ -1040,7 +1044,7 @@ export function createActionState(assetsManager: AssetsManager, actions: Action[
         if (validity !== ActionValidity.VALID) {
           continue;
         }
-        realCosts.switchActive = requiredCost;
+        realCosts.switchActive.set(action.value.characterId, requiredCost);
         createSwitchActiveActionState(root, {
           assetsManager,
           outerLevelStates: switchActiveOuterStates,
@@ -1133,10 +1137,11 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
   const NO_COST: RealCosts = {
     cards: new Map(),
     skills: new Map(),
-    switchActive: null,
+    switchActive: new Map(),
   };
   const CLICK_SWITCH_ACTIVE: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
+    targetCharacterId: null,
     isDisabled: false,
     isFocused: true,
   };
