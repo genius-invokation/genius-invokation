@@ -34,10 +34,11 @@ const packages = [
   "core",
   "data",
   "assets-manager",
+  "card-data-viewer",
   "web-ui-core",
   "web-ui",
 ];
-const VERSION = "0.17.0";
+const VERSION = "0.17.1";
 
 const doPublish = !!process.env.PUBLISH;
 if (!doPublish) {

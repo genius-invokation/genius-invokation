@@ -1,6 +1,6 @@
 {
   "name": "@gi-tcg/legacy-web-ui-core",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "Core Solid component of 'Legacy' Web UI",
   "type": "module",
   "types": "./dist/index.d.ts",
