@@ -5163,7 +5163,8 @@
         "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO"
-        }
+        },
+        "icon": "Skill_S_Sethos_01"
       },
       {
         "id": 14133,
@@ -5186,7 +5187,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
           "D__KEY__DAMAGE": 3
-        }
+        },
+        "icon": "Skill_E_Sethos_01_HD"
       },
       {
         "id": 14134,
@@ -5199,7 +5201,8 @@
         "targetList": [],
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC"
-        }
+        },
+        "icon": "Skill_S_Sethos_02"
       }
     ],
     "hp": 10,
@@ -7136,7 +7139,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 1
-        }
+        },
+        "icon": "Skill_S_Xilonen_01"
       },
       {
         "id": 16113,
@@ -7159,7 +7163,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
-        }
+        },
+        "icon": "Skill_E_Xilonen_01_HD"
       },
       {
         "id": 16114,
@@ -7170,7 +7175,8 @@
         "description": "【被动】战斗开始时，初始生成3层「源音采样」·岩，若我方存在火、水、冰、雷的角色，则将1层「源音采样」·岩转化为对应元素的「源音采样」。",
         "playCost": [],
         "targetList": [],
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Xilonen_07"
       }
     ],
     "hp": 10,

@@ -5084,7 +5084,8 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Xilonen_04"
       },
       {
         "id": 1161122,
@@ -11356,7 +11357,8 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash"
       }
     ],
     "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
