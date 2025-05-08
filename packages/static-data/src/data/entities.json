@@ -644,6 +644,7 @@
     "description": "自身行动后，获得1次额外行动。（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_ExMove",
     "buffIconHash": "7334936479476959908"
   },
   {
@@ -699,6 +700,7 @@
     "description": "每层提高1点我方元素精通（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_ElementMastery",
     "buffIconHash": "13971917967596833106"
   },
   {
@@ -712,6 +714,7 @@
     "description": "附属角色+1额外行动（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_ExMove",
     "buffIconHash": "7334936479476959908"
   },
   {
@@ -3618,6 +3621,7 @@
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Sethos_S",
     "buffIconHash": "14965258367551053254"
   },
   {
@@ -5121,6 +5125,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
     "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Xilonen",
     "buffIconHash": "109313225968952660"
   },
   {
@@ -5134,6 +5139,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的岩元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Rock",
     "buffIconHash": "12347441073172741799"
   },
   {
@@ -5147,6 +5153,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的水元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Water",
     "buffIconHash": "1540385361181519710"
   },
   {
@@ -5160,6 +5167,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的火元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Fire",
     "buffIconHash": "17361273181820187726"
   },
   {
@@ -5173,6 +5181,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的冰元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Ice",
     "buffIconHash": "3026383335067153380"
   },
   {
@@ -5186,6 +5195,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的雷元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Elec",
     "buffIconHash": "18268791121792179358"
   },
   {
@@ -11367,6 +11377,7 @@
     "playingDescription": "特技：昂扬状态\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {
@@ -11413,6 +11424,7 @@
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {
@@ -11428,6 +11440,7 @@
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {
