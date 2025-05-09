@@ -184,31 +184,6 @@ export const Liben = card(322008)
   })
   .done();
 
-export const SkillDamageAndReactionExtension = extension(322009, {
-  hasElementalDamage: false,
-  hasNonElementalDamage: false,
-  hasReaction: false
-})
-  .description("双方角色使用技能的整个结算流程期间，是否发生了元素伤害、非元素伤害或引发了元素反应")
-  .mutateWhen("onBeforeUseSkill", (st, e) => {
-    st.hasElementalDamage = false;
-    st.hasNonElementalDamage = false;
-    st.hasReaction = false;
-  })
-  .mutateWhen("onDamageOrHeal", (st, e) => {
-    if (e.isDamageTypeDamage()) {
-      if (e.type === DamageType.Physical || e.type === DamageType.Piercing) {
-        st.hasNonElementalDamage = true;
-      } else {
-        st.hasElementalDamage = true;
-      }
-    }
-  })
-  .mutateWhen("onReaction", (st, e) => {
-    st.hasReaction = true;
-  })
-  .done();
-
 /**
  * @id 322009
  * @name 常九爷
@@ -218,21 +193,21 @@ export const SkillDamageAndReactionExtension = extension(322009, {
 export const ChangTheNinth = card(322009)
   .since("v3.3.0")
   .support("ally")
-  .associateExtension(SkillDamageAndReactionExtension)
   .variable("inspiration", 0)
-  .on("useSkill", (c) => {
-    const ext = c.getExtensionState();
-    return ext.hasNonElementalDamage || ext.hasReaction;
-  })
-  .listenToAll()
-  .do((c) => {
+  .defineSnippet((c) => {
     c.addVariable("inspiration", 1);
     if (c.getVariable("inspiration") >= 3) {
       c.drawCards(2);
       c.dispose();
-      return;
     }
   })
+  .onDelayedSkillDamage((c, e) => e.type === DamageType.Piercing || e.type === DamageType.Physical)
+  .listenToAll()
+  .callSnippet()
+  .endOn()
+  .onDelayedSkillReaction()
+  .listenToAll()
+  .callSnippet()
   .done();
 
 /**

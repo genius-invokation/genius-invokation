@@ -38,6 +38,10 @@ import {
   ModifyHeal0EventArg,
   ModifyHeal1EventArg,
   CustomEventEventArg,
+  EventArg,
+  type EventAndRequest,
+  type SkillResult,
+  EMPTY_SKILL_RESULT,
 } from "../base/skill";
 import type {
   AnyState,
@@ -83,6 +87,7 @@ import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
+import { StateMutator } from "../mutator";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -788,12 +793,29 @@ export class TriggeredSkillBuilder<
     super(id);
     this.associatedExtensionId = this.parent._associatedExtensionId;
   }
+  private _delayedToSkill = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
     autoDecrease: boolean;
   } | null = null;
   private _listenTo: ListenTo = ListenTo.SameArea;
+
+  delayedToSkill() {
+    const allowedEventNames: (DetailedEventNames | CustomEvent)[] = [
+      "dealDamage",
+      "reaction",
+    ];
+    if (!allowedEventNames.includes(this.detailedEventName)) {
+      throw new GiTcgDataError(
+        `delayedToSkill is only allowed at following events: ${allowedEventNames.join(
+          ", ",
+        )}`,
+      );
+    }
+    this._delayedToSkill = true;
+    return this;
+  }
 
   /**
    * 为实体创建名为 `usage` 的变量，表示剩余使用次数。
@@ -861,11 +883,14 @@ export class TriggeredSkillBuilder<
     });
   }
 
+  listenTo(targetRange: ListenTo): this {
+    this._listenTo = targetRange;
+    return this;
+  }
   listenToPlayer(): this {
     this._listenTo = ListenTo.SamePlayer;
     return this;
   }
-
   listenToAll(): this {
     this._listenTo = ListenTo.All;
     return this;
@@ -946,17 +971,63 @@ export class TriggeredSkillBuilder<
 
     // 【构造技能定义并向父级实体添加】
 
-    const def: TriggeredSkillDefinition = {
-      type: "skill",
-      id: this.id,
-      ownerType: this.parent._type,
-      triggerOn,
-      initiativeSkillConfig: null,
-      filter: this.buildFilter(),
-      action: this.buildAction(),
-      usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
-    };
-    this.parent._skillList.push(def);
+    const filter = this.buildFilter();
+    const action = this.buildAction();
+    if (this._delayedToSkill) {
+      type DelaySkillContext = {
+        eventArg: any;
+      };
+      const context: DelaySkillContext = {
+        eventArg: null,
+      };
+      this.parent
+        .on(this.detailedEventName as any)
+        .listenToAll()
+        .do((c, e) => {
+          context.eventArg = e;
+        })
+        .endOn();
+      const def: TriggeredSkillDefinition<"onUseSkill"> = {
+        type: "skill",
+        id: this.id,
+        ownerType: this.parent._type,
+        triggerOn: "onUseSkill",
+        initiativeSkillConfig: null,
+        filter: () => true,
+        action: (state, skillInfo, arg) => {
+          if (!context.eventArg) {
+            return [state, EMPTY_SKILL_RESULT];
+          }
+          let result: SkillDescriptionReturn;
+          if (!filter(state, skillInfo, context.eventArg)) {
+            result = [state, EMPTY_SKILL_RESULT];
+          } else {
+            result = action(state, skillInfo, context.eventArg);
+          }
+          context.eventArg = null;
+          return result;
+        },
+        usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
+      };
+      // For debug
+      Object.defineProperty(def, "delayedToSkill", {
+        value: true,
+        enumerable: true,
+      });
+      this.parent._skillList.push(def);
+    } else {
+      const def: TriggeredSkillDefinition<any> = {
+        type: "skill",
+        id: this.id,
+        ownerType: this.parent._type,
+        triggerOn,
+        initiativeSkillConfig: null,
+        filter,
+        action,
+        usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
+      };
+      this.parent._skillList.push(def);
+    }
   }
 
   endOn() {

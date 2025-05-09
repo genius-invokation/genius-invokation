@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DiceType, card, combatStatus, extension, pair } from "@gi-tcg/core/builder";
-import { SkillDamageAndReactionExtension } from "./ally";
+import { DamageType, DiceType, card, combatStatus, extension, pair } from "@gi-tcg/core/builder";
 
 /**
  * @id 323001
@@ -26,10 +25,8 @@ export const ParametricTransformer = card(323001)
   .since("v3.3.0")
   .costVoid(2)
   .support("item")
-  .associateExtension(SkillDamageAndReactionExtension)
   .variable("progress", 0)
-  .on("useSkill", (c) => c.getExtensionState().hasElementalDamage)
-  .listenToAll()
+  .onDelayedSkillDamage((c, e) => e.type !== DamageType.Piercing && e.type !== DamageType.Physical)
   .do((c) => {
     c.addVariable("progress", 1);
     if (c.getVariable("progress") >= 3) {

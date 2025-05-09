@@ -44,8 +44,9 @@ export const TwilightMeditation = status(114131)
  */
 export const ThunderConvergence = status(114132)
   .since("v5.6.0")
-  .once("skillReaction")
+  .onDelayedSkillReaction((c, e) => e.relatedTo(DamageType.Electro))
   .listenToPlayer()
+  .usagePerRound(1)
   .gainEnergy(1, "@master")
   .done();
 
