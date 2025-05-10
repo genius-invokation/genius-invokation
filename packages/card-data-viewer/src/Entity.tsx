@@ -74,16 +74,18 @@ export function Character(props: CardDataProps) {
               <ul class="clear-both flex flex-col gap-2">
                 <For each={data().skills}>
                   {(skill) => (
-                    <Skill
-                      {...props}
-                      input={{
-                        from: "definitionId",
-                        type: "skill",
-                        definitionId: skill.id,
-                      }}
-                      asChild
-                      class="b-yellow-3 b-1 rounded-md"
-                    />
+                    <Show when={!skill.hidden}>
+                      <Skill
+                        {...props}
+                        input={{
+                          from: "definitionId",
+                          type: "skill",
+                          definitionId: skill.id,
+                        }}
+                        asChild
+                        class="b-yellow-3 b-1 rounded-md"
+                      />
+                    </Show>
                   )}
                 </For>
               </ul>
