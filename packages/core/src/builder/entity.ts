@@ -146,6 +146,9 @@ export class EntityBuilder<
     private readonly fromCardId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
+    if (this._type === "status" || this._type === "equipment") {
+      this.on("defeated").dispose().endOn();
+    }
   }
 
   /** @internal */
@@ -722,9 +725,6 @@ export class EntityBuilder<
     type Result = FromCard extends true
       ? readonly [CardHandle, EntityBuilderResultT<CallerType>]
       : EntityBuilderResultT<CallerType>;
-    if (this._type === "status" || this._type === "equipment") {
-      this.on("defeated").dispose().endOn();
-    }
     const varConfigs = this._varConfigs;
     // on each round begin clean up
     const usagePerRoundNames = USAGE_PER_ROUND_VARIABLE_NAMES.filter((name) =>

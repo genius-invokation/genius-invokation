@@ -644,6 +644,7 @@
     "description": "自身行动后，获得1次额外行动。（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_ExMove",
     "buffIconHash": "7334936479476959908"
   },
   {
@@ -699,6 +700,7 @@
     "description": "每层提高1点我方元素精通（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_ElementMastery",
     "buffIconHash": "13971917967596833106"
   },
   {
@@ -712,6 +714,7 @@
     "description": "附属角色+1额外行动（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_ExMove",
     "buffIconHash": "7334936479476959908"
   },
   {
@@ -2196,7 +2199,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       },
       {
         "id": 1121422,
@@ -2212,6 +2216,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {},
         "icon": "Skill_S_Mualani_03"
       },
@@ -2223,7 +2228,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>双方切换角色后，且$[A1214]为出战角色时：</color>消耗1点<color=#FFFFFFFF>「夜魂值」</color>，使敌方出战角色附属<color=#FFFFFFFF>$[K1034]</color>。\\n$[K58]：$[S1121422]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C112141]</color>。",
@@ -3618,6 +3624,7 @@
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Sethos_S",
     "buffIconHash": "14965258367551053254"
   },
   {
@@ -4294,6 +4301,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {},
         "icon": "Skill_S_Liuyun_04"
       }
@@ -4943,6 +4951,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
@@ -4957,7 +4966,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       },
       {
         "id": 1161023,
@@ -4967,7 +4977,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       },
       {
         "id": 1161024,
@@ -4977,7 +4988,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。\\n$[K58]：$[S1161021]\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116104]</color>。",
@@ -5084,7 +5096,9 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {}
+        "hidden": false,
+        "keyMap": {},
+        "icon": "Skill_S_Xilonen_04"
       },
       {
         "id": 1161122,
@@ -5094,7 +5108,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       },
       {
         "id": 1161123,
@@ -5104,7 +5119,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       },
       {
         "id": 1161124,
@@ -5114,12 +5130,14 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
     "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Xilonen",
     "buffIconHash": "109313225968952660"
   },
   {
@@ -5133,6 +5151,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的岩元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Rock",
     "buffIconHash": "12347441073172741799"
   },
   {
@@ -5146,6 +5165,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的水元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Water",
     "buffIconHash": "1540385361181519710"
   },
   {
@@ -5159,6 +5179,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的火元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Fire",
     "buffIconHash": "17361273181820187726"
   },
   {
@@ -5172,6 +5193,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的冰元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Ice",
     "buffIconHash": "3026383335067153380"
   },
   {
@@ -5185,6 +5207,7 @@
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的雷元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Xilonen_E_Elec",
     "buffIconHash": "18268791121792179358"
   },
   {
@@ -6622,6 +6645,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -6637,6 +6661,7 @@
         "description": "造成1点水元素伤害，敌方出战角色附属水泡围困。",
         "playCost": [],
         "targetList": [],
+        "hidden": true,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
@@ -6652,6 +6677,7 @@
         "description": "造成1点水元素伤害，敌方出战角色附属水泡围困。",
         "playCost": [],
         "targetList": [],
+        "hidden": true,
         "keyMap": {},
         "icon": "MonsterSkill_S_HilistrayWater_02"
       }
@@ -6900,6 +6926,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
@@ -6914,7 +6941,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -8045,6 +8073,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
@@ -8059,7 +8088,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -10971,6 +11001,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
@@ -11010,6 +11041,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
@@ -11024,7 +11056,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "$[K58]：$[S3130021]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11068,6 +11101,7 @@
             "hintText": "选择一个召唤物，结算回合结束效果"
           }
         ],
+        "hidden": false,
         "keyMap": {},
         "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01"
       },
@@ -11079,7 +11113,8 @@
         "rawDescription": "",
         "description": "",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": true
       }
     ],
     "rawDescription": "$[K58]：$[S3130031]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11123,6 +11158,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "hidden": false,
         "keyMap": {},
         "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l"
       }
@@ -11168,6 +11204,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "hidden": false,
         "keyMap": {},
         "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt"
       }
@@ -11207,7 +11244,8 @@
             "rawHintText": "对我方出战角色生效",
             "hintText": "对我方出战角色生效"
           }
-        ]
+        ],
+        "hidden": false
       },
       {
         "id": 3130062,
@@ -11226,7 +11264,8 @@
             "rawHintText": "对我方出战角色生效",
             "hintText": "对我方出战角色生效"
           }
-        ]
+        ],
+        "hidden": false
       },
       {
         "id": 3130063,
@@ -11251,6 +11290,7 @@
             "hintText": "对我方出战角色生效"
           }
         ],
+        "hidden": false,
         "keyMap": {},
         "icon": "Btn_Natsaurus_Flamingo_ElementalArt"
       }
@@ -11287,6 +11327,7 @@
           }
         ],
         "targetList": [],
+        "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
@@ -11302,6 +11343,7 @@
         "description": "附属角色切换至后台时，此牌可用次数+1。",
         "playCost": [],
         "targetList": [],
+        "hidden": false,
         "keyMap": {}
       },
       {
@@ -11312,7 +11354,8 @@
         "rawDescription": "使用时，生成2点护盾",
         "description": "使用时，生成2点护盾",
         "playCost": [],
-        "targetList": []
+        "targetList": [],
+        "hidden": false
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>入场时：</color>为我方附属角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n<color=#FFFFFFFF>附属角色切换至后台时：</color>此牌$[K3]+1。\\n$[K58]：$[S3130071]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11356,7 +11399,9 @@
             "hintText": "对我方出战角色生效"
           }
         ],
-        "keyMap": {}
+        "hidden": false,
+        "keyMap": {},
+        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash"
       }
     ],
     "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11365,6 +11410,7 @@
     "playingDescription": "特技：昂扬状态\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {
@@ -11411,6 +11457,7 @@
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {
@@ -11426,6 +11473,7 @@
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
   },
   {

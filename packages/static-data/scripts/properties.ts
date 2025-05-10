@@ -146,7 +146,9 @@ export const TITLE_TEXT_MAP_HASH = match(xkeyword, ID, 1, 2540223917);
 
 // GCGElementExcelConfigData
 const elementEntries = xelement.flatMap((e) => Object.entries(e));
-export const TYPE = elementEntries.find(([k, v]) => v === "GCG_ELEMENT_CRYO")![0];
+export const TYPE = elementEntries.find(
+  ([k, v]) => v === "GCG_ELEMENT_CRYO",
+)![0];
 export const KEYWORD_ID = elementEntries.find(([k, v]) => v === 101)![0];
 
 for (const e of xelement) {

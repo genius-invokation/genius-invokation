@@ -1,7 +1,7 @@
 {
   "name": "@gi-tcg/server",
   "private": true,
-  "version": "0.17.0",
+  "version": "0.17.1",
   "type": "module",
   "scripts": {
     "dev": "bun --watch ./src/main.ts",

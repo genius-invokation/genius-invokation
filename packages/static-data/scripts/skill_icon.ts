@@ -20,7 +20,7 @@ const doFetch = async (id: number | string) => {
   const body = await fetch(url, {
     proxy: process.env.https_proxy,
   }).then((r) => r.json() as Promise<any>);
-  if (!body.ok) {
+  if (body.response !== 200) {
     console.error(`Failed to fetch ${url}`);
     return;
   }
@@ -29,7 +29,7 @@ const doFetch = async (id: number | string) => {
 
 export async function getSkillIcon(skillId: number | string, iconHash?: number | bigint): Promise<string | undefined> {
   skillId = String(skillId);
-  if (typeof iconHash === "undefined") {
+  if (!iconHash) {
     return;
   }
   const mapping = await Bun.file(MAPPING_FILE).json();

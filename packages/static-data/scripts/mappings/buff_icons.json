@@ -150,5 +150,15 @@
   "4730368055557500692": "UI_Gcg_Buff_Kachina_S",
   "1216184163607234978": "UI_Gcg_Buff_Vehicle_Kachina",
   "1771263630888988054": "UI_Gcg_Buff_Nightsoul_Rock",
-  "8286186731443484050": "UI_Gcg_Buff_Vehicle_Waverider"
+  "8286186731443484050": "UI_Gcg_Buff_Vehicle_Waverider",
+  "7334936479476959908": "UI_Gcg_Buff_Common_ExMove",
+  "13971917967596833106": "UI_Gcg_Buff_ElementMastery",
+  "14965258367551053254": "UI_Gcg_Buff_Sethos_S",
+  "109313225968952660": "UI_Gcg_Buff_Vehicle_Xilonen",
+  "12347441073172741799": "UI_Gcg_Buff_Xilonen_E_Rock",
+  "1540385361181519710": "UI_Gcg_Buff_Xilonen_E_Water",
+  "17361273181820187726": "UI_Gcg_Buff_Xilonen_E_Fire",
+  "3026383335067153380": "UI_Gcg_Buff_Xilonen_E_Ice",
+  "18268791121792179358": "UI_Gcg_Buff_Xilonen_E_Elec",
+  "13973771076860340647": "UI_Gcg_Buff_Vehicle_Bisonsaurus"
 }
