@@ -40,6 +40,7 @@ import {
   TARGET_CAMP,
   TARGET_HINT_TEXT_MAP_HASH,
   SKILL_TAG_LIST,
+  IS_HIDDEN,
 } from "./properties";
 import tcgSkillKeyMap from "./skill_data.toml";
 
@@ -57,6 +58,7 @@ export interface SkillRawData {
   description: string;
   playCost: PlayCost[];
   targetList: ChooseTarget[];
+  hidden: boolean;
   keyMap?: Record<string, any>;
   icon?: string;
 }
@@ -102,6 +104,7 @@ export async function collateSkill(
       count: e[COUNT],
     }),
   );
+  const hidden = !!skillObj[IS_HIDDEN];
 
   const iconHash = skillObj[SKILL_ICON_HASH];
   const icon = await getSkillIcon(id, iconHash);
@@ -137,6 +140,7 @@ export async function collateSkill(
     description,
     playCost,
     targetList,
+    hidden,
     keyMap,
     icon,
   };
