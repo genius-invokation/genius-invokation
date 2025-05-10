@@ -39,7 +39,8 @@ export const OverchargedBall = card(113131)
  */
 export const VerticalForceCoordination = status(113135)
   .since("v4.8.0")
-  .on("reaction", (c, e) => e.type === Reaction.Overloaded)
+  .on("damaged", (c, e) => e.getReaction() === Reaction.Overloaded && !c.of(e.target).isMine())
+  .listenToAll()
   .usagePerRound(1)
   .createHandCard(OverchargedBall)
   .done();
@@ -120,9 +121,7 @@ export const RingOfBurstingGrenades = skill(13133)
  */
 export const VerticalForceCoordinationPassive = skill(13134)
   .type("passive")
-  .on("reaction", (c, e) => 
-    e.type === Reaction.Overloaded &&
-    !c.of(e.target).isMine())
+  .on("damaged", (c, e) => e.getReaction() === Reaction.Overloaded && !c.of(e.target).isMine())
   .listenToAll()
   .usagePerRound(1, { name: "usagePerRound1" })
   .createHandCard(OverchargedBall)
