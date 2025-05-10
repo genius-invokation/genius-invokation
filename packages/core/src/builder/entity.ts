@@ -599,7 +599,7 @@ export class EntityBuilder<
     }
   }
 
-  /** 角色使用技能后，若造成了伤害 */
+  /** 角色使用技能后，若 listening scope 造成了伤害 */
   onDelayedSkillDamage(
     filter?: SkillOperationFilter<
       CreateSkillBuilderMeta<
@@ -612,7 +612,7 @@ export class EntityBuilder<
   ) {
     return this.on("dealDamage", filter).delayedToSkill();
   }
-  /** 角色引发元素反应后（i.e. 角色使用技能后，若引发了元素反应） */
+  /** 角色引发元素反应后（i.e. 角色使用技能后，若 listening scope 引发了元素反应） */
   onDelayedSkillReaction(
     filter?: SkillOperationFilter<
       CreateSkillBuilderMeta<
@@ -623,7 +623,7 @@ export class EntityBuilder<
       >
     >,
   ) {
-    return this.on("reaction", filter).delayedToSkill();
+    return this.on("dealReaction", filter).delayedToSkill();
   }
 
   usage(

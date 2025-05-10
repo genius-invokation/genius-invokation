@@ -494,6 +494,9 @@ const detailedEventDictionary = {
   reaction: defineDescriptor("onReaction", (c, e, r) => {
     return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
   }),
+  dealReaction: defineDescriptor("onReaction", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.caller.id, r);
+  }),
   skillReaction: defineDescriptor("onReaction", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.caller.id, r) && e.viaCharacterSkill()
@@ -804,7 +807,7 @@ export class TriggeredSkillBuilder<
   delayedToSkill() {
     const allowedEventNames: (DetailedEventNames | CustomEvent)[] = [
       "dealDamage",
-      "reaction",
+      "dealReaction",
     ];
     if (!allowedEventNames.includes(this.detailedEventName)) {
       throw new GiTcgDataError(
@@ -982,7 +985,7 @@ export class TriggeredSkillBuilder<
       };
       this.parent
         .on(this.detailedEventName as any)
-        .listenToAll()
+        .listenTo(listenTo)
         .do((c, e) => {
           context.eventArg = e;
         })

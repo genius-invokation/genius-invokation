@@ -17,10 +17,13 @@ import { ref, setup, State, Character, Support, CombatStatus, Equipment, Status 
 import { InstructorsCap } from "@gi-tcg/data/internal/cards/equipment/artifacts";
 import { ChangTheNinth } from "@gi-tcg/data/internal/cards/support/ally";
 import { ParametricTransformer } from "@gi-tcg/data/internal/cards/support/item";
+import { GaleBlade, Jean } from "@gi-tcg/data/internal/characters/anemo/jean";
 import { DriftcloudWave, Xianyun } from "@gi-tcg/data/internal/characters/anemo/xianyun";
-import { AncientRiteTheThunderingSands, Sethos } from "@gi-tcg/data/internal/characters/electro/sethos";
+import { GrassRingOfSanctification, KukiShinobu } from "@gi-tcg/data/internal/characters/electro/kuki_shinobu";
+import { AncientRiteTheThunderingSands, Sethos, ThunderConvergence } from "@gi-tcg/data/internal/characters/electro/sethos";
 import { Barbara, WhisperOfWater } from "@gi-tcg/data/internal/characters/hydro/barbara";
 import { AurousBlaze, Yoimiya } from "@gi-tcg/data/internal/characters/pyro/yoimiya";
+import { Aura } from "@gi-tcg/typings";
 import { expect, test } from "bun:test";
 
 test("chang & transformer: triggered on useSkill status", async () => {
@@ -73,6 +76,26 @@ test("sethos and xianyun", async () => {
   // 切到闲云：触发冲击波
   // 冲击波扩散雷
   c.expect("opp prev").toHaveVariable({ health: 9 });
-  // 赛索斯充能+1
-  c.expect(sethos).toHaveVariable({ energy: 1 });
+  // 赛索斯充能+1（使用技能+1、效果+1）
+  c.expect(sethos).toHaveVariable({ energy: 2 });
+});
+
+test("sethos and opp useSkill", async () => {
+  const sethos = ref();
+  const c = setup(
+    <State>
+      <Character opp active def={KukiShinobu} />
+      <CombatStatus opp def={GrassRingOfSanctification} />
+      <Character my def={Sethos} ref={sethos} energy={0}>
+        <Status def={ThunderConvergence} />
+      </Character>
+      <Character my active def={Jean} aura={Aura.Cryo} health={10} />
+    </State>
+  );
+  await c.me.skill(GaleBlade);
+  // 风压剑：对方切人
+  // 触发越祓草轮，对琴1点雷伤，超导到2
+  c.expect("my active").toHaveVariable({ health: 8 });
+  // 对方实体造成的元素反应 **不触发** 赛索斯
+  c.expect(sethos).toHaveVariable({ energy: 0 });
 });
