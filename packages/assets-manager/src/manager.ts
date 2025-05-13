@@ -198,6 +198,7 @@ export class AssetsManager {
           rawDescription: skill.rawDescription,
           description: "",
           playCost: genCost(skill.playCost, false),
+          hidden: false,
           targetList: [],
         };
         this.dataCacheSync.set(skill.id, data);
