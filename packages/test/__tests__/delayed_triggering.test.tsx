@@ -28,21 +28,23 @@ import { expect, test } from "bun:test";
 
 test("chang & transformer: triggered on useSkill status", async () => {
   const chang = ref();
-  const transformer = ref();
+  const transformer1 = ref();
+  const transformer2 = ref();
   const c = setup(
     <State>
       <Character my active def={Barbara} />
       <Character my def={Yoimiya} />
       <CombatStatus my def={AurousBlaze} />
       <Support my def={ChangTheNinth} v={{ inspiration: 0 }} ref={chang} />
-      <Support my def={ParametricTransformer} v={{ progress: 0 }} ref={transformer} />
+      <Support my def={ParametricTransformer} v={{ progress: 0 }} ref={transformer1} />
+      <Support my def={ParametricTransformer} v={{ progress: 0 }} ref={transformer2} />
     </State>
   );
   await c.me.skill(WhisperOfWater);
   c.expect(chang).toHaveVariable({ inspiration: 1 });
-  c.expect(transformer).toHaveVariable({ progress: 1 });
+  c.expect(transformer1).toHaveVariable({ progress: 1 });
+  c.expect(transformer2).toHaveVariable({ progress: 1 });
 });
-
 
 test("instructor: do not trigger on useSkill status", async () => {
   const instructor = ref();

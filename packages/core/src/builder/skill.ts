@@ -978,16 +978,17 @@ export class TriggeredSkillBuilder<
     const action = this.buildAction();
     if (this._delayedToSkill) {
       type DelaySkillContext = {
-        eventArg: any;
+        /** 索引每个实体id -> 待处理 eventArg  */
+        eventArgs: Map<number, any>;
       };
       const context: DelaySkillContext = {
-        eventArg: null,
+        eventArgs: new Map(),
       };
       this.parent
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
         .do((c, e) => {
-          context.eventArg = e;
+          context.eventArgs.set(c.self.id, e);
         })
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
@@ -998,16 +999,17 @@ export class TriggeredSkillBuilder<
         initiativeSkillConfig: null,
         filter: () => true,
         action: (state, skillInfo, arg) => {
-          if (!context.eventArg) {
+          const eventArg = context.eventArgs.get(skillInfo.caller.id);
+          if (!eventArg) {
             return [state, EMPTY_SKILL_RESULT];
           }
           let result: SkillDescriptionReturn;
-          if (!filter(state, skillInfo, context.eventArg)) {
+          if (!filter(state, skillInfo, eventArg)) {
             result = [state, EMPTY_SKILL_RESULT];
           } else {
-            result = action(state, skillInfo, context.eventArg);
+            result = action(state, skillInfo, eventArg);
           }
-          context.eventArg = null;
+          context.eventArgs.delete(skillInfo.caller.id);
           return result;
         },
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
