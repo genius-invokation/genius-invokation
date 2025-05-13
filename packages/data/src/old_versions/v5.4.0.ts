@@ -76,6 +76,7 @@ const [ElementalResonanceSprawlingGreenery] = card(331702)
     c.$("my combat statuses with definition id 117")?.addVariable("usage", 1);
   })
   .toCombatStatus(303172)
+  .since("v3.3.0") // 由于 v5.4.0 删去生效中状态，手动将其标记为“主”版本
   .oneDuration()
   .once("increaseDamage", (c, e) => e.getReaction())
   .increaseDamage(2)
