@@ -28,6 +28,8 @@ export const ConquerorOfEvilWrathDeity = status(115042)
     e.canDeductCostOfType(DiceType.Anemo))
   .usage(2)
   .deductCost(DiceType.Anemo, 1)
+  .on("dispose", (c, e) => e.entity.definition.id === YakshasMask)
+  .dispose()
   .done();
 
 /**
@@ -50,13 +52,6 @@ export const YakshasMask = status(115041)
   .on("deductOmniDiceSwitch", (c) => c.self.master().isActive())
   .usagePerRound(1)
   .deductOmniCost(1)
-  .on("selfDispose")
-  .do((c) => {
-    const conquerorStatus = c.self.master().hasStatus(ConquerorOfEvilWrathDeity);
-    if (conquerorStatus) {
-      c.dispose(conquerorStatus);
-    }
-  })
   .done();
 
 /**
