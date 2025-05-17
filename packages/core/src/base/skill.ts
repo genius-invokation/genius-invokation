@@ -749,7 +749,7 @@ export class DamageOrHealEventArg<
     return this._damageInfo;
   }
   isDamageTypeDamage(): this is DamageOrHealEventArg<DamageInfo> {
-    return !this.isDamageTypeHeal();
+    return this._damageInfo?.type != null && !this.isDamageTypeHeal(); //debuging. Suspected undefined behavior exists.
   }
   isDamageTypeHeal(): this is DamageOrHealEventArg<HealInfo> {
     return this._damageInfo.type === DamageType.Heal;

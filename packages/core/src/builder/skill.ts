@@ -423,6 +423,13 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
+  beforeUseSkill: defineDescriptor("onBeforeUseSkill", (c, e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      isCharacterInitiativeSkill(e.skill) &&
+      !e.skill.definition.initiativeSkillConfig.hidden
+    );
+  }), //needed to add on to the document if needed.
   useSkill: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&

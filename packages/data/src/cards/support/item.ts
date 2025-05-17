@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -26,16 +26,29 @@ export const ParametricTransformer = card(323001)
   .costVoid(2)
   .support("item")
   .variable("progress", 0)
-  .onDelayedSkillDamage((c, e) => e.type !== DamageType.Piercing && e.type !== DamageType.Physical)
+  .variable("elementalDamaged", 0, { visible: false })// TODO: When using skill, flash a little, but the problem does not affect the settlement.
+  .variable("usingSkill", 0, { visible: false })
+  .on("beforeUseSkill")
+  .listenToAll()
+  .setVariable("elementalDamaged", 0)
+  .setVariable("usingSkill", 1)
+  .on("dealDamage", (c, e) =>
+    c.getVariable("usingSkill") === 1 &&
+    e.type !== DamageType.Piercing &&
+    e.type !== DamageType.Physical)
+  .listenToAll()
+  .setVariable("elementalDamaged", 1)
+  .on("useSkill")
   .listenToAll()
   .do((c) => {
-    c.addVariable("progress", 1);
-    if (c.getVariable("progress") >= 3) {
-      c.generateDice("randomElement", 3);
-      c.dispose();
-      return;
-    }
-  })
+    c.setVariable("usingSkill", 0)
+    if (c.getVariable("elementalDamaged") === 1){
+      c.addVariable("progress", 1);
+      if (c.getVariable("progress") >= 3) {
+        c.generateDice("randomElement", 3);
+        c.dispose();
+        return;
+  }}})
   .done();
 
 /**

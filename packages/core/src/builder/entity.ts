@@ -613,7 +613,7 @@ export class EntityBuilder<
       >
     >,
   ) {
-    return this.on("dealDamage", filter).delayedToSkill();
+    return this.on("dealDamage", filter).delayedToSkill(); //It may be a settlement disorder here
   }
   /** 角色引发元素反应后（i.e. 角色使用技能后，若 listening scope 引发了元素反应） */
   onDelayedSkillReaction(
