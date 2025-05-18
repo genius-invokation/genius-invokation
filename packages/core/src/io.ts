@@ -413,6 +413,7 @@ export function exposeEntity(
     hintText: e.definition.hintText ?? void 0,
     equipment,
     descriptionDictionary,
+    alternativeHintText: e.variables.alternativeHintText ?? void 0, //no bug for now
   };
 }
 

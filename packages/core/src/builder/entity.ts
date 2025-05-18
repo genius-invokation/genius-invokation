@@ -547,7 +547,9 @@ export class EntityBuilder<
   hintIcon(damageType: DamageType) {
     return this.variable("hintIcon", damageType);
   }
-
+  alternativeHintText(text: number) {
+    return this.variable("alternativeHintText", text);
+  }
   /**
    * Same as
    * ```

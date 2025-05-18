@@ -106,7 +106,9 @@ export function Entity(props: EntityProps) {
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
           <Image imageId={data().hintIcon!} class="h-4 w-4" />
-          {data().hintText}
+          {typeof data().alternativeHintText === "number"
+            ? data().alternativeHintText
+            : data().hintText}
         </div>
       </Show>
     </div>

@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -29,8 +29,9 @@ export const DarkShadow = summon(122043)
   .usage(0)
   .variable("atk", 0)
   .hintIcon(DamageType.Electro)
-  .hintText("[GCG_TOKEN_USR1]")
-  .replaceDescription("[GCG_TOKEN_USR1]", (c, e) => e.variables.atk)
+  // .hintText("[GCG_TOKEN_USR1]")
+  // .replaceDescription("[GCG_TOKEN_USR1]", (c, e) => e.variables.atk)
+  .alternativeHintText(0)
   .on("enter")
   .do((c) => {
     const domain = c.$(`my combat status with definition id ${DeepDevourersDomain}`)!;
@@ -39,6 +40,7 @@ export const DarkShadow = summon(122043)
     if (count > 0) {
       c.setVariable("atk", maxCost);
       c.setVariable("usage", count);
+      c.setVariable("alternativeHintText", c.getVariable("atk")) //logically
     } else {
       c.dispose();
     }
