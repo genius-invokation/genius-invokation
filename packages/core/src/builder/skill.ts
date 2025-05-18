@@ -978,18 +978,22 @@ export class TriggeredSkillBuilder<
     const action = this.buildAction();
     if (this._delayedToSkill) {
       type DelaySkillContext = {
-        /** 索引每个实体id -> 待处理 eventArg  */
-        eventArgs: Map<number, any>;
+        eventArgs: Map<number, any[]>;
       };
       const context: DelaySkillContext = {
-        eventArgs: new Map(),
+        eventArgs: new Map<number, any[]>(),
       };
       this.parent
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
         .do((c, e) => {
-          context.eventArgs.set(c.self.id, e);
-        })
+          const existingEventArgs = context.eventArgs.get(c.self.id);
+          if (existingEventArgs) {
+            existingEventArgs.push(e);
+          } else {
+            context.eventArgs.set(c.self.id, [e]);
+
+        }})
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
         type: "skill",
@@ -999,16 +1003,16 @@ export class TriggeredSkillBuilder<
         initiativeSkillConfig: null,
         filter: () => true,
         action: (state, skillInfo, arg) => {
-          const eventArg = context.eventArgs.get(skillInfo.caller.id);
-          if (!eventArg) {
-            return [state, EMPTY_SKILL_RESULT];
+          const eventArgArray = context.eventArgs.get(skillInfo.caller.id);
+          let result: SkillDescriptionReturn = [state, EMPTY_SKILL_RESULT];
+          if (!eventArgArray || eventArgArray.length === 0){
+            context.eventArgs.delete(skillInfo.caller.id);
+            return result;
           }
-          let result: SkillDescriptionReturn;
-          if (!filter(state, skillInfo, eventArg)) {
-            result = [state, EMPTY_SKILL_RESULT];
-          } else {
-            result = action(state, skillInfo, eventArg);
-          }
+          for (const eachEventArg of eventArgArray){
+            if (filter(state, skillInfo, eachEventArg)) {
+              result = action(state, skillInfo, eachEventArg);
+          }}
           context.eventArgs.delete(skillInfo.caller.id);
           return result;
         },
