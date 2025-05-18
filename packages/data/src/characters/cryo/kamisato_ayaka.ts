@@ -104,6 +104,8 @@ export const KamisatoArtSoumetsu = skill(11053)
  */
 export const KamisatoArtSenho: PassiveSkillHandle = skill(11054)
   .type("passive")
+  .on("battleBegin", (c, e) => c.self.isActive()) // 战斗开始时也附属附魔
+  .characterStatus(CryoElementalInfusion)
   .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.id)
   .if((c) => c.self.hasEquipment(KantenSenmyouBlessing))
   .characterStatus(CryoElementalInfusion01)
