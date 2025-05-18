@@ -72,9 +72,9 @@ export function Summon(props: EntityProps) {
               imageId={props.data.hintIcon!}
               class="h-4 w-4 left-0 bottom-0"
             />
-            {typeof props.data.alternativeHintText === "number"
-              ? props.data.alternativeHintText
-              : props.data.hintText}
+            {typeof props.data.hintText !== "undefined"
+              ? props.data.hintText
+              : props.data.alternativeHintText}
           </div>
         </Show>
         <Show when={previewVarDiff()}>
