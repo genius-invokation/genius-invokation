@@ -185,7 +185,7 @@ export function exposeMutation(
       const FLAG_NAME_MAP: Partial<Record<PlayerFlag, PbPlayerFlag>> = {
         declaredEnd: PbPlayerFlag.DECLARED_END,
         legendUsed: PbPlayerFlag.LEGEND_USED,
-      }
+      };
       const flagName = FLAG_NAME_MAP[m.flagName];
       if (flagName) {
         return {
@@ -366,6 +366,13 @@ export function exposeMutation(
         dice,
       };
     }
+    case "startDelaying": {
+      return null; //后面改
+    };
+
+    case "finalizeDelaying": {
+      return null; //后面改
+    };
     default: {
       const _check: never = m;
       return null;

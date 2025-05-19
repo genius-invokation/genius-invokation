@@ -1381,7 +1381,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DiceType.Hydro,
         DiceType.Pyro,
       ];
-      if (randomIncludeOmni) { 
+      if (randomIncludeOmni) {
         diceTypes.push(DiceType.Omni);
       }
       for (let i = 0; i < count; i++) {

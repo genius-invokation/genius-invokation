@@ -169,6 +169,15 @@ export interface ClearRoundSkillLogM {
 export interface ClearRemovedEntitiesM {
   readonly type: "clearRemovedEntities";
 }
+export interface StartDelayingM{
+  readonly type: "startDelaying";
+  readonly entityId: number;
+  readonly eventArg: any; //后面再改
+}
+export interface FinalizeDelayingM{
+  readonly type: "finalizeDelaying";
+  readonly entityId: number;
+}
 
 export type Mutation =
   | StepRandomM
@@ -191,7 +200,9 @@ export type Mutation =
   | MutateExtensionStateM
   | PushRoundSkillLogM
   | ClearRoundSkillLogM
-  | ClearRemovedEntitiesM;
+  | ClearRemovedEntitiesM
+  | StartDelayingM
+  | FinalizeDelayingM;
 
 function doMutation(state: GameState, m: Mutation): GameState {
   switch (m.type) {
@@ -450,6 +461,24 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.players[1].removedEntities = [];
       });
     }
+    case "startDelaying":{
+      return produce(state, (draft) => {
+        if (!draft.delayingEventArgs) {
+          draft.delayingEventArgs = new Map<number, any[]>();
+        }
+        if (!draft.delayingEventArgs.has(m.entityId)) {
+          draft.delayingEventArgs.set(m.entityId, []);
+        }
+        draft.delayingEventArgs.get(m.entityId)!.push(m.eventArg); //可以再改
+      })
+    }
+    case "finalizeDelaying":{
+      return produce(state, (draft) => {
+        if (draft.delayingEventArgs) {
+          draft.delayingEventArgs.delete(m.entityId);
+        }
+      })
+    }
     default: {
       const _: never = m;
       throw new GiTcgCoreInternalError(
@@ -524,6 +553,12 @@ export function stringifyMutation(m: Mutation): string | null {
       return `Push round skill log ${m.skillId} into ${stringifyState(
         m.caller,
       )}`;
+    }
+    case "startDelaying": {
+      return "startDelaying";
+    }
+    case "finalizeDelaying": {
+      return "finalizeDelaying";
     }
     default: {
       return null;
