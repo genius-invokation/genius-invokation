@@ -528,11 +528,11 @@ const detailedEventDictionary = {
   generateDice: defineDescriptor("onGenerateDice", (c, e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  consumeNightsoul: defineDescriptor("onConsumeNightsoul0", (c, e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r);
+  consumeNightsoul: defineDescriptor("onChangeNightsoul", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.character.id, r) && e.info.type === "consume";
   }),
-  consumeNightsoulFinal: defineDescriptor("onConsumeNightsoul1", (c, e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r);
+  gainNightsoul: defineDescriptor("onChangeNightsoul", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.character.id, r) && e.info.type === "gain";
   }),
   selectCard: defineDescriptor("onSelectCard", (c, e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
