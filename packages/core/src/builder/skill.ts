@@ -996,7 +996,7 @@ export class TriggeredSkillBuilder<
           c.mutate({
             type: "startDelaying",
             entityId: c.self.id,
-            eventArg: e.arg,
+            eventArg: e as any, //不是很对
         })})
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
@@ -1014,7 +1014,7 @@ export class TriggeredSkillBuilder<
           }
           for (const eachEventArg of eventArgArray){
             if (filter(state, skillInfo, eachEventArg)) {
-              result = action(state, skillInfo, eachEventArg);
+              result = action(state, skillInfo, eachEventArg); //这里有类型问题，不知道哪来的其他类型的eventarg进这里面来了
               return result;
           }}
           //有问题再修
