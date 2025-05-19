@@ -117,7 +117,7 @@ export class SkillExecutor {
         isPreview: this.config.preview,
         logger: this.mutator.logger,
       },
-      arg as any,
+      arg as any, //GeneralSkillArg
     );
 
     const prependMutations: ExposedMutation[] = [];

@@ -31,7 +31,7 @@ import { type EntityArea, type EntityDefinition, stringifyEntityArea } from "./e
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
-
+import { EventArg } from "./skill";
 enableMapSet();
 
 type IdWritable<T extends { readonly id: number }> = Omit<T, "id"> & {
@@ -172,7 +172,7 @@ export interface ClearRemovedEntitiesM {
 export interface StartDelayingM{
   readonly type: "startDelaying";
   readonly entityId: number;
-  readonly eventArg: any; //后面再改
+  readonly eventArg: EventArg; //后面再改
 }
 export interface ResetDelayingM{
   readonly type: "resetDelaying";
