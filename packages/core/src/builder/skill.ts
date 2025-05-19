@@ -528,11 +528,11 @@ const detailedEventDictionary = {
   generateDice: defineDescriptor("onGenerateDice", (c, e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  consumeNightsoul: defineDescriptor("onChangeNightsoul", (c, e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r) && e.info.type === "consume";
+  consumeNightsoul: defineDescriptor("onConsumeNightsoul0", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.character.id, r);
   }),
-  gainNightsoul: defineDescriptor("onChangeNightsoul", (c, e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r) && e.info.type === "gain";
+  consumeNightsoulFinal: defineDescriptor("onConsumeNightsoul1", (c, e, r) => {
+    return checkRelative(e.onTimeState, e.character.id, r);
   }),
   selectCard: defineDescriptor("onSelectCard", (c, e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
@@ -1227,12 +1227,6 @@ export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
   protected _targetQueries: string[] = [];
-  protected _fast = false;
-
-  fast(): this {
-    this._fast = true;
-    return this;
-  }
 
   protected addTargetImpl(targetQuery: string) {
     this._targetQueries = [...this._targetQueries, targetQuery];
@@ -1389,7 +1383,7 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
-          fast: this._fast,
+
           hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
@@ -1527,7 +1521,7 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
-        fast: this._fast,
+
         hidden: false,
         getTarget: this.buildTargetGetter(),
       },

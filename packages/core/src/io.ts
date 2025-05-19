@@ -477,15 +477,9 @@ function exposeCharacter(
     defeated: !ch.variables.alive,
     entity: ch.entities.map((e) => exposeEntity(state, e)),
     health: ch.variables.health,
-    energy:
-      ch.definition.specialEnergy === null
-        ? ch.variables.energy
-        : ch.variables[ch.definition.specialEnergy.variableName],
+    energy: ch.variables.energy,
     maxHealth: ch.variables.maxHealth,
-    maxEnergy:
-      ch.definition.specialEnergy === null
-        ? ch.variables.maxEnergy
-        : ch.definition.specialEnergy.slotSize,
+    maxEnergy: ch.variables.maxEnergy,
     aura: ch.variables.aura,
   };
 }
