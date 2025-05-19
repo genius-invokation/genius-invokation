@@ -996,7 +996,7 @@ export class TriggeredSkillBuilder<
           c.mutate({
             type: "startDelaying",
             entityId: c.self.id,
-            eventArg: e,
+            eventArg: e.args,
         })})
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
