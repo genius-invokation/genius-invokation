@@ -474,7 +474,7 @@ function doMutation(state: GameState, m: Mutation): GameState {
     }
     case "resetDelaying":{
       return produce(state, (draft) => {
-        if (draft.delayingEventArgs.has(m.entityId)) {
+        if (draft.delayingEventArgs?.has(m.entityId)) {
           draft.delayingEventArgs.delete(m.entityId);
         }
       })

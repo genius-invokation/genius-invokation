@@ -88,7 +88,7 @@ import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 import { StateMutator } from "../mutator";
-import { applyMutation } from "../base/mutator"
+import { applyMutation } from "../base/mutation";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
