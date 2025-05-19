@@ -1339,6 +1339,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
       where === "my" ? this.callerArea.who : flip(this.callerArea.who);
     if (count === "all") {
       count = player.dice.length;
+    } else {
+      count = Math.min(count, player.dice.length);
     }
     const oldDiceCount = player.dice.length - count;
     const oldDice = player.dice.slice(0, oldDiceCount);
