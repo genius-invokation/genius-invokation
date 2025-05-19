@@ -370,7 +370,7 @@ export function exposeMutation(
       return null; //后面改
     };
 
-    case "finalizeDelaying": {
+    case "resetDelaying": {
       return null; //后面改
     };
     default: {

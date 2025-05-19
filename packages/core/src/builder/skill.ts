@@ -88,6 +88,7 @@ import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 import { StateMutator } from "../mutator";
+import { applyMutation } from "../base/mutator"
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -978,13 +979,21 @@ export class TriggeredSkillBuilder<
     const action = this.buildAction();
     if (this._delayedToSkill) {
       this.parent
+        .on("beforeAction")
+        .listenTo(listenTo)
+        .do((c, e) => {
+          c.mutate({
+            type: "resetDelaying",
+            entityId: c.self.id,
+          })
+        })
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
         .do((c, e) => {
           c.mutate({
             type: "startDelaying",
             entityId: c.self.id,
-            eventArg: e
+            eventArg: e,
         })})
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
@@ -1000,15 +1009,6 @@ export class TriggeredSkillBuilder<
           if (!eventArgArray){
             return [state, EMPTY_SKILL_RESULT];
           }
-          this.do((c) => {
-            const eventArgArray = state.delayingEventArgs?.get(skillInfo.caller.id);
-            if (eventArgArray && eventArgArray.length > 0){
-              c.mutate({
-                type: "finalizeDelaying",
-                entityId: skillInfo.caller.id,
-              })
-            }
-          })
           for (const eachEventArg of eventArgArray){
             if (filter(state, skillInfo, eachEventArg)) {
               result = action(state, skillInfo, eachEventArg);

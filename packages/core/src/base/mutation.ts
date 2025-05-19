@@ -174,8 +174,8 @@ export interface StartDelayingM{
   readonly entityId: number;
   readonly eventArg: any; //后面再改
 }
-export interface FinalizeDelayingM{
-  readonly type: "finalizeDelaying";
+export interface ResetDelayingM{
+  readonly type: "resetDelaying";
   readonly entityId: number;
 }
 
@@ -202,7 +202,7 @@ export type Mutation =
   | ClearRoundSkillLogM
   | ClearRemovedEntitiesM
   | StartDelayingM
-  | FinalizeDelayingM;
+  | ResetDelayingM;
 
 function doMutation(state: GameState, m: Mutation): GameState {
   switch (m.type) {
@@ -472,9 +472,9 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.delayingEventArgs.get(m.entityId)!.push(m.eventArg); //可以再改
       })
     }
-    case "finalizeDelaying":{
+    case "resetDelaying":{
       return produce(state, (draft) => {
-        if (draft.delayingEventArgs) {
+        if (draft.delayingEventArgs.has(m.entityId)) {
           draft.delayingEventArgs.delete(m.entityId);
         }
       })
@@ -557,8 +557,8 @@ export function stringifyMutation(m: Mutation): string | null {
     case "startDelaying": {
       return "startDelaying";
     }
-    case "finalizeDelaying": {
-      return "finalizeDelaying";
+    case "resetDelaying": {
+      return "resetDelaying";
     }
     default: {
       return null;
