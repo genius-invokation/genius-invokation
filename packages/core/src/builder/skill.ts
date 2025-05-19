@@ -654,6 +654,9 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
         arg,
       );
       for (const filter of filters) {
+        if(!ctx?.eventArg){
+          return false;
+        }
         if (!filter(ctx as any, ctx.eventArg)) {
           return false;
         }
