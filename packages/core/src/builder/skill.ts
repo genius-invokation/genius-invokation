@@ -977,19 +977,15 @@ export class TriggeredSkillBuilder<
     const filter = this.buildFilter();
     const action = this.buildAction();
     if (this._delayedToSkill) {
-      type DelaySkillContext = {
-        /** 索引每个实体id -> 待处理 eventArg  */
-        eventArgs: Map<number, any>;
-      };
-      const context: DelaySkillContext = {
-        eventArgs: new Map(),
-      };
       this.parent
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
         .do((c, e) => {
-          context.eventArgs.set(c.self.id, e);
-        })
+          c.mutate({
+            type: "startDelaying",
+            entityId: c.self.id,
+            eventArg: e
+        })})
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
         type: "skill",
@@ -999,17 +995,26 @@ export class TriggeredSkillBuilder<
         initiativeSkillConfig: null,
         filter: () => true,
         action: (state, skillInfo, arg) => {
-          const eventArg = context.eventArgs.get(skillInfo.caller.id);
-          if (!eventArg) {
+          const eventArgArray = state.delayingEventArgs?.get(skillInfo.caller.id);
+          let result: SkillDescriptionReturn = [state, EMPTY_SKILL_RESULT];
+          if (!eventArgArray){
             return [state, EMPTY_SKILL_RESULT];
           }
-          let result: SkillDescriptionReturn;
-          if (!filter(state, skillInfo, eventArg)) {
-            result = [state, EMPTY_SKILL_RESULT];
-          } else {
-            result = action(state, skillInfo, eventArg);
-          }
-          context.eventArgs.delete(skillInfo.caller.id);
+          this.do((c) => {
+            const eventArgArray = state.delayingEventArgs?.get(skillInfo.caller.id);
+            if (eventArgArray && eventArgArray.length > 0){
+              c.mutate({
+                type: "finalizeDelaying",
+                entityId: skillInfo.caller.id,
+              })
+            }
+          })
+          for (const eachEventArg of eventArgArray){
+            if (filter(state, skillInfo, eachEventArg)) {
+              result = action(state, skillInfo, eachEventArg);
+              return result;
+          }}
+          //有问题再修
           return result;
         },
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
@@ -1222,6 +1227,12 @@ export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
   protected _targetQueries: string[] = [];
+  protected _fast = false;
+
+  fast(): this {
+    this._fast = true;
+    return this;
+  }
 
   protected addTargetImpl(targetQuery: string) {
     this._targetQueries = [...this._targetQueries, targetQuery];
@@ -1378,6 +1389,7 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
+          fast: this._fast,
           hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
@@ -1515,6 +1527,7 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
+        fast: this._fast,
         hidden: false,
         getTarget: this.buildTargetGetter(),
       },
