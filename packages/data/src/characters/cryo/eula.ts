@@ -82,11 +82,16 @@ export const IcetideVortex: SkillHandle = skill(11062)
   .type("elemental")
   .costCryo(3)
   .noEnergy()
-  .damage(DamageType.Cryo, 2)
-  .if((c) => !c.self.hasStatus(Grimheart))
-  .characterStatus(Grimheart, "@self")
-  .if((c) => !c.$(`my summons with definition id ${LightfallSword}`))
-  .gainEnergy(1, "@self")
+  .do((c) => {
+    const hasHeart = c.self.hasStatus(Grimheart);
+    c.damage(DamageType.Cryo, 2);
+    if (!hasHeart) {
+      c.characterStatus(Grimheart, "@self");
+    }
+    if (!c.$(`my summons with definition id ${LightfallSword}`)) {
+      c.gainEnergy(1, "@self");
+    }
+  })
   .done();
 
 /**
