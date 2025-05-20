@@ -179,13 +179,15 @@ export function exposeMutation(
     case "pushRoundSkillLog":
     case "clearRoundSkillLog":
     case "clearRemovedEntities":
+    case "startDelaying":
+    case "resetDelaying":
     case "switchActive": // We will manually handle this
       return null;
     case "setPlayerFlag": {
       const FLAG_NAME_MAP: Partial<Record<PlayerFlag, PbPlayerFlag>> = {
         declaredEnd: PbPlayerFlag.DECLARED_END,
         legendUsed: PbPlayerFlag.LEGEND_USED,
-      }
+      };
       const flagName = FLAG_NAME_MAP[m.flagName];
       if (flagName) {
         return {

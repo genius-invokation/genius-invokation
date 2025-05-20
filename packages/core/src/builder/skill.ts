@@ -87,7 +87,6 @@ import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
-import { StateMutator } from "../mutator";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -421,6 +420,13 @@ const detailedEventDictionary = {
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
       // c.self.id !== e.card.id &&
       checkRelative(e.onTimeState, { who: e.who }, r)
+    );
+  }),
+  beforeSkill: defineDescriptor("onBeforeUseSkill", (c, e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      isCharacterInitiativeSkill(e.skill) &&
+      !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
   useSkill: defineDescriptor("onUseSkill", (c, e, r) => {
@@ -977,18 +983,24 @@ export class TriggeredSkillBuilder<
     const filter = this.buildFilter();
     const action = this.buildAction();
     if (this._delayedToSkill) {
-      type DelaySkillContext = {
-        /** 索引每个实体id -> 待处理 eventArg  */
-        eventArgs: Map<number, any>;
-      };
-      const context: DelaySkillContext = {
-        eventArgs: new Map(),
-      };
       this.parent
+        .on("beforeSkill")
+        .listenTo(listenTo)
+        .do((c, e) => {
+          c.mutate({
+            type: "resetDelaying",
+            entityId: c.self.id,
+          });
+        })
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
         .do((c, e) => {
-          context.eventArgs.set(c.self.id, e);
+          c.mutate({
+            type: "startDelaying",
+            entityId: c.self.id,
+            eventName: triggerOn,
+            eventArg: e,
+          });
         })
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
@@ -999,24 +1011,23 @@ export class TriggeredSkillBuilder<
         initiativeSkillConfig: null,
         filter: () => true,
         action: (state, skillInfo, arg) => {
-          const eventArg = context.eventArgs.get(skillInfo.caller.id);
-          if (!eventArg) {
-            return [state, EMPTY_SKILL_RESULT];
+          const eventArgs =
+            state.delayingEventArgs.get(skillInfo.caller.id) ?? [];
+          for (const [name, e] of eventArgs) {
+            if (
+              name === triggerOn &&
+              filter(state, skillInfo, e as EventArgType)
+            ) {
+              return action(state, skillInfo, e as EventArgType);
+            }
           }
-          let result: SkillDescriptionReturn;
-          if (!filter(state, skillInfo, eventArg)) {
-            result = [state, EMPTY_SKILL_RESULT];
-          } else {
-            result = action(state, skillInfo, eventArg);
-          }
-          context.eventArgs.delete(skillInfo.caller.id);
-          return result;
+          return [state, EMPTY_SKILL_RESULT];
         },
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
       };
       // For debug
       Object.defineProperty(def, "delayedToSkill", {
-        value: true,
+        value: triggerOn,
         enumerable: true,
       });
       this.parent._skillList.push(def);
@@ -1378,6 +1389,7 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
+
           hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
@@ -1515,6 +1527,7 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
+
         hidden: false,
         getTarget: this.buildTargetGetter(),
       },

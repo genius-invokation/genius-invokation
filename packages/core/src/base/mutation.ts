@@ -27,7 +27,11 @@ import {
   stringifyState,
 } from "./state";
 import { removeEntity, getEntityById, sortDice, getEntityArea } from "../utils";
-import { type EntityArea, type EntityDefinition, stringifyEntityArea } from "./entity";
+import {
+  type EntityArea,
+  type EntityDefinition,
+  stringifyEntityArea,
+} from "./entity";
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
@@ -169,6 +173,16 @@ export interface ClearRoundSkillLogM {
 export interface ClearRemovedEntitiesM {
   readonly type: "clearRemovedEntities";
 }
+export interface StartDelayingM {
+  readonly type: "startDelaying";
+  readonly entityId: number;
+  readonly eventName: string;
+  readonly eventArg: unknown;
+}
+export interface ResetDelayingM {
+  readonly type: "resetDelaying";
+  readonly entityId: number;
+}
 
 export type Mutation =
   | StepRandomM
@@ -191,7 +205,9 @@ export type Mutation =
   | MutateExtensionStateM
   | PushRoundSkillLogM
   | ClearRoundSkillLogM
-  | ClearRemovedEntitiesM;
+  | ClearRemovedEntitiesM
+  | StartDelayingM
+  | ResetDelayingM;
 
 function doMutation(state: GameState, m: Mutation): GameState {
   switch (m.type) {
@@ -450,6 +466,21 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.players[1].removedEntities = [];
       });
     }
+    case "startDelaying": {
+      return produce(state, (draft) => {
+        if (!draft.delayingEventArgs.has(m.entityId)) {
+          draft.delayingEventArgs.set(m.entityId, []);
+        }
+        draft.delayingEventArgs
+          .get(m.entityId)!
+          .push([m.eventName, m.eventArg]);
+      });
+    }
+    case "resetDelaying": {
+      return produce(state, (draft) => {
+        draft.delayingEventArgs.delete(m.entityId);
+      });
+    }
     default: {
       const _: never = m;
       throw new GiTcgCoreInternalError(
@@ -524,6 +555,12 @@ export function stringifyMutation(m: Mutation): string | null {
       return `Push round skill log ${m.skillId} into ${stringifyState(
         m.caller,
       )}`;
+    }
+    case "startDelaying": {
+      return "startDelaying";
+    }
+    case "resetDelaying": {
+      return "resetDelaying";
     }
     default: {
       return null;

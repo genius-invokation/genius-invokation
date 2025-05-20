@@ -252,6 +252,7 @@ export class Game {
       roundNumber: 0,
       winner: null,
       extensions,
+      delayingEventArgs: new Map(),
     };
     return state;
   }
