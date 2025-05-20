@@ -998,6 +998,7 @@ export class TriggeredSkillBuilder<
           c.mutate({
             type: "startDelaying",
             entityId: c.self.id,
+            eventName: triggerOn,
             eventArg: e,
           });
         })
@@ -1012,8 +1013,11 @@ export class TriggeredSkillBuilder<
         action: (state, skillInfo, arg) => {
           const eventArgs =
             state.delayingEventArgs.get(skillInfo.caller.id) ?? [];
-          for (const e of eventArgs) {
-            if (filter(state, skillInfo, e as EventArgType)) {
+          for (const [name, e] of eventArgs) {
+            if (
+              name === triggerOn &&
+              filter(state, skillInfo, e as EventArgType)
+            ) {
               return action(state, skillInfo, e as EventArgType);
             }
           }
@@ -1023,7 +1027,7 @@ export class TriggeredSkillBuilder<
       };
       // For debug
       Object.defineProperty(def, "delayedToSkill", {
-        value: true,
+        value: triggerOn,
         enumerable: true,
       });
       this.parent._skillList.push(def);

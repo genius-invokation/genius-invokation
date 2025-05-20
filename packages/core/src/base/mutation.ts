@@ -35,6 +35,7 @@ import {
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
+import type { EventAndRequest } from "./skill";
 
 enableMapSet();
 
@@ -176,6 +177,7 @@ export interface ClearRemovedEntitiesM {
 export interface StartDelayingM {
   readonly type: "startDelaying";
   readonly entityId: number;
+  readonly eventName: string;
   readonly eventArg: unknown;
 }
 export interface ResetDelayingM {
@@ -470,7 +472,9 @@ function doMutation(state: GameState, m: Mutation): GameState {
         if (!draft.delayingEventArgs.has(m.entityId)) {
           draft.delayingEventArgs.set(m.entityId, []);
         }
-        draft.delayingEventArgs.get(m.entityId)!.push(m.eventArg);
+        draft.delayingEventArgs
+          .get(m.entityId)!
+          .push([m.eventName, m.eventArg]);
       });
     }
     case "resetDelaying": {

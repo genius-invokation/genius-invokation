@@ -34,6 +34,7 @@ import type {
   SkillDefinition,
   InitiativeSkillDefinition,
   TriggeredSkillDefinition,
+  EventAndRequest,
 } from "./skill";
 
 export interface GameConfig {
@@ -70,7 +71,10 @@ export interface GameState {
   readonly winner: 0 | 1 | null;
   readonly players: readonly [PlayerState, PlayerState];
   readonly extensions: readonly ExtensionState[];
-  readonly delayingEventArgs: Map<number, unknown[]>;
+  readonly delayingEventArgs: ReadonlyMap<
+    number,
+    readonly (readonly [string, unknown])[]
+  >;
 }
 
 export interface PlayerState {
