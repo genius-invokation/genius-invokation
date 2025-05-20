@@ -19,6 +19,8 @@ import { ChangTheNinth } from "@gi-tcg/data/internal/cards/support/ally";
 import { ParametricTransformer } from "@gi-tcg/data/internal/cards/support/item";
 import { GaleBlade, Jean } from "@gi-tcg/data/internal/characters/anemo/jean";
 import { DriftcloudWave, Xianyun } from "@gi-tcg/data/internal/characters/anemo/xianyun";
+import { ChonghuaFrostField, Chongyun } from "@gi-tcg/data/internal/characters/cryo/chongyun";
+import { Beidou, Oceanborne, ThunderbeastsTarge } from "@gi-tcg/data/internal/characters/electro/beidou";
 import { GrassRingOfSanctification, KukiShinobu } from "@gi-tcg/data/internal/characters/electro/kuki_shinobu";
 import { AncientRiteTheThunderingSands, Sethos, ThunderConvergence } from "@gi-tcg/data/internal/characters/electro/sethos";
 import { Barbara, WhisperOfWater } from "@gi-tcg/data/internal/characters/hydro/barbara";
@@ -44,6 +46,21 @@ test("chang & transformer: triggered on useSkill status", async () => {
   c.expect(chang).toHaveVariable({ inspiration: 1 });
   c.expect(transformer1).toHaveVariable({ progress: 1 });
   c.expect(transformer2).toHaveVariable({ progress: 1 });
+});
+
+test("transformer: dealing with reaction & multiple damages", async () => {
+  const transformer = ref();
+  const c = setup(
+    <State>
+      <Support opp def={ParametricTransformer} v={{ progress: 0 }} ref={transformer} />
+      <Character my active def={Beidou} />
+      <Character my def={Chongyun} />
+      <CombatStatus my def={ChonghuaFrostField} />
+      <CombatStatus my def={ThunderbeastsTarge} />
+    </State>
+  );
+  await c.me.skill(Oceanborne);
+  c.expect(transformer).toHaveVariable({ progress: 1 });
 });
 
 test("instructor: do not trigger on useSkill status", async () => {
