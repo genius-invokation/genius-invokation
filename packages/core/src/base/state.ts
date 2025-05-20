@@ -34,7 +34,6 @@ import type {
   SkillDefinition,
   InitiativeSkillDefinition,
   TriggeredSkillDefinition,
-  EventAndRequest,
 } from "./skill";
 
 export interface GameConfig {

@@ -35,7 +35,6 @@ import {
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
-import type { EventAndRequest } from "./skill";
 
 enableMapSet();
 
