@@ -27,11 +27,15 @@ import {
   stringifyState,
 } from "./state";
 import { removeEntity, getEntityById, sortDice, getEntityArea } from "../utils";
-import { type EntityArea, type EntityDefinition, stringifyEntityArea } from "./entity";
+import {
+  type EntityArea,
+  type EntityDefinition,
+  stringifyEntityArea,
+} from "./entity";
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
 import { nextRandom } from "../random";
-import { EventArg } from "./skill";
+
 enableMapSet();
 
 type IdWritable<T extends { readonly id: number }> = Omit<T, "id"> & {
@@ -169,12 +173,12 @@ export interface ClearRoundSkillLogM {
 export interface ClearRemovedEntitiesM {
   readonly type: "clearRemovedEntities";
 }
-export interface StartDelayingM{
+export interface StartDelayingM {
   readonly type: "startDelaying";
   readonly entityId: number;
-  readonly eventArg: EventArg; //后面再改
+  readonly eventArg: unknown;
 }
-export interface ResetDelayingM{
+export interface ResetDelayingM {
   readonly type: "resetDelaying";
   readonly entityId: number;
 }
@@ -461,23 +465,18 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.players[1].removedEntities = [];
       });
     }
-    case "startDelaying":{
+    case "startDelaying": {
       return produce(state, (draft) => {
-        if (!draft.delayingEventArgs) {
-          draft.delayingEventArgs = new Map<number, any[]>();
-        }
         if (!draft.delayingEventArgs.has(m.entityId)) {
           draft.delayingEventArgs.set(m.entityId, []);
         }
-        draft.delayingEventArgs.get(m.entityId)!.push(m.eventArg); //可以再改
-      })
+        draft.delayingEventArgs.get(m.entityId)!.push(m.eventArg);
+      });
     }
-    case "resetDelaying":{
+    case "resetDelaying": {
       return produce(state, (draft) => {
-        if (draft.delayingEventArgs?.has(m.entityId)) {
-          draft.delayingEventArgs.delete(m.entityId);
-        }
-      })
+        draft.delayingEventArgs.delete(m.entityId);
+      });
     }
     default: {
       const _: never = m;

@@ -70,7 +70,7 @@ export interface GameState {
   readonly winner: 0 | 1 | null;
   readonly players: readonly [PlayerState, PlayerState];
   readonly extensions: readonly ExtensionState[];
-  readonly delayingEventArgs: Map<number, any[]>;
+  readonly delayingEventArgs: Map<number, unknown[]>;
 }
 
 export interface PlayerState {

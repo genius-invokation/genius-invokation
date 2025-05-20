@@ -179,6 +179,8 @@ export function exposeMutation(
     case "pushRoundSkillLog":
     case "clearRoundSkillLog":
     case "clearRemovedEntities":
+    case "startDelaying":
+    case "resetDelaying":
     case "switchActive": // We will manually handle this
       return null;
     case "setPlayerFlag": {
@@ -366,13 +368,6 @@ export function exposeMutation(
         dice,
       };
     }
-    case "startDelaying": {
-      return null; //后面改
-    };
-
-    case "resetDelaying": {
-      return null; //后面改
-    };
     default: {
       const _check: never = m;
       return null;

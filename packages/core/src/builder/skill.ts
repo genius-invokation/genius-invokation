@@ -87,8 +87,6 @@ import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
-import { StateMutator } from "../mutator";
-import { applyMutation } from "../base/mutation";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -424,6 +422,13 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
+  beforeSkill: defineDescriptor("onBeforeUseSkill", (c, e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      isCharacterInitiativeSkill(e.skill) &&
+      !e.skill.definition.initiativeSkillConfig.hidden
+    );
+  }),
   useSkill: defineDescriptor("onUseSkill", (c, e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
@@ -654,9 +659,6 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
         arg,
       );
       for (const filter of filters) {
-        // if(!ctx?.eventArg){
-        //   return false;
-        // }
         if (!filter(ctx as any, ctx.eventArg)) {
           return false;
         }
@@ -982,13 +984,13 @@ export class TriggeredSkillBuilder<
     const action = this.buildAction();
     if (this._delayedToSkill) {
       this.parent
-        .on("beforeAction")
+        .on("beforeSkill")
         .listenTo(listenTo)
         .do((c, e) => {
           c.mutate({
             type: "resetDelaying",
             entityId: c.self.id,
-          })
+          });
         })
         .on(this.detailedEventName as any)
         .listenTo(listenTo)
@@ -996,8 +998,9 @@ export class TriggeredSkillBuilder<
           c.mutate({
             type: "startDelaying",
             entityId: c.self.id,
-            eventArg: e as any, //不是很对
-        })})
+            eventArg: e,
+          });
+        })
         .endOn();
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
         type: "skill",
@@ -1007,18 +1010,14 @@ export class TriggeredSkillBuilder<
         initiativeSkillConfig: null,
         filter: () => true,
         action: (state, skillInfo, arg) => {
-          const eventArgArray = state.delayingEventArgs?.get(skillInfo.caller.id);
-          let result: SkillDescriptionReturn = [state, EMPTY_SKILL_RESULT];
-          if (!eventArgArray){
-            return [state, EMPTY_SKILL_RESULT];
+          const eventArgs =
+            state.delayingEventArgs.get(skillInfo.caller.id) ?? [];
+          for (const e of eventArgs) {
+            if (filter(state, skillInfo, e as EventArgType)) {
+              return action(state, skillInfo, e as EventArgType);
+            }
           }
-          for (const eachEventArg of eventArgArray){
-            if (filter(state, skillInfo, eachEventArg)) {
-              result = action(state, skillInfo, eachEventArg); //这里有类型问题，不知道哪来的其他类型的eventarg进这里面来了
-              return result;
-          }}
-          //有问题再修
-          return result;
+          return [state, EMPTY_SKILL_RESULT];
         },
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
       };
