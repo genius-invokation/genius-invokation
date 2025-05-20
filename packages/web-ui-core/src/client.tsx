@@ -171,19 +171,18 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       return result;
     },
     rerollDice: async () => {
-      const response = await uiQueue.push(async () => {
-        const resolver = Promise.withResolvers<RerollDiceResponse>();
-        actionResolvers.rerollDice = resolver;
-        setViewType("rerollDice");
-        const result = await resolver.promise;
-        setViewType("rerollDiceEnd");
-        setTimeout(
-          () => setViewType((t) => (t === "rerollDiceEnd" ? "normal" : t)),
-          500,
-        );
-        return result;
-      });
-      return response;
+      // 等待当前的 ui 动画渲染完成，但不阻塞后续 ui 更新
+      await uiQueue.push(async () => {});
+      const resolver = Promise.withResolvers<RerollDiceResponse>();
+      actionResolvers.rerollDice = resolver;
+      setViewType("rerollDice");
+      const result = await resolver.promise;
+      setViewType("rerollDiceEnd");
+      setTimeout(
+        () => setViewType((t) => (t === "rerollDiceEnd" ? "normal" : t)),
+        500,
+      );
+      return result;
     },
   };
 
