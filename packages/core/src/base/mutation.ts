@@ -173,15 +173,13 @@ export interface ClearRoundSkillLogM {
 export interface ClearRemovedEntitiesM {
   readonly type: "clearRemovedEntities";
 }
-export interface StartDelayingM {
-  readonly type: "startDelaying";
-  readonly entityId: number;
+export interface PushDelayingEventM {
+  readonly type: "pushDelayingEvent";
   readonly eventName: string;
   readonly eventArg: unknown;
 }
-export interface ResetDelayingM {
-  readonly type: "resetDelaying";
-  readonly entityId: number;
+export interface ClearDelayingEventM {
+  readonly type: "clearDelayingEvent";
 }
 
 export type Mutation =
@@ -206,8 +204,8 @@ export type Mutation =
   | PushRoundSkillLogM
   | ClearRoundSkillLogM
   | ClearRemovedEntitiesM
-  | StartDelayingM
-  | ResetDelayingM;
+  | PushDelayingEventM
+  | ClearDelayingEventM;
 
 function doMutation(state: GameState, m: Mutation): GameState {
   switch (m.type) {
@@ -466,19 +464,14 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.players[1].removedEntities = [];
       });
     }
-    case "startDelaying": {
+    case "pushDelayingEvent": {
       return produce(state, (draft) => {
-        if (!draft.delayingEventArgs.has(m.entityId)) {
-          draft.delayingEventArgs.set(m.entityId, []);
-        }
-        draft.delayingEventArgs
-          .get(m.entityId)!
-          .push([m.eventName, m.eventArg]);
+        draft.delayingEventArgs.push([m.eventName, m.eventArg]);
       });
     }
-    case "resetDelaying": {
+    case "clearDelayingEvent": {
       return produce(state, (draft) => {
-        draft.delayingEventArgs.delete(m.entityId);
+        draft.delayingEventArgs = [];
       });
     }
     default: {
@@ -555,12 +548,6 @@ export function stringifyMutation(m: Mutation): string | null {
       return `Push round skill log ${m.skillId} into ${stringifyState(
         m.caller,
       )}`;
-    }
-    case "startDelaying": {
-      return "startDelaying";
-    }
-    case "resetDelaying": {
-      return "resetDelaying";
     }
     default: {
       return null;

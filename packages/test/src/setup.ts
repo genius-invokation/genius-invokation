@@ -457,7 +457,7 @@ export function setup(state: JSX.Element): TestController {
     roundNumber: stateProp.roundNumber ?? 1,
     winner: null,
     players,
-    delayingEventArgs: new Map(),
+    delayingEventArgs: [],
   };
   const c = new TestController(gameState);
   c._start();

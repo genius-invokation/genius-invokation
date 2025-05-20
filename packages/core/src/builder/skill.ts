@@ -42,6 +42,7 @@ import {
   type EventAndRequest,
   type SkillResult,
   EMPTY_SKILL_RESULT,
+  UseSkillEventArg,
 } from "../base/skill";
 import type {
   AnyState,
@@ -216,20 +217,14 @@ function checkRelative(
 
 type Descriptor<E extends EventNames> = readonly [
   E,
-  (
-    c: TypedSkillContext<
-      Omit<ContextMetaBase, "eventArgType"> & { eventArgType: EventArgOf<E> }
-    >,
-    e: EventArgOf<E>,
-    listen: RelativeArg,
-  ) => boolean,
+  (e: EventArgOf<E>, listen: RelativeArg) => boolean,
 ];
 
 function defineDescriptor<E extends EventNames>(
   name: E,
   filter?: Descriptor<E>[1],
 ): Descriptor<E> {
-  return [name, filter ?? ((e) => true)];
+  return [name, filter ?? (() => true)];
 }
 
 /**
@@ -259,80 +254,80 @@ function isDebuff(state: GameState, damageInfo: DamageInfo): boolean {
  * 在监听范围内。
  */
 const detailedEventDictionary = {
-  roll: defineDescriptor("modifyRoll", (c, e, r) => {
+  roll: defineDescriptor("modifyRoll", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  addDice: defineDescriptor("modifyAction0", (c, e, r) => {
+  addDice: defineDescriptor("modifyAction0", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  deductElementDice: defineDescriptor("modifyAction1", (c, e, r) => {
+  deductElementDice: defineDescriptor("modifyAction1", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  deductOmniDice: defineDescriptor("modifyAction2", (c, e, r) => {
+  deductOmniDice: defineDescriptor("modifyAction2", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r) && e.canDeductCost();
   }),
-  deductOmniDiceSwitch: defineDescriptor("modifyAction2", (c, e, r) => {
+  deductOmniDiceSwitch: defineDescriptor("modifyAction2", (e, r) => {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.isSwitchActive() &&
       e.canDeductCost()
     );
   }),
-  deductOmniDiceCard: defineDescriptor("modifyAction2", (c, e, r) => {
+  deductOmniDiceCard: defineDescriptor("modifyAction2", (e, r) => {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.isPlayCard() &&
       e.canDeductCost()
     );
   }),
-  deductAllDiceCard: defineDescriptor("modifyAction3", (c, e, r) => {
+  deductAllDiceCard: defineDescriptor("modifyAction3", (e, r) => {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.isPlayCard() &&
       e.canDeductCost()
     );
   }),
-  deductVoidDiceSkill: defineDescriptor("modifyAction0", (c, e, r) => {
+  deductVoidDiceSkill: defineDescriptor("modifyAction0", (e, r) => {
     return (
       e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductVoidCost()
     );
   }),
-  deductElementDiceSkill: defineDescriptor("modifyAction1", (c, e, r) => {
+  deductElementDiceSkill: defineDescriptor("modifyAction1", (e, r) => {
     return (
       e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r)
     );
   }),
-  deductOmniDiceSkill: defineDescriptor("modifyAction2", (c, e, r) => {
+  deductOmniDiceSkill: defineDescriptor("modifyAction2", (e, r) => {
     return (
       e.isUseCharacterSkill() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductCost()
     );
   }),
-  deductOmniDiceTechnique: defineDescriptor("modifyAction2", (c, e, r) => {
+  deductOmniDiceTechnique: defineDescriptor("modifyAction2", (e, r) => {
     return (
       e.isUseTechnique() &&
       checkRelative(e.onTimeState, e.action.skill.caller.id, r) &&
       e.canDeductCost()
     );
   }),
-  modifyAction: defineDescriptor("modifyAction2", (c, e, r) => {
+  modifyAction: defineDescriptor("modifyAction2", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  beforeFastSwitch: defineDescriptor("modifyAction2", (c, e, r) => {
+  beforeFastSwitch: defineDescriptor("modifyAction2", (e, r) => {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.isSwitchActive() &&
       !e.isFast()
     );
   }),
-  modifyDamageType: defineDescriptor("modifyDamage0", (c, e, r) => {
+  modifyDamageType: defineDescriptor("modifyDamage0", (e, r) => {
     return checkRelative(e.onTimeState, e.source.id, r);
   }),
-  modifySkillDamageType: defineDescriptor("modifyDamage0", (c, e, r) => {
+  modifySkillDamageType: defineDescriptor("modifyDamage0", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
@@ -340,14 +335,14 @@ const detailedEventDictionary = {
       e.damageInfo.fromReaction === null
     );
   }),
-  increaseDamage: defineDescriptor("modifyDamage1", (c, e, r) => {
+  increaseDamage: defineDescriptor("modifyDamage1", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      !isDebuff(c.state, e.damageInfo)
+      !isDebuff(e.onTimeState, e.damageInfo)
     );
   }),
-  increaseSkillDamage: defineDescriptor("modifyDamage1", (c, e, r) => {
+  increaseSkillDamage: defineDescriptor("modifyDamage1", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
@@ -355,7 +350,7 @@ const detailedEventDictionary = {
       e.damageInfo.fromReaction === null
     );
   }),
-  increaseTechniqueDamage: defineDescriptor("modifyDamage1", (c, e, r) => {
+  increaseTechniqueDamage: defineDescriptor("modifyDamage1", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
@@ -363,7 +358,7 @@ const detailedEventDictionary = {
       e.damageInfo.fromReaction === null
     );
   }),
-  multiplySkillDamage: defineDescriptor("modifyDamage2", (c, e, r) => {
+  multiplySkillDamage: defineDescriptor("modifyDamage2", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
@@ -371,32 +366,32 @@ const detailedEventDictionary = {
       !isDebuff(e.onTimeState, e.damageInfo)
     );
   }),
-  increaseDamaged: defineDescriptor("modifyDamage1", (c, e, r) => {
+  increaseDamaged: defineDescriptor("modifyDamage1", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.target.id, r)
     );
   }),
-  multiplyDamaged: defineDescriptor("modifyDamage2", (c, e, r) => {
+  multiplyDamaged: defineDescriptor("modifyDamage2", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.target.id, r)
     );
   }),
-  decreaseDamaged: defineDescriptor("modifyDamage3", (c, e, r) => {
+  decreaseDamaged: defineDescriptor("modifyDamage3", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       e.value > 0 &&
       checkRelative(e.onTimeState, e.target.id, r)
     );
   }),
-  cancelHealed: defineDescriptor("modifyHeal0", (c, e, r) => {
+  cancelHealed: defineDescriptor("modifyHeal0", (e, r) => {
     return checkRelative(e.onTimeState, e.target.id, r) && !e.cancelled;
   }),
-  decreaseHealed: defineDescriptor("modifyHeal1", (c, e, r) => {
+  decreaseHealed: defineDescriptor("modifyHeal1", (e, r) => {
     return checkRelative(e.onTimeState, e.target.id, r) && !e.cancelled;
   }),
-  beforeDefeated: defineDescriptor("modifyZeroHealth", (c, e, r) => {
+  beforeDefeated: defineDescriptor("modifyZeroHealth", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.target.id, r) && e._immuneInfo === null
     );
@@ -407,14 +402,14 @@ const detailedEventDictionary = {
   roundEnd: defineDescriptor("onRoundEnd"),
   actionPhase: defineDescriptor("onActionPhase"),
   endPhase: defineDescriptor("onEndPhase"),
-  beforeAction: defineDescriptor("onBeforeAction", (c, e, r) => {
+  beforeAction: defineDescriptor("onBeforeAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   replaceAction: defineDescriptor("replaceAction"),
-  action: defineDescriptor("onAction", (c, e, r) => {
+  action: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  playCard: defineDescriptor("onPlayCard", (c, e, r) => {
+  playCard: defineDescriptor("onPlayCard", (e, r) => {
     return (
       // 大部分支援牌不触发自身的打出时；
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
@@ -422,128 +417,128 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
-  beforeSkill: defineDescriptor("onBeforeUseSkill", (c, e, r) => {
+  beforeSkill: defineDescriptor("onBeforeUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
       !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
-  useSkill: defineDescriptor("onUseSkill", (c, e, r) => {
+  useSkill: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
       !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
-  useTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
+  useTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
       !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
-  useSkillOrTechnique: defineDescriptor("onUseSkill", (c, e, r) => {
+  useSkillOrTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
       !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
-  declareEnd: defineDescriptor("onAction", (c, e, r) => {
+  declareEnd: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r) && e.isDeclareEnd();
   }),
-  switchActive: defineDescriptor("onSwitchActive", (c, e, r) => {
+  switchActive: defineDescriptor("onSwitchActive", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.switchInfo.from.id, r) ||
       checkRelative(e.onTimeState, e.switchInfo.to.id, r)
     );
   }),
-  drawCard: defineDescriptor("onHandCardInserted", (c, e, r) => {
+  drawCard: defineDescriptor("onHandCardInserted", (e, r) => {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) && e.reason === "drawn"
     );
   }),
-  handCardInserted: defineDescriptor("onHandCardInserted", (c, e, r) => {
+  handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  disposeCard: defineDescriptor("onDisposeOrTuneCard", (c, e, r) => {
+  disposeCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
     return (
       e.method !== "elementalTuning" &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
-  disposeOrTuneCard: defineDescriptor("onDisposeOrTuneCard", (c, e, r) => {
+  disposeOrTuneCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  dealDamage: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  dealDamage: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
       e.isDamageTypeDamage() && checkRelative(e.onTimeState, e.source.id, r)
     );
   }),
-  skillDamage: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  skillDamage: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
       e.isDamageTypeDamage() && checkRelative(e.onTimeState, e.source.id, r)
     );
   }),
-  damaged: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  damaged: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
       e.isDamageTypeDamage() && checkRelative(e.onTimeState, e.target.id, r)
     );
   }),
-  healed: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  healed: defineDescriptor("onDamageOrHeal", (e, r) => {
     return e.isDamageTypeHeal() && checkRelative(e.onTimeState, e.target.id, r);
   }),
-  damagedOrHealed: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  damagedOrHealed: defineDescriptor("onDamageOrHeal", (e, r) => {
     return checkRelative(e.onTimeState, e.target.id, r);
   }),
-  reaction: defineDescriptor("onReaction", (c, e, r) => {
+  reaction: defineDescriptor("onReaction", (e, r) => {
     return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
   }),
-  dealReaction: defineDescriptor("onReaction", (c, e, r) => {
+  dealReaction: defineDescriptor("onReaction", (e, r) => {
     return checkRelative(e.onTimeState, e.caller.id, r);
   }),
-  skillReaction: defineDescriptor("onReaction", (c, e, r) => {
+  skillReaction: defineDescriptor("onReaction", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.caller.id, r) && e.viaCharacterSkill()
     );
   }),
-  enter: defineDescriptor("onEnter", (c, e, r) => {
+  enter: defineDescriptor("onEnter", (e, r) => {
     return e.entity.id === r.callerId;
   }),
-  enterRelative: defineDescriptor("onEnter", (c, e, r) => {
+  enterRelative: defineDescriptor("onEnter", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
-  dispose: defineDescriptor("onDispose", (c, e, r) => {
+  dispose: defineDescriptor("onDispose", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
-  selfDispose: defineDescriptor("onDispose", (c, e, r) => {
+  selfDispose: defineDescriptor("onDispose", (e, r) => {
     return e.entity.id === r.callerId;
   }),
-  defeated: defineDescriptor("onDamageOrHeal", (c, e, r) => {
+  defeated: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.target.id, r) && e.damageInfo.causeDefeated
     );
   }),
-  revive: defineDescriptor("onRevive", (c, e, r) => {
+  revive: defineDescriptor("onRevive", (e, r) => {
     return checkRelative(e.onTimeState, e.character.id, r);
   }),
-  transformDefinition: defineDescriptor("onTransformDefinition", (c, e, r) => {
+  transformDefinition: defineDescriptor("onTransformDefinition", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
-  generateDice: defineDescriptor("onGenerateDice", (c, e, r) => {
+  generateDice: defineDescriptor("onGenerateDice", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  consumeNightsoul: defineDescriptor("onConsumeNightsoul0", (c, e, r) => {
+  consumeNightsoul: defineDescriptor("onConsumeNightsoul0", (e, r) => {
     return checkRelative(e.onTimeState, e.character.id, r);
   }),
-  consumeNightsoulFinal: defineDescriptor("onConsumeNightsoul1", (c, e, r) => {
+  consumeNightsoulFinal: defineDescriptor("onConsumeNightsoul1", (e, r) => {
     return checkRelative(e.onTimeState, e.character.id, r);
   }),
-  selectCard: defineDescriptor("onSelectCard", (c, e, r) => {
+  selectCard: defineDescriptor("onSelectCard", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  customEvent: defineDescriptor("onCustomEvent", (c, e, r) => {
+  customEvent: defineDescriptor("onCustomEvent", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
 } satisfies Record<string, Descriptor<any>>;
@@ -960,7 +955,7 @@ export class TriggeredSkillBuilder<
     const listenTo = this._listenTo;
     this.filters.push(function (c, e) {
       const { area, state } = c.self;
-      return filterDescriptor(c as any, e as any, {
+      return filterDescriptor(e as any, {
         callerArea: area,
         callerId: state.id,
         listenTo,
@@ -983,37 +978,29 @@ export class TriggeredSkillBuilder<
     const filter = this.buildFilter();
     const action = this.buildAction();
     if (this._delayedToSkill) {
-      this.parent
-        .on("beforeSkill")
-        .listenTo(listenTo)
-        .do((c, e) => {
-          c.mutate({
-            type: "resetDelaying",
-            entityId: c.self.id,
-          });
-        })
-        .on(this.detailedEventName as any)
-        .listenTo(listenTo)
-        .do((c, e) => {
-          c.mutate({
-            type: "startDelaying",
-            entityId: c.self.id,
-            eventName: triggerOn,
-            eventArg: e,
-          });
-        })
-        .endOn();
+      const [, useSkillDescriptor] = detailedEventDictionary["useSkill"];
+      // 手动指定监听 useSkill 事件的 filter：只处理 listenOn
+      const useSkillFilter = function (
+        state: GameState,
+        skill: SkillInfo,
+        e: UseSkillEventArg,
+      ) {
+        const callerArea = getEntityArea(state, skill.caller.id);
+        return useSkillDescriptor(e, {
+          callerArea,
+          callerId: skill.caller.id,
+          listenTo,
+        });
+      };
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
         type: "skill",
         id: this.id,
         ownerType: this.parent._type,
         triggerOn: "onUseSkill",
         initiativeSkillConfig: null,
-        filter: () => true,
+        filter: useSkillFilter,
         action: (state, skillInfo, arg) => {
-          const eventArgs =
-            state.delayingEventArgs.get(skillInfo.caller.id) ?? [];
-          for (const [name, e] of eventArgs) {
+          for (const [name, e] of state.delayingEventArgs) {
             if (
               name === triggerOn &&
               filter(state, skillInfo, e as EventArgType)
