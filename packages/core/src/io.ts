@@ -179,8 +179,8 @@ export function exposeMutation(
     case "pushRoundSkillLog":
     case "clearRoundSkillLog":
     case "clearRemovedEntities":
-    case "startDelaying":
-    case "resetDelaying":
+    case "pushDelayingEvent":
+    case "clearDelayingEvent":
     case "switchActive": // We will manually handle this
       return null;
     case "setPlayerFlag": {
