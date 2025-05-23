@@ -146,9 +146,6 @@ export class EntityBuilder<
     private readonly fromCardId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
-    if (this._type === "status" || this._type === "equipment") {
-      this.on("defeated").dispose().endOn();
-    }
   }
 
   /** @internal */
