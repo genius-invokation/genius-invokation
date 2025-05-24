@@ -898,10 +898,16 @@ export class TriggeredSkillBuilder<
     return this;
   }
   listenToPlayer(): this {
+    if (this._beforeDefaultDispose){
+      throw new GiTcgDataError("Only not self defeated can be listened");
+    }
     this._listenTo = ListenTo.SamePlayer;
     return this;
   }
   listenToAll(): this {
+    if (this._beforeDefaultDispose){
+      throw new GiTcgDataError("Only not self defeated can be listened");
+    }
     this._listenTo = ListenTo.All;
     return this;
   }

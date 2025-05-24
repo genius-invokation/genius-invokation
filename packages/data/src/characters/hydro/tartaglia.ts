@@ -56,7 +56,7 @@ export const RangedStance = status(112041)
  * （处于「近战状态」的达达利亚攻击所附属角色时，会造成额外伤害。）
  */
 export const Riptide: StatusHandle = status(112043)
-  .onBeDefeated()
+  .onMasterDefeated()
   .do((c) => {
     const active = c.$("my active includes defeated")!;
     if (active.state.variables.alive) {

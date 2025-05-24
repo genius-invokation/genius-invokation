@@ -549,8 +549,13 @@ export class EntityBuilder<
     return this.variable("hintIcon", damageType);
   }
 
-  onBeDefeated(){
-    return this.on("defeated").beforeDefaultDispose();
+  onMasterDefeated(){
+    if (this._type === "status" || this._type === "equipment"){
+      return this.on("defeated").beforeDefaultDispose();
+    } else {
+      throw new GiTcgDataError("Type error when onMasterDefeated");
+    }
+
   }
   /**
    * Same as

@@ -171,7 +171,7 @@ export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
  */
 export const DetailedDiagnosisThoroughTreatment02 = skill(12136)
   .type("passive") // 希格雯倒下时：清除所有我方 112136 状态
-  .onBeDefeated()
+  .onMasterDefeated()
   .dispose(`all my status with definition id ${DetailedDiagnosisThoroughTreatmentStatus}`)
   .done();
 
