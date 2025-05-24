@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -56,7 +56,7 @@ export const RangedStance = status(112041)
  * （处于「近战状态」的达达利亚攻击所附属角色时，会造成额外伤害。）
  */
 export const Riptide: StatusHandle = status(112043)
-  .on("defeated")
+  .onMasterDefeated()
   .do((c) => {
     const active = c.$("my active includes defeated")!;
     if (active.state.variables.alive) {
@@ -153,7 +153,7 @@ export const TideWithholder = skill(12044)
  * @id 12045
  * @name 远程状态
  * @description
- * 
+ *
  */
 const RangedStanceSkill = skill(12045)
   .type("passive")
@@ -164,7 +164,7 @@ const RangedStanceSkill = skill(12045)
  * @id 12046
  * @name 遏浪
  * @description
- * 
+ *
  */
 const UnknownSkill = skill(12046)
   .reserve();

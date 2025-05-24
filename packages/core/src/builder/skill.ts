@@ -798,6 +798,7 @@ export class TriggeredSkillBuilder<
     this.associatedExtensionId = this.parent._associatedExtensionId;
   }
   private _delayedToSkill = false;
+  private _beforeDefaultDispose = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
@@ -818,6 +819,11 @@ export class TriggeredSkillBuilder<
       );
     }
     this._delayedToSkill = true;
+    return this;
+  }
+
+  beforeDefaultDispose(){
+    this._beforeDefaultDispose = true;
     return this;
   }
 
@@ -892,10 +898,16 @@ export class TriggeredSkillBuilder<
     return this;
   }
   listenToPlayer(): this {
+    if (this._beforeDefaultDispose){
+      throw new GiTcgDataError("Only not self defeated can be listened");
+    }
     this._listenTo = ListenTo.SamePlayer;
     return this;
   }
   listenToAll(): this {
+    if (this._beforeDefaultDispose){
+      throw new GiTcgDataError("Only not self defeated can be listened");
+    }
     this._listenTo = ListenTo.All;
     return this;
   }
@@ -973,8 +985,9 @@ export class TriggeredSkillBuilder<
     // 4. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
-    // 【构造技能定义并向父级实体添加】
+    const parentSkillList = this._beforeDefaultDispose ? this.parent._skillListBeforeDefaultDispose : this.parent._skillList
 
+    // 【构造技能定义并向父级实体添加】
     const filter = this.buildFilter();
     const action = this.buildAction();
     if (this._delayedToSkill) {
@@ -1017,7 +1030,7 @@ export class TriggeredSkillBuilder<
         value: triggerOn,
         enumerable: true,
       });
-      this.parent._skillList.push(def);
+      parentSkillList.push(def);
     } else {
       const def: TriggeredSkillDefinition<any> = {
         type: "skill",
@@ -1029,7 +1042,7 @@ export class TriggeredSkillBuilder<
         action,
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
       };
-      this.parent._skillList.push(def);
+      parentSkillList.push(def);
     }
   }
 

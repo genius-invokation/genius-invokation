@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -167,7 +167,7 @@ export const DetailedDiagnosisThoroughTreatment01 = skill(12134)
  * @id 12136
  * @name 细致入微的诊疗
  * @description
- * 
+ *
  */
 export const DetailedDiagnosisThoroughTreatment02 = skill(12136)
   .type("passive") // 希格雯倒下时：清除所有我方 112136 状态
@@ -204,7 +204,7 @@ export const Sigewinne = character(1213)
   .tags("hydro", "bow", "fontaine", "pneuma")
   .health(12)
   .energy(2)
-  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention, 
+  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention,
     DetailedDiagnosisThoroughTreatment02, DetailedDiagnosisThoroughTreatment03)
   .done();
 
