@@ -798,6 +798,7 @@ export class TriggeredSkillBuilder<
     this.associatedExtensionId = this.parent._associatedExtensionId;
   }
   private _delayedToSkill = false;
+  private _beforeDefaultDispose = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
@@ -818,6 +819,11 @@ export class TriggeredSkillBuilder<
       );
     }
     this._delayedToSkill = true;
+    return this;
+  }
+
+  beforeDefaultDispose(){
+    this._beforeDefaultDispose = true;
     return this;
   }
 
@@ -973,6 +979,13 @@ export class TriggeredSkillBuilder<
     // 4. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
+    // 弃置前结算
+    if (!this._beforeDefaultDispose){
+      const skillList = this.parent._skillList;
+    } else {
+      const skillList = this.parent._skillListBeforeDefaultDispose;
+    }
+
     // 【构造技能定义并向父级实体添加】
 
     const filter = this.buildFilter();
@@ -1017,7 +1030,7 @@ export class TriggeredSkillBuilder<
         value: triggerOn,
         enumerable: true,
       });
-      this.parent._skillList.push(def);
+      skillList.push(def);
     } else {
       const def: TriggeredSkillDefinition<any> = {
         type: "skill",
@@ -1029,7 +1042,7 @@ export class TriggeredSkillBuilder<
         action,
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
       };
-      this.parent._skillList.push(def);
+      skillList.push(def);
     }
   }
 

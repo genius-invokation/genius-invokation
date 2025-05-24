@@ -370,13 +370,12 @@ export class SkillExecutor {
     }
 
     await this.handleEvent(...nonDamageEvents);
-    for (const arg of criticalDamageEvents) {
-      await this.handleEvent(["onDamageOrHeal", arg]);
-    }
     for (const arg of safeDamageEvents) {
       await this.handleEvent(["onDamageOrHeal", arg]);
     }
-
+    for (const arg of criticalDamageEvents) {
+      await this.handleEvent(["onDamageOrHeal", arg]);
+    }
     // 接下来处理出战角色倒下后的切人
     // 仅当本次技能的使用造成倒下时才会处理
     if (criticalDamageEvents.length === 0) {

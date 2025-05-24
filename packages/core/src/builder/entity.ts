@@ -126,6 +126,7 @@ export class EntityBuilder<
 > {
   private _skillNo = 0;
   readonly _skillList: SkillDefinition[] = [];
+  readonly _skillListBeforeDefaultDispose: SkillDefinition[] = [];
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
@@ -759,7 +760,7 @@ export class EntityBuilder<
         type: "passiveSkill",
         version: this._versionInfo,
         varConfigs: this._varConfigs,
-        skills: this._skillList,
+        skills: [...this._skillListBeforeDefaultDispose, ...this._skillList],
       });
     } else {
       registerEntity({
@@ -769,7 +770,7 @@ export class EntityBuilder<
         visibleVarName: this._visibleVarName,
         varConfigs: this._varConfigs,
         hintText: this._hintText,
-        skills: this._skillList,
+        skills: [...this._skillListBeforeDefaultDispose, ...this._skillList],
         tags: this._tags,
         type: this._type,
         descriptionDictionary: this._descriptionDictionary,
