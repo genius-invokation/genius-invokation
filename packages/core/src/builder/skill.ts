@@ -982,7 +982,6 @@ export class TriggeredSkillBuilder<
     const parentSkillList = this._beforeDefaultDispose ? this.parent._skillListBeforeDefaultDispose : this.parent._skillList
 
     // 【构造技能定义并向父级实体添加】
-
     const filter = this.buildFilter();
     const action = this.buildAction();
     if (this._delayedToSkill) {
