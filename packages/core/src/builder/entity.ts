@@ -775,9 +775,6 @@ export class EntityBuilder<
         descriptionDictionary: this._descriptionDictionary,
       });
     }
-    if (this._type === "status" || this._type === "equipment") {
-      this.on("defeated").dispose().endOn();
-    }
     if (this.fromCardId === null) {
       return this.id as Result;
     } else {
