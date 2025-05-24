@@ -980,10 +980,9 @@ export class TriggeredSkillBuilder<
     this.filters.push(this.triggerFilter);
 
     // 弃置前结算
-    if (!this._beforeDefaultDispose){
-      const skillList = this.parent._skillList;
-    } else {
-      const skillList = this.parent._skillListBeforeDefaultDispose;
+    const skillList = this.parent._skillList;
+    if (this._beforeDefaultDispose){
+      skillList = this.parent._skillListBeforeDefaultDispose;
     }
 
     // 【构造技能定义并向父级实体添加】
