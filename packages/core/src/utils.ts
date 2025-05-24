@@ -268,14 +268,27 @@ export function allEntitiesAtArea(
   return result;
 }
 
+/**
+ * 将 `e` 的一份拷贝传入所有响应 `modifyZeroHealth` 的技能，
+ * 检查是否存在可使该 `e` 免于被击倒的可能。
+ * @param state 
+ * @param e 
+ * @returns 
+ */
 export function checkImmune(state: GameState, e: ZeroHealthEventArg) {
+  const clonedE = new ZeroHealthEventArg(state, e.damageInfo);
   for (const { caller, skill } of allSkills(state, "modifyZeroHealth")) {
     const skillInfo = defineSkillInfo({
       caller,
       definition: skill,
     });
-    const filterResult = (0, skill.filter)(state, skillInfo, e);
-    if (filterResult) {
+    clonedE._currentSkillInfo = skillInfo;
+    const filterResult = (0, skill.filter)(state, skillInfo, clonedE);
+    if (!filterResult) {
+      continue;
+    }
+    (0, skill.action)(state, skillInfo, clonedE);
+    if (clonedE._immuneInfo) {
       return true;
     }
   }
@@ -384,7 +397,29 @@ export function applyAutoSelectedDiceToAction(
       };
     }
   }
-  const autoSelectedDice = chooseDiceValue(actionInfo.cost, player.dice);
+
+  const activeCharacterIndex = getActiveCharacterIndex(player);
+  const activeCharacter = player.characters[activeCharacterIndex];
+  let activeCharacterElement: DiceType | undefined = undefined;
+  if (activeCharacter) {
+    const charElement = elementOfCharacter(activeCharacter.definition);
+    if (charElement >= 1 && charElement <= 7) { 
+      activeCharacterElement = charElement;
+    }
+  }
+
+  const otherPartyMemberElements = player.characters
+    .filter(ch => ch.id !== activeCharacter?.id) // 排除出战角色
+    .map(ch => elementOfCharacter(ch.definition))
+    .filter(el => el >= DiceType.Pyro && el <= DiceType.Dendro) // 确保是有效的元素类型 (1-7)
+    .filter((el, index, self) => self.indexOf(el) === index); // 获取唯一的元素
+
+  const autoSelectedDice = chooseDiceValue(
+    actionInfo.cost, 
+    player.dice, 
+    activeCharacterElement, 
+    otherPartyMemberElements
+  );
   const ok = checkDice(actionInfo.cost, autoSelectedDice);
   if (!ok) {
     return {
