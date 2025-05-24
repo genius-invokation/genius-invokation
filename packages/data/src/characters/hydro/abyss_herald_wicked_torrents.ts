@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -161,7 +161,7 @@ export const WateryRebirth = skill(22034)
  * @id 22037
  * @name 护罩碎裂
  * @description
- * 
+ *
  */
 export const BrokenShield = skill(22037)
   .type("passive")
@@ -171,7 +171,7 @@ export const BrokenShield = skill(22037)
  * @id 22038
  * @name 水之新生
  * @description
- * 
+ *
  */
 export const WateryRebirth01 = skill(22038)
   .type("passive")
@@ -206,6 +206,6 @@ export const SurgingUndercurrent = card(222031)
   .talent(AbyssHeraldWickedTorrents, "none")
   .on("enter", (c) => c.self.master().getVariable("wateryRebirthTriggered"))
   .combatStatus(CurseOfTheUndercurrent, "opp")
-  .on("defeated")
+  .onBeDefeated()
   .combatStatus(CurseOfTheUndercurrent, "opp")
   .done();

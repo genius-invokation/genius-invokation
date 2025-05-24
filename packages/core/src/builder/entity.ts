@@ -549,6 +549,9 @@ export class EntityBuilder<
     return this.variable("hintIcon", damageType);
   }
 
+  onBeDefeated(){
+    return this.on("defeated").beforeDefaultDispose();
+  }
   /**
    * Same as
    * ```
