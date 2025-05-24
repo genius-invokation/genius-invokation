@@ -979,6 +979,7 @@ export class TriggeredSkillBuilder<
     // 4. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
+    const parentSkillList = this._beforeDefaultDispose ? this.parent._skillListBeforeDefaultDispose : this.parent._skillList
 
     // 【构造技能定义并向父级实体添加】
 
@@ -1024,11 +1025,7 @@ export class TriggeredSkillBuilder<
         value: triggerOn,
         enumerable: true,
       });
-      if (this._beforeDefaultDispose){
-        this.parent._skillListBeforeDefaultDispose.push(def);
-      } else {
-        this.parent._skillList.push(def)
-      }
+      parentSkillList.push(def);
     } else {
       const def: TriggeredSkillDefinition<any> = {
         type: "skill",
@@ -1040,11 +1037,7 @@ export class TriggeredSkillBuilder<
         action,
         usagePerRoundVariableName: this._usagePerRoundOpt?.name ?? null,
       };
-      if (this._beforeDefaultDispose){
-        this.parent._skillListBeforeDefaultDispose.push(def);
-      } else {
-        this.parent._skillList.push(def)
-      }
+      parentSkillList.push(def);
     }
   }
 
