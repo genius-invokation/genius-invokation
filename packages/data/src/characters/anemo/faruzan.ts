@@ -28,6 +28,7 @@ export const DazzlingPolyhedron = summon(115093)
   .endPhaseDamage(DamageType.Anemo, 1)
   .usage(3)
   .on("increaseDamaged", (c, e) => !c.of(e.target).isMine() && e.type === DamageType.Anemo)
+  .listenToAll()
   .increaseDamage(1)
   .done();
 
@@ -57,6 +58,7 @@ export const DazzlingPolyhedron01 = summon(115096)
   .endPhaseDamage(DamageType.Anemo, 1)
   .usage(3)
   .on("increaseDamaged", (c, e) => !c.of(e.target).isMine() && e.type === DamageType.Anemo)
+  .listenToAll()
   .increaseDamage(1)
   .on("enter")
   .generateDice(DiceType.Anemo, 1)
@@ -73,11 +75,13 @@ export const DazzlingPolyhedron01 = summon(115096)
 export const ManifestGale = status(115091)
   .on("deductVoidDiceSkill", (c, e) => e.isChargedAttack())
   .deductVoidCost(1)
-  .on("modifySkillDamageType", (c, e) => e.viaChargedAttack() && e.type === DamageType.Physical)
-  .changeDamageType(DamageType.Anemo)
+  .on("modifySkillDamageType", (c, e) => e.viaChargedAttack())
+  .usage(1)
   .do((c, e) => {
+    if (e.type === DamageType.Physical){
+      c.changeDamageType(DamageType.Anemo);
+    }
     c.characterStatus(PressurizedCollapse, e.target);
-    c.dispose();
   })
   .done();
 
