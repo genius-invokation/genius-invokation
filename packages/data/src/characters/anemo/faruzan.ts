@@ -77,7 +77,7 @@ export const ManifestGale = status(115091)
   .changeDamageType(DamageType.Anemo)
   .do((c, e) => {
     c.characterStatus(PressurizedCollapse, e.target);
-    
+    c.dispose();
   })
   .done();
 
