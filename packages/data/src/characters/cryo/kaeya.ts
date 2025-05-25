@@ -24,6 +24,7 @@ import { character, skill, combatStatus, card, DamageType, SkillHandle } from "@
  */
 export const Icicle = combatStatus(111031)
   .on("switchActive")
+  .usage(3)
   .damage(DamageType.Cryo, 2)
   .done();
 
