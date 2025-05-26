@@ -79,7 +79,7 @@ export const ManifestGale = status(115091)
   .usage(1)
   .do((c, e) => {
     if (e.type === DamageType.Physical){
-      c.changeDamageType(DamageType.Anemo);
+      e.changeDamageType(DamageType.Anemo);
     }
     c.characterStatus(PressurizedCollapse, e.target);
   })
