@@ -203,18 +203,21 @@ export class SkillExecutor {
                 state: ch,
                 varName: "alive",
                 value: 0,
+                direction: "decrease",
               });
               this.mutate({
                 type: "modifyEntityVar",
                 state: ch,
                 varName: "energy",
                 value: 0,
+                direction: "decrease",
               });
               this.mutate({
                 type: "modifyEntityVar",
                 state: ch,
                 varName: "aura",
                 value: Aura.None,
+                direction: null,
               });
               this.mutate({
                 type: "setPlayerFlag",
@@ -308,6 +311,7 @@ export class SkillExecutor {
           state: arg.target,
           varName: "health",
           value: healValue,
+          direction: "increase",
         });
         await this.mutator.notifyAndPause({
           mutations: [
@@ -363,6 +367,7 @@ export class SkillExecutor {
             state: ch,
             varName: "energy",
             value: newEnergy,
+            direction: "increase",
           });
           await this.mutator.notifyAndPause();
         }

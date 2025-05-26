@@ -239,6 +239,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               class="absolute z-5 top-3 left-50% translate-x--50%"
               oldValue={data().health}
               newValue={props.preview!.newHealth!}
+              direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
             />
           </Show>

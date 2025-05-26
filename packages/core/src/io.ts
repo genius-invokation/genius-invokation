@@ -37,6 +37,7 @@ import {
   PbEntityArea,
   type RpcResponsePayloadOf,
   PbPlayerFlag,
+  PbModifyDirection,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -342,12 +343,19 @@ export function exposeMutation(
       };
     }
     case "modifyEntityVar": {
+      const direction: PbModifyDirection =
+        m.direction === null
+          ? PbModifyDirection.UNSPECIFIED
+          : m.direction === "increase"
+            ? PbModifyDirection.INCREASE
+            : PbModifyDirection.DECREASE;
       return {
         $case: "modifyEntityVar",
         entityId: m.state.id,
         entityDefinitionId: m.state.definition.id,
         variableName: m.varName,
         variableValue: m.value,
+        direction,
       };
     }
     case "transformDefinition": {

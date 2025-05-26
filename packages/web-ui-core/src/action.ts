@@ -19,6 +19,7 @@ import {
   ElementalTuningAction,
   PbEntityArea,
   PbEntityState,
+  PbModifyDirection,
   PlayCardAction,
   Reaction,
   UseSkillAction,
@@ -140,6 +141,7 @@ export interface RealCosts {
 
 export interface PreviewingCharacterInfo {
   newHealth: number | null;
+  newHealthDirection: PbModifyDirection;
   newEnergy: number | null;
   reactions: Reaction[];
   newAura: number | null;
@@ -150,6 +152,7 @@ export interface PreviewingCharacterInfo {
 
 export interface PreviewingEntityInfo {
   newVariableValue: number | null;
+  newVariableDirection: PbModifyDirection;
   newDefinitionId: number | null;
   disposed: boolean;
 }
@@ -174,6 +177,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
   };
   const newPreviewingCharacter = (): PreviewingCharacterInfo => ({
     newHealth: null,
+    newHealthDirection: PbModifyDirection.UNSPECIFIED,
     newEnergy: null,
     reactions: [],
     newAura: null,
@@ -183,6 +187,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
   });
   const newPreviewingEntity = (): PreviewingEntityInfo => ({
     newVariableValue: null,
+    newVariableDirection: PbModifyDirection.UNSPECIFIED,
     newDefinitionId: null,
     disposed: false,
   });
@@ -215,6 +220,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
             const info =
               result.characters.get(value.entityId) ?? newPreviewingCharacter();
             info.newHealth = value.variableValue;
+            info.newHealthDirection = value.direction;
             result.characters.set(value.entityId, info);
             break;
           }
@@ -246,6 +252,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
             const info =
               result.entities.get(value.entityId) ?? newPreviewingEntity();
             info.newVariableValue = value.variableValue;
+            info.newVariableDirection = value.direction;
             result.entities.set(value.entityId, info);
             break;
           }

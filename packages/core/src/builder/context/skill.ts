@@ -647,6 +647,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         state: targetState,
         varName: "energy",
         value: targetState.variables.energy + finalValue,
+        direction: "increase",
       });
     }
     return this.enableShortcut();
@@ -669,6 +670,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           state: targetState,
           varName: "alive",
           value: 1,
+          direction: "increase",
         });
         this.emitEvent("onRevive", this.state, targetState);
       } else {
@@ -708,6 +710,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       state: targetState,
       varName: "health",
       value: targetState.variables.health + healInfo.value,
+      direction: "increase",
     });
     this.mutator.notify({
       mutations: [
@@ -753,6 +756,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         state: targetState,
         varName: "maxHealth",
         value: targetState.variables.maxHealth + value,
+        direction: "increase",
       });
       // Note: `t.state` is a getter that gets latest state.
       // Do not write `targetState` here
@@ -822,6 +826,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         state: targetState,
         varName: "health",
         value: finalHealth,
+        direction: "decrease",
       });
       if (damageInfo.target.variables.alive) {
         this.mutator.notify({
@@ -889,6 +894,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       state: target.state,
       varName: "aura",
       value: newAura,
+      direction: null,
     });
     if (reaction !== null) {
       this.mutator.log(
@@ -1125,6 +1131,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       state: target as CharacterState | EntityState,
       varName: prop,
       value: value,
+      direction: null,
     });
     return this.enableShortcut();
   }

@@ -73,6 +73,7 @@ export function Entity(props: EntityProps) {
           class="absolute z-5 top-1 left-50% translate-x--50%"
           oldValue={data().variableValue!}
           newValue={props.preview!.newVariableValue!}
+          direction={props.preview!.newVariableDirection}
         />
       </Show>
       <Show when={props.selecting}>

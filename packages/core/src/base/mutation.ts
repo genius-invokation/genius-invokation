@@ -130,6 +130,7 @@ export interface ModifyEntityVarM {
   state: EntityState | CharacterState;
   readonly varName: string;
   readonly value: number;
+  readonly direction: "increase" | "decrease" | null;
 }
 
 export interface TransformDefinitionM {
