@@ -169,6 +169,9 @@ export function Room() {
   });
 
   const onActionRequested = async (payload: ActionRequestPayload) => {
+    if (!action) {
+      return;
+    }
     setCurrentTimer(payload.timeout);
     currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
@@ -256,18 +259,6 @@ export function Room() {
           playerIo()?.notify(payload.data);
           break;
         }
-        default: {
-          console.log("%c%s", "color: green", payload);
-          break;
-        }
-      }
-    },
-    reportStreamError,
-  );
-  const [fetchAction] = createReconnectSse(
-    `rooms/${id}/players/${playerId}/actionRequest`,
-    (payload: any) => {
-      switch (payload.type) {
         case "rpc": {
           if (payload.id !== currentRpcId.value) {
             onActionRequested(payload);
@@ -275,14 +266,13 @@ export function Room() {
           break;
         }
         default: {
-          console.log("%c%s", "color: red", payload);
+          console.log("%c%s", "color: green", JSON.stringify(payload));
           break;
         }
       }
     },
     reportStreamError,
   );
-
   const downloadGameLog = async () => {
     try {
       const { data } = await axios.get(`rooms/${id}/gameLog`);
@@ -304,9 +294,6 @@ export function Room() {
 
   onMount(() => {
     fetchNotification();
-    if (action) {
-      fetchAction();
-    }
     setActionTimer();
   });
 
