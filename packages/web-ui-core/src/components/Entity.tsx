@@ -106,8 +106,8 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
-          <Image imageId={data().hintIcon!} zero="physic" class="h-4 w-4" />
-          {data().hintText?.replace(/\$\[(\w+)\]/g, (_, g1) => data().descriptionDictionary[g1])}
+          <Image imageId={data().hintIcon!} class="h-4 w-4" />
+          {data().hintText?.replace(/\$\[(\w+)\]/g, (_, g1) => data().descriptionDictionary[`[${g1}]`])}
         </div>
       </Show>
     </div>
