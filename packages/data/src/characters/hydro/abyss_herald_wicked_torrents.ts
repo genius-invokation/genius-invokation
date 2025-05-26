@@ -206,6 +206,7 @@ export const SurgingUndercurrent = card(222031)
   .talent(AbyssHeraldWickedTorrents, "none")
   .on("enter", (c) => c.self.master().getVariable("wateryRebirthTriggered"))
   .combatStatus(CurseOfTheUndercurrent, "opp")
+  .endOn()
   .onMasterDefeated()
   .combatStatus(CurseOfTheUndercurrent, "opp")
   .done();

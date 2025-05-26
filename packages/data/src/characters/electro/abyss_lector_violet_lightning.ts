@@ -172,6 +172,7 @@ export const ChainLightningCascade = card(224061)
       c.$("opp active")!.loseEnergy(1);
     }
   })
+  .endOn()
   .onMasterDefeated()
   .do((c) => {
     c.$("opp active")!.loseEnergy(1);
