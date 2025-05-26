@@ -230,20 +230,6 @@ export class RoomsController {
     return this.rooms.playerNotification(roomId, playerId, targetPlayerId);
   }
 
-  @Sse(":roomId/players/:targetPlayerId/actionRequest")
-  getAction(
-    @UserOrGuest() playerId: number | string | null,
-    @Param("roomId", ParseIntPipe) roomId: number,
-    @Param("targetPlayerId", ParsePlayerIdPipe) targetPlayerId: number | string,
-  ) {
-    if (playerId !== targetPlayerId) {
-      throw new UnauthorizedException(
-        `You can only get your own action requests`,
-      );
-    }
-    return this.rooms.playerAction(roomId, playerId);
-  }
-
   @Post(":roomId/players/:targetPlayerId/actionResponse")
   postAction(
     @UserOrGuest() playerId: number | string | null,

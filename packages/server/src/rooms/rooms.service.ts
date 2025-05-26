@@ -51,9 +51,9 @@ import { type Deck, flip } from "@gi-tcg/utils";
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
   Subject,
   concat,
-  connect,
   defer,
   filter,
   interval,
@@ -167,34 +167,25 @@ const pingInterval = interval(15 * 1000).pipe(
 
 class Player implements PlayerIOWithError {
   private readonly completeSubject = new Subject<void>();
-
+  private readonly initializedSubject = new ReplaySubject<SSEPayload>();
+  private readonly actionSseSource = new Subject<SSEPayload>();
   private readonly notificationSseSource =
     new BehaviorSubject<SSEPayload | null>(null);
-  public notificationSse$: Observable<SSEPayload> =
-    this.notificationSseSource.pipe(
-      filter((data): data is SSEPayload => data !== null),
-      startWith<SSEPayload>({ type: "waiting" }),
-      mergeWith(pingInterval),
-      takeUntil(this.completeSubject),
-    );
-  private readonly rpcSseSource = new Subject<SSERpc>();
-  public rpcSse$: Observable<SSEPayload> = concat(
-    defer((): Observable<SSEPayload> => {
+  public readonly notificationSse$: Observable<SSEPayload> = concat(
+    this.initializedSubject,
+    defer(() => {
       const currentAction = this.currentAction();
-      if (currentAction === null) {
-        return of({ type: "waiting" });
-      } else {
-        return of(currentAction);
-      }
+      return of(currentAction);
     }),
-    this.rpcSseSource,
+    this.notificationSseSource,
   ).pipe(
-    mergeWith(
-      pingInterval.pipe(map((payload) => this.currentAction() ?? payload)),
-    ),
+    filter((data): data is SSEPayload => data !== null),
+    mergeWith(this.actionSseSource, pingInterval),
     takeUntil(this.completeSubject),
   );
-  constructor(public readonly playerInfo: PlayerInfo) {}
+  constructor(public readonly playerInfo: PlayerInfo) {
+    this.initializedSubject.next({ type: "waiting" });
+  }
 
   private _nextRpcId = 0;
   private _rpcResolver: RpcResolver | null = null;
@@ -287,7 +278,7 @@ class Player implements PlayerIOWithError {
       };
     }
     const payload: SSERpc = { type: "rpc", id, timeout, request };
-    this.rpcSseSource.next(payload);
+    this.actionSseSource.next(payload);
     return new Promise<RpcResponse>((resolve) => {
       const resolver: RpcResolver = {
         id,
@@ -317,20 +308,14 @@ class Player implements PlayerIOWithError {
     this.notificationSseSource.next({ type: "error", message: e.message });
   }
   onInitialized(who: 0 | 1, opp: PlayerInfo) {
-    const initializePayload: SSEPayload = {
+    this.initializedSubject.next({
       type: "initialized",
       who,
       config: this._timeoutConfig,
       myPlayerInfo: this.playerInfo,
       oppPlayerInfo: opp,
-    };
-    this.notificationSseSource.next(initializePayload);
-    this.notificationSse$ = this.notificationSseSource.pipe(
-      filter((data): data is SSEPayload => data !== null),
-      startWith(initializePayload),
-      mergeWith(pingInterval),
-      takeUntil(this.completeSubject),
-    );
+    });
+    this.initializedSubject.complete();
   }
   complete() {
     this.completeSubject.next();
@@ -608,9 +593,10 @@ export class RoomsService {
     const roomConfig: CreateRoomConfig = {
       hostWho,
       randomSeed: params.randomSeed,
-      gameVersion: typeof params.gameVersion === "number"
-        ? VERSIONS[params.gameVersion]!
-        : CURRENT_VERSION,
+      gameVersion:
+        typeof params.gameVersion === "number"
+          ? VERSIONS[params.gameVersion]!
+          : CURRENT_VERSION,
       initTotalActionTime: params.initTotalActionTime ?? 45,
       rerollTime: params.rerollTime ?? 40,
       roundTotalActionTime: params.roundTotalActionTime ?? 60,
@@ -674,7 +660,9 @@ export class RoomsService {
       throw new NotFoundException(`Room ${roomId} not found`);
     }
     if (room.status !== RoomStatus.Waiting) {
-      throw new ConflictException(`${roomId} has status ${room.status}, while only waiting room can be deleted`);
+      throw new ConflictException(
+        `${roomId} has status ${room.status}, while only waiting room can be deleted`,
+      );
     }
     if (room.getHost()?.playerInfo.id !== playerId) {
       throw new UnauthorizedException(`You are not the host of room ${roomId}`);
@@ -789,7 +777,10 @@ export class RoomsService {
     if (room.status !== RoomStatus.Finished) {
       throw new ConflictException(`Room ${roomId} is not finished`);
     }
-    if (room.config.watchable || room.getPlayers().some((p) => p.playerInfo.id === playerId)) {
+    if (
+      room.config.watchable ||
+      room.getPlayers().some((p) => p.playerInfo.id === playerId)
+    ) {
       return room.getStateLog();
     } else {
       throw new UnauthorizedException(
@@ -849,23 +840,6 @@ export class RoomsService {
       }
     }
     throw new InternalServerErrorException("unreachable");
-  }
-
-  playerAction(
-    roomId: number,
-    playerId: PlayerId,
-  ): Observable<{ data: SSEPayload }> {
-    const room = this.rooms.get(roomId);
-    if (!room) {
-      throw new NotFoundException(`Room not found`);
-    }
-    const players = room.getPlayers();
-    for (const player of players) {
-      if (player.playerInfo.id === playerId) {
-        return player.rpcSse$.pipe(map((data) => ({ data })));
-      }
-    }
-    throw new NotFoundException(`Player ${playerId} not in room`);
   }
 
   receivePlayerResponse(
