@@ -72,7 +72,7 @@ export function Summon(props: EntityProps) {
               imageId={props.data.hintIcon!}
               class="h-4 w-4 left-0 bottom-0"
             />
-            {props.data.hintText}
+            {props.data.descriptionDictionary["[GCG_TOKEN_USR1]"] ? props.data.descriptionDictionary["[GCG_TOKEN_USR1]"] : props.data.hintText}
           </div>
         </Show>
         <Show when={previewVarDiff()}>
