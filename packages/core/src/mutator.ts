@@ -539,6 +539,7 @@ export class StateMutator {
             state: oldState,
             varName: name,
             value,
+            direction: "increase",
           });
         }
       }

@@ -46,6 +46,7 @@ export {
   PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
   SkillType as PbSkillType,
+  ModifyDirection as PbModifyDirection,
   ChangePhaseEM,
   CreateCardEM,
   CreateCharacterEM,

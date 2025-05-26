@@ -700,6 +700,7 @@ export class Game {
           state: activeCh(),
           varName: "energy",
           value: currentEnergy - requiredEnergy,
+          direction: "decrease",
         });
       }
 

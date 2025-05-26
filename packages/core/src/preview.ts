@@ -143,11 +143,20 @@ class PreviewContext {
               alive: newAlive,
             };
             if (m.varName in maps) {
-              maps[m.varName as keyof typeof maps].set(m.state.id, m);
+              const map = maps[m.varName as keyof typeof maps];
+              map.set(m.state.id, {
+                ...m,
+                // keep first direction
+                direction: map.get(m.state.id)?.direction ?? m.direction,
+              });
             }
           } else {
             if (m.varName === m.state.definition.visibleVarName) {
-              newVisibleVar.set(m.state.id, m);
+              newVisibleVar.set(m.state.id, {
+                ...m,
+                // keep first direction
+                direction: newVisibleVar.get(m.state.id)?.direction ?? m.direction,
+              });
             }
           }
           break;

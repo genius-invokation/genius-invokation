@@ -131,11 +131,18 @@ message RemoveEntityEM {
   EntityState entity = 4;
 }
 
+enum ModifyDirection {
+  MODIFY_DIRECTION_UNSPECIFIED = 0;
+  MODIFY_DIRECTION_INCREASE = 1;
+  MODIFY_DIRECTION_DECREASE = 2;
+}
+
 message ModifyEntityVarEM {
   sint32 entity_id = 2;
   int32 entity_definition_id = 3;
   string variable_name = 4;
   int32 variable_value = 5;
+  ModifyDirection direction = 6;
 }
 
 message TransformDefinitionEM {
