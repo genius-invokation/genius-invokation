@@ -6,6 +6,9 @@
     "**/build": true,
     "**/dist": true,
     "**/.git": true,
-    "**/.vscode": true
+    "**/.vscode": true,
+    "**/cbinding": true,
+    "**/csbinding": true,
+    "**/pybinding": true
   }
 }
