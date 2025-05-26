@@ -1,4 +1,11 @@
 {
   "licenser.license": "AGPLv3",
-  "licenser.author": "Guyutongxue"
+  "licenser.author": "Guyutongxue",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/.vscode": true
+  }
 }
