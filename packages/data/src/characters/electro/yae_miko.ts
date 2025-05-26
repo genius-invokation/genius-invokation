@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -26,8 +26,8 @@ import { character, skill, summon, status, combatStatus, card, DamageType, DiceT
 export const SesshouSakura = summon(114081)
   .variable("atk", 1)
   .hintIcon(DamageType.Electro)
-  .hintText("[GCG_TOKEN_USR1]")
-  .replaceDescription("[GCG_TOKEN_USR1]", (c, e) => e.variables.atk)
+  .hintText("$[GCG_TOKEN_ATK]")
+  .replaceDescription("[GCG_TOKEN_ATK]", (c, e) => e.variables.atk)
   .on("endPhase")
   .usageCanAppend(3, 6)
   .do((c) => {
@@ -85,13 +85,13 @@ export const SpiritfoxSineater = skill(14081)
 export const YakanEvocationSesshouSakura = skill(14082)
   .type("elemental")
   .costElectro(3)
-  .summon(SesshouSakura)
   .do((c) => {
     const sakura = c.$(`my summon with definition id ${SesshouSakura}`);
     if (sakura && sakura.getVariable("atk") === 1) {
       sakura.addVariable("atk", 1);
     }
   })
+  .summon(SesshouSakura)
   .done();
 
 /**
