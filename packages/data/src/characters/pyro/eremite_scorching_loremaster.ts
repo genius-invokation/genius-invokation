@@ -157,6 +157,7 @@ export const Scorpocalypse = card(223031)
  * 厄灵·炎之魔蝎在场时：所附属角色受到的伤害-1。（每回合1次）
  */
 export const PyroScorpionGuardianStance01 = status(123033)
+  .tags("barrier")
   .reserve();
 
 /**
@@ -166,4 +167,5 @@ export const PyroScorpionGuardianStance01 = status(123033)
  * 魔蝎祝福在场时：所附属角色受到的伤害-1。（每回合至多2次）
  */
 export const PyroScorpionGuardianStance = status(123034)
+  .tags("barrier")
   .reserve();

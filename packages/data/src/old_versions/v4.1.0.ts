@@ -64,6 +64,7 @@ const TheScentRemained = card(212021)
  */
 const RainSword01 = combatStatus(112023)
   .until("v4.1.0")
+  .tags("barrier")
   .conflictWith(112021)
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && e.value >= 3)
   .usage(3)

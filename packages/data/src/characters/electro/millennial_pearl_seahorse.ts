@@ -36,6 +36,7 @@ export const ResonantCoralOrb = summon(124031)
  * 此状态存在期间：所附属角色造成的伤害+1。
  */
 export const FontemerPearl01 = status(124033)
+  .tags("barrier")
   .reserve();
 
 /**
@@ -47,6 +48,7 @@ export const FontemerPearl01 = status(124033)
  * 我方宣布结束时：如果所附属角色为「出战角色」，则抓1张牌。
  */
 export const FontemerPearl = status(124032)
+  .tags("barrier")
   .variable("decreaseDamageFromSummon", 0)
   .on("roundEnd")
   .setVariable("decreaseDamageFromSummon", 0)

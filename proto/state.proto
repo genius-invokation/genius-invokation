@@ -67,6 +67,8 @@ message CharacterState {
   int32 energy = 54;
   int32 max_energy = 55;
   AuraType aura = 56;
+  // bitor of CharacterTag
+  uint32 tags = 57;
 }
 
 message EntityState {

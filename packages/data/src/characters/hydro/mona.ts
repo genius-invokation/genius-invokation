@@ -24,6 +24,7 @@ import { character, skill, summon, combatStatus, card, DamageType } from "@gi-tc
  * 结束阶段：弃置此牌，造成1点水元素伤害。
  */
 export const Reflection = summon(112031)
+  .tags("barrier")
   .endPhaseDamage(DamageType.Hydro, 1)
   .dispose()
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())

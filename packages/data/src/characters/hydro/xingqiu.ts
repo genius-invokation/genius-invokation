@@ -50,6 +50,7 @@ export const RainSword01 = combatStatus(112023)
  * 可用次数：2
  */
 export const RainSword = combatStatus(112021)
+  .tags("barrier")
   .conflictWith(112023)
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && e.value >= 3)
   .usage(2)
