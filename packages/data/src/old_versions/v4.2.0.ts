@@ -99,6 +99,7 @@ export const TheMyriadWilds = skill(22013)
  */
 const OceanicMimicFrog = summon(122013)
   .until("v4.2.0")
+  .tags("barrier")
   .hintIcon(DamageType.Hydro)
   .hintText("2")
   .on("decreaseDamaged")

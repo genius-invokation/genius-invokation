@@ -94,6 +94,7 @@ export const InfluxBlast: SkillHandle = skill(22022)
  */
 const Ushi = summon(116051)
   .until("v3.6.0")
+  .tags("barrier")
   .endPhaseDamage(DamageType.Geo, 1)
   .dispose()
   .on("decreaseDamaged")

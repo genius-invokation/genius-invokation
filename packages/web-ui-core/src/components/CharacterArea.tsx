@@ -13,7 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { PbEquipmentType } from "@gi-tcg/typings";
+import {
+  CHARACTER_TAG_BARRIER,
+  CHARACTER_TAG_DISABLE_SKILL,
+  CHARACTER_TAG_SHIELD,
+  PbEquipmentType,
+} from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
   createEffect,
@@ -353,6 +358,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         <Show when={getDamage()}>
           {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>
+        <CharacterTagMasks tags={data().tags} />
       </div>
       <Show when={props.active}>
         <StatusGroup class="h-6 w-20" statuses={props.combatStatus} />
@@ -433,6 +439,31 @@ function Health(props: { value: number }) {
           <div class="absolute inset-0 h-full w-full pt-1 flex items-center justify-center line-height-none text-yellow-900 font-bold">
             {props.value}
           </div>
+        </div>
+      )}
+    </WithDelicateUi>
+  );
+}
+
+interface CharacterTagMasksProps {
+  tags: number;
+}
+
+function CharacterTagMasks(props: CharacterTagMasksProps) {
+  const assets = {
+    [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_01",
+    [CHARACTER_TAG_BARRIER]: "UI_GCG_Shield_02",
+    [CHARACTER_TAG_DISABLE_SKILL]: "UI_GCG_Frozen",
+  };
+  return (
+    <WithDelicateUi assetId={Object.values(assets)} fallback={<></>}>
+      {(...imgs) => (
+        <div class="absolute inset-0 children-absolute children-h-full children-w-full children-scale-110%">
+          <Index each={Object.keys(assets)}>
+            {(flag, i) => (
+              <Show when={props.tags & Number(flag())}>{imgs[i]}</Show>
+            )}
+          </Index>
         </div>
       )}
     </WithDelicateUi>

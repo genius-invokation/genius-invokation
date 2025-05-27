@@ -25,6 +25,7 @@ import { character, skill, status, card, DamageType, SkillHandle } from "@gi-tcg
  */
 export const Stealth01 = status(123012)
   .conflictWith(123011)
+  .tags("barrier")
   .usage(3)
   .on("decreaseDamaged")
   .decreaseDamage(1)
@@ -45,6 +46,7 @@ export const Stealth01 = status(123012)
  */
 export const Stealth = status(123011)
   .conflictWith(123012)
+  .tags("barrier")
   .usage(2)
   .on("decreaseDamaged")
   .decreaseDamage(1)

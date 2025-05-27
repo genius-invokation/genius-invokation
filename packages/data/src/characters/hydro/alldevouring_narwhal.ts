@@ -26,6 +26,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, diceC
  * 我方出战角色受到伤害时：抵消1点伤害，然后此牌可用次数-2。
  */
 export const DarkShadow = summon(122043)
+  .tags("barrier")
   .usage(0)
   .variable("atk", 0)
   .hintIcon(DamageType.Electro)

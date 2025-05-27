@@ -41,6 +41,7 @@ export const StoneForce = status(126012)
  * 可用次数：3
  */
 export const Stonehide = status(126011)
+  .tags("barrier")
   .on("decreaseDamaged")
   .usage(3)
   .decreaseDamage(1)

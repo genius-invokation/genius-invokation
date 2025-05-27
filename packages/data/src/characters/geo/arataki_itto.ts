@@ -42,6 +42,7 @@ export const SuperlativeSuperstrength = status(116054)
  * 结束阶段：弃置此牌，造成1点岩元素伤害。
  */
 export const Ushi = summon(116051)
+  .tags("barrier")
   .endPhaseDamage(DamageType.Geo, 1)
   .dispose()
   .on("decreaseDamaged")
