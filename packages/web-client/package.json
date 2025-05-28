@@ -12,7 +12,6 @@
   "browserslist": "defaults",
   "dependencies": {
     "@gi-tcg/deck-builder": "workspace:*",
-    "@gi-tcg/legacy-web-ui-core": "workspace:*",
     "@gi-tcg/web-ui-core": "workspace:*",
     "@server-sent-stream/web": "^1.0.3",
     "@solid-primitives/storage": "^4.2.1",

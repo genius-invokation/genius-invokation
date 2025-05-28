@@ -192,36 +192,6 @@
         "solid-js": "^1.9.4",
       },
     },
-    "packages/legacy-web-ui-core": {
-      "name": "@gi-tcg/legacy-web-ui-core",
-      "version": "0.17.1",
-      "dependencies": {
-        "@gi-tcg/assets-manager": "workspace:*",
-        "@gi-tcg/utils": "workspace:*",
-        "@solid-primitives/keyed": "^1.4.0",
-      },
-      "devDependencies": {
-        "@gi-tcg/config": "workspace:*",
-        "@gi-tcg/core": "workspace:*",
-        "@gi-tcg/data": "workspace:*",
-        "@gi-tcg/detail-log-viewer": "workspace:*",
-        "@gi-tcg/typings": "workspace:*",
-        "@typescript-eslint/eslint-plugin": "^6.18.0",
-        "@typescript-eslint/parser": "^6.18.0",
-        "eslint": "^8.56.0",
-        "eslint-plugin-only-warn": "^1.1.0",
-        "eslint-plugin-solid": "^0.13.1",
-        "rollup-plugin-node-externals": "^7.0.1",
-        "solid-devtools": "^0.29.2",
-        "unocss": "^65.4.2",
-        "vite": "^6.0.11",
-        "vite-plugin-dts": "^3.7.0",
-        "vite-plugin-solid": "^2.11.1",
-      },
-      "peerDependencies": {
-        "solid-js": "^1.9.4",
-      },
-    },
     "packages/server": {
       "name": "@gi-tcg/server",
       "version": "0.17.1",
@@ -323,7 +293,6 @@
       "version": "0.0.0",
       "dependencies": {
         "@gi-tcg/deck-builder": "workspace:*",
-        "@gi-tcg/legacy-web-ui-core": "workspace:*",
         "@gi-tcg/web-ui-core": "workspace:*",
         "@server-sent-stream/web": "^1.0.3",
         "@solid-primitives/storage": "^4.2.1",
@@ -789,8 +758,6 @@
     "@gi-tcg/deck-builder": ["@gi-tcg/deck-builder@workspace:packages/deck-builder"],
 
     "@gi-tcg/detail-log-viewer": ["@gi-tcg/detail-log-viewer@workspace:packages/detail-log-viewer"],
-
-    "@gi-tcg/legacy-web-ui-core": ["@gi-tcg/legacy-web-ui-core@workspace:packages/legacy-web-ui-core"],
 
     "@gi-tcg/server": ["@gi-tcg/server@workspace:packages/server"],
 
