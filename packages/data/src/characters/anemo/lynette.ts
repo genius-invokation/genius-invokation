@@ -52,6 +52,7 @@ export const OverawingAssault = status(115081)
  * 我方出战角色受到伤害时：抵消1点伤害。（每回合1次）
  */
 export const BogglecatBoxsTaunt = combatStatus(115083)
+  .tags("barrier")
   .reserve();
 
 /**

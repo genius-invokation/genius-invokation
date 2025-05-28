@@ -24,6 +24,7 @@ import { character, skill, summon, card, DamageType, SummonHandle } from "@gi-tc
  * 结束阶段，如果可用次数已耗尽：弃置此牌，以造成2点水元素伤害。
  */
 export const OceanicMimicFrog = summon(122013)
+  .tags("barrier")
   .hintIcon(DamageType.Hydro)
   .hintText("2")
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())

@@ -24,6 +24,7 @@ import { character, skill, summon, card, DamageType, SummonHandle } from "@gi-tc
  * 结束阶段，如果可用次数已耗尽：弃置此牌，以造成2点火元素伤害。
  */
 export const BaronBunny: SummonHandle = summon(113041)
+  .tags("barrier")
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(2)

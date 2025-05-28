@@ -38,13 +38,19 @@ import {
   type RpcResponsePayloadOf,
   PbPlayerFlag,
   PbModifyDirection,
+  CHARACTER_TAG_SHIELD,
+  CHARACTER_TAG_BARRIER,
+  CHARACTER_TAG_DISABLE_SKILL,
+  CHARACTER_TAG_NIGHTSOULS_BLESSING,
 } from "@gi-tcg/typings";
 import type {
   CardState,
   CharacterState,
   EntityState,
+  EntityTag,
   GameState,
   PhaseType,
+  PlayerState,
 } from "./base/state";
 import type { Mutation, PlayerFlag } from "./base/mutation";
 import type { ActionInfo, InitiativeSkillDefinition } from "./base/skill";
@@ -310,7 +316,7 @@ export function exposeMutation(
       return {
         $case: "createCharacter",
         who: m.who,
-        character: exposeCharacter(null, m.value),
+        character: exposeCharacter(null, null, m.value),
       };
     }
     case "createEntity": {
@@ -381,6 +387,19 @@ export function exposeMutation(
       return null;
     }
   }
+}
+
+const EXPOSED_TAGS: Partial<Record<EntityTag, number>> = {
+  shield: CHARACTER_TAG_SHIELD,
+  barrier: CHARACTER_TAG_BARRIER,
+  disableSkill: CHARACTER_TAG_DISABLE_SKILL,
+  nightsoulsBlessing: CHARACTER_TAG_NIGHTSOULS_BLESSING,
+};
+function exposeTag(tags: EntityTag[]) {
+  return tags.reduce(
+    (acc, tag) => (EXPOSED_TAGS[tag] ? acc | EXPOSED_TAGS[tag]! : acc),
+    0,
+  );
 }
 
 export function exposeEntity(
@@ -472,8 +491,17 @@ function exposeCard(
 
 function exposeCharacter(
   state: GameState | null,
+  player: PlayerState | null,
   ch: CharacterState,
 ): PbCharacterState {
+  const tags = exposeTag(
+    [
+      ...(player?.activeCharacterId === ch.id
+        ? [...player.combatStatuses, ...player.summons]
+        : []),
+      ...ch.entities,
+    ].flatMap((e) => e.definition.tags),
+  );
   return {
     id: ch.id,
     definitionId: ch.definition.id,
@@ -484,6 +512,7 @@ function exposeCharacter(
     maxHealth: ch.variables.maxHealth,
     maxEnergy: ch.variables.maxEnergy,
     aura: ch.variables.aura,
+    tags,
   };
 }
 
@@ -512,7 +541,7 @@ export function exposeState(who: 0 | 1, state: GameState): PbGameState {
         activeCharacterId: p.activeCharacterId,
         pileCard: p.pile.map((c) => exposeCard(state, c, true)),
         handCard: p.hands.map((c) => exposeCard(state, c, i !== who)),
-        character: p.characters.map((ch) => exposeCharacter(state, ch)),
+        character: p.characters.map((ch) => exposeCharacter(state, p, ch)),
         dice,
         combatStatus: p.combatStatuses.map((e) => exposeEntity(state, e)),
         support: p.supports.map((e) => exposeEntity(state, e)),

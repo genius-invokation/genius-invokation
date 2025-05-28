@@ -87,6 +87,11 @@ export const Reaction = {
 } as const;
 export type Reaction = (typeof Reaction)[keyof typeof Reaction];
 
+export const CHARACTER_TAG_SHIELD = 1 << 0;
+export const CHARACTER_TAG_BARRIER = 1 << 1;
+export const CHARACTER_TAG_DISABLE_SKILL = 1 << 2;
+export const CHARACTER_TAG_NIGHTSOULS_BLESSING = 1 << 3;
+
 export {
   PbDiceType,
   PbDiceRequirementType,
