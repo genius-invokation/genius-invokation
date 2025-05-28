@@ -61,7 +61,7 @@ export function AllCards(props: AllCardsProps) {
             value={props.version}
             onChange={(e) => props.onSetVersion?.(Number(e.target.value))}
           >
-            <Index each={props.allVersions.toReversed()}>
+            <Index each={props.allVersions}>
               {(versionStr, index) => (
                 <option value={index}>{versionStr()}</option>
               )}
