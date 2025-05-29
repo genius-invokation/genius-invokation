@@ -241,10 +241,10 @@ export function RoomDialog(props: RoomDialogProps) {
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
       class="max-h-unset max-w-unset h-100dvh w-100dvw m-0 md:m-x-auto md:m-y-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
     >
-      <div class="flex flex-col md:h-full w-full gap-5">
+      <div class="flex flex-col md:min-h-full md:h-min w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
         <div
-          class="flex-grow min-h-0 flex flex-col md:flex-row gap-4 data-[disabled=true]:cursor-not-allowed"
+          class="flex-grow min-h-0 flex flex-col md:flex-row gap-4 data-[disabled=true]:cursor-not-allowed mb-18 md:mb-0"
           data-disabled={!editable()}
         >
           <div
@@ -286,7 +286,7 @@ export function RoomDialog(props: RoomDialogProps) {
                       onClick={() => setTimeConfig(config)}
                     >
                       <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors md:mb-2">
-                        {config.name}
+                        {config.name ?? `${config.roundTotalActionTime} + ${config.actionTime}`}
                       </h5>
                       <ul class="hidden md:block pl-5 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
@@ -345,7 +345,7 @@ export function RoomDialog(props: RoomDialogProps) {
           <div class="b-r-gray-200 b-1" />
           <div class="flex flex-col min-w-52 relative">
             <h4 class="text-lg mb-3">选择出战牌组</h4>
-            <ul class="flex-grow-1 flex flex-col min-h-0 overflow-auto">
+            <ul class="flex-grow-1 flex flex-row md:flex-col flex-wrap min-h-0 overflow-auto">
               <For
                 each={availableDecks()}
                 fallback={<li class="text-gray-500">暂无该版本可用牌组</li>}
@@ -371,7 +371,7 @@ export function RoomDialog(props: RoomDialogProps) {
             </div>
           </div>
         </div>
-        <div class="flex-shrink-0 flex flex-row justify-end gap-4">
+        <div class="fixed md:static left-0 right-0 bottom-0 bg-white b-t-gray-200 b-1 md:b-0 px-6 h-18 md:h-min md:p-0 flex-shrink-0 flex flex-row justify-end items-center gap-4">
           <button
             class="btn btn-ghost-red"
             onClick={closeDialog}
@@ -394,7 +394,7 @@ export function RoomDialog(props: RoomDialogProps) {
         </div>
       </div>
       <button
-        class="absolute right-4 top-4 h-5 w-5 text-black bg-transparent"
+        class="hidden md:block absolute right-4 top-4 h-5 w-5 text-black bg-transparent"
         onClick={closeDialog}
       >
         <i class="inline-block h-full w-full i-mdi-window-close" />

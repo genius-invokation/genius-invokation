@@ -29,5 +29,5 @@ dialog:not([open]) {
 }
 
 dialog[open] {
-  transform: scale(1);
+  transform: none;
 }

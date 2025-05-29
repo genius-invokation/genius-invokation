@@ -31,9 +31,11 @@ import { useGuestDecks } from "../guest";
 import { DeckInfo } from "./Decks";
 import { useAuth } from "../auth";
 import { unwrap } from "solid-js/store";
+import { useMobile } from "../App";
 
 export function EditDeck() {
   const params = useParams();
+  const mobile = useMobile();
   const { status } = useAuth();
   const [guestDecks, { addGuestDeck, updateGuestDeck }] = useGuestDecks();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -206,14 +208,14 @@ export function EditDeck() {
   };
 
   return (
-    <Layout mainFlex>
+    <Layout mainFlex={!mobile()}>
       <div class="container mx-auto h-full flex flex-col min-h-0">
-        <div class="flex-shrink-0 flex flex-row gap-3 mb-5 min-h-0">
+        <div class="flex-shrink-0 flex flex-row flex-wrap gap-3 mb-5 min-h-0">
           <Show
             when={editingName()}
             fallback={
               <>
-                <h2 class="text-2xl font-bold min-w-0 overflow-hidden whitespace-nowrap text-ellipsis">
+                <h2 class="text-2xl font-bold min-w-0 overflow-hidden whitespace-nowrap text-ellipsis flex-shrink-0">
                   {deckName()}
                 </h2>
                 <button class="btn btn-ghost" onClick={startEditingName}>
@@ -298,7 +300,7 @@ export function EditDeck() {
           </Match>
           <Match when={status().type !== "notLogin"}>
             <DeckBuilder
-              class="min-h-0 h-full w-full"
+              class={`min-h-0 h-full w-full ${mobile() ? 'mobile' : ''}`}
               deck={deckValue()}
               onChangeDeck={(v) => (setDeckValue(v), setDirty(true))}
             />

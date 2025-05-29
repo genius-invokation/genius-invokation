@@ -30,6 +30,7 @@ function App() {
   });
   return (
     <DeckBuilder
+    class="mobile"
       deck={deck()}
       onChangeDeck={setDeck}
       // version="v3.3.0"

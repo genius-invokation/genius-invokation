@@ -20,6 +20,7 @@ import {
   Show,
   createSignal,
   onMount,
+  on,
   JSX,
   createEffect,
   onCleanup,
@@ -32,6 +33,8 @@ import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
 import type { RpcRequest } from "@gi-tcg/typings";
 import { createClient, PlayerIOWithCancellation } from "@gi-tcg/web-ui-core";
+import { useMobile } from "../App";
+import debounce from "debounce";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -276,7 +279,9 @@ export function Room() {
   const downloadGameLog = async () => {
     try {
       const { data } = await axios.get(`rooms/${id}/gameLog`);
-      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(data)], {
+        type: "application/json",
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -292,6 +297,8 @@ export function Room() {
     }
   };
 
+  let chessboardContainer: HTMLDivElement | undefined;
+
   onMount(() => {
     fetchNotification();
     setActionTimer();
@@ -303,12 +310,14 @@ export function Room() {
     cleanActionTimer();
   });
 
+  const mobile = useMobile();
+
   return (
-    <Layout>
-      <div class="container mx-auto flex flex-col">
-        <div class="flex flex-row items-center justify-between mb-3">
-          <div class="flex flex-row gap-3 items-center">
-            <h2 class="text-2xl font-bold">房间号：{code}</h2>
+    <Layout noHeader={mobile() && !!initialized()}>
+      <div class="has-[.mobile-chessboard]:p-0 container mx-auto flex flex-col">
+        <div class="flex flex-row flex-wrap items-center justify-between mb-3">
+          <div class="flex flex-row flex-wrap gap-3 items-center">
+            <h2 class="text-2xl font-bold flex-shrink-0">房间号：{code}</h2>
             <Show when={!loading() && !failed() && !initialized()}>
               <button class="btn btn-outline-red" onClick={deleteRoom}>
                 <i class="i-mdi-delete" />
@@ -367,7 +376,11 @@ export function Room() {
           </Match>
         </Switch>
         <Show when={initialized()}>
-          <div class="relative">
+          <div
+            class="relative"
+            classList={{ "mobile-chessboard": mobile() }}
+            ref={chessboardContainer}
+          >
             <Show when={currentTimer()}>
               {(time) => (
                 <div class="absolute top-0 left-[50%] translate-x-[-50%] bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29">

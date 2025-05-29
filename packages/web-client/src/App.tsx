@@ -17,8 +17,12 @@ import { Route, Router } from "@solidjs/router";
 import {
   createContext,
   createResource,
+  createSignal,
+  onMount,
+  onCleanup,
   Resource,
   useContext,
+  type Accessor,
 } from "solid-js";
 import { Home } from "./pages/Home";
 import axios from "axios";
@@ -35,6 +39,9 @@ export interface VersionContextValue {
 const VersionContext = createContext<VersionContextValue>();
 export const useVersionContext = () => useContext(VersionContext)!;
 
+const MobileContext = createContext<Accessor<boolean>>();
+export const useMobile = () => useContext(MobileContext)!;
+
 function App() {
   const [versionInfo] = createResource(() =>
     axios.get("version").then((res) => res.data),
@@ -42,18 +49,33 @@ function App() {
   const versionContextValue: VersionContextValue = {
     versionInfo,
   };
+
+  const mobileMediaQuery = window.matchMedia("(max-width: 1000px)");
+  const [mobile, setMobile] = createSignal(mobileMediaQuery.matches);
+  const handleMobileChange = (e: MediaQueryListEvent) => {
+    setMobile(e.matches);
+  };
+  onMount(() => {
+    mobileMediaQuery.addEventListener("change", handleMobileChange);
+  });
+  onCleanup(() => {
+    mobileMediaQuery.removeEventListener("change", handleMobileChange);
+  });
+
   return (
     <VersionContext.Provider value={versionContextValue}>
-      <div class="h-full w-full flex flex-row">
-        <Router base={import.meta.env.BASE_URL}>
-          <Route path="/" component={Home} />
-          <Route path="/user/:id" component={User} />
-          <Route path="/decks/:id" component={EditDeck} />
-          <Route path="/decks" component={Decks} />
-          <Route path="/rooms/:code" component={Room} />
-          <Route path="*" component={NotFound} />
-        </Router>
-      </div>
+      <MobileContext.Provider value={mobile}>
+        <div class="h-full w-full flex flex-row">
+          <Router base={import.meta.env.BASE_URL}>
+            <Route path="/" component={Home} />
+            <Route path="/user/:id" component={User} />
+            <Route path="/decks/:id" component={EditDeck} />
+            <Route path="/decks" component={Decks} />
+            <Route path="/rooms/:code" component={Room} />
+            <Route path="*" component={NotFound} />
+          </Router>
+        </div>
+      </MobileContext.Provider>
     </VersionContext.Provider>
   );
 }

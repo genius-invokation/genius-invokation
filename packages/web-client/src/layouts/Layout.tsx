@@ -13,19 +13,32 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { ErrorBoundary, JSX } from "solid-js";
+import { ErrorBoundary, JSX, Show } from "solid-js";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { useNavigate } from "@solidjs/router";
 
 export interface LayoutProps {
   mainFlex?: boolean;
+  noHeader?: boolean;
   children?: JSX.Element;
 }
 
 export function Layout(props: LayoutProps) {
+  const navigate = useNavigate();
   return (
     <div class="w-full h-full flex flex-col">
-      <Header />
+      <Show
+        when={!props.noHeader}
+        fallback={
+          <div
+            class="fixed top-2 left-2 w-12 h-12 shadow-2xl rounded-full bg-gray-900 i-mdi-home z-100"
+            onClick={() => navigate("/")}
+          />
+        }
+      >
+        <Header />
+      </Show>
       <main
         class="flex-grow w-full p-2 md:p-8 mt-16"
         classList={{ "min-h-0": props.mainFlex }}
