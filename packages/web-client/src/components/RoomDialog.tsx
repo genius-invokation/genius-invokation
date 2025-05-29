@@ -239,16 +239,16 @@ export function RoomDialog(props: RoomDialogProps) {
   return (
     <dialog
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
-      class="h-[calc(100vh-6rem)] max-h-180 rounded-xl shadow-xl p-6"
+      class="max-h-unset max-w-unset h-100dvh w-100dvw m-0 md:m-x-auto md:m-y-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
     >
-      <div class="flex flex-col h-full w-full gap-5">
+      <div class="flex flex-col md:h-full w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
         <div
-          class="flex-grow min-h-0 flex flex-row gap-4 data-[disabled=true]:cursor-not-allowed"
+          class="flex-grow min-h-0 flex flex-col md:flex-row gap-4 data-[disabled=true]:cursor-not-allowed"
           data-disabled={!editable()}
         >
           <div
-            class="flex flex-col w-80 data-[editable=true]:w-130"
+            class="flex flex-col w-80 md:data-[editable=true]:w-130"
             data-editable={editable()}
           >
             <Show when={versionInfo()}>
@@ -279,16 +279,16 @@ export function RoomDialog(props: RoomDialogProps) {
                 >
                   {(config) => (
                     <div
-                      class="b-1 b-gray-400 rounded-lg p-12px group data-[active=true]:b-slate-500 data-[active=true]:b-2 data-[active=true]:p-11px cursor-pointer data-[active=true]:cursor-default select-none transition-colors"
+                      class="b-1 b-gray-400 rounded-lg p-2 md:p-12px group data-[active=true]:b-slate-500 data-[active=true]:b-2 md:data-[active=true]:p-11px cursor-pointer data-[active=true]:cursor-default select-none transition-colors"
                       data-active={
                         !!props.joiningRoomInfo || config === timeConfig()
                       }
                       onClick={() => setTimeConfig(config)}
                     >
-                      <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors mb-2">
+                      <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors md:mb-2">
                         {config.name}
                       </h5>
-                      <ul class="pl-5 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
+                      <ul class="hidden md:block pl-5 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
                         <li>每重投时间：{config.rerollTime}s</li>
                         <li>每回合总时间：{config.roundTotalActionTime}s</li>

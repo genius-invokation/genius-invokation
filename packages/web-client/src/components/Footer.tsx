@@ -25,7 +25,7 @@ dayjs.extend(localize).locale("zh-cn");
 export function Footer() {
   const { versionInfo } = useVersionContext();
   return (
-    <footer class="flex flex-row gap-4 p-4 text-sm text-gray-500">
+    <footer class="flex flex-col md:flex-row gap-4 p-4 text-sm text-gray-500">
       <div>© 2024 Guyutongxue</div>
       <div>
         <a

@@ -141,8 +141,8 @@ export function Home() {
                   {status().name}，欢迎你！
                 </h2>
               </div>
-              <div class="flex flex-grow flex-row gap-8 min-h-0">
-                <div class="h-full w-60 flex flex-col items-start bottom-opacity-gradient">
+              <div class="flex flex-grow flex-col-reverse md:flex-row gap-8 min-h-0">
+                <div class="h-full w-full md:w-60 flex flex-col items-start md:bottom-opacity-gradient">
                   <A
                     href="/decks"
                     class="text-xl font-bold text-blue-500 hover:underline mb-4"
@@ -160,7 +160,7 @@ export function Home() {
                       </div>
                     </Match>
                     <Match when={true}>
-                      <div class="flex flex-col gap-2">
+                      <div class="flex flex-row flex-wrap md:flex-col gap-2">
                         <For
                           each={decks().data}
                           fallback={
@@ -178,7 +178,7 @@ export function Home() {
                     </Match>
                   </Switch>
                 </div>
-                <div class="b-r-gray-200 b-1" />
+                <div class="b-r-gray-200 b-1 hidden md:block" />
                 <div class="flex-grow flex flex-col">
                   <h4 class="text-xl font-bold mb-5">开始游戏</h4>
                   <Show
@@ -189,20 +189,20 @@ export function Home() {
                       </div>
                     }
                   >
-                    <div class="flex flex-row gap-5 items-center mb-8">
+                    <div class="flex flex-col md:flex-row gap-2 md:gap-5 items-center mb-8">
                       <button
-                        class="flex-shrink-0 w-35 btn btn-solid-green"
+                        class="flex-shrink-0 w-full md:w-35 btn btn-solid-green"
                         onClick={createRoom}
                       >
                         创建房间…
                       </button>
                       或者
                       <form
-                        class="flex-grow flex flex-row"
+                        class="flex-grow flex flex-row w-full md:w-unset"
                         onSubmit={joinRoomBySubmitCode}
                       >
                         <input
-                          class="input input-solid rounded-r-0 b-r-0 h-2.5em"
+                          class="input input-solid rounded-r-0 b-r-0 h-2.5em flex-grow md:flex-grow-0"
                           name="roomCode"
                           placeholder="输入房间号"
                           inputmode="numeric"
@@ -215,7 +215,7 @@ export function Home() {
                         />
                         <button
                           type="submit"
-                          class="flex-shrink-0 w-35 btn btn-solid rounded-l-0"
+                          class="flex-shrink-0 w-20 sm:w-35 btn btn-solid rounded-l-0"
                           disabled={!roomCodeValid()}
                         >
                           加入房间…
