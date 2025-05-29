@@ -299,21 +299,29 @@ export function Room() {
 
   let chessboardContainer: HTMLDivElement | undefined;
 
+  const heightNotEnough = window.matchMedia("(max-height: 576px)");
+  const [isHeightNotEnough, setIsHeightNotEnough] = createSignal(
+    heightNotEnough.matches,
+  );
+  const checkHeight = debounce(() => {
+    setIsHeightNotEnough(heightNotEnough.matches);
+  });
+
   onMount(() => {
     fetchNotification();
     setActionTimer();
+    heightNotEnough.addEventListener("change", checkHeight);
   });
 
   onCleanup(() => {
     setInitialized();
     setPlayerIo();
     cleanActionTimer();
+    heightNotEnough.addEventListener("change", checkHeight);
   });
 
-  const mobile = useMobile();
-
   return (
-    <Layout noHeader={mobile() && !!initialized()}>
+    <Layout noHeader={isHeightNotEnough() && !!initialized()}>
       <div class="has-[.mobile-chessboard]:p-0 container mx-auto flex flex-col">
         <div class="flex flex-row flex-wrap items-center justify-between mb-3">
           <div class="flex flex-row flex-wrap gap-3 items-center">
@@ -378,7 +386,7 @@ export function Room() {
         <Show when={initialized()}>
           <div
             class="relative"
-            classList={{ "mobile-chessboard": mobile() }}
+            classList={{ "mobile-chessboard": isHeightNotEnough() }}
             ref={chessboardContainer}
           >
             <Show when={currentTimer()}>

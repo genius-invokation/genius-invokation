@@ -50,7 +50,7 @@ function App() {
     versionInfo,
   };
 
-  const mobileMediaQuery = window.matchMedia("(max-width: 1000px)");
+  const mobileMediaQuery = window.matchMedia("(max-width: 768px)");
   const [mobile, setMobile] = createSignal(mobileMediaQuery.matches);
   const handleMobileChange = (e: MediaQueryListEvent) => {
     setMobile(e.matches);
