@@ -56,7 +56,8 @@ export function Header() {
             navigate("/");
           }}
         >
-          退出登录
+          <i class="i-mdi-logout" />
+          <span class="hidden sm:inline">退出登录</span>
         </button>
       </Show>
     </header>
