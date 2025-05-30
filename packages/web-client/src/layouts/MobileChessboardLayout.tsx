@@ -11,31 +11,29 @@
 // GNU Affero General Public License for more details.
 //
 // You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { render } from "solid-js/web";
-import { DeckBuilder } from ".";
-import type { Deck } from "@gi-tcg/utils";
-import { createEffect, createSignal } from "solid-js";
+import { ErrorBoundary, JSX } from "solid-js";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
 
-const EMPTY_DECK: Deck = {
-  characters: [],
-  cards: [],
-};
-
-function App() {
-  const [deck, setDeck] = createSignal<Deck>(EMPTY_DECK);
-  createEffect(() => {
-    console.log(deck());
-  });
-  return (
-    <DeckBuilder
-    class="mobile"
-      deck={deck()}
-      onChangeDeck={setDeck}
-      // version="v3.3.0"
-    />
-  );
+export interface LayoutProps {
+  mainFlex?: boolean;
+  children?: JSX.Element;
 }
 
-render(() => <App />, document.getElementById("root")!);
+export function MobileChessboardLayout(props: LayoutProps) {
+  return (
+      <main
+        class="flex w-full h-full flex-col touch-none"
+      >
+        <ErrorBoundary
+          fallback={(err) => (
+            <div class="text-red-500">{err?.message ?? String(err)}</div>
+          )}
+        >
+          {props.children}
+        </ErrorBoundary>
+      </main>
+  );
+}
