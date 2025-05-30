@@ -166,7 +166,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         if (result && result.removedHandIds.length > 0) {
           setViewType("switchHandsEnd");
           setTimeout(() => {
-            setViewType("normal");
+            setViewType((t) => t === "switchHandsEnd" ? "normal" : t);
             forceRefreshData();
           }, 1200);
         } else {
