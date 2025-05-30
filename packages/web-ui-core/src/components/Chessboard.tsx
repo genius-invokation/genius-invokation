@@ -39,6 +39,7 @@ import {
   onMount,
   Show,
   splitProps,
+  untrack,
   type ComponentProps,
 } from "solid-js";
 import debounce from "debounce";
@@ -55,6 +56,8 @@ import {
   getPilePos,
   getShowingCardPos,
   getTunningAreaPos,
+  MINIMUM_HEIGHT,
+  MINIMUM_WIDTH,
   PERSPECTIVE,
   shouldFocusHandWhenDragging,
   TUNNING_AREA_WIDTH,
@@ -230,8 +233,19 @@ export type ChessboardViewType =
   | "rerollDiceEnd"
   | "switchHandsEnd";
 
+export type Rotation = 0 | 90 | 180 | 270;
+
+const PRE_ROTATION_TRANSFORM = `translate(-50%, -50%)`;
+const POST_ROTATION_TRANSFORM = {
+  0: "translate(50%, 50%)",
+  90: "translate(50%, -50%)",
+  180: "translate(-50%, -50%)",
+  270: "translate(-50%, 50%)",
+};
+
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
+  rotation?: Rotation;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -907,6 +921,7 @@ type SelectingItem =
 export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, [
     "who",
+    "rotation",
     "data",
     "actionState",
     "viewType",
@@ -919,6 +934,9 @@ export function Chessboard(props: ChessboardProps) {
     "class",
   ]);
   let chessboardElement!: HTMLDivElement;
+  let transformWrapperEl!: HTMLDivElement;
+  let transformScale = 1;
+  let containerEl!: HTMLDivElement;
 
   const { assetsManager } = useUiContext();
   const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
@@ -970,7 +988,78 @@ export function Chessboard(props: ChessboardProps) {
   );
   let shouldMoveWhenHandBlurring: PromiseWithResolvers<boolean>;
 
+  const onContainerResize = () => {
+    const containerWidth = containerEl.clientWidth;
+    const containerHeight = containerEl.clientHeight;
+    const containerUnsetHeight =
+      !containerEl.style.height || containerEl.style.height === "unset";
+    const rotate = untrack(() => props.rotation) ?? 0;
+    const UNIT = unitInPx();
+    let height: number;
+    let width: number;
+    let scale: number;
+    const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
+    if (rotate % 180 === 0) {
+      if (containerUnsetHeight) {
+        let minHeight: number;
+        height = UNIT * MINIMUM_HEIGHT;
+        if (containerWidth < UNIT * MINIMUM_WIDTH) {
+          width = UNIT * MINIMUM_WIDTH;
+          minHeight = containerWidth * DEFAULT_HEIGHT_WIDTH_RATIO;
+          scale = containerWidth / (UNIT * MINIMUM_WIDTH);
+        } else {
+          width = containerWidth;
+          minHeight = UNIT * MINIMUM_HEIGHT;
+          scale = 1;
+        }
+        containerEl.style.minHeight = `${minHeight}px`;
+      } else {
+        containerEl.style.minHeight = "";
+        height = Math.max(containerHeight, UNIT * MINIMUM_HEIGHT);
+        width = Math.max(containerWidth, UNIT * MINIMUM_WIDTH);
+        scale = Math.min(
+          (containerHeight / UNIT) * MINIMUM_HEIGHT,
+          (containerWidth / UNIT) * MINIMUM_WIDTH,
+          1,
+        );
+      }
+    } else {
+      if (containerUnsetHeight) {
+        let minHeight: number;
+        width = MINIMUM_WIDTH;
+        if (containerWidth < UNIT * MINIMUM_HEIGHT) {
+          height = UNIT * MINIMUM_HEIGHT;
+          minHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
+          scale = containerWidth / (UNIT * MINIMUM_HEIGHT);
+        } else {
+          height = containerWidth;
+          minHeight = unitInPx() * MINIMUM_WIDTH;
+          scale = 1;
+        }
+        containerEl.style.minHeight = `${minHeight}px`;
+      } else {
+        containerEl.style.minHeight = "";
+        width = Math.max(containerHeight, UNIT * MINIMUM_HEIGHT);
+        height = Math.max(containerWidth, UNIT * MINIMUM_WIDTH);
+        scale = Math.min(
+          (containerHeight / UNIT) * MINIMUM_WIDTH,
+          (containerWidth / UNIT) * MINIMUM_HEIGHT,
+          1,
+        );
+      }
+    }
+
+    console.log({ containerWidth, containerHeight, scale });
+    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
+    transformWrapperEl.style.height = `${height}px`;
+    transformWrapperEl.style.width = `${width}px`;
+    transformScale = scale;
+  };
+
   const resizeObserver = new ResizeObserver(debounce(onResize, 200));
+  const containerResizeObserver = new ResizeObserver(
+    debounce(onContainerResize, 200),
+  );
 
   const [children, setChildren] = createSignal<ChessboardChildren>({
     characters: [],
@@ -1308,10 +1397,17 @@ export function Chessboard(props: ChessboardProps) {
         status: "start",
         tuneStep: cardInfo.tuneStep ?? null,
         updatePos: (e2) => {
+          const rot = ((untrack(() => props.rotation) ?? 0) * -Math.PI) / 180;
+          const cos = Math.cos(rot);
+          const sin = Math.sin(rot);
+          const dx = e2.clientX - initialPointerX;
+          const dy = e2.clientY - initialPointerY;
           const x =
-            originalX + ((e2.clientX - initialPointerX) / unit) * zRatio;
+            originalX +
+            (((cos * dx - sin * dy) / transformScale) / unit) * zRatio;
           const y =
-            originalY + ((e2.clientY - initialPointerY) / unit) * zRatio;
+            originalY +
+            (((sin * dx + cos * dy) / transformScale) / unit) * zRatio;
           return [x, y];
         },
       });
@@ -1448,208 +1544,220 @@ export function Chessboard(props: ChessboardProps) {
 
   onMount(() => {
     onResize();
+    onContainerResize();
     resizeObserver.observe(chessboardElement);
+    containerResizeObserver.observe(containerEl);
   });
   onCleanup(() => {
+    onContainerResize();
     resizeObserver.disconnect();
+    containerResizeObserver.disconnect();
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset relative min-h-xl min-w-3xl bg-green-50 overflow-clip ${
-        localProps.class ?? ""
-      }`}
+      class={`gi-tcg-chessboard-new reset ${localProps.class ?? ""}`}
       {...elProps}
+      ref={containerEl}
     >
       <div
-        class="relative h-full w-full preserve-3d select-none"
-        ref={chessboardElement}
-        onClick={onChessboardClick}
-        style={{
-          perspective: `${PERSPECTIVE / 4}rem`,
-        }}
+        class="relative min-h-xl min-w-3xl h-full w-full bg-green-50 overflow-clip"
+        ref={transformWrapperEl}
       >
-        <KeyWithAnimation
-          each={children().characters}
-          updateWhen={updateChildrenSignal()}
-        >
-          {(character) => (
-            <CharacterArea
-              {...character()}
-              selecting={character().id === selectingItem()?.info.id}
-              onClick={(e, t) => onCharacterAreaClick(e, t, character())}
-            />
-          )}
-        </KeyWithAnimation>
-        <KeyWithAnimation
-          each={children().cards}
-          updateWhen={updateChildrenSignal()}
-        >
-          {(card) => (
-            <Card
-              {...card()}
-              selected={
-                card().id === selectingItem()?.info.id &&
-                card().kind !== "dragging"
-              }
-              toBeSwitched={
-                card().kind === "switching" &&
-                switchedCards().includes(card().id)
-              }
-              realCost={localProps.actionState?.realCosts.cards.get(card().id)}
-              onClick={(e, t) => onCardClick(e, t, card())}
-              onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
-              onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
-              onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
-              onPointerMove={(e, t) => onCardPointerMove(e, t, card())}
-              onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
-            />
-          )}
-        </KeyWithAnimation>
-        <KeyWithAnimation
-          each={children().entities}
-          updateWhen={updateChildrenSignal()}
-        >
-          {(entity) => (
-            <Entity
-              {...entity()}
-              selecting={entity().id === selectingItem()?.info.id}
-              onClick={(e, t) => onEntityClick(e, t, entity())}
-            />
-          )}
-        </KeyWithAnimation>
-        <Key each={children().cardCountHints} by="area">
-          {(hint) => (
-            <CardCountHint
-              {...hint()}
-              shown={isShowCardHint[hint().area] !== null}
-            />
-          )}
-        </Key>
-        <ChessboardBackdrop
-          shown={
-            localProps.viewType === "switchHands" ||
-            localProps.actionState?.showBackdrop
-          }
+        <div
+          class="relative h-full w-full preserve-3d select-none"
+          ref={chessboardElement}
           onClick={onChessboardClick}
+          style={{
+            perspective: `${PERSPECTIVE / 4}rem`,
+          }}
+        >
+          <KeyWithAnimation
+            each={children().characters}
+            updateWhen={updateChildrenSignal()}
+          >
+            {(character) => (
+              <CharacterArea
+                {...character()}
+                selecting={character().id === selectingItem()?.info.id}
+                onClick={(e, t) => onCharacterAreaClick(e, t, character())}
+              />
+            )}
+          </KeyWithAnimation>
+          <KeyWithAnimation
+            each={children().cards}
+            updateWhen={updateChildrenSignal()}
+          >
+            {(card) => (
+              <Card
+                {...card()}
+                selected={
+                  card().id === selectingItem()?.info.id &&
+                  card().kind !== "dragging"
+                }
+                toBeSwitched={
+                  card().kind === "switching" &&
+                  switchedCards().includes(card().id)
+                }
+                realCost={localProps.actionState?.realCosts.cards.get(
+                  card().id,
+                )}
+                onClick={(e, t) => onCardClick(e, t, card())}
+                onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
+                onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
+                onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
+                onPointerMove={(e, t) => onCardPointerMove(e, t, card())}
+                onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
+              />
+            )}
+          </KeyWithAnimation>
+          <KeyWithAnimation
+            each={children().entities}
+            updateWhen={updateChildrenSignal()}
+          >
+            {(entity) => (
+              <Entity
+                {...entity()}
+                selecting={entity().id === selectingItem()?.info.id}
+                onClick={(e, t) => onEntityClick(e, t, entity())}
+              />
+            )}
+          </KeyWithAnimation>
+          <Key each={children().cardCountHints} by="area">
+            {(hint) => (
+              <CardCountHint
+                {...hint()}
+                shown={isShowCardHint[hint().area] !== null}
+              />
+            )}
+          </Key>
+          <ChessboardBackdrop
+            shown={
+              localProps.viewType === "switchHands" ||
+              localProps.actionState?.showBackdrop
+            }
+            onClick={onChessboardClick}
+          />
+          <Show when={children().tunningArea}>
+            {(tunningArea) => <TuningArea {...tunningArea()} />}
+          </Show>
+        </div>
+        <ActionHintText
+          class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+          text={localProps.actionState?.hintText}
         />
-        <Show when={children().tunningArea}>
-          {(tunningArea) => <TuningArea {...tunningArea()} />}
+        <DeclareEndMarker
+          class="absolute left-2 top-50% translate-y--50%"
+          {...declareEndMarkerProps()}
+        />
+        <PlayerInfo
+          opp
+          class="absolute top-0 bottom-[calc(50%+2.75rem)]"
+          {...playerInfoPropsOf(flip(localProps.who))}
+        />
+        <PlayerInfo
+          class="absolute top-[calc(50%+2.75rem)] bottom-0"
+          {...playerInfoPropsOf(localProps.who)}
+        />
+        <DicePanel
+          dice={myDice()}
+          selectedDice={selectedDice()}
+          disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
+          onSelectDice={setSelectedDice}
+          state={dicePanelState()}
+          onStateChange={setDicePanelState}
+        />
+        <SkillButtonGroup
+          class="absolute bottom-2 right-2"
+          skills={mySkills()}
+          switchActiveButton={switchActiveStep() ?? null}
+          switchActiveCost={
+            localProps.actionState?.realCosts.switchActive ?? null
+          }
+          onClick={onSkillClick}
+          shown={showSkillButtons()}
+        />
+        <ConfirmButton
+          class="absolute top-80% left-50% translate-x--50%"
+          step={localProps.actionState?.availableSteps.find(
+            (s) => s.type === "clickConfirmButton",
+          )}
+          onClick={(step) => {
+            localProps.onStepActionState?.(step, selectedDiceValue());
+          }}
+        />
+        <RoundAndPhaseNotification
+          who={localProps.who}
+          roundNumber={localProps.data.state.roundNumber}
+          currentTurn={localProps.data.state.currentTurn as 0 | 1}
+          class="absolute left-0 w-full top-50% translate-y--50%"
+          info={localProps.data.roundAndPhase}
+        />
+        <Show when={localProps.data.notificationBox} keyed>
+          {(data) => (
+            <NotificationBox opp={data.who !== localProps.who} data={data} />
+          )}
+        </Show>
+        <Show when={localProps.data.playingCard} keyed>
+          {(data) => (
+            <PlayingCard opp={data.who !== localProps.who} {...data} />
+          )}
+        </Show>
+        <RerollDiceView
+          viewType={localProps.viewType}
+          dice={myDice()}
+          selectedDice={selectedDice()}
+          onSelectDice={setSelectedDice}
+          onConfirm={() => {
+            const dice = selectedDiceValue() as PbDiceType[];
+            setSelectedDice([]);
+            localProps.onRerollDice?.(dice);
+          }}
+        />
+        <SelectCardView
+          viewType={localProps.viewType}
+          candidateIds={localProps.selectCardCandidates}
+          onClickCard={(id) => {
+            dataViewerController.showCard(id);
+          }}
+          onConfirm={(id) => {
+            localProps.onSelectCard?.(id);
+            dataViewerController.hide();
+          }}
+        />
+        <SwitchHandsView
+          viewType={localProps.viewType}
+          onConfirm={() => {
+            const cards = switchedCards();
+            setSwitchedCards([]);
+            localProps.onSwitchHands?.(cards);
+            dataViewerController.hide();
+          }}
+        />
+        <div class="absolute inset-2 pointer-events-none">
+          <CardDataViewer />
+        </div>
+        <MutationViewer who={localProps.who} mutations={allMutations()} />
+        <Show
+          when={localProps.data.state.phase === PbPhaseType.GAME_END}
+          fallback={
+            <button
+              class="absolute right-12 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+              title="放弃对局"
+              onClick={() => {
+                if (confirm("确定放弃对局吗？")) {
+                  localProps.onGiveUp?.();
+                }
+              }}
+            >
+              &#10005;
+            </button>
+          }
+        >
+          <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+            {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+          </div>
         </Show>
       </div>
-      <ActionHintText
-        class="absolute left-50% top-50% translate-x--50% translate-y--50%"
-        text={localProps.actionState?.hintText}
-      />
-      <DeclareEndMarker
-        class="absolute left-2 top-50% translate-y--50%"
-        {...declareEndMarkerProps()}
-      />
-      <PlayerInfo
-        opp
-        class="absolute top-0 bottom-[calc(50%+2.75rem)]"
-        {...playerInfoPropsOf(flip(localProps.who))}
-      />
-      <PlayerInfo
-        class="absolute top-[calc(50%+2.75rem)] bottom-0"
-        {...playerInfoPropsOf(localProps.who)}
-      />
-      <DicePanel
-        dice={myDice()}
-        selectedDice={selectedDice()}
-        disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
-        onSelectDice={setSelectedDice}
-        state={dicePanelState()}
-        onStateChange={setDicePanelState}
-      />
-      <SkillButtonGroup
-        class="absolute bottom-2 right-2"
-        skills={mySkills()}
-        switchActiveButton={switchActiveStep() ?? null}
-        switchActiveCost={
-          localProps.actionState?.realCosts.switchActive ?? null
-        }
-        onClick={onSkillClick}
-        shown={showSkillButtons()}
-      />
-      <ConfirmButton
-        class="absolute top-80% left-50% translate-x--50%"
-        step={localProps.actionState?.availableSteps.find(
-          (s) => s.type === "clickConfirmButton",
-        )}
-        onClick={(step) => {
-          localProps.onStepActionState?.(step, selectedDiceValue());
-        }}
-      />
-      <RoundAndPhaseNotification
-        who={localProps.who}
-        roundNumber={localProps.data.state.roundNumber}
-        currentTurn={localProps.data.state.currentTurn as 0 | 1}
-        class="absolute left-0 w-full top-50% translate-y--50%"
-        info={localProps.data.roundAndPhase}
-      />
-      <Show when={localProps.data.notificationBox} keyed>
-        {(data) => (
-          <NotificationBox opp={data.who !== localProps.who} data={data} />
-        )}
-      </Show>
-      <Show when={localProps.data.playingCard} keyed>
-        {(data) => <PlayingCard opp={data.who !== localProps.who} {...data} />}
-      </Show>
-      <RerollDiceView
-        viewType={localProps.viewType}
-        dice={myDice()}
-        selectedDice={selectedDice()}
-        onSelectDice={setSelectedDice}
-        onConfirm={() => {
-          const dice = selectedDiceValue() as PbDiceType[];
-          setSelectedDice([]);
-          localProps.onRerollDice?.(dice);
-        }}
-      />
-      <SelectCardView
-        viewType={localProps.viewType}
-        candidateIds={localProps.selectCardCandidates}
-        onClickCard={(id) => {
-          dataViewerController.showCard(id);
-        }}
-        onConfirm={(id) => {
-          localProps.onSelectCard?.(id);
-          dataViewerController.hide();
-        }}
-      />
-      <SwitchHandsView
-        viewType={localProps.viewType}
-        onConfirm={() => {
-          const cards = switchedCards();
-          setSwitchedCards([]);
-          localProps.onSwitchHands?.(cards);
-          dataViewerController.hide();
-        }}
-      />
-      <div class="absolute inset-2 pointer-events-none">
-        <CardDataViewer />
-      </div>
-      <MutationViewer who={localProps.who} mutations={allMutations()} />
-      <Show
-        when={localProps.data.state.phase === PbPhaseType.GAME_END}
-        fallback={
-          <button
-            class="absolute right-12 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-            title="放弃对局"
-            onClick={() => {
-              if (confirm("确定放弃对局吗？")) {
-                localProps.onGiveUp?.();
-              }
-            }}
-          >
-            &#10005;
-          </button>
-        }
-      >
-        <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-          {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
-        </div>
-      </Show>
     </div>
   );
 }

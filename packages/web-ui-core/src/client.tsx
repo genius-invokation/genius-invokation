@@ -31,6 +31,7 @@ import {
   type ChessboardViewType,
   type ChessboardData,
   type StepActionStateHandler,
+  type Rotation,
 } from "./components/Chessboard";
 import type {
   ChooseActiveResponse,
@@ -82,8 +83,12 @@ export interface PlayerIOWithCancellation extends PlayerIO {
 
 export type Client = [
   io: PlayerIOWithCancellation,
-  Chessboard: (props: ComponentProps<"div">) => JSX.Element,
+  Chessboard: (props: ClientChessboardProps) => JSX.Element,
 ];
+
+export interface ClientChessboardProps extends ComponentProps<"div"> {
+  rotation?: Rotation;
+}
 
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;

@@ -34,4 +34,6 @@ export {
   createClient,
   type ClientOption,
   type PlayerIOWithCancellation,
+  type Client,
+  type ClientChessboardProps,
 } from "./client.tsx";

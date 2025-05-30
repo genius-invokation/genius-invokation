@@ -1053,7 +1053,9 @@ export class Game {
       result.map((a) =>
         previewer
           .modifyAndPreview(a)
-          .then((a) => applyAutoSelectedDiceToAction(a, player)),
+          .then((a) =>
+            applyAutoSelectedDiceToAction(a, player, this.players[who].config),
+          ),
       ),
     );
   }
