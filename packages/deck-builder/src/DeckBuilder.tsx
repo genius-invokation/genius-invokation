@@ -119,9 +119,9 @@ export function DeckBuilder(props: DeckBuilderProps) {
         },
       }}
     >
-      <div class={`gi-tcg-deck-builder reset ${local.class}`} ref={container}>
+      <div class={`gi-tcg-deck-builder groupxxx reset ${local.class}`} ref={container}>
         <div
-          class="w-full h-full flex flex-row items-stretch gap-3 select-none"
+          class="w-full h-full flex flex-row group-[xxx.mobile]:flex-col items-stretch gap-3 select-none"
           {...rest}
           onClick={() => hide()}
         >
@@ -145,7 +145,7 @@ export function DeckBuilder(props: DeckBuilderProps) {
               )}
             </Match>
           </Switch>
-          <div class="b-r-1 b-gray" />
+          <div class="b-r-1 b-b-1 b-gray" />
           <div />
           <Show when={deckData()}>
             {(deckData) => (

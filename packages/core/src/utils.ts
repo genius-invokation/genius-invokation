@@ -55,6 +55,7 @@ import {
   GiTcgCoreInternalError,
 } from "./error";
 import type { ActionInfoWithModification } from "./preview";
+import type { PlayerConfig } from "./player";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -364,14 +365,17 @@ export function isSkillDisabled(character: CharacterState): boolean {
 export function applyAutoSelectedDiceToAction(
   actionInfo: ActionInfoWithModification,
   player: PlayerState,
+  config: PlayerConfig,
 ): ActionInfoWithModification {
   if (actionInfo.validity !== ActionValidity.VALID) {
     return actionInfo;
   }
   if (actionInfo.type === "elementalTuning") {
-    const tunningDice = player.dice.find(
-      (d) => ![DiceType.Omni, actionInfo.result].includes(d),
-    );
+    const disallowed = [actionInfo.result];
+    if (!config.allowTuningAnyDice) {
+      disallowed.push(DiceType.Omni);
+    }
+    const tunningDice = player.dice.find((d) => !disallowed.includes(d));
     if (!tunningDice) {
       return {
         ...actionInfo,

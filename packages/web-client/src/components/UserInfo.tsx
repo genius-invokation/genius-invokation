@@ -30,7 +30,7 @@ export function UserInfo(props: UserInfoProps) {
   );
   return (
     <div class="flex flex-row container gap-4">
-      <div class="flex flex-col w-45">
+      <div class="hidden md:flex flex-col w-45">
         <div class="rounded-full w-40 h-40 b-solid b-1 b-gray-200 flex items-center justify-center mb-3">
           <Show when={avatarUrl()}>
             <img src={avatarUrl()} class="w-36 h-36 [clip-path:circle()]" />

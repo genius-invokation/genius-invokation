@@ -34,7 +34,9 @@ export const SesshouSakura = summon(114081)
     c.damage(DamageType.Electro, c.getVariable("atk"));
   })
   .on("declareEnd", (c) => c.getVariable("usage") >= 4)
-  .damage(DamageType.Electro, 1)
+  .do((c) => {
+    c.damage(DamageType.Electro, c.getVariable("atk"));
+  })
   .consumeUsage()
   .done();
 

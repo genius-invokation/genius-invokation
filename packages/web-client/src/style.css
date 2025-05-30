@@ -1,8 +1,8 @@
 @unocss;
 
 #app {
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: auto;
 }
 
@@ -29,5 +29,5 @@ dialog:not([open]) {
 }
 
 dialog[open] {
-  transform: scale(1);
+  transform: none;
 }

@@ -457,11 +457,13 @@ function CharacterTagMasks(props: CharacterTagMasksProps) {
     [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_01",
     [CHARACTER_TAG_BARRIER]: "UI_GCG_Shield_02",
     [CHARACTER_TAG_DISABLE_SKILL]: "UI_GCG_Frozen",
+    // [CHARACTER_TAG_ROCK]: "UI_GCG_Rocken",
+    // [CHARACTER_TAG_DIZZY]: "UI_GCG_Dizzy",
   };
   return (
     <WithDelicateUi assetId={Object.values(assets)} fallback={<></>}>
       {(...imgs) => (
-        <div class="absolute inset-0 children-absolute children-h-full children-w-full children-scale-110%">
+        <div class="absolute inset-0 children-absolute children-inset-1/2 children--translate-x-1/2 children--translate-y-1/2 children-h-92% children-w-full children-scale-125%">
           <Index each={Object.keys(assets)}>
             {(flag, i) => (
               <Show when={props.tags & Number(flag())}>{imgs[i]}</Show>
