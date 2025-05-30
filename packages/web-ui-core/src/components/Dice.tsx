@@ -17,6 +17,7 @@ import { DiceType } from "@gi-tcg/typings";
 
 import { Image } from "./Image";
 import { Match, Switch, mergeProps } from "solid-js";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface DiceProps {
   type: number;
@@ -145,6 +146,21 @@ function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
         color: `var(--c-${DICE_COLOR[props.type]})`,
       }}
     >
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="0.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+          <feFlood flood-color="#F7A15B" flood-opacity="1" result="color" />
+          <feComposite in="color" in2="blur" operator="in" result="glowColor" />
+          <feMerge>
+            <feMergeNode in="glowColor" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
       <path
         d="M7.5 2.065L2.97 4.784v5.432l4.53 2.719 4.53-2.719V4.784z"
         stroke-width=".214"
@@ -159,9 +175,10 @@ function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
       <path
         d="M7.5 1.071L2.143 4.286v6.428L7.5 13.93l5.357-3.215V4.286L7.5 1.07zm0 .994l4.53 2.719v5.432L7.5 12.935l-4.53-2.719V4.784L7.5 2.065z"
         fill="#D4C0A5"
-        stroke="#dc2626"
+        stroke="#F7A15B"
         stroke-width={props.selected ? 1 : 0}
         stroke-linejoin="round"
+        filter={props.selected ? "url(#glow)" : undefined}
       />
       <path
         d="M7.5 7.5V2.065L2.97 4.784zM7.5 12.935V7.5l4.53 2.716z"
@@ -188,10 +205,28 @@ export function Dice(props: DiceProps) {
     <div class="relative flex items-center justify-center m--1">
       <Switch>
         <Match when={merged.type === 9}>
-          <EnergyIcon size={merged.size} />
+          <WithDelicateUi
+            assetId="UI_Gcg_DiceL_Energy"
+            fallback={<EnergyIcon size={merged.size} />}>
+            {(image) => (
+              <div class="children-h-full children-w-full children-scale-95%"
+                style={{ height: `${merged.size}px`, width: `${merged.size}px` }}>
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
         </Match>
         <Match when={merged.type === 10}>
-          <LegendIcon size={merged.size} />
+          <WithDelicateUi
+            assetId="UI_Gcg_DiceL_Legend"
+            fallback={<LegendIcon size={merged.size} />}>
+            {(image) => (
+              <div class="children-h-full children-w-full"
+                style={{ height: `${merged.size}px`, width: `${merged.size}px` }}>
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
         </Match>
         <Match when={true}>
           <DiceIcon {...merged} />
@@ -199,24 +234,51 @@ export function Dice(props: DiceProps) {
       </Switch>
       <Switch>
         <Match when={merged.text}>
+          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`} fallback={<></>}>
+            {(image) => (
+              <div class="absolute inset-0 children-h-full children-w-full">
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
           <span
-            class="absolute text-outline text-black data-[void]:text-white data-[color=increased]:text-red-500 data-[color=decreased]:text-green-500"
-            data-color={merged.color}
-            bool:data-void={merged.color === "normal" && merged.type === DiceType.Void}
+            class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold"
             style={{
-              "font-size": `${0.4 * merged.size}px`,
+              "font-size": `${0.5 * merged.size}px`,
+            }}
+          >
+            {merged.text}
+          </span>
+          <span
+            class="absolute text-white font-bold data-[color=increased]:text-red-500 data-[color=decreased]:text-green-500"
+            data-color={merged.color}
+            // bool:data-void={merged.color === "normal" && merged.type === DiceType.Void}
+            style={{
+              "font-size": `${0.5 * merged.size}px`,
             }}
           >
             {merged.text}
           </span>
         </Match>
-        <Match when={merged.type >= 1 && merged.type <= 7}>
-          <Image
-            class="absolute"
-            imageId={merged.type}
-            height={0.6 * merged.size}
-            width={0.6 * merged.size}
-          />
+        <Match when={merged.type >= 1 && merged.type <= 8 && merged.size <= 25}>
+          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_01`} fallback={<></>}>
+            {(image) => (
+              <div class="absolute inset-0 children-h-full children-w-full"
+                bool:data-selected={merged.selected}>
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
+        </Match>
+        <Match when={merged.type >= 1 && merged.type <= 8 && merged.size > 25}>
+          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_02`} fallback={<></>}>
+            {(image) => (
+              <div class="absolute inset-0 children-h-full children-w-full"
+                bool:data-selected={merged.selected}>
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
         </Match>
       </Switch>
     </div>

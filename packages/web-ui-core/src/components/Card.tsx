@@ -246,7 +246,7 @@ export function Card(props: CardProps) {
         </Match>
       </Switch>
       <DiceCost
-        class="absolute left-0 top-1 translate-x--50% backface-hidden flex flex-col gap-1"
+        class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
         cost={data().definitionCost}
         size={36}
         realCost={realCost()}

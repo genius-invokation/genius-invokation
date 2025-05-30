@@ -28,6 +28,9 @@
       entity-triggered 0.5s both,
       entity-disposing 0.2s 0.5s both;
   }
+  [data-selected] {
+    animation: blink 2s ease-in-out infinite;
+  }
   .card {
     --playable-shadow: 0 0 transparent;
     box-shadow: var(--common-shadow), var(--playable-shadow);
@@ -198,5 +201,14 @@
   }
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
 }

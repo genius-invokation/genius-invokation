@@ -133,7 +133,7 @@ function SkillButton(props: SkillButtonProps) {
         bool:data-hidden={props.hideDiceCost}
       >
         <DiceCost
-          class="flex flex-row gap-2px"
+          class="flex flex-row gap-4px"
           cost={props.cost}
           size={26}
           realCost={props.realCost}
