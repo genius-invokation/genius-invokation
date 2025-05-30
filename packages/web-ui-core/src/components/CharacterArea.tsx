@@ -451,7 +451,7 @@ interface CharacterTagMasksProps {
 
 function CharacterTagMasks(props: CharacterTagMasksProps) {
   const assets = {
-    [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_02",
+    [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_01",
     [CHARACTER_TAG_BARRIER]: "UI_GCG_Shield_02",
     [CHARACTER_TAG_DISABLE_SKILL]: "UI_GCG_Frozen",
     // [CHARACTER_TAG_ROCK]: "UI_GCG_Rocken",
