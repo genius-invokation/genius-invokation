@@ -81,7 +81,7 @@ export function AllCharacterCards(props: AllCardsProps) {
             <button
               onClick={() => toggleChTag(Number(imgIdx))}
               data-selected={chTag() === Number(imgIdx)}
-              class="data-[selected=true]:bg-black w-5 h-5"
+              class="data-[selected=true]:bg-black w-10 h-10"
             >
               <DiceIcon id={Number(imgIdx)} />
             </button>
