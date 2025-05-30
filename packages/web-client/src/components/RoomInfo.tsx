@@ -50,7 +50,7 @@ export function RoomInfo(props: RoomInfoProps) {
     },
   );
   return (
-    <div class="w-90 bg-yellow-100 rounded-xl p-4 flex flex-col">
+    <div class="w-75 md:w-90 bg-yellow-100 rounded-xl p-4 flex flex-col">
       <div class="flex flex-row items-center gap-2 mb-3">
         <h4 class="font-semibold">房间 {code()}</h4>
         <Show when={!props.watchable}>

@@ -32,7 +32,7 @@ export function AllCards(props: AllCardsProps) {
   const [tab, setTab] = createSignal(0);
 
   return (
-    <div class="min-w-0 flex-grow h-full flex flex-col min-h-0">
+    <div class="min-w-0 flex-grow h-full group-[xxx.mobile]:h-50dvh flex-shrink-0 flex flex-col min-h-0">
       <div class="flex flex-row gap-2 mb-2">
         <button
           class="data-[active=true]:font-bold"
@@ -61,9 +61,9 @@ export function AllCards(props: AllCardsProps) {
             value={props.version}
             onChange={(e) => props.onSetVersion?.(Number(e.target.value))}
           >
-            <Index each={props.allVersions}>
+            <Index each={props.allVersions.toReversed()}>
               {(versionStr, index) => (
-                <option value={index}>{versionStr()}</option>
+                <option value={props.allVersions.length - 1 - index}>{versionStr()}</option>
               )}
             </Index>
           </select>
