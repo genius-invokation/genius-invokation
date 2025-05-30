@@ -13,28 +13,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { useParams, useSearchParams } from "@solidjs/router";
+import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { Layout } from "../layouts/Layout";
 import { PlayerInfo, roomCodeToId } from "../utils";
 import {
   Show,
   createSignal,
   onMount,
-  on,
-  JSX,
   createEffect,
   onCleanup,
   createResource,
   Switch,
   Match,
+  Component,
+  createUniqueId,
 } from "solid-js";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
 import type { RpcRequest } from "@gi-tcg/typings";
-import { createClient, PlayerIOWithCancellation } from "@gi-tcg/web-ui-core";
+import {
+  Client,
+  createClient,
+  PlayerIOWithCancellation,
+} from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import debounce from "debounce";
+import { Dynamic } from "solid-js/web";
+import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -95,7 +101,11 @@ const createReconnectSse = <T,>(
           }
           resetReconnectTimer(); // Reset the timer on receiving data
           const payload = JSON.parse(value.data);
-          onPayload(payload);
+          try {
+            onPayload(payload);
+          } catch (e) {
+            console.error("Error processing payload:", e);
+          }
         }
 
         if (reconnectTimeout) {
@@ -116,6 +126,8 @@ const createReconnectSse = <T,>(
 export function Room() {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const checkboxId = createUniqueId();
+  const navigate = useNavigate();
   const code = params.code;
   const action = !!searchParams.action;
   const playerId = searchParams.player;
@@ -124,7 +136,7 @@ export function Room() {
   const [initialized, setInitialized] = createSignal<InitializedPayload>();
   const [loading, setLoading] = createSignal(true);
   const [failed, setFailed] = createSignal<null | string>(null);
-  const [chessboard, setChessboard] = createSignal<JSX.Element>();
+  const [chessboard, setChessboard] = createSignal<Component>();
 
   const reportStreamError = async (e: Error) => {
     if (e instanceof AxiosError) {
@@ -166,7 +178,7 @@ export function Room() {
       const [io, Ui] = createClient(payload.who, {
         onGiveUp,
       });
-      setChessboard(<Ui class="h-0" />);
+      setChessboard(() => Ui);
       setPlayerIo(io);
     }
   });
@@ -299,60 +311,78 @@ export function Room() {
 
   let chessboardContainer: HTMLDivElement | undefined;
 
-  const heightNotEnough = window.matchMedia("(max-height: 576px)");
-  const [isHeightNotEnough, setIsHeightNotEnough] = createSignal(
-    heightNotEnough.matches,
-  );
-  const checkHeight = debounce(() => {
-    setIsHeightNotEnough(heightNotEnough.matches);
-  });
+  const mobile = useMobile();
 
   onMount(() => {
     fetchNotification();
     setActionTimer();
-    heightNotEnough.addEventListener("change", checkHeight);
   });
 
   onCleanup(() => {
     setInitialized();
     setPlayerIo();
     cleanActionTimer();
-    heightNotEnough.addEventListener("change", checkHeight);
   });
 
   return (
-    <Layout noHeader={isHeightNotEnough() && !!initialized()}>
-      <div class="has-[.mobile-chessboard]:p-0 container mx-auto flex flex-col">
-        <div class="flex flex-row flex-wrap items-center justify-between mb-3">
-          <div class="flex flex-row flex-wrap gap-3 items-center">
-            <h2 class="text-2xl font-bold flex-shrink-0">房间号：{code}</h2>
-            <Show when={!loading() && !failed() && !initialized()}>
-              <button class="btn btn-outline-red" onClick={deleteRoom}>
-                <i class="i-mdi-delete" />
-              </button>
-            </Show>
-            <Show when={initialized()?.config?.watchable}>
-              <button
-                class="btn btn-outline-primary"
-                title="复制观战链接"
-                onClick={copyWatchLink}
-              >
-                <i class="i-mdi-link-variant" />
-              </button>
-            </Show>
+    <Dynamic
+      component={mobile() && !!chessboard() ? MobileChessboardLayout : Layout}
+    >
+      <div
+        class="data-[mobile]:p-0  data-[mobile]:h-100dvh data-[mobile]:overflow-clip container mx-auto flex flex-col group"
+        bool:data-mobile={mobile() && chessboard()}
+      >
+        <div class="group-data-[mobile]:fixed top-0 right-0 z-100 group-data-[mobile]:translate-x-100% group-data-[mobile]-rotate-90 transform-origin-top-left flex group-data-[mobile]:flex-col flex-row group-data-[mobile]:items-start items-center has-[input:checked]:bg-white group-data-[mobile]:p-4 rounded-br-2xl">
+          <input hidden type="checkbox" class="peer" id={checkboxId} />
+          <label
+            for={checkboxId}
+            class="hidden ml-4 mb-3 group-data-[mobile]:inline-flex btn btn-soft-primary peer-checked:btn-solid-primary text-primary peer-checked:text-white text-1.2rem h-8 w-8 p-0 items-center justify-center opacity-50 peer-checked:opacity-100"
+          >
+            <i class="i-mdi-info" />
+          </label>
+          <div class="flex-grow group-data-[mobile]:hidden group-data-[mobile]:peer-checked:flex flex flex-row group-data-[mobile]:flex-col flex-wrap items-center justify-between mb-3">
+            <div class="flex flex-row flex-wrap gap-3 items-center">
+              <h2 class="text-2xl font-bold flex-shrink-0">房间号：{code}</h2>
+              <Show when={!loading() && !failed() && !initialized()}>
+                <button class="btn btn-outline-red" onClick={deleteRoom}>
+                  <i class="i-mdi-delete" />
+                </button>
+              </Show>
+              <Show when={initialized()?.config?.watchable}>
+                <button
+                  class="btn btn-outline-primary"
+                  title="复制观战链接"
+                  onClick={copyWatchLink}
+                >
+                  <i class="i-mdi-link-variant" />
+                </button>
+              </Show>
+            </div>
+            <div>
+              <Show when={initialized()}>
+                {(payload) => (
+                  <div class="flex group-data-[mobile]:flex-col flex-row items-center">
+                    <div>
+                      <span>{payload().myPlayerInfo.name}（您）</span>
+                      <span class="font-bold"> VS </span>
+                      <span>{payload().oppPlayerInfo.name}</span>
+                    </div>
+                    <span class="group-data-[mobile]:hidden">，</span>
+                    <span>您是{payload().who === 0 ? "先手" : "后手"}</span>
+                  </div>
+                )}
+              </Show>
+            </div>
           </div>
-          <div>
-            <Show when={initialized()}>
-              {(payload) => (
-                <>
-                  <span>{payload().myPlayerInfo.name}（您）</span>
-                  <span class="font-bold"> VS </span>
-                  <span>{payload().oppPlayerInfo.name}</span>
-                  <span>，您是{payload().who === 0 ? "先手" : "后手"}</span>
-                </>
-              )}
-            </Show>
-          </div>
+          <button
+            class="hidden group-data-[mobile]:peer-checked:inline-flex btn btn-outline-blue"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <i class="i-mdi-home" />
+            回到首页
+          </button>
         </div>
         <Switch>
           <Match when={loading() || roomInfo.loading}>
@@ -386,12 +416,11 @@ export function Room() {
         <Show when={initialized()}>
           <div
             class="relative"
-            classList={{ "mobile-chessboard": isHeightNotEnough() }}
             ref={chessboardContainer}
           >
             <Show when={currentTimer()}>
               {(time) => (
-                <div class="absolute top-0 left-[50%] translate-x-[-50%] bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29">
+                <div class="absolute top-0 left-50% translate-x--50% group-data-[mobile]:top-50% group-data-[mobile]:left-100% group-data-[mobile]:rotate-90 group-data-[mobile]:translate-x--100% group-data-[mobile]:translate-y--50% transform-origin-bottom-center bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
                   {Math.max(Math.floor(time() / 60), 0)
                     .toString()
                     .padStart(2, "0")}{" "}
@@ -402,10 +431,15 @@ export function Room() {
                 </div>
               )}
             </Show>
-            {chessboard()}
+            <Dynamic<Client[1]>
+              component={chessboard()}
+              rotation={mobile() ? 90 : 0}
+              class={`${mobile() ? "h-100dvh w-100dvw" : ""}`}
+              data-auto-height={mobile() ? "false" : "true"}
+            />
           </div>
         </Show>
       </div>
-    </Layout>
+    </Dynamic>
   );
 }

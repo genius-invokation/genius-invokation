@@ -990,9 +990,8 @@ export function Chessboard(props: ChessboardProps) {
 
   const onContainerResize = () => {
     const containerWidth = containerEl.clientWidth;
-    const containerHeight = containerEl.clientHeight;
-    const containerUnsetHeight =
-      !containerEl.style.height || containerEl.style.height === "unset";
+    let containerHeight = containerEl.clientHeight;
+    const containerUnsetHeight = containerEl.dataset.autoHeight !== "false";
     const rotate = untrack(() => props.rotation) ?? 0;
     const UNIT = unitInPx();
     let height: number;
@@ -1001,55 +1000,51 @@ export function Chessboard(props: ChessboardProps) {
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
     if (rotate % 180 === 0) {
       if (containerUnsetHeight) {
-        let minHeight: number;
         height = UNIT * MINIMUM_HEIGHT;
         if (containerWidth < UNIT * MINIMUM_WIDTH) {
           width = UNIT * MINIMUM_WIDTH;
-          minHeight = containerWidth * DEFAULT_HEIGHT_WIDTH_RATIO;
+          containerHeight = containerWidth * DEFAULT_HEIGHT_WIDTH_RATIO;
           scale = containerWidth / (UNIT * MINIMUM_WIDTH);
         } else {
           width = containerWidth;
-          minHeight = UNIT * MINIMUM_HEIGHT;
+          containerHeight = UNIT * MINIMUM_HEIGHT;
           scale = 1;
         }
-        containerEl.style.minHeight = `${minHeight}px`;
+        containerEl.style.height = `${containerHeight}px`;
       } else {
-        containerEl.style.minHeight = "";
-        height = Math.max(containerHeight, UNIT * MINIMUM_HEIGHT);
-        width = Math.max(containerWidth, UNIT * MINIMUM_WIDTH);
         scale = Math.min(
-          (containerHeight / UNIT) * MINIMUM_HEIGHT,
-          (containerWidth / UNIT) * MINIMUM_WIDTH,
+          containerHeight / (UNIT * MINIMUM_HEIGHT),
+          containerWidth / (UNIT * MINIMUM_WIDTH),
           1,
         );
+        height = containerHeight / scale;
+        width = containerWidth / scale;
       }
     } else {
       if (containerUnsetHeight) {
-        let minHeight: number;
-        width = MINIMUM_WIDTH;
+        width = UNIT * MINIMUM_WIDTH;
         if (containerWidth < UNIT * MINIMUM_HEIGHT) {
           height = UNIT * MINIMUM_HEIGHT;
-          minHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
+          containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
           scale = containerWidth / (UNIT * MINIMUM_HEIGHT);
         } else {
           height = containerWidth;
-          minHeight = unitInPx() * MINIMUM_WIDTH;
+          containerHeight = unitInPx() * MINIMUM_WIDTH;
           scale = 1;
         }
-        containerEl.style.minHeight = `${minHeight}px`;
+        containerEl.style.height = `${containerHeight}px`;
       } else {
-        containerEl.style.minHeight = "";
-        width = Math.max(containerHeight, UNIT * MINIMUM_HEIGHT);
-        height = Math.max(containerWidth, UNIT * MINIMUM_WIDTH);
         scale = Math.min(
-          (containerHeight / UNIT) * MINIMUM_WIDTH,
-          (containerWidth / UNIT) * MINIMUM_HEIGHT,
+          containerHeight / (UNIT * MINIMUM_WIDTH),
+          containerWidth / (UNIT * MINIMUM_HEIGHT),
           1,
         );
+        height = containerWidth / scale;
+        width = containerHeight / scale;
       }
     }
 
-    console.log({ containerWidth, containerHeight, scale });
+    console.log({ containerWidth, containerHeight, scale, height, width });
     transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
@@ -1404,10 +1399,10 @@ export function Chessboard(props: ChessboardProps) {
           const dy = e2.clientY - initialPointerY;
           const x =
             originalX +
-            (((cos * dx - sin * dy) / transformScale) / unit) * zRatio;
+            ((cos * dx - sin * dy) / transformScale / unit) * zRatio;
           const y =
             originalY +
-            (((sin * dx + cos * dy) / transformScale) / unit) * zRatio;
+            ((sin * dx + cos * dy) / transformScale / unit) * zRatio;
           return [x, y];
         },
       });
@@ -1559,10 +1554,7 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
       ref={containerEl}
     >
-      <div
-        class="relative min-h-xl min-w-3xl h-full w-full bg-green-50 overflow-clip"
-        ref={transformWrapperEl}
-      >
+      <div class="relative  bg-green-50 overflow-clip" ref={transformWrapperEl}>
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}

@@ -136,44 +136,54 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       actionResolvers.chooseActive = resolver;
       const acState = createChooseActiveState(candidateIds);
       setActionState(acState);
-      const response = await resolver.promise;
-      setActionState(null);
-      return response;
+      try {
+        return await resolver.promise;
+      } finally {
+        setActionState(null);
+      }
     },
     action: async ({ action }) => {
       const resolver = Promise.withResolvers<ActionResponse>();
       actionResolvers.action = resolver;
       const acState = createActionState(assetsManager, action);
       setActionState(acState);
-      const response = await resolver.promise;
-      setActionState(null);
-      return response;
+      try {
+        return await resolver.promise;
+      } finally {
+        setActionState(null);
+      }
     },
     switchHands: async () => {
       const resolver = Promise.withResolvers<SwitchHandsResponse>();
       actionResolvers.switchHands = resolver;
       // return { removedHandIds: [] };
       setViewType("switchHands");
-      const result = await resolver.promise;
-      if (result.removedHandIds.length > 0) {
-        setViewType("switchHandsEnd");
-        setTimeout(() => {
+      let result: SwitchHandsResponse | null = null;
+      try {
+        result = await resolver.promise;
+        return result;
+      } finally {
+        if (result && result.removedHandIds.length > 0) {
+          setViewType("switchHandsEnd");
+          setTimeout(() => {
+            setViewType("normal");
+            forceRefreshData();
+          }, 1200);
+        } else {
           setViewType("normal");
-          forceRefreshData();
-        }, 1200);
-      } else {
-        setViewType("normal");
+        }
       }
-      return result;
     },
     selectCard: async ({ candidateDefinitionIds }) => {
       const resolver = Promise.withResolvers<SelectCardResponse>();
       actionResolvers.selectCard = resolver;
       setSelectCardCandidates(candidateDefinitionIds);
       setViewType("selectCard");
-      const result = await resolver.promise;
-      setViewType("normal");
-      return result;
+      try {
+        return await resolver.promise;
+      } finally {
+        setViewType("normal");
+      }
     },
     rerollDice: async () => {
       // 等待当前的 ui 动画渲染完成，但不阻塞后续 ui 更新
@@ -181,13 +191,15 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       const resolver = Promise.withResolvers<RerollDiceResponse>();
       actionResolvers.rerollDice = resolver;
       setViewType("rerollDice");
-      const result = await resolver.promise;
-      setViewType("rerollDiceEnd");
-      setTimeout(
-        () => setViewType((t) => (t === "rerollDiceEnd" ? "normal" : t)),
-        500,
-      );
-      return result;
+      try {
+        return await resolver.promise;
+      } finally {
+        setViewType("rerollDiceEnd");
+        setTimeout(
+          () => setViewType((t) => (t === "rerollDiceEnd" ? "normal" : t)),
+          500,
+        );
+      }
     },
   };
 

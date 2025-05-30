@@ -22,13 +22,10 @@ export interface LayoutProps {
   children?: JSX.Element;
 }
 
-export function Layout(props: LayoutProps) {
+export function MobileChessboardLayout(props: LayoutProps) {
   return (
-    <div class="w-full h-full flex flex-col">
-      <Header />
       <main
-        class="flex-grow w-full p-8 mt-16"
-        classList={{ "min-h-0": props.mainFlex }}
+        class="flex w-full h-full flex-col touch-none"
       >
         <ErrorBoundary
           fallback={(err) => (
@@ -38,8 +35,5 @@ export function Layout(props: LayoutProps) {
           {props.children}
         </ErrorBoundary>
       </main>
-
-      <Footer />
-    </div>
   );
 }
