@@ -219,7 +219,7 @@ export function CharacterArea(props: CharacterAreaProps) {
       <div class="h-36 w-21 relative">
         <Show when={!defeated()}>
           <Health value={data().health} />
-          <div class="absolute z-1 right-1 top-3 translate-x-50% flex flex-col gap-1 items-center">
+          <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
@@ -436,7 +436,10 @@ function Health(props: { value: number }) {
       {(img) => (
         <div class="absolute z-1 left--3 top--4 h-12 children-h-full">
           {img}
-          <div class="absolute inset-0 h-full w-full pt-1 flex items-center justify-center line-height-none text-yellow-900 font-bold">
+          <div class="absolute inset-0 h-full w-full pt-1.5 flex items-center justify-center line-height-none text-yellow-900 font-bold text-stroke-black text-stroke-opacity-70 text-stroke-2">
+            {props.value}
+          </div>
+          <div class="absolute inset-0 h-full w-full pt-1.5 flex items-center justify-center line-height-none text-white font-bold">
             {props.value}
           </div>
         </div>
@@ -454,11 +457,13 @@ function CharacterTagMasks(props: CharacterTagMasksProps) {
     [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_01",
     [CHARACTER_TAG_BARRIER]: "UI_GCG_Shield_02",
     [CHARACTER_TAG_DISABLE_SKILL]: "UI_GCG_Frozen",
+    // [CHARACTER_TAG_ROCK]: "UI_GCG_Rocken",
+    // [CHARACTER_TAG_DIZZY]: "UI_GCG_Dizzy",
   };
   return (
     <WithDelicateUi assetId={Object.values(assets)} fallback={<></>}>
       {(...imgs) => (
-        <div class="absolute inset-0 children-absolute children-h-full children-w-full children-scale-110%">
+        <div class="absolute inset-0 children-absolute children-inset-1/2 children--translate-x-1/2 children--translate-y-1/2 children-h-92% children-w-full children-scale-125%">
           <Index each={Object.keys(assets)}>
             {(flag, i) => (
               <Show when={props.tags & Number(flag())}>{imgs[i]}</Show>

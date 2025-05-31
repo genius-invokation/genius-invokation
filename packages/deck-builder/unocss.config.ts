@@ -19,7 +19,8 @@ export default defineConfig({
   presets: [presetUno()],
   // https://github.com/unocss/unocss/discussions/3444
   postprocess: (obj) => {
-    obj.selector = ".gi-tcg-deck-builder " + obj.selector;
+    const scope = ".gi-tcg-deck-builder";
+    obj.selector += `:where(${scope},${scope} *)`;
   },
   transformers: [transformerDirectives()],
 });

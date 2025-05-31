@@ -40,7 +40,7 @@ export function DiceIcon(props: DiceIconProps) {
       when={url.state === "ready"}
       fallback={CHARACTER_ELEMENT_NAME[Number(props.id)]}
     >
-      <img src={url()} />
+      <img src={url()} class="w-full h-full object-contain" />
     </Show>
   );
 }

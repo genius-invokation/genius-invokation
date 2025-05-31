@@ -14,6 +14,8 @@
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
 
+  overflow: clip;
+
   [data-entering] {
     animation: entity-entering 0.5s both;
   }

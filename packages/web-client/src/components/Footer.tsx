@@ -25,9 +25,9 @@ dayjs.extend(localize).locale("zh-cn");
 export function Footer() {
   const { versionInfo } = useVersionContext();
   return (
-    <footer class="flex flex-row gap-4 p-4 text-sm text-gray-500">
-      <div>© 2024 Guyutongxue</div>
-      <div>
+    <footer class="flex flex-col md:flex-row gap-4 p-4 text-sm text-gray-500">
+      <div class="flex flex-row gap-4">
+        <span>© 2024 Guyutongxue</span>
         <a
           class="text-blue-400"
           href="https://github.com/genius-invokation/genius-invokation"
@@ -70,6 +70,15 @@ export function Footer() {
           )
         </div>
       </Show>
+      <div>
+        <a
+          class="text-blue-400"
+          href="https://qm.qq.com/q/svHK8eJulW"
+          target="_blank"
+        >
+          点击加入用户QQ群
+        </a>
+      </div>
     </footer>
   );
 }
