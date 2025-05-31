@@ -291,7 +291,7 @@ export function Dice(props: DiceProps) {
           >
             {(image) => (
               <div
-                class="absolute inset-0 children-h-full children-w-full"
+                class="absolute inset-0 children-h-full children-w-full delicate-dice"
                 bool:data-selected={merged.selected}
               >
                 {image}

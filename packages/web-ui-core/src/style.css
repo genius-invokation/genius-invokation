@@ -28,9 +28,6 @@
       entity-triggered 0.5s both,
       entity-disposing 0.2s 0.5s both;
   }
-  [data-selected] {
-    animation: blink 4s ease-in-out infinite;
-  }
   .card {
     --playable-shadow: 0 0 transparent;
     box-shadow: var(--common-shadow), var(--playable-shadow);
@@ -88,18 +85,26 @@
 
   .dice-panel {
     background: linear-gradient(
-      to_right,
+      to right,
       #9d907b 2px,
       #86795e 2px,
       #5e4223 50px
     );
     mask-image: linear-gradient(
-      to_bottom,
+      to bottom,
       rgba(0, 0, 0, 0) 8%,
       rgba(0, 0, 0, 0.9) 14%,
       rgba(0, 0, 0, 0.9) 86%,
       rgba(0, 0, 0, 0) 92%
     );
+
+    .delicate-dice {
+      --blink-opacity: 1;
+      animation: blink 4s ease-in-out infinite;
+    }
+    .delicate-dice[data-selected] {
+      --blink-opacity: 0.5;
+    }
   }
 }
 
@@ -224,7 +229,7 @@
 @keyframes blink {
   0%,
   100% {
-    opacity: 0.5;
+    opacity: var(--blink-opacity, 1);
   }
   50% {
     opacity: 1;
