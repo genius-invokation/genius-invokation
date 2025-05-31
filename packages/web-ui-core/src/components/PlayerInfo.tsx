@@ -45,7 +45,28 @@ export function PlayerInfo(props: PlayerInfoProps) {
       data-opp={!!props.opp}
     >
       <div>
-        <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
+        <WithDelicateUi
+          assetId={
+            props.opp ? "UI_Gcg_DiceL_Count_02" : "UI_Gcg_DiceL_Count_01"
+          }
+          fallback={
+           <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
+          }
+        >
+          {(image) => (
+          <div class="relative flex items-center justify-center m--1">
+            <div class="h-10 w-10">{image}</div>
+            <span
+              class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold text-5"
+            >
+              {String(props.diceCount)}
+            </span>
+            <span class="absolute text-white font-bold text-5" >
+              {String(props.diceCount)}
+            </span>
+          </div>
+          )}
+        </WithDelicateUi>
       </div>
       <div class="flex-grow-1" />
       <div class="flex flex-row gap-4 items-center">
