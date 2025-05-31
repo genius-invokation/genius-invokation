@@ -23,7 +23,7 @@ import { character, skill, summon, combatStatus, card, DamageType } from "@gi-tc
  * 可用次数：2
  */
 export const CelestialDreamsphere = summon(111093)
-  .endPhaseDamage(DamageType.cryo, 1)
+  .endPhaseDamage(DamageType.Cryo, 1)
   .usage(2)
   .do((c) => {
     const star = c.$(`my combat status with definition id ${ShootingStar}`);
