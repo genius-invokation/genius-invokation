@@ -32,7 +32,7 @@ export function AllCards(props: AllCardsProps) {
   const [tab, setTab] = createSignal(0);
 
   return (
-    <div class="min-w-0 flex-grow h-full group-[xxx.mobile]:h-50dvh flex-shrink-0 flex flex-col min-h-0">
+    <div class="min-w-0 flex-grow h-full group-[xxx.mobile]:h-50dvh group-[xxx.mobile]:flex-shrink-0 flex flex-col min-h-0">
       <div class="flex flex-row gap-2 mb-2">
         <button
           class="data-[active=true]:font-bold"
