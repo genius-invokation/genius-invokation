@@ -52,7 +52,8 @@
     animation: card-dragging-end 0.2s both;
   }
 
-  .declare-end-marker-img,.skill-button-img {
+  .declare-end-marker-img,
+  .skill-button-img {
     background-image: var(--img-url);
     background-size: contain;
     background-repeat: no-repeat;
@@ -83,6 +84,22 @@
   }
   .skill-button-img:has(.skill-button-img-button:active) {
     background-image: var(--img-active-url);
+  }
+
+  .dice-panel {
+    background: linear-gradient(
+      to_right,
+      #9d907b 2px,
+      #86795e 2px,
+      #5e4223 50px
+    );
+    mask-image: linear-gradient(
+      to_bottom,
+      rgba(0, 0, 0, 0) 8%,
+      rgba(0, 0, 0, 0.9) 14%,
+      rgba(0, 0, 0, 0.9) 86%,
+      rgba(0, 0, 0, 0) 92%
+    );
   }
 }
 
@@ -205,7 +222,8 @@
 }
 
 @keyframes blink {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.5;
   }
   50% {

@@ -49,7 +49,7 @@ export function DicePanel(props: DicePanelProps) {
   return (
     <>
       <div
-        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center transition-right bg-[linear-gradient(to_right,#9d907b_2px,#86795e_2px,#5e4223_50px)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0)_8%,rgba(0,0,0,0.9)_14%,rgba(0,0,0,0.9)_86%,rgba(0,0,0,0)_92%)]"
+        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center transition-right dice-panel"
         data-state={props.state}
       >
         <div
