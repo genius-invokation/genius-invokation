@@ -193,6 +193,8 @@ class Player implements PlayerIOWithError {
   private _roundTimeout = Infinity;
   private _mutationExtraTimeout = 0;
 
+  private _contiguousTimeoutRpcExecuted = 0;
+
   setTimeoutConfig(config: RoomConfig) {
     this._timeoutConfig = config;
     this._roundTimeout = this._timeoutConfig?.initTotalActionTime ?? Infinity;
@@ -232,6 +234,10 @@ class Player implements PlayerIOWithError {
   }
 
   private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
+    this._contiguousTimeoutRpcExecuted++;
+    if (this.playerInfo.isGuest && this._contiguousTimeoutRpcExecuted >= 3) {
+      throw new Error(`Give up actions due to too many timeout of guest`);
+    }
     return dispatchRpc({
       action: async ({ action }) => {
         const declareEndIdx = action.findIndex(
@@ -288,6 +294,7 @@ class Player implements PlayerIOWithError {
           clearInterval(interval);
           setRoundTimeout(resolver.timeout);
           this._rpcResolver = null;
+          this._contiguousTimeoutRpcExecuted = 0;
           resolve(r);
         },
       };
