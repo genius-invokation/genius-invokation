@@ -114,9 +114,9 @@ export const WildThunderburst = skill(24063)
   .costElectro(3)
   .costEnergy(2)
   .if((c) => c.$("opp active")!.energy <= 1)
-  .damage(DamageType.Electro, 3)
+  .damage(DamageType.Electro, 5)
   .else()
-  .damage(DamageType.Electro, 1)
+  .damage(DamageType.Electro, 3)
   .done();
 
 /**
