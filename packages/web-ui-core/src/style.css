@@ -29,7 +29,7 @@
       entity-disposing 0.2s 0.5s both;
   }
   [data-selected] {
-    animation: blink 2s ease-in-out infinite;
+    animation: blink 4s ease-in-out infinite;
   }
   .card {
     --playable-shadow: 0 0 transparent;
@@ -206,7 +206,7 @@
 
 @keyframes blink {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
   50% {
     opacity: 1;

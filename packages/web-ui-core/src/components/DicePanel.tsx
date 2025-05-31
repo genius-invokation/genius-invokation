@@ -16,6 +16,7 @@
 import type { DiceType } from "@gi-tcg/typings";
 import { Index, Match, Show, Switch } from "solid-js";
 import { Dice } from "./Dice";
+import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export type DicePanelState = "hidden" | "wrapped" | "visible";
 
@@ -48,11 +49,11 @@ export function DicePanel(props: DicePanelProps) {
   return (
     <>
       <div
-        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center bg-yellow-700 transition-right"
+        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center transition-right bg-[linear-gradient(to_right,#9d907b_2px,#86795e_2px,#5e4223_50px)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0)_8%,rgba(0,0,0,0.9)_14%,rgba(0,0,0,0.9)_86%,rgba(0,0,0,0)_92%)]"
         data-state={props.state}
       >
         <div
-          class="text-yellow-500 h-60 flex items-center select-none cursor-pointer"
+          class="text-#e7d090 h-60 ml-1 flex items-center select-none cursor-pointer"
           onClick={toggleState}
         >
           {props.state === "visible" ? "\u276F" : "\u276E"}
@@ -86,9 +87,26 @@ export function DicePanel(props: DicePanelProps) {
         bool:data-shown={props.state !== "visible"}
       >
         <div class="m-2 flex flex-col select-none gap-2 items-center">
-          <div class="h-8 w-8 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1 text-yellow-800">
-            {props.dice.length}
-          </div>
+          <WithDelicateUi
+            assetId={"UI_Gcg_DiceL_Count_03"}
+            fallback={
+              <div class="h-8 w-8 mt-10 mr-0.3 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1 text-yellow-800">
+                {props.dice.length}
+              </div>
+            }
+          >
+            {(image) => (
+              <div class="relative h-8 w-8.6 mt-10 mb-1 items-center justify-center">
+                <div class="children-h-full children-w-full">
+                  {image}
+                </div>
+                <div class="absolute inset-0 top-1 flex items-center justify-center text-white font-bold">
+                  {props.dice.length}
+                </div>
+              </div>
+            )}
+          </WithDelicateUi>
+          
           <ul class="flex flex-col gap-2 items-center">
             <Index each={props.dice}>
               {(dice, index) => (

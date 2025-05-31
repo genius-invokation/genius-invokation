@@ -1634,7 +1634,7 @@ export function Chessboard(props: ChessboardProps) {
         when={localProps.data.state.phase === PbPhaseType.GAME_END}
         fallback={
           <button
-            class="absolute right-12 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+            class="absolute right-2.3 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
             title="放弃对局"
             onClick={() => {
               if (confirm("确定放弃对局吗？")) {

@@ -176,7 +176,7 @@ function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
     >
       <defs>
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="0.5" result="blur" />
+          <feGaussianBlur stdDeviation="0.3" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
@@ -204,7 +204,7 @@ function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
         d="M7.5 1.071L2.143 4.286v6.428L7.5 13.93l5.357-3.215V4.286L7.5 1.07zm0 .994l4.53 2.719v5.432L7.5 12.935l-4.53-2.719V4.784L7.5 2.065z"
         fill="#D4C0A5"
         stroke="#F7A15B"
-        stroke-width={props.selected ? 1 : 0}
+        stroke-width={props.selected ? 2 : 0}
         stroke-linejoin="round"
         filter={props.selected ? "url(#glow)" : undefined}
       />
