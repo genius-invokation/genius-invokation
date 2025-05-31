@@ -16,7 +16,7 @@
 import { DiceType } from "@gi-tcg/typings";
 
 import { Image } from "./Image";
-import { Match, Switch, mergeProps } from "solid-js";
+import { Match, Show, Switch, mergeProps } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface DiceProps {
@@ -76,10 +76,13 @@ function EnergyIcon(props: { size: number }) {
             fill="#ffffdf"
           />
         </svg>
-      }>
+      }
+    >
       {(image) => (
-        <div class="children-h-full children-w-full children-scale-95%"
-          style={{ height: `${props.size}px`, width: `${props.size}px` }}>
+        <div
+          class="children-h-full children-w-full children-scale-95%"
+          style={{ height: `${props.size}px`, width: `${props.size}px` }}
+        >
           {image}
         </div>
       )}
@@ -143,10 +146,13 @@ function LegendIcon(props: { size: number }) {
             fill="#81664b"
           />
         </svg>
-      }>
+      }
+    >
       {(image) => (
-        <div class="children-h-full children-w-full"
-          style={{ height: `${props.size}px`, width: `${props.size}px` }}>
+        <div
+          class="children-h-full children-w-full"
+          style={{ height: `${props.size}px`, width: `${props.size}px` }}
+        >
           {image}
         </div>
       )}
@@ -238,7 +244,10 @@ export function Dice(props: DiceProps) {
       </Switch>
       <Switch>
         <Match when={merged.text}>
-          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`} fallback={<></>}>
+          <WithDelicateUi
+            assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`}
+            fallback={<></>}
+          >
             {(image) => (
               <div class="absolute inset-0 children-h-full children-w-full">
                 {image}
@@ -264,21 +273,27 @@ export function Dice(props: DiceProps) {
             {merged.text}
           </span>
         </Match>
-        <Match when={merged.type >= 1 && merged.type <= 8 && merged.size <= 25}>
-          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_01`} fallback={<></>}>
+        <Match when={merged.type >= 1 && merged.type <= 8}>
+          <WithDelicateUi
+            assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_0${
+              1 + +(merged.size > 25)
+            }`}
+            fallback={
+              <Show when={merged.type !== 8}>
+                <Image
+                  class="absolute"
+                  imageId={merged.type}
+                  height={0.6 * merged.size}
+                  width={0.6 * merged.size}
+                />
+              </Show>
+            }
+          >
             {(image) => (
-              <div class="absolute inset-0 children-h-full children-w-full"
-                bool:data-selected={merged.selected}>
-                {image}
-              </div>
-            )}
-          </WithDelicateUi>
-        </Match>
-        <Match when={merged.type >= 1 && merged.type <= 8 && merged.size > 25}>
-          <WithDelicateUi assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_02`} fallback={<></>}>
-            {(image) => (
-              <div class="absolute inset-0 children-h-full children-w-full"
-                bool:data-selected={merged.selected}>
+              <div
+                class="absolute inset-0 children-h-full children-w-full"
+                bool:data-selected={merged.selected}
+              >
                 {image}
               </div>
             )}
