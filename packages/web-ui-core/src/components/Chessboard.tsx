@@ -1555,6 +1555,13 @@ export function Chessboard(props: ChessboardProps) {
       ref={containerEl}
     >
       <div class="relative  bg-green-50 overflow-clip" ref={transformWrapperEl}>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex items-center justify-center">
+              <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-yellow-400 flex items-center justify-center">
+                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#66CCFF_49%,#000000_50%,#66CCFF_51%)] rounded-15%" />
+              </div>
+            </div>
+        </div> 
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}
@@ -1562,7 +1569,7 @@ export function Chessboard(props: ChessboardProps) {
           style={{
             perspective: `${PERSPECTIVE / 4}rem`,
           }}
-        >
+        >  
           <KeyWithAnimation
             each={children().characters}
             updateWhen={updateChildrenSignal()}

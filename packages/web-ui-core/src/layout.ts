@@ -22,12 +22,20 @@ export function unitInPx() {
   return parseFloat(getComputedStyle(document.documentElement).fontSize) / 4;
 }
 
+export function chessBoardSize([height, width]: Size, aspectratio: number = 16 / 9,): Size {
+  if (width / height >= aspectratio) {
+    return [height, height * aspectratio];
+  } else {
+    return [width / aspectratio, width];
+  }
+}
+
 export const PERSPECTIVE = 200;
 export const FOCUSING_HANDS_Z = 10;
 export const DRAGGING_Z = 12;
 
-export const MINIMUM_WIDTH = 192;
-export const MINIMUM_HEIGHT = 144;
+export const MINIMUM_WIDTH = 240;
+export const MINIMUM_HEIGHT = 135;
 
 const EFFECTIVE_MAXIMUM_WIDTH = 240;
 
@@ -49,7 +57,7 @@ const ENTITY_GAP = 4;
 const ENTITY_AREA_HEIGHT = 2 * ENTITY_HEIGHT + ENTITY_GAP;
 const ENTITY_AREA_WIDTH = 2 * ENTITY_WIDTH + ENTITY_GAP;
 
-const HAND_CARD_BLURRED_SHOW_HEIGHT = 18;
+const HAND_CARD_BLURRED_SHOW_HEIGHT = 15;
 const HAND_CARD_BLURRED_SHOW_WIDTH = 10;
 const OPP_HAND_CARD_RIGHT_OFFSET = 21;
 
@@ -67,6 +75,7 @@ const HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING = CARD_HEIGHT + 10;
 
 const SHOING_CARD_GAP_MIN = 10;
 
+
 export function getCharacterAreaPos(
   [height, width]: Size,
   opp: boolean,
@@ -75,11 +84,13 @@ export function getCharacterAreaPos(
   isActive: boolean,
 ): Pos {
   const halfHeight = height / 2;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  const halfChessboardHeight = chessboardHeight / 2;
   const gapAroundCharacterArea =
-    (halfHeight - CHARACTER_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
+    (halfChessboardHeight - CHARACTER_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
   let characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
-    : halfHeight + gapAroundCharacterArea;
+    : halfHeight + gapAroundCharacterArea + 2;
 
   if (isActive === opp) {
     characterAreaY += GADGET_HEIGHT;
@@ -105,22 +116,20 @@ export function getEntityPos(
   }
   const halfHeight = height / 2;
   const halfWidth = width / 2;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  const halfChessboardHeight = chessboardHeight / 2;
   const gapAroundEntityArea =
-    (halfHeight - ENTITY_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
+    (halfChessboardHeight - ENTITY_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
   const entityAreaY = opp
     ? halfHeight - gapAroundEntityArea - ENTITY_AREA_HEIGHT
     : halfHeight + gapAroundEntityArea;
-  const effectiveWidth = Math.min(width, EFFECTIVE_MAXIMUM_WIDTH);
-  const entityXGap =
-    (effectiveWidth - TOTAL_CHARACTERS_MAX_WIDTH - 10 - 2 * ENTITY_AREA_WIDTH) /
-    4;
   const entityAreaX =
     type === "summon"
-      ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + entityXGap
+      ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + 4
       : halfWidth -
-        TOTAL_CHARACTERS_MAX_WIDTH / 2 -
-        entityXGap -
-        ENTITY_AREA_WIDTH;
+      TOTAL_CHARACTERS_MAX_WIDTH / 2 -
+      4 -
+      ENTITY_AREA_WIDTH;
   const x = entityAreaX + (index % 2) * (ENTITY_WIDTH + ENTITY_GAP);
   const y = entityAreaY + Math.floor(index / 2) * (ENTITY_HEIGHT + ENTITY_GAP);
   return [x, y];
@@ -134,19 +143,21 @@ export function getHandCardBlurredPos(
   index: number,
   skillCount: number,
 ): Pos {
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
   if (opp) {
-    let y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT;
+    let y = (height - chessboardHeight) / 2 + HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT - 3;
     if (!showHands) {
       y -= CARD_HEIGHT / 2 - 1;
     }
     const areaX =
-      width -
+      (width - chessboardWidth) / 2 +
+      chessboardWidth -
       OPP_HAND_CARD_RIGHT_OFFSET -
       totalCount * HAND_CARD_BLURRED_SHOW_WIDTH;
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   } else {
-    let y = height - HAND_CARD_BLURRED_SHOW_HEIGHT;
+    let y = (height - chessboardHeight) / 2 + chessboardHeight - HAND_CARD_BLURRED_SHOW_HEIGHT + 2;
     if (!showHands) {
       y += CARD_HEIGHT / 2 + 1;
     }
@@ -155,24 +166,21 @@ export function getHandCardBlurredPos(
       (totalCount - 1) * HAND_CARD_BLURRED_SHOW_WIDTH + CARD_WIDTH;
     let areaX = halfWidth - totalHandCardWidth / 2;
     const skillButtonGroupWidth = skillCount * SKILL_BUTTON_WIDTH + 2;
-    if (areaX + totalHandCardWidth > width - skillButtonGroupWidth) {
-      areaX = width - skillButtonGroupWidth - totalHandCardWidth;
+    if (areaX + totalHandCardWidth > (width - chessboardWidth) / 2 + chessboardWidth - skillButtonGroupWidth) {
+      areaX = (width - chessboardWidth) / 2 + chessboardWidth - skillButtonGroupWidth - totalHandCardWidth;
     }
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   }
 }
 
-function effectiveAreaX(width: number) {
-  return Math.max(0, (width - EFFECTIVE_MAXIMUM_WIDTH) / 2);
-}
-
 export function getPilePos([height, width]: Size, opp: boolean): Pos {
-  const quarterHeight = height / 4;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  const quarterHeight = chessboardHeight / 4;
   const y = opp
-    ? quarterHeight - CARD_WIDTH / 2
-    : height - quarterHeight - CARD_WIDTH / 2;
-  const x = effectiveAreaX(width) + 6 - CARD_HEIGHT;
+    ? (height - chessboardHeight) / 2 + quarterHeight - CARD_WIDTH / 2
+    : (height - chessboardHeight) / 2 + quarterHeight * 3 - CARD_WIDTH / 2;
+  const x = (width - chessboardWidth) / 2 + 20 - CARD_HEIGHT;
   return [x, y];
 }
 
@@ -182,7 +190,8 @@ export function getHandCardFocusedPos(
   index: number,
   hoveringIndex: number | null,
 ): Pos {
-  const yBase = height - HAND_CARD_FOCUSED_SHOW_HEIGHT;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  const yBase = (height - chessboardHeight) / 2 + chessboardHeight - HAND_CARD_FOCUSED_SHOW_HEIGHT;
   let y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
   const halfWidth = width / 2;
 
@@ -210,7 +219,8 @@ export function shouldFocusHandWhenDragging(
   [height, width]: Size,
   currentY: number,
 ) {
-  return currentY >= height - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  return currentY >= (height - chessboardHeight) / 2 + chessboardHeight - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
 }
 
 export function getShowingCardPos(
@@ -218,9 +228,10 @@ export function getShowingCardPos(
   totalCount: number,
   index: number,
 ): Pos {
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
   const y = height / 2 - CARD_HEIGHT / 2;
   const xOffset = Math.min(
-    (width - CARD_WIDTH) / (totalCount - 1),
+    (chessboardWidth - CARD_WIDTH) / (totalCount - 1),
     CARD_WIDTH + SHOING_CARD_GAP_MIN,
   );
   const totalWidth = xOffset * (totalCount - 1) + CARD_WIDTH;
@@ -247,7 +258,7 @@ export function getHandHintPos(size: Size, opp: boolean, value: number) {
   } else {
     const [x, y] = getHandCardFocusedPos(size, value, value - 1, null);
     return {
-      x: x + CARD_WIDTH / 2 - 3,
+      x: x + CARD_WIDTH / 2 - 2,
       y: y - 10,
     };
   }
@@ -259,8 +270,9 @@ export function getTunningAreaPos(
   [height, width]: Size,
   draggingHand: DraggingCardInfo | null,
 ) {
-  const tangent = width / 2 / PERSPECTIVE;
-  let x = width - DRAGGING_Z * tangent;
+  const [chessboardHeight, chessboardWidth] = chessBoardSize([height, width]);
+  const tangent = chessboardWidth / 2 / PERSPECTIVE;
+  let x = (width - chessboardWidth) / 2 + chessboardWidth - DRAGGING_Z * tangent;
   if (draggingHand?.status === "moving" && draggingHand.tuneStep) {
     x -= TUNNING_AREA_WIDTH;
   }
