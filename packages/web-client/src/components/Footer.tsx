@@ -72,10 +72,12 @@ export function Footer() {
       </Show>
       <div>
         <a
-          title="加入我们的用户群"
           class="text-blue-400"
           href="https://qm.qq.com/q/svHK8eJulW"
-        />
+          target="_blank"
+        >
+          点击加入用户QQ群
+        </a>
       </div>
     </footer>
   );
