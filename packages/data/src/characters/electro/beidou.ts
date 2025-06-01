@@ -41,11 +41,10 @@ export const Wavestrider = skill(14054)
   .prepared()
   .do((c) => {
     c.$(`status with definition id ${TidecallerSurfEmbrace} at @self`)?.dispose();
-  }
+  })
   .damage(DamageType.Electro, 3)
   .if((c) => c.self.master.hasEquipment(LightningStorm))
   .characterStatus(SummonerOfLightning, "@master")
-  })
   .done();
 
 /**
