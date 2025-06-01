@@ -211,6 +211,8 @@ export interface SkillInfo {
   cost: PbDiceRequirement[];
   realCost?: PbDiceRequirement[];
   step: ClickSkillButtonActionStep | ClickSwitchActiveButtonActionStep | null;
+  isTechnique?: boolean,
+  energy?: number,
 }
 
 export interface ChessboardData extends ParsedMutation {
@@ -1269,6 +1271,16 @@ export function Chessboard(props: ChessboardProps) {
       ) ?? null
     );
   };
+  const isTechnique = (id: SkillInfo["id"]):boolean => (typeof id === 'number' && id.toString().length > 5);
+  const myActiveEnergy = createMemo(() => {
+    const player = localProps.data.state.player[localProps.who];
+    const { energy = 0, maxEnergy = 1 } = player.character.find((ch) => ch.id === player.activeCharacterId) ?? {};
+    return { energy, maxEnergy };
+  });
+  const energyPercentage = (): number => {
+    const { energy, maxEnergy } = myActiveEnergy();
+    return Math.min(energy / maxEnergy, 1);
+  };
   const mySkills = createMemo<SkillInfo[]>(() => {
     const actionState = localProps.actionState;
     const steps = actionState?.availableSteps ?? [];
@@ -1279,6 +1291,8 @@ export function Chessboard(props: ChessboardProps) {
         cost: sk.definitionCost,
         realCost: realCosts?.get(sk.definitionId),
         step: findSkillStep(steps, sk.definitionId),
+        isTechnique: isTechnique(sk.definitionId),
+        energy: energyPercentage(),
       }),
     );
   });
@@ -1452,7 +1466,7 @@ export function Chessboard(props: ChessboardProps) {
     if (dragging?.id !== cardInfo.id) {
       return;
     }
-    const [tunningAreaX] = getTunningAreaPos([0, width()], dragging);
+    const [tunningAreaX] = getTunningAreaPos([height(), width()], dragging);
     if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
       localProps.onStepActionState?.(cardInfo.tuneStep, selectedDiceValue());
       setDraggingHand({ ...dragging, status: "end" });
@@ -1554,11 +1568,11 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
       ref={containerEl}
     >
-      <div class="relative  bg-green-50 overflow-clip" ref={transformWrapperEl}>
+      <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
         <div class="absolute inset-0 flex items-center justify-center">
             <div class="aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex items-center justify-center">
-              <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-yellow-400 flex items-center justify-center">
-                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#66CCFF_49%,#000000_50%,#66CCFF_51%)] rounded-15%" />
+              <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-#554433 flex items-center justify-center">
+                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]" />
               </div>
             </div>
         </div> 
@@ -1640,67 +1654,95 @@ export function Chessboard(props: ChessboardProps) {
             {(tunningArea) => <TuningArea {...tunningArea()} />}
           </Show>
         </div>
-        <ActionHintText
-          class="absolute left-50% top-50% translate-x--50% translate-y--50%"
-          text={localProps.actionState?.hintText}
-        />
-        <DeclareEndMarker
-          class="absolute left-2 top-50% translate-y--50%"
-          {...declareEndMarkerProps()}
-        />
-        <PlayerInfo
-          opp
-          class="absolute top-0 bottom-[calc(50%+2.75rem)]"
-          {...playerInfoPropsOf(flip(localProps.who))}
-        />
-        <PlayerInfo
-          class="absolute top-[calc(50%+2.75rem)] bottom-0"
-          {...playerInfoPropsOf(localProps.who)}
-        />
-        <DicePanel
-          dice={myDice()}
-          selectedDice={selectedDice()}
-          disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
-          onSelectDice={setSelectedDice}
-          state={dicePanelState()}
-          onStateChange={setDicePanelState}
-        />
-        <SkillButtonGroup
-          class="absolute bottom-2 right-2"
-          skills={mySkills()}
-          switchActiveButton={switchActiveStep() ?? null}
-          switchActiveCost={
-            localProps.actionState?.realCosts.switchActive ?? null
-          }
-          onClick={onSkillClick}
-          shown={showSkillButtons()}
-        />
-        <ConfirmButton
-          class="absolute top-80% left-50% translate-x--50%"
-          step={localProps.actionState?.availableSteps.find(
-            (s) => s.type === "clickConfirmButton",
-          )}
-          onClick={(step) => {
-            localProps.onStepActionState?.(step, selectedDiceValue());
-          }}
-        />
-        <RoundAndPhaseNotification
-          who={localProps.who}
-          roundNumber={localProps.data.state.roundNumber}
-          currentTurn={localProps.data.state.currentTurn as 0 | 1}
-          class="absolute left-0 w-full top-50% translate-y--50%"
-          info={localProps.data.roundAndPhase}
-        />
-        <Show when={localProps.data.notificationBox} keyed>
-          {(data) => (
-            <NotificationBox opp={data.who !== localProps.who} data={data} />
-          )}
-        </Show>
-        <Show when={localProps.data.playingCard} keyed>
-          {(data) => (
-            <PlayingCard opp={data.who !== localProps.who} {...data} />
-          )}
-        </Show>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="absolute aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex children-pointer-events-auto">
+              <ActionHintText
+                class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+                text={localProps.actionState?.hintText}
+              />
+              <DeclareEndMarker
+                class={"absolute top-50% translate-y--50% left-1"}
+                {...declareEndMarkerProps()}
+              />
+              <PlayerInfo
+                opp
+                class="absolute top-2 bottom-[calc(50%+2.75rem)] left-2"
+                {...playerInfoPropsOf(flip(localProps.who))}
+              />
+              <PlayerInfo
+                class="absolute top-[calc(50%+2.75rem)] bottom-2 left-2"
+                {...playerInfoPropsOf(localProps.who)}
+              />
+              <DicePanel
+                dice={myDice()}
+                selectedDice={selectedDice()}
+                disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
+                onSelectDice={setSelectedDice}
+                state={dicePanelState()}
+                onStateChange={setDicePanelState}
+              />
+              <SkillButtonGroup
+                class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
+                skills={mySkills()}
+                switchActiveButton={switchActiveStep() ?? null}
+                switchActiveCost={
+                  localProps.actionState?.realCosts.switchActive ?? null
+                }
+                onClick={onSkillClick}
+                shown={showSkillButtons()}
+              />
+              <ConfirmButton
+                class="absolute top-80% left-50% translate-x--50%"
+                step={localProps.actionState?.availableSteps.find(
+                  (s) => s.type === "clickConfirmButton",
+                )}
+                onClick={(step) => {
+                  localProps.onStepActionState?.(step, selectedDiceValue());
+                }}
+              />
+              <RoundAndPhaseNotification
+                who={localProps.who}
+                roundNumber={localProps.data.state.roundNumber}
+                currentTurn={localProps.data.state.currentTurn as 0 | 1}
+                class="absolute left-0 w-full top-50% translate-y--50%"
+                info={localProps.data.roundAndPhase}
+              />
+              <Show when={localProps.data.notificationBox} keyed>
+                {(data) => (
+                  <NotificationBox opp={data.who !== localProps.who} data={data} />
+                )}
+              </Show>
+              <Show when={localProps.data.playingCard} keyed>
+                {(data) => (
+                  <PlayingCard opp={data.who !== localProps.who} {...data} />
+                )}
+              </Show>
+              <div class="absolute inset-2 pointer-events-none">
+                <CardDataViewer />
+              </div>
+              <MutationViewer who={localProps.who} mutations={allMutations()} />
+              <Show
+                when={localProps.data.state.phase === PbPhaseType.GAME_END}
+                fallback={
+                  <button
+                    class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                    title="放弃对局"
+                    onClick={() => {
+                      if (confirm("确定放弃对局吗？")) {
+                        localProps.onGiveUp?.();
+                      }
+                    }}
+                  >
+                    &#10005;
+                  </button>
+                }
+              >
+                <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+                  {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+                </div>
+              </Show>
+            </div>
+        </div> 
         <RerollDiceView
           viewType={localProps.viewType}
           dice={myDice()}
@@ -1732,30 +1774,6 @@ export function Chessboard(props: ChessboardProps) {
             dataViewerController.hide();
           }}
         />
-        <div class="absolute inset-2 pointer-events-none">
-          <CardDataViewer />
-        </div>
-        <MutationViewer who={localProps.who} mutations={allMutations()} />
-        <Show
-          when={localProps.data.state.phase === PbPhaseType.GAME_END}
-          fallback={
-            <button
-              class="absolute right-2.3 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-              title="放弃对局"
-              onClick={() => {
-                if (confirm("确定放弃对局吗？")) {
-                  localProps.onGiveUp?.();
-                }
-              }}
-            >
-              &#10005;
-            </button>
-          }
-        >
-          <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-            {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
-          </div>
-        </Show>
       </div>
     </div>
   );

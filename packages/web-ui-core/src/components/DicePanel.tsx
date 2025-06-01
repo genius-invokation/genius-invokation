@@ -49,11 +49,12 @@ export function DicePanel(props: DicePanelProps) {
   return (
     <>
       <div
-        class="absolute right--36 data-[state=visible]:right-0 data-[state=wrapped]:right--22 top-0 bottom-0 pr-4 gap-2 w-36 h-full flex flex-row items-center transition-right dice-panel"
+        class="absolute right--40 data-[state=visible]:right--4 data-[state=wrapped]:right--4 top-0 bottom-0 pr-4 gap-2 w-0 data-[state=visible]:w-40 data-[state=wrapped]:w-18 h-full flex flex-row items-center transition-right dice-panel data-[state=hidden]:pr-0"
         data-state={props.state}
       >
         <div
           class="text-#e7d090 h-60 ml-1 flex items-center select-none cursor-pointer"
+          data-state={props.state}
           onClick={toggleState}
         >
           {props.state === "visible" ? "\u276F" : "\u276E"}
@@ -100,7 +101,7 @@ export function DicePanel(props: DicePanelProps) {
                 <div class="children-h-full children-w-full">
                   {image}
                 </div>
-                <div class="absolute inset-0 top-1 flex items-center justify-center text-white font-bold">
+                <div class="absolute inset-0 top-0.5 flex items-center justify-center text-white font-bold">
                   {props.dice.length}
                 </div>
               </div>

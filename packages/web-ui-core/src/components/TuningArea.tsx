@@ -22,8 +22,9 @@ export interface TuningAreaProps extends TunningAreaInfo {}
 export function TuningArea(props: TuningAreaProps) {
   return (
     <div
-      class="absolute top-0 left-0 h-full w-20 invisible data-[shown]:visible transition-all bg-yellow-400/30 data-[card-hovering]:bg-yellow-400/60 flex items-center justify-center text-4xl text-yellow-500"
+      class="absolute top-0 left-0 h-full w-0 data-[shown]:w-20 data-[hidden]:w-0 invisible data-[shown]:visible data-[hidden]:invisible pr-0 data-[shown]:pr-8 data-[hidden]:pr-0 transition-all opacity-75% data-[card-hovering]:opacity-100% flex items-center justify-center text-4xl text-#e7d090 dice-panel"
       bool:data-shown={props.draggingHand?.tuneStep}
+      bool:data-hidden={!props.draggingHand?.tuneStep || props.draggingHand?.status !== "moving"}
       bool:data-card-hovering={props.cardHovering}
       style={cssPropertyOfTransform(props.transform)}
     >
