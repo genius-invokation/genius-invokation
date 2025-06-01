@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard, customEvent, CardState } from "@gi-tcg/core/builder";
 
 // 入场时：获得我方已吞噬卡牌中最高元素骰费用值的「攻击力」，获得该费用的已吞噬卡牌数量的可用次数。
 
@@ -175,6 +175,8 @@ export const ShatteringWaves = skill(22041)
   .damage(DamageType.Physical, 2)
   .done();
 
+const StarfallShowerDisposeCard = customEvent<CardState>("StarfallShowerDisposeCard");
+
 /**
  * @id 22042
  * @name 迸落星雨
@@ -189,12 +191,7 @@ export const StarfallShower = skill(22042)
     const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 3) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
     const [card] = c.disposeMaxCostHands(1);
-    if (card) {
-      if (c.self.hasEquipment(LightlessFeeding)) {
-        c.usagePerRound(1);
-        c.heal(diceCostOfCard(card.definition), "@self");
-      }
-    }
+    c.emitCustomEvent(StarfallShowerDisposeCard, card);
   })
   .done();
 
@@ -255,4 +252,9 @@ export const LightlessFeeding = card(222041)
   .talent(AlldevouringNarwhal)
   .on("enter")
   .useSkill(StarfallShower)
+  .on(StarfallShowerDisposeCard)
+  .usagePerRound(1)
+  .do((c, e) => {
+    c.heal(diceCostOfCard(e.arg.definition), "@master")
+  })
   .done();
