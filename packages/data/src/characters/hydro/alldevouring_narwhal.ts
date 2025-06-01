@@ -44,7 +44,7 @@ export const DarkShadow = summon(122043)
       c.dispose();
     }
   })
-  .on("endPhase")
+  .on("endPhase") //文本有误，实为结束阶段时
   .do((c) => {
     c.damage(DamageType.Electro, c.getVariable("atk"));
     c.consumeUsage();
