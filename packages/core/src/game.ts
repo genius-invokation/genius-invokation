@@ -615,6 +615,12 @@ export class Game {
         DetailLogType.Phase,
         `In action phase (round ${this.state.roundNumber}, turn ${this.state.currentTurn}) (replaced action):`,
       );
+      this.mutate({
+        type: "setPlayerFlag",
+        who,
+        flagName: "canPlunging",
+        value: false,
+      });
       await this.executeSkill(replaceAction, new EventArg(this.state));
       this.mutate({
         type: "switchTurn",
@@ -701,6 +707,16 @@ export class Game {
           varName: "energy",
           value: currentEnergy - requiredEnergy,
           direction: "decrease",
+        });
+      }
+
+      // 非快速行动，重置下落攻击的可能性
+      if (!actionInfo.fast) {
+        this.mutate({
+          type: "setPlayerFlag",
+          who,
+          flagName: "canPlunging",
+          value: false,
         });
       }
 
