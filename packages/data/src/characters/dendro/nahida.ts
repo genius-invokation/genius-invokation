@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -46,7 +46,7 @@ export const SeedOfSkandha: StatusHandle = status(117031)
   })
   .on("damaged", (c, e) =>
     // 当受到“蕴种印造成的一类伤害”时。“一类伤害”的判断方法：伤害来自蕴种印，且非本技能造成的
-    e.source.definition.id === SeedOfSkandha && 
+    e.source.definition.id === SeedOfSkandha &&
     e.via.definition.id !== c.skillInfo.definition.id &&
     e.target.id !== c.self.master().id)
   .listenToPlayer()
@@ -66,7 +66,7 @@ export const ShrineOfMaya01 = combatStatus(117033)
   .duration(3)
   .on("increaseDamage", (c, e) => e.getReaction())
   .increaseDamage(1)
-  .on("enter", (c) => 
+  .on("enter", (c) =>
     c.$("my characters has equipment with definition id 217031") && // 装备有心识蕴藏之种
     c.$("my characters include defeated with tag (electro)") // 我方队伍中存在雷元素
   )
@@ -88,7 +88,7 @@ export const ShrineOfMaya = combatStatus(117032)
   .duration(2)
   .on("increaseDamage", (c, e) => e.getReaction())
   .increaseDamage(1)
-  .on("enter", (c) => 
+  .on("enter", (c) =>
     c.$("my characters has equipment with definition id 217031") && // 装备有心识蕴藏之种
     c.$("my characters include defeated with tag (electro)") // 我方队伍中存在雷元素
   )

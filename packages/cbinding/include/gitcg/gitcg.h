@@ -285,9 +285,9 @@ GITCG_API int gitcg_game_get_error(gitcg_game_t game, char** error);
 
 /**
  * @brief A simple wrapper around libc's `free`.
- * 
+ *
  * Useful when the library is dll-opened by another language.
- * 
+ *
  * @param ptr The address to free
  */
 GITCG_API void gitcg_free_buffer(void* ptr);

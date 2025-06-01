@@ -402,7 +402,7 @@ export class CardBuilder<
   }
 
   /**
-   * 增加 food 标签。通常为剩余没有饱腹的角色附着效果，使用如下 query 获得这些角色：  
+   * 增加 food 标签。通常为剩余没有饱腹的角色附着效果，使用如下 query 获得这些角色：
    * `my characters and not has status with definition id ${Satiated}`
    */
   combatFood(opt: CombatFoodOption = {}) {

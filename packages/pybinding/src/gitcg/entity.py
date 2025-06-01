@@ -38,12 +38,12 @@ class Entity:
 
     def id(self):
         return ll.entity_get_id(self._entity_handle)
-    
+
     def definition_id(self):
         return ll.entity_get_definition_id(self._entity_handle)
-    
+
     def variable(self, name: str) -> int:
         return ll.entity_get_variable(self._entity_handle, name)
-    
+
     def __del__(self):
         ll.entity_free(self._entity_handle)

@@ -8,7 +8,7 @@
     "verbatimModuleSyntax": true,
 
     "noEmit": true,
-    
+
     "useDefineForClassFields": true,
     "esModuleInterop": true,
 

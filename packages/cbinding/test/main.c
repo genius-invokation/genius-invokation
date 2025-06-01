@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
   gitcg_state_t state;
   gitcg_state_new(createparam, &state);
   gitcg_state_createparam_free(createparam);
-  
+
   gitcg_game_t game;
   gitcg_game_new(state, &game);
   gitcg_state_free(state);

@@ -389,7 +389,7 @@ const DandelionField: SummonHandle = summon(115021)
   .endPhaseDamage(DamageType.Anemo, 2)
   .usage(2)
   .heal(1, "my active")
-  .on("increaseDamage", (c, e) => 
+  .on("increaseDamage", (c, e) =>
     c.$(`my equipment with definition id ${LandsOfDandelion}`) && // 装备有天赋的琴在场时
     e.type === DamageType.Anemo
   )
@@ -574,4 +574,3 @@ const RoyalDescentBeholdIttoTheEvil = skill(16053)
   .damage(DamageType.Geo, 5)
   .characterStatus(RagingOniKing)
   .done();
-

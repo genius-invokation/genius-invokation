@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "Preserve",
-    
+
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
 
     "noEmit": true,
-    
+
     "useDefineForClassFields": true,
     "esModuleInterop": true,
 

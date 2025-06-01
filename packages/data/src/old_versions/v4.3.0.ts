@@ -47,7 +47,7 @@ const LightningRod = status(124022)
   .until("v4.3.0")
   .unique()
   .on("increaseDamaged", (c, e) => [
-      ThunderManifestation as number, 
+      ThunderManifestation as number,
       ThunderingShacklesSummon as number
     ].includes(e.source.definition.id))
   .usage(1, { autoDispose: false })
@@ -72,4 +72,3 @@ const GrievingEcho = card(224021)
   .usagePerRound(1)
   .drawCards(1)
   .done();
-

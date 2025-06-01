@@ -9,13 +9,13 @@ QueryLang {
   identifier = ~reservedWord identifierName
   identifierName = identifierStart identifierPart*
 
-  identifierStart = letter | "$" | "_" 
+  identifierStart = letter | "$" | "_"
   identifierPart = identifierStart | digit
 
   reservedWord = keyword
   keyword = kwMy | kwOpp | kwAll | kwCharacter | kwSummon
     | kwCombat | kwSupport | kwStatus | kwEquipment | kwAny
-    | kwActive | kwPrev | kwNext | kwStandby | kwIncludes 
+    | kwActive | kwPrev | kwNext | kwStandby | kwIncludes
     | kwDefeated | kwWeapon | kwElement | kwNation | kwWith
     | kwTag | kwId | kwDefinition | kwAt | kwHas
     | kwRecentFrom | kwOrderBy | kwLimit | kwNot | kwAnd
@@ -24,7 +24,7 @@ QueryLang {
   stringLiteral = "\"" doubleStringCharacter* "\""
   doubleStringCharacter = ~("\"" | "\\" | lineTerminator) sourceCharacter -- nonEscape
     | "\\" escapeSequence --escape
-    
+
   escapeSequence = "\"" | "\\" | "b" | "f" | "n" | "r" | "t" | "v"
 
   numericLiteral = decimalIntegerLiteral "." decimalDigit* --bothParts
@@ -71,7 +71,7 @@ QueryLang {
   kwOr = "or" ~identifierPart
   kwOf = "of" ~identifierPart
 
-  PropertyName = identifier | stringLiteral 
+  PropertyName = identifier | stringLiteral
   ExternalPropertyName = identifier | decimalIntegerLiteral
 
   PrimaryExpression = PropertyName
@@ -116,12 +116,12 @@ QueryLang {
     | kwDefinition kwId "="? Expression -- defId
     | kwTag TagSpecifier -- tag
     | PropertyName relativeOperator Expression -- prop
-    
+
   relativeOperator = ">=" | "<=" | "!=" | "=" | ">" | "<"
 
   TagSpecifier = "(" NonemptyListOf<identifierName, ","> ")" -- direct
     | TagQualifier? kwOf "(" Query ")" -- indirect
-    
+
   TagQualifier = kwWeapon | kwElement | kwNation
 
   UnaryQuery = kwNot UnaryQuery -- not

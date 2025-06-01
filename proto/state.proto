@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -46,12 +46,12 @@ message PlayerState {
   repeated CardState pile_card = 7;
   // 手牌数据
   repeated CardState hand_card = 8;
-  
+
   // 是否已宣布结束
   bool declared_end = 51;
   // 是否使用了秘传牌
   bool legend_used = 52;
-  
+
   // 当前出战角色的主动技能和特技列表
   repeated SkillInfo initiative_skill = 101;
 }
@@ -60,7 +60,7 @@ message CharacterState {
   sint32 id = 1;
   int32 definition_id = 2;
   repeated EntityState entity = 3;
-  
+
   bool defeated = 51;
   int32 health = 52;
   int32 max_health = 53;
@@ -74,9 +74,9 @@ message CharacterState {
 message EntityState {
   sint32 id = 1;
   int32 definition_id = 2;
-  // 指示如何替换文本描述中的变量名 
+  // 指示如何替换文本描述中的变量名
   map<string, string> description_dictionary = 4;
-  
+
   // 显示于召唤物、支援牌右上角的变量名和变量值
   optional string variable_name = 51;
   optional int32 variable_value = 52;

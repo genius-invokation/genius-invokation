@@ -123,26 +123,26 @@ function keyArray<T extends AnimatingElement, U, K>(
  *   {(value, item) => ...}
  * </KeyWithAnimation>
  * ```
- * 
+ *
  * 其中 `each` 需要传入满足
- * 
+ *
  * ```ts
  * interface AnimatingElement {
  *   id: number;
  *   uiState: { isAnimating: boolean };
  * }
  * ```
- * 
+ *
  * 的数据数组，`id` 为数据的键（将对应元素绑定到惟一 DOM 上更新），`isAnimating` 指定该元素是否处在动画中。
- * 
+ *
  * 整个数组的重渲染不由 `each` Signal 触发，而是由 `updateWhen` Signal 触发；当 `updateWhen` 更新的
  * `force` 指为 `false` 时，正在动画中的元素不会被重新渲染（即动画不会被非强制的更新打断）；惟有强制的更新才会更新动画状态的元素。
- * 
+ *
  * 使用时，当：
  * - `<Chessboard>` 中的 `data` 发生更新（即收到了新的 `notification`），设置 `each` 并触发一次强制更新；
  * - 对于 `<Chessboard>` 内部的 UI 布局更新（如视窗 resize、手牌展开与否），设置 `each` 并触发一次非强制的更新；
  * 此时未在动画中的元素会更新到新位置，而动画中的元素不会被打断也不会重新触发动画。
- * 
+ *
  * ```
  */
 export function KeyWithAnimation<T extends AnimatingElement>(props: {

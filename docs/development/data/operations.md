@@ -86,7 +86,7 @@ interface SkillContext {
 
   // 累加 target 的变量值，但是不超过上限 maxLimit
   addVariableWithMax(prop: string, value: number, maxLimit: number, target = "@self"): void;
-  
+
   // 修改关联的扩展点的状态
   setExtensionState(setter: (draft: Draft<...>) => void): void;
 

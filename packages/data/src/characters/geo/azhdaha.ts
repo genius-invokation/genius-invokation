@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -186,7 +186,7 @@ export const FrostspikeWave = skill(66013)
  * @id 6601
  * @name 若陀龙王
  * @description
- * 
+ *
  */
 export const AzhdahaCryo = character(6601)
   .since("v4.3.0")
@@ -213,7 +213,7 @@ export const TorrentialRebuke = skill(66023)
  * @id 6602
  * @name 若陀龙王
  * @description
- * 
+ *
  */
 export const AzhdahaHydro = character(6602)
   .since("v4.3.0")
@@ -240,7 +240,7 @@ export const BlazingRebuke = skill(66033)
  * @id 6603
  * @name 若陀龙王
  * @description
- * 
+ *
  */
 export const AzhdahaPyro = character(6603)
   .since("v4.3.0")
@@ -267,7 +267,7 @@ export const ThunderstormWave = skill(66043)
  * @id 6604
  * @name 若陀龙王
  * @description
- * 
+ *
  */
 export const AzhdahaElectro = character(6604)
   .since("v4.3.0")

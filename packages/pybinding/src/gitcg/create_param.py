@@ -24,8 +24,8 @@ from . import low_level as ll
 class Deck:
     """
     A deck that consists initial characters and action cards that initialize a GI-TCG Game State.
-    In an ordinary GI-TCG game, each player has 3 characters and 30 action cards. 
-    
+    In an ordinary GI-TCG game, each player has 3 characters and 30 action cards.
+
     The `characters` and `cards` is a list of definition ids of characters and action cards respectively.
     """
     characters: list[int]

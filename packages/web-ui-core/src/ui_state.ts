@@ -41,8 +41,8 @@ export const cssPropertyOfTransform = (
   x: Transform,
 ): Record<string, string> => ({
   // "z-index": `${x.zIndex}`,
-  transform: `var(--override-transform, translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem) 
-    rotateY(${x.ry}deg) 
+  transform: `var(--override-transform, translate3d(${x.x / 4}rem, ${x.y / 4}rem, ${x.z / 4}rem)
+    rotateY(${x.ry}deg)
     rotateZ(${x.rz}deg))`,
 });
 

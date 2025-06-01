@@ -17,8 +17,8 @@ const dataUrls = new Map<Blob, string>();
 
 /**
  * Create URL from `Blob`. `URL.createObjectURL` must be available in the environment.
- * @param blob 
- * @returns 
+ * @param blob
+ * @returns
  */
 export function blobToDataUrl(blob: Blob): string {
   if (dataUrls.has(blob)) {

@@ -29,7 +29,7 @@ class StateCreateParam final : public Object {
 
 public:
   using Object::Object;
-  
+
   void set_attribute(int attribute, int value);
   void set_attribute(int attribute, const std::string& value);
 

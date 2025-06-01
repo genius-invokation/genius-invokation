@@ -230,7 +230,7 @@ const MidareRanzanPyro = status(115055)
   .on("useSkill")
   .dispose()
   .done();
-  
+
 /**
  * @id 15052
  * @name 千早振

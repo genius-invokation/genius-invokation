@@ -32,7 +32,7 @@ type PublicValue = true | undefined;
 /**
  * By default, a route can only be accessed by login users.
  * Decorate a route with `@Public()` to allow public access (un-login or guest).
- * @returns 
+ * @returns
  */
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
@@ -51,7 +51,7 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     request.auth = null;
-    
+
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       return isPublic;

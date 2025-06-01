@@ -2,7 +2,7 @@
 
 > **Warning**
 >
-> This package is not designed for public use yet. You should make `solid-js` as a peer dependency to render things exported from this package. For more common scenario, use `@gi-tcg/web-ui` package instead.  
+> This package is not designed for public use yet. You should make `solid-js` as a peer dependency to render things exported from this package. For more common scenario, use `@gi-tcg/web-ui` package instead.
 > This is an ESM-only package.
 
 ## Usage
@@ -19,7 +19,7 @@ function App() {
   const game = new Game(state);
   game.players[0].io = io0;
   game.players[1].io = io1;
-  
+
   onMount(() => {
     game.start();
   });

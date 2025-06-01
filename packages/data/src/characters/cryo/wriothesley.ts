@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -25,7 +25,7 @@ import { character, skill, status, combatStatus, card, DamageType, DiceType } fr
  */
 export const ChillingPenalty = status(111111)
   .on("deductElementDiceSkill", (c, e) => c.self.master().health >= 6 &&
-    e.isSkillType("normal") && 
+    e.isSkillType("normal") &&
     e.canDeductCostOfType(DiceType.Cryo))
   .deductCost(DiceType.Cryo, 1)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
@@ -94,9 +94,9 @@ export const DarkgoldWolfbite = skill(11113)
 
 /**
  * @id 11114
- * @name 
+ * @name
  * @description
- * 
+ *
  */
 export const Skill11114 = skill(11114)
   .type("passive")
@@ -104,9 +104,9 @@ export const Skill11114 = skill(11114)
 
 /**
  * @id 11115
- * @name 
+ * @name
  * @description
- * 
+ *
  */
 export const Skill11115 = skill(11115)
   .type("passive")

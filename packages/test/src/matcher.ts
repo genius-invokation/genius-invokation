@@ -50,5 +50,5 @@ export class StatesMatcher {
     this.toBeUnique();
     expect(this.states[0]).toMatchObject({ id: ref.id });
   }
-  
+
 }

@@ -226,7 +226,7 @@ jobs:
           merge-multiple: true
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-  
+
   Gen-CSharp:
     name: 🦀 Generate C# Binding Code From C Header
     runs-on: ubuntu-latest

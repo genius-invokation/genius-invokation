@@ -105,7 +105,7 @@ interface SkillInfo {
 
   // 此技能的定义
   readonly definition: SkillDefinition;
- 
+
   // 此技能如果是被另一个技能描述请求而发起的，则给出“原始”的 SkillInfo
   readonly requestBy: SkillInfo | null;
 }
@@ -117,4 +117,3 @@ interface SkillInfo {
 - `onSwitchActive` 等，引发了新一步的事件。`Game` 需要将技能中引发的事件广播给所有实体，然后继续调用它们的技能响应。
 
 至于 `Arg`，通常包含了事件的具体信息，比如 `onSwitchActive` 中是从哪个角色切换到了哪个角色。对于卡牌描述，`Arg` 包含了卡牌的使用目标（也包括支援牌在支援区已满时“踢出”的实体）。
-

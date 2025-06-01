@@ -135,8 +135,8 @@ const LightfallSword = summon(111062)
   .until("v3.7.0")
   .hintText("3+")
   .usage(0, { autoDispose: false })
-  .on("useSkill", (c, e) => 
-    e.skill.definition.id === FavoniusBladeworkEdel || 
+  .on("useSkill", (c, e) =>
+    e.skill.definition.id === FavoniusBladeworkEdel ||
     e.skill.definition.id === IcetideVortex)
   .do((c, e) => {
     if (e.skill.definition.id === IcetideVortex &&
@@ -152,4 +152,3 @@ const LightfallSword = summon(111062)
     c.dispose();
   })
   .done();
-

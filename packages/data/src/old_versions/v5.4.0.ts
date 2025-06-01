@@ -137,7 +137,7 @@ const Sigewinne = character(1213)
   .tags("hydro", "bow", "fontaine", "pneuma")
   .health(10)
   .energy(2)
-  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention, 
+  .skills(TargetedTreatment, ReboundHydrotherapy, SuperSaturatedSyringing, DetailedDiagnosisThoroughTreatment01, MedicalInterventionOfPureIntention,
     DetailedDiagnosisThoroughTreatment02, DetailedDiagnosisThoroughTreatment03)
   .done();
 

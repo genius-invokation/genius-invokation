@@ -3,13 +3,13 @@
 .gi-tcg-deck-builder {
   /* Apply some useful reset. See https://github.com/unocss/unocss/blob/main/packages-presets/reset/tailwind-compat.css */
 
-  line-height: 1.5; 
-  -webkit-text-size-adjust: 100%; 
-  -moz-tab-size: 4; 
-  tab-size: 4; 
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
-  font-feature-settings: normal; 
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-feature-settings: normal;
   font-variation-settings: normal;
   -webkit-tap-highlight-color: transparent;
   position: relative;
@@ -17,9 +17,9 @@
   *,
   ::before,
   ::after {
-    box-sizing: border-box; 
+    box-sizing: border-box;
     /* border-width: 0;  */
-    border-style: solid; 
+    border-style: solid;
     border-color: var(--un-default-border-color, #e5e7eb);
   }
 
@@ -36,15 +36,15 @@
   optgroup,
   select,
   textarea {
-    font-family: inherit; 
+    font-family: inherit;
     font-feature-settings: inherit;
-    font-variation-settings: inherit; 
-    font-size: 100%; 
-    font-weight: inherit; 
-    line-height: inherit; 
-    color: inherit; 
-    margin: 0; 
-    padding: 0; 
+    font-variation-settings: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
   }
 
   button,
@@ -56,10 +56,10 @@
   [type="button"],
   [type="reset"],
   [type="submit"] {
-    -webkit-appearance: button; 
+    -webkit-appearance: button;
     /* https://github.com/unocss/unocss/issues/2127 */
     /* background-color: transparent; */
-    background-image: none; 
+    background-image: none;
   }
 
   img,

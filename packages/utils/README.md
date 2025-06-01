@@ -2,5 +2,5 @@
 
 > **Warning**
 >
-> This package is not designed for public use yet.  
+> This package is not designed for public use yet.
 > This is an ESM-only package.

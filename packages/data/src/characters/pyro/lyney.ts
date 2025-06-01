@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -78,7 +78,7 @@ export const PropArrow = skill(13102)
     if (surplusSt) {
       c.addVariableWithMax("surplus", 1, 3, surplusSt);
     } else {
-      c.self.addStatus(PropSurplus);  
+      c.self.addStatus(PropSurplus);
     }
     if (c.self.health >= 6) {
       c.damage(DamageType.Piercing, 1, "@self");
@@ -150,7 +150,7 @@ export const ConclusiveOvation = card(213101)
   .on("enter")
   .useSkill(PropArrow)
   .on("increaseSkillDamage", (c, e) =>
-    [Lyney as number, GrinmalkinHat as number].includes(e.source.definition.id) && 
+    [Lyney as number, GrinmalkinHat as number].includes(e.source.definition.id) &&
     c.of(e.target).aura === Aura.Pyro)
   .usagePerRound(1)
   .increaseDamage(2)

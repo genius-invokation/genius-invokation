@@ -33,7 +33,7 @@ export class Card<Meta extends ContextMetaBase> {
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
   }
-  
+
   get state(): CardState {
     return getEntityById(this.skillContext.state, this.id) as CardState;
   }

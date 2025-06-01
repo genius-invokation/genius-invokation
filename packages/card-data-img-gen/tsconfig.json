@@ -8,7 +8,7 @@
     "verbatimModuleSyntax": true,
 
     "noEmit": true,
-    
+
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "useDefineForClassFields": true,

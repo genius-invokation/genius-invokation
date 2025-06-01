@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,7 +27,7 @@ export const JadeScreenStatus: CombatStatusHandle = combatStatus(116011)
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && e.value >= 2)
   .usage(2)
   .decreaseDamage(1)
-  .on("increaseDamage", (c, e) => e.type === DamageType.Geo && 
+  .on("increaseDamage", (c, e) => e.type === DamageType.Geo &&
     c.$(`my equipment with definition id ${StrategicReserve}`))
   .listenToPlayer()
   .increaseDamage(1)

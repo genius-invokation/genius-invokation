@@ -9,8 +9,8 @@
 ```js
 import {
   characters,
-  actionCards, 
-  entities, 
+  actionCards,
+  entities,
   keywords
 } from "@gi-tcg/static-data";
 ```

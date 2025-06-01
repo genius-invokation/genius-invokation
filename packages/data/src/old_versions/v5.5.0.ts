@@ -13,7 +13,7 @@ const ElementalResonanceSprawlingGreenery = card(331702)
   .costDendro(1)
   .tags("resonance")
   .filter((c) => c.$(`
-    my combat status with definition id ${DendroCore} or 
+    my combat status with definition id ${DendroCore} or
     my combat status with definition id ${CatalyzingField} or
     my summon with definition id ${BurningFlame}`))
   .do((c) => {

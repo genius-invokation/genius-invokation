@@ -66,7 +66,7 @@ class Game:
     ```py
     game = Game(create_param=CreateParam(deck0=DECK0, deck1=DECK1))
     ```
-    
+
     The game can be started and stepped through. A game instance can only be used once.
     ```py
     game.start()

@@ -78,7 +78,7 @@ class State:
         if winner == -1:
             return None
         return winner
-    
+
     def _get_player_flag(self, who: int, p0_attr: int) -> bool:
         assert who == 0 or who == 1
         return bool(ll.state_get_attr(self._state_handle, p0_attr + who))

@@ -106,7 +106,7 @@ export function DicePanel(props: DicePanelProps) {
               </div>
             )}
           </WithDelicateUi>
-          
+
           <ul class="flex flex-col gap-2 items-center">
             <Index each={props.dice}>
               {(dice, index) => (

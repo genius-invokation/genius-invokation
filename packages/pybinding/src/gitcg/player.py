@@ -54,8 +54,8 @@ class Player(ABC):
     def on_notify(self, notification: Notification):
         """
         The player receives `Notification` that includes state and mutation info.
-        
-        **Notice**: your dice and hand cards are provided from here as part of state data. You should use them to determine how to response following `rerollDice` and `switchHands` requests. 
+
+        **Notice**: your dice and hand cards are provided from here as part of state data. You should use them to determine how to response following `rerollDice` and `switchHands` requests.
         """
         pass
 

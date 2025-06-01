@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -215,15 +215,15 @@ export const ElementalResonanceImpetuousWindsInEffect03 = combatStatus(303136)
 export const ElementalResonanceImpetuousWindsInEffect02 = combatStatus(303134)
   .on("increaseDamage", (c, e) => (
     ([
-      Reaction.SwirlCryo, 
-      Reaction.SwirlElectro, 
-      Reaction.SwirlHydro, 
+      Reaction.SwirlCryo,
+      Reaction.SwirlElectro,
+      Reaction.SwirlHydro,
       Reaction.SwirlPyro
     ] as (Reaction | null)[]).includes(e.damageInfo.fromReaction)) &&
     !c.of(e.target).isMine())
   .increaseDamage(1)
   .on("reaction", (c, e) =>
-    e.reactionInfo.fromDamage && 
+    e.reactionInfo.fromDamage &&
     c.of(e.reactionInfo.fromDamage.source).who === c.self.who &&
     e.relatedTo(DamageType.Anemo))
   .listenToAll()
@@ -283,7 +283,7 @@ export const ElementalResonanceSprawlingGreenery = card(331702)
   .costDendro(1)
   .tags("resonance")
   .filter((c) => c.$(`
-    my combat status with definition id ${DendroCore} or 
+    my combat status with definition id ${DendroCore} or
     my summon with definition id ${BountifulCore} or
     my combat status with definition id ${CatalyzingField} or
     my summon with definition id ${BurningFlame}`))
@@ -723,9 +723,9 @@ export const AbyssalSummons = card(332015)
   .do((c) => {
     c.summon(
       c.random([
-        CryoHilichurlShooter, 
-        HydroSamachurl, 
-        HilichurlBerserker, 
+        CryoHilichurlShooter,
+        HydroSamachurl,
+        HilichurlBerserker,
         ElectroHilichurlShooter
       ])
     );
@@ -1290,8 +1290,8 @@ const MELUSINE_EVENT_CARDS = [
   331803, // ThunderAndEternity
   331804, // NatureAndWisdom
   331805, // WaterAndJustice
-  // 331806, 
-  // 331807, 
+  // 331806,
+  // 331807,
 ] as CardHandle[];
 
 /**

@@ -263,7 +263,7 @@ def _on_rpc_handler(
     """
 void (*gitcg_notification_handler)(void* player_data,
                                    const char* notification_data,
-                                   size_t notification_len)     
+                                   size_t notification_len)
 """
 )
 def _on_notify_handler(
