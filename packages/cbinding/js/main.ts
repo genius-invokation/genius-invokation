@@ -28,6 +28,7 @@ import {
   PbPhaseType,
 } from "@gi-tcg/typings";
 import {
+  CURRENT_VERSION,
   deserializeGameStateLog,
   executeQueryOnState,
   GiTcgIoError,
@@ -156,6 +157,7 @@ class GameCreateParameter {
         data: getData(this.dataVersion),
         decks: this.decks,
       }),
+      this.dataVersion ?? CURRENT_VERSION,
     );
   }
 }
@@ -205,18 +207,23 @@ class Entity {
 
 class State {
   public readonly state: InternalState;
-  constructor(state: InternalState) {
+  public readonly gameVersion: Version;
+  constructor(state: InternalState, gameVersion: Version) {
     this.state = state;
+    this.gameVersion = gameVersion;
   }
 
   toJson(): string {
-    return JSON.stringify(
-      serializeGameStateLog([{ state: this.state, canResume: false }]),
-    );
+    return JSON.stringify({
+      gv: this.gameVersion,
+      ...serializeGameStateLog([{ state: this.state, canResume: false }]),
+    });
   }
   static fromJson(json: string): State {
+    const { gv, ...log } = JSON.parse(json);
     return new State(
-      deserializeGameStateLog(getData, JSON.parse(json))[0]!.state,
+      deserializeGameStateLog(getData(gv), JSON.parse(log))[0]!.state,
+      gv,
     );
   }
   query(who: 0 | 1, query: string): Entity[] {
@@ -329,9 +336,11 @@ export class Game {
 
   #game: InternalGame;
   readonly id: number;
+  readonly gameVersion: Version;
 
   constructor(id: number, state: State) {
     this.id = id;
+    this.gameVersion = state.gameVersion;
     this.#game = new InternalGame(state.state);
     this.#game.onPause = (st, m, r) => this.#onPause(st, m, r);
     this.#game.onIoError = (e) => this.#onIoError(e);
@@ -365,7 +374,11 @@ export class Game {
   #stepDoneResolvers = Promise.withResolvers();
 
   #mutations: Mutation[] = [];
-  async #onPause(state: InternalState, mutations: Mutation[], resumable: boolean) {
+  async #onPause(
+    state: InternalState,
+    mutations: Mutation[],
+    resumable: boolean,
+  ) {
     this.#mutations = mutations;
     this.#resumable = resumable;
     this.#stepDoneResolvers = Promise.withResolvers();
@@ -386,7 +399,7 @@ export class Game {
   #error: unknown = null;
   #resumable = false;
   get state() {
-    return new State(this.#game.state);
+    return new State(this.#game.state, this.gameVersion);
   }
   get winner(): number {
     return this.#game.state.winner ?? -1;

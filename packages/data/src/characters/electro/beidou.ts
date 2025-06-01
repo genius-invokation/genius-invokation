@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -25,6 +25,7 @@ import { character, skill, status, combatStatus, card, DamageType, DiceType } fr
 export const SummonerOfLightning = status(114052)
   .oneDuration()
   .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
+  .usage(2)
   .deductVoidCost(1)
   .done();
 
@@ -42,6 +43,8 @@ export const Wavestrider = skill(14054)
     c.$(`status with definition id ${TidecallerSurfEmbrace} at @self`)?.dispose();
   })
   .damage(DamageType.Electro, 3)
+  .if((c) => c.self.master.hasEquipment(LightningStorm))
+  .characterStatus(SummonerOfLightning, "@master")
   .done();
 
 /**
@@ -150,7 +153,4 @@ export const LightningStorm = card(214051)
   .talent(Beidou)
   .on("enter")
   .useSkill(Tidecaller)
-  .on("useSkill", (c, e) => e.skill.definition.id === Wavestrider)
-  .usage(2, { autoDispose: false })
-  .characterStatus(SummonerOfLightning, "@master")
   .done();

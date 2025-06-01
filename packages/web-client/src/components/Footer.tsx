@@ -27,7 +27,7 @@ export function Footer() {
   return (
     <footer class="flex flex-col md:flex-row gap-4 p-4 text-sm text-gray-500">
       <div class="flex flex-row gap-4">
-        <span>© 2024 Guyutongxue</span>
+        <span>© 2025 Guyutongxue</span>
         <a
           class="text-blue-400"
           href="https://github.com/genius-invokation/genius-invokation"

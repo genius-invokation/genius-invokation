@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -76,7 +76,7 @@ export const SingerOfManyWaters = summon(112112)
   .endPhaseDamage(DamageType.Heal, 1, "all my characters")
   .usageCanAppend(2, 4)
   .do((c) => {
-    if (c.$(`my character with health <= 6`)) {
+    if (c.$(`my character with health <= 5`)) {
       c.heal(1, "my characters order by health - maxHealth limit 1");
     }
   })
@@ -173,9 +173,9 @@ export const LetThePeopleRejoice = skill(12113)
 
 /**
  * @id 12114
- * @name 
+ * @name
  * @description
- * 
+ *
  */
 export const Skill12114 = skill(12114)
   .type("passive")
@@ -243,7 +243,7 @@ export const SalonSolitaireOusia = skill(12122)
  * @id 1212
  * @name 芙宁娜
  * @description
- * 
+ *
  */
 export const FurinaOusia = character(1212)
   .since("v4.7.0")

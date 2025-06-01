@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,7 +27,7 @@ export const BakeKurage: SummonHandle = summon(112051)
   .hintText("1")
   .on("endPhase")
   .usageCanAppend(2, 4)
-  .if((c) => c.$(`my equipment with definition id ${TamakushiCasket}`))
+  .if((c) => c.$(`my equipment with definition id ${TamakushiCasket}`) && c.$(`my status with definition id ${CeremonialGarment}`))
   .damage(DamageType.Hydro, 2)
   .else()
   .damage(DamageType.Hydro, 1)
