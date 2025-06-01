@@ -146,7 +146,7 @@ export const DeepDevourersDomain = combatStatus(122041)
       c.setVariable("totalMaxCostCount", 1);
     }
   })
-  .on("endPhase")//文本有误，实为结束阶段时
+  .on("endPhase") // 文本有误，实为结束阶段时
   .do((c, e) => {
     const extraMaxHealth = c.getVariable("extraMaxHealth");
     if (extraMaxHealth) {

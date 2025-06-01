@@ -132,7 +132,10 @@ export const DominanceOfEarth = card(216031)
   .on("enter")
   .useSkill(DominusLapidisStrikingStone)
   .on("increaseDamage", (c, e) => {
-    return c.self.master().health >= 7 && (e.source.definition.id === Zhongli || e.type === DamageType.Geo && e.source.definition.type === "summon")
+    return c.self.master().health >= 7 &&
+    (e.source.definition.id === Zhongli ||
+      e.type === DamageType.Geo &&
+      e.source.definition.type === "summon")
   })
   .listenToPlayer()
   .increaseDamage(1)

@@ -43,6 +43,8 @@ export const Wavestrider = skill(14054)
     c.$(`status with definition id ${TidecallerSurfEmbrace} at @self`)?.dispose();
   })
   .damage(DamageType.Electro, 3)
+  .if((c) => c.self.master.hasEquipment(LightningStorm))
+  .characterStatus(SummonerOfLightning, "@master")
   .done();
 
 /**
@@ -151,7 +153,4 @@ export const LightningStorm = card(214051)
   .talent(Beidou)
   .on("enter")
   .useSkill(Tidecaller)
-  .on("useSkill", (c, e) => e.skill.definition.id === Wavestrider)
-  .usage(2, { autoDispose: false })
-  .characterStatus(SummonerOfLightning, "@master")
   .done();
