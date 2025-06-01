@@ -84,6 +84,13 @@ export const MistySummons = skill(21012)
   .type("elemental")
   .costCryo(3)
   .damage(DamageType.Cryo, 1)
+  .do((c) => {
+    const talent = c.self.hasEquipment(CicinsColdGlare);
+    const cicins = c.$(`my summons with definition id ${CryoCicins}`);
+    if (talent && cicins && cicins.getVariable("usage") >= 2) {
+      c.of(talent).setVariable("dealDamage", 1);
+    }
+  })
   .summon(CryoCicins)
   .done();
 
@@ -129,13 +136,10 @@ export const CicinsColdGlare = card(221011)
   .since("v3.7.0")
   .costCryo(3)
   .talent(FatuiCryoCicinMage)
+  .variable("dealDamage", 0)
   .on("enter")
   .useSkill(MistySummons)
-  .on("useSkill")
-  .do((c) => {
-    const cicins = c.$(`my summons with definition id ${CryoCicins}`);
-    if (cicins && cicins?.getVariable("usage") > 3) { //有待商榷，usage不会超过3，可能需要另外方法实现
-      c.damage(DamageType.Cryo, 2);
-    }
-  })
+  .on("useSkill", (c) => c.getVariable("dealDamage"))
+  .damage(DamageType.Cryo, 2)
+  .setVariable("dealDamage", 0)
   .done();
