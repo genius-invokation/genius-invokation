@@ -1804,7 +1804,6 @@ export function Chessboard(props: ChessboardProps) {
                     {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
                   </div>
                 </Show>
-
               </Show>
             </div>
         </div>
