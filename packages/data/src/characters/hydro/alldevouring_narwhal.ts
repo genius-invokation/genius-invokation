@@ -191,6 +191,7 @@ export const StarfallShower = skill(22042)
     const [card] = c.disposeMaxCostHands(1);
     if (card) {
       if (c.self.hasEquipment(LightlessFeeding)) {
+        c.usagePerRound(1);
         c.heal(diceCostOfCard(card.definition), "@self");
       }
     }
