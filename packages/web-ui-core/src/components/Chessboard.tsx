@@ -1322,6 +1322,16 @@ export function Chessboard(props: ChessboardProps) {
 
   const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
 
+  const [showMenu, setShowMenu] = createSignal(false);
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu());
+  };
+
+  const [backgroundImageUrl, setBackgroundImageUrl] = createSignal<string | null>(null);
+  let fileInputRef: HTMLInputElement | undefined;
+  let objectUrl: string | null = null;
+
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -1551,6 +1561,32 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
+  const handleFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+      objectUrl = URL.createObjectURL(file);
+      setBackgroundImageUrl(objectUrl);
+    }
+  };
+
+  const handleUploadButtonClick = () => {
+  if (backgroundImageUrl()) {
+    // If an image is currently set, restore the default
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
+    setBackgroundImageUrl(null);
+  } else {
+    // If no image is set (or it was restored), trigger file upload
+    fileInputRef?.click();
+  }
+};
+
   onMount(() => {
     onResize();
     onContainerResize();
@@ -1561,6 +1597,10 @@ export function Chessboard(props: ChessboardProps) {
     onContainerResize();
     resizeObserver.disconnect();
     containerResizeObserver.disconnect();
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
   });
   return (
     <div
@@ -1572,10 +1612,19 @@ export function Chessboard(props: ChessboardProps) {
         <div class="absolute inset-0 flex items-center justify-center">
             <div class="aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex items-center justify-center">
               <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-#554433 flex items-center justify-center">
-                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]" />
+                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]"
+                style={{
+        // Use the signal for background image
+        "background-image": backgroundImageUrl() ? `url(${backgroundImageUrl()})` : undefined,
+        // Fallback background color if no image is selected, or original color
+        "background-color": backgroundImageUrl() ? 'transparent' : '#554433',
+        "background-size": "cover", // Ensure the image covers the div
+        "background-position": "center", // Center the image
+        "background-repeat": "no-repeat" // Do not repeat the image
+      }} />
               </div>
             </div>
-        </div> 
+        </div>
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}
@@ -1583,7 +1632,7 @@ export function Chessboard(props: ChessboardProps) {
           style={{
             perspective: `${PERSPECTIVE / 4}rem`,
           }}
-        >  
+        >
           <KeyWithAnimation
             each={children().characters}
             updateWhen={updateChildrenSignal()}
@@ -1720,29 +1769,51 @@ export function Chessboard(props: ChessboardProps) {
               <div class="absolute inset-2 pointer-events-none">
                 <CardDataViewer />
               </div>
-              <MutationViewer who={localProps.who} mutations={allMutations()} />
-              <Show
-                when={localProps.data.state.phase === PbPhaseType.GAME_END}
-                fallback={
-                  <button
-                    class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-                    title="放弃对局"
-                    onClick={() => {
-                      if (confirm("确定放弃对局吗？")) {
-                        localProps.onGiveUp?.();
-                      }
-                    }}
-                  >
-                    &#10005;
+
+              <button
+                class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200
+                text-yellow-800 transition-colors line-height-none cursor-pointer"
+                title={showMenu() ?"收起菜单":"展开菜单"}
+                onClick={toggleMenu}>
+                {showMenu() ?
+                "\u21E5":
+                "\u22EE"}
+              </button>
+              <Show when={showMenu()}>
+                <button
+                      class="absolute right-32.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200
+                      text-yellow-800 transition-colors line-height-none cursor-pointer"
+                      title={backgroundImageUrl()? "恢复默认牌桌":"自定义牌桌"}
+                      onClick={handleUploadButtonClick}
+                    >
+                      {backgroundImageUrl()?"\u27F2":
+                      "\u25A7"}
                   </button>
-                }
-              >
-                <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-                  {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
-                </div>
+                <MutationViewer who={localProps.who} mutations={allMutations()} />
+                <Show
+                  when={localProps.data.state.phase === PbPhaseType.GAME_END}
+                  fallback={
+                    <button
+                      class="absolute right-12.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                      title="放弃对局"
+                      onClick={() => {
+                        if (confirm("确定放弃对局吗？")) {
+                          localProps.onGiveUp?.();
+                        }
+                      }}
+                    >
+                      &#10005;
+                    </button>
+                  }
+                >
+                  <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+                    {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+                  </div>
+                </Show>
+
               </Show>
             </div>
-        </div> 
+        </div>
         <RerollDiceView
           viewType={localProps.viewType}
           dice={myDice()}
@@ -1773,6 +1844,13 @@ export function Chessboard(props: ChessboardProps) {
             localProps.onSwitchHands?.(cards);
             dataViewerController.hide();
           }}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
         />
       </div>
     </div>
