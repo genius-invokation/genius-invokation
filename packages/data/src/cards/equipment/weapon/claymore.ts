@@ -259,7 +259,7 @@ export const PortablePowerSaw = card(311309)
   .disposeMaxCostHands(1)
   .decreaseDamage(1)
   .addVariable("stoic", 1)
-  .on("increaseSkillDamage" (c) => c.getVariable("stoic") > 0)
+  .on("increaseSkillDamage", (c) => c.getVariable("stoic") > 0)
   .do((c, e) => {
     e.increaseDamage(1);
     c.drawCards(c.getVariable("stoic"));
