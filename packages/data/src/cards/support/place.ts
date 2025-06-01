@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -184,7 +184,7 @@ export const SumeruCity = card(321010)
   .costSame(2)
   .support("place")
   .on("deductOmniDice", (c, e) =>
-    (e.isUseSkill() || e.hasCardTag("talent")) && 
+    (e.isUseSkill() || e.hasCardTag("talent")) &&
     (c.player.dice.length <= c.player.hands.length))
   .usagePerRound(1)
   .deductOmniCost(1)
@@ -564,7 +564,8 @@ export const StageTepetl = card(321023)
     const attention = c.getVariable("attention");
     if (attention >= 3) {
       c.generateDice("randomElement", 1);
-    } else if (attention >= 1) {
+    }
+    if (attention >= 1) {
       c.convertDice(DiceType.Omni, 1);
     }
   })
@@ -689,7 +690,7 @@ export const CollectiveOfPlenty = card(321028)
   .costVoid(3)
   .support("place")
   .on("enterRelative", (c, e) =>
-    e.entity.definition.type === "status" && 
+    e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill"))
   .do((c, e) => {
     const ch = c.of<"status">(e.entity).master();

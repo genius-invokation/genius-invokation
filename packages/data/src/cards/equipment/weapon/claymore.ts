@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -253,15 +253,17 @@ export const PortablePowerSaw = card(311309)
   .since("v5.1.0")
   .costSame(2)
   .weapon("claymore")
-  .variable("marker", 0)
+  .variable("stoic", 0)
   .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
   .usagePerRound(1)
   .disposeMaxCostHands(1)
-  .addVariable("marker", 1)
+  .addVariable("stoic", 1)
   .on("increaseSkillDamage")
   .do((c, e) => {
-    e.increaseDamage(1);
-    c.drawCards(c.getVariable("marker"));
-    c.setVariable("marker", 0);
+    if (c.getVariable("stoic") > 0){
+      e.increaseDamage(1);
+      c.drawCards(c.getVariable("stoic"));
+      c.setVariable("stoic", 0);
+    }
   })
   .done();
