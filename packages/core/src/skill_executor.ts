@@ -32,7 +32,11 @@ import {
   UseSkillEventArg,
   ZeroHealthEventArg,
 } from "./base/skill";
-import { type AnyState, type CharacterState, stringifyState } from "./base/state";
+import {
+  type AnyState,
+  type CharacterState,
+  stringifyState,
+} from "./base/state";
 import {
   Aura,
   DamageType,
@@ -87,15 +91,6 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return [];
     }
-    const { who } = getEntityArea(this.state, skillInfo.caller.id);
-    if (skillInfo.plunging) {
-      this.mutate({
-        type: "setPlayerFlag",
-        who,
-        flagName: "canPlunging",
-        value: false,
-      });
-    }
     using l = this.mutator.subLog(
       DetailLogType.Skill,
       `Using skill [skill:${skillInfo.definition.id}]${
@@ -145,6 +140,7 @@ export class SkillExecutor {
         }
       }
       if (skillDef.initiativeSkillConfig || newState !== oldState) {
+        const { who } = getEntityArea(this.state, skillInfo.caller.id);
         prependMutations.push({
           $case: "skillUsed",
           who,
@@ -651,8 +647,8 @@ export class SkillExecutor {
         }
         if (name === "onBeforeUseSkill") {
           this.mutate({
-            type: "clearDelayingEvent"
-          })
+            type: "clearDelayingEvent",
+          });
         }
         using l = this.mutator.subLog(
           DetailLogType.Event,
