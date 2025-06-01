@@ -47,8 +47,8 @@ export const ScopeOutSoftSpots = combatStatus(111131)
     if (take) {
       c.combatStatus(StrikeWhereItHurts);
       consumedUsage += Math.ceil(usage / 2);
+      c.consumeUsage(consumedUsage);
     }
-    c.consumeUsage(consumedUsage);
   })
   .done();
 
