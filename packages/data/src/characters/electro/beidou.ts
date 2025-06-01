@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardDefinition } from "@gi-tcg/core";
 import { character, skill, status, combatStatus, card, DamageType, DiceType } from "@gi-tcg/core/builder";
 
 /**
@@ -42,10 +41,10 @@ export const Wavestrider = skill(14054)
   .prepared()
   .do((c) => {
     c.$(`status with definition id ${TidecallerSurfEmbrace} at @self`)?.dispose();
-    c.damage(DamageType.Electro, 3);
-    if (c.self.hasEquipment(LightningStorm)){
-      c.characterStatus(SummonerOfLightning, "@self")
-    }
+  }
+  .damage(DamageType.Electro, 3)
+  .if((c) => c.self.master.hasEquipment(LightningStorm))
+  .characterStatus(SummonerOfLightning, "@master")
   })
   .done();
 
