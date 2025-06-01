@@ -118,8 +118,9 @@ const ProspectorsDrill = card(311409)
   .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
   .usagePerRound(2)
   .disposeMaxCostHands(1)
+  .decreaseDamage(1)
   .addVariable("solidarity", 1)
-  .on("increaseSkillDamage")
+  .on("increaseSkillDamage", (c) => c.getVariable("solidarity") > 0)
   .do((c, e) => {
     e.increaseDamage(1);
     c.drawCards(c.getVariable("solidarity"));
