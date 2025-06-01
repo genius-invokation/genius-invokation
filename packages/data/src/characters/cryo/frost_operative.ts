@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -82,7 +82,7 @@ export const BloodbondedShadow = skill(21044)
   .do((c, e) => c.setVariable("damageValue", e.damageInfo.value))
   .on("useSkill")
   .do((c) => {
-    const usage = c.getVariable("damageValue") - 2;
+    const usage = Math.min(c.getVariable("damageValue") - 2, 5);
     if (usage > 0) {
       c.characterStatus(BondOfLife, "opp active", {
         overrideVariables: { usage }
