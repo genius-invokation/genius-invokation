@@ -44,7 +44,7 @@ export const DarkShadow = summon(122043)
       c.dispose();
     }
   })
-  .on("endPhase") //文本有误，实为结束阶段时
+  .on("endPhase")
   .do((c) => {
     c.damage(DamageType.Electro, c.getVariable("atk"));
     c.consumeUsage();
@@ -146,7 +146,7 @@ export const DeepDevourersDomain = combatStatus(122041)
       c.setVariable("totalMaxCostCount", 1);
     }
   })
-  .on("endPhase")
+  .on("endPhase")//文本有误，实为结束阶段时
   .do((c, e) => {
     const extraMaxHealth = c.getVariable("extraMaxHealth");
     if (extraMaxHealth) {
