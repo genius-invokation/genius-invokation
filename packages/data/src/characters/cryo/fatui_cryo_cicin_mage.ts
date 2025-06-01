@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -134,7 +134,7 @@ export const CicinsColdGlare = card(221011)
   .on("useSkill")
   .do((c) => {
     const cicins = c.$(`my summons with definition id ${CryoCicins}`);
-    if (cicins && cicins?.getVariable("usage") > 3) {
+    if (cicins && cicins?.getVariable("usage") > 3) { //有待商榷，usage不会超过3，可能需要另外方法实现
       c.damage(DamageType.Cryo, 2);
     }
   })
