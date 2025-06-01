@@ -1573,16 +1573,14 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
-  const handleUploadButtonClick = () => {
+  const handleUploadBackgroundButtonClick = () => {
   if (backgroundImageUrl()) {
-    // If an image is currently set, restore the default
     if (objectUrl) {
       URL.revokeObjectURL(objectUrl);
       objectUrl = null;
     }
     setBackgroundImageUrl(null);
   } else {
-    // If no image is set (or it was restored), trigger file upload
     fileInputRef?.click();
   }
 };
@@ -1614,14 +1612,12 @@ export function Chessboard(props: ChessboardProps) {
               <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-#554433 flex items-center justify-center">
                 <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]"
                 style={{
-        // Use the signal for background image
-        "background-image": backgroundImageUrl() ? `url(${backgroundImageUrl()})` : undefined,
-        // Fallback background color if no image is selected, or original color
-        "background-color": backgroundImageUrl() ? 'transparent' : '#554433',
-        "background-size": "cover", // Ensure the image covers the div
-        "background-position": "center", // Center the image
-        "background-repeat": "no-repeat" // Do not repeat the image
-      }} />
+                  "background-image": backgroundImageUrl() ? `url(${backgroundImageUrl()})` : undefined,
+                  "background-color": backgroundImageUrl() ? 'transparent' : '#554433',
+                  "background-size": "cover",
+                  "background-position": "center",
+                  "background-repeat": "no-repeat"
+                }}/>
               </div>
             </div>
         </div>
@@ -1773,22 +1769,20 @@ export function Chessboard(props: ChessboardProps) {
               <button
                 class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200
                 text-yellow-800 transition-colors line-height-none cursor-pointer"
-                title={showMenu() ?"收起菜单":"展开菜单"}
-                onClick={toggleMenu}>
-                {showMenu() ?
-                "\u21E5":
-                "\u22EE"}
+                title={showMenu() ? "收起菜单" : "展开菜单"}
+                onClick={toggleMenu}
+              >
+                {showMenu() ? "\u21E5": "\u2261"}
               </button>
               <Show when={showMenu()}>
                 <button
-                      class="absolute right-32.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200
-                      text-yellow-800 transition-colors line-height-none cursor-pointer"
-                      title={backgroundImageUrl()? "恢复默认牌桌":"自定义牌桌"}
-                      onClick={handleUploadButtonClick}
-                    >
-                      {backgroundImageUrl()?"\u27F2":
-                      "\u25A7"}
-                  </button>
+                  class="absolute right-32.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200
+                  text-yellow-800 transition-colors line-height-none cursor-pointer"
+                  title={backgroundImageUrl()? "恢复默认牌桌":"自定义牌桌"}
+                  onClick={handleUploadBackgroundButtonClick}
+                >
+                  {backgroundImageUrl() ? "\u27F2" : "\u25A7"}
+                </button>
                 <MutationViewer who={localProps.who} mutations={allMutations()} />
                 <Show
                   when={localProps.data.state.phase === PbPhaseType.GAME_END}

@@ -230,7 +230,7 @@ export function MutationViewer(props: MutationViewerProps) {
         class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
         onClick={() => setShown((v) => !v)}
       >
-        &#8801;
+        {"\u22EE"}
       </button>
     </>
   );
