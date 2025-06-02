@@ -64,7 +64,8 @@ export const ElectricRebirth = status(124061)
       c.$("opp active")!.loseEnergy(1);
     }
   })
-  .characterStatus(ElectricRebirthHoned)
+  .characterStatus(ElectricRebirthHoned, "@master")
+  .dispose()
   .done();
 
 /**
