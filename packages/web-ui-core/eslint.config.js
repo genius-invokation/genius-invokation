@@ -28,6 +28,7 @@ export default [
     rules: {
       semi: 0,
       "@typescript-eslint/semi": 1,
+      "@typescript-eslint/no-non-null-assertion": 1,
       eqeqeq: 1,
       "no-unused-vars": 0,
       "@typescript-eslint/no-unused-vars": 1,

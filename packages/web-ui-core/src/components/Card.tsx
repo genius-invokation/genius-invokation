@@ -16,7 +16,11 @@
 import { createEffect, createMemo, Match, Show, Switch } from "solid-js";
 import { Image } from "./Image";
 import { DiceCost } from "./DiceCost";
-import { cssPropertyOfTransform, type CardAnimatingUiState } from "../ui_state";
+import {
+  cssPropertyOfTransform,
+  type CardAnimatingUiState,
+  type Transform,
+} from "../ui_state";
 import type { CardInfo } from "./Chessboard";
 import { SelectingIcon } from "./SelectingIcon";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
@@ -36,7 +40,14 @@ export interface CardProps extends CardInfo {
 
 const transformKeyframes = (uiState: CardAnimatingUiState): Keyframe[] => {
   const { start, middle, end } = uiState;
-  const fallbackStyle = cssPropertyOfTransform(middle ?? end ?? start!);
+  const EMPTY: Transform = {
+    x: 0,
+    y: 0,
+    z: 0,
+    ry: 0,
+    rz: 0,
+  };
+  const fallbackStyle = cssPropertyOfTransform(middle ?? end ?? start ?? EMPTY);
   const startKeyframe: Keyframe = {
     offset: 0,
     ...(start ? cssPropertyOfTransform(start) : fallbackStyle),

@@ -227,13 +227,16 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const io: PlayerIOWithCancellation = {
     cancelRpc,
     notify: ({ mutation, state }) => {
+      if (!state) {
+        return;
+      }
       uiQueue.push(async () => {
         const parsed = parseMutations(mutation);
         const { promise, resolve } = Promise.withResolvers<void>();
         // console.log(parsed);
         setData({
-          previousState: savedState!,
-          state: state!,
+          previousState: savedState ?? state,
+          state,
           onAnimationFinish: resolve,
           ...parsed,
         } satisfies ChessboardData);
