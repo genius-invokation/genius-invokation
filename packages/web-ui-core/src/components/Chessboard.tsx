@@ -111,6 +111,7 @@ import {
   type PreviewingCharacterInfo,
   type PreviewingEntityInfo,
 } from "../action";
+import { ChessboardBackground } from "./ChessboardBackground";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
 import { ActionHintText } from "./ActionHintText";
 import { ConfirmButton } from "./ConfirmButton";
@@ -211,6 +212,8 @@ export interface SkillInfo {
   cost: PbDiceRequirement[];
   realCost?: PbDiceRequirement[];
   step: ClickSkillButtonActionStep | ClickSwitchActiveButtonActionStep | null;
+  isTechnique?: boolean;
+  energy?: number;
 }
 
 export interface ChessboardData extends ParsedMutation {
@@ -246,6 +249,7 @@ const POST_ROTATION_TRANSFORM = {
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
   rotation?: Rotation;
+  autoHeight?: boolean;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -991,7 +995,7 @@ export function Chessboard(props: ChessboardProps) {
   const onContainerResize = () => {
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
-    const containerUnsetHeight = containerEl.dataset.autoHeight !== "false";
+    const autoHeight = untrack(() => props.autoHeight) ?? true;
     const rotate = untrack(() => props.rotation) ?? 0;
     const UNIT = unitInPx();
     let height: number;
@@ -999,49 +1003,27 @@ export function Chessboard(props: ChessboardProps) {
     let scale: number;
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
     if (rotate % 180 === 0) {
-      if (containerUnsetHeight) {
-        height = UNIT * MINIMUM_HEIGHT;
-        if (containerWidth < UNIT * MINIMUM_WIDTH) {
-          width = UNIT * MINIMUM_WIDTH;
-          containerHeight = containerWidth * DEFAULT_HEIGHT_WIDTH_RATIO;
-          scale = containerWidth / (UNIT * MINIMUM_WIDTH);
-        } else {
-          width = containerWidth;
-          containerHeight = UNIT * MINIMUM_HEIGHT;
-          scale = 1;
-        }
+      if (autoHeight) {
+        containerHeight = 0.9 * DEFAULT_HEIGHT_WIDTH_RATIO * containerWidth;
         containerEl.style.height = `${containerHeight}px`;
-      } else {
-        scale = Math.min(
-          containerHeight / (UNIT * MINIMUM_HEIGHT),
-          containerWidth / (UNIT * MINIMUM_WIDTH),
-          1,
-        );
-        height = containerHeight / scale;
-        width = containerWidth / scale;
       }
+      scale = Math.min(
+        containerHeight / (UNIT * MINIMUM_HEIGHT),
+        containerWidth / (UNIT * MINIMUM_WIDTH),
+      );
+      height = containerHeight / scale;
+      width = containerWidth / scale;
     } else {
-      if (containerUnsetHeight) {
-        width = UNIT * MINIMUM_WIDTH;
-        if (containerWidth < UNIT * MINIMUM_HEIGHT) {
-          height = UNIT * MINIMUM_HEIGHT;
-          containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
-          scale = containerWidth / (UNIT * MINIMUM_HEIGHT);
-        } else {
-          height = containerWidth;
-          containerHeight = unitInPx() * MINIMUM_WIDTH;
-          scale = 1;
-        }
+      if (autoHeight) {
+        containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
         containerEl.style.height = `${containerHeight}px`;
-      } else {
-        scale = Math.min(
-          containerHeight / (UNIT * MINIMUM_WIDTH),
-          containerWidth / (UNIT * MINIMUM_HEIGHT),
-          1,
-        );
-        height = containerWidth / scale;
-        width = containerHeight / scale;
       }
+      scale = Math.min(
+        containerHeight / (UNIT * MINIMUM_WIDTH),
+        containerWidth / (UNIT * MINIMUM_HEIGHT),
+      );
+      height = containerWidth / scale;
+      width = containerHeight / scale;
     }
 
     console.log({ containerWidth, containerHeight, scale, height, width });
@@ -1269,6 +1251,18 @@ export function Chessboard(props: ChessboardProps) {
       ) ?? null
     );
   };
+  const isTechnique = (id: SkillInfo["id"]): boolean =>
+    typeof id === "number" && id.toString().length > 5;
+  const myActiveEnergy = createMemo(() => {
+    const player = localProps.data.state.player[localProps.who];
+    const { energy = 0, maxEnergy = 1 } =
+      player.character.find((ch) => ch.id === player.activeCharacterId) ?? {};
+    return { energy, maxEnergy };
+  });
+  const energyPercentage = (): number => {
+    const { energy, maxEnergy } = myActiveEnergy();
+    return Math.min(energy / maxEnergy, 1);
+  };
   const mySkills = createMemo<SkillInfo[]>(() => {
     const actionState = localProps.actionState;
     const steps = actionState?.availableSteps ?? [];
@@ -1279,6 +1273,8 @@ export function Chessboard(props: ChessboardProps) {
         cost: sk.definitionCost,
         realCost: realCosts?.get(sk.definitionId),
         step: findSkillStep(steps, sk.definitionId),
+        isTechnique: isTechnique(sk.definitionId),
+        energy: energyPercentage(),
       }),
     );
   });
@@ -1452,7 +1448,7 @@ export function Chessboard(props: ChessboardProps) {
     if (dragging?.id !== cardInfo.id) {
       return;
     }
-    const [tunningAreaX] = getTunningAreaPos([0, width()], dragging);
+    const [tunningAreaX] = getTunningAreaPos([height(), width()], dragging);
     if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
       localProps.onStepActionState?.(cardInfo.tuneStep, selectedDiceValue());
       setDraggingHand({ ...dragging, status: "end" });
@@ -1495,7 +1491,9 @@ export function Chessboard(props: ChessboardProps) {
       setShowCardHint("myHand", null);
     }
     setShowDeclareEndButton(false);
-    setSelectingItem({ type: "character", info: characterInfo });
+    if (!props.actionState?.showBackdrop) {
+      setSelectingItem({ type: "character", info: characterInfo });
+    }
     if (characterInfo.clickStep) {
       localProps.onStepActionState?.(
         characterInfo.clickStep,
@@ -1514,7 +1512,9 @@ export function Chessboard(props: ChessboardProps) {
       setShowCardHint("myHand", null);
     }
     setShowDeclareEndButton(false);
-    setSelectingItem({ type: "entity", info: entityInfo });
+    if (!props.actionState?.showBackdrop) {
+      setSelectingItem({ type: "entity", info: entityInfo });
+    }
     if (entityInfo.clickStep) {
       localProps.onStepActionState?.(entityInfo.clickStep, selectedDiceValue());
     }
@@ -1554,7 +1554,8 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
       ref={containerEl}
     >
-      <div class="relative  bg-green-50 overflow-clip" ref={transformWrapperEl}>
+      <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
+        <ChessboardBackground />
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}
@@ -1633,67 +1634,102 @@ export function Chessboard(props: ChessboardProps) {
             {(tunningArea) => <TuningArea {...tunningArea()} />}
           </Show>
         </div>
-        <ActionHintText
-          class="absolute left-50% top-50% translate-x--50% translate-y--50%"
-          text={localProps.actionState?.hintText}
-        />
-        <DeclareEndMarker
-          class="absolute left-2 top-50% translate-y--50%"
-          {...declareEndMarkerProps()}
-        />
-        <PlayerInfo
-          opp
-          class="absolute top-0 bottom-[calc(50%+2.75rem)]"
-          {...playerInfoPropsOf(flip(localProps.who))}
-        />
-        <PlayerInfo
-          class="absolute top-[calc(50%+2.75rem)] bottom-0"
-          {...playerInfoPropsOf(localProps.who)}
-        />
-        <DicePanel
-          dice={myDice()}
-          selectedDice={selectedDice()}
-          disabledDiceTypes={localProps.actionState?.disabledDiceTypes ?? []}
-          onSelectDice={setSelectedDice}
-          state={dicePanelState()}
-          onStateChange={setDicePanelState}
-        />
-        <SkillButtonGroup
-          class="absolute bottom-2 right-2"
-          skills={mySkills()}
-          switchActiveButton={switchActiveStep() ?? null}
-          switchActiveCost={
-            localProps.actionState?.realCosts.switchActive ?? null
-          }
-          onClick={onSkillClick}
-          shown={showSkillButtons()}
-        />
-        <ConfirmButton
-          class="absolute top-80% left-50% translate-x--50%"
-          step={localProps.actionState?.availableSteps.find(
-            (s) => s.type === "clickConfirmButton",
-          )}
-          onClick={(step) => {
-            localProps.onStepActionState?.(step, selectedDiceValue());
-          }}
-        />
-        <RoundAndPhaseNotification
-          who={localProps.who}
-          roundNumber={localProps.data.state.roundNumber}
-          currentTurn={localProps.data.state.currentTurn as 0 | 1}
-          class="absolute left-0 w-full top-50% translate-y--50%"
-          info={localProps.data.roundAndPhase}
-        />
-        <Show when={localProps.data.notificationBox} keyed>
-          {(data) => (
-            <NotificationBox opp={data.who !== localProps.who} data={data} />
-          )}
-        </Show>
-        <Show when={localProps.data.playingCard} keyed>
-          {(data) => (
-            <PlayingCard opp={data.who !== localProps.who} {...data} />
-          )}
-        </Show>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="absolute aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex children-pointer-events-auto">
+            <ActionHintText
+              class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+              text={localProps.actionState?.hintText}
+            />
+            <DeclareEndMarker
+              class={"absolute top-50% translate-y--50% left-1"}
+              {...declareEndMarkerProps()}
+            />
+            <PlayerInfo
+              opp
+              class="absolute top-2 bottom-[calc(50%+2.75rem)] left-2"
+              {...playerInfoPropsOf(flip(localProps.who))}
+            />
+            <PlayerInfo
+              class="absolute top-[calc(50%+2.75rem)] bottom-2 left-2"
+              {...playerInfoPropsOf(localProps.who)}
+            />
+            <DicePanel
+              dice={myDice()}
+              selectedDice={selectedDice()}
+              disabledDiceTypes={
+                localProps.actionState?.disabledDiceTypes ?? []
+              }
+              onSelectDice={setSelectedDice}
+              state={dicePanelState()}
+              onStateChange={setDicePanelState}
+            />
+            <SkillButtonGroup
+              class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
+              skills={mySkills()}
+              switchActiveButton={switchActiveStep() ?? null}
+              switchActiveCost={
+                localProps.actionState?.realCosts.switchActive ?? null
+              }
+              onClick={onSkillClick}
+              shown={showSkillButtons()}
+            />
+            <ConfirmButton
+              class="absolute top-80% left-50% translate-x--50%"
+              step={localProps.actionState?.availableSteps.find(
+                (s) => s.type === "clickConfirmButton",
+              )}
+              onClick={(step) => {
+                localProps.onStepActionState?.(step, selectedDiceValue());
+              }}
+            />
+            <RoundAndPhaseNotification
+              who={localProps.who}
+              roundNumber={localProps.data.state.roundNumber}
+              currentTurn={localProps.data.state.currentTurn as 0 | 1}
+              class="absolute left-0 w-full top-50% translate-y--50%"
+              info={localProps.data.roundAndPhase}
+            />
+            <Show when={localProps.data.notificationBox} keyed>
+              {(data) => (
+                <NotificationBox
+                  opp={data.who !== localProps.who}
+                  data={data}
+                />
+              )}
+            </Show>
+            <Show when={localProps.data.playingCard} keyed>
+              {(data) => (
+                <PlayingCard opp={data.who !== localProps.who} {...data} />
+              )}
+            </Show>
+            <div class="absolute inset-2 pointer-events-none">
+              <CardDataViewer />
+            </div>
+            <MutationViewer who={localProps.who} mutations={allMutations()} />
+            <Show
+              when={localProps.data.state.phase === PbPhaseType.GAME_END}
+              fallback={
+                <button
+                  class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                  title="放弃对局"
+                  onClick={() => {
+                    if (confirm("确定放弃对局吗？")) {
+                      localProps.onGiveUp?.();
+                    }
+                  }}
+                >
+                  &#10005;
+                </button>
+              }
+            >
+              <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+                {localProps.data.state.winner === localProps.who
+                  ? "胜利"
+                  : "失败"}
+              </div>
+            </Show>
+          </div>
+        </div>
         <RerollDiceView
           viewType={localProps.viewType}
           dice={myDice()}
@@ -1725,30 +1761,6 @@ export function Chessboard(props: ChessboardProps) {
             dataViewerController.hide();
           }}
         />
-        <div class="absolute inset-2 pointer-events-none">
-          <CardDataViewer />
-        </div>
-        <MutationViewer who={localProps.who} mutations={allMutations()} />
-        <Show
-          when={localProps.data.state.phase === PbPhaseType.GAME_END}
-          fallback={
-            <button
-              class="absolute right-2.3 top-2 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-              title="放弃对局"
-              onClick={() => {
-                if (confirm("确定放弃对局吗？")) {
-                  localProps.onGiveUp?.();
-                }
-              }}
-            >
-              &#10005;
-            </button>
-          }
-        >
-          <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-            {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
-          </div>
-        </Show>
       </div>
     </div>
   );

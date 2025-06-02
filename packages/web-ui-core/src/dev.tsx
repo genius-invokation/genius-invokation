@@ -80,7 +80,7 @@ function App() {
 
   return (
     <>
-      <Chessboard0 rotation={270} style={{ width: "100vw" }} />
+      <Chessboard0 rotation={90} style={{ width: "100vw", height: "100vh" }} autoHeight={false} />
       <Chessboard1 style={{ width: "100vw" }} />
       <DetailLogViewer logs={logs()} />
     </>

@@ -25,9 +25,12 @@ import type { ClickSwitchActiveButtonActionStep } from "../action";
 import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { DICE_COLOR } from "./Dice";
 
 export interface SkillButtonProps extends SkillInfo {
   hideDiceCost?: boolean;
+  isTechnique?: boolean;
+  energy?: number;
   onClick?: (e: MouseEvent) => void;
 }
 
@@ -49,7 +52,14 @@ function SwitchActiveIcon() {
 
 function SkillButton(props: SkillButtonProps) {
   const skillId = createMemo(() => props.id);
-
+  const color = createMemo(() => {
+    const diceType =
+      props.cost.find((item) => item.type >= 1 && item.type <= 7)?.type ?? 8;
+    return `var(--c-${DICE_COLOR[diceType]})`;
+  });
+  const isBurst = createMemo(
+    () => props.cost.find((item) => item.type === 9) && !props.isTechnique,
+  );
   const children = () => (
     <Switch>
       <Match when={typeof skillId() === "number"}>
@@ -65,7 +75,23 @@ function SkillButton(props: SkillButtonProps) {
   );
 
   return (
-    <div class="w-12 flex flex-col items-center gap-1 group select-none">
+    <div
+      class="relative w-12 flex flex-col items-center gap-1 group select-none"
+      style={{
+        "--color": color(),
+      }}
+    >
+      {/* 元素爆发特效动画 */}
+      <Show when={isBurst() && props.energy === 1}>
+        <For each={[1, 2, 3]}>
+          {(i) => (
+            <div
+              class="absolute inset-0 w-12 h-12 rounded-full border-6 opacity-80 pointer-events-none b-[var(--color)] burst-animator"
+              style={{ "--animation-name": `elemental-burst-${i}` }}
+            />
+          )}
+        </For>
+      </Show>
       <WithDelicateUi
         assetId={[
           "UI_GCG_SkillButton_01",
@@ -75,14 +101,16 @@ function SkillButton(props: SkillButtonProps) {
           "UI_GCG_SkillButton_05",
           "UI_GCG_SkillButton_06",
           "UI_GCG_SkillButton_Choose",
+          "UI_GCG_SkillButton_Burst",
         ]}
         dataUri
         fallback={
           <button
             type="button"
-            class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 data-[focused]:b-yellow-400 b-3 data-[focused]:shadow-[inset_0_0_4px_4px] shadow-yellow shadow-inset hover:bg-yellow-700 active:bg-yellow-600 data-[disabled]:cursor-not-allowed transition-all flex items-center justify-center group"
+            class="relative w-10 h-10 p-0.5 rounded-full bg-yellow-800 b-yellow-900 data-[focused]:b-yellow-400 b-3 data-[focused]:shadow-[inset_0_0_4px_4px] shadow-yellow shadow-inset hover:bg-yellow-700 active:bg-yellow-600 data-[disabled]:cursor-not-allowed transition-all flex items-center justify-center group data-[mini]:w-8 data-[mini]:h-8 data-[mini]:mt-1 data-[mini]:mb-1"
             bool:data-disabled={!props.step || props.step.isDisabled}
             bool:data-focused={props.step?.isFocused}
+            bool:data-mini={props.isTechnique}
             onClick={(e) => props.onClick?.(e)}
             title={props.step ? props.step.tooltipText : "不是你的行动轮"}
           >
@@ -98,11 +126,14 @@ function SkillButton(props: SkillButtonProps) {
           focusedHover,
           focusedActive,
           focusedMarker,
+          burst,
         ) => (
           <div
-            class="relative w-12 h-12 skill-button-img flex items-center justify-center"
+            class="relative w-12 h-12 skill-button-img flex items-center justify-center data-[mini]:w-9.6 data-[mini]:h-9.6 data-[mini]:mt-1.7 data-[mini]:mb-0.7 data-[disabled]:saturate-80 data-[disabled]:brightness-80"
             title={props.step ? props.step.tooltipText : "不是你的行动轮"}
+            bool:data-mini={props.isTechnique}
             bool:data-focused={props.step?.isFocused}
+            bool:data-disabled={!props.step || props.step.isDisabled}
             onClick={(e) => props.onClick?.(e)}
             style={{
               "--img-url": `url(${
@@ -116,11 +147,24 @@ function SkillButton(props: SkillButtonProps) {
               })`,
             }}
           >
+            <Show when={isBurst()}>
+              <img
+                class="absolute top-0 left-0 w-full pointer-events-none"
+                src={burst}
+              />
+              <div
+                class="absolute w-11.5 h-11.5 rounded-full border-3.2 saturate-100 brightness-100 pointer-events-none b-[var(--color)] burst-progress"
+                style={{
+                  "--progress-value": (100 * (props.energy ?? 0)).toFixed(0) + '%',
+                }}
+              />
+            </Show>
             <Show when={props.step?.isFocused}>
               <img class="absolute top--1 left-0 w-full" src={focusedMarker} />
             </Show>
             <button
-              class="skill-button-img-button w-full rounded-full p-2 flex items-center justify-center"
+              class="skill-button-img-button w-full rounded-full p-1.5 flex items-center justify-center data-[abled]:bg-[radial-gradient(circle_at_center,#d67f3f_0%,transparent_45%)] group"
+              bool:data-abled={props.step && !props.step.isDisabled}
               bool:data-disabled={!props.step || props.step.isDisabled}
             >
               {children()}
@@ -128,9 +172,39 @@ function SkillButton(props: SkillButtonProps) {
           </div>
         )}
       </WithDelicateUi>
+      {/* 禁用标志 */}
+      <Show when={!props.step}>
+        <div class="absolute top-7 left-7 w-5 h-5 flex p-0.7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_center,#38200d_0%,#624522_60%,#624522_66%,#38200d_70%)]">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="24"
+              cy="24"
+              r="20"
+              stroke="#897660"
+              stroke-width="6"
+              fill="none"
+            />
+            <line
+              x1="38"
+              y1="10"
+              x2="10"
+              y2="38"
+              stroke="#897660"
+              stroke-width="6"
+            />
+          </svg>
+        </div>
+      </Show>
       <div
-        class="data-[hidden]:invisible"
+        class="data-[hidden]:invisible mt--0.5 data-[disabled]:saturate-80 data-[disabled]:brightness-80"
         bool:data-hidden={props.hideDiceCost}
+        bool:data-disabled={!props.step || props.step.isDisabled}
       >
         <DiceCost
           class="flex flex-row gap-4px"
@@ -175,12 +249,12 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
   });
   return (
     <div
-      class={`flex flex-row gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto ${
+      class={`flex flex-row-reverse gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto ${
         props.class ?? ""
       }`}
       bool:data-shown={props.shown}
     >
-      <Key each={skills()} by="id">
+      <Key each={[...skills()].reverse()} by="id">
         {(skill) => (
           <SkillButton
             {...skill()}
