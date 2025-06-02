@@ -10,7 +10,7 @@ export interface ConfirmButtonProps {
 export function ConfirmButton(props: ConfirmButtonProps) {
   return (
     <div
-      class={`opacity-0 data-[shown]:pointer-events-auto data-[shown]:opacity-100 transition-opacity ${
+      class={`opacity-0 pointer-events-none data-[shown]:pointer-events-auto data-[shown]:opacity-100 transition-opacity ${
         props.class ?? ""
       }`}
       bool:data-shown={props.step}
