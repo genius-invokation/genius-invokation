@@ -110,6 +110,20 @@
       --blink-opacity: 0.5;
     }
   }
+
+  .burst-animator {
+    box-shadow:
+      inset 0 0 20px var(--color),
+      0 0 20px var(--color);
+    animation: var(--animation-name) 3s linear infinite;
+  }
+  .burst-progress {
+    mask-image: linear-gradient(
+      to top,
+      #ffffffff var(--progress-value),
+      transparent var(--progress-value)
+    );
+  }
 }
 
 @keyframes entity-entering {
@@ -241,28 +255,82 @@
 }
 
 @keyframes elemental-burst-1 {
-  0% { transform: scale(1); opacity: 0; }
-  20% { transform: scale(1.15); opacity: 0.7; }
-  40% { transform: scale(1.275); opacity: 0.45; }
-  60% { transform: scale(1.375); opacity: 0.25; }
-  80% { transform: scale(1.45); opacity: 0.1; }
-  100% { transform: scale(1.5); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+  40% {
+    transform: scale(1.275);
+    opacity: 0.45;
+  }
+  60% {
+    transform: scale(1.375);
+    opacity: 0.25;
+  }
+  80% {
+    transform: scale(1.45);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
 }
 
 @keyframes elemental-burst-2 {
-  0% { transform: scale(1); opacity: 0; }
-  20% { transform: scale(1); opacity: 0; }
-  40% { transform: scale(1); opacity: 0; }
-  60% { transform: scale(1); opacity: 0.35; }
-  80% { transform: scale(1.15); opacity: 0.7; }
-  100% { transform: scale(1.275); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  80% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.275);
+    opacity: 0;
+  }
 }
 
 @keyframes elemental-burst-3 {
-  0% { transform: scale(1.375); opacity: 0; }
-  20% { transform: scale(1.45); opacity: 0.25; }
-  40% { transform: scale(1.5); opacity: 0; }
-  60% { transform: scale(1); opacity: 0; }
-  80% { transform: scale(1); opacity: 0; }
-  100% { transform: scale(1.375); opacity: 0; }
+  0% {
+    transform: scale(1.375);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.45);
+    opacity: 0.25;
+  }
+  40% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.375);
+    opacity: 0;
+  }
 }

@@ -88,6 +88,7 @@ export type Client = [
 
 export interface ClientChessboardProps extends ComponentProps<"div"> {
   rotation?: Rotation;
+  autoHeight?: boolean;
 }
 
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {

@@ -216,7 +216,7 @@ export function MutationViewer(props: MutationViewerProps) {
   return (
     <>
       <div
-        class="hidden data-[shown]:block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto"
+        class="hidden data-[shown]:block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto bg-gray/20"
         bool:data-shown={shown()}
         ref={scrollRef}
       >

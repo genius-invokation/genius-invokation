@@ -111,6 +111,7 @@ import {
   type PreviewingCharacterInfo,
   type PreviewingEntityInfo,
 } from "../action";
+import { ChessboardBackground } from "./ChessboardBackground";
 import { ChessboardBackdrop } from "./ChessboardBackdrop";
 import { ActionHintText } from "./ActionHintText";
 import { ConfirmButton } from "./ConfirmButton";
@@ -248,6 +249,7 @@ const POST_ROTATION_TRANSFORM = {
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
   rotation?: Rotation;
+  autoHeight?: boolean;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -993,7 +995,7 @@ export function Chessboard(props: ChessboardProps) {
   const onContainerResize = () => {
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
-    const containerUnsetHeight = containerEl.dataset.autoHeight !== "false";
+    const autoHeight = untrack(() => props.autoHeight) ?? true;
     const rotate = untrack(() => props.rotation) ?? 0;
     const UNIT = unitInPx();
     let height: number;
@@ -1001,49 +1003,27 @@ export function Chessboard(props: ChessboardProps) {
     let scale: number;
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
     if (rotate % 180 === 0) {
-      if (containerUnsetHeight) {
-        height = UNIT * MINIMUM_HEIGHT;
-        if (containerWidth < UNIT * MINIMUM_WIDTH) {
-          width = UNIT * MINIMUM_WIDTH;
-          containerHeight = containerWidth * DEFAULT_HEIGHT_WIDTH_RATIO;
-          scale = containerWidth / (UNIT * MINIMUM_WIDTH);
-        } else {
-          width = containerWidth;
-          containerHeight = UNIT * MINIMUM_HEIGHT;
-          scale = 1;
-        }
+      if (autoHeight) {
+        containerHeight = 0.9 * DEFAULT_HEIGHT_WIDTH_RATIO * containerWidth;
         containerEl.style.height = `${containerHeight}px`;
-      } else {
-        scale = Math.min(
-          containerHeight / (UNIT * MINIMUM_HEIGHT),
-          containerWidth / (UNIT * MINIMUM_WIDTH),
-          1,
-        );
-        height = containerHeight / scale;
-        width = containerWidth / scale;
       }
+      scale = Math.min(
+        containerHeight / (UNIT * MINIMUM_HEIGHT),
+        containerWidth / (UNIT * MINIMUM_WIDTH),
+      );
+      height = containerHeight / scale;
+      width = containerWidth / scale;
     } else {
-      if (containerUnsetHeight) {
-        width = UNIT * MINIMUM_WIDTH;
-        if (containerWidth < UNIT * MINIMUM_HEIGHT) {
-          height = UNIT * MINIMUM_HEIGHT;
-          containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
-          scale = containerWidth / (UNIT * MINIMUM_HEIGHT);
-        } else {
-          height = containerWidth;
-          containerHeight = unitInPx() * MINIMUM_WIDTH;
-          scale = 1;
-        }
+      if (autoHeight) {
+        containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
         containerEl.style.height = `${containerHeight}px`;
-      } else {
-        scale = Math.min(
-          containerHeight / (UNIT * MINIMUM_WIDTH),
-          containerWidth / (UNIT * MINIMUM_HEIGHT),
-          1,
-        );
-        height = containerWidth / scale;
-        width = containerHeight / scale;
-      }
+      } 
+      scale = Math.min(
+        containerHeight / (UNIT * MINIMUM_WIDTH),
+        containerWidth / (UNIT * MINIMUM_HEIGHT),
+      );
+      height = containerWidth / scale;
+      width = containerHeight / scale;
     }
 
     console.log({ containerWidth, containerHeight, scale, height, width });
@@ -1569,13 +1549,7 @@ export function Chessboard(props: ChessboardProps) {
       ref={containerEl}
     >
       <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
-        <div class="absolute inset-0 flex items-center justify-center">
-            <div class="aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex items-center justify-center">
-              <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-#554433 flex items-center justify-center">
-                <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]" />
-              </div>
-            </div>
-        </div> 
+        <ChessboardBackground />
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}

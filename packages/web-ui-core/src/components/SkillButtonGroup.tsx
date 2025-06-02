@@ -52,7 +52,14 @@ function SwitchActiveIcon() {
 
 function SkillButton(props: SkillButtonProps) {
   const skillId = createMemo(() => props.id);
-  const animateColor = () => (`var(--c-${DICE_COLOR[props.cost.find(item => item.type >= 1 && item.type <= 7)?.type ?? 8]})`);
+  const color = createMemo(() => {
+    const diceType =
+      props.cost.find((item) => item.type >= 1 && item.type <= 7)?.type ?? 8;
+    return `var(--c-${DICE_COLOR[diceType]})`;
+  });
+  const isBurst = createMemo(
+    () => props.cost.find((item) => item.type === 9) && !props.isTechnique,
+  );
   const children = () => (
     <Switch>
       <Match when={typeof skillId() === "number"}>
@@ -68,15 +75,19 @@ function SkillButton(props: SkillButtonProps) {
   );
 
   return (
-    <div class="relative w-12 flex flex-col items-center gap-1 group select-none">
-      <Show when={props.cost.find(item => item.type === 9) && !props.isTechnique && props.energy === 1}>
+    <div
+      class="relative w-12 flex flex-col items-center gap-1 group select-none"
+      style={{
+        "--color": color(),
+      }}
+    >
+      {/* 元素爆发特效动画 */}
+      <Show when={isBurst() && props.energy === 1}>
         <For each={[1, 2, 3]}>
           {(i) => (
-            <div 
-              class="absolute inset-0 w-12 h-12 rounded-full border-6 opacity-80 pointer-events-none"
-              style={{"border-color": animateColor(),
-                      "box-shadow": `inset 0 0 20px ${animateColor()}, 0 0 20px ${animateColor()}`,
-                      "animation": `elemental-burst-${i} 3s linear infinite`}}
+            <div
+              class="absolute inset-0 w-12 h-12 rounded-full border-6 opacity-80 pointer-events-none b-[var(--color)] burst-animator"
+              style={{ "--animation-name": `elemental-burst-${i}` }}
             />
           )}
         </For>
@@ -136,13 +147,16 @@ function SkillButton(props: SkillButtonProps) {
               })`,
             }}
           >
-            <Show when={props.cost.find(item => item.type === 9) && !props.isTechnique}>
-              <img class="absolute top-0 left-0 w-full pointer-events-none" src={burst} />
-              <div 
-                class="absolute w-11.5 h-11.5 rounded-full border-3.2 saturate-100 brightness-100 pointer-events-none"
-                style={{"border-color": animateColor(),
-                        "mask-image": `linear-gradient(to top, #FFFFFFFF ${(props.energy ?? 0) * 100}%, transparent ${(props.energy ?? 0) * 100}%)`}}
-                bool:data-ready={props.energy === 1}
+            <Show when={isBurst()}>
+              <img
+                class="absolute top-0 left-0 w-full pointer-events-none"
+                src={burst}
+              />
+              <div
+                class="absolute w-11.5 h-11.5 rounded-full border-3.2 saturate-100 brightness-100 pointer-events-none b-[var(--color)] burst-progress"
+                style={{
+                  "--progress-value": (100 * (props.energy ?? 0)).toFixed(0) + '%',
+                }}
               />
             </Show>
             <Show when={props.step?.isFocused}>
@@ -154,15 +168,36 @@ function SkillButton(props: SkillButtonProps) {
               bool:data-disabled={!props.step || props.step.isDisabled}
             >
               {children()}
-            </button>    
+            </button>
           </div>
         )}
       </WithDelicateUi>
+      {/* 禁用标志 */}
       <Show when={!props.step}>
         <div class="absolute top-7 left-7 w-5 h-5 flex p-0.7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_center,#38200d_0%,#624522_60%,#624522_66%,#38200d_70%)]">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="24" r="20" stroke="#897660" stroke-width="6" fill="none" />
-            <line x1="38" y1="10" x2="10" y2="38" stroke="#897660" stroke-width="6" />
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="24"
+              cy="24"
+              r="20"
+              stroke="#897660"
+              stroke-width="6"
+              fill="none"
+            />
+            <line
+              x1="38"
+              y1="10"
+              x2="10"
+              y2="38"
+              stroke="#897660"
+              stroke-width="6"
+            />
           </svg>
         </div>
       </Show>
