@@ -49,9 +49,14 @@ interface InitializedPayload {
   oppPlayerInfo: PlayerInfo;
 }
 
+interface RpcTimer {
+  current: number;
+  total: number;
+}
+
 interface ActionRequestPayload {
   id: number;
-  timeout: number;
+  timer: RpcTimer;
   request: RpcRequest;
 }
 
@@ -187,7 +192,7 @@ export function Room() {
     if (!action) {
       return;
     }
-    setCurrentTimer(payload.timeout);
+    setCurrentMyTimer(payload.timer);
     currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
     await new Promise((r) => setTimeout(r, 100)); // wait for UI notifications?
@@ -195,7 +200,7 @@ export function Room() {
     if (!response) {
       return;
     }
-    setCurrentTimer(null);
+    setCurrentMyTimer(null);
     try {
       const reply = axios.post(
         `rooms/${id}/players/${playerId}/actionResponse`,
@@ -236,17 +241,27 @@ export function Room() {
     alert("观战链接已复制到剪贴板！");
   };
 
-  const [currentTimer, setCurrentTimer] = createSignal<number | null>(null);
+  const [currentMyTimer, setCurrentMyTimer] = createSignal<RpcTimer | null>(
+    null,
+  );
+  const [currentOppTimer, setCurrentOppTimer] = createSignal<RpcTimer | null>(
+    null,
+  );
   const currentRpcId: { value: number | null } = { value: null };
   let actionTimerIntervalId: number | null = null;
   const setActionTimer = () => {
     actionTimerIntervalId = window.setInterval(() => {
-      const current = currentTimer();
-      if (typeof current === "number") {
-        setCurrentTimer(current - 1);
-        if (current <= 0) {
-          playerIo()?.cancelRpc();
-          setCurrentTimer(null);
+      for (const [timer, setTimer] of [
+        [currentMyTimer(), setCurrentMyTimer] as const,
+        [currentOppTimer(), setCurrentOppTimer] as const,
+      ]) {
+        if (timer) {
+          const current = timer.current - 1;
+          setTimer({ ...timer, current });
+          if (current <= 0) {
+            playerIo()?.cancelRpc();
+            setTimer(null);
+          }
         }
       }
     }, 1000);
@@ -272,6 +287,7 @@ export function Room() {
         }
         case "notification": {
           playerIo()?.notify(payload.data);
+          setCurrentOppTimer(payload.timer ?? null);
           break;
         }
         case "rpc": {
@@ -414,28 +430,13 @@ export function Room() {
           </Match>
         </Switch>
         <Show when={initialized()}>
-          <div
-            class="relative"
-            ref={chessboardContainer}
-          >
-            <Show when={currentTimer()}>
-              {(time) => (
-                <div class="absolute top-0 left-50% translate-x--50% group-data-[mobile]:top-50% group-data-[mobile]:left-100% group-data-[mobile]:rotate-90 group-data-[mobile]:translate-x--100% group-data-[mobile]:translate-y--50% transform-origin-bottom-center bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
-                  {Math.max(Math.floor(time() / 60), 0)
-                    .toString()
-                    .padStart(2, "0")}{" "}
-                  :{" "}
-                  {Math.max(time() % 60, 0)
-                    .toString()
-                    .padStart(2, "0")}
-                </div>
-              )}
-            </Show>
+          <div class="relative" ref={chessboardContainer}>
             <Dynamic<Client[1]>
               component={chessboard()}
               rotation={mobile() ? 90 : 0}
               autoHeight={!mobile()}
               class={`${mobile() ? "h-100dvh w-100dvw" : ""}`}
+              timer={currentMyTimer() ?? currentOppTimer()}
             />
           </div>
         </Show>

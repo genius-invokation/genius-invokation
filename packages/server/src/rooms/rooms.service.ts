@@ -60,9 +60,6 @@ import {
   map,
   mergeWith,
   of,
-  share,
-  startWith,
-  take,
   takeUntil,
 } from "rxjs";
 import { createGuestId, DeckVerificationError, verifyDeck } from "../utils";
@@ -115,6 +112,11 @@ type PlayerInfo = (
 
 export type PlayerId = PlayerInfo["id"];
 
+export interface Timer {
+  current: number;
+  total: number;
+}
+
 export interface SSEWaiting {
   type: "waiting";
 }
@@ -133,6 +135,7 @@ export interface SSEInitialized {
 
 export interface SSENotification {
   type: "notification";
+  oppTimer: Timer | null;
   data: Notification;
 }
 export interface SSEError {
@@ -142,7 +145,7 @@ export interface SSEError {
 export interface SSERpc {
   type: "rpc";
   id: number;
-  timeout: number;
+  timer: Timer;
   request: RpcRequest;
 }
 
@@ -158,6 +161,7 @@ interface RpcResolver {
   id: number;
   request: RpcRequest;
   timeout: number;
+  readonly totalTimeout: number;
   resolve: (response: any) => void;
 }
 
@@ -194,6 +198,7 @@ class Player implements PlayerIOWithError {
   private _mutationExtraTimeout = 0;
 
   private _contiguousTimeoutRpcExecuted = 0;
+  private _oppPlayer: Player | null = null;
 
   setTimeoutConfig(config: RoomConfig) {
     this._timeoutConfig = config;
@@ -207,8 +212,18 @@ class Player implements PlayerIOWithError {
       return {
         type: "rpc",
         id: this._rpcResolver.id,
-        timeout: this._rpcResolver.timeout,
+        timer: this.getTimer()!,
         request: this._rpcResolver.request,
+      };
+    } else {
+      return null;
+    }
+  }
+  getTimer(): Timer | null {
+    if (this._rpcResolver) {
+      return {
+        current: this._rpcResolver.timeout,
+        total: this._rpcResolver.totalTimeout,
       };
     } else {
       return null;
@@ -229,6 +244,7 @@ class Player implements PlayerIOWithError {
     this.notificationSseSource.next({
       type: "notification",
       data: notification,
+      oppTimer: this._oppPlayer?.getTimer() ?? null,
     });
     this._mutationExtraTimeout += 0.5 * notification.mutation.length;
   }
@@ -283,13 +299,12 @@ class Player implements PlayerIOWithError {
         this._mutationExtraTimeout = 0;
       };
     }
-    const payload: SSERpc = { type: "rpc", id, timeout, request };
-    this.actionSseSource.next(payload);
     return new Promise<RpcResponse>((resolve) => {
       const resolver: RpcResolver = {
         id,
         request,
         timeout,
+        totalTimeout: timeout,
         resolve: (r) => {
           clearInterval(interval);
           setRoundTimeout(resolver.timeout);
@@ -299,6 +314,7 @@ class Player implements PlayerIOWithError {
         },
       };
       this._rpcResolver = resolver;
+      this.actionSseSource.next(this.currentAction()!);
       const interval = setInterval(() => {
         resolver.timeout--;
         if (resolver.timeout <= -2) {
@@ -314,13 +330,14 @@ class Player implements PlayerIOWithError {
   onError(e: GiTcgError) {
     this.notificationSseSource.next({ type: "error", message: e.message });
   }
-  onInitialized(who: 0 | 1, opp: PlayerInfo) {
+  onInitialized(who: 0 | 1, oppPlayer: Player) {
+    this._oppPlayer = oppPlayer;
     this.initializedSubject.next({
       type: "initialized",
       who,
       config: this._timeoutConfig,
       myPlayerInfo: this.playerInfo,
-      oppPlayerInfo: opp,
+      oppPlayerInfo: oppPlayer.playerInfo,
     });
     this.initializedSubject.complete();
   }
@@ -435,8 +452,8 @@ class Room {
     };
     game.players[0].io = player0;
     game.players[1].io = player1;
-    player0.onInitialized(0, player1.playerInfo);
-    player1.onInitialized(1, player0.playerInfo);
+    player0.onInitialized(0, player1);
+    player1.onInitialized(1, player0);
     (async () => {
       try {
         this.game = game;
