@@ -88,15 +88,17 @@
   .dice-panel {
     background: linear-gradient(
       to right,
-      #9d907b 2px,
-      #86795e 2px,
-      #5e4223 50px
+      #9d907bff 2px,
+      #86795eff 2px,
+      #5e4223ff 50px,
+      #5e4223ff 90%,
+      #5e422300 100%
     );
     mask-image: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0) 8%,
-      rgba(0, 0, 0, 0.9) 14%,
-      rgba(0, 0, 0, 0.9) 86%,
+      rgba(0, 0, 0, 0) 6%,
+      rgba(0, 0, 0, 0.9) 12%,
+      rgba(0, 0, 0, 0.9) 82%,
       rgba(0, 0, 0, 0) 92%
     );
 
@@ -107,6 +109,20 @@
     .delicate-dice[data-selected] {
       --blink-opacity: 0.5;
     }
+  }
+
+  .burst-animator {
+    box-shadow:
+      inset 0 0 20px var(--color),
+      0 0 20px var(--color);
+    animation: var(--animation-name) 3s linear infinite;
+  }
+  .burst-progress {
+    mask-image: linear-gradient(
+      to top,
+      #ffffffff var(--progress-value),
+      transparent var(--progress-value)
+    );
   }
 }
 
@@ -235,5 +251,86 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes elemental-burst-1 {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+  40% {
+    transform: scale(1.275);
+    opacity: 0.45;
+  }
+  60% {
+    transform: scale(1.375);
+    opacity: 0.25;
+  }
+  80% {
+    transform: scale(1.45);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes elemental-burst-2 {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  80% {
+    transform: scale(1.15);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.275);
+    opacity: 0;
+  }
+}
+
+@keyframes elemental-burst-3 {
+  0% {
+    transform: scale(1.375);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1.45);
+    opacity: 0.25;
+  }
+  40% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.375);
+    opacity: 0;
   }
 }

@@ -216,7 +216,7 @@ export function MutationViewer(props: MutationViewerProps) {
   return (
     <>
       <div
-        class="hidden data-[shown]:block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto"
+        class="hidden data-[shown]:block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto bg-gray/20"
         bool:data-shown={shown()}
         ref={scrollRef}
       >
@@ -227,7 +227,7 @@ export function MutationViewer(props: MutationViewerProps) {
         </div>
       </div>
       <button
-        class="absolute right-12.3 top-2 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
+        class="absolute right-12.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
         onClick={() => setShown((v) => !v)}
       >
         &#8801;

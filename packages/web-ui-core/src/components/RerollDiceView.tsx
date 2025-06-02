@@ -68,9 +68,15 @@ export function RerollDiceView(props: RerollViewProps) {
                       onPointerDown={(e) => {
                         if (checkPointerEvent(e)) {
                           toggleDice(index);
+                          if (e.target.hasPointerCapture(e.pointerId)) {
+                            // https://w3c.github.io/pointerevents/#implicit-pointer-capture
+                            // Touchscreen may implicitly capture pointer
+                            e.target.releasePointerCapture(e.pointerId);
+                          }
                         }
                       }}
                       onPointerEnter={(e) => {
+                        console.log('enter',e);
                         if (checkPointerEvent(e)) {
                           toggleDice(index);
                         }

@@ -205,7 +205,7 @@ export function CharacterArea(props: CharacterAreaProps) {
       }}
     >
       <div
-        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse"
+        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse z-10"
         bool:data-preview={props.preview?.newAura}
       >
         <For each={aura()}>
@@ -216,7 +216,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           )}
         </For>
       </div>
-      <div class="h-36 w-21 relative">
+      <div class="h-36 w-21 relative z-9">
         <Show when={!defeated()}>
           <Health value={data().health} />
           <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">

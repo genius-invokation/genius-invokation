@@ -434,8 +434,8 @@ export function Room() {
             <Dynamic<Client[1]>
               component={chessboard()}
               rotation={mobile() ? 90 : 0}
+              autoHeight={!mobile()}
               class={`${mobile() ? "h-100dvh w-100dvw" : ""}`}
-              data-auto-height={mobile() ? "false" : "true"}
             />
           </div>
         </Show>

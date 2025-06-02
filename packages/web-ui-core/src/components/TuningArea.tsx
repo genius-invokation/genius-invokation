@@ -20,10 +20,22 @@ import { cssPropertyOfTransform } from "../ui_state";
 export interface TuningAreaProps extends TunningAreaInfo {}
 
 export function TuningArea(props: TuningAreaProps) {
+  const status = () => {
+    if (!props.draggingHand || !props.draggingHand.tuneStep) {
+      return "none";
+    }
+    if (props.draggingHand.status !== "moving") {
+      return "hidden";
+    }
+    if (props.cardHovering) {
+      return "shown-hovering";
+    }
+    return "shown";
+  };
   return (
     <div
-      class="absolute top-0 left-0 h-full w-20 invisible data-[shown]:visible transition-all bg-yellow-400/30 data-[card-hovering]:bg-yellow-400/60 flex items-center justify-center text-4xl text-yellow-500"
-      bool:data-shown={props.draggingHand?.tuneStep}
+      class="absolute top-0 left-0 h-full opacity-0 data-[status=shown]:opacity-75%  data-[status=shown-hovering]:opacity-100% w-0 data-[status^=shown]:w-20 invisible data-[status^=shown]:visible pr-0 data-[status^=shown]:pr-8 transition-all flex items-center justify-center text-4xl text-#e7d090 dice-panel"
+      data-status={status()}
       bool:data-card-hovering={props.cardHovering}
       style={cssPropertyOfTransform(props.transform)}
     >

@@ -54,7 +54,7 @@ export function PlayerInfo(props: PlayerInfoProps) {
           }
         >
           {(image) => (
-          <div class="relative flex items-center justify-center m--1">
+          <div class="relative flex items-center justify-center mt--3 mb--3 ml-2">
             <div class="h-10 w-10">{image}</div>
             <span
               class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold text-5"
@@ -92,7 +92,7 @@ export function PlayerInfo(props: PlayerInfoProps) {
           已宣布结束
         </div>
       </div>
-      <div class="text-blue-600 text-xs h-4">
+      <div class="text-blue-300 text-xs h-4 ml-2">
         <Show when={props.status !== PbPlayerStatus.UNSPECIFIED}>
           {props.opp ? "对方" : "我方"}
           {STATUS_TEXT_MAP[props.status]}
