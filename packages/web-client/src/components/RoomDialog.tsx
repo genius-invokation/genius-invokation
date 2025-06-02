@@ -53,7 +53,7 @@ function SelectableDeckInfo(
             {(id) => (
               <img
                 class="h-12 w-12 b-2 b-yellow-100 rounded-full"
-                src={`${DEFAULT_ASSET_API_ENDPOINT}/images/character_icons/${id}`}
+                src={`${DEFAULT_ASSET_API_ENDPOINT}/images/${id}?type=icon`}
               />
             )}
           </For>
