@@ -248,27 +248,28 @@ export function Room() {
     null,
   );
   const currentRpcId: { value: number | null } = { value: null };
-  let actionTimerIntervalId: number | null = null;
-  const setActionTimer = () => {
-    actionTimerIntervalId = window.setInterval(() => {
-      for (const [timer, setTimer] of [
-        [currentMyTimer(), setCurrentMyTimer] as const,
-        [currentOppTimer(), setCurrentOppTimer] as const,
-      ]) {
-        if (timer) {
-          const current = timer.current - 1;
-          setTimer({ ...timer, current });
-          if (current <= 0) {
-            playerIo()?.cancelRpc();
-            setTimer(null);
-          }
+  let countDownTimerIntervalId: number | null = null;
+  const countDownTimer = () => {
+    for (const [timer, setTimer] of [
+      [currentMyTimer(), setCurrentMyTimer] as const,
+      [currentOppTimer(), setCurrentOppTimer] as const,
+    ]) {
+      if (timer) {
+        const current = timer.current - 1;
+        setTimer({ ...timer, current });
+        if (current <= 0) {
+          playerIo()?.cancelRpc();
+          setTimer(null);
         }
       }
-    }, 1000);
+    }
+  };
+  const setActionTimer = () => {
+    countDownTimerIntervalId = window.setInterval(countDownTimer, 1000);
   };
   const cleanActionTimer = () => {
-    if (actionTimerIntervalId) {
-      window.clearInterval(actionTimerIntervalId);
+    if (countDownTimerIntervalId) {
+      window.clearInterval(countDownTimerIntervalId);
     }
   };
 
@@ -287,7 +288,10 @@ export function Room() {
         }
         case "notification": {
           playerIo()?.notify(payload.data);
-          setCurrentOppTimer(payload.timer ?? null);
+          break;
+        }
+        case "oppRpc": {
+          setCurrentOppTimer(payload.oppTimer ?? null);
           break;
         }
         case "rpc": {
@@ -339,6 +343,10 @@ export function Room() {
     setPlayerIo();
     cleanActionTimer();
   });
+
+  // createEffect(() => {
+  //   console.log(currentOppTimer());
+  // });
 
   return (
     <Dynamic

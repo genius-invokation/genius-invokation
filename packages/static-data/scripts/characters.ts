@@ -30,6 +30,7 @@ import {
 } from "./properties";
 import { collateSkill, type SkillRawData } from "./skills";
 import {
+  CARD_FACE_CORRELATION,
   getLanguage,
   sanitizeDescription,
   sanitizeName,
@@ -145,14 +146,14 @@ export async function collateCharacters(
       skills.push();
     }
 
-    const cardPrefabName = xcardview.find((e) => e[ID] === id)![
+    const cardPrefabName: string = xcardview.find((e) => e[ID] === id)![
       CARD_PREFAB_NAME
     ];
     const cardFace = `UI_${cardPrefabName}`;
-    const icon = cardFace.replace(
-      /CardFace_Char_([a-zA-Z]+)_([a-zA-Z]+)$/,
+    const icon = cardPrefabName.replace(
+      /^Gcg_CardFace_Char_([a-zA-Z]+)_([a-zA-Z]+)$/,
       (match, p1, p2) => {
-        return `Char_${p1}Icon_${CARDFACE_TO_AVATAR_MAP[p2] ?? p2}`;
+        return `UI_Gcg_Char_${p1}Icon_${CARDFACE_TO_AVATAR_MAP[p2] ?? p2}`;
       },
     );
 
@@ -169,7 +170,7 @@ export async function collateCharacters(
       skills,
       hp,
       maxEnergy,
-      cardFace,
+      cardFace: CARD_FACE_CORRELATION[cardFace] ?? cardFace,
       icon,
     });
   }

@@ -8841,7 +8841,7 @@
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
-    "cardFace": "UI_Gcg_CardFace_Summon_AbyssEle"
+    "cardFace": "UI_Gcg_CardFace_Summon_AbyssEle_Layer00"
   },
   {
     "id": 134042,

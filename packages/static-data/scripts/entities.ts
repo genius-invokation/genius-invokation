@@ -39,6 +39,7 @@ import {
   sanitizeName,
   xcardview,
   xcard,
+  CARD_FACE_CORRELATION,
 } from "./utils";
 
 export interface EntityRawData {
@@ -186,7 +187,8 @@ export async function collateEntities(langCode: string) {
       const cardPrefabName = xcardview.find((e) => e[ID] === id)![
         CARD_PREFAB_NAME
       ];
-      data.cardFace = `UI_${cardPrefabName}`;
+      const cardFace = `UI_${cardPrefabName}`;
+      data.cardFace = CARD_FACE_CORRELATION[cardFace] ?? cardFace;
     }
     result.push(data);
   }

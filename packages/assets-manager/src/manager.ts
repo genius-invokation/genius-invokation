@@ -48,6 +48,7 @@ export type AnyData =
 export interface GetDataOptions {}
 
 export interface GetImageOptions {
+  type?: "cardFace" | "icon" | "unspecified";
   thumbnail?: boolean;
 }
 
@@ -56,10 +57,7 @@ export interface Progress {
   total: number;
 }
 
-export interface PrepareForSyncOptions {
-  includeImages?: boolean;
-  imageProgressCallback?: (progress: Progress) => void;
-}
+export interface PrepareForSyncOptions {}
 
 export interface AssetsManagerOption {
   apiEndpoint: string;
@@ -315,11 +313,13 @@ export class AssetsManager {
     if (this.imageCache.has(id)) {
       return this.imageCache.get(id)!;
     }
+    const searchParams = new URLSearchParams({
+      thumb: options.thumbnail ? "1" : "",
+      type: options.type ?? "unspecified",
+    });
     const url =
       this.customDataImageUrls.get(id) ??
-      `${this.options.apiEndpoint}/images/${id}${
-        options.thumbnail ? "?thumb=1" : ""
-      }`;
+      `${this.options.apiEndpoint}/images/${id}?${searchParams}`;
     const promise = fetch(url)
       .then((r) => r.blob())
       .then((blob) => {
@@ -350,12 +350,6 @@ export class AssetsManager {
       return this.preparedSyncData;
     }
     await this.prepareSyncData();
-    if (options.includeImages) {
-      if (this.preparedSyncImages) {
-        return this.preparedSyncImages;
-      }
-      await this.prepareSyncImages(options.imageProgressCallback);
-    }
   }
 
   private preparedSyncData: Promise<void> | undefined;
@@ -372,50 +366,12 @@ export class AssetsManager {
     })());
   }
 
-  private preparedSyncImages: Promise<void> | undefined;
-  private prepareSyncImages(progressCallback?: (progress: Progress) => void) {
-    return (this.preparedSyncImages ??= (async () => {
-      const imageUrl = `${this.options.apiEndpoint}/images`;
-      const images = await fetch(imageUrl).then((r) => r.json());
-      const imageUrls = [
-        ...Object.keys(images).map(
-          (id) =>
-            [Number(id), `${DEFAULT_ASSET_API_ENDPOINT}/images/${id}`] as const,
-        ),
-        ...this.customDataImageUrls.entries(),
-      ];
-      const total = imageUrls.length;
-      let current = 0;
-      const imagePromises = imageUrls.map(async ([id, url]) => {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        this.imageCacheSync.set(Number(id), blob);
-        current++;
-        progressCallback?.({ current, total });
-      });
-      await Promise.all(imagePromises);
-    })());
-  }
-
   getDataSync(id: number): AnyData {
     const data = this.dataCacheSync.get(id);
     if (!data) {
       throw new Error(`Data not found for ID ${id}`);
     }
     return data;
-  }
-
-  getImageSync(id: number): Blob {
-    const image = this.imageCacheSync.get(id);
-    if (!image) {
-      throw new Error(`Image not found for ID ${id}`);
-    }
-    return image;
-  }
-
-  getImageUrlSync(id: number): string {
-    const image = this.getImageSync(id);
-    return blobToDataUrl(image);
   }
 
   async getDeckData(): Promise<DeckData> {

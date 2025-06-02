@@ -76,7 +76,6 @@ export function RerollDiceView(props: RerollViewProps) {
                         }
                       }}
                       onPointerEnter={(e) => {
-                        console.log('enter',e);
                         if (checkPointerEvent(e)) {
                           toggleDice(index);
                         }

@@ -96,7 +96,8 @@ export function getDescriptionReplaced(
             break;
           }
 
-          case "E": { // ELEMENT
+          case "E": {
+            // ELEMENT
             const element = keyMap.D__KEY__ELEMENT;
             if (!element) {
               replacementText = "D__KEY__ELEMENT";
@@ -235,5 +236,11 @@ export function getDescriptionReplaced(
 
   return description;
 }
+
+export const CARD_FACE_CORRELATION: Record<string, string> = {
+  UI_Gcg_CardFace_Summon_AbyssEle: "UI_Gcg_CardFace_Summon_AbyssEle_Layer00",
+  UI_Gcg_CardFace_Char_Monster_Effigyice:
+    "UI_Gcg_CardFace_Char_Monster_EffigyIce",
+};
 
 export * from "./sanitize";
