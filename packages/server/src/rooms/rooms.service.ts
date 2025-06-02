@@ -233,11 +233,14 @@ class Player implements PlayerIOWithError {
       return null;
     }
   }
+  perRoundTotalActionTime(): number {
+    return (this._timeoutConfig?.actionTime ?? 25) + (this._timeoutConfig?.roundTotalActionTime ?? 60);
+  }
   getTimer(): RpcTimer | null {
     if (this._rpcResolver) {
       return {
         current: this._rpcResolver.timeout,
-        total: this._rpcResolver.totalTimeout,
+        total: this.perRoundTotalActionTime(),
       };
     } else {
       return null;

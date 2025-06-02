@@ -16,6 +16,7 @@
 import type { PbPhaseType } from "@gi-tcg/typings";
 import { Button } from "./Button";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { createMemo } from "solid-js";
 
 export interface DeclareEndMarkerProps {
   class?: string;
@@ -24,8 +25,97 @@ export interface DeclareEndMarkerProps {
   opp: boolean;
   roundNumber: number;
   phase: PbPhaseType;
+  currentTime: number;
+  totalTime: number;
+  doingRpc: boolean;
   onClick: (e: MouseEvent) => void;
 }
+
+export interface TimerProps {
+  currentTime: number;
+  totalTime: number;
+  doingRpc: boolean;
+}
+
+export function TimerBar(props: TimerProps) {
+  const r = 40;
+  const c = 50;
+  const b = 6;
+  const circumference = 2 * Math.PI * r;
+  const colorBg = () => ( props.doingRpc ? "#ebd29a" : "#c2d8f3" );
+  const colorFg = () => ( props.doingRpc ? "#ec8831" : "#5a9bef" );
+  const offsetFg = () => ( circumference * (props.currentTime > 45 ? 0.55 : (1 - props.currentTime / 100)));  
+  const offsetBg = createMemo(() => { 
+    if (props.totalTime > 45) {
+      return props.currentTime > 45 ? circumference * (((1 - (props.currentTime - 45) / (props.totalTime - 45)) * 0.55)) : offsetFg();
+    } else  {
+      return offsetFg();
+    }
+  });
+  // const spot = createMemo(() => {
+  //   const angle = 180 + ((props.currentTime > 45 ? ((1 - (props.currentTime - 45) / (props.totalTime - 45)) * 0.55) : (1 - props.currentTime / 100)) * 360);
+  //   const rad = (angle * Math.PI) / 180;
+  //   const x = c + r * Math.cos(rad);
+  //   const y = c + r * Math.sin(rad);
+  //   return { x, y };
+  // });
+  return (
+    <svg viewBox="0 0 100 100" class="w-full h-full rotate-90">
+      <circle
+        cx={`${c}`}
+        cy={`${c}`}
+        r={`${r}`}
+        fill="none"
+        stroke="#ffffff00"
+        stroke-width={`${b}`}
+      />
+      <circle
+        cx={`${c}`}
+        cy={`${c}`}
+        r={`${r}`}
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width={`${b}`}
+        stroke-dasharray={`4 ${circumference-5}`}
+        stroke-dashoffset={`${offsetBg()}`}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{    
+          filter: 'drop-shadow(0 0 6px #ffffff)',        
+          transition: 'stroke-dashoffset 1s linear',
+        }}
+      />
+      <circle
+        cx={`${c}`}
+        cy={`${c}`}
+        r={`${r}`}
+        fill="none"
+        stroke={colorBg()}
+        stroke-width={`${b}`}
+        stroke-dasharray={`${circumference}`}
+        stroke-dashoffset={`${offsetBg()}`}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{ transition: 'stroke-dashoffset 1s linear' }}
+      />
+      <circle
+        cx={`${c}`}
+        cy={`${c}`}
+        r={`${r}`}
+        fill="none"
+        stroke={colorFg()}
+        stroke-width={`${b}`}
+        stroke-dasharray={`${circumference}`}
+        stroke-dashoffset={`${offsetFg()}`}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{ transition: 'stroke-dashoffset 1s linear' }}
+      />
+    </svg>
+  );
+}
+
+
 
 export function DeclareEndMarker(props: DeclareEndMarkerProps) {
   const onClick = (e: MouseEvent) => {
@@ -48,12 +138,15 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
         dataUri
         fallback={
           <div
-            class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
+            class="pointer-events-auto ml-3 h-14 w-14 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
             data-opp={props.opp}
             onClick={onClick}
             bool:data-clickable={props.markerClickable}
           >
             T{props.roundNumber}
+            <div class="w-19 h-19 absolute pointer-events-none">
+              <TimerBar currentTime={props.currentTime} totalTime={props.totalTime} doingRpc={props.doingRpc}/>
+            </div>
           </div>
         }
       >
@@ -68,6 +161,9 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
               "--img-active-url": `url("${props.opp ? opp : active}")`,
             }}
           >
+            <div class="w-13.8 h-13.8 absolute">
+              <TimerBar currentTime={props.currentTime} totalTime={props.totalTime} doingRpc={props.doingRpc}/>
+            </div>
             <button
               class="block pointer-events-auto h-12 w-12 rounded-full declare-end-marker-img-button data-[opp=true]:color-white"
               data-opp={props.opp}
