@@ -112,7 +112,7 @@ type PlayerInfo = (
 
 export type PlayerId = PlayerInfo["id"];
 
-export interface Timer {
+export interface RpcTimer {
   current: number;
   total: number;
 }
@@ -135,7 +135,6 @@ export interface SSEInitialized {
 
 export interface SSENotification {
   type: "notification";
-  oppTimer: Timer | null;
   data: Notification;
 }
 export interface SSEError {
@@ -145,8 +144,12 @@ export interface SSEError {
 export interface SSERpc {
   type: "rpc";
   id: number;
-  timer: Timer;
+  timer: RpcTimer;
   request: RpcRequest;
+}
+export interface SSEOppRpc {
+  type: "oppRpc";
+  oppTimer: RpcTimer | null;
 }
 
 export type SSEPayload =
@@ -155,6 +158,7 @@ export type SSEPayload =
   | SSEWaiting
   | SSEInitialized
   | SSENotification
+  | SSEOppRpc
   | SSEError;
 
 interface RpcResolver {
@@ -171,11 +175,20 @@ const pingInterval = interval(15 * 1000).pipe(
 
 class Player implements PlayerIOWithError {
   private readonly completeSubject = new Subject<void>();
-  private readonly initializedSubject = new ReplaySubject<SSEPayload>();
+  private readonly initializedSubject = new ReplaySubject<
+    SSEInitialized | SSEWaiting
+  >();
   private readonly actionSseSource = new Subject<SSEPayload>();
+  private readonly errorSseSource = new BehaviorSubject<SSEError | null>(null);
+  private readonly oppRpcSseSource = new BehaviorSubject<SSEOppRpc>({
+    type: "oppRpc",
+    oppTimer: null,
+  });
   private readonly notificationSseSource =
-    new BehaviorSubject<SSEPayload | null>(null);
-  public readonly notificationSse$: Observable<SSEPayload> = concat(
+    new BehaviorSubject<SSENotification | null>(null);
+  public readonly notificationSse$: Observable<SSEPayload> = concat<
+    (SSEPayload | null)[]
+  >(
     this.initializedSubject,
     defer(() => {
       const currentAction = this.currentAction();
@@ -183,8 +196,9 @@ class Player implements PlayerIOWithError {
     }),
     this.notificationSseSource,
   ).pipe(
+    mergeWith(this.errorSseSource),
     filter((data): data is SSEPayload => data !== null),
-    mergeWith(this.actionSseSource, pingInterval),
+    mergeWith(this.actionSseSource, this.oppRpcSseSource, pingInterval),
     takeUntil(this.completeSubject),
   );
   constructor(public readonly playerInfo: PlayerInfo) {
@@ -219,7 +233,7 @@ class Player implements PlayerIOWithError {
       return null;
     }
   }
-  getTimer(): Timer | null {
+  getTimer(): RpcTimer | null {
     if (this._rpcResolver) {
       return {
         current: this._rpcResolver.timeout,
@@ -244,9 +258,14 @@ class Player implements PlayerIOWithError {
     this.notificationSseSource.next({
       type: "notification",
       data: notification,
-      oppTimer: this._oppPlayer?.getTimer() ?? null,
     });
     this._mutationExtraTimeout += 0.5 * notification.mutation.length;
+  }
+  sendOppRpc(oppTimer: RpcTimer | null) {
+    this.oppRpcSseSource.next({
+      type: "oppRpc",
+      oppTimer,
+    });
   }
 
   private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
@@ -299,36 +318,40 @@ class Player implements PlayerIOWithError {
         this._mutationExtraTimeout = 0;
       };
     }
-    return new Promise<RpcResponse>((resolve) => {
-      const resolver: RpcResolver = {
-        id,
-        request,
-        timeout,
-        totalTimeout: timeout,
-        resolve: (r) => {
-          clearInterval(interval);
-          setRoundTimeout(resolver.timeout);
-          this._rpcResolver = null;
-          this._contiguousTimeoutRpcExecuted = 0;
-          resolve(r);
-        },
-      };
-      this._rpcResolver = resolver;
-      this.actionSseSource.next(this.currentAction()!);
-      const interval = setInterval(() => {
-        resolver.timeout--;
-        if (resolver.timeout <= -2) {
-          clearInterval(interval);
-          setRoundTimeout(0);
-          this._rpcResolver = null;
-          resolve(this.timeoutRpc(request));
-        }
-      }, 1000);
-    });
+    try {
+      return await new Promise<RpcResponse>((resolve) => {
+        const resolver: RpcResolver = {
+          id,
+          request,
+          timeout,
+          totalTimeout: timeout,
+          resolve: (r) => {
+            clearInterval(interval);
+            setRoundTimeout(resolver.timeout);
+            this._contiguousTimeoutRpcExecuted = 0;
+            resolve(r);
+          },
+        };
+        this._rpcResolver = resolver;
+        this.actionSseSource.next(this.currentAction()!);
+        this._oppPlayer?.sendOppRpc(this.getTimer()!);
+        const interval = setInterval(() => {
+          resolver.timeout--;
+          if (resolver.timeout <= -2) {
+            clearInterval(interval);
+            setRoundTimeout(0);
+            resolve(this.timeoutRpc(request));
+          }
+        }, 1000);
+      });
+    } finally {
+      this._rpcResolver = null;
+      this.sendOppRpc(null);
+    }
   }
 
   onError(e: GiTcgError) {
-    this.notificationSseSource.next({ type: "error", message: e.message });
+    this.errorSseSource.next({ type: "error", message: e.message });
   }
   onInitialized(who: 0 | 1, oppPlayer: Player) {
     this._oppPlayer = oppPlayer;

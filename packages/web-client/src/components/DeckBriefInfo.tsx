@@ -91,7 +91,7 @@ export function DeckBriefInfo(props: DeckInfoProps) {
           {(id) => (
             <img
               class="h-14 w-14 b-2 b-yellow-100 rounded-full"
-              src={`${DEFAULT_ASSET_API_ENDPOINT}/images/character_icons/${id}`}
+              src={`${DEFAULT_ASSET_API_ENDPOINT}/images/${id}?type=icon`}
             />
           )}
         </For>

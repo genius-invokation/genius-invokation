@@ -62,7 +62,7 @@ export function Image(props: ImageProps) {
     (): ComponentProps<"img"> => ({
       ...rest,
       class: `${rest.class ?? ""} ${classNames}`,
-      src: url(),
+      src: url.state === "ready" ? url() : void 0,
       alt: isUnknown()
         ? ""
         : assetsManager.getNameSync(local.imageId) ?? `${local.imageId}`,

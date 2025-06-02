@@ -1034,8 +1034,6 @@ export function Chessboard(props: ChessboardProps) {
       height = containerWidth / scale;
       width = containerHeight / scale;
     }
-
-    console.log({ containerWidth, containerHeight, scale, height, width });
     transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
@@ -1155,7 +1153,7 @@ export function Chessboard(props: ChessboardProps) {
       () => localProps.actionState,
       (actionState, prevActionState) => {
         // DEBUG
-        console.log(actionState);
+        // console.log(actionState);
         if (actionState) {
           if (actionState.autoSelectedDice) {
             const dice = myDice();

@@ -56,6 +56,7 @@ export function StandaloneChessboard(props: StandaloneChessboardProps) {
         actionState={null}
         viewType="normal"
         selectCardCandidates={[]}
+        doingRpc={false}
         {...elProps}
       />
     </UiContext.Provider>
