@@ -139,11 +139,13 @@ export const ImperialPanoply = skill(23044)
       }
       shield.dispose();
     }
-    c.characterStatus(ArmoredCrabCarapace, "@master", {
-      overrideVariables: {
-        shield: shieldValue
-      }
-    });
+    if (shieldValue > 0) {
+      c.characterStatus(ArmoredCrabCarapace, "@master", {
+        overrideVariables: {
+          shield: shieldValue
+        }
+      });
+    }
   })
   .done();
 
