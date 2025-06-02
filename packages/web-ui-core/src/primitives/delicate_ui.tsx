@@ -95,6 +95,7 @@ export function WithDelicateUi(props: WithDelicateUiProps) {
                 return;
               }
               const img = new Image();
+              img.draggable = false;
               img.src = url;
               img.onload = () => {
                 assetsImageCache.set(url, img);

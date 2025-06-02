@@ -1,5 +1,9 @@
 @unocss;
 
+:root {
+  touch-action: pan-x pan-y;
+}
+
 #app {
   height: 100dvh;
   width: 100dvw;
