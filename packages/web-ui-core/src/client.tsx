@@ -32,6 +32,7 @@ import {
   type ChessboardData,
   type StepActionStateHandler,
   type Rotation,
+  type RpcTimer,
 } from "./components/Chessboard";
 import type {
   ChooseActiveResponse,
@@ -89,6 +90,7 @@ export type Client = [
 export interface ClientChessboardProps extends ComponentProps<"div"> {
   rotation?: Rotation;
   autoHeight?: boolean;
+  timer?: RpcTimer | null;
 }
 
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
@@ -113,6 +115,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     reactions: [],
   });
   const [actionState, setActionState] = createSignal<ActionState | null>(null);
+  const [doingRpc, setDoingRpc] = createSignal(false);
   const [viewType, setViewType] = createSignal<ChessboardViewType>("normal");
   const [selectCardCandidates, setSelectCardCandidates] = createSignal<
     number[]
@@ -244,7 +247,14 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         await promise;
       });
     },
-    rpc: dispatchRpc(dispatcher),
+    rpc: async (req) => {
+      try {
+        setDoingRpc(true);
+        return await dispatchRpc(dispatcher)(req);
+      } finally {
+        setDoingRpc(false);
+      }
+    }
   };
 
   const onStepActionState: StepActionStateHandler = (step, dice) => {
@@ -299,6 +309,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         actionState={actionState()}
         viewType={viewType()}
         selectCardCandidates={selectCardCandidates()}
+        doingRpc={doingRpc()}
         onStepActionState={onStepActionState}
         onRerollDice={onRerollDice}
         onSwitchHands={onSwitchHands}

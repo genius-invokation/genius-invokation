@@ -237,6 +237,10 @@ export type ChessboardViewType =
   | "switchHandsEnd";
 
 export type Rotation = 0 | 90 | 180 | 270;
+export interface RpcTimer {
+  current: number;
+  total: number;
+}
 
 const PRE_ROTATION_TRANSFORM = `translate(-50%, -50%)`;
 const POST_ROTATION_TRANSFORM = {
@@ -250,6 +254,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
   rotation?: Rotation;
   autoHeight?: boolean;
+  timer?: RpcTimer | null;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -260,6 +265,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   actionState: ActionState | null;
   viewType: ChessboardViewType;
   selectCardCandidates: number[];
+  doingRpc: boolean;
   onStepActionState?: StepActionStateHandler;
   onRerollDice?: (dice: PbDiceType[]) => void;
   onSwitchHands?: (cardIds: number[]) => void;
@@ -926,10 +932,13 @@ export function Chessboard(props: ChessboardProps) {
   const [localProps, elProps] = splitProps(props, [
     "who",
     "rotation",
+    "autoHeight",
+    "timer",
     "data",
     "actionState",
     "viewType",
     "selectCardCandidates",
+    "doingRpc",
     "onStepActionState",
     "onRerollDice",
     "onSwitchHands",
@@ -995,8 +1004,8 @@ export function Chessboard(props: ChessboardProps) {
   const onContainerResize = () => {
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
-    const autoHeight = untrack(() => props.autoHeight) ?? true;
-    const rotate = untrack(() => props.rotation) ?? 0;
+    const autoHeight = untrack(() => localProps.autoHeight) ?? true;
+    const rotate = untrack(() => localProps.rotation) ?? 0;
     const UNIT = unitInPx();
     let height: number;
     let width: number;
@@ -1706,30 +1715,26 @@ export function Chessboard(props: ChessboardProps) {
               <CardDataViewer />
             </div>
             <MutationViewer who={localProps.who} mutations={allMutations()} />
-            <Show
-              when={localProps.data.state.phase === PbPhaseType.GAME_END}
-              fallback={
-                <button
-                  class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-                  title="放弃对局"
-                  onClick={() => {
-                    if (confirm("确定放弃对局吗？")) {
-                      localProps.onGiveUp?.();
-                    }
-                  }}
-                >
-                  &#10005;
-                </button>
-              }
-            >
-              <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-                {localProps.data.state.winner === localProps.who
-                  ? "胜利"
-                  : "失败"}
-              </div>
+            <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
+              <button
+                class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                title="放弃对局"
+                onClick={() => {
+                  if (confirm("确定放弃对局吗？")) {
+                    localProps.onGiveUp?.();
+                  }
+                }}
+              >
+                &#10005;
+              </button>
             </Show>
           </div>
         </div>
+        <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
+          <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
+            {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+          </div>
+        </Show>
         <RerollDiceView
           viewType={localProps.viewType}
           dice={myDice()}
@@ -1761,6 +1766,19 @@ export function Chessboard(props: ChessboardProps) {
             dataViewerController.hide();
           }}
         />
+            <Show when={localProps.doingRpc && localProps.timer}>
+              {(timer) => (
+                <div class="absolute top-0 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
+                  {Math.max(Math.floor(timer().current / 60), 0)
+                    .toString()
+                    .padStart(2, "0")}{" "}
+                  :{" "}
+                  {Math.max(timer().current % 60, 0)
+                    .toString()
+                    .padStart(2, "0")}
+                </div>
+              )}
+            </Show>
       </div>
     </div>
   );
