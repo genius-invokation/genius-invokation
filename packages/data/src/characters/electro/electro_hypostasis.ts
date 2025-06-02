@@ -27,6 +27,7 @@ export const ChainsOfWardingThunder = summon(124013)
   .endPhaseDamage(DamageType.Electro, 1)
   .usage(2)
   .on("addDice", (c, e) => c.self.who !== e.action.who && e.action.type === "switchActive")
+  .usagePerRound(1)
   .listenToAll()
   .addCost(DiceType.Void, 1)
   .done();
