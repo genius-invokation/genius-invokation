@@ -46,6 +46,7 @@ import {
   xdeckcard,
   xcard,
   xchoose,
+  CARD_FACE_CORRELATION,
 } from "./utils";
 import { getVersion } from "./version";
 
@@ -190,7 +191,7 @@ export function collateActionCards(langCode: string) {
       description,
       rawPlayingDescription,
       playingDescription,
-      cardFace,
+      cardFace: CARD_FACE_CORRELATION[cardFace] ?? cardFace,
     });
   }
   return result;

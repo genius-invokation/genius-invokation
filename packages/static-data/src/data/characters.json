@@ -8741,7 +8741,7 @@
     ],
     "hp": 8,
     "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_Effigyice",
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_EffigyIce",
     "icon": "UI_Gcg_Char_MonsterIcon_EffigyIce"
   },
   {

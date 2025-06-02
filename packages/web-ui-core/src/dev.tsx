@@ -48,7 +48,7 @@ const deck1: DeckConfig = {
 
 function App() {
   const assetsManager = new AssetsManager({
-    apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v2`,
+    apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v3`,
   });
   const [io0, Chessboard0] = createClient(0, { assetsManager });
   const [io1, Chessboard1] = createClient(1, {

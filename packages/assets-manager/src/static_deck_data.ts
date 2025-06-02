@@ -1,3 +1,4 @@
+import type { DeckData } from "./deck_data";
 import staticDeckData from "./deck_data.json" with { type: "json" };
 
 export function getStaticDeckData(): DeckData {
