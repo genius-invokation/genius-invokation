@@ -37,18 +37,21 @@ export const StrikeWhereItHurts = combatStatus(111133)
  */
 export const ScopeOutSoftSpots = combatStatus(111131)
   .since("v5.2.0")
+  .variable("layer", 0)
   .on("useSkill")
-  .usage(1, { append: { limit: Infinity }, autoDecrease: false })
   .do((c) => {
-    const usage = c.getVariable("usage");
-    let consumedUsage = 1;
-    const buf = Array.from({ length: 10 }, (_, i) => i < usage);
+    const layer = c.getVariable("layer");
+    const buf = Array.from({ length: 10 }, (_, i) => i < layer);
     const take = c.random(buf);
     if (take) {
       c.combatStatus(StrikeWhereItHurts);
-      consumedUsage += Math.ceil(usage / 2);
+      const newLayer = Math.floor(layer / 2);
+      if (newLayer > 0) {
+        c.setVariable("layer", newLayer);
+      } else {
+        c.dispose();
+      }
     }
-    c.consumeUsage(consumedUsage);
   })
   .done();
 
@@ -65,7 +68,7 @@ export const EvercoldFrostlance = summon(111132)
   .usage(2)
   .combatStatus(ScopeOutSoftSpots, "my", {
     overrideVariables: {
-      usage: 2
+      layer: 2
     }
   })
   .done();
@@ -93,7 +96,11 @@ export const RavagingConfession = skill(11132)
   .type("elemental")
   .costCryo(3)
   .damage(DamageType.Cryo, 1)
-  .combatStatus(ScopeOutSoftSpots)
+  .combatStatus(ScopeOutSoftSpots, "my", {
+    overrideVariables: {
+      layer: 1
+    }
+  })
   .done();
 
 /**
