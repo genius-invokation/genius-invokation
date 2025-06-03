@@ -69,7 +69,7 @@ export const MistBubbleSlime = card(122051)
   .provideSkill(1220511)
   .costSame(1)
   .usage(2)
-  .characterStatus(MistBubbleLockdownPreparing)
+  .characterStatus(MistBubbleLockdownPreparing, "@master")
   .done();
 
 /**

@@ -127,7 +127,7 @@ export const ImperialPanoply = skill(23044)
       shield: 5
     }
   })
-  .on("action")
+  .on("action", (c) => c.$(`(my statuses with tag (shield) or my combat statuses with tag (shield)) and not with definition id ${ArmoredCrabCarapace}`))
   .do((c) => {
     const shields = c.$$(`my statuses with tag (shield) or my combat statuses with tag (shield)`);
     let shieldValue = 0;
