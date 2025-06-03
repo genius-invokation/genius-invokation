@@ -16,6 +16,7 @@
 import type { PbPhaseType } from "@gi-tcg/typings";
 import { Button } from "./Button";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { createEffect, createMemo, createSignal, on } from "solid-js";
 
 export interface DeclareEndMarkerProps {
   class?: string;
@@ -24,7 +25,102 @@ export interface DeclareEndMarkerProps {
   opp: boolean;
   roundNumber: number;
   phase: PbPhaseType;
+  currentTime: number;
+  totalTime: number;
+  timingMine: boolean;
   onClick: (e: MouseEvent) => void;
+}
+
+export interface TimerProps {
+  currentTime: number;
+  totalTime: number;
+  timingMine: boolean;
+}
+
+export function TimerBar(props: TimerProps) {
+  const RADIUS = 40;
+  const CENTER = 50;
+  const BORDER_WIDTH = 6;
+  const circumference = 2 * Math.PI * RADIUS;
+  const colorBg = () => (props.timingMine ? "#ebd29a" : "#c2d8f3");
+  const colorFg = () => (props.timingMine ? "#ec8831" : "#5a9bef");
+  const offsetFg = () =>
+    circumference *
+    (props.currentTime > 45 ? 0.55 : 1 - props.currentTime / 100);
+  const offsetBg = createMemo(() => {
+    if (props.totalTime > 45) {
+      return props.currentTime > 45
+        ? circumference *
+            ((1 - (props.currentTime - 45) / (props.totalTime - 45)) * 0.55)
+        : offsetFg();
+    } else {
+      return offsetFg();
+    }
+  });
+  const [transition, setTransition] = createSignal(
+    "stroke-dashoffset 1s linear",
+  );
+  const timingMine = createMemo(() => props.timingMine);
+  createEffect(
+    on(timingMine, () => {
+      setTransition("none");
+      setTimeout(() => setTransition("stroke-dashoffset 1s linear"), 100);
+    }),
+  );
+  return (
+    <svg viewBox="0 0 100 100" class="w-full h-full rotate-90">
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke="#ffffff00"
+        stroke-width={BORDER_WIDTH}
+      />
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width={BORDER_WIDTH}
+        stroke-dasharray={`4 ${circumference - 5}`}
+        stroke-dashoffset={offsetBg()}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{
+          filter: "drop-shadow(0 0 6px #ffffff)",
+          transition: transition(),
+        }}
+      />
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke={colorBg()}
+        stroke-width={BORDER_WIDTH}
+        stroke-dasharray={`${circumference}`}
+        stroke-dashoffset={offsetBg()}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{ transition: transition() }}
+      />
+      <circle
+        cx={CENTER}
+        cy={CENTER}
+        r={RADIUS}
+        fill="none"
+        stroke={colorFg()}
+        stroke-width={BORDER_WIDTH}
+        stroke-dasharray={`${circumference}`}
+        stroke-dashoffset={offsetFg()}
+        stroke-linecap="butt"
+        transform="scale(-1,1) translate(-100,0)"
+        style={{ transition: transition() }}
+      />
+    </svg>
+  );
 }
 
 export function DeclareEndMarker(props: DeclareEndMarkerProps) {
@@ -32,6 +128,7 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
     e.stopPropagation();
     props.onClick(e);
   };
+  const currentTime = () => Math.min(props.currentTime, props.totalTime);
   return (
     <div
       class={`flex flex-row items-center pointer-events-none select-none gap-3 ${
@@ -48,12 +145,19 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
         dataUri
         fallback={
           <div
-            class="pointer-events-auto h-16 w-16 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
+            class="pointer-events-auto ml-3 h-14 w-14 rounded-full data-[opp=true]:bg-blue-300 data-[opp=false]:bg-yellow-300 b-white b-3 flex flex-col items-center justify-center cursor-not-allowed data-[clickable]:cursor-pointer data-[clickable]:hover:bg-yellow-400 transition-colors"
             data-opp={props.opp}
             onClick={onClick}
             bool:data-clickable={props.markerClickable}
           >
             T{props.roundNumber}
+            <div class="w-19 h-19 absolute pointer-events-none">
+              <TimerBar
+                currentTime={currentTime()}
+                totalTime={props.totalTime}
+                timingMine={props.timingMine}
+              />
+            </div>
           </div>
         }
       >
@@ -68,6 +172,13 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
               "--img-active-url": `url("${props.opp ? opp : active}")`,
             }}
           >
+            <div class="w-13.8 h-13.8 absolute">
+              <TimerBar
+                currentTime={currentTime()}
+                totalTime={props.totalTime}
+                timingMine={props.timingMine}
+              />
+            </div>
             <button
               class="block pointer-events-auto h-12 w-12 rounded-full declare-end-marker-img-button data-[opp=true]:color-white"
               data-opp={props.opp}

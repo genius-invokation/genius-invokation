@@ -244,16 +244,18 @@ export function Dice(props: DiceProps) {
       </Switch>
       <Switch>
         <Match when={merged.text}>
-          <WithDelicateUi
-            assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`}
-            fallback={<></>}
-          >
-            {(image) => (
-              <div class="absolute inset-0 children-h-full children-w-full">
-                {image}
-              </div>
-            )}
-          </WithDelicateUi>
+          <Show when={merged.type !== 9}>
+            <WithDelicateUi
+              assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`}
+              fallback={<></>}
+            >
+              {(image) => (
+                <div class="absolute inset-0 children-h-full children-w-full">
+                  {image}
+                </div>
+              )}
+            </WithDelicateUi>
+          </Show>
           <span
             class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold"
             style={{

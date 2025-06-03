@@ -31,6 +31,7 @@ import {
   type GameStateLogEntry,
   GiTcgError,
   Game as InternalGame,
+  Player as InternalPlayer,
   type Notification,
   type PlayerIO,
   type RerollDiceResponse,
@@ -209,17 +210,23 @@ class Player implements PlayerIOWithError {
   private _rpcResolver: RpcResolver | null = null;
   private _timeoutConfig: RoomConfig | null = null;
   private _roundTimeout = Infinity;
+  private _initialRoundTimeout = Infinity;
   private _mutationExtraTimeout = 0;
 
   private _contiguousTimeoutRpcExecuted = 0;
   private _oppPlayer: Player | null = null;
 
+  private _game: InternalGame | null = null;
+  private _who: 0 | 1 = 0;
+
   setTimeoutConfig(config: RoomConfig) {
     this._timeoutConfig = config;
-    this._roundTimeout = this._timeoutConfig?.initTotalActionTime ?? Infinity;
+    this._initialRoundTimeout = this._roundTimeout =
+      this._timeoutConfig?.initTotalActionTime ?? Infinity;
   }
   resetRoundTimeout() {
-    this._roundTimeout = this._timeoutConfig?.roundTotalActionTime ?? Infinity;
+    this._initialRoundTimeout = this._roundTimeout =
+      this._timeoutConfig?.roundTotalActionTime ?? Infinity;
   }
   currentAction(): SSERpc | null {
     if (this._rpcResolver) {
@@ -271,6 +278,9 @@ class Player implements PlayerIOWithError {
   private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
     this._contiguousTimeoutRpcExecuted++;
     if (this.playerInfo.isGuest && this._contiguousTimeoutRpcExecuted >= 3) {
+      if (this._game && this._who) {
+        this._game?.giveUp(this._who);
+      }
       throw new Error(`Give up actions due to too many timeout of guest`);
     }
     return dispatchRpc({
@@ -300,6 +310,8 @@ class Player implements PlayerIOWithError {
 
   async rpc(request: RpcRequest): Promise<RpcResponse> {
     const id = this._nextRpcId++;
+    // 计时器上限
+    let totalTimeout = this._initialRoundTimeout;
     // 当前回合剩余时间
     const roundTimeout = this._roundTimeout;
     // 本行动可用时间
@@ -307,12 +319,16 @@ class Player implements PlayerIOWithError {
     // 行动结束后，计算新的回合剩余时间
     let setRoundTimeout: (remained: number) => void;
     if (request.request?.$case === "rerollDice") {
-      timeout += this._timeoutConfig?.rerollTime ?? Infinity;
+      const actionTimeout = this._timeoutConfig?.rerollTime ?? Infinity;
+      timeout += actionTimeout;
+      totalTimeout += actionTimeout;
       setRoundTimeout = () => {
         this._mutationExtraTimeout = 0;
       };
     } else {
-      timeout += roundTimeout + (this._timeoutConfig?.actionTime ?? Infinity);
+      const actionTimeout = this._timeoutConfig?.actionTime ?? Infinity;
+      timeout += roundTimeout + actionTimeout;
+      totalTimeout += actionTimeout;
       setRoundTimeout = (remain) => {
         this._roundTimeout = Math.min(roundTimeout, remain + 1);
         this._mutationExtraTimeout = 0;
@@ -324,7 +340,7 @@ class Player implements PlayerIOWithError {
           id,
           request,
           timeout,
-          totalTimeout: timeout,
+          totalTimeout,
           resolve: (r) => {
             clearInterval(interval);
             setRoundTimeout(resolver.timeout);
@@ -346,14 +362,16 @@ class Player implements PlayerIOWithError {
       });
     } finally {
       this._rpcResolver = null;
-      this.sendOppRpc(null);
+      this._oppPlayer?.sendOppRpc(null);
     }
   }
 
   onError(e: GiTcgError) {
     this.errorSseSource.next({ type: "error", message: e.message });
   }
-  onInitialized(who: 0 | 1, oppPlayer: Player) {
+  onInitialized(who: 0 | 1, game: InternalGame, oppPlayer: Player) {
+    this._who = who;
+    this._game = game;
     this._oppPlayer = oppPlayer;
     this.initializedSubject.next({
       type: "initialized",
@@ -475,8 +493,8 @@ class Room {
     };
     game.players[0].io = player0;
     game.players[1].io = player1;
-    player0.onInitialized(0, player1);
-    player1.onInitialized(1, player0);
+    player0.onInitialized(0, game, player1);
+    player1.onInitialized(1, game, player0);
     (async () => {
       try {
         this.game = game;
