@@ -15,6 +15,6 @@
 
 import { SERVER_HOST, WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
 
-export const BACKEND_BASE_URL = `${SERVER_HOST || '//' + location.host}${WEB_CLIENT_BASE_PATH}api`;
+export const BACKEND_BASE_URL = `${SERVER_HOST || location.protocol + '//' + location.host}${WEB_CLIENT_BASE_PATH}api`;
 
 export const GITHUB_AUTH_REDIRECT_URL = `${BACKEND_BASE_URL}/auth/github/callback`;
