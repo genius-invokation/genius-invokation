@@ -51,11 +51,12 @@ export function RerollDiceView(props: RerollViewProps) {
     >
       <Show when={shown()}>
         <div
-          class="absolute inset-0 bg-green-50/90 flex flex-col items-center justify-center gap-10 select-none"
+          class="absolute inset-0  flex flex-col items-center justify-center gap-10 select-none"
           onPointerUp={() => setSelectingOn(null)}
         >
-          <h3 class="font-bold text-3xl">重投骰子</h3>
-          <ul class="grid grid-cols-4 gap-6">
+          <div class="absolute w-200% h-full bg-green-50/90 select-none z-0"/>
+          <h3 class="font-bold text-3xl z-1">重投骰子</h3>
+          <ul class="grid grid-cols-4 gap-6 z-1">
             <Index each={props.dice}>
               {(dice, index) => (
                 <li>
@@ -91,7 +92,7 @@ export function RerollDiceView(props: RerollViewProps) {
             </Index>
           </ul>
           <div
-            class="visible data-[hidden]:invisible"
+            class="visible data-[hidden]:invisible z-1"
             bool:data-hidden={props.viewType === "rerollDiceEnd"}
           >
             <Button onClick={() => props.onConfirm()}>确定</Button>
@@ -99,7 +100,7 @@ export function RerollDiceView(props: RerollViewProps) {
         </div>
       </Show>
       <button
-        class="absolute right-2 top-2 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
+        class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
         onClick={() => setShown((v) => !v)}
       >
         <svg

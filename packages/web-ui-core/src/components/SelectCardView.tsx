@@ -33,9 +33,10 @@ export function SelectCardView(props: SelectCardViewProps) {
   return (
     <Show when={props.viewType === "selectCard"}>
       <Show when={shown()}>
-        <div class="absolute inset-0 bg-green-50/90 flex flex-col items-center justify-center gap-10 select-none">
-          <h3 class="font-bold text-3xl">挑选卡牌</h3>
-          <ul class="flex flex-row gap-6">
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
+          <div class="absolute w-200% h-full bg-green-50/90 select-none z-0"/>
+          <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
+          <ul class="flex flex-row gap-6 z-1">
             <For each={props.candidateIds}>
               {(cardId) => (
                 <li
@@ -59,7 +60,7 @@ export function SelectCardView(props: SelectCardViewProps) {
             </For>
           </ul>
           <div
-            class="invisible data-[shown]:visible"
+            class="invisible data-[shown]:visible z-1"
             bool:data-shown={selectedId()}
           >
             <Button onClick={() => props.onConfirm(selectedId()!)}>确定</Button>
@@ -67,7 +68,7 @@ export function SelectCardView(props: SelectCardViewProps) {
         </div>
       </Show>
       <button
-        class="absolute right-2 top-2 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
+        class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
         onClick={() => setShown((v) => !v)}
       >
         <svg

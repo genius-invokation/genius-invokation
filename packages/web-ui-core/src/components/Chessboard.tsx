@@ -118,6 +118,7 @@ import { ConfirmButton } from "./ConfirmButton";
 import { TuningArea } from "./TuningArea";
 import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
+import { SwitchHandsBackdrop } from "./SwitchHandsBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
 import { MutationViewer } from "./MutationViewer";
 
@@ -1303,6 +1304,7 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
+  const [switchHandsShown, setSwitchHandsShown] = createSignal(true);
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
     createSignal<DicePanelState>("hidden");
@@ -1601,6 +1603,7 @@ export function Chessboard(props: ChessboardProps) {
                   card().kind === "switching" &&
                   switchedCards().includes(card().id)
                 }
+                switchHidden={card().kind === "switching" && !switchHandsShown()}
                 realCost={localProps.actionState?.realCosts.cards.get(
                   card().id,
                 )}
@@ -1633,12 +1636,15 @@ export function Chessboard(props: ChessboardProps) {
               />
             )}
           </Key>
+          <Show when={switchHandsShown()}>
+            <SwitchHandsBackdrop
+              shown={localProps.viewType === "switchHands"}
+              onClick={onChessboardClick}
+            />
+          </Show>
           <ChessboardBackdrop
-            shown={
-              localProps.viewType === "switchHands" ||
-              localProps.actionState?.showBackdrop
-            }
-            onClick={onChessboardClick}
+              shown={localProps.actionState?.showBackdrop}
+              onClick={onChessboardClick}
           />
           <Show when={children().tunningArea}>
             {(tunningArea) => <TuningArea {...tunningArea()} />}
@@ -1712,9 +1718,6 @@ export function Chessboard(props: ChessboardProps) {
                 <PlayingCard opp={data.who !== localProps.who} {...data} />
               )}
             </Show>
-            <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
-              <CardDataViewer />
-            </div>
             <MutationViewer who={localProps.who} mutations={allMutations()} />
             <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
               <button
@@ -1729,59 +1732,63 @@ export function Chessboard(props: ChessboardProps) {
                 &#10005;
               </button>
             </Show>
+            <SelectCardView
+              viewType={localProps.viewType}
+              candidateIds={localProps.selectCardCandidates}
+              onClickCard={(id) => {
+                dataViewerController.showCard(id);
+              }}
+              onConfirm={(id) => {
+                localProps.onSelectCard?.(id);
+                dataViewerController.hide();
+              }}
+            />
+            <SwitchHandsView
+              viewType={localProps.viewType}
+              onConfirm={() => {
+                const cards = switchedCards();
+                setSwitchedCards([]);
+                localProps.onSwitchHands?.(cards);
+                dataViewerController.hide();
+              }}
+              setShownCard={() => {setSwitchHandsShown((v) => !v);}}
+            />
+            <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
+              <CardDataViewer />
+            </div>
+            <RerollDiceView
+              viewType={localProps.viewType}
+              dice={myDice()}
+              selectedDice={selectedDice()}
+              onSelectDice={setSelectedDice}
+              onConfirm={() => {
+                const dice = selectedDiceValue() as PbDiceType[];
+                setSelectedDice([]);
+                localProps.onRerollDice?.(dice);
+              }}
+            />
+            <Show when={localProps.doingRpc && localProps.timer}>
+              {(timer) => (
+                <div
+                  class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
+                  bool:data-shown={true}
+                  bool:data-alert={timer().current <= 10}>
+                  {Math.max(Math.floor(timer().current / 60), 0)
+                    .toString()
+                    .padStart(2, "0")}{" "}
+                  :{" "}
+                  {Math.max(timer().current % 60, 0)
+                    .toString()
+                    .padStart(2, "0")}
+                </div>
+              )}
+            </Show>
           </div>
         </div>
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
           <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
             {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
           </div>
-        </Show>
-        <RerollDiceView
-          viewType={localProps.viewType}
-          dice={myDice()}
-          selectedDice={selectedDice()}
-          onSelectDice={setSelectedDice}
-          onConfirm={() => {
-            const dice = selectedDiceValue() as PbDiceType[];
-            setSelectedDice([]);
-            localProps.onRerollDice?.(dice);
-          }}
-        />
-        <SelectCardView
-          viewType={localProps.viewType}
-          candidateIds={localProps.selectCardCandidates}
-          onClickCard={(id) => {
-            dataViewerController.showCard(id);
-          }}
-          onConfirm={(id) => {
-            localProps.onSelectCard?.(id);
-            dataViewerController.hide();
-          }}
-        />
-        <SwitchHandsView
-          viewType={localProps.viewType}
-          onConfirm={() => {
-            const cards = switchedCards();
-            setSwitchedCards([]);
-            localProps.onSwitchHands?.(cards);
-            dataViewerController.hide();
-          }}
-        />
-        <Show when={localProps.doingRpc && localProps.timer}>
-          {(timer) => (
-            <div
-              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-              bool:data-shown={true}
-              bool:data-alert={timer().current <= 10}>
-              {Math.max(Math.floor(timer().current / 60), 0)
-                .toString()
-                .padStart(2, "0")}{" "}
-              :{" "}
-              {Math.max(timer().current % 60, 0)
-                .toString()
-                .padStart(2, "0")}
-            </div>
-          )}
         </Show>
       </div>
     </div>
