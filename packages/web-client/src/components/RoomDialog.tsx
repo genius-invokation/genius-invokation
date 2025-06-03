@@ -97,7 +97,7 @@ const TIME_CONFIGS: TimeConfig[] = [
     actionTime: 25,
   },
   {
-    name: "标准（推荐）",
+    name: "标准",
     estimationTime: 5,
     initTotalActionTime: 45,
     rerollTime: 40,
@@ -105,7 +105,7 @@ const TIME_CONFIGS: TimeConfig[] = [
     actionTime: 25,
   },
   {
-    name: "双倍（推荐）",
+    name: "双倍",
     estimationTime: 10,
     initTotalActionTime: 20,
     rerollTime: 60,
@@ -121,7 +121,7 @@ const TIME_CONFIGS: TimeConfig[] = [
     actionTime: 90,
   },
   {
-    name: "无尽",
+    name: "≈无尽",
     estimationTime: 60,
     initTotalActionTime: 60,
     rerollTime: 300,
@@ -308,10 +308,10 @@ export function RoomDialog(props: RoomDialogProps) {
                       <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors">
                         {config.name ?? `${config.roundTotalActionTime} + ${config.actionTime}`}
                       </h5>
-                      <h5 class="text-gray-400 group-data-[active=true]:text-black transition-colors md:mb-2 font-size-90%">
-                        {`预计每回合时间: <${config.estimationTime}min`}
+                      <h5 class="text-gray-400 group-data-[active=true]:text-gray-600 transition-colors md:mb-2 font-size-80%">
+                        {`预计每回合 ${config.estimationTime}min`}
                       </h5>
-                      <ul class="hidden md:block pl-5 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
+                      <ul class="hidden md:block pl-3 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
                         <li>每重投时间：{config.rerollTime}s</li>
                         <li>每回合总时间：{config.roundTotalActionTime}s</li>
