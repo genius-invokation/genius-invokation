@@ -31,7 +31,11 @@ import {
 import axios, { AxiosError, AxiosResponse } from "axios";
 import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
-import type { RpcRequest } from "@gi-tcg/typings";
+import {
+  PbPlayerStatus,
+  type Notification,
+  type RpcRequest,
+} from "@gi-tcg/typings";
 import {
   Client,
   createClient,
@@ -182,6 +186,7 @@ export function Room() {
     if (payload) {
       const [io, Ui] = createClient(payload.who, {
         onGiveUp,
+        disableAction: !action,
       });
       setChessboard(() => Ui);
       setPlayerIo(io);
@@ -189,14 +194,13 @@ export function Room() {
   });
 
   const onActionRequested = async (payload: ActionRequestPayload) => {
-    if (!action) {
-      return;
-    }
     setCurrentMyTimer(payload.timer);
     currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
     await new Promise((r) => setTimeout(r, 100)); // wait for UI notifications?
-    const response = await playerIo()?.rpc(payload.request);
+    const response = await playerIo()
+      ?.rpc(payload.request)
+      .catch(() => void 0);
     if (!response) {
       return;
     }
@@ -287,7 +291,21 @@ export function Room() {
           break;
         }
         case "notification": {
-          playerIo()?.notify(payload.data);
+          const notification: Notification = payload.data;
+          playerIo()?.notify(notification);
+          // 观战时，收到我方状态变更为非行动通知时，取消 rpc
+          if (
+            !action &&
+            notification.mutation.find(
+              (mut) =>
+                mut.mutation?.$case === "playerStatusChange" &&
+                mut.mutation.value.who === initialized()?.who &&
+                mut.mutation.value.status === PbPlayerStatus.UNSPECIFIED,
+            )
+          ) {
+            playerIo()?.cancelRpc();
+            setCurrentMyTimer(null);
+          }
           break;
         }
         case "oppRpc": {
@@ -344,10 +362,6 @@ export function Room() {
     cleanActionTimer();
   });
 
-  // createEffect(() => {
-  //   console.log(currentOppTimer());
-  // });
-
   return (
     <Dynamic
       component={mobile() && !!chessboard() ? MobileChessboardLayout : Layout}
@@ -387,7 +401,10 @@ export function Room() {
                 {(payload) => (
                   <div class="flex group-data-[mobile]:flex-col flex-row items-center">
                     <div>
-                      <span>{payload().myPlayerInfo.name}（您）</span>
+                      <span>
+                        {payload().myPlayerInfo.name}
+                        {action ? "（您）" : "（观战中）"}
+                      </span>
                       <span class="font-bold"> VS </span>
                       <span>{payload().oppPlayerInfo.name}</span>
                     </div>

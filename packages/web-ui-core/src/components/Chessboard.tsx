@@ -1222,6 +1222,9 @@ export function Chessboard(props: ChessboardProps) {
       phase: localProps.data.state.phase,
       markerClickable: !!canDeclareEnd,
       showButton: showDeclareEndButton(),
+      timingMine: localProps.doingRpc,
+      currentTime: localProps.timer?.current ?? 0,
+      totalTime: localProps.timer?.total ?? Infinity,
       onClick: () => {
         if (canDeclareEnd) {
           if (!showDeclareEndButton()) {
@@ -1766,7 +1769,10 @@ export function Chessboard(props: ChessboardProps) {
         />
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
-            <div class="absolute top-0 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
+            <div
+              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
+              bool:data-shown={true}
+              bool:data-alert={timer().current <= 10}>
               {Math.max(Math.floor(timer().current / 60), 0)
                 .toString()
                 .padStart(2, "0")}{" "}
