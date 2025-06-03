@@ -1222,9 +1222,9 @@ export function Chessboard(props: ChessboardProps) {
       phase: localProps.data.state.phase,
       markerClickable: !!canDeclareEnd,
       showButton: showDeclareEndButton(),
-      doingRpc: localProps.doingRpc,
+      timingMine: localProps.doingRpc,
       currentTime: localProps.timer?.current ?? 0,
-      totalTime: localProps.timer?.total ?? 85,
+      totalTime: localProps.timer?.total ?? Infinity,
       onClick: () => {
         if (canDeclareEnd) {
           if (!showDeclareEndButton()) {
@@ -1771,7 +1771,7 @@ export function Chessboard(props: ChessboardProps) {
           {(timer) => (
             <div
               class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 pl-4 pr-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-              bool:data-shown={timer().current <= 20}
+              bool:data-shown={true}
               bool:data-alert={timer().current <= 10}>
               {Math.max(Math.floor(timer().current / 60), 0)
                 .toString()

@@ -344,10 +344,6 @@ export function Room() {
     cleanActionTimer();
   });
 
-  // createEffect(() => {
-  //   console.log(currentOppTimer());
-  // });
-
   return (
     <Dynamic
       component={mobile() && !!chessboard() ? MobileChessboardLayout : Layout}
