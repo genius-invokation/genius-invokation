@@ -42,21 +42,21 @@ export function NotificationBox(props: NotificationBoxProps) {
 
   return (
     <div
-      class="absolute top-25 z-100 data-[opp=false]:bg-[linear-gradient(to_right,#786049dd_50%,#786049aa_100%)] data-[opp=true]:bg-[linear-gradient(to_right,#485569dd_50%,#485569aa_100%)] text-white flex flex-row gap-2 items-center p-3 rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 data-[opp=false]:border-#644d39aa data-[opp=true]:border-#3f4957 border-2 animate-[notification-box_700ms_both]"
+      class="absolute top-25 z-100 text-white flex flex-row gap-2 items-center p-3 rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 notificction-box border-2 animate-[notification-box_700ms_both]"
       data-opp={props.opp}
       style={{
         "--enter-offset": props.opp ? "2rem" : "-2rem",
       }}
     >
       <div
-        class="absolute w-full h-full ml--3 items-center rounded-1.5 data-[opp=false]:border-#bea678 data-[opp=true]:border-#899dc6 border-1"
+        class="absolute w-full h-full ml--3 items-center rounded-1.5 notificction-border border-1"
         data-opp={props.opp}
       />
       <div>
         <Image
           imageId={props.data.characterDefinitionId}
           type="icon"
-          class="h-10 w-10 rounded-full data-[opp=false]:border-#bea678 data-[opp=true]:border-#899dc6 border-2"
+          class="h-10 w-10 rounded-full notificction-border border-2"
           data-opp={props.opp}
         />
       </div>
@@ -71,7 +71,7 @@ export function NotificationBox(props: NotificationBoxProps) {
                 )}
               </h5>
               <p
-                class="data-[opp=false]:color-#d9b48d data-[opp=true]:color-#7e98cb font-size-80% font-bold"
+                class="notificction-text font-size-80% font-bold"
                 data-opp={props.opp}>
                 {typeText(props.data.skillType)}
               </p>
@@ -79,7 +79,7 @@ export function NotificationBox(props: NotificationBoxProps) {
                 {(skillDefinitionId) =>
                   <>
                     <div
-                      class="absolute h-8 w-8 rounded-full data-[opp=false]:bg-#786049 data-[opp=true]:bg-#485569 data-[opp=false]:border-#bea678 data-[opp=true]:border-#899dc6 border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
+                      class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
                       data-opp={props.opp}>
                       <Image
                         imageId={skillDefinitionId()}
@@ -102,12 +102,12 @@ export function NotificationBox(props: NotificationBoxProps) {
             {(skillDefinitionId) =>
               <>
                 <p
-                  class="data-[opp=false]:color-#d9b48d data-[opp=true]:color-#7e98cb font-size-80% font-bold"
+                  class="notificction-text font-size-80% font-bold"
                   data-opp={props.opp}>
                   {getNameSync(props.data.characterDefinitionId)}
                 </p>
                 <div
-                  class="absolute h-8 w-8 rounded-full data-[opp=false]:bg-#786049 data-[opp=true]:bg-#485569 data-[opp=false]:border-#bea678 data-[opp=true]:border-#899dc6 border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
+                  class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
                   data-opp={props.opp}>
                   <Image
                     imageId={skillDefinitionId()}
@@ -121,7 +121,7 @@ export function NotificationBox(props: NotificationBoxProps) {
           </Show>
           <Show when={props.data.skillType === "overloaded"}>
             <p
-              class="data-[opp=false]:color-#d9b48d data-[opp=true]:color-#7e98cb font-size-80% font-bold"
+              class="notificction-text font-size-80% font-bold"
               data-opp={props.opp}>
               超载
             </p>
