@@ -81,7 +81,7 @@ function App() {
   return (
     <>
       <Chessboard0
-        rotation={90}
+        rotation={0}
         style={{ width: "100vw", height: "100vh" }}
         autoHeight={false}
       />

@@ -127,38 +127,20 @@
     }
   }
 
-  .notificction-box[data-opp="false"] {
+  .notification-box[data-opp="false"] {
     background-image: linear-gradient(to right, #786049dd 50%, #786049aa 100%);
     border-color: #644d39aa;
+    --inner-background-color: #786049;
+    --inner-border-color: #bea678;
+    --text-color: #d9b48d;
   }
 
-  .notificction-box[data-opp="true"] {
+  .notification-box[data-opp="true"] {
     background-image: linear-gradient(to right, #485569dd 50%, #485569aa 100%);
     border-color: #3f4957aa;
-  }
-
-  .notificction-bg[data-opp="false"] {
-    background-color: #786049;
-  }
-
-  .notificction-bg[data-opp="true"] {
-    background-color: #485569;
-  }
-
-  .notificction-text[data-opp="false"] {
-    color: #d9b48d;
-  }
-
-  .notificction-text[data-opp="true"] {
-    color: #7e98cb;
-  }
-
-  .notificction-border[data-opp="false"] {
-    border-color: #bea678;
-  }
-
-  .notificction-border[data-opp="true"] {
-    border-color: #899dc6;
+    --inner-background-color: #485569;
+    --inner-border-color: #899dc6;
+    --text-color: #7e98cb;
   }
 
   .chessboard-bg {
