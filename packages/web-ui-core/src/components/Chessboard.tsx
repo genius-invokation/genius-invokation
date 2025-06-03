@@ -1709,7 +1709,7 @@ export function Chessboard(props: ChessboardProps) {
                 <PlayingCard opp={data.who !== localProps.who} {...data} />
               )}
             </Show>
-            <div class="absolute inset-2 pointer-events-none">
+            <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
               <CardDataViewer />
             </div>
             <MutationViewer who={localProps.who} mutations={allMutations()} />

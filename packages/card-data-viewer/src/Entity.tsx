@@ -52,7 +52,7 @@ export function Character(props: CardDataProps) {
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId),
+    (defId) => assetsManager.getImageUrl(defId, {type: "icon"}),
   );
   return (
     <div class={props.class}>
@@ -63,7 +63,7 @@ export function Character(props: CardDataProps) {
           {(data) => (
             <>
               <Show when={props.includesImage}>
-                <div class="w-20 float-start mr-3 mb-3">
+                <div class="w-15 float-start mr-3 mb-3">
                   <Show when={image()}>
                     {(image) => <img src={image()} class="w-full" />}
                   </Show>
@@ -127,7 +127,7 @@ export function ActionCard(props: CardDataProps) {
           {(data) => (
             <>
               <Show when={props.includesImage}>
-                <div class="w-20 float-start mr-3 mb-3">
+                <div class="w-19 float-start mr-2 mb-0">
                   <Show when={image()}>
                     {(image) => <img src={image()} class="w-full" />}
                   </Show>
@@ -390,9 +390,19 @@ export function Reference(props: ReferenceProps) {
   return (
     <div>
       <Show when={props.includesImage}>
-        <div class="w-8 float-start mr-2 mb-2">
+        <div class="w-8 h-11 float-start mr-1 justify-center overflow-hidden relative rounded-1">
           <Show when={image()}>
-            {(image) => <img src={image()} class="w-full" />}
+            {(image) => (
+              <img
+                src={image()}
+                class="absolute w-full top-50% left-50% translate-x--50% translate-y--50%"
+                classList={{
+                "skill-icon":
+                  data.state === "ready" &&
+                  data()?.type.startsWith("GCG_SKILL_"),
+                }}
+              />
+            )}
           </Show>
         </div>
       </Show>

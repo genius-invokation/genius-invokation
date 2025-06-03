@@ -27,6 +27,7 @@ export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
   zero?: "unknown" | "physic";
   noAltText?: boolean;
+  type?: "cardFace" | "icon" | "unspecified";
 }
 
 export function Image(props: ImageProps) {
@@ -37,12 +38,14 @@ export function Image(props: ImageProps) {
     "height",
     "zero",
     "noAltText",
+    "type",
   ]);
   const { assetsManager } = useUiContext();
   const [url] = createResource(
-    () => local.imageId,
-    (imageId) =>
+    () => [local.imageId, local.type] as const,
+    ([imageId, type]) =>
       assetsManager.getImageUrl(imageId, {
+        type: type,
         thumbnail: true,
       }),
   );

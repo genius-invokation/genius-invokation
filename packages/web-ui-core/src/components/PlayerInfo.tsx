@@ -50,7 +50,9 @@ export function PlayerInfo(props: PlayerInfoProps) {
             props.opp ? "UI_Gcg_DiceL_Count_02" : "UI_Gcg_DiceL_Count_01"
           }
           fallback={
-           <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
+            <div class="relative flex items-center justify-center mt--3 mb--3 ml-2.8">
+              <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
+            </div> 
           }
         >
           {(image) => (
