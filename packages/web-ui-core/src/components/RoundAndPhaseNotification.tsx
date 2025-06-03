@@ -15,7 +15,14 @@
 
 import { PbPhaseType } from "@gi-tcg/typings";
 import type { RoundAndPhaseNotificationInfo } from "../mutations";
-import { createEffect, createMemo, createSignal, Match, Show, Switch } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  Match,
+  Show,
+  Switch,
+} from "solid-js";
 
 export interface RoundAndPhaseNotificationProps {
   class?: string;

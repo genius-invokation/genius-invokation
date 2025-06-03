@@ -21,5 +21,5 @@
 }
 
 .card-panel {
-  --at-apply: pointer-events-auto max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-80 relative;
+  --at-apply: pointer-events-auto max-h-100% overflow-auto bg-yellow-1 b-yellow-8 text-yellow-9 b-solid b-1 rounded-md p-2 w-72 relative;
 }

@@ -98,16 +98,14 @@ export function DicePanel(props: DicePanelProps) {
           >
             {(image) => (
               <div class="relative h-8 w-8.6 mt-10 mb-1 items-center justify-center">
-                <div class="children-h-full children-w-full">
-                  {image}
-                </div>
+                <div class="children-h-full children-w-full">{image}</div>
                 <div class="absolute inset-0 top-0.5 flex items-center justify-center text-white font-bold">
                   {props.dice.length}
                 </div>
               </div>
             )}
           </WithDelicateUi>
-          
+
           <ul class="flex flex-col gap-2 items-center">
             <Index each={props.dice}>
               {(dice, index) => (

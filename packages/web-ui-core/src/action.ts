@@ -907,12 +907,11 @@ function createSwitchActiveActionState(
         step === INNER_SWITCH_ACTIVE_BUTTON ||
         step === CONFIRM_CLICK_ACTION
       ) {
-        const realCost = root.realCosts.switchActive.get(ctx.action.value.characterId)!;
+        const realCost = root.realCosts.switchActive.get(
+          ctx.action.value.characterId,
+        )!;
         const diceReq = new Map(
-          realCost.map(({ type, count }) => [
-            type as DiceType,
-            count,
-          ]),
+          realCost.map(({ type, count }) => [type as DiceType, count]),
         );
         if (checkDice(diceReq, dice)) {
           return {
@@ -975,7 +974,10 @@ function createSwitchActiveActionState(
   ctx.innerLevelStates.set(INNER_CHARACTER_CLICK_ACTION, innerState);
 }
 
-export function createActionState(assetsManager: AssetsManager, actions: Action[]): ActionState {
+export function createActionState(
+  assetsManager: AssetsManager,
+  actions: Action[],
+): ActionState {
   assetsManager.prepareForSync();
   const realCosts: RealCosts = {
     cards: new Map(),

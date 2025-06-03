@@ -44,7 +44,11 @@ export function RerollDiceView(props: RerollViewProps) {
     props.onSelectDice(selectedDice);
   };
   return (
-    <Show when={props.viewType === "rerollDice" || props.viewType === "rerollDiceEnd"}>
+    <Show
+      when={
+        props.viewType === "rerollDice" || props.viewType === "rerollDiceEnd"
+      }
+    >
       <Show when={shown()}>
         <div
           class="absolute inset-0 bg-green-50/90 flex flex-col items-center justify-center gap-10 select-none"
@@ -86,8 +90,11 @@ export function RerollDiceView(props: RerollViewProps) {
               )}
             </Index>
           </ul>
-          <div class="visible data-[hidden]:invisible" bool:data-hidden={props.viewType === "rerollDiceEnd"}>
-          <Button onClick={() => props.onConfirm()}>确定</Button>
+          <div
+            class="visible data-[hidden]:invisible"
+            bool:data-hidden={props.viewType === "rerollDiceEnd"}
+          >
+            <Button onClick={() => props.onConfirm()}>确定</Button>
           </div>
         </div>
       </Show>
