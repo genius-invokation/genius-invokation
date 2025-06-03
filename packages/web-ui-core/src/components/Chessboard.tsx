@@ -1656,11 +1656,11 @@ export function Chessboard(props: ChessboardProps) {
             />
             <PlayerInfo
               opp
-              class="absolute top-2 bottom-[calc(50%+2.75rem)] left-2"
+              class="absolute top-2 bottom-[calc(50%+2rem)] left-2"
               {...playerInfoPropsOf(flip(localProps.who))}
             />
             <PlayerInfo
-              class="absolute top-[calc(50%+2.75rem)] bottom-2 left-2"
+              class="absolute top-[calc(50%+2rem)] bottom-2 left-2"
               {...playerInfoPropsOf(localProps.who)}
             />
             <DicePanel
@@ -1712,7 +1712,7 @@ export function Chessboard(props: ChessboardProps) {
                 <PlayingCard opp={data.who !== localProps.who} {...data} />
               )}
             </Show>
-            <div class="absolute inset-2 pointer-events-none">
+            <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
               <CardDataViewer />
             </div>
             <MutationViewer who={localProps.who} mutations={allMutations()} />
@@ -1770,7 +1770,7 @@ export function Chessboard(props: ChessboardProps) {
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
             <div
-              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 pl-4 pr-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
+              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
               bool:data-shown={true}
               bool:data-alert={timer().current <= 10}>
               {Math.max(Math.floor(timer().current / 60), 0)

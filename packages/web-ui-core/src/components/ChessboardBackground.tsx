@@ -18,7 +18,7 @@ export function ChessboardBackground() {
     <div class="absolute inset-0 flex items-center justify-center">
       <div class="aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex items-center justify-center">
         <div class="aspect-ratio-[16/9] w-full max-h-full flex-grow-0 flex-shrink-0 bg-#554433 flex items-center justify-center">
-          <div class="w-95% h-85% flex-grow-0 flex-shrink-0 bg-[linear-gradient(to_bottom,#F0FDF4_49.5%,#DDEEDD_50%,#F0FDF4_50.5%)] rounded-15% border-6 border-#443322 shadow-[inset_0_0_18px_#000000,_0_0_40px_#63524a]" />
+          <div class="w-95% h-85% flex-grow-0 flex-shrink-0 chessboard-bg rounded-15% border-6 border-#443322" />
         </div>
       </div>
     </div>

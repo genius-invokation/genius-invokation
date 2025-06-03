@@ -37,7 +37,7 @@ export const StrikeWhereItHurts = combatStatus(111133)
  */
 export const ScopeOutSoftSpots = combatStatus(111131)
   .since("v5.2.0")
-  .variable("layer", 0)
+  .variableCanAppend("layer", 0, Infinity)
   .on("useSkill")
   .do((c) => {
     const layer = c.getVariable("layer");

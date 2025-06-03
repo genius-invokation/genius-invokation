@@ -76,6 +76,7 @@ export interface ClientOption {
   rpc?: Partial<RpcDispatcher>;
   assetsManager?: AssetsManager;
   disableDelicateUi?: boolean;
+  disableAction?: boolean;
 }
 
 export interface PlayerIOWithCancellation extends PlayerIO {
@@ -170,7 +171,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         if (result && result.removedHandIds.length > 0) {
           setViewType("switchHandsEnd");
           setTimeout(() => {
-            setViewType((t) => t === "switchHandsEnd" ? "normal" : t);
+            setViewType((t) => (t === "switchHandsEnd" ? "normal" : t));
             forceRefreshData();
           }, 1200);
         } else {
@@ -254,7 +255,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       } finally {
         setDoingRpc(false);
       }
-    }
+    },
   };
 
   const onStepActionState: StepActionStateHandler = (step, dice) => {
@@ -269,11 +270,17 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         break;
       }
       case "actionCommitted": {
+        if (option.disableAction) {
+          break;
+        }
         actionResolvers.action?.resolve(result);
         setActionState(null);
         break;
       }
       case "chooseActiveCommitted": {
+        if (option.disableAction) {
+          break;
+        }
         actionResolvers.chooseActive?.resolve(result);
         setActionState(null);
         break;
@@ -282,12 +289,21 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   };
 
   const onRerollDice = (diceToReroll: PbDiceType[]) => {
+    if (option.disableAction) {
+      return;
+    }
     actionResolvers.rerollDice?.resolve({ diceToReroll });
   };
   const onSwitchHands = (removedHandIds: number[]) => {
+    if (option.disableAction) {
+      return;
+    }
     actionResolvers.switchHands?.resolve({ removedHandIds });
   };
   const onSelectCard = (selectedDefinitionId: number) => {
+    if (option.disableAction) {
+      return;
+    }
     actionResolvers.selectCard?.resolve({ selectedDefinitionId });
   };
 

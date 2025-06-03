@@ -76,7 +76,7 @@ function SkillButton(props: SkillButtonProps) {
 
   return (
     <div
-      class="relative w-12 flex flex-col items-center gap-1 group select-none"
+      class="relative w-12 flex flex-col items-center gap-0.5 group select-none"
       style={{
         "--color": color(),
       }}
@@ -155,7 +155,8 @@ function SkillButton(props: SkillButtonProps) {
               <div
                 class="absolute w-11.5 h-11.5 rounded-full border-3.2 saturate-100 brightness-100 pointer-events-none b-[var(--color)] burst-progress"
                 style={{
-                  "--progress-value": (100 * (props.energy ?? 0)).toFixed(0) + '%',
+                  "--progress-value":
+                    (100 * (props.energy ?? 0)).toFixed(0) + "%",
                 }}
               />
             </Show>
@@ -202,7 +203,7 @@ function SkillButton(props: SkillButtonProps) {
         </div>
       </Show>
       <div
-        class="data-[hidden]:invisible mt--0.5 data-[disabled]:saturate-80 data-[disabled]:brightness-80"
+        class="data-[hidden]:invisible data-[disabled]:saturate-80 data-[disabled]:brightness-80"
         bool:data-hidden={props.hideDiceCost}
         bool:data-disabled={!props.step || props.step.isDisabled}
       >
