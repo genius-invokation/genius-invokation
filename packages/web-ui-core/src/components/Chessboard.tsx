@@ -1764,19 +1764,19 @@ export function Chessboard(props: ChessboardProps) {
             dataViewerController.hide();
           }}
         />
-            <Show when={localProps.doingRpc && localProps.timer}>
-              {(timer) => (
-                <div class="absolute top-0 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
-                  {Math.max(Math.floor(timer().current / 60), 0)
-                    .toString()
-                    .padStart(2, "0")}{" "}
-                  :{" "}
-                  {Math.max(timer().current % 60, 0)
-                    .toString()
-                    .padStart(2, "0")}
-                </div>
-              )}
-            </Show>
+        <Show when={localProps.doingRpc && localProps.timer}>
+          {(timer) => (
+            <div class="absolute top-0 left-50% translate-x--50%  bg-black text-white opacity-80 p-2 rounded-lb rounded-rb z-29 whitespace-pre">
+              {Math.max(Math.floor(timer().current / 60), 0)
+                .toString()
+                .padStart(2, "0")}{" "}
+              :{" "}
+              {Math.max(timer().current % 60, 0)
+                .toString()
+                .padStart(2, "0")}
+            </div>
+          )}
+        </Show>
       </div>
     </div>
   );

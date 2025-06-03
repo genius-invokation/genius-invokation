@@ -101,17 +101,21 @@
   }
 
   .dice-panel {
-    background: linear-gradient(to right,
-        #9d907bff 2px,
-        #86795eff 2px,
-        #5e4223ff 50px,
-        #5e4223ff 90%,
-        #5e422300 100%);
-    mask-image: linear-gradient(to bottom,
-        rgba(0, 0, 0, 0) 6%,
-        rgba(0, 0, 0, 0.9) 12%,
-        rgba(0, 0, 0, 0.9) 82%,
-        rgba(0, 0, 0, 0) 92%);
+    background: linear-gradient(
+      to right,
+      #9d907bff 2px,
+      #86795eff 2px,
+      #5e4223ff 50px,
+      #5e4223ff 90%,
+      #5e422300 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 6%,
+      rgba(0, 0, 0, 0.9) 12%,
+      rgba(0, 0, 0, 0.9) 82%,
+      rgba(0, 0, 0, 0) 92%
+    );
 
     .delicate-dice {
       --blink-opacity: 1;
@@ -124,16 +128,12 @@
   }
 
   .notificction-box[data-opp="false"] {
-    background-image: linear-gradient(to right,
-        #786049dd 50%,
-        #786049aa 100%);
+    background-image: linear-gradient(to right, #786049dd 50%, #786049aa 100%);
     border-color: #644d39aa;
   }
 
   .notificction-box[data-opp="true"] {
-    background-image: linear-gradient(to right,
-        #485569dd 50%,
-        #485569aa 100%);
+    background-image: linear-gradient(to right, #485569dd 50%, #485569aa 100%);
     border-color: #3f4957aa;
   }
 
@@ -162,11 +162,15 @@
   }
 
   .chessboard-bg {
-    background-image: linear-gradient(to bottom,
-        #f0fdf4ff 49.5%,
-        #ddeeddff 50%,
-        #f0fdf4ff 50.5%,);
-    box-shadow: inset 0 0 18px #000000, 0 0 40px #63524a;
+    background-image: linear-gradient(
+      to bottom,
+      #f0fdf4ff 49.5%,
+      #ddeeddff 50%,
+      #f0fdf4ff 50.5%
+    );
+    box-shadow:
+      inset 0 0 18px #000000,
+      0 0 40px #63524a;
   }
 
   .burst-animator {
@@ -177,9 +181,11 @@
   }
 
   .burst-progress {
-    mask-image: linear-gradient(to top,
-        #ffffffff var(--progress-value),
-        transparent var(--progress-value));
+    mask-image: linear-gradient(
+      to top,
+      #ffffffff var(--progress-value),
+      transparent var(--progress-value)
+    );
   }
 }
 
@@ -320,7 +326,6 @@
 }
 
 @keyframes blink {
-
   0%,
   100% {
     opacity: var(--blink-opacity, 1);

@@ -25,7 +25,9 @@ export interface VariableDiffProps {
 }
 
 export function VariableDiff(props: VariableDiffProps) {
-  const increase = createMemo(() => props.direction !== PbModifyDirection.DECREASE);
+  const increase = createMemo(
+    () => props.direction !== PbModifyDirection.DECREASE,
+  );
   return (
     <div
       class={`data-[increase=true]-bg-green-500 data-[increase=false]-bg-red-500 text-white font-bold h-8 min-w-10 rounded-4 line-height-none flex items-center justify-center ${

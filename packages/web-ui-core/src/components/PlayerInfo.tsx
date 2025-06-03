@@ -51,22 +51,24 @@ export function PlayerInfo(props: PlayerInfoProps) {
           }
           fallback={
             <div class="relative flex items-center justify-center mt--3 mb--3 ml-2.8">
-              <Dice type={DiceType.Omni} size={40} text={String(props.diceCount)} />
-            </div> 
+              <Dice
+                type={DiceType.Omni}
+                size={40}
+                text={String(props.diceCount)}
+              />
+            </div>
           }
         >
           {(image) => (
-          <div class="relative flex items-center justify-center mt--3 mb--3 ml-2">
-            <div class="h-10 w-10">{image}</div>
-            <span
-              class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold text-5"
-            >
-              {String(props.diceCount)}
-            </span>
-            <span class="absolute text-white font-bold text-5" >
-              {String(props.diceCount)}
-            </span>
-          </div>
+            <div class="relative flex items-center justify-center mt--3 mb--3 ml-2">
+              <div class="h-10 w-10">{image}</div>
+              <span class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold text-5">
+                {String(props.diceCount)}
+              </span>
+              <span class="absolute text-white font-bold text-5">
+                {String(props.diceCount)}
+              </span>
+            </div>
           )}
         </WithDelicateUi>
       </div>

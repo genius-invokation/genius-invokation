@@ -155,7 +155,8 @@ function SkillButton(props: SkillButtonProps) {
               <div
                 class="absolute w-11.5 h-11.5 rounded-full border-3.2 saturate-100 brightness-100 pointer-events-none b-[var(--color)] burst-progress"
                 style={{
-                  "--progress-value": (100 * (props.energy ?? 0)).toFixed(0) + '%',
+                  "--progress-value":
+                    (100 * (props.energy ?? 0)).toFixed(0) + "%",
                 }}
               />
             </Show>

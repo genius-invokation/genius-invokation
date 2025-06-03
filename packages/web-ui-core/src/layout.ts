@@ -65,7 +65,6 @@ const HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING = CARD_HEIGHT + 10;
 
 const SHOING_CARD_GAP_MIN = 10;
 
-
 export function getCharacterAreaPos(
   [height, width]: Size,
   opp: boolean,
@@ -76,7 +75,10 @@ export function getCharacterAreaPos(
   const halfHeight = height / 2;
   const halfChessboardHeight = MINIMUM_HEIGHT / 2;
   const gapAroundCharacterArea =
-    (halfChessboardHeight - CHARACTER_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
+    (halfChessboardHeight -
+      CHARACTER_AREA_HEIGHT -
+      HAND_CARD_BLURRED_SHOW_HEIGHT) /
+    2;
   let characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
     : halfHeight + gapAroundCharacterArea + 2;
@@ -107,17 +109,17 @@ export function getEntityPos(
   const halfWidth = width / 2;
   const halfChessboardHeight = MINIMUM_HEIGHT / 2;
   const gapAroundEntityArea =
-    (halfChessboardHeight - ENTITY_AREA_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT) / 2;
+    (halfChessboardHeight -
+      ENTITY_AREA_HEIGHT -
+      HAND_CARD_BLURRED_SHOW_HEIGHT) /
+    2;
   const entityAreaY = opp
     ? halfHeight - gapAroundEntityArea - ENTITY_AREA_HEIGHT
     : halfHeight + gapAroundEntityArea;
   const entityAreaX =
     type === "summon"
       ? halfWidth + TOTAL_CHARACTERS_MAX_WIDTH / 2 + 4
-      : halfWidth -
-      TOTAL_CHARACTERS_MAX_WIDTH / 2 -
-      4 -
-      ENTITY_AREA_WIDTH;
+      : halfWidth - TOTAL_CHARACTERS_MAX_WIDTH / 2 - 4 - ENTITY_AREA_WIDTH;
   const x = entityAreaX + (index % 2) * (ENTITY_WIDTH + ENTITY_GAP);
   const y = entityAreaY + Math.floor(index / 2) * (ENTITY_HEIGHT + ENTITY_GAP);
   return [x, y];
@@ -132,7 +134,11 @@ export function getHandCardBlurredPos(
   skillCount: number,
 ): Pos {
   if (opp) {
-    let y = (height - MINIMUM_HEIGHT) / 2 + HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT - 3;
+    let y =
+      (height - MINIMUM_HEIGHT) / 2 +
+      HAND_CARD_BLURRED_SHOW_HEIGHT -
+      CARD_HEIGHT -
+      3;
     if (!showHands) {
       y = HAND_CARD_BLURRED_SHOW_HEIGHT - CARD_HEIGHT - 2 - CARD_HEIGHT / 2;
     }
@@ -144,7 +150,11 @@ export function getHandCardBlurredPos(
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
   } else {
-    let y = (height - MINIMUM_HEIGHT) / 2 + MINIMUM_HEIGHT - HAND_CARD_BLURRED_SHOW_HEIGHT + 2;
+    let y =
+      (height - MINIMUM_HEIGHT) / 2 +
+      MINIMUM_HEIGHT -
+      HAND_CARD_BLURRED_SHOW_HEIGHT +
+      2;
     if (!showHands) {
       y = height - HAND_CARD_BLURRED_SHOW_HEIGHT + 3 + CARD_HEIGHT / 2;
     }
@@ -153,8 +163,15 @@ export function getHandCardBlurredPos(
       (totalCount - 1) * HAND_CARD_BLURRED_SHOW_WIDTH + CARD_WIDTH;
     let areaX = halfWidth - totalHandCardWidth / 2;
     const skillButtonGroupWidth = skillCount * SKILL_BUTTON_WIDTH + 2;
-    if (areaX + totalHandCardWidth > (width - MINIMUM_WIDTH) / 2 + MINIMUM_WIDTH - skillButtonGroupWidth) {
-      areaX = (width - MINIMUM_WIDTH) / 2 + MINIMUM_WIDTH - skillButtonGroupWidth - totalHandCardWidth;
+    if (
+      areaX + totalHandCardWidth >
+      (width - MINIMUM_WIDTH) / 2 + MINIMUM_WIDTH - skillButtonGroupWidth
+    ) {
+      areaX =
+        (width - MINIMUM_WIDTH) / 2 +
+        MINIMUM_WIDTH -
+        skillButtonGroupWidth -
+        totalHandCardWidth;
     }
     const x = areaX + index * HAND_CARD_BLURRED_SHOW_WIDTH;
     return [x, y];
@@ -176,8 +193,11 @@ export function getHandCardFocusedPos(
   index: number,
   hoveringIndex: number | null,
 ): Pos {
-  const yBase = (height - MINIMUM_HEIGHT) / 2 + MINIMUM_HEIGHT - HAND_CARD_FOCUSED_SHOW_HEIGHT;
-  let y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
+  const yBase =
+    (height - MINIMUM_HEIGHT) / 2 +
+    MINIMUM_HEIGHT -
+    HAND_CARD_FOCUSED_SHOW_HEIGHT;
+  const y = yBase - (index === hoveringIndex ? HAND_CARD_HOVERING_Y_OFFSET : 0);
   const halfWidth = width / 2;
   const cardAreaCenter = halfWidth + HAND_CARD_FOCUSED_CENTER_X_OFFSET;
   const cardAreaMaxWidth = 9 * HAND_CARD_FOCUSED_SHOW_WIDTH_MIN + CARD_WIDTH;
@@ -203,7 +223,12 @@ export function shouldFocusHandWhenDragging(
   [height, width]: Size,
   currentY: number,
 ) {
-  return currentY >= (height - MINIMUM_HEIGHT) / 2 + MINIMUM_HEIGHT - HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING;
+  return (
+    currentY >=
+    (height - MINIMUM_HEIGHT) / 2 +
+      MINIMUM_HEIGHT -
+      HAND_CARD_FOCUSING_AREA_HEIGHT_WHEN_DRAGGING
+  );
 }
 
 export function getShowingCardPos(

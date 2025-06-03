@@ -170,7 +170,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         if (result && result.removedHandIds.length > 0) {
           setViewType("switchHandsEnd");
           setTimeout(() => {
-            setViewType((t) => t === "switchHandsEnd" ? "normal" : t);
+            setViewType((t) => (t === "switchHandsEnd" ? "normal" : t));
             forceRefreshData();
           }, 1200);
         } else {
@@ -254,7 +254,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       } finally {
         setDoingRpc(false);
       }
-    }
+    },
   };
 
   const onStepActionState: StepActionStateHandler = (step, dice) => {

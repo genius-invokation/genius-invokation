@@ -72,15 +72,17 @@ export function NotificationBox(props: NotificationBoxProps) {
               </h5>
               <p
                 class="notificction-text font-size-80% font-bold"
-                data-opp={props.opp}>
+                data-opp={props.opp}
+              >
                 {typeText(props.data.skillType)}
               </p>
               <Show when={props.data.skillDefinitionId}>
-                {(skillDefinitionId) =>
+                {(skillDefinitionId) => (
                   <>
                     <div
                       class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
-                      data-opp={props.opp}>
+                      data-opp={props.opp}
+                    >
                       <Image
                         imageId={skillDefinitionId()}
                         type="icon"
@@ -89,7 +91,7 @@ export function NotificationBox(props: NotificationBoxProps) {
                       />
                     </div>
                   </>
-                }
+                )}
               </Show>
             </>
           }
@@ -99,16 +101,18 @@ export function NotificationBox(props: NotificationBoxProps) {
             {getNameSync(props.data.characterDefinitionId)}
           </h5>
           <Show when={props.data.skillDefinitionId}>
-            {(skillDefinitionId) =>
+            {(skillDefinitionId) => (
               <>
                 <p
                   class="notificction-text font-size-80% font-bold"
-                  data-opp={props.opp}>
+                  data-opp={props.opp}
+                >
                   {getNameSync(props.data.characterDefinitionId)}
                 </p>
                 <div
                   class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
-                  data-opp={props.opp}>
+                  data-opp={props.opp}
+                >
                   <Image
                     imageId={skillDefinitionId()}
                     type="icon"
@@ -117,12 +121,13 @@ export function NotificationBox(props: NotificationBoxProps) {
                   />
                 </div>
               </>
-            }
+            )}
           </Show>
           <Show when={props.data.skillType === "overloaded"}>
             <p
               class="notificction-text font-size-80% font-bold"
-              data-opp={props.opp}>
+              data-opp={props.opp}
+            >
               超载
             </p>
           </Show>
