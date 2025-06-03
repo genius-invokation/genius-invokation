@@ -42,96 +42,97 @@ export function NotificationBox(props: NotificationBoxProps) {
 
   return (
     <div
-      class="absolute top-25 z-100 text-white flex flex-row gap-2 items-center p-3 rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 notificction-box border-2 animate-[notification-box_700ms_both]"
+      class="absolute top-25 z-100 text-white  rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 notification-box border-2 " //animate-[notification-box_700ms_both]
       data-opp={props.opp}
       style={{
         "--enter-offset": props.opp ? "2rem" : "-2rem",
       }}
     >
       <div
-        class="absolute w-full h-full ml--3 items-center rounded-1.5 notificction-border border-1"
+        class="w-full h-full items-center rounded-1.5 notification-border border-1 flex flex-row gap-2 items-center p-3"
         data-opp={props.opp}
-      />
-      <div>
-        <Image
-          imageId={props.data.characterDefinitionId}
-          type="icon"
-          class="h-10 w-10 rounded-full notificction-border border-2"
-          data-opp={props.opp}
-        />
-      </div>
-      <div class="flex-col">
-        <Show
-          when={props.data.type === "switchActive"}
-          fallback={
-            <>
-              <h5 class="font-bold color-#ede4d8">
-                {getNameSync(
-                  Math.floor(props.data.skillDefinitionId as number),
-                )}
-              </h5>
+      >
+        <div>
+          <Image
+            imageId={props.data.characterDefinitionId}
+            type="icon"
+            class="h-10 w-10 rounded-full notification-border border-2"
+            data-opp={props.opp}
+          />
+        </div>
+        <div class="flex-col">
+          <Show
+            when={props.data.type === "switchActive"}
+            fallback={
+              <>
+                <h5 class="font-bold color-#ede4d8">
+                  {getNameSync(
+                    Math.floor(props.data.skillDefinitionId as number),
+                  )}
+                </h5>
+                <p
+                  class="notification-text font-size-80% font-bold"
+                  data-opp={props.opp}
+                >
+                  {typeText(props.data.skillType)}
+                </p>
+                <Show when={props.data.skillDefinitionId}>
+                  {(skillDefinitionId) => (
+                    <>
+                      <div
+                        class="absolute h-8 w-8 rounded-full notification-bg notification-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
+                        data-opp={props.opp}
+                      >
+                        <Image
+                          imageId={Math.floor(skillDefinitionId())}
+                          type="icon"
+                          class="h-full w-full"
+                          data-opp={props.opp}
+                        />
+                      </div>
+                    </>
+                  )}
+                </Show>
+              </>
+            }
+          >
+            <h5 class="font-bold color-#ede4d8">
+              {props.opp ? "对方" : "我方"}切换角色：
+              {getNameSync(props.data.characterDefinitionId)}
+            </h5>
+            <Show when={props.data.skillDefinitionId}>
+              {(skillDefinitionId) => (
+                <>
+                  <p
+                    class="notification-text font-size-80% font-bold"
+                    data-opp={props.opp}
+                  >
+                    {getNameSync(props.data.characterDefinitionId)}
+                  </p>
+                  <div
+                    class="absolute h-8 w-8 rounded-full notification-bg notification-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
+                    data-opp={props.opp}
+                  >
+                    <Image
+                      imageId={skillDefinitionId()}
+                      type="icon"
+                      class="h-full w-full"
+                      data-opp={props.opp}
+                    />
+                  </div>
+                </>
+              )}
+            </Show>
+            <Show when={props.data.skillType === "overloaded"}>
               <p
-                class="notificction-text font-size-80% font-bold"
+                class="notification-text font-size-80% font-bold"
                 data-opp={props.opp}
               >
-                {typeText(props.data.skillType)}
+                超载
               </p>
-              <Show when={props.data.skillDefinitionId}>
-                {(skillDefinitionId) => (
-                  <>
-                    <div
-                      class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
-                      data-opp={props.opp}
-                    >
-                      <Image
-                        imageId={Math.floor(skillDefinitionId())}
-                        type="icon"
-                        class="h-full w-full"
-                        data-opp={props.opp}
-                      />
-                    </div>
-                  </>
-                )}
-              </Show>
-            </>
-          }
-        >
-          <h5 class="font-bold color-#ede4d8">
-            {props.opp ? "对方" : "我方"}切换角色：
-            {getNameSync(props.data.characterDefinitionId)}
-          </h5>
-          <Show when={props.data.skillDefinitionId}>
-            {(skillDefinitionId) => (
-              <>
-                <p
-                  class="notificction-text font-size-80% font-bold"
-                  data-opp={props.opp}
-                >
-                  {getNameSync(props.data.characterDefinitionId)}
-                </p>
-                <div
-                  class="absolute h-8 w-8 rounded-full notificction-bg notificction-border border-1 translate-x-50% translate-y--50% right-0 top-50% justify-center items-center p-0.3"
-                  data-opp={props.opp}
-                >
-                  <Image
-                    imageId={skillDefinitionId()}
-                    type="icon"
-                    class="h-full w-full"
-                    data-opp={props.opp}
-                  />
-                </div>
-              </>
-            )}
+            </Show>
           </Show>
-          <Show when={props.data.skillType === "overloaded"}>
-            <p
-              class="notificction-text font-size-80% font-bold"
-              data-opp={props.opp}
-            >
-              超载
-            </p>
-          </Show>
-        </Show>
+        </div>
       </div>
     </div>
   );

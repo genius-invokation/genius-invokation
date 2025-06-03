@@ -1656,11 +1656,11 @@ export function Chessboard(props: ChessboardProps) {
             />
             <PlayerInfo
               opp
-              class="absolute top-2 bottom-[calc(50%+2.75rem)] left-2"
+              class="absolute top-2 bottom-[calc(50%+2rem)] left-2"
               {...playerInfoPropsOf(flip(localProps.who))}
             />
             <PlayerInfo
-              class="absolute top-[calc(50%+2.75rem)] bottom-2 left-2"
+              class="absolute top-[calc(50%+2rem)] bottom-2 left-2"
               {...playerInfoPropsOf(localProps.who)}
             />
             <DicePanel
