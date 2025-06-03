@@ -24,7 +24,7 @@ export interface PlayingCardProps extends PlayingCardInfo {
 export function PlayingCard(props: PlayingCardProps) {
   return (
     <div
-      class="absolute top-15 data-[opp=false]:left-15 data-[opp=true]:right-15 z-100 shadow-xl w-42 h-72 rounded-6 animate-[playing-card_700ms_both]"
+      class="absolute top-50% mt--42.5 data-[opp=false]:left-30 data-[opp=true]:right-30 z-100 shadow-xl w-35 h-60 rounded-6 animate-[playing-card_700ms_both]"
       data-opp={props.opp}
     >
       <WithDelicateUi

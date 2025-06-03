@@ -42,7 +42,7 @@ export function NotificationBox(props: NotificationBoxProps) {
 
   return (
     <div
-      class="absolute top-25 z-100 text-white flex flex-row gap-2 items-center p-3 rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 notificction-box border-2 animate-[notification-box_700ms_both]"
+      class="absolute top-50% mt--42.5 z-100 text-white flex flex-row gap-2 items-center p-3 rounded-2 shadow-lg h-15 min-w-60 data-[opp=false]:left-15 data-[opp=true]:right-15 notificction-box border-2 animate-[notification-box_700ms_both]"
       data-opp={props.opp}
       style={{
         "--enter-offset": props.opp ? "2rem" : "-2rem",
