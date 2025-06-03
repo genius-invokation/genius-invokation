@@ -84,7 +84,7 @@ export function NotificationBox(props: NotificationBoxProps) {
                       data-opp={props.opp}
                     >
                       <Image
-                        imageId={skillDefinitionId()}
+                        imageId={Math.floor(skillDefinitionId())}
                         type="icon"
                         class="h-full w-full"
                         data-opp={props.opp}
