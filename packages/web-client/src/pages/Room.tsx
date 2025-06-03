@@ -189,9 +189,6 @@ export function Room() {
   });
 
   const onActionRequested = async (payload: ActionRequestPayload) => {
-    if (!action) {
-      return;
-    }
     setCurrentMyTimer(payload.timer);
     currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
@@ -201,6 +198,10 @@ export function Room() {
       return;
     }
     setCurrentMyTimer(null);
+    if (!action) {
+      alert(`您正在观战，无法进行操作。`);
+      return;
+    }
     try {
       const reply = axios.post(
         `rooms/${id}/players/${playerId}/actionResponse`,
@@ -383,7 +384,10 @@ export function Room() {
                 {(payload) => (
                   <div class="flex group-data-[mobile]:flex-col flex-row items-center">
                     <div>
-                      <span>{payload().myPlayerInfo.name}（您）</span>
+                      <span>
+                        {payload().myPlayerInfo.name}
+                        {action ? "（您）" : "（观战中）"}
+                      </span>
                       <span class="font-bold"> VS </span>
                       <span>{payload().oppPlayerInfo.name}</span>
                     </div>
