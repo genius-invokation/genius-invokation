@@ -186,6 +186,7 @@ export function Room() {
     if (payload) {
       const [io, Ui] = createClient(payload.who, {
         onGiveUp,
+        disableAction: !action,
       });
       setChessboard(() => Ui);
       setPlayerIo(io);
@@ -197,15 +198,13 @@ export function Room() {
     currentRpcId.value = payload.id;
     playerIo()?.cancelRpc();
     await new Promise((r) => setTimeout(r, 100)); // wait for UI notifications?
-    const response = await playerIo()?.rpc(payload.request);
+    const response = await playerIo()
+      ?.rpc(payload.request)
+      .catch(() => void 0);
     if (!response) {
       return;
     }
     setCurrentMyTimer(null);
-    if (!action) {
-      alert(`您正在观战，无法进行操作。`);
-      return;
-    }
     try {
       const reply = axios.post(
         `rooms/${id}/players/${playerId}/actionResponse`,
