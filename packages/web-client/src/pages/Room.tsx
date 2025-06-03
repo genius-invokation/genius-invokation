@@ -31,7 +31,11 @@ import {
 import axios, { AxiosError, AxiosResponse } from "axios";
 import "@gi-tcg/web-ui-core/style.css";
 import EventSourceStream from "@server-sent-stream/web";
-import type { RpcRequest } from "@gi-tcg/typings";
+import {
+  PbPlayerStatus,
+  type Notification,
+  type RpcRequest,
+} from "@gi-tcg/typings";
 import {
   Client,
   createClient,
@@ -288,7 +292,21 @@ export function Room() {
           break;
         }
         case "notification": {
-          playerIo()?.notify(payload.data);
+          const notification: Notification = payload.data;
+          playerIo()?.notify(notification);
+          // 观战时，收到我方状态变更为非行动通知时，取消 rpc
+          if (
+            !action &&
+            notification.mutation.find(
+              (mut) =>
+                mut.mutation?.$case === "playerStatusChange" &&
+                mut.mutation.value.who === initialized()?.who &&
+                mut.mutation.value.status === PbPlayerStatus.UNSPECIFIED,
+            )
+          ) {
+            playerIo()?.cancelRpc();
+            setCurrentMyTimer(null);
+          }
           break;
         }
         case "oppRpc": {
