@@ -49,7 +49,7 @@ export function NotificationBox(props: NotificationBoxProps) {
       }}
     >
       <div
-        class="w-full h-full items-center rounded-1.5 notification-border border-1 flex flex-row gap-2 items-center p-3"
+        class="w-full h-full rounded-1.5 notification-border border-1 flex flex-row gap-2 items-center p-3"
         data-opp={props.opp}
       >
         <div>
