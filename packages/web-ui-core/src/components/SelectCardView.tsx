@@ -59,7 +59,7 @@ export function SelectCardView(props: SelectCardViewProps) {
                 size={36}
               />
               <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
-              <div class="absolute h-10 w-full bottom--12 font-size-4 text-center color-black/60 font-bold">
+              <div class="absolute h-10 w-36 left-50% -translate-x-50% bottom--12 font-size-4 text-center color-black/60 font-bold">
                 {props.nameGetter(cardId)}
               </div>
             </li>

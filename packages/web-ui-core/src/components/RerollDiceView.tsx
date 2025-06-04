@@ -50,7 +50,7 @@ export function RerollDiceView(props: RerollViewProps) {
       onPointerUp={() => setSelectingOn(null)}
     >
       <h3 class="font-bold text-3xl z-1">重投骰子</h3>
-      <ul class="grid grid-cols-4 gap-6 z-1">
+      <ul class="grid grid-rows-2 grid-flow-col gap-6 z-1">
         <Index each={props.dice}>
           {(dice, index) => (
             <li>

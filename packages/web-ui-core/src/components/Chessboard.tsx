@@ -1315,6 +1315,16 @@ export function Chessboard(props: ChessboardProps) {
   const displayUiComponents = createMemo(
     () => !hasSpecialView() || !specialViewVisible(),
   );
+  createEffect(() => {
+    if (hasSpecialView() && specialViewVisible()) {
+      dataViewerController.hide();
+    }
+  });
+  createEffect(() => {
+    if (hasSpecialView()) {
+      setSpecialViewVisible(true);
+    }
+  });
 
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
@@ -1544,6 +1554,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const onSkillClick = (sk: SkillInfo) => {
+    setShowDeclareEndButton(false)
     if (sk.id === "switchActive") {
       const step = switchActiveStep();
       if (step) {
@@ -1616,8 +1627,8 @@ export function Chessboard(props: ChessboardProps) {
                   switchedCards().includes(card().id)
                 }
                 hidden={
-                  // 切换手牌时：显示前台切换手牌面板时只显示切换中手牌，反之只显示其它手牌
-                  props.viewType === "switchHands"
+                  // 存在特殊视图时：视图可见时只显示正在切换的手牌，反之只显示其他行动牌
+                  hasSpecialView()
                     ? (card().kind === "switching") !== specialViewVisible()
                     : false
                 }
