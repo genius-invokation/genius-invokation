@@ -14,15 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export interface SwitchHandsBackdropProps {
-  shown?: boolean;
   onClick?: (e: MouseEvent) => void;
 }
 
-export function SwitchHandsBackdrop(props: SwitchHandsBackdropProps) {
+export function ViewPanelBackdrop(props: SwitchHandsBackdropProps) {
   return (
     <div
-      class="absolute inset-0 top-50% left-50% -translate-x-50% -translate-y-50% translate-z-10 pointer-events-none data-[shown]:pointer-events-auto data-[shown]:bg-green-50/90 transition-colors h-102 w-170"
-      bool:data-shown={props.shown}
+      class="absolute w-200% h-full bg-green-50/90 select-none translate-z-0.1"
       onClick={(e) => {
         e.stopPropagation();
         props.onClick?.(e);

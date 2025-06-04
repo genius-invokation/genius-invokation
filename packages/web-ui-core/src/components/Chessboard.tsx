@@ -118,7 +118,7 @@ import { ConfirmButton } from "./ConfirmButton";
 import { TuningArea } from "./TuningArea";
 import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
-import { SwitchHandsBackdrop } from "./SwitchHandsBackdrop";
+import { ViewPanelBackdrop } from "./ViewPanelBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
 import { MutationViewer } from "./MutationViewer";
 
@@ -1304,7 +1304,15 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
-  const [switchHandsShown, setSwitchHandsShown] = createSignal(true);
+  const [viewPanelVisible, setViewPanelVisible] = createSignal(true);
+  const screenUiShown = createMemo(() => {
+    if (["rerollDice", "rerollDiceEnd", "switchHands", "selectCard"].includes(localProps.viewType)) {
+      return !viewPanelVisible();
+    } else {
+      return true;
+    }});
+  const [switchHandsVisible, setSwitchHandsVisible] = createSignal(true);
+
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
     createSignal<DicePanelState>("hidden");
@@ -1566,6 +1574,7 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
       ref={containerEl}
     >
+      {/* 3d space */}
       <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
         <ChessboardBackground />
         <div
@@ -1603,7 +1612,7 @@ export function Chessboard(props: ChessboardProps) {
                   card().kind === "switching" &&
                   switchedCards().includes(card().id)
                 }
-                switchHidden={card().kind === "switching" && !switchHandsShown()}
+                switchHidden={card().kind === "switching" && !switchHandsVisible()}
                 realCost={localProps.actionState?.realCosts.cards.get(
                   card().id,
                 )}
@@ -1636,9 +1645,8 @@ export function Chessboard(props: ChessboardProps) {
               />
             )}
           </Key>
-          <Show when={switchHandsShown()}>
-            <SwitchHandsBackdrop
-              shown={localProps.viewType === "switchHands"}
+          <Show when={localProps.viewType === "switchHands" && switchHandsVisible()}>
+            <ViewPanelBackdrop
               onClick={onChessboardClick}
             />
           </Show>
@@ -1650,7 +1658,9 @@ export function Chessboard(props: ChessboardProps) {
             {(tunningArea) => <TuningArea {...tunningArea()} />}
           </Show>
         </div>
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {/* screen ui canvas */}
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none data-[shown]:invisible"
+          bool:data-shown={!screenUiShown()}>
           <div class="absolute aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex children-pointer-events-auto">
             <ActionHintText
               class="absolute left-50% top-50% translate-x--50% translate-y--50%"
@@ -1732,6 +1742,11 @@ export function Chessboard(props: ChessboardProps) {
                 &#10005;
               </button>
             </Show>
+          </div>
+        </div>
+        {/* screen scence canvas */}
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="absolute aspect-ratio-[16/9] h-full max-w-full flex-grow-0 flex-shrink-0 flex children-pointer-events-auto">
             <SelectCardView
               viewType={localProps.viewType}
               candidateIds={localProps.selectCardCandidates}
@@ -1742,7 +1757,10 @@ export function Chessboard(props: ChessboardProps) {
                 localProps.onSelectCard?.(id);
                 dataViewerController.hide();
               }}
-            />
+              onVisible={() => {
+                setViewPanelVisible((v) => !v);
+              }}
+            />            
             <SwitchHandsView
               viewType={localProps.viewType}
               onConfirm={() => {
@@ -1751,11 +1769,14 @@ export function Chessboard(props: ChessboardProps) {
                 localProps.onSwitchHands?.(cards);
                 dataViewerController.hide();
               }}
-              setShownCard={() => {setSwitchHandsShown((v) => !v);}}
-            />
+              onVisible={() => {
+                setSwitchHandsVisible((v) => !v);
+                setViewPanelVisible((v) => !v);
+              }}
+            />            
             <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
               <CardDataViewer />
-            </div>
+            </div>            
             <RerollDiceView
               viewType={localProps.viewType}
               dice={myDice()}
@@ -1766,7 +1787,10 @@ export function Chessboard(props: ChessboardProps) {
                 setSelectedDice([]);
                 localProps.onRerollDice?.(dice);
               }}
-            />
+              onVisible={() => {
+                setViewPanelVisible((v) => !v);
+              }}
+            />            
             <Show when={localProps.doingRpc && localProps.timer}>
               {(timer) => (
                 <div
@@ -1785,6 +1809,7 @@ export function Chessboard(props: ChessboardProps) {
             </Show>
           </div>
         </div>
+        {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
           <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
             {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}

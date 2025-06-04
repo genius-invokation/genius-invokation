@@ -19,6 +19,7 @@ import { createSignal, Index, Show } from "solid-js";
 import { checkPointerEvent } from "../utils";
 import { Button } from "./Button";
 import type { ChessboardViewType } from "./Chessboard";
+import { ViewPanelBackdrop } from "./ViewPanelBackdrop";
 
 export interface RerollViewProps {
   viewType: ChessboardViewType;
@@ -26,6 +27,7 @@ export interface RerollViewProps {
   selectedDice: boolean[];
   onSelectDice: (selectedDice: boolean[]) => void;
   onConfirm: () => void;
+  onVisible: () => void;
 }
 
 export function RerollDiceView(props: RerollViewProps) {
@@ -54,7 +56,7 @@ export function RerollDiceView(props: RerollViewProps) {
           class="absolute inset-0  flex flex-col items-center justify-center gap-10 select-none"
           onPointerUp={() => setSelectingOn(null)}
         >
-          <div class="absolute w-200% h-full bg-green-50/90 select-none z-0"/>
+          <ViewPanelBackdrop/>
           <h3 class="font-bold text-3xl z-1">重投骰子</h3>
           <ul class="grid grid-cols-4 gap-6 z-1">
             <Index each={props.dice}>
@@ -101,7 +103,7 @@ export function RerollDiceView(props: RerollViewProps) {
       </Show>
       <button
         class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
-        onClick={() => setShown((v) => !v)}
+        onClick={() => {setShown((v) => !v); props.onVisible();}}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

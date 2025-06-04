@@ -153,15 +153,6 @@
       0 0 40px #63524a;
   }
 
-  .switchhands-bg {
-    mask:
-      linear-gradient(white, white) content-box,
-      linear-gradient(black, black);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 756px 620px 756px 620px;
-  }
-
   .burst-animator {
     box-shadow:
       inset 0 0 20px var(--color),

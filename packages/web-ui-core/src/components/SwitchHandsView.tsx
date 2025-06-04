@@ -20,7 +20,7 @@ import type { ChessboardViewType } from "./Chessboard";
 export interface SwitchHandsViewProps {
   viewType: ChessboardViewType;
   onConfirm: () => void;
-  setShownCard: () => void;
+  onVisible: () => void;
 }
 
 export function SwitchHandsView(props: SwitchHandsViewProps) {
@@ -29,17 +29,16 @@ export function SwitchHandsView(props: SwitchHandsViewProps) {
     <Show when={props.viewType === "switchHands"}>
       <Show when={shown()}>
         <div class="absolute pointer-events-none inset-0 flex flex-col items-center">
-          <div class="absolute w-480 h-480 top-50% left-50% -translate-x-50% -translate-y-50% bg-green-50/90 select-none z-0 switchhands-bg"/>
           <h3 class="absolute top-50% -translate-y-40 font-bold text-3xl text-black z-1">替换手牌</h3>
           <div class="flex-grow" />
-          <Button class="absolute top-50% translate-y-40 pointer-events-auto z-1" onClick={props.onConfirm}>
+          <Button class="absolute top-50% translate-y-30 pointer-events-auto z-1" onClick={props.onConfirm}>
             确认
           </Button>
         </div>
       </Show>
       <button
         class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
-        onClick={() => {setShown((v) => !v); props.setShownCard();}}
+        onClick={() => {setShown((v) => !v); props.onVisible();}}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
