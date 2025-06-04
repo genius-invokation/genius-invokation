@@ -143,6 +143,20 @@
     --text-color: #7e98cb;
   }
 
+    .who-notice[data-opp="false"] {
+    --fg-color: #644d39;
+    --inner-background-color: #786049;
+    --inner-border-color: #bea678;
+    --bg-color: #d9b48d;
+  }
+
+  .who-notice[data-opp="true"] {
+    --fg-color: #3f4957;
+    --inner-background-color: #485569;
+    --inner-border-color: #899dc6;
+    --bg-color: #7e98cb;
+  }
+
   .chessboard-bg {
     background-image: linear-gradient(to bottom,
         #f0fdf4ff 49.5%,

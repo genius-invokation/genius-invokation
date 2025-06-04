@@ -1807,6 +1807,12 @@ export function Chessboard(props: ChessboardProps) {
                 </div>
               )}
             </Show>
+            <Show when={localProps.data.state.phase <=2}>
+              <div class="absolute right-32.3 top-2.5 h-8 w-24 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold who-notice text-color-[var(--fg-color)] border-[var(--fg-color)] bg-[var(--bg-color)]"
+                data-opp={localProps.data.state.currentTurn !== localProps.who ? "true" : "false"}>
+                {localProps.data.state.currentTurn !== localProps.who ? "对方先手" : "我方先手"}
+              </div>
+            </Show>
           </div>
         </div>
         {/* game end */}
