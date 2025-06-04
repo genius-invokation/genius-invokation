@@ -1695,16 +1695,6 @@ export function Chessboard(props: ChessboardProps) {
               class="absolute top-[calc(50%+2rem)] bottom-2 left-2"
               {...playerInfoPropsOf(localProps.who)}
             />
-            <SkillButtonGroup
-              class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
-              skills={mySkills()}
-              switchActiveButton={switchActiveStep() ?? null}
-              switchActiveCost={
-                localProps.actionState?.realCosts.switchActive ?? null
-              }
-              onClick={onSkillClick}
-              shown={showSkillButtons()}
-            />
             <DicePanel
               dice={myDice()}
               selectedDice={selectedDice()}
@@ -1714,6 +1704,16 @@ export function Chessboard(props: ChessboardProps) {
               onSelectDice={setSelectedDice}
               state={dicePanelState()}
               onStateChange={setDicePanelState}
+            />
+            <SkillButtonGroup
+              class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
+              skills={mySkills()}
+              switchActiveButton={switchActiveStep() ?? null}
+              switchActiveCost={
+                localProps.actionState?.realCosts.switchActive ?? null
+              }
+              onClick={onSkillClick}
+              shown={showSkillButtons()}
             />
           </Show>
           <ConfirmButton
