@@ -529,11 +529,23 @@ const detailedEventDictionary = {
   generateDice: defineDescriptor("onGenerateDice", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  consumeNightsoul: defineDescriptor("onConsumeNightsoul0", (e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r);
+  cancelConsumeNightsoul: defineDescriptor("modifyChangeNightsoul", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.character.id, r) &&
+      e.info.type === "consume" &&
+      !e.info.cancelled
+    );
   }),
-  consumeNightsoulFinal: defineDescriptor("onConsumeNightsoul1", (e, r) => {
-    return checkRelative(e.onTimeState, e.character.id, r);
+  consumeNightsoul: defineDescriptor("onChangeNightsoul", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.character.id, r) &&
+      e.info.type === "consume"
+    );
+  }),
+  gainNightsoul: defineDescriptor("onChangeNightsoul", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.character.id, r) && e.info.type === "gain"
+    );
   }),
   selectCard: defineDescriptor("onSelectCard", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
@@ -1233,6 +1245,17 @@ export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
   protected _targetQueries: string[] = [];
+  protected _fast = false;
+
+  fast(): this {
+    this._fast = true;
+    return this;
+  }
+
+  filter(pred: SkillOperationFilter<Meta>): this {
+    this.filters.push(pred);
+    return this;
+  }
 
   protected addTargetImpl(targetQuery: string) {
     this._targetQueries = [...this._targetQueries, targetQuery];
@@ -1354,13 +1377,6 @@ export class InitiativeSkillBuilder<
   /** 此定义未被使用。 */
   reserve(): void {}
 
-  filter(
-    pred: StrictInitiativeSkillFilter<"character", KindTs, AssociatedExt>,
-  ): this {
-    this.filters.push(pred);
-    return this;
-  }
-
   addTarget<Q extends TargetQuery>(
     targetQuery: Q,
   ): BuilderWithShortcut<
@@ -1389,7 +1405,7 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
-
+          fast: this._fast,
           hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
@@ -1419,6 +1435,7 @@ export class TechniqueBuilder<
     name: UsagePerRoundVariableNames;
     autoDecrease: boolean;
   } | null = null;
+  private _prepared = false;
 
   constructor(
     id: number,
@@ -1432,6 +1449,11 @@ export class TechniqueBuilder<
   ) {
     super(id);
     this.associatedExtensionId = this.parent._associatedExtensionId;
+  }
+
+  prepared(): this {
+    this._prepared = true;
+    return this;
   }
 
   addTarget<Q extends TargetQuery>(
@@ -1527,8 +1549,8 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
-
-        hidden: false,
+        fast: this._fast,
+        hidden: this._prepared,
         getTarget: this.buildTargetGetter(),
       },
       filter: this.buildFilter(),

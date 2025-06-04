@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, SkillHandle } from "@gi-tcg/core/builder";
 import { Frozen } from "../../commons";
 
 /**
@@ -29,18 +29,6 @@ export const MistBubblePrison = status(122052)
   .done();
 
 /**
- * @id 1220512
- * @name 水泡封锁
- * @description
- * 造成1点水元素伤害，敌方出战角色附属水泡围困。
- */
-export const MistBubbleLockdown = skill(1220512)
-  .prepared()
-  .damage(DamageType.Hydro, 1)
-  .characterStatus(MistBubblePrison, "opp active")
-  .done();
-
-/**
  * @id 122053
  * @name 水泡封锁（准备中）
  * @description
@@ -48,7 +36,7 @@ export const MistBubbleLockdown = skill(1220512)
  */
 export const MistBubbleLockdownPreparing = status(122053)
   .since("v5.0.0")
-  .prepare(MistBubbleLockdown)
+  .prepare(1220512 as SkillHandle)
   .done();
 
 /**
@@ -68,8 +56,23 @@ export const MistBubbleSlime = card(122051)
   .technique()
   .provideSkill(1220511)
   .costSame(1)
-  .usage(2)
+  .usage(2, { autoDispose: false })
   .characterStatus(MistBubbleLockdownPreparing, "@master")
+  .endProvide()
+  .provideSkill(1220512)
+  .prepared()
+  .damage(DamageType.Hydro, 1)
+  .characterStatus(MistBubblePrison, "opp active")
+  .if((c) => c.getVariable("usage") === 0)
+  .dispose()
+  .endProvide()
+  .on("switchActive", (c, e) => {
+    const ch = c.self.master();
+    return ch.id === e.switchInfo.from.id &&
+      ch.hasStatus(MistBubbleLockdownPreparing) &&
+      c.getVariable("usage") === 0;
+  })
+  .dispose()
   .done();
 
 /**
