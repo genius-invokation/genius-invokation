@@ -21,6 +21,7 @@ import type { ChessboardViewType } from "./Chessboard";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { DiceCost } from "./DiceCost";
+import { CardFace } from "./Card";
 
 export interface SelectCardViewProps {
   candidateIds: number[];
@@ -46,29 +47,7 @@ export function SelectCardView(props: SelectCardViewProps) {
                 props.onClickCard(cardId);
               }}
             >
-              <div class="absolute h-full w-full backface-hidden">
-                <WithDelicateUi
-                  assetId="UI_TeyvatCard_CardFrame_Common"
-                  fallback={
-                    <Image
-                      class="h-full w-full rounded-xl b-white b-3"
-                      imageId={cardId}
-                    />
-                  }
-                >
-                  {(frame) => (
-                    <>
-                      <Image
-                        class="absolute inset-0 h-full w-full p-1px"
-                        imageId={cardId}
-                      />
-                      <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-                        {frame}
-                      </div>
-                    </>
-                  )}
-                </WithDelicateUi>
-              </div>
+              <CardFace definitionId={cardId} />
               <Show when={selectedId() === cardId}>
                 <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
                   <SelectingIcon />

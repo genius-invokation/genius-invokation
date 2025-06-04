@@ -116,6 +116,38 @@ const opacityKeyframes = (uiState: CardAnimatingUiState): Keyframe[] => {
   return [startKeyframe, ...middleKeyframes, endKeyframe];
 };
 
+export interface CardFaceProps {
+  definitionId: number;
+}
+
+export function CardFace(props: CardFaceProps) {
+  return (
+    <div class="absolute h-full w-full backface-hidden">
+      <WithDelicateUi
+        assetId="UI_TeyvatCard_CardFrame_Common"
+        fallback={
+          <Image
+            class="h-full w-full rounded-xl b-white b-3"
+            imageId={props.definitionId}
+          />
+        }
+      >
+        {(frame) => (
+          <>
+            <Image
+              class="absolute inset-0 h-full w-full p-1px"
+              imageId={props.definitionId}
+            />
+            <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+              {frame}
+            </div>
+          </>
+        )}
+      </WithDelicateUi>
+    </div>
+  );
+}
+
 export function Card(props: CardProps) {
   // const [data] = createResource(
   //   () => props.data.definitionId,
@@ -182,7 +214,9 @@ export function Card(props: CardProps) {
       bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}
       bool:data-shadow={props.enableShadow}
-      bool:data-playable={props.kind !== "switching" && props.playStep?.playable}
+      bool:data-playable={
+        props.kind !== "switching" && props.playStep?.playable
+      }
       bool:data-dragging-end={
         props.uiState.type === "cardStatic" &&
         props.uiState.draggingEndAnimation
@@ -212,29 +246,7 @@ export function Card(props: CardProps) {
         props.onPointerDown?.(e, e.currentTarget);
       }}
     >
-      <div class="absolute h-full w-full backface-hidden">
-        <WithDelicateUi
-          assetId="UI_TeyvatCard_CardFrame_Common"
-          fallback={
-            <Image
-              class="h-full w-full rounded-xl b-white b-3"
-              imageId={data().definitionId}
-            />
-          }
-        >
-          {(frame) => (
-            <>
-              <Image
-                class="absolute inset-0 h-full w-full p-1px"
-                imageId={data().definitionId}
-              />
-              <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-                {frame}
-              </div>
-            </>
-          )}
-        </WithDelicateUi>
-      </div>
+      <CardFace definitionId={data().definitionId} />
       <Switch>
         <Match when={props.toBeSwitched}>
           <WithDelicateUi
