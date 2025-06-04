@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType, SkillHandle } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, SkillHandle, StatusHandle } from "@gi-tcg/core/builder";
 import { Frozen } from "../../commons";
 
 /**
@@ -34,9 +34,11 @@ export const MistBubblePrison = status(122052)
  * @description
  * 本角色将在下次行动时，直接使用技能：水泡封锁。
  */
-export const MistBubbleLockdownPreparing = status(122053)
+export const MistBubbleLockdownPreparing: StatusHandle = status(122053)
   .since("v5.0.0")
   .prepare(1220512 as SkillHandle)
+  .on("dispose", (c, e) => e.entity.definition.id === MistBubbleSlime)
+  .dispose()
   .done();
 
 /**
@@ -66,6 +68,7 @@ export const MistBubbleSlime = card(122051)
   .if((c) => c.getVariable("usage") === 0)
   .dispose()
   .endProvide()
+  // 切人导致准备中状态消失时，自己如果可用次数耗尽也消失
   .on("switchActive", (c, e) => {
     const ch = c.self.master();
     return ch.id === e.switchInfo.from.id &&
