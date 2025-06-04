@@ -13,117 +13,95 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createSignal, For, Show, Switch, Match} from "solid-js";
+import { createSignal, For, Show, Switch, Match } from "solid-js";
 import { Button } from "./Button";
 import { Image } from "./Image";
 import { SelectingIcon } from "./SelectingIcon";
 import type { ChessboardViewType } from "./Chessboard";
-import { ViewPanelBackdrop } from "./ViewPanelBackdrop";
+import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { DiceCost } from "./DiceCost";
-import { getNameSync } from "@gi-tcg/assets-manager";
 
 export interface SelectCardViewProps {
-  viewType: ChessboardViewType;
   candidateIds: number[];
+  nameGetter: (id: number) => string | undefined;
   onClickCard: (id: number) => void;
   onConfirm: (id: number) => void;
   onVisible: () => void;
 }
 
 export function SelectCardView(props: SelectCardViewProps) {
-  const [shown, setShown] = createSignal(true);
   const [selectedId, setSelectedId] = createSignal<number | null>(null);
 
   return (
-    <Show when={props.viewType === "selectCard"}>
-      <Show when={shown()}>
-        <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
-          <ViewPanelBackdrop/>
-          <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
-          <ul class="flex flex-row gap-16 z-1">
-            <For each={props.candidateIds}>
-              {(cardId) => (
-                <li
-                  class="h-36 w-21 relative"
-                  onClick={() => {
-                    setSelectedId(cardId);
-                    props.onClickCard(cardId);
-                  }}
+    <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
+      <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
+      <ul class="flex flex-row gap-16 z-1">
+        <For each={props.candidateIds}>
+          {(cardId) => (
+            <li
+              class="h-36 w-21 relative"
+              onClick={() => {
+                setSelectedId(cardId);
+                props.onClickCard(cardId);
+              }}
+            >
+              <div class="absolute h-full w-full backface-hidden">
+                <WithDelicateUi
+                  assetId="UI_TeyvatCard_CardFrame_Common"
+                  fallback={
+                    <Image
+                      class="h-full w-full rounded-xl b-white b-3"
+                      imageId={cardId}
+                    />
+                  }
                 >
-                  <div class="absolute h-full w-full backface-hidden">
-                    <WithDelicateUi
-                      assetId="UI_TeyvatCard_CardFrame_Common"
-                      fallback={
-                        <Image
-                          class="h-full w-full rounded-xl b-white b-3"
-                          imageId={cardId}
-                        />
-                      }
-                    >
-                      {(frame) => (
-                        <>
-                          <Image
-                            class="absolute inset-0 h-full w-full p-1px"
-                            imageId={cardId}
-                          />
-                          <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-                            {frame}
-                          </div>
-                        </>
-                      )}
-                    </WithDelicateUi>
-                  </div>
-                  <Show when={selectedId() === cardId}>
-                    <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-                      <SelectingIcon />
-                    </div>
-                  </Show>
-                  <DiceCost
-                    class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
-                    cost={[]}
-                    size={36}
-                  />
-                  <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
-                  <div class="absolute h-10 w-full top-37 font-size-2.5 text-center color-black/60 font-bold">
-                      {getNameSync(cardId)}
-                  </div>
-                </li>
-              )}
-            </For>
-          </ul>
-          <div
-            class="invisible data-[shown]:visible z-1"
-            bool:data-shown={selectedId()}
-          >
-            <Button onClick={() => props.onConfirm(selectedId()!)}>确定</Button>
-          </div>
-        </div>
-      </Show>
-      <button
-        class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
-        onClick={() => {setShown((v) => !v); props.onVisible();}}
+                  {(frame) => (
+                    <>
+                      <Image
+                        class="absolute inset-0 h-full w-full p-1px"
+                        imageId={cardId}
+                      />
+                      <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
+                        {frame}
+                      </div>
+                    </>
+                  )}
+                </WithDelicateUi>
+              </div>
+              <Show when={selectedId() === cardId}>
+                <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
+                  <SelectingIcon />
+                </div>
+              </Show>
+              <DiceCost
+                class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
+                cost={[]}
+                size={36}
+              />
+              <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
+              <div class="absolute h-10 w-full bottom--12 font-size-4 text-center color-black/60 font-bold">
+                {props.nameGetter(cardId)}
+              </div>
+            </li>
+          )}
+        </For>
+      </ul>
+      <div
+        class="invisible pointer-events-none data-[shown]:visible data-[shown]:pointer-events-auto z-1"
+        bool:data-shown={selectedId() !== null}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
+        <Button
+          onClick={() => {
+            const id = selectedId();
+            if (id !== null) {
+              props.onConfirm(id);
+            }
+          }}
         >
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-width="2"
-          >
-            <path
-              stroke-linejoin="round"
-              d="M10.73 5.073A11 11 0 0 1 12 5c4.664 0 8.4 2.903 10 7a11.6 11.6 0 0 1-1.555 2.788M6.52 6.519C4.48 7.764 2.9 9.693 2 12c1.6 4.097 5.336 7 10 7a10.44 10.44 0 0 0 5.48-1.52m-7.6-7.6a3 3 0 1 0 4.243 4.243"
-            />
-            <path d="m4 4l16 16" />
-          </g>
-        </svg>
-      </button>
-    </Show>
+          确定
+        </Button>
+      </div>
+    </div>
   );
 }

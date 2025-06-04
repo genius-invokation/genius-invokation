@@ -182,7 +182,7 @@ export function Card(props: CardProps) {
       bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}
       bool:data-shadow={props.enableShadow}
-      bool:data-playable={props.playStep?.playable}
+      bool:data-playable={props.kind !== "switching" && props.playStep?.playable}
       bool:data-dragging-end={
         props.uiState.type === "cardStatic" &&
         props.uiState.draggingEndAnimation
