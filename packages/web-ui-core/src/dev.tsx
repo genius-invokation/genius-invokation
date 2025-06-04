@@ -86,7 +86,8 @@ function App() {
         autoHeight={false}
       />
       <Chessboard1
-        style={{ width: "100vw" }}
+        style={{ width: "100vw", height: "200px" }}
+        autoHeight={false}
         timer={{ current: 114, total: 514 }}
       />
       <DetailLogViewer logs={logs()} />

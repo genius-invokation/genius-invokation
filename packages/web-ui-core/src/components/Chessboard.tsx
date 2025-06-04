@@ -1574,9 +1574,9 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
       ref={containerEl}
     >
-      {/* 3d space */}
       <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
         <ChessboardBackground />
+      {/* 3d space */}
         <div
           class="relative h-full w-full preserve-3d select-none"
           ref={chessboardElement}
@@ -1612,7 +1612,7 @@ export function Chessboard(props: ChessboardProps) {
                   card().kind === "switching" &&
                   switchedCards().includes(card().id)
                 }
-                switchHidden={card().kind === "switching" && !switchHandsVisible()}
+                hidden={card().kind === "switching" && !switchHandsVisible()}
                 realCost={localProps.actionState?.realCosts.cards.get(
                   card().id,
                 )}
