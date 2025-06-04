@@ -44,6 +44,7 @@
 
   .card[data-hidden] {
     visibility: hidden;
+    pointer-events: none;
   }
 
   .card[data-shadow] {

@@ -30,7 +30,7 @@ export interface CardProps extends CardInfo {
   selected: boolean;
   toBeSwitched: boolean;
   realCost?: PbDiceRequirement[];
-  switchHidden?: boolean;
+  hidden?: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
   onPointerEnter?: (e: PointerEvent, currentTarget: HTMLElement) => void;
   onPointerLeave?: (e: PointerEvent, currentTarget: HTMLElement) => void;
@@ -179,7 +179,7 @@ export function Card(props: CardProps) {
       ref={el}
       class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d touch-none transform-origin-tl card data-[dragging-end]:pointer-events-none"
       style={style()}
-      bool:data-hidden={props.switchHidden}
+      bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}
       bool:data-shadow={props.enableShadow}
       bool:data-playable={props.playStep?.playable}
