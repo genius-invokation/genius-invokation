@@ -69,6 +69,12 @@ export interface CharacterDefinition extends WithVersionInfo {
   readonly varConfigs: CharacterVariableConfigs;
   readonly skills: readonly SkillDefinition[];
   readonly associatedNightsoulsBlessing: EntityDefinition | null;
+  readonly specialEnergy: SpecialEnergyConfig | null;
+}
+
+export interface SpecialEnergyConfig {
+  readonly variableName: string;
+  readonly slotSize: number;
 }
 
 export interface CharacterVariableConfigs {

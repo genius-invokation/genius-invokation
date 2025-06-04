@@ -57,6 +57,7 @@ import {
   playSkillOfCard,
   type Writable,
   applyAutoSelectedDiceToAction,
+  isChargedPlunging,
 } from "./utils";
 import type { GameData } from "./builder/registry";
 import {
@@ -902,14 +903,7 @@ export class Game {
     // Skills
     const skillDisabled = isSkillDisabled(activeCh);
     for (const { caller, skill } of initiativeSkillsOfPlayer(player)) {
-      const skillType = skill.initiativeSkillConfig.skillType;
-      const charged = skillType === "normal" && player.canCharged;
-      const plunging =
-        skillType === "normal" &&
-        (player.canPlunging ||
-          activeCh.entities.some((et) =>
-            et.definition.tags.includes("normalAsPlunging"),
-          ));
+      const { charged, plunging } = isChargedPlunging(skill, player);
       const skillInfo = defineSkillInfo({
         caller,
         definition: skill,
@@ -921,7 +915,7 @@ export class Game {
         who,
         skill: skillInfo,
         targets: [],
-        fast: false,
+        fast: skill.initiativeSkillConfig.fast,
         cost: skill.initiativeSkillConfig.requiredCost,
         autoSelectedDice: [],
       };
@@ -976,7 +970,7 @@ export class Game {
         who,
         skill: skillInfo,
         cost: skillDef.initiativeSkillConfig.requiredCost,
-        fast: !card.definition.tags.includes("action"),
+        fast: skillDef.initiativeSkillConfig.fast,
         autoSelectedDice: [],
         targets: [],
         willBeEffectless: false,

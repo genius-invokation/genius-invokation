@@ -28,7 +28,7 @@ import {
 } from "../../base/entity";
 import type { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
 import {
-  type ConsumeNightsoulInfo,
+  type NightsoulValueChangeInfo,
   type DamageInfo,
   DamageOrHealEventArg,
   type DisposeOrTuneMethod,
@@ -50,6 +50,7 @@ import {
   constructEventAndRequestArg,
   CustomEventEventArg,
   type UseSkillRequestOption,
+  BeforeNightsoulEventArg,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -1240,7 +1241,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         );
       }
     }
-    this.assertNotCard(target);
     const oldDef = target.definition;
     const def = this.state.data[oldDef.__definition].get(newDefId);
     if (typeof def === "undefined") {
@@ -1364,12 +1364,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     });
     return this.enableShortcut();
   }
-  generateDice(type: DiceType | "randomElement" , count: number, option: GenerateDiceOption = {}) {
+  generateDice(
+    type: DiceType | "randomElement",
+    count: number,
+    option: GenerateDiceOption = {},
+  ) {
     const maxCount = this.state.config.maxDiceCount - this.player.dice.length;
-    const {
-      randomIncludeOmni = false,
-      randomAllowDuplicate = false
-    } = option;
+    const { randomIncludeOmni = false, randomAllowDuplicate = false } = option;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
       `Generate ${count}${
@@ -1748,15 +1749,24 @@ export class SkillContext<Meta extends ContextMetaBase> {
       if (st) {
         const oldValue = this.getVariable("nightsoul", st.state);
         const newValue = Math.max(0, oldValue - count);
-        this.setVariable("nightsoul", newValue, st.state);
-        const info: ConsumeNightsoulInfo = {
+        const info: NightsoulValueChangeInfo = {
+          type: "consume",
           oldValue,
           newValue,
           consumedValue: count,
+          cancelled: false,
         };
-        this.emitEvent("onConsumeNightsoul0", this.state, t.state, info);
-        this.emitEvent("onConsumeNightsoul1", this.state, t.state, info);
-        // 不在此处弃置夜魂加持；在相应特技的 onConsumeNightsoul1 事件中处理
+        const modifyEventArg = new BeforeNightsoulEventArg(
+          this.state,
+          t.state,
+          info,
+        );
+        this.handleInlineEvent("modifyChangeNightsoul", modifyEventArg);
+        if (modifyEventArg.info.cancelled) {
+          continue;
+        }
+        this.setVariable("nightsoul", modifyEventArg.info.newValue, st.state);
+        this.emitEvent("onChangeNightsoul", this.state, t.state, modifyEventArg.info);
       }
     }
     return this.enableShortcut();
@@ -1773,15 +1783,26 @@ export class SkillContext<Meta extends ContextMetaBase> {
       if (!t.definition.associatedNightsoulsBlessing) {
         continue;
       }
+      const oldValue = t.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
       this.characterStatus(
         t.definition.associatedNightsoulsBlessing.id as StatusHandle,
         t.state,
         {
+          modifyOverriddenVariablesOnly: true,
           overrideVariables: {
             nightsoul: count,
           },
         },
       );
+      const newValue = t.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
+      const info: NightsoulValueChangeInfo = {
+        type: "gain",
+        oldValue,
+        newValue,
+        consumedValue: count,
+        cancelled: false,
+      };
+      this.emitEvent("onChangeNightsoul", this.state, t.state, info);
     }
     return this.enableShortcut();
   }

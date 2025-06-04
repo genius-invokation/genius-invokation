@@ -508,9 +508,15 @@ function exposeCharacter(
     defeated: !ch.variables.alive,
     entity: ch.entities.map((e) => exposeEntity(state, e)),
     health: ch.variables.health,
-    energy: ch.variables.energy,
+    energy:
+      ch.definition.specialEnergy === null
+        ? ch.variables.energy
+        : ch.variables[ch.definition.specialEnergy.variableName],
     maxHealth: ch.variables.maxHealth,
-    maxEnergy: ch.variables.maxEnergy,
+    maxEnergy:
+      ch.definition.specialEnergy === null
+        ? ch.variables.maxEnergy
+        : ch.definition.specialEnergy.slotSize,
     aura: ch.variables.aura,
     tags,
   };

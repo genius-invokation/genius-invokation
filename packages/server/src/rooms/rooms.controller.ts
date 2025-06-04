@@ -60,21 +60,25 @@ export class CreateRoomDto {
   @IsNumber()
   @IsOptional()
   @Min(0)
+  @Max(300)
   initTotalActionTime?: number;
 
   @IsNumber()
   @IsOptional()
   @Min(25)
+  @Max(300)
   rerollTime?: number;
 
   @IsNumber()
   @IsOptional()
   @Min(0)
+  @Max(300)
   roundTotalActionTime?: number;
 
   @IsNumber()
   @IsOptional()
   @Min(25)
+  @Max(300)
   actionTime?: number;
 
   @IsNumber()

@@ -159,6 +159,10 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       }
     },
     switchHands: async () => {
+      if (savedState && savedState.phase >= PbPhaseType.INIT_ACTIVES) {
+        // 草与智慧：等待当前的 ui 动画渲染完成，但不阻塞后续 ui 更新
+        await uiQueue.push(async () => {});
+      }
       const resolver = Promise.withResolvers<SwitchHandsResponse>();
       actionResolvers.switchHands = resolver;
       // return { removedHandIds: [] };
