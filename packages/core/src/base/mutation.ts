@@ -25,6 +25,8 @@ import {
   type GameState,
   type PlayerState,
   stringifyState,
+  type AnyState,
+  type CardDefinition,
 } from "./state";
 import { removeEntity, getEntityById, sortDice, getEntityArea } from "../utils";
 import {
@@ -135,8 +137,8 @@ export interface ModifyEntityVarM {
 
 export interface TransformDefinitionM {
   readonly type: "transformDefinition";
-  state: CharacterState | EntityState;
-  readonly newDefinition: CharacterDefinition | EntityDefinition;
+  state: AnyState;
+  readonly newDefinition: CharacterDefinition | EntityDefinition | CardDefinition;
 }
 
 export interface ResetDiceM {

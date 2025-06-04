@@ -33,7 +33,9 @@ import {
   type HandCardInsertedEventArg,
   type InitiativeSkillDefinition,
   type InitiativeSkillEventArg,
+  type SkillActionFilter,
   type SkillDefinition,
+  type SkillDescription,
   type TriggeredSkillDefinition,
 } from "../base/skill";
 import { registerCard } from "./registry";
@@ -66,9 +68,16 @@ import {
 } from "../base/version";
 
 type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
-  callerType: "character";
+  callerType: "card";
   callerVars: never;
   eventArgType: DisposeOrTuneCardEventArg;
+  associatedExtension: AssociatedExt;
+};
+
+type HCICardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
+  callerType: "card";
+  callerVars: never;
+  eventArgType: HandCardInsertedEventArg;
   associatedExtension: AssociatedExt;
 };
 
@@ -96,6 +105,19 @@ export interface CombatFoodOption {
   satiatedFilter?: "existsNot" | "allNot";
 }
 
+export interface NightsoulTechniqueOption {
+  /**
+   * 若可存在于手牌中，则指定打出目标。
+   * 默认为 `my characters`，即 `technique()` 的默认目标。
+   */
+  target?: string;
+  /**
+   * 弃置自身时同时弃置夜魂加持状态
+   * @default true
+   */
+  alsoDisposeNightsoulsBlessing?: boolean;
+}
+
 type CardArea = { readonly who: 0 | 1 };
 type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
   st: GameState,
@@ -120,10 +142,13 @@ export class CardBuilder<
    * `null` 表明不添加（不是料理牌或者手动指定）
    */
   private _satiatedTarget: string | null = null;
-  private _descriptionOnDraw = false;
+  private _descriptionOnHCI = false;
   private _doSameWhenDisposed = false;
   private _disposeOperation: SkillOperation<
     DisposeCardBuilderMeta<AssociatedExt>
+  > | null = null;
+  private _hciOperation: SkillOperation<
+    HCICardBuilderMeta<AssociatedExt>
   > | null = null;
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
 
@@ -219,27 +244,41 @@ export class CardBuilder<
   artifact() {
     return this.tags("artifact").equipment("my characters").tags("artifact");
   }
-  technique() {
-    return this.tags("technique").equipment("my characters").tags("technique");
+  technique(targetQuery = "my characters") {
+    return this.tags("technique")
+      .equipment(targetQuery as "character")
+      .tags("technique");
   }
 
   /**
    * 带有夜魂性质的特技：
    * 所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。
    */
-  nightsoulTechnique() {
-    return this
-      .unobtainable()
-      .technique()
-      .on("consumeNightsoulFinal")
+  nightsoulTechnique(option: NightsoulTechniqueOption = {}) {
+    const { alsoDisposeNightsoulsBlessing = true, target } = option;
+    const self = this.unobtainable()
+      .technique(target)
+      .on("beforeAction")
+      .listenToAll()
       .do((c) => {
         const st = c.$(`status with tags (nightsoulsBlessing) at @master`);
         if (st && st.getVariable("nightsoul") <= 0) {
-          st.dispose();
           c.dispose();
         }
       })
       .endOn();
+    if (alsoDisposeNightsoulsBlessing) {
+      self
+        .on("selfDispose")
+        .do((c, e) => {
+          if (e.area.type !== "characters") {
+            return;
+          }
+          c.$(`status with tags (nightsoulsBlessing) at with id ${e.area.characterId}`)?.dispose();
+        })
+        .endOn();
+    }
+    return self;
   }
 
   support(type: SupportTag | null): EntityBuilderPublic<"support"> {
@@ -383,13 +422,6 @@ export class CardBuilder<
     return this.addTarget(targetQuery);
   }
 
-  filter(
-    pred: StrictInitiativeSkillFilter<"card", KindTs, AssociatedExt>,
-  ): this {
-    this.filters.push(pred);
-    return this;
-  }
-
   /** 增加 food 标签；设置目标为我方非饱腹角色 */
   food(opt: FoodOption = {}) {
     this._satiatedTarget = "@targets.0";
@@ -402,22 +434,27 @@ export class CardBuilder<
   }
 
   /**
-   * 增加 food 标签。通常为剩余没有饱腹的角色附着效果，使用如下 query 获得这些角色：  
+   * 增加 food 标签。通常为剩余没有饱腹的角色附着效果，使用如下 query 获得这些角色：
    * `my characters and not has status with definition id ${Satiated}`
    */
   combatFood(opt: CombatFoodOption = {}) {
-    this._satiatedTarget = "my characters and not has status with definition id 303300";
+    this._satiatedTarget =
+      "my characters and not has status with definition id 303300";
     const satiatedFilter = opt.satiatedFilter ?? "existsNot";
     if (satiatedFilter === "allNot") {
-      this.filter((c) => !c.$("my characters has status with definition id 303300"));
+      this.filter(
+        (c) => !c.$("my characters has status with definition id 303300"),
+      );
     } else if (satiatedFilter === "existsNot") {
-      this.filter((c) => c.$("my characters and not has status with definition id 303300"));
+      this.filter((c) =>
+        c.$("my characters and not has status with definition id 303300"),
+      );
     }
     return this.tags("food");
   }
 
   doSameWhenDisposed() {
-    if (this._disposeOperation || this._descriptionOnDraw) {
+    if (this._disposeOperation || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .onDispose() or .descriptionOnDraw().`,
       );
@@ -430,27 +467,46 @@ export class CardBuilder<
     this._doSameWhenDisposed = true;
     return this;
   }
+  /** @deprecated use `descriptionOnHCI` */
   descriptionOnDraw() {
+    return this.descriptionOnHCI();
+  }
+  /**
+   * 下述描述适用于当此牌加入手牌时（"handCardInserted"），并随后弃置此牌。
+   */
+  descriptionOnHCI() {
     if (this._doSameWhenDisposed || this._disposeOperation) {
       throw new GiTcgDataError(
-        `Cannot specify descriptionOnDraw when using .doSameWhenDisposed() or .onDispose().`,
+        `Cannot specify descriptionOnHCI when using .doSameWhenDisposed() or .onDispose().`,
       );
     }
     if (this._targetQueries.length > 0) {
       throw new GiTcgDataError(
-        `Cannot specify targets when using .descriptionOnDraw().`,
+        `Cannot specify targets when using .descriptionOnHCI().`,
       );
     }
-    this._descriptionOnDraw = true;
+    this._descriptionOnHCI = true;
     return this;
   }
   onDispose(op: SkillOperation<DisposeCardBuilderMeta<AssociatedExt>>) {
-    if (this._doSameWhenDisposed || this._descriptionOnDraw) {
+    if (this._doSameWhenDisposed || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .doSameWhenDisposed() or .descriptionOnDraw().`,
       );
     }
     this._disposeOperation = op;
+    return this;
+  }
+  /**
+   * 当此牌加入手牌时（"handCardInserted"）执行的代码
+   */
+  onHCI(op: SkillOperation<HCICardBuilderMeta<AssociatedExt>>) {
+    if (this._descriptionOnHCI) {
+      throw new GiTcgDataError(
+        `Cannot specify dispose action when using .descriptionOnDraw().`,
+      );
+    }
+    this._hciOperation = op;
     return this;
   }
 
@@ -488,16 +544,29 @@ export class CardBuilder<
       };
       skills.push(disposeDef);
     }
-    if (this._descriptionOnDraw) {
-      this.do((c) => {
-        c.mutate({
-          type: "removeCard",
-          who: c.self.who,
-          where: "hands",
-          oldState: c.self.state,
-          reason: "onDrawTriggered",
+    if (this._descriptionOnHCI || this._hciOperation !== null) {
+      const hciOp = this._hciOperation;
+      let drawAction: SkillDescription<HandCardInsertedEventArg>;
+      let filter: SkillActionFilter<InitiativeSkillEventArg>;
+      let action: SkillDescription<InitiativeSkillEventArg>;
+      if (hciOp) {
+        drawAction = this.buildAction<HandCardInsertedEventArg>(hciOp);
+        filter = this.buildFilter();
+        action = this.buildAction();
+      } else {
+        this.do((c) => {
+          c.mutate({
+            type: "removeCard",
+            who: c.self.who,
+            where: "hands",
+            oldState: c.self.state,
+            reason: "onDrawTriggered",
+          });
         });
-      });
+        drawAction = this.buildAction<HandCardInsertedEventArg>();
+        filter = () => false;
+        action = (st) => [st, EMPTY_SKILL_RESULT];
+      }
       const drawSkillDef: TriggeredSkillDefinition<"onHandCardInserted"> = {
         type: "skill",
         id: this.cardId + 0.03,
@@ -507,7 +576,7 @@ export class CardBuilder<
         filter: (st, info, arg) => {
           return info.caller.id === arg.card.id;
         },
-        action: this.buildAction<HandCardInsertedEventArg>(),
+        action: drawAction,
         usagePerRoundVariableName: null,
       };
       const skillDef: InitiativeSkillDefinition = {
@@ -521,11 +590,12 @@ export class CardBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: false,
+          fast: !this._tags.includes("action"),
           hidden: false,
-          getTarget: () => [],
+          getTarget: targetGetter,
         },
-        filter: () => false,
-        action: (st) => [st, EMPTY_SKILL_RESULT],
+        filter,
+        action,
         usagePerRoundVariableName: null,
       };
       skills.push(skillDef, drawSkillDef);
@@ -543,6 +613,7 @@ export class CardBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: false,
+          fast: !this._tags.includes("action"),
           hidden: false,
           getTarget: targetGetter,
         },

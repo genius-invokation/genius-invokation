@@ -86,6 +86,8 @@ export interface MutatorConfig {
 }
 
 export interface CreateEntityOptions {
+  /** 若重复创建，只修改 `overrideVariables` 中指定的变量 */
+  readonly modifyOverriddenVariablesOnly?: boolean;
   /** 创建实体时，覆盖默认变量 */
   readonly overrideVariables?: Partial<EntityVariables>;
   /** 设定创建实体的 id。仅在打出支援牌和装备牌时直接继承原手牌 id */
@@ -502,6 +504,9 @@ export class StateMutator {
       const newValues: Record<string, number> = {};
       // refresh exist entity's variable
       for (const name in varConfigs) {
+        if (opt.modifyOverriddenVariablesOnly && !(name in overrideVariables)) {
+          continue;
+        }
         let { initialValue, recreateBehavior } = varConfigs[name];
         if (typeof overrideVariables[name] === "number") {
           initialValue = overrideVariables[name]!;

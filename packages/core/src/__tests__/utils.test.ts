@@ -54,6 +54,7 @@ test("sort dice", () => {
             },
           },
           associatedNightsoulsBlessing: null,
+          specialEnergyVariableName: null,
         },
       },
       {
@@ -75,6 +76,7 @@ test("sort dice", () => {
             },
           },
           associatedNightsoulsBlessing: null,
+          specialEnergyVariableName: null,
         },
       },
     ],
