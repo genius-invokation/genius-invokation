@@ -51,6 +51,9 @@ import {
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  initiativeSkillsOfPlayer,
+  isChargedPlunging,
+  isSkillDisabled,
   playSkillOfCard,
 } from "./utils";
 import { flip } from "@gi-tcg/utils";
@@ -521,13 +524,10 @@ export class SkillExecutor {
           `another skill [skill:${arg.requestingSkillId}] is requested:`,
         );
         const player = this.state.players[arg.who];
+        const availableSkills = initiativeSkillsOfPlayer(player, true);
         const activeCh = player.characters[getActiveCharacterIndex(player)];
-        const callerArea = getEntityArea(this.state, activeCh.id);
-        if (
-          activeCh.entities.find((et) =>
-            et.definition.tags.includes("disableSkill"),
-          )
-        ) {
+        const skillDisabled = isSkillDisabled(activeCh);
+        if (skillDisabled) {
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
@@ -540,10 +540,11 @@ export class SkillExecutor {
           );
           continue;
         }
-        const skillDef = activeCh.definition.skills.find(
-          (sk) => sk.id === arg.requestingSkillId,
+        const skillAndCaller = availableSkills.find(
+          ({ skill }) => skill.id === arg.requestingSkillId,
         );
-        if (!skillDef || !skillDef.initiativeSkillConfig) {
+        if (!skillAndCaller) {
+          console.log(availableSkills.map(({ skill }) => skill.id), arg.requestingSkillId)
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
@@ -556,22 +557,17 @@ export class SkillExecutor {
           );
           continue;
         }
-        const skillType = skillDef.initiativeSkillConfig.skillType;
-        const charged = skillType === "normal" && player.canCharged;
-        const plunging =
-          skillType === "normal" &&
-          (player.canPlunging ||
-            activeCh.entities.some((et) =>
-              et.definition.tags.includes("normalAsPlunging"),
-            ));
+        const { caller, skill } = skillAndCaller;
+        const { charged, plunging } = isChargedPlunging(skill, player);
         const skillInfo = defineSkillInfo({
-          caller: activeCh,
-          definition: skillDef,
+          caller,
+          definition: skill,
           requestBy: arg.via,
           charged,
           plunging,
           prepared: arg.requestOption.asPrepared ?? false,
         });
+        const callerArea = getEntityArea(this.state, caller.id);
         await this.handleEvent([
           "onBeforeUseSkill",
           new UseSkillEventArg(this.state, callerArea, skillInfo),

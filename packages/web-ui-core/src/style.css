@@ -42,6 +42,11 @@
     transition-duration: 150ms;
   }
 
+  .card[data-hidden] {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .card[data-shadow] {
     --common-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
       0 8px 10px -6px rgb(0 0 0 / 0.1);
@@ -101,21 +106,17 @@
   }
 
   .dice-panel {
-    background: linear-gradient(
-      to right,
-      #9d907bff 2px,
-      #86795eff 2px,
-      #5e4223ff 50px,
-      #5e4223ff 90%,
-      #5e422300 100%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 6%,
-      rgba(0, 0, 0, 0.9) 12%,
-      rgba(0, 0, 0, 0.9) 82%,
-      rgba(0, 0, 0, 0) 92%
-    );
+    background: linear-gradient(to right,
+        #9d907bff 2px,
+        #86795eff 2px,
+        #5e4223ff 50px,
+        #5e4223ff 90%,
+        #5e422300 100%);
+    mask-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0) 6%,
+        rgba(0, 0, 0, 0.9) 12%,
+        rgba(0, 0, 0, 0.9) 82%,
+        rgba(0, 0, 0, 0) 92%);
 
     .delicate-dice {
       --blink-opacity: 1;
@@ -143,13 +144,25 @@
     --text-color: #7e98cb;
   }
 
+  .current-turn-hint[data-opp="false"] {
+    --fg-color: #644d39;
+    --inner-background-color: #786049;
+    --inner-border-color: #bea678;
+    --bg-color: #d9b48d;
+  }
+
+  .current-turn-hint[data-opp="true"] {
+    --fg-color: #3f4957;
+    --inner-background-color: #485569;
+    --inner-border-color: #899dc6;
+    --bg-color: #7e98cb;
+  }
+
   .chessboard-bg {
-    background-image: linear-gradient(
-      to bottom,
-      #f0fdf4ff 49.5%,
-      #ddeeddff 50%,
-      #f0fdf4ff 50.5%
-    );
+    background-image: linear-gradient(to bottom,
+        #f0fdf4ff 49.5%,
+        #ddeeddff 50%,
+        #f0fdf4ff 50.5%);
     box-shadow:
       inset 0 0 18px #000000,
       0 0 40px #63524a;
@@ -163,11 +176,9 @@
   }
 
   .burst-progress {
-    mask-image: linear-gradient(
-      to top,
-      #ffffffff var(--progress-value),
-      transparent var(--progress-value)
-    );
+    mask-image: linear-gradient(to top,
+        #ffffffff var(--progress-value),
+        transparent var(--progress-value));
   }
 }
 
@@ -308,6 +319,7 @@
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: var(--blink-opacity, 1);

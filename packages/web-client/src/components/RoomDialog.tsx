@@ -80,6 +80,7 @@ export interface RoomDialogProps {
 
 interface TimeConfig {
   name: string;
+  estimationTime: number;
   initTotalActionTime: number;
   rerollTime: number;
   roundTotalActionTime: number;
@@ -89,23 +90,42 @@ interface TimeConfig {
 const TIME_CONFIGS: TimeConfig[] = [
   {
     name: "最小",
-    initTotalActionTime: 0,
+    estimationTime: 3,
+    initTotalActionTime: 20,
     rerollTime: 25,
-    roundTotalActionTime: 0,
+    roundTotalActionTime: 20,
     actionTime: 25,
   },
   {
     name: "标准",
+    estimationTime: 5,
     initTotalActionTime: 45,
     rerollTime: 40,
     roundTotalActionTime: 60,
     actionTime: 25,
   },
   {
+    name: "双倍",
+    estimationTime: 10,
+    initTotalActionTime: 20,
+    rerollTime: 60,
+    roundTotalActionTime: 180,
+    actionTime: 45,
+  },
+    {
     name: "超长",
-    initTotalActionTime: 0,
+    estimationTime: 20,
+    initTotalActionTime: 60,
+    rerollTime: 120,
+    roundTotalActionTime: 300,
+    actionTime: 90,
+  },
+  {
+    name: "≈无尽",
+    estimationTime: 60,
+    initTotalActionTime: 60,
     rerollTime: 300,
-    roundTotalActionTime: 0,
+    roundTotalActionTime: 180,
     actionTime: 300,
   },
 ];
@@ -267,7 +287,7 @@ export function RoomDialog(props: RoomDialogProps) {
               </div>
               <h4 class="text-lg mb-3">思考时间</h4>
               <div
-                class="flex flex-row gap-2 mb-3 data-[disabled=true]:pointer-events-none"
+                class="grid grid-cols-3 gap-2 mb-3 data-[disabled=true]:pointer-events-none"
                 data-disabled={!editable()}
               >
                 <For
@@ -285,10 +305,13 @@ export function RoomDialog(props: RoomDialogProps) {
                       }
                       onClick={() => setTimeConfig(config)}
                     >
-                      <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors md:mb-2">
+                      <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors">
                         {config.name ?? `${config.roundTotalActionTime} + ${config.actionTime}`}
                       </h5>
-                      <ul class="hidden md:block pl-5 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
+                      <h5 class="text-gray-400 group-data-[active=true]:text-gray-600 transition-colors md:mb-2 font-size-80%">
+                        {`预计每回合 ${config.estimationTime}min`}
+                      </h5>
+                      <ul class="hidden md:block pl-3 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
                         <li>每重投时间：{config.rerollTime}s</li>
                         <li>每回合总时间：{config.roundTotalActionTime}s</li>

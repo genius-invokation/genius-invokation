@@ -99,6 +99,14 @@ interface GlobalUsageOptions extends VariableOptions {
   autoDispose?: boolean;
 }
 
+interface NightsoulOptions extends VariableOptions {
+  /**
+   * 是否在夜魂值为 0 时退出夜魂加持
+   * @default false
+   */
+  autoDispose?: boolean;
+}
+
 type EntityStateWithArea = EntityState & { readonly area: EntityArea };
 
 type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
@@ -497,13 +505,20 @@ export class EntityBuilder<
       .endOn();
   }
 
-  nightsoulsBlessing(maxCount: number, varOpt?: VariableOptions) {
-    return this.tags("nightsoulsBlessing").variableCanAppend(
+  nightsoulsBlessing(maxCount: number, opt: NightsoulOptions = {}) {
+    const self = this.tags("nightsoulsBlessing").variableCanAppend(
       "nightsoul",
       0,
       maxCount,
-      varOpt,
+      opt,
     );
+    if (opt.autoDispose) {
+      self
+        .on("consumeNightsoul", (c, e) => c.getVariable("nightsoul") <= 0)
+        .dispose()
+        .endOn();
+    }
+    return self;
   }
 
   prepare(skill: SkillHandle | "normal", opt: PrepareOption = {}) {

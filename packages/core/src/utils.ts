@@ -158,6 +158,7 @@ export interface CallerAndInitiativeSkill {
  */
 export function initiativeSkillsOfPlayer(
   player: PlayerState,
+  includesHidden = false,
 ): CallerAndInitiativeSkill[] {
   const activeCh = player.characters.find(
     (ch) => player.activeCharacterId === ch.id,
@@ -177,7 +178,8 @@ export function initiativeSkillsOfPlayer(
     ...activeCh.definition.skills
       .filter(
         (sk): sk is InitiativeSkillDefinition =>
-          sk.triggerOn === "initiative" && !sk.initiativeSkillConfig.hidden,
+          sk.triggerOn === "initiative" &&
+          (includesHidden || !sk.initiativeSkillConfig.hidden),
       )
       .map((sk) => ({
         caller: activeCh,
@@ -269,14 +271,27 @@ export function allEntitiesAtArea(
   return result;
 }
 
+/**
+ * 将 `e` 的一份拷贝传入所有响应 `modifyZeroHealth` 的技能，
+ * 检查是否存在可使该 `e` 免于被击倒的可能。
+ * @param state
+ * @param e
+ * @returns
+ */
 export function checkImmune(state: GameState, e: ZeroHealthEventArg) {
+  const clonedE = new ZeroHealthEventArg(state, e.damageInfo);
   for (const { caller, skill } of allSkills(state, "modifyZeroHealth")) {
     const skillInfo = defineSkillInfo({
       caller,
       definition: skill,
     });
-    const filterResult = (0, skill.filter)(state, skillInfo, e);
-    if (filterResult) {
+    clonedE._currentSkillInfo = skillInfo;
+    const filterResult = (0, skill.filter)(state, skillInfo, clonedE);
+    if (!filterResult) {
+      continue;
+    }
+    (0, skill.action)(state, skillInfo, clonedE);
+    if (clonedE._immuneInfo) {
       return true;
     }
   }
@@ -360,6 +375,23 @@ export function isSkillDisabled(character: CharacterState): boolean {
   return character.entities.some((st) =>
     st.definition.tags.includes("disableSkill"),
   );
+}
+
+export function isChargedPlunging(skill: SkillDefinition, player: PlayerState) {
+  if (!skill.initiativeSkillConfig) {
+    return { charged: false, plunging: false };
+  }
+  const isNormal = skill.initiativeSkillConfig.skillType === "normal";
+  if (!isNormal) {
+    return { charged: false, plunging: false };
+  }
+  const activeCh = player.characters[getActiveCharacterIndex(player)];
+  const forcePlunging = activeCh.entities.some((et) =>
+    et.definition.tags.includes("normalAsPlunging"),
+  );
+  const charged = player.canCharged;
+  const plunging = player.canPlunging || forcePlunging;
+  return { charged, plunging };
 }
 
 export function applyAutoSelectedDiceToAction(

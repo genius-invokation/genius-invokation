@@ -16,7 +16,7 @@
 import { DiceType } from "@gi-tcg/typings";
 
 import { Image } from "./Image";
-import { Match, Show, Switch, mergeProps } from "solid-js";
+import { Match, Show, Switch, createMemo, mergeProps } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 
 export interface DiceProps {
@@ -228,6 +228,8 @@ export function Dice(props: DiceProps) {
     },
     props,
   );
+  const normalDelicateDiceAssetId = createMemo(()=>`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`);
+  const signedDelicateDiceAssetId = createMemo(()=>`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_0${merged.size>25 ? "2" : "1"}`);
 
   return (
     <div class="relative flex items-center justify-center m--1">
@@ -246,7 +248,7 @@ export function Dice(props: DiceProps) {
         <Match when={merged.text}>
           <Show when={merged.type !== 9}>
             <WithDelicateUi
-              assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`}
+              assetId={normalDelicateDiceAssetId()}
               fallback={<></>}
             >
               {(image) => (
@@ -277,9 +279,7 @@ export function Dice(props: DiceProps) {
         </Match>
         <Match when={merged.type >= 1 && merged.type <= 8}>
           <WithDelicateUi
-            assetId={`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_0${
-              1 + +(merged.size > 25)
-            }`}
+            assetId={signedDelicateDiceAssetId()}
             fallback={
               <Show when={merged.type !== 8}>
                 <Image
