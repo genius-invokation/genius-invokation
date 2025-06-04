@@ -28,7 +28,7 @@ import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 const deck0: DeckConfig = {
   characters: [1101, 1601, 1203],
   cards: [
-    331602, 331202, 332042, 331802, 332006, 332042, 223041, 223041, 226031,
+    331804, 332045, 332042, 331802, 332006, 332042, 223041, 223041, 226031,
     226031, 312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004,
     321017, 321017, 322008, 322012, 322012, 322025, 332004, 332004, 332006,
     332032, 332032, 332041, 332041,
@@ -86,7 +86,8 @@ function App() {
         autoHeight={false}
       />
       <Chessboard1
-        style={{ width: "100vw" }}
+        style={{ width: "100vw", height: "200px" }}
+        autoHeight={false}
         timer={{ current: 114, total: 514 }}
       />
       <DetailLogViewer logs={logs()} />

@@ -13,28 +13,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Button } from "./Button";
-import type { ChessboardViewType } from "./Chessboard";
-
-export interface SwitchHandsViewProps {
-  viewType: ChessboardViewType;
-  onConfirm: () => void;
-  onVisible: () => void;
+export interface SwitchHandsBackdropProps {
+  onClick?: (e: MouseEvent) => void;
 }
 
-export function SwitchHandsView(props: SwitchHandsViewProps) {
+export function SpecialViewBackdrop(props: SwitchHandsBackdropProps) {
   return (
-    <div class="absolute pointer-events-none inset-0 flex flex-col items-center">
-      <h3 class="absolute top-50% -translate-y-40 font-bold text-3xl text-black z-1">
-        替换手牌
-      </h3>
-      <div class="flex-grow" />
-      <Button
-        class="absolute top-50% translate-y-30 pointer-events-auto z-1"
-        onClick={props.onConfirm}
-      >
-        确认
-      </Button>
-    </div>
+    <div
+      class="absolute inset-0 bg-green-50/90 select-none translate-z-0.1"
+      onClick={(e) => {
+        e.stopPropagation();
+        props.onClick?.(e);
+      }}
+    />
   );
 }
