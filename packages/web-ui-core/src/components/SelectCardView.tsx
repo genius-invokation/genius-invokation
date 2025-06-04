@@ -37,7 +37,7 @@ export function SelectCardView(props: SelectCardViewProps) {
   return (
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
       <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
-      <ul class="flex flex-row gap-4 z-1">
+      <ul class="flex flex-row gap-1 z-1">
         <For each={props.candidateIds}>
           {(cardId) => (
             <li class="flex flex-col items-center">
