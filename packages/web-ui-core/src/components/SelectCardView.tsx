@@ -37,29 +37,30 @@ export function SelectCardView(props: SelectCardViewProps) {
   return (
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
       <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
-      <ul class="flex flex-row gap-16 z-1">
+      <ul class="flex flex-row gap-4 z-1">
         <For each={props.candidateIds}>
           {(cardId) => (
-            <li
-              class="h-36 w-21 relative"
-              onClick={() => {
-                setSelectedId(cardId);
-                props.onClickCard(cardId);
-              }}
-            >
-              <CardFace definitionId={cardId} />
-              <Show when={selectedId() === cardId}>
-                <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-                  <SelectingIcon />
-                </div>
-              </Show>
-              <DiceCost
-                class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
-                cost={[]}
-                size={36}
-              />
-              <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
-              <div class="absolute h-10 w-36 left-50% -translate-x-50% bottom--12 font-size-4 text-center color-black/60 font-bold">
+            <li class="flex flex-col items-center">
+              <div
+                class="h-36 w-21 relative"
+                onClick={() => {
+                  setSelectedId(cardId);
+                  props.onClickCard(cardId);
+                }}
+              >
+                <CardFace definitionId={cardId} />
+                <Show when={selectedId() === cardId}>
+                  <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
+                    <SelectingIcon />
+                  </div>
+                </Show>
+                <DiceCost
+                  class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
+                  cost={[]}
+                  size={36}
+                />
+              </div>
+              <div class="mt-2 w-36 text-center font-size-4 text-center color-black/60 font-bold">
                 {props.nameGetter(cardId)}
               </div>
             </li>
