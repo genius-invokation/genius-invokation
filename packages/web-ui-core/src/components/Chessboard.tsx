@@ -1664,6 +1664,7 @@ export function Chessboard(props: ChessboardProps) {
             {(tunningArea) => <TuningArea {...tunningArea()} />}
           </Show>
         </div>
+        {/* 下层 UI 组件 */}
         <AspectRatioContainer>
           <ActionHintText
             class="absolute left-50% top-50% translate-x--50% translate-y--50%"
@@ -1745,7 +1746,7 @@ export function Chessboard(props: ChessboardProps) {
             </button>
           </Show>
         </AspectRatioContainer>
-        {/* screen scence canvas */}
+        {/* SpecialViews */}
         <Show when={props.viewType === "selectCard" && specialViewVisible()}>
           <SelectCardView
             candidateIds={localProps.selectCardCandidates}
@@ -1798,6 +1799,7 @@ export function Chessboard(props: ChessboardProps) {
             }}
           />
         </Show>
+        {/* 上层 UI 组件 */}
         <AspectRatioContainer>
           <CurrentTurnHint
             phase={localProps.data.state.phase}
