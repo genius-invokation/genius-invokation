@@ -123,6 +123,7 @@ export interface InitiativeSkillConfig {
   readonly computed$costSize: number;
   readonly computed$diceCostSize: number;
   readonly gainEnergy: boolean;
+  readonly fast: boolean;
   readonly hidden: boolean;
   readonly getTarget: InitiativeSkillTargetGetter;
 }
@@ -1019,7 +1020,9 @@ export class EnterEventArg extends EntityEventArg {
   }
 }
 
-export class DisposeEventArg<T extends AnyState = EntityState> extends EntityEventArg<T> {}
+export class DisposeEventArg<
+  T extends AnyState = EntityState,
+> extends EntityEventArg<T> {}
 
 export class DisposeOrTuneCardEventArg extends DisposeEventArg<CardState> {
   constructor(
@@ -1117,11 +1120,17 @@ export class ZeroHealthEventArg extends ModifyDamage1EventArg {
 
 export class TransformDefinitionEventArg extends EventArg {
   public readonly who: 0 | 1;
-  public readonly oldDefinition: CharacterDefinition | EntityDefinition;
+  public readonly oldDefinition:
+    | CharacterDefinition
+    | EntityDefinition
+    | CardDefinition;
   constructor(
     state: GameState,
-    public readonly entity: CharacterState | EntityState,
-    public readonly newDefinition: CharacterDefinition | EntityDefinition,
+    public readonly entity: AnyState,
+    public readonly newDefinition:
+      | CharacterDefinition
+      | EntityDefinition
+      | CardDefinition,
   ) {
     super(state);
     const area = getEntityArea(state, entity.id);
@@ -1168,19 +1177,36 @@ export class GenerateDiceEventArg extends PlayerEventArg {
   }
 }
 
-export interface ConsumeNightsoulInfo {
-  oldValue: number;
-  consumedValue: number;
-  newValue: number;
+export interface NightsoulValueChangeInfo {
+  readonly oldValue: number;
+  readonly consumedValue: number;
+  readonly newValue: number;
+  readonly type: "consume" | "gain";
+  readonly cancelled: boolean;
 }
 
-export class ConsumeNightsoulEventArg extends CharacterEventArg {
+export class NightsoulEventArg extends CharacterEventArg {
   constructor(
     state: GameState,
     character: CharacterState,
-    public readonly info: ConsumeNightsoulInfo,
+    public readonly _info: NightsoulValueChangeInfo,
   ) {
     super(state, character);
+  }
+  protected _cancelled = false;
+  get info() {
+    return this._info;
+  }
+}
+export class BeforeNightsoulEventArg extends NightsoulEventArg {
+  cancel() {
+    this._cancelled = true;
+  }
+  override get info() {
+    return {
+      ...this._info,
+      cancelled: this._cancelled,
+    };
   }
 }
 
@@ -1239,8 +1265,9 @@ export const EVENT_MAP = {
   onReaction: ReactionEventArg,
   onTransformDefinition: TransformDefinitionEventArg,
   onGenerateDice: GenerateDiceEventArg,
-  onConsumeNightsoul0: ConsumeNightsoulEventArg,
-  onConsumeNightsoul1: ConsumeNightsoulEventArg,
+  modifyChangeNightsoul: BeforeNightsoulEventArg,
+  onChangeNightsoul: NightsoulEventArg,
+
   onSelectCard: SelectCardEventArg,
 
   modifyDamage0: ModifyDamage0EventArg, // 类型
@@ -1269,7 +1296,8 @@ export type InlineEventNames =
   | "modifyDamage2"
   | "modifyDamage3"
   | "modifyHeal0"
-  | "modifyHeal1";
+  | "modifyHeal1"
+  | "modifyChangeNightsoul";
 
 export type EventArgOf<E extends EventNames> = InstanceType<EventMap[E]>;
 

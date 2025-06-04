@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Aura } from "@gi-tcg/typings";
-import type { CharacterTag } from "../base/character";
+import type { CharacterTag, SpecialEnergyConfig } from "../base/character";
 import { registerCharacter, builderWeakRefs } from "./registry";
 import type {
   CharacterHandle,
@@ -38,6 +38,7 @@ export class CharacterBuilder {
   private _varConfigs: Record<number, VariableConfig> = {};
   private readonly _skillIds: number[] = [];
   private _associatedNightsoulsBlessingId: number | null = null;
+  private _specialEnergy: SpecialEnergyConfig | null = null;
   constructor(private readonly id: number) {
     builderWeakRefs.add(new WeakRef(this));
   }
@@ -75,6 +76,13 @@ export class CharacterBuilder {
     this._maxEnergy = value;
     return this;
   }
+  specialEnergy(varName: string, slotSize: number = 0) {
+    this._specialEnergy = {
+      variableName: varName,
+      slotSize,
+    };
+    return this;
+  }
 
   associateNightsoul(nightsoulsBlessing: StatusHandle) {
     this._associatedNightsoulsBlessingId = nightsoulsBlessing;
@@ -99,6 +107,7 @@ export class CharacterBuilder {
       },
       skillIds: this._skillIds,
       associatedNightsoulsBlessingId: this._associatedNightsoulsBlessingId,
+      specialEnergy: this._specialEnergy,
     });
     return this.id as CharacterHandle;
   }
