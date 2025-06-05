@@ -408,8 +408,8 @@ function diceReqText(
     const name =
       (ctx.assetsManager.getNameSync(-300 - shifted) ?? "")
         .replace("无色", "任意")
-        .replace("相同", "") + "骰";
-    const style = `color: var(--c-${DICE_COLOR[type]});`;
+        .replace("相同", count === 1 ? "" : "相同") + "骰";
+    const style = (type >=1 && type<=7) ? `color: var(--c-${DICE_COLOR[type]});` : "";
     return `${count}个<span style="${style}">${name}</span>`;
   });
   return `请支付${diceText.join("和")}`;
