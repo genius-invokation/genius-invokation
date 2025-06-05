@@ -67,16 +67,14 @@ function App() {
   return (
     <VersionContext.Provider value={versionContextValue}>
       <MobileContext.Provider value={mobile}>
-        <div class="flex flex-row select-none md:select-auto">
-          <Router base={import.meta.env.BASE_URL}>
-            <Route path="/" component={Home} />
-            <Route path="/user/:id" component={User} />
-            <Route path="/decks/:id" component={EditDeck} />
-            <Route path="/decks" component={Decks} />
-            <Route path="/rooms/:code" component={Room} />
-            <Route path="*" component={NotFound} />
-          </Router>
-        </div>
+        <Router base={import.meta.env.BASE_URL}>
+          <Route path="/" component={Home} />
+          <Route path="/user/:id" component={User} />
+          <Route path="/decks/:id" component={EditDeck} />
+          <Route path="/decks" component={Decks} />
+          <Route path="/rooms/:code" component={Room} />
+          <Route path="*" component={NotFound} />
+        </Router>
       </MobileContext.Provider>
     </VersionContext.Provider>
   );

@@ -5,7 +5,8 @@
   --root-padding-bottom: env(safe-area-inset-bottom, 0px);
   --root-padding-left: env(safe-area-inset-left, 0px);
   --root-padding-right: env(safe-area-inset-right, 0px);
-  --root-padding: var(--root-padding-top) var(--root-padding-right) var(--root-padding-bottom) var(--root-padding-left);
+  --root-padding: var(--root-padding-top) var(--root-padding-right)
+    var(--root-padding-bottom) var(--root-padding-left);
 }
 
 #app {
@@ -14,6 +15,12 @@
   height: 100dvh;
   width: 100dvw;
   overflow: auto;
+  user-select: auto;
+}
+@media (max-width: 768px) {
+  #app {
+    user-select: none;
+  }
 }
 
 #app:has(.mobile-chessboard) {
@@ -33,7 +40,9 @@ form {
 dialog {
   display: unset;
   inset: 0;
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
 }
 
 dialog:not([open]) {
