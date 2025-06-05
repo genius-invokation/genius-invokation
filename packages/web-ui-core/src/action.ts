@@ -409,7 +409,8 @@ function diceReqText(
       (ctx.assetsManager.getNameSync(-300 - shifted) ?? "")
         .replace("无色", "任意")
         .replace("相同", count === 1 ? "" : "相同") + "骰";
-    const style = (type >=1 && type<=7) ? `color: var(--c-${DICE_COLOR[type]});` : "";
+    const style =
+      type >= 1 && type <= 7 ? `color: var(--c-${DICE_COLOR[type]});` : "";
     return `${count}个<span style="${style}">${name}</span>`;
   });
   return `请支付${diceText.join("和")}`;
@@ -881,10 +882,11 @@ function createSwitchActiveActionState(
   root: ActionState,
   ctx: CreateSwitchActiveActionStateContext,
 ): void {
+  const ok = ctx.action.validity === ActionValidity.VALID;
   const INNER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
     type: "clickSwitchActiveButton",
     targetCharacterId: ctx.action.value.characterId,
-    isDisabled: false,
+    isDisabled: !ok,
     isFocused: true,
   };
   const OUTER_SWITCH_ACTIVE_BUTTON: ClickSwitchActiveButtonActionStep = {
@@ -938,7 +940,7 @@ function createSwitchActiveActionState(
         const diceReq = new Map(
           realCost.map(({ type, count }) => [type as DiceType, count]),
         );
-        if (checkDice(diceReq, dice)) {
+        if (ok && checkDice(diceReq, dice)) {
           return {
             type: "actionCommitted",
             chosenActionIndex: ctx.index,
@@ -950,7 +952,8 @@ function createSwitchActiveActionState(
             newState: {
               ...innerState,
               autoSelectedDice: null,
-              alertText: diceReqText(diceReq, ctx),
+              alertText:
+                validityText(ctx.action.validity) ?? diceReqText(diceReq, ctx),
             },
           };
         }
@@ -1077,9 +1080,6 @@ export function createActionState(
         break;
       }
       case "switchActive": {
-        if (validity !== ActionValidity.VALID) {
-          continue;
-        }
         realCosts.switchActive.set(action.value.characterId, requiredCost);
         createSwitchActiveActionState(root, {
           assetsManager,
