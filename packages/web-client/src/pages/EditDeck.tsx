@@ -259,12 +259,11 @@ export function EditDeck() {
           >
             <form onSubmit={saveName} class="flex flex-row gap-3">
               <input
-                type="text"
                 required
                 ref={setNameInputEl}
                 onFocus={(e) => e.target.select()}
                 name="name"
-                class="input input-outline w-50 h-8 text-1rem"
+                class="input input-outline w-50 h-8"
               />
               <button
                 type="submit"
@@ -301,7 +300,7 @@ export function EditDeck() {
           </Match>
           <Match when={status().type !== "notLogin"}>
             <DeckBuilder
-              class={`min-h-0 h-full w-full ${mobile() ? "mobile" : ""}`}
+              class={`min-h-0 h-full w-full ${mobile() ? 'mobile' : ''}`}
               deck={deckValue()}
               onChangeDeck={(v) => (setDeckValue(v), setDirty(true))}
             />

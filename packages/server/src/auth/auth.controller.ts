@@ -21,10 +21,9 @@ import {
   HttpStatus,
   Post,
   Query,
-  Req,
   Res,
 } from "@nestjs/common";
-import type { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyReply } from "fastify";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { AuthService } from "./auth.service";
 import { Public } from "./auth.guard";
@@ -42,17 +41,12 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Get("github/callback")
-  async login(
-    @Query() { code }: GitHubCallbackDto,
-    @Req() req: FastifyRequest,
-    @Res() res: FastifyReply,
-  ) {
+  async login(@Query() { code }: GitHubCallbackDto, @Res() res: FastifyReply) {
     const { accessToken } = await this.auth.login(code);
-    const hostname = new URL("http://" + req.hostname).hostname;
     const homepage = `${
       import.meta.env.NODE_ENV === "production"
         ? SERVER_HOST
-        : `http://${hostname ?? "localhost"}:5173`
+        : `http://localhost:5173`
     }${WEB_CLIENT_BASE_PATH}`;
     res.status(302).redirect(`${homepage}?token=${accessToken}`);
   }

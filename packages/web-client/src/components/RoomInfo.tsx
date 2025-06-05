@@ -64,7 +64,7 @@ export function RoomInfo(props: RoomInfoProps) {
         <Show when={props.players.length > 0}>
           <A
             href={url(props.players[0].id)}
-            class="flex flex-row items-center h-6 rounded-r-xl pr-2 bg-yellow-800 text-yellow-100 ml-2 hover:bg-yellow-700 transition-colors group-data-[disabled=true]:pointer-events-none max-w-30 whitespace-nowrap"
+            class="flex flex-row items-center h-6 rounded-r-xl pr-2 bg-yellow-800 text-yellow-100 ml-2 hover:bg-yellow-700 transition-colors group-data-[disabled=true]:pointer-events-none"
           >
             <img
               src={avatarUrl0()}
@@ -72,7 +72,7 @@ export function RoomInfo(props: RoomInfoProps) {
               height="30"
               class="rounded-full b-yellow-800 b-1 translate-x--2"
             />
-            <span class="overflow-hidden text-ellipsis">{props.players[0].name}</span>
+            {props.players[0].name}
           </A>
           <span class="text-xl font-bold">VS</span>
           <Show
@@ -93,9 +93,9 @@ export function RoomInfo(props: RoomInfoProps) {
           >
             <A
               href={url(props.players[1].id)}
-              class="flex flex-row items-center h-6 rounded-l-xl pl-2 bg-yellow-800 text-yellow-100 mr-2 hover:bg-yellow-700 transition-colors group-data-[disabled=true]:pointer-events-none max-w-30 whitespace-nowrap"
+              class="flex flex-row items-center h-6 rounded-l-xl pl-2 bg-yellow-800 text-yellow-100 mr-2 hover:bg-yellow-700 transition-colors group-data-[disabled=true]:pointer-events-none"
             >
-            <span class="overflow-hidden text-ellipsis">{props.players[1].name}</span>
+              {props.players[1].name}
               <img
                 src={avatarUrl1()}
                 width="30"

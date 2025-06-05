@@ -24,7 +24,7 @@ export function Header() {
   const navigate = useNavigate();
   const { status, logout } = useAuth();
   return (
-    <header class="fixed top-0 left-0 w-100lvw flex flex-row h-[calc(4rem+var(--root-padding-top))] pt-[var(--root-padding-top)] bg-white z-200 px-4 shadow-md items-center gap-4">
+    <header class="fixed top-0 left-0 w-100dvw flex flex-row h-16 bg-white z-200 px-4 shadow-md items-center gap-4">
       <div class="flex-grow flex flex-col md:flex-row items-start md:items-end gap-2">
         <h1 class="text-xl line-height-none font-bold ">
           <A href="/">七圣召唤模拟对战平台</A>
