@@ -36,9 +36,7 @@ export interface VersionContextValue {
   versionInfo: Resource<any>;
 }
 
-const VersionContext = createContext<VersionContextValue>({
-  versionInfo: createResource(() => Promise.resolve({}))[0],
-});
+const VersionContext = createContext<VersionContextValue>();
 export const useVersionContext = () => useContext(VersionContext)!;
 
 const MobileContext = createContext<Accessor<boolean>>();
@@ -67,7 +65,7 @@ function App() {
   return (
     <VersionContext.Provider value={versionContextValue}>
       <MobileContext.Provider value={mobile}>
-        <div class="flex flex-row select-none md:select-auto">
+        <div class="h-full w-full flex flex-row">
           <Router base={import.meta.env.BASE_URL}>
             <Route path="/" component={Home} />
             <Route path="/user/:id" component={User} />

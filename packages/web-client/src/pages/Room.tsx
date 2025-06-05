@@ -367,10 +367,10 @@ export function Room() {
       component={mobile() && !!chessboard() ? MobileChessboardLayout : Layout}
     >
       <div
-        class="data-[mobile]:p-[var(--root-padding)] data-[mobile]:h-100lvh data-[mobile]:overflow-clip container mx-auto flex flex-col group"
+        class="data-[mobile]:p-0  data-[mobile]:h-100dvh data-[mobile]:overflow-clip container mx-auto flex flex-col group"
         bool:data-mobile={mobile() && chessboard()}
       >
-        <div class="group-data-[mobile]:fixed top-0 right-0 z-100 group-data-[mobile]:translate-x-100% group-data-[mobile]-rotate-90 transform-origin-top-left flex group-data-[mobile]:flex-col flex-row group-data-[mobile]:items-start items-center has-[input:checked]:bg-white group-data-[mobile]:pl-[var(--root-padding)+1rem] group-data-[mobile]:p-4 rounded-br-2xl">
+        <div class="group-data-[mobile]:fixed top-0 right-0 z-100 group-data-[mobile]:translate-x-100% group-data-[mobile]-rotate-90 transform-origin-top-left flex group-data-[mobile]:flex-col flex-row group-data-[mobile]:items-start items-center has-[input:checked]:bg-white group-data-[mobile]:p-4 rounded-br-2xl">
           <input hidden type="checkbox" class="peer" id={checkboxId} />
           <label
             for={checkboxId}
@@ -460,7 +460,7 @@ export function Room() {
               component={chessboard()}
               rotation={mobile() ? 90 : 0}
               autoHeight={!mobile()}
-              class={`${mobile() ? "h-100lvh w-100lvw" : ""}`}
+              class={`${mobile() ? "h-100dvh w-100dvw" : ""}`}
               timer={currentMyTimer() ?? currentOppTimer()}
             />
           </div>

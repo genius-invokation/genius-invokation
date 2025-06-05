@@ -1,18 +1,12 @@
 @unocss;
 
 :root {
-  --root-padding-top: env(safe-area-inset-top, 0px);
-  --root-padding-bottom: env(safe-area-inset-bottom, 0px);
-  --root-padding-left: env(safe-area-inset-left, 0px);
-  --root-padding-right: env(safe-area-inset-right, 0px);
-  --root-padding: var(--root-padding-top) var(--root-padding-right) var(--root-padding-bottom) var(--root-padding-left);
+  touch-action: pan-x pan-y;
 }
 
 #app {
-  touch-action: pan-x pan-y;
-  padding: var(--root-padding);
-  height: 100lvh;
-  width: 100lvw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: auto;
 }
 
