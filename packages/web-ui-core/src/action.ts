@@ -34,7 +34,6 @@ import { DICE_COLOR } from "./components/Dice";
 import { checkDice } from "@gi-tcg/utils";
 import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
 import type { AssetsManager } from "@gi-tcg/assets-manager";
-import { useUiContext } from "./hooks/context";
 
 export function getHintTextOfCardOrSkill(
   assetsManager: AssetsManager,
@@ -315,6 +314,8 @@ export interface ActionState {
   disabledDiceTypes?: DiceType[];
   /** 进入此状态时自动选中的骰子 */
   autoSelectedDice: DiceType[] | null;
+  /** 限制骰子最多选中个数 */
+  maxSelectedDiceCount: number | null;
   /** 是否显示背板遮罩 */
   showBackdrop: boolean;
   /** 解析后的预览信息 */
@@ -400,16 +401,18 @@ interface CreatePlayCardActionStateContext {
 
 function diceReqText(
   diceReq: Map<DiceType, number>,
-  ctx: { assetsManager: any },
-) { 
-  const diceName = Array.from(diceReq.entries())
-    .map(([type, count]) => {
-      const shifted = (type + 8) % 9 + 1;
-      let name = ctx.assetsManager.getNameSync(-300 - shifted);
-      name = name.replace("无色", "任意");
-      return `${count}个[[color:${DICE_COLOR[type]}]]${name}[[/color]]`;
-    });    
-  return `请支付${diceName.join("和").replace("1个[[color:omni]]相同元素[[/color]]", "1个元素骰")}`;
+  ctx: { assetsManager: AssetsManager },
+) {
+  const diceText = Array.from(diceReq.entries()).map(([type, count]) => {
+    const shifted = ((type + 8) % 9) + 1;
+    const name =
+      (ctx.assetsManager.getNameSync(-300 - shifted) ?? "")
+        .replace("无色", "任意")
+        .replace("相同", "") + "骰";
+    const style = `color: var(--c-${DICE_COLOR[type]});`;
+    return `${count}个<span style="${style}">${name}</span>`;
+  });
+  return `请支付${diceText.join("和")}`;
 }
 
 function createPlayCardActionState(
@@ -482,6 +485,7 @@ function createPlayCardActionState(
     )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
+    maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
     showBackdrop: true,
     previewData,
     step: (step, dice) => {
@@ -584,6 +588,7 @@ function createMultiStepState<T>(
         dicePanel:
           node.value.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
         autoSelectedDice: null,
+        maxSelectedDiceCount: null,
         showBackdrop: true,
         previewData: parsePreviewData(node.value.action.preview),
         step: (step, dice) => {
@@ -641,6 +646,7 @@ function createMultiStepState<T>(
         hintText: hintTexts[0],
         dicePanel: isSkill ? "wrapped" : "hidden",
         autoSelectedDice,
+        maxSelectedDiceCount: autoSelectedDice?.length ?? null,
         showBackdrop: true,
         previewData: NO_PREVIEW,
         step: (step, dice) => {
@@ -769,6 +775,7 @@ function createUseSkillActionState(
     showSkillButtons: true,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
+    maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
     showBackdrop: true,
     previewData: parsePreviewData(ctx.action.preview),
     step: (step, dice) => {
@@ -792,7 +799,8 @@ function createUseSkillActionState(
             newState: {
               ...resultState,
               autoSelectedDice: null,
-              alertText: validityText(ctx.action.validity) ?? diceReqText(diceReq, ctx),
+              alertText:
+                validityText(ctx.action.validity) ?? diceReqText(diceReq, ctx),
             },
           };
         }
@@ -827,6 +835,7 @@ function createElementalTunningActionState(
     hintText: `调和为${"_冰水火雷风岩草"[targetDice]}元素骰子`,
     dicePanel: "visible",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
+    maxSelectedDiceCount: 1,
     disabledDiceTypes,
     showBackdrop: true,
     previewData: NO_PREVIEW,
@@ -913,6 +922,7 @@ function createSwitchActiveActionState(
     )}」`,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
+    maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
     showBackdrop: true,
     previewData: parsePreviewData(ctx.action.preview),
     step: (step, dice) => {
@@ -965,6 +975,7 @@ function createSwitchActiveActionState(
     showSkillButtons: true,
     dicePanel: "hidden",
     autoSelectedDice: null,
+    maxSelectedDiceCount: null,
     showBackdrop: false,
     previewData: NO_PREVIEW,
     step: (step) => {
@@ -1005,6 +1016,7 @@ export function createActionState(
     previewData: NO_PREVIEW,
     dicePanel: "hidden",
     autoSelectedDice: null,
+    maxSelectedDiceCount: null,
     showBackdrop: false,
     showHands: true,
     showSkillButtons: true,
@@ -1175,7 +1187,8 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
     realCosts: NO_COST,
     previewData: NO_PREVIEW,
     dicePanel: "hidden",
-    autoSelectedDice: [],
+    autoSelectedDice: null,
+    maxSelectedDiceCount: null,
     showBackdrop: false,
     showHands: true,
     showSkillButtons: true,
@@ -1223,6 +1236,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
       previewData: NO_PREVIEW,
       dicePanel: "hidden",
       autoSelectedDice: null,
+      maxSelectedDiceCount: null,
       showBackdrop: false,
       showHands: true,
       showSkillButtons: true,

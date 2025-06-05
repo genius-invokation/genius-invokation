@@ -422,17 +422,14 @@
   }
 }
 
-@keyframes hideAfter {
+@keyframes alert-auto-hide {
   0% {
-    visibility: visible;
     opacity: 1;
   }
   90% {
-    visibility: visible;
     opacity: 1;
   }
   100% {
-    visibility: hidden;
     opacity: 0;
   }
 }

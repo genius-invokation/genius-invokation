@@ -24,24 +24,22 @@ export interface DicePanelProps {
   dice: DiceType[];
   disabledDiceTypes: DiceType[];
   selectedDice: boolean[];
-  diceRequiredNumber: number;
+  maxSelectedCount: number | null;
   onSelectDice: (selectedDice: boolean[]) => void;
   state: DicePanelState;
   onStateChange: (state: DicePanelState) => void;
-  onClick: (e: MouseEvent) => void;
 }
 
 export function DicePanel(props: DicePanelProps) {
   const toggleDice = (dice: DiceType, index: number) => {
+    console.log(props.maxSelectedCount);
     if (props.disabledDiceTypes.includes(dice)) {
       return;
     }
     const rawSelectedDice = props.selectedDice;
     const selectedDice = Array.from(props.dice, (_, i) => !!rawSelectedDice[i]);
     const selectedCount = selectedDice.filter(Boolean).length;
-    if (props.diceRequiredNumber === 0) {
-      selectedDice[index] = !selectedDice[index];
-    } else if (selectedCount < props.diceRequiredNumber) {
+    if (!props.maxSelectedCount || selectedCount < props.maxSelectedCount) {
       selectedDice[index] = !selectedDice[index];
     } else {
       if (selectedDice[index]) {
@@ -63,9 +61,8 @@ export function DicePanel(props: DicePanelProps) {
   return (
     <>
       <div
-        class="absolute right--40 data-[state=visible]:right--4 data-[state=wrapped]:right--4 top-0 bottom-0 pr-4 gap-2 w-0 data-[state=visible]:w-40 data-[state=wrapped]:w-18 h-full flex flex-row items-center transition-right dice-panel data-[state=hidden]:pr-0"
+        class="absolute right--40 data-[state=visible]:right--4 data-[state=wrapped]:right--4 top-0 bottom-0 pr-4 gap-2 w-0 data-[state=visible]:w-40 data-[state=wrapped]:w-18 h-full flex flex-row items-center transition-right dice-panel data-[state=hidden]:pr-0 select-none"
         data-state={props.state}
-        onClick={(e) => {props.onClick(e);}}
       >
         <div
           class="text-#e7d090 h-60 ml-1 flex items-center select-none cursor-pointer"
@@ -102,7 +99,7 @@ export function DicePanel(props: DicePanelProps) {
         class="absolute right-0 top-0 bottom-0 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity"
         bool:data-shown={props.state !== "visible"}
       >
-        <div class="pointer-events-auto m-2 flex flex-col select-none gap-2 items-center">
+        <div class=" m-2 flex flex-col select-none gap-2 items-center">
           <WithDelicateUi
             assetId={"UI_Gcg_DiceL_Count_03"}
             fallback={
