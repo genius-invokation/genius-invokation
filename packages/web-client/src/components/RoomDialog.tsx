@@ -40,10 +40,11 @@ function SelectableDeckInfo(
     "id",
   ]);
   return (
-    <label class="relative group cursor-pointer">
+    <label class="relative group cursor-pointer min-w-15">
       <input
         type="radio"
-        class="w-0 h-0 opacity-0 peer"
+        hidden
+        class="peer"
         name="createRoomDeck"
         {...inputProps}
       />
@@ -112,7 +113,7 @@ const TIME_CONFIGS: TimeConfig[] = [
     roundTotalActionTime: 180,
     actionTime: 45,
   },
-    {
+  {
     name: "超长",
     estimationTime: 20,
     initTotalActionTime: 60,
@@ -259,12 +260,12 @@ export function RoomDialog(props: RoomDialogProps) {
   return (
     <dialog
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
-      class="max-h-unset max-w-unset h-100dvh w-100dvw m-0 md:m-x-auto md:m-y-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
+      class="max-h-unset max-w-unset h-100lvh w-100lvw overflow-auto pt-[calc(0.75rem+var(--root-padding-top))] md:pt-3 md:m-x-auto md:my-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
     >
       <div class="flex flex-col md:min-h-full md:h-min w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
         <div
-          class="flex-grow min-h-0 flex flex-col md:flex-row gap-4 data-[disabled=true]:cursor-not-allowed mb-18 md:mb-0"
+          class="flex-grow min-h-0 flex flex-col md:flex-row gap-4 data-[disabled=true]:cursor-not-allowed mb-[calc(4.5rem+var(--root-padding-bottom))] md:mb-0"
           data-disabled={!editable()}
         >
           <div
@@ -275,7 +276,7 @@ export function RoomDialog(props: RoomDialogProps) {
               <div class="mb-3 flex flex-row gap-4 items-center">
                 <h4 class="text-lg">游戏版本</h4>
                 <select
-                  class="disabled:pointer-events-none"
+                  class="disabled:pointer-events-none appearance-none"
                   value={version()}
                   onChange={(e) => setVersion(Number(e.target.value))}
                   disabled={!editable()}
@@ -306,12 +307,13 @@ export function RoomDialog(props: RoomDialogProps) {
                       onClick={() => setTimeConfig(config)}
                     >
                       <h5 class="font-bold text-gray-400 group-data-[active=true]:text-black transition-colors">
-                        {config.name ?? `${config.roundTotalActionTime} + ${config.actionTime}`}
+                        {config.name ??
+                          `${config.roundTotalActionTime} + ${config.actionTime}`}
                       </h5>
-                      <h5 class="text-gray-400 group-data-[active=true]:text-gray-600 transition-colors md:mb-2 font-size-80%">
+                      <h5 class="text-gray-400 group-data-[active=true]:text-gray-600 transition-colors md:mb-1 font-size-80%">
                         {`预计每回合 ${config.estimationTime}min`}
                       </h5>
-                      <ul class="hidden md:block pl-3 list-disc text-gray-400 text-sm group-data-[active=true]:text-slate-500 transition-colors">
+                      <ul class="hidden md:block pl-3 list-disc text-gray-400 font-size-80% text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
                         <li>每重投时间：{config.rerollTime}s</li>
                         <li>每回合总时间：{config.roundTotalActionTime}s</li>
@@ -394,11 +396,8 @@ export function RoomDialog(props: RoomDialogProps) {
             </div>
           </div>
         </div>
-        <div class="fixed md:static left-0 right-0 bottom-0 bg-white b-t-gray-200 b-1 md:b-0 px-6 h-18 md:h-min md:p-0 flex-shrink-0 flex flex-row justify-end items-center gap-4">
-          <button
-            class="btn btn-ghost-red"
-            onClick={closeDialog}
-          >
+        <div class="fixed md:static left-0 right-0 bottom-0 bg-white b-t-gray-200 b-1 md:b-0 px-6 pb-[var(--root-padding-bottom)] h-[calc(4.5rem+var(--root-padding-bottom))] md:h-min md:p-0 flex-shrink-0 flex flex-row justify-end items-center gap-4">
+          <button class="btn btn-ghost-red" onClick={closeDialog}>
             取消
           </button>
           <button
@@ -417,6 +416,7 @@ export function RoomDialog(props: RoomDialogProps) {
         </div>
       </div>
       <button
+        autofocus
         class="hidden md:block absolute right-4 top-4 h-5 w-5 text-black bg-transparent"
         onClick={closeDialog}
       >

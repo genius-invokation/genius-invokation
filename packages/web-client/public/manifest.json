@@ -1,5 +1,5 @@
 {
   "name": "打雨酱牌！",
   "start_url": ".",
-  "display": "standalone"
+  "display": "fullscreen"
 }
