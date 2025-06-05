@@ -24,9 +24,11 @@ export interface DicePanelProps {
   dice: DiceType[];
   disabledDiceTypes: DiceType[];
   selectedDice: boolean[];
+  diceRequiredNumber: number;
   onSelectDice: (selectedDice: boolean[]) => void;
   state: DicePanelState;
   onStateChange: (state: DicePanelState) => void;
+  onClick: (e: MouseEvent) => void;
 }
 
 export function DicePanel(props: DicePanelProps) {
@@ -36,7 +38,19 @@ export function DicePanel(props: DicePanelProps) {
     }
     const rawSelectedDice = props.selectedDice;
     const selectedDice = Array.from(props.dice, (_, i) => !!rawSelectedDice[i]);
-    selectedDice[index] = !selectedDice[index];
+    const selectedCount = selectedDice.filter(Boolean).length;
+    if (props.diceRequiredNumber === 0) {
+      selectedDice[index] = !selectedDice[index];
+    } else if (selectedCount < props.diceRequiredNumber) {
+      selectedDice[index] = !selectedDice[index];
+    } else {
+      if (selectedDice[index]) {
+        selectedDice[index] = false;
+      } else {
+        selectedDice.fill(false);
+        selectedDice[index] = true;
+      }
+    }
     props.onSelectDice(selectedDice);
   };
   const toggleState = () => {
@@ -51,6 +65,7 @@ export function DicePanel(props: DicePanelProps) {
       <div
         class="absolute right--40 data-[state=visible]:right--4 data-[state=wrapped]:right--4 top-0 bottom-0 pr-4 gap-2 w-0 data-[state=visible]:w-40 data-[state=wrapped]:w-18 h-full flex flex-row items-center transition-right dice-panel data-[state=hidden]:pr-0"
         data-state={props.state}
+        onClick={(e) => {props.onClick(e);}}
       >
         <div
           class="text-#e7d090 h-60 ml-1 flex items-center select-none cursor-pointer"

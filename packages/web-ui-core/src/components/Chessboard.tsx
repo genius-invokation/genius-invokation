@@ -123,6 +123,7 @@ import { SwitchHandsView } from "./SwitchHandsView";
 import { MutationViewer } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
+import { Alert } from "./Alert";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1175,7 +1176,8 @@ export function Chessboard(props: ChessboardProps) {
             setSelectedDice(selectingDice);
           }
           if (actionState.alertText) {
-            alert(actionState.alertText);
+            // alert(actionState.alertText);
+            setShowAlert(true);
           }
           setDicePanelState(actionState.dicePanel);
         } else if (prevActionState) {
@@ -1213,6 +1215,16 @@ export function Chessboard(props: ChessboardProps) {
     }, 500);
     setShowCardHint(area, timeout);
   };
+
+  const [showAlert, setShowAlert] = createSignal(false);
+  createEffect(() => {
+    if (showAlert()) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  });
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1554,7 +1566,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const onSkillClick = (sk: SkillInfo) => {
-    setShowDeclareEndButton(false)
+    setShowDeclareEndButton(false);
     if (sk.id === "switchActive") {
       const step = switchActiveStep();
       if (step) {
@@ -1698,12 +1710,14 @@ export function Chessboard(props: ChessboardProps) {
             <DicePanel
               dice={myDice()}
               selectedDice={selectedDice()}
+              diceRequiredNumber={localProps.actionState?.autoSelectedDice?.length ?? 0}
               disabledDiceTypes={
                 localProps.actionState?.disabledDiceTypes ?? []
               }
               onSelectDice={setSelectedDice}
               state={dicePanelState()}
               onStateChange={setDicePanelState}
+              onClick={() => {setShowAlert(false);}}
             />
             <SkillButtonGroup
               class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
@@ -1736,6 +1750,12 @@ export function Chessboard(props: ChessboardProps) {
             {(data) => (
               <NotificationBox opp={data.who !== localProps.who} data={data} />
             )}
+          </Show>
+          <Show when={showAlert() && localProps.actionState?.alertText}>
+            <Alert
+              class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+              text={localProps.actionState?.alertText}
+            />
           </Show>
           <Show when={localProps.data.playingCard} keyed>
             {(data) => (

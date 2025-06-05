@@ -30,6 +30,7 @@ import {
   type SwitchActiveAction,
 } from "@gi-tcg/typings";
 import type { DicePanelState } from "./components/DicePanel";
+import { DICE_COLOR } from "./components/Dice";
 import { checkDice } from "@gi-tcg/utils";
 import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
 import type { AssetsManager } from "@gi-tcg/assets-manager";
@@ -397,6 +398,20 @@ interface CreatePlayCardActionStateContext {
   index: number;
 }
 
+function diceReqText(
+  diceReq: Map<DiceType, number>,
+  ctx: { assetsManager: any },
+) { 
+  const diceName = Array.from(diceReq.entries())
+    .map(([type, count]) => {
+      const shifted = (type + 8) % 9 + 1;
+      let name = ctx.assetsManager.getNameSync(-300 - shifted);
+      name = name.replace("无色", "任意");
+      return `${count}个[[color:${DICE_COLOR[type]}]]${name}[[/color]]`;
+    });    
+  return `请支付${diceName.join("和").replace("1个[[color:omni]]相同元素[[/color]]", "1个元素骰")}`;
+}
+
 function createPlayCardActionState(
   root: ActionState,
   ctx: CreatePlayCardActionStateContext,
@@ -490,7 +505,7 @@ function createPlayCardActionState(
             newState: {
               ...resultState,
               autoSelectedDice: null,
-              alertText: "骰子不符合要求",
+              alertText: diceReqText(diceReq, ctx),
             },
           };
         }
@@ -596,7 +611,7 @@ function createMultiStepState<T>(
                 type: "newState",
                 newState: {
                   ...resultState,
-                  alertText: "骰子不符合要求",
+                  alertText: diceReqText(diceReq, ctx),
                 },
               };
             }
@@ -777,7 +792,7 @@ function createUseSkillActionState(
             newState: {
               ...resultState,
               autoSelectedDice: null,
-              alertText: validityText(ctx.action.validity) ?? "骰子不符合要求",
+              alertText: validityText(ctx.action.validity) ?? diceReqText(diceReq, ctx),
             },
           };
         }
@@ -925,7 +940,7 @@ function createSwitchActiveActionState(
             newState: {
               ...innerState,
               autoSelectedDice: null,
-              alertText: "骰子不符合要求",
+              alertText: diceReqText(diceReq, ctx),
             },
           };
         }
