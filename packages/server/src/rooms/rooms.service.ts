@@ -278,7 +278,7 @@ class Player implements PlayerIOWithError {
   private timeoutRpc(request: RpcRequest): Promise<RpcResponse> {
     this._contiguousTimeoutRpcExecuted++;
     if (this.playerInfo.isGuest && this._contiguousTimeoutRpcExecuted >= 3) {
-      if (this._game && this._who) {
+      if (this._game && this._who !== null) {
         this._game?.giveUp(this._who);
       }
       throw new Error(`Give up actions due to too many timeout of guest`);
@@ -335,7 +335,7 @@ class Player implements PlayerIOWithError {
       };
     }
     try {
-      return await new Promise<RpcResponse>((resolve) => {
+      return await new Promise<RpcResponse>((resolve, reject) => {
         const resolver: RpcResolver = {
           id,
           request,
@@ -356,7 +356,9 @@ class Player implements PlayerIOWithError {
           if (resolver.timeout <= -2) {
             clearInterval(interval);
             setRoundTimeout(0);
-            resolve(this.timeoutRpc(request));
+            this.timeoutRpc(request)
+              .then((r) => resolve(r))
+              .catch((e) => reject(e));
           }
         }, 1000);
       });
