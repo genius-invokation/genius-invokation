@@ -361,7 +361,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         <CharacterTagMasks tags={data().tags} />
       </div>
       <Show when={props.active}>
-        <StatusGroup class="h-6 w-20" statuses={props.combatStatus} />
+        <StatusGroup class="h-6 w-20 z-10" statuses={props.combatStatus} />
       </Show>
     </div>
   );

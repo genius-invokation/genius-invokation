@@ -146,15 +146,11 @@
 
   .current-turn-hint[data-opp="false"] {
     --fg-color: #644d39;
-    --inner-background-color: #786049;
-    --inner-border-color: #bea678;
     --bg-color: #d9b48d;
   }
 
   .current-turn-hint[data-opp="true"] {
     --fg-color: #3f4957;
-    --inner-background-color: #485569;
-    --inner-border-color: #899dc6;
     --bg-color: #7e98cb;
   }
 
@@ -422,6 +418,18 @@
 
   100% {
     transform: scale(1.375);
+    opacity: 0;
+  }
+}
+
+@keyframes alert-auto-hide {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
     opacity: 0;
   }
 }

@@ -123,6 +123,7 @@ import { SwitchHandsView } from "./SwitchHandsView";
 import { MutationViewer } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
+import { createAlert } from "./Alert";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1175,7 +1176,7 @@ export function Chessboard(props: ChessboardProps) {
             setSelectedDice(selectingDice);
           }
           if (actionState.alertText) {
-            alert(actionState.alertText);
+            showAlert(actionState.alertText);
           }
           setDicePanelState(actionState.dicePanel);
         } else if (prevActionState) {
@@ -1213,6 +1214,8 @@ export function Chessboard(props: ChessboardProps) {
     }, 500);
     setShowCardHint(area, timeout);
   };
+
+  const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1489,7 +1492,11 @@ export function Chessboard(props: ChessboardProps) {
     }
     if (!focusingHands && cardInfo.playStep) {
       localProps.onStepActionState?.(cardInfo.playStep, selectedDiceValue());
-      setDraggingHand({ ...dragging, status: "end" });
+      if (cardInfo.playStep.playable) {
+        setDraggingHand({ ...dragging, status: "end" });
+      } else {
+        setDraggingHand(null);
+      }
     } else {
       setDraggingHand(null);
     }
@@ -1554,7 +1561,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const onSkillClick = (sk: SkillInfo) => {
-    setShowDeclareEndButton(false)
+    setShowDeclareEndButton(false);
     if (sk.id === "switchActive") {
       const step = switchActiveStep();
       if (step) {
@@ -1698,6 +1705,9 @@ export function Chessboard(props: ChessboardProps) {
             <DicePanel
               dice={myDice()}
               selectedDice={selectedDice()}
+              maxSelectedCount={
+                localProps.actionState?.maxSelectedDiceCount ?? null
+              }
               disabledDiceTypes={
                 localProps.actionState?.disabledDiceTypes ?? []
               }
@@ -1825,6 +1835,7 @@ export function Chessboard(props: ChessboardProps) {
             />
           </Show>
         </AspectRatioContainer>
+        <Alert />
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
             <div
