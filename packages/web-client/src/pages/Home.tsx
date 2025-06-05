@@ -54,7 +54,7 @@ export function Home() {
   const [currentRoom] = createResource(() =>
     axios.get("rooms/current").then((r) => r.data),
   );
-  const [allRooms] = createResource(() =>
+  const [allRooms, { refetch: refreshAllRooms }] = createResource(() =>
     axios
       .get("rooms")
       .then((e) => e.data.filter((r: any) => r.id !== currentRoom()?.id)),
@@ -191,18 +191,19 @@ export function Home() {
                   >
                     <div class="flex flex-col md:flex-row gap-2 md:gap-5 items-center mb-8">
                       <button
-                        class="flex-shrink-0 w-full md:w-35 btn btn-solid-green"
+                        class="flex-shrink-0 w-full md:w-35 btn btn-solid-green h-2.3rem"
                         onClick={createRoom}
                       >
                         创建房间…
                       </button>
-                      或者
+                      <span class="flex-shrink-0">或者</span>
                       <form
                         class="flex-grow flex flex-row w-full md:w-unset"
                         onSubmit={joinRoomBySubmitCode}
                       >
                         <input
-                          class="input input-solid rounded-r-0 b-r-0 h-2.5em flex-grow md:flex-grow-0"
+                          type="text"
+                          class="input input-solid rounded-r-0 b-r-0 flex-grow md:flex-grow-0 text-1rem line-height-none h-2.3rem"
                           name="roomCode"
                           placeholder="输入房间号"
                           inputmode="numeric"
@@ -215,7 +216,7 @@ export function Home() {
                         />
                         <button
                           type="submit"
-                          class="flex-shrink-0 w-20 sm:w-35 btn btn-solid rounded-l-0"
+                          class="flex-shrink-0 w-20 sm:w-35 btn btn-solid rounded-l-0 h-2.3rem"
                           disabled={!roomCodeValid()}
                         >
                           加入房间…
@@ -223,18 +224,38 @@ export function Home() {
                       </form>
                     </div>
                   </Show>
-                  <h4 class="text-xl font-bold mb-5">当前对局</h4>
+                  <h4 class="text-xl font-bold mb-5 flex flex-row items-center gap-2">
+                    当前对局
+                    <button class="btn btn-ghost-primary p-1">
+                      <i class="i-mdi-refresh" onClick={refreshAllRooms} />
+                    </button>
+                  </h4>
                   <ul class="flex gap-2 flex-row flex-wrap">
-                    <For
-                      each={allRooms()}
-                      fallback={<div class="text-gray-500">暂无对局</div>}
-                    >
-                      {(roomInfo) => (
-                        <li>
-                          <RoomInfo {...roomInfo} onJoin={joinRoomByInfo} />
-                        </li>
-                      )}
-                    </For>
+                    <Switch>
+                      <Match when={allRooms.loading}>
+                        <div class="text-gray-500">对局信息加载中…</div>
+                      </Match>
+                      <Match when={allRooms.error}>
+                        <div class="text-red-500">
+                          对局信息加载失败：
+                          {allRooms.error instanceof AxiosError
+                            ? allRooms.error.response?.data.message
+                            : allRooms.error}
+                        </div>
+                      </Match>
+                      <Match when={true}>
+                        <For
+                          each={allRooms()}
+                          fallback={<div class="text-gray-500">暂无对局</div>}
+                        >
+                          {(roomInfo) => (
+                            <li>
+                              <RoomInfo {...roomInfo} onJoin={joinRoomByInfo} />
+                            </li>
+                          )}
+                        </For>
+                      </Match>
+                    </Switch>
                   </ul>
                 </div>
               </div>

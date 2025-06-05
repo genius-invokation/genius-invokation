@@ -59,6 +59,7 @@ export function Login() {
         </p>
         <form class="flex flex-row items-stretch" onSubmit={guestLogin}>
           <input
+            type="text"
             class="input input-solid rounded-r-0 b-r-0 h-2.2rem text-1rem"
             name="guestName"
             maxLength={64}
