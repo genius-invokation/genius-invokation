@@ -11,9 +11,13 @@
 #app {
   touch-action: pan-x pan-y;
   padding: var(--root-padding);
-  height: 100lvh;
-  width: 100lvw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: auto;
+}
+
+#app:has(.mobile-chessboard) {
+  padding: 0;
 }
 
 form {

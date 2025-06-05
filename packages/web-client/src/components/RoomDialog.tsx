@@ -260,7 +260,7 @@ export function RoomDialog(props: RoomDialogProps) {
   return (
     <dialog
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
-      class="max-h-unset max-w-unset h-100lvh w-100lvw overflow-auto pt-[calc(0.75rem+var(--root-padding-top))] md:pt-3 md:m-x-auto md:my-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
+      class="max-h-unset max-w-unset h-100dvh w-100dvw overflow-auto pt-[calc(0.75rem+var(--root-padding-top))] md:pt-3 md:m-x-auto md:my-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
     >
       <div class="flex flex-col md:min-h-full md:h-min w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
@@ -311,7 +311,9 @@ export function RoomDialog(props: RoomDialogProps) {
                           `${config.roundTotalActionTime} + ${config.actionTime}`}
                       </h5>
                       <h5 class="text-gray-400 group-data-[active=true]:text-gray-600 transition-colors md:mb-1 font-size-80%">
-                        {`预计每回合 ${config.estimationTime}min`}
+                        {config.estimationTime
+                          ? `预计每回合 ${config.estimationTime}min`
+                          : ""}
                       </h5>
                       <ul class="hidden md:block pl-3 list-disc text-gray-400 font-size-80% text-sm group-data-[active=true]:text-slate-500 transition-colors">
                         <li>初始化总时间：{config.initTotalActionTime}s</li>
