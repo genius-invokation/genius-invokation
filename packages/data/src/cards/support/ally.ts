@@ -347,11 +347,13 @@ export const Rana = card(322017)
   .since("v3.7.0")
   .costSame(2)
   .support("ally")
-  .on("useSkill", (c, e) => e.isSkillType("elemental") && c.$(`my next and not my active`))
+  .on("useSkill", (c, e) => e.isSkillType("elemental"))
   .usagePerRound(1)
   .do((c) => {
-    const next = c.$("my next")!;
-    c.generateDice(next.element(), 1);
+    const next = c.$("my next");
+    if (next) {
+      c.generateDice(next.element(), 1);
+    }
   })
   .done();
 

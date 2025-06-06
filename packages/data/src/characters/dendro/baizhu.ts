@@ -39,9 +39,14 @@ export const SeamlessShield: CombatStatusHandle = combatStatus(117053)
   .shield(1)
   .defineSnippet((c) => {
     c.damage(DamageType.Dendro, 1)
-    c.heal(1, "my active")
+    const active = c.$("my active");
+    if (!active) {
+      // 出战角色被击倒，治疗和生成骰子不生效
+      return;
+    }
+    c.heal(1, active.state)
     if (c.$(`my equipment with definition id ${AllThingsAreOfTheEarth}`)) {
-      c.generateDice(c.$(`my active`)!.element(), 1);
+      c.generateDice(active.element(), 1);
     }
   })
   .on("enter", (c, e) => e.overridden)

@@ -54,7 +54,7 @@ export const YuubanMeigen = skill(15061)
   .costAnemo(1)
   .costVoid(2)
   .if((c) => c.self.hasStatus(Windfavored))
-  .damage(DamageType.Anemo, 1, "opp next")
+  .damage(DamageType.Anemo, 1, "opp next or opp active")
   .else()
   .damage(DamageType.Anemo, 1)
   .done();

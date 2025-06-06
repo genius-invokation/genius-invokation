@@ -591,7 +591,7 @@ export const Starsigns = card(332008)
   .since("v3.3.0")
   .costVoid(2)
   .filter((c) => c.$(`my active with energy < maxEnergy`))
-  .do((c) => c.$("my active character")!.gainEnergy(1))
+  .do((c) => c.$("my active character")?.gainEnergy(1))
   .done();
 
 /**
@@ -610,7 +610,7 @@ export const CalxsArts = card(332009)
     for (const ch of chs) {
       count += ch.loseEnergy();
     }
-    c.$("my active character")!.gainEnergy(count);
+    c.$("my active")?.gainEnergy(count);
   })
   .done();
 

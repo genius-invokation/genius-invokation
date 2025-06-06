@@ -84,7 +84,7 @@ export const YoohooArtFuuinDash = skill(15072)
   .type("elemental")
   .costAnemo(3)
   .do((c) => {
-    const aura = c.$("opp active")!.aura;
+    const aura = c.$("opp active")?.aura;
     let fuufuuWindType: DamageType;
     switch (aura) {
       case Aura.Cryo:

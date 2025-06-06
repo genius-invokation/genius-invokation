@@ -581,7 +581,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   switchActive(target: CharacterTargetArg) {
     const RET = this.enableShortcut();
     const targets = this.queryCoerceToCharacters(target);
-    if (targets.length !== 1) {
+    if (targets.length === 0) {
+      return RET;
+    }
+    if (targets.length > 1) {
       throw new GiTcgDataError(
         "Expected exactly one target when switching active",
       );

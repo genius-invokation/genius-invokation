@@ -67,7 +67,6 @@ export const AlmightyDragonlordAjaw = summon(117093)
   .since("v5.4.0")
   .endPhaseDamage(DamageType.Dendro, 1)
   .usage(2)
-  .if((c) => c.$("opp next and not opp active"))
   .damage(DamageType.Dendro, 1, "opp next")
   .done();
 

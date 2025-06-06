@@ -62,7 +62,7 @@ export const BurningFlame = summon(115)
 export const DendroCore = combatStatus(116)
   .on("increaseDamage", (c, e) =>
     ([DamageType.Pyro, DamageType.Electro] as DamageType[]).includes(e.type) &&
-    e.target.id === c.$("opp active character")!.id)
+    e.target.id === c.$("opp active")?.id)
   .usage(1)
   .increaseDamage(2)
   .done();
@@ -77,7 +77,7 @@ export const DendroCore = combatStatus(116)
 export const CatalyzingField = combatStatus(117)
   .on("increaseDamage", (c, e) =>
     ([DamageType.Electro, DamageType.Dendro] as DamageType[]).includes(e.type) &&
-    e.target.id === c.$("opp active character")!.id)
+    e.target.id === c.$("opp active")?.id)
   .usage(2)
   .increaseDamage(1)
   .done();

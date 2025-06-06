@@ -92,7 +92,7 @@ const CatalyzingField = combatStatus(117)
   .until("v3.3.0")
   .on("increaseDamage", (c, e) =>
     ([DamageType.Electro, DamageType.Dendro] as DamageType[]).includes(e.type) &&
-    e.target.id === c.$("opp active character")!.id)
+    e.target.id === c.$("opp active")?.id)
   .usage(3)
   .increaseDamage(1)
   .done();
