@@ -46,7 +46,7 @@ export const ThunderConvergence = status(114132)
   .since("v5.6.0")
   .onDelayedSkillReaction((c, e) => e.relatedTo(DamageType.Electro))
   .listenToPlayer()
-  .usagePerRound(1)
+  .usage(1)
   .gainEnergy(1, "@master")
   .done();
 
