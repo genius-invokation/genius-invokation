@@ -1824,7 +1824,7 @@ export function Chessboard(props: ChessboardProps) {
         <AspectRatioContainer>
           <CurrentTurnHint
             phase={localProps.data.state.phase}
-            opp={localProps.data.state.currentTurn === localProps.who}
+            opp={localProps.data.state.currentTurn !== localProps.who}
           />
           <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
