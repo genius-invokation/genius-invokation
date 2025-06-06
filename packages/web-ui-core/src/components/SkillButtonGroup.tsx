@@ -36,15 +36,64 @@ export interface SkillButtonProps extends SkillInfo {
 
 function SwitchActiveIcon() {
   return (
+    <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#filter0_ddd_34_454)">
+        <circle cx="257" cy="101" r="62" fill="#FCD08D" stroke="#B4673C" stroke-width="10" stroke-opacity="0.7"/>
+        <path d="M257.5 168C324.784 179.021 355.953 196.592 383.215 212.332C389.595 216.015 389.595 218.883 383.215 224.683L349.573 251.365C321 407.5 268.021 449 257 449C245.979 449 191 408 166.282 254.845L126.84 222.363C122.199 217.143 121.262 215.53 126.84 212.332C163.962 191.041 186.156 180.181 257.5 168Z" fill="#B4673C" fill-opacity="0.7"/>
+        <path d="M257.5 178C315.5 187.5 342.5 201.785 366 215.353C371.5 218.528 371.5 221 366 226L337 249C314 383.5 266.5 436.5 257 436.5C247.5 436.5 197 384 179 252L145 224C141 219.5 140.192 218.11 145 215.353C177 197 196 188.5 257.5 178Z" fill="#FCD08D"/>
+        <circle cx="345.5" cy="344.5" r="107.5" fill="#B4673C" fill-opacity="0.7"/>
+        <path d="M345 259.5C404 259.5 429.5 306 429.5 328C429.5 336.433 426.5 340 421.5 340H410.5C404 340 399 340 397.5 331C370.5 267 313 295.5 307 313.5L317.5 326.591C320 330.5 318.5 334.025 312 334.025H273C266 334.025 266 331 266 326.591V285.5C266 281 270 277 275.5 282.5L282.5 288.5C293.5 277.5 314.5 259.5 345 259.5Z" fill="#FCD08D"/>
+        <path d="M349.5 428.5C290.5 428.5 265 382 265 360C265 351.567 268 348 273 348L284 348C290.5 348 295.5 348 297 357C324 421 381.5 392.5 387.5 374.5L377 361.409C374.5 357.5 376 353.976 382.5 353.976L421.5 353.976C428.5 353.976 428.5 357 428.5 361.409L428.5 402.5C428.5 407 424.5 411 419 405.5L412 399.5C401 410.5 380 428.5 349.5 428.5Z" fill="#FCD08D"/>
+      </g>
+      <defs>
+        <filter id="filter0_ddd_34_454" x="-8" y="-5" width="528" height="528" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset/>
+          <feGaussianBlur stdDeviation="0.25"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/>
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_34_454"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dy="3"/>
+          <feGaussianBlur stdDeviation="4"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+          <feBlend mode="normal" in2="effect1_dropShadow_34_454" result="effect2_dropShadow_34_454"/>
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+          <feOffset dx="1" dy="3"/>
+          <feGaussianBlur stdDeviation="1.5"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+          <feBlend mode="normal" in2="effect2_dropShadow_34_454" result="effect3_dropShadow_34_454"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_34_454" result="shape"/>
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+
+function SkillAbandonIcon() {
+  return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width="48"
+      height="48"
       viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        fill="#ffffff"
-        d="M22 4c-5.523 0-10 4.477-10 10s4.477 10 10 10s10-4.477 10-10S27.523 4 22 4M10.25 28A4.25 4.25 0 0 0 6 32.249V33c0 3.755 1.942 6.567 4.92 8.38C13.85 43.163 17.786 44 22 44c1.172 0 2.322-.065 3.435-.196A12.95 12.95 0 0 1 22 35c0-2.577.75-4.98 2.044-7zM24 35c0 6.075 4.925 11 11 11s11-4.925 11-11s-4.925-11-11-11s-11 4.925-11 11m8.647-7.093A7 7 0 0 1 40 29.601V29a1 1 0 1 1 2 0v3a1 1 0 0 1-1 1h-3a1 1 0 1 1 0-2h.57a5 5 0 0 0-7.106-.035a1 1 0 0 1-1.414-1.415a7 7 0 0 1 2.597-1.643m4.706 14.186A7 7 0 0 1 30 40.399V41a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-.57a5 5 0 0 0 5.25 1.21a5 5 0 0 0 1.856-1.175a1 1 0 0 1 1.414 1.415a7 7 0 0 1-2.597 1.643"
+      <circle
+        cx="24"
+        cy="24"
+        r="20"
+        stroke="#897660"
+        stroke-width="6"
+        fill="none"
+      />
+      <line
+        x1="38"
+        y1="10"
+        x2="10"
+        y2="38"
+        stroke="#897660"
+        stroke-width="6"
       />
     </svg>
   );
@@ -69,7 +118,9 @@ function SkillButton(props: SkillButtonProps) {
         />
       </Match>
       <Match when={skillId() === "switchActive"}>
-        <SwitchActiveIcon />
+        <div class="w-full group-data-[disabled]:opacity-50 scale-128%">
+          <SwitchActiveIcon />
+        </div>
       </Match>
     </Switch>
   );
@@ -176,30 +227,7 @@ function SkillButton(props: SkillButtonProps) {
       {/* 禁用标志 */}
       <Show when={!props.step}>
         <div class="absolute top-7 left-7 w-5 h-5 flex p-0.7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_center,#38200d_0%,#624522_60%,#624522_66%,#38200d_70%)]">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 48 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx="24"
-              cy="24"
-              r="20"
-              stroke="#897660"
-              stroke-width="6"
-              fill="none"
-            />
-            <line
-              x1="38"
-              y1="10"
-              x2="10"
-              y2="38"
-              stroke="#897660"
-              stroke-width="6"
-            />
-          </svg>
+          <SkillAbandonIcon />
         </div>
       </Show>
       <div
