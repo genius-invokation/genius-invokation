@@ -31,7 +31,7 @@ export const TwilightMeditation = status(114131)
   .changeDamageType(DamageType.Electro)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .increaseDamage(1)
-  .on("skillDamage", (c, e) => e.viaSkillType("normal"))
+  .on("useSkill", (c, e) => e.isSkillType("normal"))
   .damage(DamageType.Piercing, 1, "opp character order by health limit 1")
   .done();
 
