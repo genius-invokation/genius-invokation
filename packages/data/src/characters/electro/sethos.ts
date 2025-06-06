@@ -31,7 +31,7 @@ export const TwilightMeditation = status(114131)
   .changeDamageType(DamageType.Electro)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .increaseDamage(1)
-  .on("skillDamage", (c, e) => e.viaSkillType("normal"))
+  .on("useSkill", (c, e) => e.isSkillType("normal"))
   .damage(DamageType.Piercing, 1, "opp character order by health limit 1")
   .done();
 
@@ -46,7 +46,7 @@ export const ThunderConvergence = status(114132)
   .since("v5.6.0")
   .onDelayedSkillReaction((c, e) => e.relatedTo(DamageType.Electro))
   .listenToPlayer()
-  .usagePerRound(1)
+  .usage(1)
   .gainEnergy(1, "@master")
   .done();
 

@@ -226,8 +226,11 @@ export function Home() {
                   </Show>
                   <h4 class="text-xl font-bold mb-5 flex flex-row items-center gap-2">
                     当前对局
-                    <button class="btn btn-ghost-primary p-1">
-                      <i class="i-mdi-refresh" onClick={refreshAllRooms} />
+                    <button
+                      class="btn btn-ghost-primary p-1"
+                      onClick={refreshAllRooms}
+                    >
+                      <i class="i-mdi-refresh" />
                     </button>
                   </h4>
                   <ul class="flex gap-2 flex-row flex-wrap">
