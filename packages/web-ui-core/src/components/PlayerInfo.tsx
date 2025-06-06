@@ -17,6 +17,7 @@ import { DiceType, PbPlayerStatus } from "@gi-tcg/typings";
 import { Dice } from "./Dice";
 import { Show } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { StrokedText } from "./StrokedText";
 
 export interface PlayerInfoProps {
   class?: string;
@@ -62,12 +63,12 @@ export function PlayerInfo(props: PlayerInfoProps) {
           {(image) => (
             <div class="relative flex items-center justify-center  ml-2">
               <div class="h-10 w-10">{image}</div>
-              <span class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold text-5">
-                {String(props.diceCount)}
-              </span>
-              <span class="absolute text-white font-bold text-5">
-                {String(props.diceCount)}
-              </span>
+              <StrokedText
+                text={String(props.diceCount)}
+                strokeWidth={2}
+                strokeColor="#000000B0"
+                class="absolute inset-0 text-center text-white font-bold text-5 line-height-10"
+              />
             </div>
           )}
         </WithDelicateUi>

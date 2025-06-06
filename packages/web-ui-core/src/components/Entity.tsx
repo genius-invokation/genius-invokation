@@ -21,6 +21,7 @@ import { SelectingIcon } from "./SelectingIcon";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { StrokedText } from "./StrokedText";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -97,9 +98,12 @@ export function Entity(props: EntityProps) {
           {(image) => (
             <div class="w-8 h-8 absolute top--3 right--3">
               {image}
-              <div class="absolute inset-0 flex items-center justify-center text-white font-bold text-stroke-0.5 text-stroke-black">
-                {data().variableValue}
-              </div>
+              <StrokedText
+                class="absolute inset-0 line-height-8 text-center text-white font-bold"
+                strokeWidth={1}
+                strokeColor="black"
+                text={String(data().variableValue)}
+              />
             </div>
           )}
         </WithDelicateUi>

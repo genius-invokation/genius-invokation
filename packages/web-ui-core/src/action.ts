@@ -992,7 +992,7 @@ function createSwitchActiveActionState(
       } else if (step.type === "clickEntity") {
         return {
           type: "newState",
-          newState: ctx.outerLevelStates.get(step)!,
+          newState: ctx.outerLevelStates.get(step) ?? root,
         };
       } else {
         throw new Error("Unexpected step");
@@ -1153,8 +1153,14 @@ export function createActionState(
   }
 
   // 切人 & 外层跳转
+  const ACTIVE_CHARACTER_CLICK: ClickEntityActionStep = {
+    type: "clickEntity",
+    entityId: "myActiveCharacter",
+    ui: ActionStepEntityUi.None,
+  };
   for (const [step, state] of switchActiveOuterStates.entries()) {
     state.availableSteps.push(...switchActiveOuterStates.keys());
+    state.availableSteps.push(ACTIVE_CHARACTER_CLICK);
     steps.set(step, () => ({ type: "newState", newState: state }));
   }
   // 切人内层跳转

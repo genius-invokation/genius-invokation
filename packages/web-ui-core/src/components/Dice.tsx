@@ -18,6 +18,7 @@ import { DiceType } from "@gi-tcg/typings";
 import { Image } from "./Image";
 import { Match, Show, Switch, createMemo, mergeProps } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import { StrokedText } from "./StrokedText";
 
 export interface DiceProps {
   type: number;
@@ -228,8 +229,15 @@ export function Dice(props: DiceProps) {
     },
     props,
   );
-  const normalDelicateDiceAssetId = createMemo(()=>`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`);
-  const signedDelicateDiceAssetId = createMemo(()=>`UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_0${merged.size>25 ? "2" : "1"}`);
+  const normalDelicateDiceAssetId = createMemo(
+    () => `UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow`,
+  );
+  const signedDelicateDiceAssetId = createMemo(
+    () =>
+      `UI_Gcg_DiceL_${DICE_COLOR[merged.type]}_Glow_0${
+        merged.size > 25 ? "2" : "1"
+      }`,
+  );
 
   return (
     <div class="relative flex items-center justify-center m--1">
@@ -258,24 +266,17 @@ export function Dice(props: DiceProps) {
               )}
             </WithDelicateUi>
           </Show>
-          <span
-            class="absolute text-black text-white text-stroke-2 text-stroke-opacity-70 text-stroke-black font-bold"
+          <StrokedText
+            class="absolute inset-0 text-center font-bold text-white data-[color=increased]:text-red-500 data-[color=decreased]:text-green-500"
             style={{
+              "line-height": `${merged.size}px`,
               "font-size": `${0.5 * merged.size}px`,
             }}
-          >
-            {merged.text}
-          </span>
-          <span
-            class="absolute text-white font-bold data-[color=increased]:text-red-500 data-[color=decreased]:text-green-500"
+            strokeWidth={2}
+            strokeColor="#000000B0"
+            text={merged.text ?? ""}
             data-color={merged.color}
-            // bool:data-void={merged.color === "normal" && merged.type === DiceType.Void}
-            style={{
-              "font-size": `${0.5 * merged.size}px`,
-            }}
-          >
-            {merged.text}
-          </span>
+          />
         </Match>
         <Match when={merged.type >= 1 && merged.type <= 8}>
           <WithDelicateUi
