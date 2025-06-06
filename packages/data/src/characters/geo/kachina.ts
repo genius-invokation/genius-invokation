@@ -34,11 +34,11 @@ export const TurboTwirlyLetItRip = summon(116103)
     const field = c.$(`my combat status with definition id ${TurboDrillField}`);
     if (field) {
       c.damage(DamageType.Geo, 2);
-      c.damage(DamageType.Piercing, 2, "opp next and not opp active");
+      c.damage(DamageType.Piercing, 2, "opp next");
       c.consumeUsage(1, field.state);
     } else {
       c.damage(DamageType.Geo, 1);
-      c.damage(DamageType.Piercing, 1, "opp next and not opp active");
+      c.damage(DamageType.Piercing, 1, "opp next");
     }
     c.emitCustomEvent(TurboTwirlyTriggered);
   })
@@ -83,11 +83,11 @@ export const TurboTwirly = card(116102)
     const field = c.$(`my combat status with definition id ${TurboDrillField}`);
     if (field) {
       c.damage(DamageType.Geo, 3);
-      c.damage(DamageType.Piercing, 2, "opp next and not opp active");
+      c.damage(DamageType.Piercing, 2, "opp next");
       c.consumeUsage(1, field.state);
     } else {
       c.damage(DamageType.Geo, 2);
-      c.damage(DamageType.Piercing, 1, "opp next and not opp active");
+      c.damage(DamageType.Piercing, 1, "opp next");
     }
     c.emitCustomEvent(TurboTwirlyTriggered);
   })

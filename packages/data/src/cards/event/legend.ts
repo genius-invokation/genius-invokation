@@ -56,7 +56,7 @@ export const CovenantOfRock = card(330002)
 export const JoyousCelebration = card(330003)
   .since("v4.0.0")
   .legend()
-  .filter((c) => ([DiceType.Cryo, DiceType.Hydro, DiceType.Pyro, DiceType.Electro, DiceType.Dendro] as DiceType[]).includes(c.$("my active")!.element()))
+  .filter((c) => ([DiceType.Cryo, DiceType.Hydro, DiceType.Pyro, DiceType.Electro, DiceType.Dendro] as (DiceType | undefined)[]).includes(c.$("my active")?.element()))
   .do((c) => {
     const element = c.$("my active")!.element() as 1 | 2 | 3 | 4 | 7;
     // 先挂后台再挂前台（避免前台被超载走导致结算错误）
@@ -168,7 +168,7 @@ export const ViciousAncientBattle = card(330008)
   .since("v4.7.0")
   .legend()
   .do((c) => {
-    c.$("opp active")!.loseEnergy(1);
+    c.$("opp active")?.loseEnergy(1);
   })
   .done();
 

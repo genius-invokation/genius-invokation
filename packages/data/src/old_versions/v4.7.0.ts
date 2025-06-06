@@ -244,7 +244,7 @@ const Chihayaburu = skill(15052)
   .type("elemental")
   .costAnemo(3)
   .do((c) => {
-    const aura = c.$("opp active")!.aura;
+    const aura = c.$("opp active")?.aura;
     let midareRanzan;
     switch (aura) {
       case Aura.Cryo:

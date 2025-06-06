@@ -112,7 +112,7 @@ export const AuraOfMajesty = skill(26022)
   .type("elemental")
   .costGeo(3)
   .do((c) => {
-    const targetAura = c.$("opp active")!.aura;
+    const targetAura = c.$("opp active")?.aura;
     c.damage(DamageType.Geo, 3);
     switch (targetAura) {
       case Aura.Cryo: c.transformDefinition("@master", AzhdahaCryo); break;

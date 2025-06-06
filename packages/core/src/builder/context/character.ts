@@ -81,16 +81,23 @@ export class CharacterBase {
     const player = currentState.players[this.who];
     const activeIdx = getActiveCharacterIndex(player);
     const length = player.characters.length;
+    const isActive = player.activeCharacterId === this.id;
     let dx;
     switch (pos) {
       case "active":
-        return player.activeCharacterId === this._id;
+        return isActive;
       case "standby":
-        return player.activeCharacterId !== this._id;
+        return !isActive;
       case "next":
+        if (isActive) {
+          return false;
+        }
         dx = 1;
         break;
       case "prev":
+        if (isActive) {
+          return false;
+        }
         dx = -1;
         break;
       default: {
@@ -197,7 +204,9 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     );
   }
   hasNightsoulsBlessing() {
-    return this.state.entities.find((v) => v.definition.tags.includes("nightsoulsBlessing"));
+    return this.state.entities.find((v) =>
+      v.definition.tags.includes("nightsoulsBlessing"),
+    );
   }
 
   $$<const Q extends string>(arg: Q) {
@@ -237,7 +246,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     }
     this.skillContext.createEntity("equipment", equipment, this._area, opt);
   }
-  /** 不触发 onDispose */ 
+  /** 不触发 onDispose */
   removeArtifact(): EntityState | null {
     const entity = this.state.entities.find((v) =>
       v.definition.tags.includes("artifact"),
@@ -248,7 +257,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     this.skillContext.dispose(entity, { noTriggerEvent: true });
     return entity;
   }
-  /** 不触发 onDispose */ 
+  /** 不触发 onDispose */
   removeWeapon(): EntityState | null {
     const entity = this.state.entities.find((v) =>
       v.definition.tags.includes("weapon"),

@@ -61,7 +61,7 @@ export const ElectricRebirth = status(124061)
     const talent = c.self.master().hasEquipment(ChainLightningCascade);
     if (talent) {
       c.dispose(talent);
-      c.$("opp active")!.loseEnergy(1);
+      c.$("opp active")?.loseEnergy(1);
     }
   })
   .characterStatus(ElectricRebirthHoned, "@master")
@@ -92,8 +92,8 @@ export const ShockOfTheEnigmaticAbyss = skill(24062)
   .type("elemental")
   .costElectro(3)
   .do((c) => {
-    const target = c.$("opp active")!;
-    if (target.aura === Aura.Electro) {
+    const target = c.$("opp active");
+    if (target?.aura === Aura.Electro) {
       const energy = target.loseEnergy(1);
       if (energy > 0) {
         c.$("my characters with energy < maxEnergy")?.gainEnergy(1);
@@ -170,12 +170,12 @@ export const ChainLightningCascade = card(224061)
   .on("enter")
   .do((c) => {
     if (!c.self.master().hasStatus(ElectricRebirth)) {
-      c.$("opp active")!.loseEnergy(1);
+      c.$("opp active")?.loseEnergy(1);
     }
   })
   .endOn()
   .onMasterDefeated()
   .do((c) => {
-    c.$("opp active")!.loseEnergy(1);
+    c.$("opp active")?.loseEnergy(1);
   })
   .done();
