@@ -22,9 +22,9 @@ import {
   type Transform,
 } from "../ui_state";
 import type { CardInfo } from "./Chessboard";
-import { SelectingIcon } from "./SelectingIcon";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
+import SelectingIcon from "../svg/SelectingIcon.svg";
 
 export interface CardProps extends CardInfo {
   selected: boolean;

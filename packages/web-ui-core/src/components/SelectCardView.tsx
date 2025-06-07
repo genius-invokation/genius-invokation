@@ -16,12 +16,12 @@
 import { createSignal, For, Show, Switch, Match } from "solid-js";
 import { Button } from "./Button";
 import { Image } from "./Image";
-import { SelectingIcon } from "./SelectingIcon";
 import type { ChessboardViewType } from "./Chessboard";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { DiceCost } from "./DiceCost";
 import { CardFace } from "./Card";
+import SelectingIcon from "../svg/SelectingIcon.svg";
 
 export interface SelectCardViewProps {
   candidateIds: number[];

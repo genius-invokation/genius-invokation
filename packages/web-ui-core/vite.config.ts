@@ -19,6 +19,7 @@ import unoCss from "unocss/vite";
 import solid from "vite-plugin-solid";
 import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
+import solidSvg from 'vite-plugin-solid-svg';
 
 export default defineConfig({
   esbuild: {
@@ -34,6 +35,7 @@ export default defineConfig({
     unoCss(),
     solid(),
     !process.env.NO_TYPING && dts({ rollupTypes: true }),
+    solidSvg({ defaultAsComponent: true }),
   ],
   build: {
     sourcemap: true,

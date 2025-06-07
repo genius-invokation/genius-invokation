@@ -12,21 +12,10 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import VisibilityIcon from "../svg/VisibilityIcon.svg";
 
-export interface SpecialViewToggleButtonProps {
-  onClick?: () => void;
-}
+declare module "*.svg" {
+  import type { Component } from "solid-js";
 
-export function SpecialViewToggleButton(props: SpecialViewToggleButtonProps) {
-  return (
-    <button
-      class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
-      onClick={() => {
-        props.onClick?.();
-      }}
-    >
-      <VisibilityIcon />
-    </button>
-  );
+  const content: Component<JSX.SvgSVGAttributes<SVGSVGElement>>;
+  export default content;
 }

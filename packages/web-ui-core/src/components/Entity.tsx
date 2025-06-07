@@ -17,11 +17,11 @@ import { createMemo, Show } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
-import { SelectingIcon } from "./SelectingIcon";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
+import SelectingIcon from "../svg/SelectingIcon.svg";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
