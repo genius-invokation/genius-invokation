@@ -20,6 +20,7 @@ import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { DeckInfo } from "../pages/Decks";
 import { useGuestDecks } from "../guest";
 import { useAuth } from "../auth";
+import { copyToClipboard } from "../utils";
 
 export interface DeckInfoProps extends DeckInfo {
   editable?: boolean;
@@ -38,7 +39,7 @@ export function DeckBriefInfo(props: DeckInfoProps) {
 
   const copyCode = async (e: MouseEvent) => {
     e.stopPropagation();
-    await navigator.clipboard.writeText(props.code);
+    await copyToClipboard(props.code);
     alert(`已复制分享码：${props.code}`);
   };
 

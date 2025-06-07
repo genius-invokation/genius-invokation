@@ -15,7 +15,7 @@
 
 import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { Layout } from "../layouts/Layout";
-import { PlayerInfo, roomCodeToId } from "../utils";
+import { copyToClipboard, PlayerInfo, roomCodeToId } from "../utils";
 import {
   Show,
   createSignal,
@@ -241,7 +241,7 @@ export function Room() {
   const copyWatchLink = async () => {
     const url = new URL(location.href);
     url.searchParams.delete("action");
-    await navigator.clipboard.writeText(url.href);
+    await copyToClipboard(url.href);
     alert("观战链接已复制到剪贴板！");
   };
 

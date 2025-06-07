@@ -32,6 +32,7 @@ import { DeckInfo } from "./Decks";
 import { useAuth } from "../auth";
 import { unwrap } from "solid-js/store";
 import { useMobile } from "../App";
+import { copyToClipboard } from "../utils";
 
 export function EditDeck() {
   const params = useParams();
@@ -122,7 +123,7 @@ export function EditDeck() {
     try {
       const deck = deckValue();
       const code = encode(deck);
-      await navigator.clipboard.writeText(code);
+      await copyToClipboard(code);
       alert(`分享码已复制到剪贴板：${code}`);
     } catch (e) {
       if (e instanceof Error) {
