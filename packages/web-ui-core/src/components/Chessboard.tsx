@@ -1159,6 +1159,9 @@ export function Chessboard(props: ChessboardProps) {
         // DEBUG
         // console.log(actionState);
         if (actionState) {
+          if (actionState.showBackdrop) {
+            dataViewerController.hide();
+          }
           if (actionState.autoSelectedDice) {
             const dice = myDice();
             const selectingDice = Array.from(
