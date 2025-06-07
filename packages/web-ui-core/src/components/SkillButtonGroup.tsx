@@ -26,8 +26,8 @@ import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { DICE_COLOR } from "./Dice";
-import SkillAbandonIcon from "../svg/SkillAbandonIcon.svg";
-import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg";
+import SkillAbandonIcon from "../svg/SkillAbandonIcon.svg?component-solid";
+import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg?component-solid";
 
 export interface SkillButtonProps extends SkillInfo {
   hideDiceCost?: boolean;

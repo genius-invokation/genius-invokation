@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import VisibilityIcon from "../svg/VisibilityIcon.svg";
+import VisibilityIcon from "../svg/VisibilityIcon.svg?component-solid";
 
 export interface SpecialViewToggleButtonProps {
   onClick?: () => void;

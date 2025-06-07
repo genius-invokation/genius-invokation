@@ -16,7 +16,7 @@
 import { PbModifyDirection } from "@gi-tcg/typings";
 import { createMemo, Show } from "solid-js";
 import { StrokedText } from "./StrokedText";
-import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg";
+import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
 
 export interface VariableDiffProps {
   class?: string;
@@ -45,7 +45,7 @@ export function VariableDiff(props: VariableDiffProps) {
       }}
     >
       <Show when={props.defeated}>
-        <DefeatedPreviewIcon />
+        <DefeatedPreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
       </Show>
       <StrokedText
         class="flex-shrink-0 font-bold font-size-4.5 line-height-none"

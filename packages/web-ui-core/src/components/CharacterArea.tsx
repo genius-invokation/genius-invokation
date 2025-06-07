@@ -40,10 +40,10 @@ import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import DefeatedIcon from '../svg/DefeatedIcon.svg';
-import SimpleHealthIcon from "../svg/SimpleHealth.svg";
-import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg";
-import SelectingIcon from "../svg/SelectingIcon.svg";
+import DefeatedIcon from '../svg/DefeatedIcon.svg?component-solid';
+import SimpleHealthIcon from "../svg/SimpleHealth.svg?component-solid";
+import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
+import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -298,6 +298,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           statuses={statuses()}
         />
         <Show when={defeated()}>
+          <svg class="" />
           <DefeatedIcon
             class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]"
           />
@@ -374,7 +375,7 @@ function Health(props: { value: number }) {
       assetId="UI_TeyvatCard_LifeBg_Common"
       fallback={
         <div class="absolute z-1 left--2 top--2.5 flex items-center justify-center">
-          <SimpleHealthIcon />
+          <SimpleHealthIcon class="w-7.5 h-10" />
           <div class="absolute line-height-none">{props.value}</div>
         </div>
       }

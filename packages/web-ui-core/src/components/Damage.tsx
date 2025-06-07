@@ -18,8 +18,8 @@ import { DICE_COLOR } from "./Dice";
 import type { DamageInfo } from "./Chessboard";
 import { createEffect, createMemo } from "solid-js";
 import { StrokedText } from "./StrokedText";
-import DamageIcon from "../svg/DamageIcon.svg";
-import HealIcon from "../svg/HealIcon.svg";
+import DamageIcon from "../svg/DamageIcon.svg?component-solid";
+import HealIcon from "../svg/HealIcon.svg?component-solid";
 
 export interface DamageProps {
   info: DamageInfo;

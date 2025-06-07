@@ -24,7 +24,7 @@ import {
 import type { CardInfo } from "./Chessboard";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
-import SelectingIcon from "../svg/SelectingIcon.svg";
+import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 
 export interface CardProps extends CardInfo {
   selected: boolean;

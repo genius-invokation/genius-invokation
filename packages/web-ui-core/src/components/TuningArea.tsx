@@ -16,7 +16,7 @@
 import { createMemo } from "solid-js";
 import type { TunningAreaInfo } from "./Chessboard";
 import { cssPropertyOfTransform } from "../ui_state";
-import TunningIcon from "../svg/TunningIcon.svg";
+import TunningIcon from "../svg/TunningIcon.svg?component-solid";
 
 export interface TuningAreaProps extends TunningAreaInfo {}
 

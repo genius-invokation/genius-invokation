@@ -19,8 +19,8 @@ import { Image } from "./Image";
 import { Match, Show, Switch, createMemo, mergeProps } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import SimpleEnergyDice from "../svg/SimpleEnergyDice.svg";
-import SimpleLegendDice from "../svg/SimpleLegendDice.svg";
+import SimpleEnergyDice from "../svg/SimpleEnergyDice.svg?component-solid";
+import SimpleLegendDice from "../svg/SimpleLegendDice.svg?component-solid";
 
 export interface DiceProps {
   type: number;

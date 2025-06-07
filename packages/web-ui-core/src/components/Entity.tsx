@@ -21,7 +21,7 @@ import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import SelectingIcon from "../svg/SelectingIcon.svg";
+import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
