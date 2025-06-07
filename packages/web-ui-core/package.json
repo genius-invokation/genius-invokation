@@ -34,8 +34,8 @@
     "@gi-tcg/config": "workspace:*",
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/data": "workspace:*",
-    "@gi-tcg/typings": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
+    "@gi-tcg/typings": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",
@@ -46,6 +46,7 @@
     "unocss": "^65.4.2",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-solid": "^2.11.1"
+    "vite-plugin-solid": "^2.11.1",
+    "vite-plugin-solid-svg": "^0.8.1"
   }
 }

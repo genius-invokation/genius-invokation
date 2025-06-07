@@ -14,3 +14,4 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /// <reference types="vite/client" />
+/// <reference types="vite-plugin-solid-svg/types" />
