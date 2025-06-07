@@ -664,7 +664,6 @@ function SelectingConfirmIcon() {
       xmlns:xlink="http://www.w3.org/1999/xlink"
     >
       <g filter="url(#filter0_ddd_29_401)">
-        <rect width="512" height="512" fill="url(#pattern0_29_401)" />
         <path
           opacity="0.9"
           d="M255.5 46.8906C370.712 46.8906 464.109 140.288 464.109 255.5C464.109 370.712 370.712 464.109 255.5 464.109C140.288 464.109 46.8906 370.712 46.8906 255.5C46.8906 140.288 140.288 46.8906 255.5 46.8906Z"
