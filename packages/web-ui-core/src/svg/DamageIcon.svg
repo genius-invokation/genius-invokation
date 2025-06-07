@@ -4,7 +4,7 @@
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
 >
-  <g filter="url(#filter0_ddd_1_2)">
+  <g filter="url(#filter0_ddd_damage)">
     <path
       d="M444.974 255.703C444.974 360.288 360.191 445.07 255.607 445.07C151.023 445.07 66.2402 360.288 66.2402 255.703C66.2402 151.119 151.023 66.3365 255.607 66.3365C360.191 66.3365 444.974 151.119 444.974 255.703Z"
       fill="#705941"
@@ -99,7 +99,7 @@
   </g>
   <defs>
     <filter
-      id="filter0_ddd_1_2"
+      id="filter0_ddd_damage"
       x="-3.79259"
       y="-2.37037"
       width="519.585"
@@ -123,7 +123,7 @@
       <feBlend
         mode="normal"
         in2="BackgroundImageFix"
-        result="effect1_dropShadow_1_2"
+        result="effect1_dropShadow_damage"
       />
       <feColorMatrix
         in="SourceAlpha"
@@ -139,8 +139,8 @@
       />
       <feBlend
         mode="normal"
-        in2="effect1_dropShadow_1_2"
-        result="effect2_dropShadow_1_2"
+        in2="effect1_dropShadow_damage"
+        result="effect2_dropShadow_damage"
       />
       <feColorMatrix
         in="SourceAlpha"
@@ -156,13 +156,13 @@
       />
       <feBlend
         mode="normal"
-        in2="effect2_dropShadow_1_2"
-        result="effect3_dropShadow_1_2"
+        in2="effect2_dropShadow_damage"
+        result="effect3_dropShadow_damage"
       />
       <feBlend
         mode="normal"
         in="SourceGraphic"
-        in2="effect3_dropShadow_1_2"
+        in2="effect3_dropShadow_damage"
         result="shape"
       />
     </filter>

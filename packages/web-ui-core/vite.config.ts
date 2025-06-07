@@ -35,7 +35,10 @@ export default defineConfig({
     unoCss(),
     solid(),
     !process.env.NO_TYPING && dts({ rollupTypes: true }),
-    solidSvg({ defaultAsComponent: true }),
+    solidSvg({ 
+      defaultAsComponent: true,
+      svgo: { enabled: false }
+    })
   ],
   build: {
     sourcemap: true,

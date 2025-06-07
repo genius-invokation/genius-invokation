@@ -67,8 +67,8 @@ export interface AssetsManagerOption {
 export class AssetsManager {
   private readonly dataCacheSync = new Map<number, AnyData>();
   private readonly dataCache = new Map<number, Promise<AnyData>>();
-  private readonly imageCacheSync = new Map<number, Blob>();
-  private readonly imageCache = new Map<number, Promise<Blob>>();
+  private readonly imageCacheSync = new Map<string, Blob>();
+  private readonly imageCache = new Map<string, Promise<Blob>>();
   private readonly customDataNames = new Map<number, string>();
   private readonly customDataImageUrls = new Map<number, string>();
   private readonly options: AssetsManagerOption;
@@ -307,11 +307,13 @@ export class AssetsManager {
   }
 
   async getImage(id: number, options: GetImageOptions = {}): Promise<Blob> {
-    if (this.imageCacheSync.has(id)) {
-      return this.imageCacheSync.get(id)!;
+    const type = options.type ?? "unspecified";
+    const cacheKey = `${id}-${type}-${options.thumbnail ? "thumb" : "full"}`;
+    if (this.imageCacheSync.has(cacheKey)) {
+      return this.imageCacheSync.get(cacheKey)!;
     }
-    if (this.imageCache.has(id)) {
-      return this.imageCache.get(id)!;
+    if (this.imageCache.has(cacheKey)) {
+      return this.imageCache.get(cacheKey)!;
     }
     const searchParams = new URLSearchParams({
       thumb: options.thumbnail ? "1" : "",
@@ -323,10 +325,10 @@ export class AssetsManager {
     const promise = fetch(url)
       .then((r) => r.blob())
       .then((blob) => {
-        this.imageCacheSync.set(id, blob);
+        this.imageCacheSync.set(cacheKey, blob);
         return blob;
       });
-    this.imageCache.set(id, promise);
+    this.imageCache.set(cacheKey, promise);
     return promise;
   }
 

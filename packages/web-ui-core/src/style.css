@@ -224,6 +224,19 @@
     border-radius: var(--radius);
     }
   }
+
+  .equipment-usage[data-usable] {
+    background-image: radial-gradient(
+      circle at center,
+      #ffffbb00 0%,
+      #ffffbb33 35%,
+      #ffffbbff 55%,
+      #8c6b4400 58%,
+      #8c6b4400 61%,
+      #ffaa00ff 61%,
+      #ffffbb00 69%
+    );
+  }
 }
 
 @keyframes entity-entering {
