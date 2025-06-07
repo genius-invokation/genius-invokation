@@ -305,12 +305,12 @@ export function CharacterArea(props: CharacterAreaProps) {
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
-            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
               <SelectingConfirmIcon class="cursor-pointer h-20 w-20"/>
             </div>
           </Match>
           <Match when={props.selecting}>
-            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
               <SelectingIcon />
             </div>
           </Match>
