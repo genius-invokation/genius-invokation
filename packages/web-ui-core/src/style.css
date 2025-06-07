@@ -200,6 +200,7 @@
       line to calc(100% - var(--dx)) 0px,
       close
     );
+    border-radius: var(--radius);
     background-color: black;
 
     &::before {
@@ -220,6 +221,7 @@
         line to calc(100% - var(--dx)) 0px,
         close
       );
+    border-radius: var(--radius);
     }
   }
 }
