@@ -79,7 +79,7 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={props.selecting}>
         <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-          <SelectingIcon />
+          <SelectingIcon class="w-24 h-24"/>
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
