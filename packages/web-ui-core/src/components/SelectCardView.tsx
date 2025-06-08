@@ -47,7 +47,7 @@ export function SelectCardView(props: SelectCardViewProps) {
                 <CardFace definitionId={cardId} />
                 <Show when={selectedId() === cardId}>
                   <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-                    <SelectingIcon />
+                    <SelectingIcon class="w-24 h-24"/>
                   </div>
                 </Show>
                 <DiceCost

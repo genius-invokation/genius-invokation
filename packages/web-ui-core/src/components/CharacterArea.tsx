@@ -40,7 +40,7 @@ import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import DefeatedIcon from '../svg/DefeatedIcon.svg?component-solid';
+import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import SimpleHealthIcon from "../svg/SimpleHealth.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
@@ -331,7 +331,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </Match>
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingIcon />
+              <SelectingIcon class="w-24 h-24"/>
             </div>
           </Match>
         </Switch>

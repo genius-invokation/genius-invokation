@@ -266,7 +266,7 @@ export function Card(props: CardProps) {
         </Match>
         <Match when={props.selected}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-            <SelectingIcon />
+            <SelectingIcon class="w-24 h-24"/>
           </div>
         </Match>
       </Switch>
