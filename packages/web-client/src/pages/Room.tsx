@@ -318,6 +318,10 @@ export function Room() {
           }
           break;
         }
+        case "error": {
+          alert(`发生致命错误：${payload.message}`);
+          break;
+        }
         default: {
           console.log("%c%s", "color: green", JSON.stringify(payload));
           break;

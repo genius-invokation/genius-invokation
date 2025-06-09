@@ -490,8 +490,11 @@ class Room {
       }
     };
     game.onIoError = (e) => {
-      player0.onError(e);
-      player1.onError(e);
+      if (e.who === 0) {
+        player0.onError(e);
+      } else if (e.who === 1) {
+        player1.onError(e);
+      }
     };
     game.players[0].io = player0;
     game.players[1].io = player1;
@@ -698,7 +701,7 @@ export class RoomsService {
 
     room.onStop(async (room) => {
       const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
-      if (room.status === RoomStatus.Finished) {
+      if (room.status !== RoomStatus.Waiting) {
         await Bun.sleep(keepRoomDuration);
       }
       this.rooms.delete(room.id);
