@@ -28,7 +28,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, diceC
 export const DarkShadow = summon(122043)
   .tags("barrier")
   .usage(0)
-  .variable("atk", 0)
+  .variable("atk", 0, { visible: false })
   .hintIcon(DamageType.Electro)
   .hintText("$[GCG_TOKEN_ATK]")
   .replaceDescription("[GCG_TOKEN_ATK]", (c, e) => e.variables.atk)
