@@ -170,6 +170,12 @@ export function CharacterArea(props: CharacterAreaProps) {
   const otherEquipments = createMemo(() =>
     props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
   );
+  const resurgent = createMemo(() =>
+    props.preview && 
+    props.preview.newHealth !== null && 
+    props.preview!.newHealthDirection === 1 && 
+    data().health === 0,
+  );
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
@@ -229,6 +235,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
+              resurgent={resurgent()}
             />
           </Show>
           <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">
