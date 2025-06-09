@@ -49,9 +49,11 @@ test("chang & transformer: triggered on useSkill status", async () => {
 });
 
 test("transformer: dealing with reaction & multiple damages", async () => {
+  const chang = ref();
   const transformer = ref();
   const c = setup(
     <State>
+      <Support opp def={ChangTheNinth} v={{ inspiration: 0 }} ref={chang} />
       <Support opp def={ParametricTransformer} v={{ progress: 0 }} ref={transformer} />
       <Character my active def={Beidou} />
       <Character my def={Chongyun} />
@@ -61,6 +63,7 @@ test("transformer: dealing with reaction & multiple damages", async () => {
   );
   await c.me.skill(Oceanborne);
   c.expect(transformer).toHaveVariable({ progress: 1 });
+  c.expect(chang).toHaveVariable({ inspiration: 1 });
 });
 
 test("instructor: do not trigger on useSkill status", async () => {
