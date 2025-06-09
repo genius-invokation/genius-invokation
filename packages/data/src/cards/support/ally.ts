@@ -235,8 +235,8 @@ export const Liben = card(322008)
 export const ChangTheNinth = card(322009)
   .since("v3.3.0")
   .support("ally")
-  .variable("inspiration", 0)
   .variable("triggered", 0) // 穿透或物理技能触发后，不再因元素反应触发
+  .variable("inspiration", 0)
   .defineSnippet((c) => {
     c.addVariable("inspiration", 1);
     if (c.getVariable("inspiration") >= 3) {
