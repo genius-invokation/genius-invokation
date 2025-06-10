@@ -105,13 +105,10 @@ export const VortexVanquisher = card(311404)
     return !!c.$("(my combat statuses with tag (shield)) or status with tag (shield) at @master");
   })
   .increaseDamage(1)
-  .on("useSkill")
+  .on("useSkill", (c, e) => e.isSkillType("elemental") && c.$("my combat status with tag (shield)"))
   .usagePerRound(1)
   .do((c) => {
-    const shieldCombatStatus = c.$("my combat status with tag (shield)");
-    if (shieldCombatStatus) {
-      shieldCombatStatus.addVariable("shield", 1)
-    }
+    c.$("my combat status with tag (shield)")?.addVariable("shield", 1)
   })
   .done();
 
