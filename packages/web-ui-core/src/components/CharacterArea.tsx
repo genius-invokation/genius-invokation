@@ -40,10 +40,13 @@ import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import DefeatedIcon from '../svg/DefeatedIcon.svg?component-solid';
-import SimpleHealthIcon from "../svg/SimpleHealth.svg?component-solid";
+import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
+import HealthIcon from "../svg/HealthIcon.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
+import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
+import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -201,13 +204,20 @@ export function CharacterArea(props: CharacterAreaProps) {
             <Show when={technique()} keyed>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et.data.hasUsagePerRound}
+                  class="relative w-6 h-6 rounded-full"
                   bool:data-entering={et.animation === "entering"}
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  &#129668;
+                  <Image 
+                    class="w-6 h-6"
+                    imageId={et.data.definitionId} 
+                    type={"icon"} 
+                  />
+                  <div 
+                    class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full data-[usable]:bg-white/30"
+                    bool:data-usable={et.data.hasUsagePerRound}
+                  />
                 </div>
               )}
             </Show>
@@ -219,45 +229,56 @@ export function CharacterArea(props: CharacterAreaProps) {
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
+              // revive={props.preview?.revive}
             />
           </Show>
-          <div class="absolute z-3 hover:z-10 left--1 top-8 flex flex-col items-center justify-center gap-2">
+          <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">
             <Show when={weapon()} keyed>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et.data.hasUsagePerRound}
+                  class="relative w-6.5 h-6.5 rounded-full"
                   bool:data-entering={et.animation === "entering"}
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  &#x1F5E1;
+                  
+                  <WeaponIcon class="w-7 h-7"/>
+                  <div 
+                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
+                    bool:data-usable={et.data.hasUsagePerRound}
+                  />
                 </div>
               )}
             </Show>
             <Show when={artifact()} keyed>
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et.data.hasUsagePerRound}
+                  class="relative w-6.5 h-6.5 rounded-full"
                   bool:data-entering={et.animation === "entering"}
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  &#x1F451;
+                  <ArtifactIcon class="w-7 h-7"/>
+                  <div 
+                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
+                    bool:data-usable={et.data.hasUsagePerRound}
+                  />
                 </div>
               )}
             </Show>
             <Key each={otherEquipments()} by="id">
               {(et) => (
                 <div
-                  class="w-5 h-5 text-4 line-height-none rounded-3 text-center bg-yellow-50 data-[highlight]:bg-yellow-200 border-solid border-1 border-yellow-800"
-                  bool:data-highlight={et().data.hasUsagePerRound}
+                  class="relative w-6.5 h-6.5 rounded-full"
                   bool:data-entering={et().animation === "entering"}
                   bool:data-disposing={et().animation === "disposing"}
                   bool:data-triggered={et().triggered}
                 >
-                  &#x2728;
+                  <TalentIcon class="w-7 h-7"/>
+                  <div 
+                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
+                    bool:data-usable={et().data.hasUsagePerRound}
+                  />
                 </div>
               )}
             </Key>
@@ -305,13 +326,13 @@ export function CharacterArea(props: CharacterAreaProps) {
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
-            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
               <SelectingConfirmIcon class="cursor-pointer h-20 w-20"/>
             </div>
           </Match>
           <Match when={props.selecting}>
-            <div class="absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingIcon />
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
+              <SelectingIcon class="w-24 h-24"/>
             </div>
           </Match>
         </Switch>
@@ -371,29 +392,17 @@ function EnergyBar(props: EnergyBarProps) {
 
 function Health(props: { value: number }) {
   return (
-    <WithDelicateUi
-      assetId="UI_TeyvatCard_LifeBg_Common"
-      fallback={
-        <div class="absolute z-1 left--2 top--2.5 flex items-center justify-center">
-          <SimpleHealthIcon class="w-7.5 h-10" />
-          <div class="absolute line-height-none">{props.value}</div>
-        </div>
-      }
-    >
-      {(img) => (
-        <div class="absolute z-1 left--3 top--4 h-12 children-h-full">
-          {img}
-          <div class="absolute inset-0 h-full w-full pt-1.5 flex items-center justify-center">
-            <StrokedText
-              text={String(props.value)}
-              class="line-height-none text-white font-bold"
-              strokeWidth={2}
-              strokeColor="#000000B0"
-            />
-          </div>
-        </div>
-      )}
-    </WithDelicateUi>
+    <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
+      <HealthIcon class="w-full h-full" />
+      <div class="absolute inset-0 h-full w-full pt-1.2 flex items-center justify-center">
+        <StrokedText
+          text={String(props.value)}
+          class="line-height-none text-white font-bold"
+          strokeWidth={2}
+          strokeColor="#000000B0"
+        />
+      </div>
+    </div>
   );
 }
 

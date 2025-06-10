@@ -164,7 +164,7 @@ function SkillButton(props: SkillButtonProps) {
       {/* 禁用标志 */}
       <Show when={!props.step}>
         <div class="absolute top-7 left-7 w-5 h-5 flex p-0.7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_center,#38200d_0%,#624522_60%,#624522_66%,#38200d_70%)]">
-          <SkillAbandonIcon />
+          <SkillAbandonIcon class="w-5 h-5" />
         </div>
       </Show>
       <div

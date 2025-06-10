@@ -231,20 +231,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     this.skillContext.createEntity("status", status, this._area, opt);
   }
   equip(equipment: EquipmentHandle, opt?: CreateEntityOptions) {
-    // Remove existing artifact/weapon/technique first
-    for (const tag of ["artifact", "weapon", "technique"] as const) {
-      if (
-        this.skillContext.state.data.entities.get(equipment)?.tags.includes(tag)
-      ) {
-        const exist = this.state.entities.find((v) =>
-          v.definition.tags.includes(tag),
-        );
-        if (exist) {
-          this.skillContext.dispose(exist);
-        }
-      }
-    }
-    this.skillContext.createEntity("equipment", equipment, this._area, opt);
+    this.skillContext.equip(equipment, this.state, opt);
   }
   /** 不触发 onDispose */
   removeArtifact(): EntityState | null {

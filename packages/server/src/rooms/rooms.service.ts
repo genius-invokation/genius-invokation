@@ -405,6 +405,25 @@ interface RoomInfo {
   players: PlayerInfo[];
 }
 
+function sendDebugLog(name: string, message: any) {
+  if (import.meta.env.DEBUG_LOG_RECEIVE_URL) {
+    fetch(import.meta.env.DEBUG_LOG_RECEIVE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Disposition": `attachment; filename="${name}.json"`,
+      },
+      body: JSON.stringify(message),
+    })
+      .then(() => {
+        console.log(
+          `Debug log ${name} sent to ${import.meta.env.DEBUG_LOG_RECEIVE_URL}`,
+        );
+      })
+      .catch(() => ({}));
+  }
+}
+
 class Room {
   public static readonly CORE_VERSION = CORE_VERSION;
   private game: InternalGame | null = null;
@@ -490,8 +509,11 @@ class Room {
       }
     };
     game.onIoError = (e) => {
-      player0.onError(e);
-      player1.onError(e);
+      if (e.who === 0) {
+        player0.onError(e);
+      } else if (e.who === 1) {
+        player1.onError(e);
+      }
     };
     game.players[0].io = player0;
     game.players[1].io = player1;
@@ -505,6 +527,11 @@ class Room {
         if (e instanceof GiTcgError) {
           player0.onError(e);
           player1.onError(e);
+          sendDebugLog("gameErrorLog", {
+            em: e.message,
+            gv: this.config.gameVersion,
+            ...serializeGameStateLog(this.stateLog),
+          });
         } else {
           throw e;
         }
@@ -696,11 +723,16 @@ export class RoomsService {
     this.rooms.set(roomId, room);
     this.roomIdPool.shift();
 
-    room.onStop(async (room) => {
+    room.onStop(async (room, game) => {
       const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
-      if (room.status === RoomStatus.Finished) {
+      this.logger.log(
+        `Room ${room.id} stopped, status ${room.status}, keep it for ${keepRoomDuration} ms`,
+      );
+      this.logger.log(`Room ${room.id} game phase: ${game?.state.phase}`);
+      if (room.status !== RoomStatus.Waiting) {
         await Bun.sleep(keepRoomDuration);
       }
+      this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
