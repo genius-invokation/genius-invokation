@@ -41,7 +41,7 @@ import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
-import SimpleHealthIcon from "../svg/SimpleHealth.svg?component-solid";
+import HealthIcon from "../svg/HealthIcon.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
@@ -229,6 +229,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
+              // revive={props.preview?.revive}
             />
           </Show>
           <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">
@@ -391,29 +392,17 @@ function EnergyBar(props: EnergyBarProps) {
 
 function Health(props: { value: number }) {
   return (
-    <WithDelicateUi
-      assetId="UI_TeyvatCard_LifeBg_Common"
-      fallback={
-        <div class="absolute z-1 left--2 top--2.5 flex items-center justify-center">
-          <SimpleHealthIcon class="w-7.5 h-10" />
-          <div class="absolute line-height-none">{props.value}</div>
-        </div>
-      }
-    >
-      {(img) => (
-        <div class="absolute z-1 left--3 top--4 h-12 children-h-full">
-          {img}
-          <div class="absolute inset-0 h-full w-full pt-1.5 flex items-center justify-center">
-            <StrokedText
-              text={String(props.value)}
-              class="line-height-none text-white font-bold"
-              strokeWidth={2}
-              strokeColor="#000000B0"
-            />
-          </div>
-        </div>
-      )}
-    </WithDelicateUi>
+    <div class="absolute z-1 left-1.8 top-3 -translate-x-50% -translate-y-50% h-12 children-h-full">
+      <HealthIcon class="w-9.8 h-9.8" />
+      <div class="absolute inset-0 h-full w-full pt-1.2 flex items-center justify-center">
+        <StrokedText
+          text={String(props.value)}
+          class="line-height-none text-white font-bold"
+          strokeWidth={2}
+          strokeColor="#000000B0"
+        />
+      </div>
+    </div>
   );
 }
 
