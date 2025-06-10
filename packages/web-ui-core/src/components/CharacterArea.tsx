@@ -392,7 +392,7 @@ function EnergyBar(props: EnergyBarProps) {
 
 function Health(props: { value: number }) {
   return (
-    <div class="absolute z-1 left-1.8 top-3 -translate-x-50% -translate-y-50% h-12 children-h-full">
+    <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
       <HealthIcon class="w-9.8 h-9.8" />
       <div class="absolute inset-0 h-full w-full pt-1.2 flex items-center justify-center">
         <StrokedText
