@@ -251,7 +251,7 @@ export const FlowingPurity = card(311110)
   .weapon("catalyst")
   .on("enter")
   .characterStatus(BondOfLife, "@master")
-  .on("roundEnd")
+  .on("endPhase") // 实为结束阶段时
   .characterStatus(BondOfLife, "@master")
   .on("beforeAction", (c) => !c.self.master().hasStatus(BondOfLife))
   .listenToAll()

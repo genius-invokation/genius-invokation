@@ -1026,6 +1026,17 @@ export class SkillContext<Meta extends ContextMetaBase> {
   ) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
+      // Remove existing artifact/weapon/technique first
+      for (const tag of ["artifact", "weapon", "technique"] as const) {
+        if (this.state.data.entities.get(id)?.tags.includes(tag)) {
+          const exist = t.state.entities.find((v) =>
+            v.definition.tags.includes(tag),
+          );
+          if (exist) {
+            this.dispose(exist);
+          }
+        }
+      }
       this.createEntity("equipment", id, t.area, opt);
     }
     return this.enableShortcut();
@@ -1769,7 +1780,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
           continue;
         }
         this.setVariable("nightsoul", modifyEventArg.info.newValue, st.state);
-        this.emitEvent("onChangeNightsoul", this.state, t.state, modifyEventArg.info);
+        this.emitEvent(
+          "onChangeNightsoul",
+          this.state,
+          t.state,
+          modifyEventArg.info,
+        );
       }
     }
     return this.enableShortcut();
