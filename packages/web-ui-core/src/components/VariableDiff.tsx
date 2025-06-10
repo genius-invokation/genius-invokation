@@ -17,12 +17,12 @@ import { PbModifyDirection } from "@gi-tcg/typings";
 import { createMemo, Show } from "solid-js";
 import { StrokedText } from "./StrokedText";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
-import ResurgentPreviewIcon from "../svg/ResurgentPreviewIcon.svg?component-solid";
+import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 
 export interface VariableDiffProps {
   class?: string;
   defeated?: boolean;
-  resurgent?: boolean | null;
+  revive?: boolean;
   oldValue: number;
   newValue: number;
   direction: PbModifyDirection;
@@ -49,8 +49,8 @@ export function VariableDiff(props: VariableDiffProps) {
       <Show when={props.defeated}>
         <DefeatedPreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
       </Show>
-      <Show when={props.resurgent}>
-        <ResurgentPreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
+      <Show when={props.revive}>
+        <RevivePreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
       </Show>
       <StrokedText
         class="flex-shrink-0 font-bold font-size-4.5 line-height-none"
