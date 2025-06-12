@@ -561,7 +561,7 @@ export class EntityBuilder<
     return this;
   }
   hintIcon(damageType: DamageType) {
-    return this.variable("hintIcon", damageType);
+    return this.variable("hintIcon", damageType, { visible: false });
   }
 
   onMasterDefeated(){
