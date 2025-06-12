@@ -13,87 +13,64 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createEffect, createSignal, Show, type Component } from "solid-js";
+import { onMount } from "solid-js";
+import { render } from "solid-js/web";
 
-interface MessageBoxOptions {
-  message: string;
-  onConfirm: () => void;
-  onCancel?: () => void;
+let dialogRef: HTMLDialogElement | null = null;
+let confirmCallback: () => void = () => {};
+let cancelCallback: () => void = () => {};
+let textEl: HTMLParagraphElement | null = null;
+
+export function messageBox(
+  question: string,
+  onConfirm: () => void,
+  onCancel?: () => void
+) {
+  confirmCallback = onConfirm;
+  cancelCallback = onCancel ?? (() => {});
+  if (textEl) textEl.textContent = question;
+  dialogRef?.showModal();
 }
 
-export interface MessageBoxController {
-  show: (options: MessageBoxOptions) => void;
+export function mountMessageBox(target = document.body) {
+  const el = document.createElement("div");
+  target.appendChild(el);
+  render(() => <MessageBox />, el);
 }
 
-export const createMessageBox = (): [
-  controller: MessageBoxController,
-  component: Component,
-] => {
-  const [shown, setShown] = createSignal(false);
-  const [message, setMessage] = createSignal<string>("");
-  const [onConfirm, setOnConfirm] = createSignal<() => void>(() => {});
-  const [onCancel, setOnCancel] = createSignal<() => void | undefined>();
-
-  const show = (options: MessageBoxOptions) => {
-    setMessage(options.message);
-    setOnConfirm(() => () => {
-      options.onConfirm();
-      setShown(false);
-    });
-    setOnCancel(() => () => {
-      options.onCancel?.();
-      setShown(false);
-    });
-    setShown(true);
-  };
-
-  return [
-    { show },
-    () => (
-      <MessageBox
-        shown={shown()}
-        message={message()}
-        onConfirm={onConfirm()}
-        onCancel={onCancel()}
-      />
-    ),
-  ];
-};
-
-interface MessageBoxProps {
-  shown: boolean;
-  class?: string;
-  message: string;
-  onConfirm: () => void;
-  onCancel?: () => void;
-}
-
-function MessageBox(props: MessageBoxProps) {
+function MessageBox() {
+  onMount(() => {});
   return (
-    <Show when={props.shown}>
-      <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div class="bg-#ebdab7 p-4 rounded-3 shadow-lg w-96 h-48 border-#735a3f b-2">
-          <p class="h-24 font-size-6 font-bold mt-4 text-center">{props.message}</p>
-          <div class="flex justify-center space-x-2">
-            <button
-              class="px-3 py-1 w-36 font-bold font-size-5 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)] hover:border-white"
-              onClick={() => {
-                props.onCancel?.();
-              }}
-            >
-              取消
-            </button>
-            <button
-              class="px-3 py-1 w-36 font-bold font-size-5 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)] hover:border-white"
-              onClick={() => {
-                props.onConfirm();
-              }}
-            >
-              确认
-            </button>
-          </div>
-        </div>
+    <dialog
+      ref={(el) => (dialogRef = el)}
+      class="bg-#ebdab7 p-4 rounded-3 shadow-lg w-96 h-48 border-#735a3f border-2"
+    >
+      <p
+        class="h-24 font-size-6 font-bold mt-4 text-center"
+        ref={(el) => (textEl = el)}
+      >
+        message
+      </p>
+      <div class="flex justify-center gap-2">
+        <button
+          class="px-3 py-1 w-36 font-bold font-size-5 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)] hover:border-white"
+          onClick={() => {
+            dialogRef?.close();
+            cancelCallback();
+          }}
+        >
+          取消
+        </button>
+        <button
+          class="px-3 py-1 w-36 font-bold font-size-5 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)] hover:border-white"
+          onClick={() => {
+            dialogRef?.close();
+            confirmCallback();
+          }}
+        >
+          确定
+        </button>
       </div>
-    </Show>
+    </dialog>
   );
 }
