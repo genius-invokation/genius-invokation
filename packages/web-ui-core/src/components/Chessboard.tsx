@@ -1868,7 +1868,7 @@ export function Chessboard(props: ChessboardProps) {
         </Show>
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
-          <div class="absolute inset-0 bg-black/80 flex items-center justify-center flex-col">
+          <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
             <div class="font-bold text-4xl text-white my-10">
                {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
             </div>
