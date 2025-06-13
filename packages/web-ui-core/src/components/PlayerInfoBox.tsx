@@ -26,6 +26,8 @@ export interface PlayerInfoProps {
   legendUsed: boolean;
   declaredEnd: boolean;
   status: PbPlayerStatus; // TODO
+  name?: string;
+  avaterUrl?: string;
 }
 
 const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
@@ -37,7 +39,7 @@ const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
   [PbPlayerStatus.SELECTING_CARDS]: "正在挑选…",
 };
 
-export function PlayerInfo(props: PlayerInfoProps) {
+export function PlayerInfoBox(props: PlayerInfoProps) {
   return (
     <div
       class={`pointer-events-none select-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${

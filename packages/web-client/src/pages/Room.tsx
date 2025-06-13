@@ -15,7 +15,7 @@
 
 import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { Layout } from "../layouts/Layout";
-import { copyToClipboard, PlayerInfo, roomCodeToId } from "../utils";
+import { copyToClipboard, PlayerInfo, roomCodeToId, getPlayerAvatarUrl } from "../utils";
 import {
   Show,
   createSignal,
@@ -459,15 +459,45 @@ export function Room() {
           </Match>
         </Switch>
         <Show when={initialized()}>
-          <div class="relative" ref={chessboardContainer}>
-            <Dynamic<Client[1]>
-              component={chessboard()}
-              rotation={mobile() ? 90 : 0}
-              autoHeight={!mobile()}
-              class={`${mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""}`}
-              timer={currentMyTimer() ?? currentOppTimer()}
-            />
-          </div>
+          {(payload) => (
+            <div class="relative" ref={chessboardContainer}>
+              <Dynamic<Client[1]>
+                component={chessboard()}
+                rotation={mobile() ? 90 : 0}
+                autoHeight={!mobile()}
+                class={`${mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""}`}
+                timer={currentMyTimer() ?? currentOppTimer()}
+                myPlayerInfo={{
+                  name: payload().myPlayerInfo.name,
+                  avaterUrl: getPlayerAvatarUrl(payload().myPlayerInfo),
+                }}
+                oppPlayerInfo={{
+                  name: payload().oppPlayerInfo.name,
+                  avaterUrl: getPlayerAvatarUrl(payload().oppPlayerInfo),
+                }}
+                gameEndExtra={
+                  <div class="flex justify-center gap-20 mt-10">
+                    <div class="flex flex-col justify-start w-48 h-36">
+                      <button 
+                        class="px-4 py-1 w-48 h-13 mt-20 font-bold font-size-6 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_white] hover:border-white" 
+                        onClick={downloadGameLog}
+                      >
+                        下载日志
+                      </button>
+                    </div>
+                    <div class="flex flex-col justify-start w-48 h-36">
+                      <button
+                        class="px-4 py-1 w-48 h-13 mt-20 font-bold font-size-6 color-black bg-#e9e2d3 rounded-full border-#735a3f b-2 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_white] hover:border-white"
+                        onClick={() => {navigate("/");}}
+                      >
+                        回到首页
+                      </button>
+                    </div>
+                  </div>
+                }
+              />
+            </div>
+          )}
         </Show>
       </div>
     </Dynamic>

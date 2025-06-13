@@ -88,10 +88,18 @@ export type Client = [
   Chessboard: (props: ClientChessboardProps) => JSX.Element,
 ];
 
+export interface PlayerInfo {
+  avaterUrl?: string;
+  name?: string;
+}
+
 export interface ClientChessboardProps extends ComponentProps<"div"> {
   rotation?: Rotation;
   autoHeight?: boolean;
   timer?: RpcTimer | null;
+  myPlayerInfo?: PlayerInfo;
+  oppPlayerInfo?: PlayerInfo;
+  gameEndExtra?: JSX.Element;
 }
 
 export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
