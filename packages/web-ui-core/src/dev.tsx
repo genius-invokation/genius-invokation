@@ -84,6 +84,10 @@ function App() {
         rotation={0}
         style={{ width: "100vw", height: "100vh" }}
         autoHeight={false}
+        myPlayerInfo={{
+          avatarUrl: "https://http.cat/404",
+          name: "啊啊啊宝宝你是一个松松软软香香甜甜的小蛋糕"
+        }}
       />
       <Chessboard1
         style={{ width: "100vw", height: "200px" }}

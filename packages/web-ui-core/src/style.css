@@ -132,6 +132,16 @@
     }
   }
 
+  .playerinfo-box {
+    background-image: linear-gradient(to right, #deab65 25%, #845f39 100%);
+    border-color: #ffd89f;
+  }
+
+  .playerinfo-box[data-opp] {
+    background-image: linear-gradient(to right, #4c6890 25%, #293954 100%);
+    border-color: #697a8c;
+  }
+
   .notification-box[data-opp="false"] {
     background-image: linear-gradient(to right, #786049dd 50%, #786049aa 100%);
     border-color: #644d39aa;
