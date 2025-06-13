@@ -40,17 +40,6 @@ const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
 };
 
 export function PlayerInfoBox(props: PlayerInfoProps) {
-  const displayName = () => (
-    props.name ? (
-      props.name.length <= 7 ? 
-        props.name : 
-        `${props.name.slice(0, 6)}…`
-      ) : (
-      props.opp ?  
-        "小王子" :
-        "旅行者"
-      )
-  );
   return (
     <div
       class={`pointer-events-none select-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
@@ -104,28 +93,23 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
           data-opp={props.opp}
         />
         <div class="relative flex items-center p-1">
-          <div 
-            class="absolute h-8 w-8 rounded-full border-3 border-#9f6939 data-[opp]:border-#415671"
-            data-opp={props.opp}
-          />
-          <div class="relative h-8 w-8 shrink-0 p-0.5">
-            <Show 
-              when={props.avatarUrl}
-              fallback={
-                <div class="w-7 h-7 rounded-full border-1.5 border-white/70"/>
-              }>
+          <Show when={props.avatarUrl} fallback={<div class="w-2" />}>
+            <div
+              class="absolute h-8 w-8 rounded-full border-3 border-#9f6939 data-[opp]:border-#415671"
+              data-opp={props.opp}
+            />
+            <div class="relative h-8 w-8 shrink-0 p-0.5">
               <img
                 src={props.avatarUrl}
                 class="w-7 h-7 rounded-full border-1.5 border-white/70 object-cover"
               />
-            </Show>
-          </div>
+            </div>
+          </Show>
           <div class="flex flex-col ml-2 flex-1 gap-0.2 text-stroke-0.3">
-            <span class="text-3 leading-tight text-white">{displayName()}</span>
-            <div 
-              class="text-2.5 h-3 w-24 text-white/40"
-              data-opp={props.opp}
-            >
+            <span class="text-3 leading-tight text-white w-24 overflow-hidden text-nowrap text-ellipsis">
+              {props.name || <>&nbsp;</>}
+            </span>
+            <div class="text-2.5 h-3 w-24 text-white/40" data-opp={props.opp}>
               {STATUS_TEXT_MAP[props.status]}
             </div>
           </div>
@@ -142,7 +126,7 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
           >
             {(image) => <div class="h-8 w-8">{image}</div>}
           </WithDelicateUi>
-        </div>   
+        </div>
       </div>
     </div>
   );
