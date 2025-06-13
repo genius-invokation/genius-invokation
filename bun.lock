@@ -377,8 +377,8 @@
   },
   "overrides": {
     "babel-plugin-jsx-dom-expressions": "0.39.6",
-    "caniuse-lite": "1.0.30001690",
     "esbuild": "0.19.11",
+    "caniuse-lite": "1.0.30001690",
   },
   "packages": {
     "@ampproject/remapping": ["@ampproject/remapping@2.3.0", "", { "dependencies": { "@jridgewell/gen-mapping": "^0.3.5", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw=="],
