@@ -126,6 +126,7 @@ import { MutationViewer } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
+import { createMessageBox } from "./MessageBox";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1227,6 +1228,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
+  const [{ confirm }, MessageBox] = createMessageBox();
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1770,8 +1772,8 @@ export function Chessboard(props: ChessboardProps) {
             <button
               class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
               title="放弃对局"
-              onClick={() => {
-                if (confirm("确定放弃对局吗？")) {
+              onClick={async () => {
+                if (await confirm("确定放弃对局吗？")) {
                   localProps.onGiveUp?.();
                 }
               }}
@@ -1849,6 +1851,7 @@ export function Chessboard(props: ChessboardProps) {
           </Show>
         </AspectRatioContainer>
         <Alert />
+        <MessageBox />
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
             <div
