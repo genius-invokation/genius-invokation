@@ -27,7 +27,7 @@ export interface PlayerInfoProps {
   declaredEnd: boolean;
   status: PbPlayerStatus; // TODO
   name?: string;
-  avaterUrl?: string;
+  avatarUrl?: string;
 }
 
 const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
