@@ -127,6 +127,7 @@ import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
+import { Timer } from "./Timer";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1845,6 +1846,7 @@ export function Chessboard(props: ChessboardProps) {
           <CurrentTurnHint
             phase={localProps.data.state.phase}
             opp={localProps.data.state.currentTurn !== localProps.who}
+            hasSpecialView={hasSpecialView()}
           />
           <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
@@ -1854,26 +1856,18 @@ export function Chessboard(props: ChessboardProps) {
               onClick={() => setSpecialViewVisible((v) => !v)}
             />
           </Show>
+          <Show when={localProps.doingRpc && localProps.timer}>
+            {(timer) => (
+              <Timer 
+                timer={timer()}
+                phase={localProps.data.state.phase}
+                hasSpecialView={hasSpecialView()}
+              />
+            )}
+          </Show>
         </AspectRatioContainer>
         <Alert />
         <MessageBox />
-        <Show when={localProps.doingRpc && localProps.timer}>
-          {(timer) => (
-            <div
-              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-              bool:data-shown={true}
-              bool:data-alert={timer().current <= 10}
-            >
-              {Math.max(Math.floor(timer().current / 60), 0)
-                .toString()
-                .padStart(2, "0")}{" "}
-              :{" "}
-              {Math.max(timer().current % 60, 0)
-                .toString()
-                .padStart(2, "0")}
-            </div>
-          )}
-        </Show>
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
           <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">

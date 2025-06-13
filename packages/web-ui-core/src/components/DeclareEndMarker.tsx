@@ -31,13 +31,13 @@ export interface DeclareEndMarkerProps {
   onClick: (e: MouseEvent) => void;
 }
 
-export interface TimerProps {
+export interface TimerBarProps {
   currentTime: number;
   totalTime: number;
   timingMine: boolean;
 }
 
-export function TimerBar(props: TimerProps) {
+export function TimerBar(props: TimerBarProps) {
   const RADIUS = 40;
   const CENTER = 50;
   const BORDER_WIDTH = 6;
