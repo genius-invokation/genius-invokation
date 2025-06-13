@@ -31,8 +31,8 @@ export interface PlayerInfoProps {
 }
 
 const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
-  [PbPlayerStatus.UNSPECIFIED]: "",
-  [PbPlayerStatus.ACTING]: "正在行动中…",
+  [PbPlayerStatus.UNSPECIFIED]: "正在等待…",
+  [PbPlayerStatus.ACTING]: "正在行动…",
   [PbPlayerStatus.CHOOSING_ACTIVE]: "正在选择出战角色…",
   [PbPlayerStatus.REROLLING]: "正在重投骰子…",
   [PbPlayerStatus.SWITCHING_HANDS]: "正在替换手牌…",
@@ -40,6 +40,25 @@ const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
 };
 
 export function PlayerInfoBox(props: PlayerInfoProps) {
+  const displayName = () => (
+    props.name ? (
+      props.name.length <= 7 ? 
+        props.name : 
+        `${props.name.slice(0, 6)}…`
+      ) : (
+      props.opp ?  
+        "小王子" :
+        "旅行者"
+      )
+  );
+  const displayAvater = () => (
+    props.avaterUrl ?
+      props.avaterUrl : (
+      props.opp ?  
+        "./svg/UI_Gcg_Char_EnemyIcon_SlimeElec.png" :
+        "./svg/UI_Gcg_Char_EnemyIcon_SlimeIce.png"
+      )
+  );
   return (
     <div
       class={`pointer-events-none select-none m-2 gap-1 flex items-start data-[opp=true]:flex-col-reverse data-[opp=false]:flex-col ${
@@ -76,8 +95,34 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
         </WithDelicateUi>
       </div>
       <div class="flex-grow-1" />
-      <div class="flex flex-row gap-4 items-center">
-        <div class="ml-1.75">
+      <div
+        class="opacity-0 data-[shown]:opacity-100 bg-yellow-100 text-yellow-800 py-1 px-3 rounded-xl transition-opacity"
+        bool:data-shown={props.declaredEnd}
+      >
+        已宣布结束
+      </div>
+      <div class="relative inline-block h-10 w-50">
+        <div
+          class="absolute inset-0 rounded-l-full rounded-r-0 border-1.5 playerinfo-box h-full w-full"
+          style={{
+            "mask-image":
+              "linear-gradient(to right, #000000ee 55%, transparent 95%)",
+          }}
+          data-opp={props.opp ?? false}
+        />
+        <div class="relative flex items-center p-1">
+          <img
+            src={displayAvater()}
+            alt={props.name}
+            class="w-8 h-8 rounded-full border-[3px] border-#9f6939 data-[opp]:border-#415671 object-cover shrink-0"
+            data-opp={props.opp}
+          />
+          <div class="flex flex-col ml-2 flex-1 gap-0.2">
+            <span class="text-3 leading-tight text-white text-stroke-0.3">{displayName()}</span>
+            <div class="text-2.5 h-3 w-28 text-#9f6939">
+              {STATUS_TEXT_MAP[props.status]}
+            </div>
+          </div>
           <WithDelicateUi
             assetId={
               props.legendUsed ? "UI_Gcg_Esoteric_Bg" : "UI_Gcg_DiceL_Legend"
@@ -91,19 +136,7 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
           >
             {(image) => <div class="h-8 w-8">{image}</div>}
           </WithDelicateUi>
-        </div>
-        <div
-          class="opacity-0 data-[shown]:opacity-100 bg-yellow-100 text-yellow-800 py-1 px-3 rounded-xl transition-opacity"
-          bool:data-shown={props.declaredEnd}
-        >
-          已宣布结束
-        </div>
-      </div>
-      <div class="text-blue-300 text-xs h-4 ml-2">
-        <Show when={props.status !== PbPlayerStatus.UNSPECIFIED}>
-          {props.opp ? "对方" : "我方"}
-          {STATUS_TEXT_MAP[props.status]}
-        </Show>
+        </div>   
       </div>
     </div>
   );
