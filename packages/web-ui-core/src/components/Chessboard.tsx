@@ -126,6 +126,7 @@ import { MutationViewer } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
+import { createMessageBox } from "./MessageBox";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1168,7 +1169,14 @@ export function Chessboard(props: ChessboardProps) {
         // console.log(actionState);
         if (actionState) {
           if (actionState.showBackdrop) {
-            dataViewerController.hide();
+            // 当显示遮罩时，不再选中角色或实体
+            setSelectingItem((item) => {
+              if (item?.type === "character" || item?.type === "entity") {
+                return null;
+              } else {
+                return item;
+              }
+            });
           }
           if (actionState.autoSelectedDice) {
             const dice = myDice();
@@ -1202,10 +1210,6 @@ export function Chessboard(props: ChessboardProps) {
     ),
   );
 
-  createEffect(() => {
-    setSelectingItem(null);
-  });
-
   const [isShowCardHint, setShowCardHint] = createStore<
     Record<CardArea, number | null>
   >({
@@ -1221,12 +1225,13 @@ export function Chessboard(props: ChessboardProps) {
       clearTimeout(current);
     }
     const timeout = window.setTimeout(() => {
-      setShowCardHint(area, null);
+      setShowCardHint(area, null)
     }, 500);
     setShowCardHint(area, timeout);
   };
 
   const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
+  const [{ confirm }, MessageBox] = createMessageBox();
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1329,11 +1334,13 @@ export function Chessboard(props: ChessboardProps) {
   const displayUiComponents = createMemo(
     () => !hasSpecialView() || !specialViewVisible(),
   );
+  /** 当显示特殊视图时，隐藏所有选中对象 */
   createEffect(() => {
     if (hasSpecialView() && specialViewVisible()) {
-      dataViewerController.hide();
+      setSelectingItem(null);
     }
   });
+  /** 当存在特殊视图可用时，使其可见 */
   createEffect(() => {
     if (hasSpecialView()) {
       setSpecialViewVisible(true);
@@ -1770,8 +1777,8 @@ export function Chessboard(props: ChessboardProps) {
             <button
               class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
               title="放弃对局"
-              onClick={() => {
-                if (confirm("确定放弃对局吗？")) {
+              onClick={async () => {
+                if (await confirm("确定放弃对局吗？")) {
                   localProps.onGiveUp?.();
                 }
               }}
@@ -1804,7 +1811,7 @@ export function Chessboard(props: ChessboardProps) {
               const cards = switchedCards();
               setSwitchedCards([]);
               localProps.onSwitchHands?.(cards);
-              dataViewerController.hide();
+              setSelectingItem(null);
             }}
             onVisible={() => {
               setSpecialViewVisible((v) => !v);
@@ -1849,6 +1856,7 @@ export function Chessboard(props: ChessboardProps) {
           </Show>
         </AspectRatioContainer>
         <Alert />
+        <MessageBox />
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
             <div

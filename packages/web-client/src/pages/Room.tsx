@@ -353,7 +353,7 @@ export function Room() {
 
   const getClientPlayerInfo = (playerInfo: PlayerInfo) => ({
     name: playerInfo.name,
-    avaterUrl: getPlayerAvatarUrl(playerInfo),
+    avatarUrl: getPlayerAvatarUrl(playerInfo),
   });
 
   let chessboardContainer: HTMLDivElement | undefined;
@@ -483,6 +483,9 @@ export function Room() {
                       >
                         下载日志
                       </button>
+                      {/* <Show when={logtimer}>
+                        <span class="text-white/60 text-3">{logtimer}后到期</span>
+                      </Show> */}
                     </div>
                     <div class="flex flex-col justify-start w-36 h-30">
                       <button

@@ -89,7 +89,7 @@ export type Client = [
 ];
 
 export interface PlayerInfo {
-  avaterUrl?: string;
+  avatarUrl?: string;
   name?: string;
 }
 
