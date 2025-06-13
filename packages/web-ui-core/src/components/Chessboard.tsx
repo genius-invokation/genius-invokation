@@ -41,6 +41,7 @@ import {
   splitProps,
   untrack,
   type ComponentProps,
+  type JSX,
 } from "solid-js";
 import debounce from "debounce";
 import {
@@ -74,13 +75,14 @@ import {
   type Transform,
 } from "../ui_state";
 import type { ParsedMutation } from "../mutations";
+import type { PlayerInfo } from "../client";
 import {
   KeyWithAnimation,
   type UpdateSignal,
 } from "../primitives/key_with_animation";
 import { NotificationBox } from "./NotificationBox";
 import { Entity } from "./Entity";
-import { PlayerInfo, type PlayerInfoProps } from "./PlayerInfo";
+import { PlayerInfoBox, type PlayerInfoProps } from "./PlayerInfoBox";
 import { flip } from "@gi-tcg/utils";
 import { DicePanel, type DicePanelState } from "./DicePanel";
 import { SkillButtonGroup } from "./SkillButtonGroup";
@@ -124,6 +126,7 @@ import { MutationViewer } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
+import { createMessageBox } from "./MessageBox";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -259,6 +262,9 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   rotation?: Rotation;
   autoHeight?: boolean;
   timer?: RpcTimer | null;
+  myPlayerInfo?: PlayerInfo;
+  oppPlayerInfo?: PlayerInfo;
+  gameEndExtra?: JSX.Element;  
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -938,6 +944,9 @@ export function Chessboard(props: ChessboardProps) {
     "rotation",
     "autoHeight",
     "timer",
+    "myPlayerInfo",
+    "oppPlayerInfo",
+    "gameEndExtra",
     "data",
     "actionState",
     "viewType",
@@ -1222,6 +1231,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
+  const [{ confirm }, MessageBox] = createMessageBox();
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1701,14 +1711,16 @@ export function Chessboard(props: ChessboardProps) {
               class={"absolute top-50% translate-y--50% left-1"}
               {...declareEndMarkerProps()}
             />
-            <PlayerInfo
+            <PlayerInfoBox
               opp
               class="absolute top-2 bottom-[calc(50%+2rem)] left-2"
               {...playerInfoPropsOf(flip(localProps.who))}
+              {...localProps.oppPlayerInfo}
             />
-            <PlayerInfo
+            <PlayerInfoBox
               class="absolute top-[calc(50%+2rem)] bottom-2 left-2"
               {...playerInfoPropsOf(localProps.who)}
+              {...localProps.myPlayerInfo}
             />
             <DicePanel
               dice={myDice()}
@@ -1765,8 +1777,8 @@ export function Chessboard(props: ChessboardProps) {
             <button
               class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
               title="放弃对局"
-              onClick={() => {
-                if (confirm("确定放弃对局吗？")) {
+              onClick={async () => {
+                if (await confirm("确定放弃对局吗？")) {
                   localProps.onGiveUp?.();
                 }
               }}
@@ -1844,6 +1856,7 @@ export function Chessboard(props: ChessboardProps) {
           </Show>
         </AspectRatioContainer>
         <Alert />
+        <MessageBox />
         <Show when={localProps.doingRpc && localProps.timer}>
           {(timer) => (
             <div
@@ -1863,8 +1876,11 @@ export function Chessboard(props: ChessboardProps) {
         </Show>
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
-          <div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-4xl text-white">
-            {localProps.data.state.winner === localProps.who ? "胜利" : "失败"}
+          <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
+            <div class="font-bold text-4xl text-white my-10">
+               {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
+            </div>
+            {localProps.gameEndExtra}
           </div>
         </Show>
       </div>

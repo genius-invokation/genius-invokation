@@ -15,7 +15,7 @@
 
 import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { Layout } from "../layouts/Layout";
-import { copyToClipboard, PlayerInfo, roomCodeToId } from "../utils";
+import { copyToClipboard, PlayerInfo, roomCodeToId, getPlayerAvatarUrl } from "../utils";
 import {
   Show,
   createSignal,
@@ -351,6 +351,11 @@ export function Room() {
     }
   };
 
+  const getClientPlayerInfo = (playerInfo: PlayerInfo) => ({
+    name: playerInfo.name,
+    avatarUrl: getPlayerAvatarUrl(playerInfo),
+  });
+
   let chessboardContainer: HTMLDivElement | undefined;
 
   const mobile = useMobile();
@@ -459,15 +464,42 @@ export function Room() {
           </Match>
         </Switch>
         <Show when={initialized()}>
-          <div class="relative" ref={chessboardContainer}>
-            <Dynamic<Client[1]>
-              component={chessboard()}
-              rotation={mobile() ? 90 : 0}
-              autoHeight={!mobile()}
-              class={`${mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""}`}
-              timer={currentMyTimer() ?? currentOppTimer()}
-            />
-          </div>
+          {(payload) => (
+            <div class="relative" ref={chessboardContainer}>
+              <Dynamic<Client[1]>
+                component={chessboard()}
+                rotation={mobile() ? 90 : 0}
+                autoHeight={!mobile()}
+                class={`${mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""}`}
+                timer={currentMyTimer() ?? currentOppTimer()}
+                myPlayerInfo={getClientPlayerInfo(payload().myPlayerInfo)}
+                oppPlayerInfo={getClientPlayerInfo(payload().oppPlayerInfo)}
+                gameEndExtra={
+                  <div class="flex justify-center gap-20 mt-10">
+                    <div class="flex flex-col justify-start w-36 h-30">
+                      <button 
+                        class="px-4 py-1 w-36 h-10 mt-20 font-bold font-size-4.5 text-yellow-800 bg-yellow-50 rounded-full border-yellow-800 b-2 active:bg-yellow-800 active:text-yellow-200 hover:shadow-[inset_0_0_16px_white] hover:border-white" 
+                        onClick={downloadGameLog}
+                      >
+                        下载日志
+                      </button>
+                      {/* <Show when={logtimer}>
+                        <span class="text-white/60 text-3">{logtimer}后到期</span>
+                      </Show> */}
+                    </div>
+                    <div class="flex flex-col justify-start w-36 h-30">
+                      <button
+                        class="px-4 py-1 w-36 h-10 mt-20 font-bold font-size-4.5 text-yellow-800 bg-yellow-50 rounded-full border-yellow-800 b-2 active:bg-yellow-800 active:text-yellow-200 hover:shadow-[inset_0_0_16px_white] hover:border-white"
+                        onClick={() => {navigate("/");}}
+                      >
+                        回到首页
+                      </button>
+                    </div>
+                  </div>
+                }
+              />
+            </div>
+          )}
         </Show>
       </div>
     </Dynamic>
