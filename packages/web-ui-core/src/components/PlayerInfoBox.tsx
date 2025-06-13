@@ -27,7 +27,7 @@ export interface PlayerInfoProps {
   declaredEnd: boolean;
   status: PbPlayerStatus; // TODO
   name?: string;
-  avaterUrl?: string;
+  avatarUrl?: string;
 }
 
 const STATUS_TEXT_MAP: Record<PbPlayerStatus, string> = {
@@ -49,14 +49,6 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
       props.opp ?  
         "小王子" :
         "旅行者"
-      )
-  );
-  const displayAvater = () => (
-    props.avaterUrl ?
-      props.avaterUrl : (
-      props.opp ?  
-        "./svg/UI_Gcg_Char_EnemyIcon_SlimeElec.png" :
-        "./svg/UI_Gcg_Char_EnemyIcon_SlimeIce.png"
       )
   );
   return (
@@ -96,30 +88,44 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
       </div>
       <div class="flex-grow-1" />
       <div
-        class="opacity-0 data-[shown]:opacity-100 bg-yellow-100 text-yellow-800 py-1 px-3 rounded-xl transition-opacity"
+        class="opacity-0 data-[shown]:opacity-100 bg-#e9e1d3 text-#403f44 text-3 font-bold b-1 b-#403f44 py-0.5 pr-3 pl-3.5 ml-7 rounded-r-3 transition-opacity rounded-lb-0 rounded-lt-4 data-[opp]:rounded-lb-4 data-[opp]:rounded-lt-0"
         bool:data-shown={props.declaredEnd}
+        data-opp={props.opp}
       >
         已宣布结束
       </div>
-      <div class="relative inline-block h-10 w-50">
+      <div class="relative inline-block h-10 w-44">
         <div
           class="absolute inset-0 rounded-l-full rounded-r-0 border-1.5 playerinfo-box h-full w-full"
           style={{
             "mask-image":
               "linear-gradient(to right, #000000ee 55%, transparent 95%)",
           }}
-          data-opp={props.opp ?? false}
+          data-opp={props.opp}
         />
         <div class="relative flex items-center p-1">
-          <img
-            src={displayAvater()}
-            alt={props.name}
-            class="w-8 h-8 rounded-full border-[3px] border-#9f6939 data-[opp]:border-#415671 object-cover shrink-0"
+          <div 
+            class="absolute h-8 w-8 rounded-full border-3 border-#9f6939 data-[opp]:border-#415671"
             data-opp={props.opp}
           />
-          <div class="flex flex-col ml-2 flex-1 gap-0.2">
-            <span class="text-3 leading-tight text-white text-stroke-0.3">{displayName()}</span>
-            <div class="text-2.5 h-3 w-28 text-#9f6939">
+          <div class="relative h-8 w-8 shrink-0 p-0.5">
+            <Show 
+              when={props.avatarUrl}
+              fallback={
+                <div class="w-7 h-7 rounded-full border-1.5 border-white/70"/>
+              }>
+              <img
+                src={props.avatarUrl}
+                class="w-7 h-7 rounded-full border-1.5 border-white/70 object-cover"
+              />
+            </Show>
+          </div>
+          <div class="flex flex-col ml-2 flex-1 gap-0.2 text-stroke-0.3">
+            <span class="text-3 leading-tight text-white">{displayName()}</span>
+            <div 
+              class="text-2.5 h-3 w-24 text-white/40"
+              data-opp={props.opp}
+            >
               {STATUS_TEXT_MAP[props.status]}
             </div>
           </div>
