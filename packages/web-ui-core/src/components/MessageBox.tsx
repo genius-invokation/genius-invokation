@@ -14,16 +14,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { createSignal } from "solid-js";
+import type { Rotation } from "./Chessboard";
+
 
 export interface MessageBoxController {
   confirm: (question: string) => Promise<boolean>;
+  rotate: (angle: Rotation) => void;
 }
 
 export function createMessageBox() {
   let dialogEl: HTMLDialogElement | undefined;
   const [question, setQuestion] = createSignal<string>("");
+  const [rotation, setRotation] = createSignal<Rotation>(0);
   let resolver: PromiseWithResolvers<boolean> | null = null;
-
   return [
     {
       confirm: async (q) => {
@@ -33,11 +36,15 @@ export function createMessageBox() {
           dialogEl?.close();
         });
       },
+      rotate: (a) => {
+        setRotation(a);
+      },
     } as MessageBoxController,
     () => (
       <MessageBox
         ref={dialogEl!}
         question={question()}
+        rotation={rotation()}
         onConfirm={() => resolver?.resolve(true)}
         onCancel={() => resolver?.resolve(false)}
       />
@@ -48,6 +55,7 @@ export function createMessageBox() {
 interface MessageBoxProps {
   ref: HTMLDialogElement;
   question: string;
+  rotation: Rotation;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -56,7 +64,8 @@ function MessageBox(props: MessageBoxProps) {
   return (
     <dialog
       ref={props.ref}
-      class="bg-#ebdab7 p-4 rounded-3 shadow-lg w-96 h-48 border-#735a3f border-2"
+      class="bg-#ebdab7 p-4 rounded-3 shadow-lg w-96 h-48 border-#735a3f border-2 !rotate-[var(--rotation)] transition-none"
+      style={{"--rotation": `${props.rotation}deg`}}
     >
       <p class="h-24 font-size-6 font-bold mt-4 text-center">
         {props.question}

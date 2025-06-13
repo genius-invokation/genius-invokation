@@ -1231,7 +1231,11 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
-  const [{ confirm }, MessageBox] = createMessageBox();
+  const [{ confirm, rotate}, MessageBox] = createMessageBox();
+
+  createEffect(() => {
+    rotate(untrack(() => localProps.rotation) ?? 0);
+  });
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
