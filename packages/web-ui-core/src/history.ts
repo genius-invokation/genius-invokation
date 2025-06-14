@@ -41,7 +41,8 @@ type HistoryChildren =
   | VariableChangeHistoryChild
   | RemoveEntityHistoryChild
   | ConvertDiceHistoryChild
-  | ForbidCardHistoryChild;
+  | ForbidCardHistoryChild
+  | TransformHistoryChild;
 
 type CharacterHistoryChildren =
   | SwitchActiveHistoryChild
@@ -337,6 +338,16 @@ interface ForbidCardHistoryChild {
     type: "forbidCard";
     who: 0 | 1;
     cardDefinitionId: number;
+}
+
+// 转换形态
+// 角色、召唤物
+// content: Cardface <-> cardName \n ("转换形态···" || "转换形态完成")
+interface TransformHistoryChild {
+    type: "transform";
+    who: 0 | 1;
+    cardDefinitionId: number; // 对应新旧形态
+    stage: "old" | "new";
 }
 
 /////////////// block如何对自己的child生成预览 ////////////////
