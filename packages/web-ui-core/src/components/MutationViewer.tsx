@@ -197,13 +197,29 @@ export function MutationBlock(props: MutationBlockProps) {
   );
 }
 
-export interface MutationViewerProps {
+export interface MutationPanelProps {
   who: 0 | 1;
   mutations: PbExposedMutation[][];
 }
 
-export function MutationViewer(props: MutationViewerProps) {
-  const [shown, setShown] = createSignal(false);
+export interface MutationToggleButtonProps {
+  onClick?: () => void;
+}
+
+export function MutationToggleButton(props: MutationToggleButtonProps) {
+  return (
+    <button
+      class="h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
+      onClick={() => {
+        props.onClick?.();
+      }}
+    >
+      &#8801;
+    </button>
+  );
+}
+
+export function MutationPanel(props: MutationPanelProps) {
   let scrollRef!: HTMLDivElement;
   createEffect(
     on(
@@ -214,24 +230,15 @@ export function MutationViewer(props: MutationViewerProps) {
     ),
   );
   return (
-    <>
-      <div
-        class="hidden data-[shown]:block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto bg-gray/20"
-        bool:data-shown={shown()}
-        ref={scrollRef}
-      >
-        <div class="pointer-events-auto h-full w-full flex flex-col gap-1">
-          <For each={props.mutations}>
-            {(group) => <MutationBlock who={props.who} mutations={group} />}
-          </For>
-        </div>
+    <div
+      class="block absolute right-0 top-0 py-12 px-2 w-60 h-full overflow-auto pointer-events-none touch-auto bg-gray/20"
+      ref={scrollRef}
+    >
+      <div class="pointer-events-auto h-full w-full flex flex-col gap-1">
+        <For each={props.mutations}>
+          {(group) => <MutationBlock who={props.who} mutations={group} />}
+        </For>
       </div>
-      <button
-        class="absolute right-12.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer"
-        onClick={() => setShown((v) => !v)}
-      >
-        &#8801;
-      </button>
-    </>
+    </div>
   );
 }

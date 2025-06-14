@@ -24,7 +24,6 @@ export interface SelectCardViewProps {
   nameGetter: (id: number) => string | undefined;
   onClickCard: (id: number) => void;
   onConfirm: (id: number) => void;
-  onVisible: () => void;
 }
 
 export function SelectCardView(props: SelectCardViewProps) {

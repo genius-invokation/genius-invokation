@@ -122,12 +122,12 @@ import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
-import { MutationViewer } from "./MutationViewer";
+import { MutationToggleButton, MutationPanel } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
-import { Timer } from "./Timer";
+import { TimerCapsule, TimerAlert } from "./Timer";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1358,7 +1358,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
-
+  const [mutationVisible, setMutationVisible] = createSignal(false);
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -1773,20 +1773,6 @@ export function Chessboard(props: ChessboardProps) {
               <PlayingCard opp={data.who !== localProps.who} {...data} />
             )}
           </Show>
-          <MutationViewer who={localProps.who} mutations={allMutations()} />
-          <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
-            <button
-              class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-              title="放弃对局"
-              onClick={async () => {
-                if (await confirm("确定放弃对局吗？")) {
-                  localProps.onGiveUp?.();
-                }
-              }}
-            >
-              &#10005;
-            </button>
-          </Show>
         </AspectRatioContainer>
         {/* SpecialViews */}
         <Show when={props.viewType === "selectCard" && specialViewVisible()}>
@@ -1799,9 +1785,6 @@ export function Chessboard(props: ChessboardProps) {
               localProps.onSelectCard?.(id);
               dataViewerController.hide();
             }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
             nameGetter={(name) => assetsManager.getNameSync(name)}
           />
         </Show>
@@ -1813,9 +1796,6 @@ export function Chessboard(props: ChessboardProps) {
               setSwitchedCards([]);
               localProps.onSwitchHands?.(cards);
               setSelectingItem(null);
-            }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
             }}
           />
         </Show>
@@ -1836,37 +1816,55 @@ export function Chessboard(props: ChessboardProps) {
               setSelectedDice([]);
               localProps.onRerollDice?.(dice);
             }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
           />
         </Show>
         {/* 上层 UI 组件 */}
         <AspectRatioContainer>
-          <CurrentTurnHint
-            phase={localProps.data.state.phase}
-            opp={localProps.data.state.currentTurn !== localProps.who}
-            hasSpecialView={hasSpecialView()}
-          />
           <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
-          <Show when={hasSpecialView()}>
-            <SpecialViewToggleButton
-              onClick={() => setSpecialViewVisible((v) => !v)}
+          <Show when={mutationVisible()}>
+            <MutationPanel who={localProps.who} mutations={allMutations()} />
+          </Show>
+          <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
+            <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
+              <button
+                class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                title="放弃对局"
+                onClick={async () => {
+                  if (await confirm("确定放弃对局吗？")) {
+                    localProps.onGiveUp?.();
+                  }
+                }}
+              >
+                &#10005;
+              </button>
+            </Show>
+            <MutationToggleButton 
+              onClick={() => setMutationVisible((v) => !v)} 
             />
-          </Show>
-          <Show when={localProps.doingRpc && localProps.timer}>
-            {(timer) => (
-              <Timer 
-                timer={timer()}
-                phase={localProps.data.state.phase}
-                hasSpecialView={hasSpecialView()}
+            <Show when={hasSpecialView()}>
+              <SpecialViewToggleButton
+                onClick={() => setSpecialViewVisible((v) => !v)}
               />
-            )}
-          </Show>
+            </Show>            
+            <CurrentTurnHint
+              phase={localProps.data.state.phase}
+              opp={localProps.data.state.currentTurn !== localProps.who}
+            />
+            <Show when={localProps.doingRpc && localProps.timer}>
+              {(timer) => (
+                <TimerCapsule timer={timer()}/>
+              )}
+            </Show>
+          </div>
         </AspectRatioContainer>
         <Alert />
+        <Show when={localProps.doingRpc && localProps.timer}>
+          {(timer) => (
+            <TimerCapsule timer={timer()}/>
+          )}
+        </Show>
         <MessageBox />
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>

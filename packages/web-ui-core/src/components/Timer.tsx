@@ -15,50 +15,42 @@
 
 import { Show } from "solid-js";
 import type { RpcTimer } from "./Chessboard";
-import { PbPhaseType } from "@gi-tcg/typings";
 
 export interface TimerProps {
   timer: RpcTimer;
-  phase: PbPhaseType;
-  hasSpecialView: boolean;
 }
 
-export function Timer(props: TimerProps) {
-  const timerOffsetX = () => {
-    let x = 0;
-    if (props.phase <= PbPhaseType.ROLL) {
-      x += 26;
-    }
-    if (props.hasSpecialView) {
-      x += 10;
-    }
-    return x / 4;
-  };
-  const parseTime = () => (
-    `${Math.max(Math.floor(props.timer.current / 60), 0)
-      .toString()
-      .padStart(2, "0")} : ${Math.max(props.timer.current % 60, 0)
-      .toString()
-      .padStart(2, "0")}`
-      );
+function parseTime(time: number) {
+  return(
+    `${Math.max(Math.floor(time / 60), 0)
+    .toString()
+    .padStart(2, "0")} : ${Math.max(time % 60, 0)
+    .toString()
+    .padStart(2, "0")}`
+  );
+}
+  
+export function TimerCapsule(props: TimerProps) {
   return (
-    <Show 
-      when={ props.timer.current > 20 }
-      fallback={
-        <div
-          class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-          bool:data-shown={true}
-          bool:data-alert={props.timer.current <= 10}
-        >
-          {parseTime()}
-        </div>
-      }
-    >
+    <Show when={ props.timer.current > 20 }>
       <div
-        class="absolute right-22.3 top-2.5 h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50 -translate-x-[var(--timer-x)] transition"
-        style={{"--timer-x": `${timerOffsetX()}rem`}}
+        class="h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50"
       >
-        {parseTime()}
+        {parseTime(props.timer.current)}
+      </div>
+    </Show>
+  );
+}
+
+export function TimerAlert(props: TimerProps) {
+  return (
+    <Show when={ props.timer.current <= 20 }>
+      <div
+        class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
+        bool:data-shown={true}
+        bool:data-alert={props.timer.current <= 10}
+      >
+        {parseTime(props.timer.current)}
       </div>
     </Show>
   );

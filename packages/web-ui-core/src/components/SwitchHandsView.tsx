@@ -19,7 +19,6 @@ import type { ChessboardViewType } from "./Chessboard";
 export interface SwitchHandsViewProps {
   viewType: ChessboardViewType;
   onConfirm: () => void;
-  onVisible: () => void;
 }
 
 export function SwitchHandsView(props: SwitchHandsViewProps) {
