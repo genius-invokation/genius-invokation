@@ -27,7 +27,6 @@ export interface RerollViewProps {
   selectedDice: boolean[];
   onSelectDice: (selectedDice: boolean[]) => void;
   onConfirm: () => void;
-  onVisible: () => void;
 }
 
 export function RerollDiceView(props: RerollViewProps) {

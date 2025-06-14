@@ -122,11 +122,12 @@ import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
-import { MutationViewer } from "./MutationViewer";
+import { MutationToggleButton, MutationPanel } from "./MutationViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
+import { TimerCapsule, TimerAlert } from "./Timer";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -264,7 +265,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   timer?: RpcTimer | null;
   myPlayerInfo?: PlayerInfo;
   oppPlayerInfo?: PlayerInfo;
-  gameEndExtra?: JSX.Element;  
+  gameEndExtra?: JSX.Element;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -1225,7 +1226,7 @@ export function Chessboard(props: ChessboardProps) {
       clearTimeout(current);
     }
     const timeout = window.setTimeout(() => {
-      setShowCardHint(area, null)
+      setShowCardHint(area, null);
     }, 500);
     setShowCardHint(area, timeout);
   };
@@ -1347,6 +1348,8 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
+  const timer = () => (localProps.doingRpc ? localProps.timer ?? null : null);
+
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
     createSignal<DicePanelState>("hidden");
@@ -1357,7 +1360,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
-
+  const [showMutationPanel, setShowMutationPanel] = createSignal(false);
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -1772,20 +1775,6 @@ export function Chessboard(props: ChessboardProps) {
               <PlayingCard opp={data.who !== localProps.who} {...data} />
             )}
           </Show>
-          <MutationViewer who={localProps.who} mutations={allMutations()} />
-          <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
-            <button
-              class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-              title="放弃对局"
-              onClick={async () => {
-                if (await confirm("确定放弃对局吗？")) {
-                  localProps.onGiveUp?.();
-                }
-              }}
-            >
-              &#10005;
-            </button>
-          </Show>
         </AspectRatioContainer>
         {/* SpecialViews */}
         <Show when={props.viewType === "selectCard" && specialViewVisible()}>
@@ -1798,9 +1787,6 @@ export function Chessboard(props: ChessboardProps) {
               localProps.onSelectCard?.(id);
               dataViewerController.hide();
             }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
             nameGetter={(name) => assetsManager.getNameSync(name)}
           />
         </Show>
@@ -1812,9 +1798,6 @@ export function Chessboard(props: ChessboardProps) {
               setSwitchedCards([]);
               localProps.onSwitchHands?.(cards);
               setSelectingItem(null);
-            }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
             }}
           />
         </Show>
@@ -1835,50 +1818,56 @@ export function Chessboard(props: ChessboardProps) {
               setSelectedDice([]);
               localProps.onRerollDice?.(dice);
             }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
           />
         </Show>
         {/* 上层 UI 组件 */}
         <AspectRatioContainer>
-          <CurrentTurnHint
-            phase={localProps.data.state.phase}
-            opp={localProps.data.state.currentTurn !== localProps.who}
-          />
           <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
-          <Show when={hasSpecialView()}>
-            <SpecialViewToggleButton
-              onClick={() => setSpecialViewVisible((v) => !v)}
-            />
+          <Show when={showMutationPanel()}>
+            <MutationPanel who={localProps.who} mutations={allMutations()} />
           </Show>
+          {/* 左上角部件 */}
+          <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
+            <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
+              <button
+                class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                title="放弃对局"
+                onClick={async () => {
+                  if (await confirm("确定放弃对局吗？")) {
+                    localProps.onGiveUp?.();
+                  }
+                }}
+              >
+                &#10005;
+              </button>
+            </Show>
+            <MutationToggleButton
+              onClick={() => setShowMutationPanel((v) => !v)}
+            />
+            <Show when={hasSpecialView()}>
+              <SpecialViewToggleButton
+                onClick={() => setSpecialViewVisible((v) => !v)}
+              />
+            </Show>
+            <CurrentTurnHint
+              phase={localProps.data.state.phase}
+              opp={localProps.data.state.currentTurn !== localProps.who}
+            />
+            <TimerCapsule timer={timer()} />
+          </div>
         </AspectRatioContainer>
+        <TimerAlert timer={timer()} />
         <Alert />
         <MessageBox />
-        <Show when={localProps.doingRpc && localProps.timer}>
-          {(timer) => (
-            <div
-              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-              bool:data-shown={true}
-              bool:data-alert={timer().current <= 10}
-            >
-              {Math.max(Math.floor(timer().current / 60), 0)
-                .toString()
-                .padStart(2, "0")}{" "}
-              :{" "}
-              {Math.max(timer().current % 60, 0)
-                .toString()
-                .padStart(2, "0")}
-            </div>
-          )}
-        </Show>
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
           <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
             <div class="font-bold text-4xl text-white my-10">
-               {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
+              {localProps.data.state.winner === localProps.who
+                ? "对局胜利"
+                : "对局失败"}
             </div>
             {localProps.gameEndExtra}
           </div>

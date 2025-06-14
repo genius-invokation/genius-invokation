@@ -21,7 +21,7 @@ export interface SpecialViewToggleButtonProps {
 export function SpecialViewToggleButton(props: SpecialViewToggleButtonProps) {
   return (
     <button
-      class="absolute right-22.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
+      class="h-8 w-8 flex items-center justify-center rounded-full b-yellow-800 b-1 bg-yellow-50 hover:bg-yellow-100 active:bg-yellow-200 text-yellow-800 transition-colors line-height-none cursor-pointer z-1"
       onClick={() => {
         props.onClick?.();
       }}
