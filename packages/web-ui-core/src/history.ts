@@ -15,7 +15,7 @@
 
 import { Aura, DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
-type HistoryBlock =
+export type HistoryBlock =
   | ChangePhaseHistoryBlock
   | ActionHistoryBlock
   | SwitchOrSelectActiveHistoryBlock
@@ -25,7 +25,7 @@ type HistoryBlock =
   | ElementalTunningHistoryBlock
   | SelectCardHistoryBlock;
 
-type HistoryChildren =
+export type HistoryChildren =
   | SwitchActiveHistoryChild
   | TriggeredHistoryChild
   | DrawCardHistoryChild
@@ -44,24 +44,24 @@ type HistoryChildren =
   | ForbidCardHistoryChild
   | TransformHistoryChild;
 
-type CharacterHistoryChildren =
+export type CharacterHistoryChildren =
   | SwitchActiveHistoryChild
-  | CreateEntityHistoryChild // entityType = "state" | "combatState"
+  | Extract<CreateEntityHistoryChild, { entityType: "state" | "combatState" }>
   | DamageHistoryChild
   | HealHistoryChild
   | ApplyHistoryChild;
 
-type CardHistoryChildren =
-  | CreateEntityHistoryChild // entityType = "summon"
+export type CardHistoryChildren =
+  | Extract<CreateEntityHistoryChild, { entityType:"summon" }>
   | DisposeCardHistoryChild
-  | RemoveEntityHistoryChild; // entityType = "summon" | "support"
+  | Extract<RemoveEntityHistoryChild, { entityType: "summon" | "support" }>;
 
 /////////////// block部分 ////////////////
 
 // 游戏阶段和回合标记
 // style采用灰底白字 居中
 // text: "替换起始手牌" | "选择初始出战角色" | "回合N 开始" | "结束阶段"
-interface ChangePhaseHistoryBlock {
+export interface ChangePhaseHistoryBlock {
   type: "changePhase";
   roundNumber: number;
   newPhase: "initSwitchHands" | "initSwitchActive" | "action" | "end";
@@ -70,7 +70,7 @@ interface ChangePhaseHistoryBlock {
 // 行动标记
 // style采用实色填充 居中
 // text: who + ("行动" | "宣布回合结束")
-interface ActionHistoryBlock {
+export interface ActionHistoryBlock {
   type: "action";
   who: 0 | 1;
   actionType: "other" | "declareEnd";
@@ -80,7 +80,7 @@ interface ActionHistoryBlock {
 // title: who + ("初始出战角色" | "切换角色" | "选择出战角色")
 // image: characterCardface ^ SwitchActiveIcon + icon[->] + [###预览###]
 // click_description: characterCardface <-> characterName \n "角色出战"
-interface SwitchOrSelectActiveHistoryBlock {
+export interface SwitchOrSelectActiveHistoryBlock {
   type: "switchActive";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -93,7 +93,7 @@ interface SwitchOrSelectActiveHistoryBlock {
 // title: who + ("使用技能" || "使用特技")
 // image: callerCardface ^ energyChange? + icon[->] + [###预览###]
 // click_description: callerCardface <-> callerName \n "使用技能" \n skillIcon + skillName
-interface UseSkillHistoryBlock {
+export interface UseSkillHistoryBlock {
   type: "useSkill";
   who: 0 | 1;
   skillDefinitionId: number;
@@ -114,7 +114,7 @@ interface UseSkillHistoryBlock {
 // else:
 //    return (callerDescription);
 // }
-interface TriggeredHistoryBlock {
+export interface TriggeredHistoryBlock {
   type: "triggered";
   who: 0 | 1;
   callerDefinitionId: number;
@@ -127,7 +127,7 @@ interface TriggeredHistoryBlock {
 // title: who + "打出手牌"
 // image: Cardface + icon[->] + [###预览###]
 // click_description: Cardface <-> cardName \n cardDescription
-interface PlayCardHistoryBlock {
+export interface PlayCardHistoryBlock {
   type: "playingCard";
   who: 0 | 1;
   cardDefinitionId: number;
@@ -144,7 +144,7 @@ interface PlayCardHistoryBlock {
 // else:
 //   return (Cardback <-> "???" \n who + "触发挑选效果");
 // }
-interface SelectCardHistoryBlock {
+export interface SelectCardHistoryBlock {
   type: "selectCard";
   who: 0 | 1;
   cardDefinitionId: number; // 被选择的牌
@@ -161,7 +161,7 @@ interface SelectCardHistoryBlock {
 // else:
 //   return (Cardback <-> "???" \n "???");
 // }
-interface ElementalTunningHistoryBlock {
+export interface ElementalTunningHistoryBlock {
   type: "elementalTunning";
   who: 0 | 1;
   cardDefinitionId: number;
@@ -173,7 +173,7 @@ interface ElementalTunningHistoryBlock {
 
 // 切换出战角色
 // content: characterCardface <-> characterName \n "角色出战" + ("卡牌效果" || "超载")
-interface SwitchActiveHistoryChild {
+export interface SwitchActiveHistoryChild {
   type: "switchActive";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -182,7 +182,7 @@ interface SwitchActiveHistoryChild {
 
 // 触发效果
 // content: {effectCardface || effectIcon} <-> effectName \n "触发效果"
-interface TriggeredHistoryChild {
+export interface TriggeredHistoryChild {
   type: "triggered";
   who: 0 | 1;
   effectDefinitionId: number;
@@ -190,7 +190,7 @@ interface TriggeredHistoryChild {
 
 // 抓牌
 // content: {callerCardface || callerIcon} <-> callerName \n who + "抓N张牌"
-interface DrawCardHistoryChild {
+export interface DrawCardHistoryChild {
   type: "drawCard";
   who: 0 | 1;
   callerDefinitionId: number;
@@ -200,7 +200,7 @@ interface DrawCardHistoryChild {
 // 偷牌
 // 匿叶龙，以极限之名
 // content: Cardface <-> cardrName \n who + "夺取" + !who + "手牌"
-interface StealHandHistoryChild {
+export interface StealHandHistoryChild {
   type: "stealHand";
   who: 0 | 1;
   cardDefinitionId: number; // 偷到的牌
@@ -211,7 +211,7 @@ interface StealHandHistoryChild {
 // 生成出战状态|召唤物
 // 支援不显示
 // content: {entityCardface || entityIcon} <-> entityName \n who + ("生成出战状态" || "生成召唤物")
-interface CreateEntityHistoryChild {
+export interface CreateEntityHistoryChild {
   type: "createEntity";
   who: 0 | 1;
   entityType: "combatStatus" | "status" | "equipment" | "summon";
@@ -221,7 +221,7 @@ interface CreateEntityHistoryChild {
 
 // 生成骰子
 // content: {callerCardface || callerIcon} <-> callerName \n who + "生成${diceCount}个${diceType}"
-interface GenerateDiceHistoryChild {
+export interface GenerateDiceHistoryChild {
   type: "generateDice";
   who: 0 | 1;
   callerDefinitionId: number;
@@ -231,7 +231,7 @@ interface GenerateDiceHistoryChild {
 
 // 生成卡牌|复制卡牌
 // content: Cardface <-> cardName \n who + ("生成卡牌, 并将其置入牌库"|| "获得手牌")
-interface CreateCardHistoryChild {
+export interface CreateCardHistoryChild {
   type: "createCard";
   who: 0 | 1;
   cardDefinitionId: number;
@@ -240,7 +240,7 @@ interface CreateCardHistoryChild {
 
 // 受到伤害
 // content: characterCardface <-> characterName + DamageIcon[+/-N] \n "受到${damageValue}点${damageType}${(inlineIcon[oldAura] + inlineIcon[damageType] + reactionName)?}, 生命值${oldHealth}→${newHealth}$" + ("" || ", 被击倒")
-interface DamageHistoryChild {
+export interface DamageHistoryChild {
   type: "damage";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -256,7 +256,7 @@ interface DamageHistoryChild {
 
 // 受到治疗
 // content: characterCardface <-> characterName + HealIcon[+/-N] \n ("" || "复苏, 并" || "角色免于被击倒并") + "受到${healValue}点治疗, 生命值${oldHealth}→${newHealth}"
-interface HealHistoryChild {
+export interface HealHistoryChild {
   type: "heal";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -268,7 +268,7 @@ interface HealHistoryChild {
 
 // 附着元素
 // content: characterCardface <-> characterName \n "附着${damageType}${(inlineIcon[oldAura] + inlineIcon[elementType] + reactionName)?}"
-interface ApplyHistoryChild {
+export interface ApplyHistoryChild {
   type: "apply";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -281,7 +281,7 @@ interface ApplyHistoryChild {
 // 获得充能|消耗充能
 // 被动减少也显示消耗
 // content: characterCardface <-> characterName \n "(获得 || 消耗)${energyValue}点充能, 充能值${oldEnergy}→${newEnergy}"
-interface EnergyHistoryChild {
+export interface EnergyHistoryChild {
   type: "energy";
   who: 0 | 1;
   characterDefinitionId: number;
@@ -293,7 +293,7 @@ interface EnergyHistoryChild {
 
 // 舍弃
 // content: Cardface <-> cardName \n who + "舍弃手牌"
-interface DisposeCardHistoryChild {
+export interface DisposeCardHistoryChild {
   type: "disposeCard";
   who: 0 | 1;
   cardDefinitionId: number;
@@ -302,7 +302,7 @@ interface DisposeCardHistoryChild {
 // 变量改变
 // 如卡牌、状态等的可用次数、计数器等
 // content: {Cardface || Icon} <-> cardName \n "${variableName}: ${oldValue}→${newValue}"
-interface VariableChangeHistoryChild {
+export interface VariableChangeHistoryChild {
   type: "variableChange";
   who: 0 | 1;
   cardDefinitionId: number;
@@ -315,7 +315,7 @@ interface VariableChangeHistoryChild {
 // content: characterCardface <-> characterName \n ("失去状态:" || "失去装备:") + inline[entityIcon] + entityName
 // 弃置出战状态、召唤物、支援
 // content: {entityCardface || entityIcon} <-> entityName \n ("出战状态消失" || "卡牌弃置")
-interface RemoveEntityHistoryChild {
+export interface RemoveEntityHistoryChild {
   type: "removeEntity";
   who: 0 | 1;
   entityType: "combatStatus" | "status" | "equipment" | "summon" | "support";
@@ -325,16 +325,17 @@ interface RemoveEntityHistoryChild {
 
 // 元素调和|某些卡牌转化元素骰的效果
 // content: (Cardface || cardIcon || TuningIcon) <-> (cardName || "元素调和") \n who + "将1个元素骰转换为inlineIcon[DiceType]${DiceType}"
-interface ConvertDiceHistoryChild {
+export interface ConvertDiceHistoryChild {
   type: "convertDice";
   who: 0 | 1;
+  callerDefinitionId?: number; // 某些卡牌转化元素骰的效果
   isTunning: boolean;
   diceType: DiceType;
 }
 
 // 裁定之时, 梅洛彼得堡
 // content: Cardface <-> cardName \n "遭到反制，未能生效"
-interface ForbidCardHistoryChild {
+export interface ForbidCardHistoryChild {
     type: "forbidCard";
     who: 0 | 1;
     cardDefinitionId: number;
@@ -343,7 +344,7 @@ interface ForbidCardHistoryChild {
 // 转换形态
 // 角色、召唤物
 // content: Cardface <-> cardName \n ("转换形态···" || "转换形态完成")
-interface TransformHistoryChild {
+export interface TransformHistoryChild {
     type: "transform";
     who: 0 | 1;
     cardDefinitionId: number; // 对应新旧形态
@@ -382,7 +383,7 @@ interface TransformHistoryChild {
 //    如果List内仅存在一个card则直接显示
 //    如果List内存在多个card则显示第一个，其他折叠为牌堆
 //    DisposeList为7:12, 其余为28:33
-interface HistoryChildrenSummary {
+export interface HistoryChildrenSummary {
   characterSummary: CharacterSummary[];
   cardSummary: CardSummary[];
 }
@@ -391,7 +392,7 @@ interface HistoryChildrenSummary {
 // 如果不存在CharacterSummary的id为该角色，则创建对应的CharacterSummary并将事件加入其中
 // 如果存在CharacterSummary的id为该角色，则将事件加入其中
 // 计算伤害事件和治疗事件后角色最终的血量变化
-interface CharacterSummary {
+export interface CharacterSummary {
   characterDefinitionId: number;
   healthChange: number;
   children: CharacterHistoryChildren[];
@@ -400,7 +401,7 @@ interface CharacterSummary {
 // 如果事件符合CardHistoryChildren类型及描述
 // 如果不存在CardSummary的id为该卡牌，则创建对应的CardSummary并将事件加入其中
 // 如果存在CardSummary的id为该卡牌，则将事件加入其中
-interface CardSummary {
+export interface CardSummary {
   cardDefinitionId: number;
   children: CardHistoryChildren[];
 }
@@ -415,7 +416,7 @@ interface CardSummary {
 // 每回合重投后（我看现有的mutation可以记录这个）计算有效骰并validDiceCount.append()
 // 如果发生了TuningHistoryBlock，就对tuningTimes +1
 // 如果发生了DrawCardHistoryChild，就对drawCardsCount + drawCardsCount
-interface GlobalRecord {
+export interface GlobalRecord {
   who: 0 | 1;
   damageList: number[];
   healList: number[];
