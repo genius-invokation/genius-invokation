@@ -31,6 +31,7 @@ import {
 import { Card } from "./Card";
 import {
   batch,
+  createContext,
   createEffect,
   createMemo,
   createSignal,
@@ -40,6 +41,8 @@ import {
   Show,
   splitProps,
   untrack,
+  useContext,
+  type Accessor,
   type ComponentProps,
   type JSX,
 } from "solid-js";
@@ -297,6 +300,13 @@ interface CardInfoCalcContext {
   draggingHand: DraggingCardInfo | null;
   availableSteps: ActionStep[];
 }
+
+interface ChessboardContextValue {
+  rotation: Accessor<Rotation | undefined>;
+}
+
+const ChessboardContext = createContext<ChessboardContextValue>();
+export const useChessboardContext = () => useContext(ChessboardContext)!;
 
 function calcCardsInfo(
   state: PbGameState,
@@ -1231,11 +1241,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [{ show: showAlert, hide: hideAlert }, Alert] = createAlert();
-  const [{ confirm, rotate}, MessageBox] = createMessageBox();
-
-  createEffect(() => {
-    rotate(untrack(() => localProps.rotation) ?? 0);
-  });
+  const [{ confirm }, MessageBox] = createMessageBox();
 
   const [showDeclareEndButton, setShowDeclareEndButton] = createSignal(false);
   const declareEndMarkerProps = createMemo<DeclareEndMarkerProps>(() => {
@@ -1612,282 +1618,284 @@ export function Chessboard(props: ChessboardProps) {
     containerResizeObserver.disconnect();
   });
   return (
-    <div
-      class={`gi-tcg-chessboard-new reset ${localProps.class ?? ""}`}
-      {...elProps}
-      ref={containerEl}
-    >
-      <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
-        <ChessboardBackground />
-        {/* 3d space */}
-        <div
-          class="relative h-full w-full preserve-3d select-none"
-          ref={chessboardElement}
-          onClick={onChessboardClick}
-          style={{
-            perspective: `${PERSPECTIVE / 4}rem`,
-          }}
-        >
-          <KeyWithAnimation
-            each={children().characters}
-            updateWhen={updateChildrenSignal()}
-          >
-            {(character) => (
-              <CharacterArea
-                {...character()}
-                selecting={character().id === selectingItem()?.info.id}
-                onClick={(e, t) => onCharacterAreaClick(e, t, character())}
-              />
-            )}
-          </KeyWithAnimation>
-          <KeyWithAnimation
-            each={children().cards}
-            updateWhen={updateChildrenSignal()}
-          >
-            {(card) => (
-              <Card
-                {...card()}
-                selected={
-                  card().id === selectingItem()?.info.id &&
-                  card().kind !== "dragging"
-                }
-                toBeSwitched={
-                  card().kind === "switching" &&
-                  switchedCards().includes(card().id)
-                }
-                hidden={
-                  // 存在特殊视图时：视图可见时只显示正在切换的手牌，反之只显示其他行动牌
-                  hasSpecialView()
-                    ? (card().kind === "switching") !== specialViewVisible()
-                    : false
-                }
-                realCost={localProps.actionState?.realCosts.cards.get(
-                  card().id,
-                )}
-                onClick={(e, t) => onCardClick(e, t, card())}
-                onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
-                onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
-                onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
-                onPointerMove={(e, t) => onCardPointerMove(e, t, card())}
-                onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
-              />
-            )}
-          </KeyWithAnimation>
-          <KeyWithAnimation
-            each={children().entities}
-            updateWhen={updateChildrenSignal()}
-          >
-            {(entity) => (
-              <Entity
-                {...entity()}
-                selecting={entity().id === selectingItem()?.info.id}
-                onClick={(e, t) => onEntityClick(e, t, entity())}
-              />
-            )}
-          </KeyWithAnimation>
-          <Key each={children().cardCountHints} by="area">
-            {(hint) => (
-              <CardCountHint
-                {...hint()}
-                shown={isShowCardHint[hint().area] !== null}
-              />
-            )}
-          </Key>
-          <Show when={hasSpecialView() && specialViewVisible()}>
-            <SpecialViewBackdrop onClick={onChessboardClick} />
-          </Show>
-          <ChessboardBackdrop
-            shown={localProps.actionState?.showBackdrop}
+    <ChessboardContext.Provider value={{ rotation: () => localProps.rotation}}>
+      <div
+        class={`gi-tcg-chessboard-new reset ${localProps.class ?? ""}`}
+        {...elProps}
+        ref={containerEl}
+      >
+        <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
+          <ChessboardBackground />
+          {/* 3d space */}
+          <div
+            class="relative h-full w-full preserve-3d select-none"
+            ref={chessboardElement}
             onClick={onChessboardClick}
-          />
-          <Show when={children().tunningArea}>
-            {(tunningArea) => <TuningArea {...tunningArea()} />}
+            style={{
+              perspective: `${PERSPECTIVE / 4}rem`,
+            }}
+          >
+            <KeyWithAnimation
+              each={children().characters}
+              updateWhen={updateChildrenSignal()}
+            >
+              {(character) => (
+                <CharacterArea
+                  {...character()}
+                  selecting={character().id === selectingItem()?.info.id}
+                  onClick={(e, t) => onCharacterAreaClick(e, t, character())}
+                />
+              )}
+            </KeyWithAnimation>
+            <KeyWithAnimation
+              each={children().cards}
+              updateWhen={updateChildrenSignal()}
+            >
+              {(card) => (
+                <Card
+                  {...card()}
+                  selected={
+                    card().id === selectingItem()?.info.id &&
+                    card().kind !== "dragging"
+                  }
+                  toBeSwitched={
+                    card().kind === "switching" &&
+                    switchedCards().includes(card().id)
+                  }
+                  hidden={
+                    // 存在特殊视图时：视图可见时只显示正在切换的手牌，反之只显示其他行动牌
+                    hasSpecialView()
+                      ? (card().kind === "switching") !== specialViewVisible()
+                      : false
+                  }
+                  realCost={localProps.actionState?.realCosts.cards.get(
+                    card().id,
+                  )}
+                  onClick={(e, t) => onCardClick(e, t, card())}
+                  onPointerEnter={(e, t) => onCardPointerEnter(e, t, card())}
+                  onPointerLeave={(e, t) => onCardPointerLeave(e, t, card())}
+                  onPointerDown={(e, t) => onCardPointerDown(e, t, card())}
+                  onPointerMove={(e, t) => onCardPointerMove(e, t, card())}
+                  onPointerUp={(e, t) => onCardPointerUp(e, t, card())}
+                />
+              )}
+            </KeyWithAnimation>
+            <KeyWithAnimation
+              each={children().entities}
+              updateWhen={updateChildrenSignal()}
+            >
+              {(entity) => (
+                <Entity
+                  {...entity()}
+                  selecting={entity().id === selectingItem()?.info.id}
+                  onClick={(e, t) => onEntityClick(e, t, entity())}
+                />
+              )}
+            </KeyWithAnimation>
+            <Key each={children().cardCountHints} by="area">
+              {(hint) => (
+                <CardCountHint
+                  {...hint()}
+                  shown={isShowCardHint[hint().area] !== null}
+                />
+              )}
+            </Key>
+            <Show when={hasSpecialView() && specialViewVisible()}>
+              <SpecialViewBackdrop onClick={onChessboardClick} />
+            </Show>
+            <ChessboardBackdrop
+              shown={localProps.actionState?.showBackdrop}
+              onClick={onChessboardClick}
+            />
+            <Show when={children().tunningArea}>
+              {(tunningArea) => <TuningArea {...tunningArea()} />}
+            </Show>
+          </div>
+          {/* 下层 UI 组件 */}
+          <AspectRatioContainer>
+            <ActionHintText
+              class="absolute left-50% top-50% translate-x--50% translate-y--50%"
+              text={localProps.actionState?.hintText}
+            />
+            <Show when={displayUiComponents()}>
+              <DeclareEndMarker
+                class={"absolute top-50% translate-y--50% left-1"}
+                {...declareEndMarkerProps()}
+              />
+              <PlayerInfoBox
+                opp
+                class="absolute top-0.5 bottom-[calc(50%+2rem)] left-2"
+                {...playerInfoPropsOf(flip(localProps.who))}
+                {...localProps.oppPlayerInfo}
+              />
+              <PlayerInfoBox
+                class="absolute top-[calc(50%+2rem)] bottom-0.5 left-2"
+                {...playerInfoPropsOf(localProps.who)}
+                {...localProps.myPlayerInfo}
+              />
+              <DicePanel
+                dice={myDice()}
+                selectedDice={selectedDice()}
+                maxSelectedCount={
+                  localProps.actionState?.maxSelectedDiceCount ?? null
+                }
+                disabledDiceTypes={
+                  localProps.actionState?.disabledDiceTypes ?? []
+                }
+                onSelectDice={setSelectedDice}
+                state={dicePanelState()}
+                onStateChange={setDicePanelState}
+              />
+              <SkillButtonGroup
+                class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
+                skills={mySkills()}
+                switchActiveButton={switchActiveStep() ?? null}
+                switchActiveCost={
+                  localProps.actionState?.realCosts.switchActive ?? null
+                }
+                onClick={onSkillClick}
+                shown={showSkillButtons()}
+              />
+            </Show>
+            <ConfirmButton
+              class="absolute top-80% left-50% translate-x--50%"
+              step={localProps.actionState?.availableSteps.find(
+                (s) => s.type === "clickConfirmButton",
+              )}
+              onClick={(step) => {
+                localProps.onStepActionState?.(step, selectedDiceValue());
+              }}
+            />
+            <RoundAndPhaseNotification
+              who={localProps.who}
+              roundNumber={localProps.data.state.roundNumber}
+              currentTurn={localProps.data.state.currentTurn as 0 | 1}
+              class="absolute left-0 w-full top-50% translate-y--50%"
+              info={localProps.data.roundAndPhase}
+            />
+            <Show when={localProps.data.notificationBox} keyed>
+              {(data) => (
+                <NotificationBox opp={data.who !== localProps.who} data={data} />
+              )}
+            </Show>
+            <Show when={localProps.data.playingCard} keyed>
+              {(data) => (
+                <PlayingCard opp={data.who !== localProps.who} {...data} />
+              )}
+            </Show>
+            <MutationViewer who={localProps.who} mutations={allMutations()} />
+            <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
+              <button
+                class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                title="放弃对局"
+                onClick={async () => {
+                  if (await confirm("确定放弃对局吗？")) {
+                    localProps.onGiveUp?.();
+                  }
+                }}
+              >
+                &#10005;
+              </button>
+            </Show>
+          </AspectRatioContainer>
+          {/* SpecialViews */}
+          <Show when={props.viewType === "selectCard" && specialViewVisible()}>
+            <SelectCardView
+              candidateIds={localProps.selectCardCandidates}
+              onClickCard={(id) => {
+                dataViewerController.showCard(id);
+              }}
+              onConfirm={(id) => {
+                localProps.onSelectCard?.(id);
+                dataViewerController.hide();
+              }}
+              onVisible={() => {
+                setSpecialViewVisible((v) => !v);
+              }}
+              nameGetter={(name) => assetsManager.getNameSync(name)}
+            />
           </Show>
-        </div>
-        {/* 下层 UI 组件 */}
-        <AspectRatioContainer>
-          <ActionHintText
-            class="absolute left-50% top-50% translate-x--50% translate-y--50%"
-            text={localProps.actionState?.hintText}
-          />
-          <Show when={displayUiComponents()}>
-            <DeclareEndMarker
-              class={"absolute top-50% translate-y--50% left-1"}
-              {...declareEndMarkerProps()}
+          <Show when={props.viewType === "switchHands" && specialViewVisible()}>
+            <SwitchHandsView
+              viewType={localProps.viewType}
+              onConfirm={() => {
+                const cards = switchedCards();
+                setSwitchedCards([]);
+                localProps.onSwitchHands?.(cards);
+                setSelectingItem(null);
+              }}
+              onVisible={() => {
+                setSpecialViewVisible((v) => !v);
+              }}
             />
-            <PlayerInfoBox
-              opp
-              class="absolute top-0.5 bottom-[calc(50%+2rem)] left-2"
-              {...playerInfoPropsOf(flip(localProps.who))}
-              {...localProps.oppPlayerInfo}
-            />
-            <PlayerInfoBox
-              class="absolute top-[calc(50%+2rem)] bottom-0.5 left-2"
-              {...playerInfoPropsOf(localProps.who)}
-              {...localProps.myPlayerInfo}
-            />
-            <DicePanel
+          </Show>
+          <Show
+            when={
+              (props.viewType === "rerollDice" ||
+                props.viewType === "rerollDiceEnd") &&
+              specialViewVisible()
+            }
+          >
+            <RerollDiceView
+              noConfirmButton={props.viewType === "rerollDiceEnd"}
               dice={myDice()}
               selectedDice={selectedDice()}
-              maxSelectedCount={
-                localProps.actionState?.maxSelectedDiceCount ?? null
-              }
-              disabledDiceTypes={
-                localProps.actionState?.disabledDiceTypes ?? []
-              }
               onSelectDice={setSelectedDice}
-              state={dicePanelState()}
-              onStateChange={setDicePanelState}
-            />
-            <SkillButtonGroup
-              class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
-              skills={mySkills()}
-              switchActiveButton={switchActiveStep() ?? null}
-              switchActiveCost={
-                localProps.actionState?.realCosts.switchActive ?? null
-              }
-              onClick={onSkillClick}
-              shown={showSkillButtons()}
-            />
-          </Show>
-          <ConfirmButton
-            class="absolute top-80% left-50% translate-x--50%"
-            step={localProps.actionState?.availableSteps.find(
-              (s) => s.type === "clickConfirmButton",
-            )}
-            onClick={(step) => {
-              localProps.onStepActionState?.(step, selectedDiceValue());
-            }}
-          />
-          <RoundAndPhaseNotification
-            who={localProps.who}
-            roundNumber={localProps.data.state.roundNumber}
-            currentTurn={localProps.data.state.currentTurn as 0 | 1}
-            class="absolute left-0 w-full top-50% translate-y--50%"
-            info={localProps.data.roundAndPhase}
-          />
-          <Show when={localProps.data.notificationBox} keyed>
-            {(data) => (
-              <NotificationBox opp={data.who !== localProps.who} data={data} />
-            )}
-          </Show>
-          <Show when={localProps.data.playingCard} keyed>
-            {(data) => (
-              <PlayingCard opp={data.who !== localProps.who} {...data} />
-            )}
-          </Show>
-          <MutationViewer who={localProps.who} mutations={allMutations()} />
-          <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
-            <button
-              class="absolute right-2.3 top-2.5 h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-              title="放弃对局"
-              onClick={async () => {
-                if (await confirm("确定放弃对局吗？")) {
-                  localProps.onGiveUp?.();
-                }
+              onConfirm={() => {
+                const dice = selectedDiceValue() as PbDiceType[];
+                setSelectedDice([]);
+                localProps.onRerollDice?.(dice);
               }}
-            >
-              &#10005;
-            </button>
-          </Show>
-        </AspectRatioContainer>
-        {/* SpecialViews */}
-        <Show when={props.viewType === "selectCard" && specialViewVisible()}>
-          <SelectCardView
-            candidateIds={localProps.selectCardCandidates}
-            onClickCard={(id) => {
-              dataViewerController.showCard(id);
-            }}
-            onConfirm={(id) => {
-              localProps.onSelectCard?.(id);
-              dataViewerController.hide();
-            }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
-            nameGetter={(name) => assetsManager.getNameSync(name)}
-          />
-        </Show>
-        <Show when={props.viewType === "switchHands" && specialViewVisible()}>
-          <SwitchHandsView
-            viewType={localProps.viewType}
-            onConfirm={() => {
-              const cards = switchedCards();
-              setSwitchedCards([]);
-              localProps.onSwitchHands?.(cards);
-              setSelectingItem(null);
-            }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
-          />
-        </Show>
-        <Show
-          when={
-            (props.viewType === "rerollDice" ||
-              props.viewType === "rerollDiceEnd") &&
-            specialViewVisible()
-          }
-        >
-          <RerollDiceView
-            noConfirmButton={props.viewType === "rerollDiceEnd"}
-            dice={myDice()}
-            selectedDice={selectedDice()}
-            onSelectDice={setSelectedDice}
-            onConfirm={() => {
-              const dice = selectedDiceValue() as PbDiceType[];
-              setSelectedDice([]);
-              localProps.onRerollDice?.(dice);
-            }}
-            onVisible={() => {
-              setSpecialViewVisible((v) => !v);
-            }}
-          />
-        </Show>
-        {/* 上层 UI 组件 */}
-        <AspectRatioContainer>
-          <CurrentTurnHint
-            phase={localProps.data.state.phase}
-            opp={localProps.data.state.currentTurn !== localProps.who}
-          />
-          <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
-            <CardDataViewer />
-          </div>
-          <Show when={hasSpecialView()}>
-            <SpecialViewToggleButton
-              onClick={() => setSpecialViewVisible((v) => !v)}
+              onVisible={() => {
+                setSpecialViewVisible((v) => !v);
+              }}
             />
           </Show>
-        </AspectRatioContainer>
-        <Alert />
-        <MessageBox />
-        <Show when={localProps.doingRpc && localProps.timer}>
-          {(timer) => (
-            <div
-              class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-              bool:data-shown={true}
-              bool:data-alert={timer().current <= 10}
-            >
-              {Math.max(Math.floor(timer().current / 60), 0)
-                .toString()
-                .padStart(2, "0")}{" "}
-              :{" "}
-              {Math.max(timer().current % 60, 0)
-                .toString()
-                .padStart(2, "0")}
+          {/* 上层 UI 组件 */}
+          <AspectRatioContainer>
+            <CurrentTurnHint
+              phase={localProps.data.state.phase}
+              opp={localProps.data.state.currentTurn !== localProps.who}
+            />
+            <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
+              <CardDataViewer />
             </div>
-          )}
-        </Show>
-        {/* game end */}
-        <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
-          <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
-            <div class="font-bold text-4xl text-white my-10">
-               {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
+            <Show when={hasSpecialView()}>
+              <SpecialViewToggleButton
+                onClick={() => setSpecialViewVisible((v) => !v)}
+              />
+            </Show>
+          </AspectRatioContainer>
+          <Alert />
+          <MessageBox />
+          <Show when={localProps.doingRpc && localProps.timer}>
+            {(timer) => (
+              <div
+                class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
+                bool:data-shown={true}
+                bool:data-alert={timer().current <= 10}
+              >
+                {Math.max(Math.floor(timer().current / 60), 0)
+                  .toString()
+                  .padStart(2, "0")}{" "}
+                :{" "}
+                {Math.max(timer().current % 60, 0)
+                  .toString()
+                  .padStart(2, "0")}
+              </div>
+            )}
+          </Show>
+          {/* game end */}
+          <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
+            <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
+              <div class="font-bold text-4xl text-white my-10">
+                {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
+              </div>
+              {localProps.gameEndExtra}
             </div>
-            {localProps.gameEndExtra}
-          </div>
-        </Show>
+          </Show>
+        </div>
       </div>
-    </div>
+    </ChessboardContext.Provider>  
   );
 }
