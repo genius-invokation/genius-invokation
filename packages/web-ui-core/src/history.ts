@@ -40,7 +40,8 @@ type HistoryChildren =
   | DisposeCardHistoryChild
   | VariableChangeHistoryChild
   | RemoveEntityHistoryChild
-  | ConvertDiceHistoryChild;
+  | ConvertDiceHistoryChild
+  | ForbidCardHistoryChild;
 
 type CharacterHistoryChildren =
   | SwitchActiveHistoryChild
@@ -52,7 +53,7 @@ type CharacterHistoryChildren =
 type CardHistoryChildren =
   | CreateEntityHistoryChild // entityType = "summon"
   | DisposeCardHistoryChild
-  | RemoveEntityHistoryChild; // entityType = "summon"
+  | RemoveEntityHistoryChild; // entityType = "summon" | "support"
 
 /////////////// block部分 ////////////////
 
@@ -201,7 +202,7 @@ interface DrawCardHistoryChild {
 interface StealHandHistoryChild {
   type: "stealHand";
   who: 0 | 1;
-  callerDefinitionId: number; // 偷到的牌
+  cardDefinitionId: number; // 偷到的牌
 }
 
 // 附属状态|装备
@@ -237,7 +238,7 @@ interface CreateCardHistoryChild {
 }
 
 // 受到伤害
-// content: characterCardface <-> characterName + DamageIcon[+/-N] \n "受到${damageValue}点${damageType}${(inlineIcon[characterElementBefore] + inlineIcon[damageType] + reactionName)?}, 生命值${oldHealth}→${newHealth}$" + ("" || ", 被击倒")
+// content: characterCardface <-> characterName + DamageIcon[+/-N] \n "受到${damageValue}点${damageType}${(inlineIcon[oldAura] + inlineIcon[damageType] + reactionName)?}, 生命值${oldHealth}→${newHealth}$" + ("" || ", 被击倒")
 interface DamageHistoryChild {
   type: "damage";
   who: 0 | 1;
@@ -265,7 +266,7 @@ interface HealHistoryChild {
 }
 
 // 附着元素
-// content: characterCardface <-> characterName \n "附着${damageType}${(inlineIcon[characterElementBefore] + inlineIcon[elementType] + reactionName)?}"
+// content: characterCardface <-> characterName \n "附着${damageType}${(inlineIcon[oldAura] + inlineIcon[elementType] + reactionName)?}"
 interface ApplyHistoryChild {
   type: "apply";
   who: 0 | 1;
@@ -310,19 +311,19 @@ interface VariableChangeHistoryChild {
 }
 
 // 弃置状态|装备
-// content: characterCardface <-> characterName \n ("失去状态:" || "失去装备:") + inline[propertyIcon] + propertyName
+// content: characterCardface <-> characterName \n ("失去状态:" || "失去装备:") + inline[entityIcon] + entityName
 // 弃置出战状态、召唤物、支援
 // content: {entityCardface || entityIcon} <-> entityName \n ("出战状态消失" || "卡牌弃置")
 interface RemoveEntityHistoryChild {
   type: "removeEntity";
   who: 0 | 1;
-  entityType: "combatStatus" | "status" | "equipment" | "summon";
+  entityType: "combatStatus" | "status" | "equipment" | "summon" | "support";
   characterDefinitionId?: number; // 状态、装备：所属角色区
   entityDefinitionId: number;
 }
 
 // 元素调和|某些卡牌转化元素骰的效果
-// content: (Cardface || cardIcon || TuningIcon) <-> (cardName || "元素调和") \n who + "将一个元素骰转换为inlineIcon[DiceType]${DiceType}"
+// content: (Cardface || cardIcon || TuningIcon) <-> (cardName || "元素调和") \n who + "将1个元素骰转换为inlineIcon[DiceType]${DiceType}"
 interface ConvertDiceHistoryChild {
   type: "convertDice";
   who: 0 | 1;
@@ -330,35 +331,46 @@ interface ConvertDiceHistoryChild {
   diceType: DiceType;
 }
 
+// 裁定之时, 梅洛彼得堡
+// content: Cardface <-> cardName \n "遭到反制，未能生效"
+interface ForbidCardHistoryChild {
+    type: "forbidCard";
+    who: 0 | 1;
+    cardDefinitionId: number;
+}
+
 /////////////// block如何对自己的child生成预览 ////////////////
 
 // bolck预览渲染逻辑
 // 遍历characterSummary
-//    if 一个character包含伤害事件，就将其加入DamageList
-//    elif 一个character包含治疗事件，就将其加入HealList
+//    if 一个character的healthChange<0，就将其加入DamageList
+//    elif 一个character的healthChange>0，就将其加入HealList
 //    elif 一个character包含附着元素事件，就将其加入ElementList
 //    elif 一个character包含切换角色事件，就将其加入SwitchList
 //    else 将剩余角色加入StateList
 // 遍历每个List
 //    if List内只有一个角色
 //      显示这个角色
-//      如果有伤害，显示总伤害！
+//      如果有healthChange，显示healthChange
 //      对于元素反应、状态、出战状态
 //        如果有1个则直接显示，如果有多个则显示“···”
 //    else List内有多个角色
 //      显示第一个角色，其他折叠为牌堆
-//      如果有伤害，显示“···”
-//      对于伤害、元素反应、状态
+//      如果有healthChange，显示“···”
+//      对于元素反应、状态
 //        如果有则显示“···”
 //      对于出战状态
 //        如果有1个且List内角色阵营相同则直接显示，否则显示“···”
 // 遍历cardSummary
 //    if 仅含有DisposeCardHistoryChild，就将其加入DisposeList
 //    elif 仅含有CreateEntityHistoryChild，就将其加入CreateList
-//    elif 仅含有RemoveEntityHistoryChild，就将其加入RemoveList
+//    elif 仅含有RemoveEntityHistoryChild:
+//      if entityType="summon" 就将其加入RemoveList
+//      elif entityType="support" 就将其加入DisposeList
 // 遍历每个List
 //    如果List内仅存在一个card则直接显示
 //    如果List内存在多个card则显示第一个，其他折叠为牌堆
+//    DisposeList为7:12, 其余为28:33
 interface HistoryChildrenSummary {
   characterSummary: CharacterSummary[];
   cardSummary: CardSummary[];
@@ -367,8 +379,10 @@ interface HistoryChildrenSummary {
 // 如果事件符合CharaterHistoryChildren类型及描述
 // 如果不存在CharacterSummary的id为该角色，则创建对应的CharacterSummary并将事件加入其中
 // 如果存在CharacterSummary的id为该角色，则将事件加入其中
+// 计算伤害事件和治疗事件后角色最终的血量变化
 interface CharacterSummary {
   characterDefinitionId: number;
+  healthChange: number;
   children: CharacterHistoryChildren[];
 }
 // 对于child事件
