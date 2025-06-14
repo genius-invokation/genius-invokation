@@ -265,7 +265,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   timer?: RpcTimer | null;
   myPlayerInfo?: PlayerInfo;
   oppPlayerInfo?: PlayerInfo;
-  gameEndExtra?: JSX.Element;  
+  gameEndExtra?: JSX.Element;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
    */
@@ -1226,7 +1226,7 @@ export function Chessboard(props: ChessboardProps) {
       clearTimeout(current);
     }
     const timeout = window.setTimeout(() => {
-      setShowCardHint(area, null)
+      setShowCardHint(area, null);
     }, 500);
     setShowCardHint(area, timeout);
   };
@@ -1348,6 +1348,8 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
+  const timer = () => (localProps.doingRpc ? localProps.timer ?? null : null);
+
   const [selectedDice, setSelectedDice] = createSignal<boolean[]>([]);
   const [dicePanelState, setDicePanelState] =
     createSignal<DicePanelState>("hidden");
@@ -1358,7 +1360,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
-  const [mutationVisible, setMutationVisible] = createSignal(false);
+  const [showMutationPanel, setShowMutationPanel] = createSignal(false);
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -1823,9 +1825,10 @@ export function Chessboard(props: ChessboardProps) {
           <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
-          <Show when={mutationVisible()}>
+          <Show when={showMutationPanel()}>
             <MutationPanel who={localProps.who} mutations={allMutations()} />
           </Show>
+          {/* 左上角部件 */}
           <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
             <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
               <button
@@ -1840,37 +1843,31 @@ export function Chessboard(props: ChessboardProps) {
                 &#10005;
               </button>
             </Show>
-            <MutationToggleButton 
-              onClick={() => setMutationVisible((v) => !v)} 
+            <MutationToggleButton
+              onClick={() => setShowMutationPanel((v) => !v)}
             />
             <Show when={hasSpecialView()}>
               <SpecialViewToggleButton
                 onClick={() => setSpecialViewVisible((v) => !v)}
               />
-            </Show>            
+            </Show>
             <CurrentTurnHint
               phase={localProps.data.state.phase}
               opp={localProps.data.state.currentTurn !== localProps.who}
             />
-            <Show when={localProps.doingRpc && localProps.timer}>
-              {(timer) => (
-                <TimerCapsule timer={timer()}/>
-              )}
-            </Show>
+            <TimerCapsule timer={timer()} />
           </div>
         </AspectRatioContainer>
+        <TimerAlert timer={timer()} />
         <Alert />
-        <Show when={localProps.doingRpc && localProps.timer}>
-          {(timer) => (
-            <TimerCapsule timer={timer()}/>
-          )}
-        </Show>
         <MessageBox />
         {/* game end */}
         <Show when={localProps.data.state.phase === PbPhaseType.GAME_END}>
           <div class="absolute inset-0 bg-black/85 flex items-center justify-center flex-col z-50">
             <div class="font-bold text-4xl text-white my-10">
-               {localProps.data.state.winner === localProps.who ? "对局胜利" : "对局失败"}
+              {localProps.data.state.winner === localProps.who
+                ? "对局胜利"
+                : "对局失败"}
             </div>
             {localProps.gameEndExtra}
           </div>

@@ -17,26 +17,22 @@ import { Show } from "solid-js";
 import type { RpcTimer } from "./Chessboard";
 
 export interface TimerProps {
-  timer: RpcTimer;
+  timer: RpcTimer | null;
 }
 
 function parseTime(time: number) {
-  return(
-    `${Math.max(Math.floor(time / 60), 0)
+  return `${Math.max(Math.floor(time / 60), 0)
     .toString()
     .padStart(2, "0")} : ${Math.max(time % 60, 0)
     .toString()
-    .padStart(2, "0")}`
-  );
+    .padStart(2, "0")}`;
 }
-  
+
 export function TimerCapsule(props: TimerProps) {
   return (
-    <Show when={ props.timer.current > 20 }>
-      <div
-        class="h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50"
-      >
-        {parseTime(props.timer.current)}
+    <Show when={props.timer && props.timer.current > 20}>
+      <div class="h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50">
+        {parseTime(props.timer!.current)}
       </div>
     </Show>
   );
@@ -44,13 +40,12 @@ export function TimerCapsule(props: TimerProps) {
 
 export function TimerAlert(props: TimerProps) {
   return (
-    <Show when={ props.timer.current <= 20 }>
+    <Show when={props.timer && props.timer.current <= 20}>
       <div
-        class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold invisible data-[shown]:visible data-[alert]:text-red pointer-events-none"
-        bool:data-shown={true}
-        bool:data-alert={props.timer.current <= 10}
+        class="absolute top-6 left-50% translate-x--50%  bg-black text-white opacity-80 py-2 px-4 rounded-2 z-29 whitespace-pre font-bold  data-[alert]:text-red pointer-events-none"
+        bool:data-alert={props.timer!.current <= 10}
       >
-        {parseTime(props.timer.current)}
+        {parseTime(props.timer!.current)}
       </div>
     </Show>
   );
