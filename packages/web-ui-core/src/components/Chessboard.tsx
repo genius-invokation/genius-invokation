@@ -122,12 +122,15 @@ import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
-import { MutationToggleButton, MutationPanel } from "./MutationViewer";
+import { HistoryToggleButton, HistoryPanel } from "./HistoryViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
+// 测试用
+import historyData from '../mock-history.json';
+import type { HistoryBlock } from "../history";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1071,6 +1074,9 @@ export function Chessboard(props: ChessboardProps) {
     [],
   );
 
+  // 测试用
+  const testHistory = () => historyData as HistoryBlock[];
+
   const getHandState = (
     focusing: boolean,
     viewType: ChessboardViewType,
@@ -1826,7 +1832,7 @@ export function Chessboard(props: ChessboardProps) {
             <CardDataViewer />
           </div>
           <Show when={showMutationPanel()}>
-            <MutationPanel who={localProps.who} mutations={allMutations()} />
+            <HistoryPanel who={localProps.who} history={testHistory()} />
           </Show>
           {/* 左上角部件 */}
           <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
@@ -1843,7 +1849,7 @@ export function Chessboard(props: ChessboardProps) {
                 &#10005;
               </button>
             </Show>
-            <MutationToggleButton
+            <HistoryToggleButton
               onClick={() => setShowMutationPanel((v) => !v)}
             />
             <Show when={hasSpecialView()}>
