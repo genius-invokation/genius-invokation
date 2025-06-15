@@ -15,6 +15,18 @@
 
 import { Aura, DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
+export type HistoryDetailBlock =
+  | SwitchOrSelectActiveHistoryBlock
+  | UseSkillHistoryBlock
+  | TriggeredHistoryBlock
+  | PlayCardHistoryBlock
+  | ElementalTunningHistoryBlock
+  | SelectCardHistoryBlock;
+
+export type HistoryHintBlock =
+  | ChangePhaseHistoryBlock
+  | ActionHistoryBlock;
+
 export type HistoryBlock =
   | ChangePhaseHistoryBlock
   | ActionHistoryBlock
@@ -364,12 +376,12 @@ export interface TransformHistoryChild {
 //    if List内只有一个角色
 //      显示这个角色
 //      如果有healthChange，显示healthChange
-//      对于元素反应、状态、出战状态
+//      对于元素反应/附着、状态、出战状态
 //        如果有1个则直接显示，如果有多个则显示“···”
 //    else List内有多个角色
 //      显示第一个角色，其他折叠为牌堆
 //      如果有healthChange，显示“···”
-//      对于元素反应、状态
+//      对于元素反应/附着、状态
 //        如果有则显示“···”
 //      对于出战状态
 //        如果有1个且List内角色阵营相同则直接显示，否则显示“···”
