@@ -570,6 +570,7 @@ export class Game {
           type: "resetDice",
           who,
           value: initDice,
+          reason: "roll",
         });
         this.notifyOne(who);
         await this.mutator.reroll(who, count);
@@ -691,6 +692,7 @@ export class Game {
         type: "resetDice",
         who,
         value: operatingDice,
+        reason: "consume",
       });
       // 消耗能量
       const requiredEnergy = actionInfo.cost.get(DiceType.Energy) ?? 0;
@@ -807,6 +809,7 @@ export class Game {
               ...player().dice,
               elementOfCharacter(activeCh().definition),
             ]),
+            reason: "elementalTunning",
           });
           await this.handleEvent("onDisposeOrTuneCard", tuneCardEventArg);
           break;

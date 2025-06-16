@@ -57,6 +57,7 @@ export {
   PlayerStatusChangeEM,
   RemoveCardEM,
   RemoveEntityEM,
+  ResetDiceReason as PbResetDiceReason,
   ResetDiceEM,
   SetWinnerEM,
   StepRoundEM,

@@ -150,9 +150,20 @@ message TransformDefinitionEM {
   int32 new_entity_definition_id = 3;
 }
 
+enum ResetDiceReason {
+  RESET_DICE_REASON_UNSPECIFIED = 0;
+  RESET_DICE_REASON_ROLL = 1;
+  RESET_DICE_REASON_CONSUME = 2;
+  RESET_DICE_REASON_ELEMENTAL_TUNING = 3;
+  RESET_DICE_REASON_GENERATE = 4;
+  RESET_DICE_REASON_CONVERT = 5;
+  RESET_DICE_REASON_ABSORB = 6;
+}
+
 message ResetDiceEM {
   int32 who = 1;
   repeated DiceType dice = 2;
+  ResetDiceReason reason = 3;
 }
 
 message DamageEM {

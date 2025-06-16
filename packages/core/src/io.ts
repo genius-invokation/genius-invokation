@@ -42,6 +42,7 @@ import {
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_NIGHTSOULS_BLESSING,
+  PbResetDiceReason,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -376,10 +377,21 @@ export function exposeMutation(
         m.who === who
           ? ([...m.value] as PbDiceType[])
           : Array.from(m.value, () => PbDiceType.UNSPECIFIED);
+      const reason =
+        {
+          roll: PbResetDiceReason.ROLL,
+          consume: PbResetDiceReason.CONSUME,
+          elementalTunning: PbResetDiceReason.ELEMENTAL_TUNING,
+          generate: PbResetDiceReason.GENERATE,
+          convert: PbResetDiceReason.CONVERT,
+          absorb: PbResetDiceReason.ABSORB,
+          other: PbResetDiceReason.UNSPECIFIED,
+        }[m.reason] ?? PbResetDiceReason.UNSPECIFIED;
       return {
         $case: "resetDice",
         who: m.who,
         dice,
+        reason,
       };
     }
     default: {

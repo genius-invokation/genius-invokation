@@ -138,13 +138,26 @@ export interface ModifyEntityVarM {
 export interface TransformDefinitionM {
   readonly type: "transformDefinition";
   state: AnyState;
-  readonly newDefinition: CharacterDefinition | EntityDefinition | CardDefinition;
+  readonly newDefinition:
+    | CharacterDefinition
+    | EntityDefinition
+    | CardDefinition;
 }
+
+export type ResetDiceReason =
+  | "roll"
+  | "consume"
+  | "elementalTunning"
+  | "generate"
+  | "convert"
+  | "absorb"
+  | "other";
 
 export interface ResetDiceM {
   readonly type: "resetDice";
   readonly who: 0 | 1;
   readonly value: readonly DiceType[];
+  readonly reason: ResetDiceReason;
 }
 
 export type PlayerFlag = {

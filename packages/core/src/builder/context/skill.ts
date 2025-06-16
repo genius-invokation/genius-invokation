@@ -1316,6 +1316,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           type: "resetDice",
           who: this.callerArea.who,
           value: sorted.slice(count),
+          reason: "absorb",
         });
         return newDice;
       }
@@ -1341,6 +1342,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           type: "resetDice",
           who: this.callerArea.who,
           value: dice,
+          reason: "absorb",
         });
         return collected;
       }
@@ -1375,6 +1377,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       type: "resetDice",
       who,
       value: finalDice,
+      reason: "convert",
     });
     return this.enableShortcut();
   }
@@ -1424,6 +1427,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       type: "resetDice",
       who: this.callerArea.who,
       value: newDice,
+      reason: "generate",
     });
     for (const d of insertedDice) {
       this.emitEvent(

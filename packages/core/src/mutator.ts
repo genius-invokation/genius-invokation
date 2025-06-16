@@ -337,6 +337,7 @@ export class StateMutator {
           ...oldDice,
           ...this.randomDice(diceToReroll.length),
         ]),
+        reason: "roll",
       });
       this.notify();
     }
