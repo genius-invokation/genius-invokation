@@ -84,12 +84,11 @@ const createReconnectSse = <T,>(
     }
     reconnectTimeout = setTimeout(() => {
       console.warn("No data received, reconnecting...");
-      connect();
+      abortController?.abort();
     }, SSE_RECONNECT_TIMEOUT);
   };
 
   const connect = () => {
-    abortController?.abort();
     abortController = new AbortController();
     axios
       .get(url, {
@@ -139,8 +138,7 @@ const createReconnectSse = <T,>(
         }
       })
       .catch((error) => {
-        abortController = null;
-        // network error, try reconnect later
+        // network error / abort error, try reconnect later
         onError?.(error);
         setTimeout(connect, 1000);
       });
