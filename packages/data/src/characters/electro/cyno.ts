@@ -67,12 +67,7 @@ export const SecretRiteChasmicSoulfarer = skill(14042)
   .damage(DamageType.Electro, 3)
   .do((c) => {
     const status = c.self.hasStatus(PactswornPathclearer)!;
-    const newVal = c.getVariable("reliance", status) + 1;
-    if (newVal >= 8) {
-      c.setVariable("reliance", newVal - 6, status);
-    } else {
-      c.setVariable("reliance", newVal, status);
-    }
+    c.of(status).addVariable("reliance", 1);
   })
   .done();
 
@@ -90,12 +85,7 @@ export const SacredRiteWolfsSwiftness = skill(14043)
   .damage(DamageType.Electro, 4)
   .do((c) => {
     const status = c.self.hasStatus(PactswornPathclearer)!;
-    const newVal = c.getVariable("reliance", status) + 2;
-    if (newVal >= 8) {
-      c.setVariable("reliance", newVal - 6, status);
-    } else {
-      c.setVariable("reliance", newVal, status);
-    }
+    c.of(status).addVariable("reliance", 2);
   })
   .done();
 

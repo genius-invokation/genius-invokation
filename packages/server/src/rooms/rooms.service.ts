@@ -730,7 +730,7 @@ export class RoomsService {
       );
       this.logger.log(`Room ${room.id} game phase: ${game?.state.phase}`);
       if (room.status !== RoomStatus.Waiting) {
-        await Bun.sleep(keepRoomDuration);
+        await new Promise((r) => setTimeout(r, keepRoomDuration));
       }
       this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);
