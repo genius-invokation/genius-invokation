@@ -15,7 +15,12 @@
 
 import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { Layout } from "../layouts/Layout";
-import { copyToClipboard, PlayerInfo, roomCodeToId, getPlayerAvatarUrl } from "../utils";
+import {
+  copyToClipboard,
+  PlayerInfo,
+  roomCodeToId,
+  getPlayerAvatarUrl,
+} from "../utils";
 import {
   Show,
   createSignal,
@@ -42,7 +47,6 @@ import {
   PlayerIOWithCancellation,
 } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
-import debounce from "debounce";
 import { Dynamic } from "solid-js/web";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
 
@@ -80,12 +84,12 @@ const createReconnectSse = <T,>(
     }
     reconnectTimeout = setTimeout(() => {
       console.warn("No data received, reconnecting...");
-      abortController?.abort();
       connect();
     }, SSE_RECONNECT_TIMEOUT);
   };
 
   const connect = () => {
+    abortController?.abort();
     abortController = new AbortController();
     axios
       .get(url, {
@@ -95,8 +99,21 @@ const createReconnectSse = <T,>(
         responseType: "stream",
         signal: abortController.signal,
         adapter: "fetch",
+        validateStatus: () => true, // Accept all status codes
       })
       .then(async (response) => {
+        if (response.status !== 200) {
+          onError?.(
+            new AxiosError(
+              response.statusText,
+              `${response.status}`,
+              void 0,
+              void 0,
+              response,
+            ),
+          );
+          return;
+        }
         console.log(`${url} CONNECTED`);
         const data: ReadableStream = response.data;
         const reader = data.pipeThrough(new EventSourceStream()).getReader();
@@ -122,10 +139,9 @@ const createReconnectSse = <T,>(
         }
       })
       .catch((error) => {
-        if (reconnectTimeout) {
-          clearTimeout(reconnectTimeout);
-        }
+        // network error, try reconnect later
         onError?.(error);
+        setTimeout(connect, 1000);
       });
   };
 
@@ -470,15 +486,17 @@ export function Room() {
                 component={chessboard()}
                 rotation={mobile() ? 90 : 0}
                 autoHeight={!mobile()}
-                class={`${mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""}`}
+                class={`${
+                  mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""
+                }`}
                 timer={currentMyTimer() ?? currentOppTimer()}
                 myPlayerInfo={getClientPlayerInfo(payload().myPlayerInfo)}
                 oppPlayerInfo={getClientPlayerInfo(payload().oppPlayerInfo)}
                 gameEndExtra={
                   <div class="flex justify-center gap-20 mt-10">
                     <div class="flex flex-col justify-start w-36 h-30">
-                      <button 
-                        class="px-4 py-1 w-36 h-10 mt-20 font-bold font-size-4.5 text-yellow-800 bg-yellow-50 rounded-full border-yellow-800 b-2 active:bg-yellow-800 active:text-yellow-200 hover:shadow-[inset_0_0_16px_white] hover:border-white" 
+                      <button
+                        class="px-4 py-1 w-36 h-10 mt-20 font-bold font-size-4.5 text-yellow-800 bg-yellow-50 rounded-full border-yellow-800 b-2 active:bg-yellow-800 active:text-yellow-200 hover:shadow-[inset_0_0_16px_white] hover:border-white"
                         onClick={downloadGameLog}
                       >
                         下载日志
@@ -490,7 +508,9 @@ export function Room() {
                     <div class="flex flex-col justify-start w-36 h-30">
                       <button
                         class="px-4 py-1 w-36 h-10 mt-20 font-bold font-size-4.5 text-yellow-800 bg-yellow-50 rounded-full border-yellow-800 b-2 active:bg-yellow-800 active:text-yellow-200 hover:shadow-[inset_0_0_16px_white] hover:border-white"
-                        onClick={() => {navigate("/");}}
+                        onClick={() => {
+                          navigate("/");
+                        }}
                       >
                         回到首页
                       </button>
