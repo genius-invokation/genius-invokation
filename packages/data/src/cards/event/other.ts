@@ -480,6 +480,37 @@ export const WaterAndJustice = card(331805)
   .done();
 
 /**
+ * @id 303240
+ * @name 还魂诗
+ * @description
+ * 本回合内，所附属角色被击倒时：如可能，消耗等同于此牌「重燃」的元素骰，使角色免于被击倒，并治疗该角色到2点生命值。然后此牌「重燃」+1。
+ */
+export const OdeOfResurrection = status(303240)
+  .oneDuration()
+  .variable("reignite", 1)
+  .on("beforeDefeated", (c, e) => c.player.dice.length >= c.getVariable("reignite"))
+  .do((c) => {
+    c.absorbDice("seq", c.getVariable("reignite"));
+  })
+  .immune(1)
+  .addVariable("reignite", 1)
+  .done();
+
+/**
+ * @id 331806
+ * @name 火与战争
+ * @description
+ * 选一个我方角色，使其附属「重燃」为1的还魂诗。（本回合内该角色被击倒时，消耗等同于「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值，然后「重燃」+1）
+ * （牌组包含至少2个「纳塔」角色，才能加入牌组）
+ */
+export const FireAndWar = card(331806)
+  .since("v5.7.0")
+  .costSame(1)
+  .addTarget("my characters")
+  .characterStatus(OdeOfResurrection, "@targets.0")
+  .done();
+
+/**
  * @id 332001
  * @name 最好的伙伴！
  * @description
@@ -1278,19 +1309,19 @@ export const CosanzeanasSupport = card(302208)
   .done();
 
 const MELUSINE_EVENT_CARDS = [
-  331102, // ElementalResonanceShatteringIce
-  331202, // ElementalResonanceSoothingWater
-  331302, // ElementalResonanceFerventFlames
-  331402, // ElementalResonanceHighVoltage
-  331502, // ElementalResonanceImpetuousWinds
-  331602, // ElementalResonanceEnduringRock
-  331702, // ElementalResonanceSprawlingGreenery
-  331801, // WindAndFreedom
-  331802, // StoneAndContracts
-  331803, // ThunderAndEternity
-  331804, // NatureAndWisdom
-  331805, // WaterAndJustice
-  // 331806, 
+  ElementalResonanceShatteringIce,
+  ElementalResonanceSoothingWater,
+  ElementalResonanceFerventFlames,
+  ElementalResonanceHighVoltage,
+  ElementalResonanceImpetuousWinds,
+  ElementalResonanceEnduringRock,
+  ElementalResonanceSprawlingGreenery,
+  WindAndFreedom,
+  StoneAndContracts,
+  ThunderAndEternity,
+  NatureAndWisdom,
+  WaterAndJustice,
+  FireAndWar,
   // 331807, 
 ] as CardHandle[];
 
@@ -1721,19 +1752,6 @@ export const ArtOfSleepyMeditation = card(332045)
   .done();
 
 /**
- * @id 331806
- * @name 火与战争
- * @description
- * 选一个我方角色，使其附属「重燃」为1的还魂诗。（本回合内该角色被击倒时，消耗等同于「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值，然后「重燃」+1）
- * （牌组包含至少2个「纳塔」角色，才能加入牌组）
- */
-export const FireAndWar = card(331806)
-  .since("v5.7.0")
-  .costSame(1)
-  // TODO
-  .done();
-
-/**
  * @id 332046
  * @name 飞行队出击！
  * @description
@@ -1743,19 +1761,44 @@ export const FireAndWar = card(331806)
 export const FlyingSquadAttack = card(332046)
   .since("v5.7.0")
   .costVoid(3)
-  // TODO
+  .do((c) => {
+    c.disposeMaxCostHands(2);
+    const handsLength = c.player.hands.length;
+    if (handsLength < 4) {
+      c.drawCards(4 - handsLength);
+  }})
+  .onDispose((c, e) => {
+    if(e.area.type === "hands"){
+      c.drawCards(1);
+  }})
   .done();
 
 /**
- * @id 332047
- * @name 火与战争（test）
+ * @id 303242
+ * @name 健身的成果（生效中）
  * @description
- * 此卡牌废弃。
+ * 该角色下次元素战技花费1个元素骰。（不可叠加）
  */
-export const FireAndWarTest = card(332047)
-  .since("v5.7.0")
-  .costSame(3)
-  // TODO
+export const FruitsOfTrainingInEffect02 = status(303242)
+  .once("deductOmniDiceSkill", (c, e) => e.isSkillType("elemental"))
+  .deductOmniCost(1)
+  .done();
+
+/**
+ * @id 303241
+ * @name 健身的成果（生效中）
+ * @description
+ * 我方其他角色准备技能时：所选角色下次元素战技花费1个元素骰。（至多触发2次，不可叠加）
+ */
+export const FruitsOfTrainingInEffect01 = status(303241)
+  .on("enterRelative", (c, e) =>
+    e.entity.definition.type === "status" &&
+    e.entity.definition.tags.includes("preparingSkill") &&
+    c.of<"status">(e.entity).master().id !== c.self.master().id &&
+    !c.self.master().hasStatus(FruitsOfTrainingInEffect02))
+  .listenToPlayer()
+  .usage(2)
+  .characterStatus(FruitsOfTrainingInEffect02, "@master")
   .done();
 
 /**
@@ -1766,5 +1809,6 @@ export const FireAndWarTest = card(332047)
  */
 export const FruitsOfTraining = card(332048)
   .since("v5.7.0")
-  // TODO
+  .addTarget("my characters")
+  .characterStatus(FruitsOfTrainingInEffect01, "@targets.0")
   .done();

@@ -986,6 +986,21 @@ export const DemonwarriorsFeatherMask = card(312032)
   .done();
 
 /**
+ * @id 301205
+ * @name 诸圣的礼冠（生效中）
+ * @description
+ * 该角色下次技能或特技技能造成伤害+1。
+ */
+export const CrownOfTheSaintsInEffect = status(301205)
+  .on("increaseSkillDamage")
+  .increaseDamage(1)
+  .dispose()
+  .on("increaseTechniqueDamage")
+  .increaseDamage(1)
+  .dispose()
+  .done();
+
+/**
  * @id 312033
  * @name 诸圣的礼冠
  * @description
@@ -996,7 +1011,9 @@ export const CrownOfTheSaints = card(312033)
   .since("v5.7.0")
   .costSame(1)
   .artifact()
-  // TODO
+  .on("consumeNightsoul")
+  .usagePerRound(2)
+  .characterStatus(CrownOfTheSaintsInEffect, "@master")
   .done();
 
 /**
@@ -1010,5 +1027,8 @@ export const ScrollOfTheHeroOfCinderCity = card(312034)
   .since("v5.7.0")
   .costVoid(3)
   .artifact()
-  // TODO
+  .on("consumeNightsoul")
+  .usagePerRound(1)
+  .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
+  .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
   .done();

@@ -511,6 +511,12 @@ export const [SingYourHeartOut] = card(333027)
 export const HarvestsBoon = card(333028)
   .since("v5.7.0")
   .costSame(1)
-  .tags("food")
-  // TODO
+  .food()
+  .heal(1, "@targets.0")
+  .toStatus(303322, "@targets.0")
+  .on("enterRelative", (c, e) =>
+    e.entity.definition.type === "status" &&
+    e.entity.definition.tags.includes("preparingSkill"))
+  .usage(2)
+  .heal(1, "@master")
   .done();

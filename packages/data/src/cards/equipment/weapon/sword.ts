@@ -208,5 +208,16 @@ export const TheDockhandsAssistant = card(311509)
   .since("v5.7.0")
   .costSame(2)
   .weapon("sword")
-  // TODO
+  .variable("solidarity", 0)
+  .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
+  .usagePerRound(1)
+  .disposeMaxCostHands(1)
+  .decreaseDamage(1)
+  .addVariable("solidarity", 1)
+  .on("increaseSkillDamage", (c) => c.getVariable("solidarity") > 0)
+  .do((c, e) => {
+    e.increaseDamage(1);
+    c.drawCards(c.getVariable("solidarity"));
+    c.setVariable("solidarity", 0);
+  })
   .done();

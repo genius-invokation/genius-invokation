@@ -12861,7 +12861,7 @@
   },
   {
     "id": 332047,
-    "obtainable": true,
+    "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "火与战争（test）",
     "englishName": "Fire and War (test)",
