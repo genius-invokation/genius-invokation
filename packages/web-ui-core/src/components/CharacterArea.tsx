@@ -318,7 +318,6 @@ export function CharacterArea(props: CharacterAreaProps) {
           statuses={statuses()}
         />
         <Show when={defeated()}>
-          <svg class="" />
           <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
         </Show>
         <Switch>
