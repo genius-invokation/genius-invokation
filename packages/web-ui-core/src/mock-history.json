@@ -1,62 +1,2892 @@
 [
   {
-    "type": "elementalTunning",
+    "type": "playingCard",
     "who": 1,
-    "cardDefinitionId": 332006,
+    "cardDefinitionId": 331802,
+    "children": [],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 332032,
+    "effectDefinitionId": 332032,
     "children": [
       {
-        "type": "heal",
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1704,
+        "oldAura": 0,
+        "newAura": 4,
+        "elementType": 3
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1704,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1704,
+              "oldAura": 0,
+              "newAura": 4,
+              "elementType": 3
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "useSkill",
+    "who": 0,
+    "skillDefinitionId": 14073,
+    "callerDefinitionId": 2102,
+    "skillType": "normal",
+    "children": [
+      {
+        "type": "variableChange",
+        "who": 0,
+        "cardDefinitionId": 313002,
+        "variableName": "round",
+        "oldValue": 2,
+        "newValue": 1
+      },
+      {
+        "type": "disposeCard",
         "who": 1,
-        "characterDefinitionId": 1407,
-        "healValue": 5,
-        "oldHealth": 4,
-        "newHealth": 8,
-        "healType": "normal"
+        "cardDefinitionId": 226031
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 332041
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 226031,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 1,
+              "cardDefinitionId": 226031
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "changePhase",
+    "roundNumber": 14,
+    "newPhase": "initHands"
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 332041,
+    "effectDefinitionId": 332041,
+    "children": [
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 313002,
+        "target": "hands"
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1402,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 322012,
+        "isTunning": false,
+        "diceType": 2
       },
       {
         "type": "energy",
         "who": 0,
         "characterDefinitionId": 1105,
-        "energyValue": 1,
-        "oldEnergy": 2,
-        "newEnergy": 6,
+        "energyValue": 2,
+        "oldEnergy": 7,
+        "newEnergy": 7,
         "how": "loss"
       },
       {
-        "type": "apply",
-        "who": 1,
-        "characterDefinitionId": 1709,
-        "oldAura": 3,
-        "newAura": 3,
-        "elementType": 3
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1704,
+        "energyValue": 4,
+        "oldEnergy": 2,
+        "newEnergy": 4,
+        "how": "loss"
       },
       {
         "type": "createEntity",
-        "who": 0,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1506,
+        "who": 1,
+        "entityType": "equipment",
+        "characterDefinitionId": 1204,
         "entityDefinitionId": 112142
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1402,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 2502,
+    "effectDefinitionId": 11103,
+    "children": [
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 332006
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "switchActive",
+    "who": 1,
+    "characterDefinitionId": 1303,
+    "how": "init",
+    "children": [
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 332006,
+        "stage": "new"
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 312010,
+        "diceType": 5,
+        "diceCount": 1
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 331802
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 211011,
+        "stage": "old"
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 2102,
+        "isOverloaded": false
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2102,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 2102,
+              "isOverloaded": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "useSkill",
+    "who": 0,
+    "skillDefinitionId": 13032,
+    "callerDefinitionId": 1105,
+    "skillType": "elemental",
+    "children": [
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 321017,
+        "isTunning": false,
+        "diceType": 1
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 332004
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 2702,
+        "healValue": 2,
+        "oldHealth": 1,
+        "newHealth": 5,
+        "healType": "revive"
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 223041,
+        "diceType": 1,
+        "diceCount": 2
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 2302,
+        "diceType": 4,
+        "diceCount": 2
+      },
+      {
+        "type": "transform",
+        "who": 1,
+        "cardDefinitionId": 332032,
+        "stage": "old"
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1506,
+        "energyValue": 2,
+        "oldEnergy": 4,
+        "newEnergy": 4,
+        "how": "gain"
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 312009,
+        "diceType": 3,
+        "diceCount": 3
       },
       {
         "type": "stealHand",
         "who": 1,
+        "cardDefinitionId": 332032
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2702,
+          "healthChange": 4,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 2702,
+              "healValue": 2,
+              "oldHealth": 1,
+              "newHealth": 5,
+              "healType": "revive"
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "elementalTunning",
+    "who": 1,
+    "cardDefinitionId": 332042,
+    "children": [
+      {
+        "type": "forbidCard",
+        "who": 0,
+        "cardDefinitionId": 313002
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1204,
+        "oldAura": 113,
+        "newAura": 2,
+        "elementType": 8
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "support",
+        "characterDefinitionId": 2302,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "combatStatus",
+        "characterDefinitionId": 1501,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 332004,
+        "variableName": "usage",
+        "oldValue": 1,
+        "newValue": 5
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 301104
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 332006,
+        "target": "pile"
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 1605,
+        "stage": "new"
+      },
+      {
+        "type": "variableChange",
+        "who": 0,
+        "cardDefinitionId": 332032,
+        "variableName": "round",
+        "oldValue": 1,
+        "newValue": 2
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1204,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1204,
+              "oldAura": 113,
+              "newAura": 2,
+              "elementType": 8
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1501,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "combatStatus",
+              "characterDefinitionId": 1501,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "support",
+              "characterDefinitionId": 2302,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "action",
+    "who": 0,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 211011,
+    "effectDefinitionId": 211011,
+    "children": [
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 321017,
+        "drawCardsCount": 3
+      },
+      {
+        "type": "forbidCard",
+        "who": 0,
         "cardDefinitionId": 332041
+      },
+      {
+        "type": "disposeCard",
+        "who": 0,
+        "cardDefinitionId": 211011
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1704,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1407,
+        "oldAura": 3,
+        "newAura": 1,
+        "damageType": 2,
+        "damageValue": 6,
+        "oldHealth": 4,
+        "newHealth": 7,
+        "reaction": 112,
+        "causeDefeated": false
       }
     ],
     "summary": {
       "characterSummary": [
         {
           "characterDefinitionId": 1407,
-          "healthChange": 4,
+          "healthChange": 3,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1407,
+              "oldAura": 3,
+              "newAura": 1,
+              "damageType": 2,
+              "damageValue": 6,
+              "oldHealth": 4,
+              "newHealth": 7,
+              "reaction": 112,
+              "causeDefeated": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 211011,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 211011
+            }
+          ]
+        },
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1704,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "elementalTunning",
+    "who": 0,
+    "cardDefinitionId": 223041,
+    "children": [
+      {
+        "type": "damage",
+        "who": 1,
+        "characterDefinitionId": 1709,
+        "oldAura": 4,
+        "newAura": 4,
+        "damageType": 6,
+        "damageValue": 6,
+        "oldHealth": 7,
+        "newHealth": 8,
+        "causeDefeated": true
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1204,
+        "oldAura": 113,
+        "newAura": 1,
+        "damageType": 2,
+        "damageValue": 8,
+        "oldHealth": 2,
+        "newHealth": 3,
+        "causeDefeated": false
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1105,
+        "energyValue": 1,
+        "oldEnergy": 10,
+        "newEnergy": 5,
+        "how": "loss"
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 2602,
+        "isOverloaded": false
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 223041,
+        "stage": "old"
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1105,
+        "energyValue": 4,
+        "oldEnergy": 9,
+        "newEnergy": 4,
+        "how": "gain"
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 223041,
+        "isTunning": true,
+        "diceType": 3
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1308,
+        "isOverloaded": false
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 332042,
+        "target": "pile"
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1402,
+        "oldAura": 113,
+        "newAura": 4,
+        "damageType": 9,
+        "damageValue": 3,
+        "oldHealth": 7,
+        "newHealth": 10,
+        "reaction": 111,
+        "causeDefeated": true
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1204,
+        "isOverloaded": false
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1709,
+          "healthChange": 1,
+          "children": [
+            {
+              "type": "damage",
+              "who": 1,
+              "characterDefinitionId": 1709,
+              "oldAura": 4,
+              "newAura": 4,
+              "damageType": 6,
+              "damageValue": 6,
+              "oldHealth": 7,
+              "newHealth": 8,
+              "causeDefeated": true
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1204,
+          "healthChange": 1,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1204,
+              "oldAura": 113,
+              "newAura": 1,
+              "damageType": 2,
+              "damageValue": 8,
+              "oldHealth": 2,
+              "newHealth": 3,
+              "causeDefeated": false
+            },
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1204,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2602,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 2602,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1308,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1308,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": 3,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1402,
+              "oldAura": 113,
+              "newAura": 4,
+              "damageType": 9,
+              "damageValue": 3,
+              "oldHealth": 7,
+              "newHealth": 10,
+              "reaction": 111,
+              "causeDefeated": true
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "action",
+    "who": 0,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 1204,
+    "effectDefinitionId": 17042,
+    "children": [
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1709,
+        "isOverloaded": true
+      },
+      {
+        "type": "forbidCard",
+        "who": 0,
+        "cardDefinitionId": 332041
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 127033
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 1402,
+        "isTunning": true,
+        "diceType": 4
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 1402,
+        "isTunning": false,
+        "diceType": 4
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1110,
+        "energyValue": 5,
+        "oldEnergy": 1,
+        "newEnergy": 10,
+        "how": "gain"
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 2702,
+        "healValue": 5,
+        "oldHealth": 4,
+        "newHealth": 5,
+        "healType": "revive"
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 1704,
+        "energyValue": 3,
+        "oldEnergy": 3,
+        "newEnergy": 6,
+        "how": "loss"
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 332045
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 321015
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 331802,
+        "drawCardsCount": 4
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "equipment",
+        "characterDefinitionId": 1709,
+        "entityDefinitionId": 116102
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1709,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1709,
+              "isOverloaded": true
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2702,
+          "healthChange": 1,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 2702,
+              "healValue": 5,
+              "oldHealth": 4,
+              "newHealth": 5,
+              "healType": "revive"
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "selectCard",
+    "who": 0,
+    "cardDefinitionId": 332032,
+    "children": [
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1402,
+        "oldAura": 2,
+        "newAura": 2,
+        "damageType": 3,
+        "damageValue": 1,
+        "oldHealth": 4,
+        "newHealth": 1,
+        "causeDefeated": false
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 312009,
+        "target": "hands"
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1610,
+        "energyValue": 4,
+        "oldEnergy": 10,
+        "newEnergy": 7,
+        "how": "gain"
+      },
+      {
+        "type": "disposeCard",
+        "who": 1,
+        "cardDefinitionId": 332006
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1105,
+        "oldAura": 1,
+        "newAura": 4,
+        "elementType": 2
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 322012,
+        "diceType": 8,
+        "diceCount": 2
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 321015,
+        "target": "pile"
+      },
+      {
+        "type": "disposeCard",
+        "who": 0,
+        "cardDefinitionId": 313002
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 2102,
+        "stage": "old"
+      },
+      {
+        "type": "transform",
+        "who": 1,
+        "cardDefinitionId": 2402,
+        "stage": "old"
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 301104
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": -3,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1402,
+              "oldAura": 2,
+              "newAura": 2,
+              "damageType": 3,
+              "damageValue": 1,
+              "oldHealth": 4,
+              "newHealth": 1,
+              "causeDefeated": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1105,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1105,
+              "oldAura": 1,
+              "newAura": 4,
+              "elementType": 2
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 332006,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 1,
+              "cardDefinitionId": 332006
+            }
+          ]
+        },
+        {
+          "cardDefinitionId": 313002,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 313002
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 2102,
+    "effectDefinitionId": 117091,
+    "children": [
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 332004,
+        "target": "hands"
+      },
+      {
+        "type": "heal",
+        "who": 1,
+        "characterDefinitionId": 2302,
+        "healValue": 5,
+        "oldHealth": 1,
+        "newHealth": 8,
+        "healType": "immuneDefeated"
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 321015
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 331804,
+        "stage": "new"
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 211011,
+        "target": "hands"
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 332004
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 332045,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 332032
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "combatStatus",
+        "characterDefinitionId": 1402,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 1407,
+        "oldAura": 1,
+        "newAura": 1,
+        "elementType": 6,
+        "reaction": 116
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2302,
+          "healthChange": 7,
           "children": [
             {
               "type": "heal",
               "who": 1,
+              "characterDefinitionId": 2302,
+              "healValue": 5,
+              "oldHealth": 1,
+              "newHealth": 8,
+              "healType": "immuneDefeated"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "combatStatus",
+              "characterDefinitionId": 1402,
+              "entityDefinitionId": 116102
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1407,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 1,
               "characterDefinitionId": 1407,
+              "oldAura": 1,
+              "newAura": 1,
+              "elementType": 6,
+              "reaction": 116
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "playingCard",
+    "who": 0,
+    "cardDefinitionId": 332004,
+    "children": [
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 312009
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 1105,
+        "healValue": 3,
+        "oldHealth": 7,
+        "newHealth": 6,
+        "healType": "normal"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1105,
+          "healthChange": -1,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 1105,
+              "healValue": 3,
+              "oldHealth": 7,
+              "newHealth": 6,
+              "healType": "normal"
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 226031,
+    "effectDefinitionId": 226031,
+    "children": [
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 117092
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 2302,
+        "isOverloaded": true
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 322025,
+        "target": "pile"
+      },
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 312010,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "summon",
+        "characterDefinitionId": 2202,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 322025,
+        "target": "hands"
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "support",
+        "characterDefinitionId": 1501,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "convertDice",
+        "who": 0,
+        "callerDefinitionId": 2602,
+        "isTunning": false,
+        "diceType": 2
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1506,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1110,
+        "isOverloaded": false
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2302,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 2302,
+              "isOverloaded": true
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1110,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1110,
+              "isOverloaded": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "summon",
+              "characterDefinitionId": 2202,
+              "entityDefinitionId": 112142
+            },
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "support",
+              "characterDefinitionId": 1501,
+              "entityDefinitionId": 112142
+            },
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1506,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "elementalTunning",
+    "who": 1,
+    "cardDefinitionId": 321002,
+    "children": [
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 127033
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 2202,
+        "energyValue": 4,
+        "oldEnergy": 2,
+        "newEnergy": 9,
+        "how": "loss"
+      },
+      {
+        "type": "disposeCard",
+        "who": 0,
+        "cardDefinitionId": 313002
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 211011
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1402,
+        "energyValue": 3,
+        "oldEnergy": 2,
+        "newEnergy": 2,
+        "how": "gain"
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 211011,
+        "variableName": "round",
+        "oldValue": 3,
+        "newValue": 5
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 226031,
+        "target": "hands"
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 2102,
+        "energyValue": 5,
+        "oldEnergy": 8,
+        "newEnergy": 2,
+        "how": "loss"
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 313002,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 313002
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "action",
+    "who": 1,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "selectCard",
+    "who": 1,
+    "cardDefinitionId": 322008,
+    "children": [
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 1303,
+        "isTunning": false,
+        "diceType": 6
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 211011,
+        "target": "hands"
+      },
+      {
+        "type": "transform",
+        "who": 1,
+        "cardDefinitionId": 312009,
+        "stage": "new"
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 121013
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 312010,
+        "diceType": 8,
+        "diceCount": 1
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 2502,
+    "effectDefinitionId": 117094,
+    "children": [
+      {
+        "type": "variableChange",
+        "who": 0,
+        "cardDefinitionId": 301104,
+        "variableName": "usage",
+        "oldValue": 3,
+        "newValue": 4
+      },
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 121013
+      },
+      {
+        "type": "heal",
+        "who": 1,
+        "characterDefinitionId": 1605,
+        "healValue": 5,
+        "oldHealth": 4,
+        "newHealth": 3,
+        "healType": "normal"
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1204,
+        "isOverloaded": true
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "combatStatus",
+        "characterDefinitionId": 1402,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 223041,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 332004
+      },
+      {
+        "type": "convertDice",
+        "who": 0,
+        "callerDefinitionId": 226031,
+        "isTunning": true,
+        "diceType": 6
+      },
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 312010,
+        "drawCardsCount": 1
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 322008,
+        "drawCardsCount": 1
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "status",
+        "characterDefinitionId": 1402,
+        "entityDefinitionId": 116102
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1605,
+          "healthChange": -1,
+          "children": [
+            {
+              "type": "heal",
+              "who": 1,
+              "characterDefinitionId": 1605,
               "healValue": 5,
               "oldHealth": 4,
+              "newHealth": 3,
+              "healType": "normal"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1204,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1204,
+              "isOverloaded": true
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "combatStatus",
+              "characterDefinitionId": 1402,
+              "entityDefinitionId": 116102
+            },
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "status",
+              "characterDefinitionId": 1402,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "switchActive",
+    "who": 1,
+    "characterDefinitionId": 2502,
+    "how": "select",
+    "children": [
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 332041
+      },
+      {
+        "type": "damage",
+        "who": 1,
+        "characterDefinitionId": 2202,
+        "oldAura": 2,
+        "newAura": 1,
+        "damageType": 0,
+        "damageValue": 1,
+        "oldHealth": 9,
+        "newHealth": 6,
+        "causeDefeated": true
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "combatStatus",
+        "characterDefinitionId": 1209,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1308,
+        "energyValue": 2,
+        "oldEnergy": 4,
+        "newEnergy": 6,
+        "how": "gain"
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 2602,
+        "oldAura": 0,
+        "newAura": 4,
+        "elementType": 7
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1506,
+        "isOverloaded": false
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 1110,
+        "healValue": 3,
+        "oldHealth": 10,
+        "newHealth": 3,
+        "healType": "revive"
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "support",
+        "characterDefinitionId": 1506,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 2402,
+        "healValue": 2,
+        "oldHealth": 6,
+        "newHealth": 8,
+        "healType": "normal"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2202,
+          "healthChange": -3,
+          "children": [
+            {
+              "type": "damage",
+              "who": 1,
+              "characterDefinitionId": 2202,
+              "oldAura": 2,
+              "newAura": 1,
+              "damageType": 0,
+              "damageValue": 1,
+              "oldHealth": 9,
+              "newHealth": 6,
+              "causeDefeated": true
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1209,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "combatStatus",
+              "characterDefinitionId": 1209,
+              "entityDefinitionId": 112142
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2602,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 1,
+              "characterDefinitionId": 2602,
+              "oldAura": 0,
+              "newAura": 4,
+              "elementType": 7
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1506,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1506,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1110,
+          "healthChange": -7,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 1110,
+              "healValue": 3,
+              "oldHealth": 10,
+              "newHealth": 3,
+              "healType": "revive"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2402,
+          "healthChange": 2,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 2402,
+              "healValue": 2,
+              "oldHealth": 6,
               "newHealth": 8,
               "healType": "normal"
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "support",
+              "characterDefinitionId": 1506,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 226031,
+    "effectDefinitionId": 226031,
+    "children": [
+      {
+        "type": "transform",
+        "who": 1,
+        "cardDefinitionId": 1204,
+        "stage": "old"
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 127033,
+        "variableName": "usage",
+        "oldValue": 4,
+        "newValue": 1
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1506,
+        "energyValue": 4,
+        "oldEnergy": 10,
+        "newEnergy": 10,
+        "how": "loss"
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 2502,
+        "isOverloaded": false
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 332045
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1605,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "createEntity",
+        "who": 0,
+        "entityType": "summon",
+        "characterDefinitionId": 2202,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 2702,
+        "oldAura": 113,
+        "newAura": 0,
+        "elementType": 6,
+        "reaction": 115
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2502,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 2502,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2702,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 2702,
+              "oldAura": 113,
+              "newAura": 0,
+              "elementType": 6,
+              "reaction": 115
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1605,
+              "entityDefinitionId": 116102
+            },
+            {
+              "type": "createEntity",
+              "who": 0,
+              "entityType": "summon",
+              "characterDefinitionId": 2202,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 1709,
+    "effectDefinitionId": 14022,
+    "children": [
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 332004,
+        "diceType": 10,
+        "diceCount": 1
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 332004,
+        "variableName": "round",
+        "oldValue": 1,
+        "newValue": 3
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 117094
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 223041,
+        "isTunning": false,
+        "diceType": 0
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 1110,
+        "diceType": 4,
+        "diceCount": 2
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1605,
+        "oldAura": 113,
+        "newAura": 3,
+        "elementType": 2,
+        "reaction": 114
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1407,
+        "energyValue": 4,
+        "oldEnergy": 8,
+        "newEnergy": 6,
+        "how": "gain"
+      },
+      {
+        "type": "removeEntity",
+        "who": 0,
+        "entityType": "support",
+        "characterDefinitionId": 2302,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 2202,
+        "energyValue": 4,
+        "oldEnergy": 3,
+        "newEnergy": 1,
+        "how": "gain"
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1105,
+        "oldAura": 1,
+        "newAura": 4,
+        "damageType": 4,
+        "damageValue": 6,
+        "oldHealth": 1,
+        "newHealth": 1,
+        "causeDefeated": false
+      },
+      {
+        "type": "disposeCard",
+        "who": 1,
+        "cardDefinitionId": 312009
+      },
+      {
+        "type": "disposeCard",
+        "who": 0,
+        "cardDefinitionId": 332032
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1605,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1605,
+              "oldAura": 113,
+              "newAura": 3,
+              "elementType": 2,
+              "reaction": 114
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1105,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1105,
+              "oldAura": 1,
+              "newAura": 4,
+              "damageType": 4,
+              "damageValue": 6,
+              "oldHealth": 1,
+              "newHealth": 1,
+              "causeDefeated": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 0,
+              "entityType": "support",
+              "characterDefinitionId": 2302,
+              "entityDefinitionId": 112142
+            }
+          ]
+        },
+        {
+          "cardDefinitionId": 312009,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 1,
+              "cardDefinitionId": 312009
+            }
+          ]
+        },
+        {
+          "cardDefinitionId": 332032,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 332032
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "action",
+    "who": 0,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "playingCard",
+    "who": 1,
+    "cardDefinitionId": 312010,
+    "children": [
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 1709,
+        "stage": "old"
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1704,
+        "oldAura": 3,
+        "newAura": 0,
+        "damageType": 4,
+        "damageValue": 6,
+        "oldHealth": 8,
+        "newHealth": 10,
+        "causeDefeated": false
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 312010
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1610,
+        "isOverloaded": true
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 211011,
+        "drawCardsCount": 3
+      },
+      {
+        "type": "disposeCard",
+        "who": 1,
+        "cardDefinitionId": 321017
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 321017,
+        "isTunning": true,
+        "diceType": 4
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1704,
+          "healthChange": 2,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1704,
+              "oldAura": 3,
+              "newAura": 0,
+              "damageType": 4,
+              "damageValue": 6,
+              "oldHealth": 8,
+              "newHealth": 10,
+              "causeDefeated": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1610,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1610,
+              "isOverloaded": true
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 321017,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 1,
+              "cardDefinitionId": 321017
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "changePhase",
+    "roundNumber": 14,
+    "newPhase": "end"
+  },
+  {
+    "type": "action",
+    "who": 0,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "useSkill",
+    "who": 0,
+    "skillDefinitionId": 15063,
+    "callerDefinitionId": 312010,
+    "skillType": "normal",
+    "children": [
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 2302,
+        "isOverloaded": false
+      },
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 332032,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "disposeCard",
+        "who": 0,
+        "cardDefinitionId": 223041
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 226031,
+        "diceType": 6,
+        "diceCount": 3
+      },
+      {
+        "type": "disposeCard",
+        "who": 1,
+        "cardDefinitionId": 211011
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 2502,
+        "oldAura": 113,
+        "newAura": 1,
+        "damageType": 4,
+        "damageValue": 3,
+        "oldHealth": 5,
+        "newHealth": 4,
+        "causeDefeated": false
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 1506,
+        "oldAura": 2,
+        "newAura": 4,
+        "elementType": 7
+      },
+      {
+        "type": "variableChange",
+        "who": 0,
+        "cardDefinitionId": 226031,
+        "variableName": "round",
+        "oldValue": 5,
+        "newValue": 5
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 321015,
+        "isTunning": true,
+        "diceType": 0
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1402,
+        "oldAura": 1,
+        "newAura": 7,
+        "elementType": 5,
+        "reaction": 106
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1308,
+        "isOverloaded": false
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2302,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 2302,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2502,
+          "healthChange": -1,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 2502,
+              "oldAura": 113,
+              "newAura": 1,
+              "damageType": 4,
+              "damageValue": 3,
+              "oldHealth": 5,
+              "newHealth": 4,
+              "causeDefeated": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1506,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 1,
+              "characterDefinitionId": 1506,
+              "oldAura": 2,
+              "newAura": 4,
+              "elementType": 7
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1402,
+              "oldAura": 1,
+              "newAura": 7,
+              "elementType": 5,
+              "reaction": 106
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1308,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1308,
+              "isOverloaded": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 223041,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 223041
+            }
+          ]
+        },
+        {
+          "cardDefinitionId": 211011,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 1,
+              "cardDefinitionId": 211011
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 2402,
+    "effectDefinitionId": 21022,
+    "children": [
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 2402,
+        "energyValue": 5,
+        "oldEnergy": 3,
+        "newEnergy": 1,
+        "how": "gain"
+      },
+      {
+        "type": "apply",
+        "who": 0,
+        "characterDefinitionId": 1506,
+        "oldAura": 3,
+        "newAura": 4,
+        "elementType": 1,
+        "reaction": 115
+      },
+      {
+        "type": "heal",
+        "who": 1,
+        "characterDefinitionId": 2702,
+        "healValue": 3,
+        "oldHealth": 6,
+        "newHealth": 5,
+        "healType": "immuneDefeated"
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1501,
+        "isOverloaded": false
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "equipment",
+        "characterDefinitionId": 2302,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "convertDice",
+        "who": 0,
+        "callerDefinitionId": 332041,
+        "isTunning": false,
+        "diceType": 8
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1501,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1209,
+        "oldAura": 2,
+        "newAura": 1,
+        "damageType": 1,
+        "damageValue": 7,
+        "oldHealth": 4,
+        "newHealth": 9,
+        "causeDefeated": true
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 332004,
+        "stage": "old"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1506,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 0,
+              "characterDefinitionId": 1506,
+              "oldAura": 3,
+              "newAura": 4,
+              "elementType": 1,
+              "reaction": 115
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2702,
+          "healthChange": -1,
+          "children": [
+            {
+              "type": "heal",
+              "who": 1,
+              "characterDefinitionId": 2702,
+              "healValue": 3,
+              "oldHealth": 6,
+              "newHealth": 5,
+              "healType": "immuneDefeated"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1501,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1501,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1209,
+          "healthChange": 5,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1209,
+              "oldAura": 2,
+              "newAura": 1,
+              "damageType": 1,
+              "damageValue": 7,
+              "oldHealth": 4,
+              "newHealth": 9,
+              "causeDefeated": true
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1501,
+              "entityDefinitionId": 116102
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "playingCard",
+    "who": 1,
+    "cardDefinitionId": 331804,
+    "children": [
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 301104
+      },
+      {
+        "type": "heal",
+        "who": 1,
+        "characterDefinitionId": 1704,
+        "healValue": 1,
+        "oldHealth": 3,
+        "newHealth": 3,
+        "healType": "revive"
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1110,
+        "energyValue": 4,
+        "oldEnergy": 10,
+        "newEnergy": 2,
+        "how": "gain"
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 2502,
+        "isOverloaded": true
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1110,
+        "energyValue": 4,
+        "oldEnergy": 7,
+        "newEnergy": 4,
+        "how": "loss"
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 1105,
+        "energyValue": 1,
+        "oldEnergy": 1,
+        "newEnergy": 1,
+        "how": "loss"
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 332032,
+        "drawCardsCount": 1
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 312010,
+        "drawCardsCount": 1
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1704,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "heal",
+              "who": 1,
+              "characterDefinitionId": 1704,
+              "healValue": 1,
+              "oldHealth": 3,
+              "newHealth": 3,
+              "healType": "revive"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 2502,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 2502,
+              "isOverloaded": true
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "action",
+    "who": 1,
+    "actionType": "declareEnd"
+  },
+  {
+    "type": "selectCard",
+    "who": 1,
+    "cardDefinitionId": 331804,
+    "children": [
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1303,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 117094,
+        "variableName": "round",
+        "oldValue": 0,
+        "newValue": 1
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1709,
+        "energyValue": 5,
+        "oldEnergy": 2,
+        "newEnergy": 1,
+        "how": "gain"
+      },
+      {
+        "type": "damage",
+        "who": 1,
+        "characterDefinitionId": 1610,
+        "oldAura": 3,
+        "newAura": 1,
+        "damageType": 5,
+        "damageValue": 2,
+        "oldHealth": 1,
+        "newHealth": 7,
+        "reaction": 116,
+        "causeDefeated": false
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 321015,
+        "target": "pile"
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 1605,
+        "diceType": 5,
+        "diceCount": 2
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1303,
+        "oldAura": 7,
+        "newAura": 4,
+        "damageType": 8,
+        "damageValue": 6,
+        "oldHealth": 10,
+        "newHealth": 2,
+        "reaction": 116,
+        "causeDefeated": false
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 322012,
+        "target": "hands"
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1204,
+        "energyValue": 5,
+        "oldEnergy": 7,
+        "newEnergy": 8,
+        "how": "loss"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1610,
+          "healthChange": 6,
+          "children": [
+            {
+              "type": "damage",
+              "who": 1,
+              "characterDefinitionId": 1610,
+              "oldAura": 3,
+              "newAura": 1,
+              "damageType": 5,
+              "damageValue": 2,
+              "oldHealth": 1,
+              "newHealth": 7,
+              "reaction": 116,
+              "causeDefeated": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1303,
+          "healthChange": -8,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1303,
+              "oldAura": 7,
+              "newAura": 4,
+              "damageType": 8,
+              "damageValue": 6,
+              "oldHealth": 10,
+              "newHealth": 2,
+              "reaction": 116,
+              "causeDefeated": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1303,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "changePhase",
+    "roundNumber": 1,
+    "newPhase": "initHands"
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 312009,
+    "effectDefinitionId": 312009,
+    "children": [
+      {
+        "type": "removeEntity",
+        "who": 0,
+        "entityType": "equipment",
+        "characterDefinitionId": 1704,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1704,
+        "isOverloaded": false
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 312009,
+        "stage": "new"
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 322012
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 1506,
+        "isTunning": false,
+        "diceType": 9
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 332006
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 313002
+      },
+      {
+        "type": "triggered",
+        "who": 1,
+        "effectDefinitionId": 117091
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 211011,
+        "variableName": "round",
+        "oldValue": 5,
+        "newValue": 3
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1704,
+        "oldAura": 2,
+        "newAura": 113,
+        "damageType": 1,
+        "damageValue": 7,
+        "oldHealth": 6,
+        "newHealth": 2,
+        "causeDefeated": true
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1704,
+          "healthChange": -4,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1704,
+              "isOverloaded": false
+            },
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1704,
+              "oldAura": 2,
+              "newAura": 113,
+              "damageType": 1,
+              "damageValue": 7,
+              "oldHealth": 6,
+              "newHealth": 2,
+              "causeDefeated": true
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "elementalTunning",
+    "who": 0,
+    "cardDefinitionId": 332032,
+    "children": [
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 223041,
+        "isTunning": true,
+        "diceType": 3
+      },
+      {
+        "type": "drawCard",
+        "who": 0,
+        "callerDefinitionId": 312009,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 2702,
+        "healValue": 1,
+        "oldHealth": 2,
+        "newHealth": 9,
+        "healType": "immuneDefeated"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 2702,
+          "healthChange": 7,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 2702,
+              "healValue": 1,
+              "oldHealth": 2,
+              "newHealth": 9,
+              "healType": "immuneDefeated"
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "useSkill",
+    "who": 1,
+    "skillDefinitionId": 12093,
+    "callerDefinitionId": 1605,
+    "skillType": "normal",
+    "children": [
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "status",
+        "characterDefinitionId": 1407,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 1709,
+        "oldAura": 3,
+        "newAura": 2,
+        "elementType": 6
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1407,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "status",
+              "characterDefinitionId": 1407,
+              "entityDefinitionId": 112142
             }
           ]
         },
@@ -69,21 +2899,8 @@
               "who": 1,
               "characterDefinitionId": 1709,
               "oldAura": 3,
-              "newAura": 3,
-              "elementType": 3
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1506,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "combatStatus",
-              "characterDefinitionId": 1506,
-              "entityDefinitionId": 112142
+              "newAura": 2,
+              "elementType": 6
             }
           ]
         }
@@ -92,27 +2909,416 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "switchActive",
     "who": 1,
-    "cardDefinitionId": 321015,
+    "characterDefinitionId": 2302,
+    "how": "init",
     "children": [
       {
-        "type": "forbidCard",
+        "type": "drawCard",
         "who": 0,
-        "cardDefinitionId": 312010
+        "callerDefinitionId": 313002,
+        "drawCardsCount": 2
       },
       {
-        "type": "transform",
+        "type": "generateDice",
         "who": 0,
-        "cardDefinitionId": 223041,
-        "stage": "old"
+        "callerDefinitionId": 2102,
+        "diceType": 10,
+        "diceCount": 3
+      },
+      {
+        "type": "heal",
+        "who": 1,
+        "characterDefinitionId": 1501,
+        "healValue": 2,
+        "oldHealth": 9,
+        "newHealth": 6,
+        "healType": "revive"
+      },
+      {
+        "type": "convertDice",
+        "who": 0,
+        "callerDefinitionId": 312010,
+        "isTunning": false,
+        "diceType": 5
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 1506,
+        "oldAura": 113,
+        "newAura": 3,
+        "elementType": 1
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 332004,
+        "variableName": "usage",
+        "oldValue": 0,
+        "newValue": 4
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1501,
+          "healthChange": -3,
+          "children": [
+            {
+              "type": "heal",
+              "who": 1,
+              "characterDefinitionId": 1501,
+              "healValue": 2,
+              "oldHealth": 9,
+              "newHealth": 6,
+              "healType": "revive"
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1506,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 1,
+              "characterDefinitionId": 1506,
+              "oldAura": 113,
+              "newAura": 3,
+              "elementType": 1
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 332032,
+    "effectDefinitionId": 332032,
+    "children": [
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "status",
+        "characterDefinitionId": 2202,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 117092
+      },
+      {
+        "type": "energy",
+        "who": 0,
+        "characterDefinitionId": 1110,
+        "energyValue": 3,
+        "oldEnergy": 7,
+        "newEnergy": 9,
+        "how": "loss"
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 226031,
+        "drawCardsCount": 4
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 332006,
+        "variableName": "round",
+        "oldValue": 4,
+        "newValue": 2
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 332032,
+        "diceType": 2,
+        "diceCount": 3
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "combatStatus",
+        "characterDefinitionId": 1407,
+        "entityDefinitionId": 116102
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1204,
+        "isOverloaded": false
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1204,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1204,
+              "isOverloaded": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "playingCard",
+    "who": 0,
+    "cardDefinitionId": 331802,
+    "children": [
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 1209,
+        "energyValue": 2,
+        "oldEnergy": 6,
+        "newEnergy": 4,
+        "how": "loss"
+      },
+      {
+        "type": "convertDice",
+        "who": 1,
+        "callerDefinitionId": 1402,
+        "isTunning": false,
+        "diceType": 7
       },
       {
         "type": "removeEntity",
         "who": 1,
         "entityType": "summon",
-        "characterDefinitionId": 2502,
+        "characterDefinitionId": 2302,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 332006,
+        "target": "pile"
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 2702,
+        "diceType": 9,
+        "diceCount": 1
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "status",
+        "characterDefinitionId": 2402,
+        "entityDefinitionId": 112142
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 2302,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "playingCard",
+    "who": 0,
+    "cardDefinitionId": 332004,
+    "children": [
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 226031,
+        "variableName": "usage",
+        "oldValue": 1,
+        "newValue": 5
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "selectCard",
+    "who": 0,
+    "cardDefinitionId": 332004,
+    "children": [
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1402,
+        "isOverloaded": false
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 1605,
+        "isOverloaded": false
+      },
+      {
+        "type": "damage",
+        "who": 0,
+        "characterDefinitionId": 1506,
+        "oldAura": 0,
+        "newAura": 3,
+        "damageType": 4,
+        "damageValue": 3,
+        "oldHealth": 4,
+        "newHealth": 7,
+        "reaction": 108,
+        "causeDefeated": false
+      },
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 301104
+      },
+      {
+        "type": "energy",
+        "who": 1,
+        "characterDefinitionId": 1402,
+        "energyValue": 3,
+        "oldEnergy": 6,
+        "newEnergy": 8,
+        "how": "loss"
+      },
+      {
+        "type": "forbidCard",
+        "who": 1,
+        "cardDefinitionId": 321017
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 322012,
+        "variableName": "round",
+        "oldValue": 4,
+        "newValue": 0
+      },
+      {
+        "type": "switchActive",
+        "who": 1,
+        "characterDefinitionId": 1605,
+        "isOverloaded": false
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 332004,
+        "stage": "old"
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 312009,
+        "drawCardsCount": 4
+      },
+      {
+        "type": "forbidCard",
+        "who": 0,
+        "cardDefinitionId": 321015
+      },
+      {
+        "type": "createCard",
+        "who": 1,
+        "cardDefinitionId": 321017,
+        "target": "hands"
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1402,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1402,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1605,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 1605,
+              "isOverloaded": false
+            },
+            {
+              "type": "switchActive",
+              "who": 1,
+              "characterDefinitionId": 1605,
+              "isOverloaded": false
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1506,
+          "healthChange": 3,
+          "children": [
+            {
+              "type": "damage",
+              "who": 0,
+              "characterDefinitionId": 1506,
+              "oldAura": 0,
+              "newAura": 3,
+              "damageType": 4,
+              "damageValue": 3,
+              "oldHealth": 4,
+              "newHealth": 7,
+              "reaction": 108,
+              "causeDefeated": false
+            }
+          ]
+        }
+      ],
+      "cardSummary": []
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 0,
+    "callerDefinitionId": 321004,
+    "effectDefinitionId": 321004,
+    "children": [
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "equipment",
+        "characterDefinitionId": 1204,
         "entityDefinitionId": 116102
+      },
+      {
+        "type": "forbidCard",
+        "who": 0,
+        "cardDefinitionId": 321004
       },
       {
         "type": "disposeCard",
@@ -120,43 +3326,231 @@
         "cardDefinitionId": 332032
       },
       {
-        "type": "createCard",
+        "type": "disposeCard",
         "who": 0,
-        "cardDefinitionId": 332006,
-        "target": "hands"
+        "cardDefinitionId": 332004
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 313002,
+        "drawCardsCount": 4
       },
       {
         "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 331802,
-        "target": "hands"
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 312009,
+        "who": 1,
+        "cardDefinitionId": 332042,
         "target": "pile"
       },
       {
-        "type": "triggered",
+        "type": "convertDice",
+        "who": 0,
+        "callerDefinitionId": 2402,
+        "isTunning": false,
+        "diceType": 7
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "cardDefinitionId": 332032,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 332032
+            }
+          ]
+        },
+        {
+          "cardDefinitionId": 332004,
+          "children": [
+            {
+              "type": "disposeCard",
+              "who": 0,
+              "cardDefinitionId": 332004
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "selectCard",
+    "who": 1,
+    "cardDefinitionId": 322008,
+    "children": [
+      {
+        "type": "drawCard",
         "who": 1,
-        "effectDefinitionId": 226031
+        "callerDefinitionId": 332041,
+        "drawCardsCount": 2
+      },
+      {
+        "type": "removeEntity",
+        "who": 0,
+        "entityType": "equipment",
+        "characterDefinitionId": 1709,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 322025
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 1204,
+        "diceType": 10,
+        "diceCount": 2
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 1605,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "stealHand",
+        "who": 1,
+        "cardDefinitionId": 312010
+      },
+      {
+        "type": "apply",
+        "who": 1,
+        "characterDefinitionId": 1407,
+        "oldAura": 3,
+        "newAura": 0,
+        "elementType": 0,
+        "reaction": 108
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "status",
+        "characterDefinitionId": 1407,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "heal",
+        "who": 0,
+        "characterDefinitionId": 1303,
+        "healValue": 2,
+        "oldHealth": 2,
+        "newHealth": 4,
+        "healType": "immuneDefeated"
+      },
+      {
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 2502,
+        "diceType": 6,
+        "diceCount": 3
+      },
+      {
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 1704,
+        "stage": "old"
+      },
+      {
+        "type": "generateDice",
+        "who": 1,
+        "callerDefinitionId": 331802,
+        "diceType": 4,
+        "diceCount": 1
+      }
+    ],
+    "summary": {
+      "characterSummary": [
+        {
+          "characterDefinitionId": 1407,
+          "healthChange": 0,
+          "children": [
+            {
+              "type": "apply",
+              "who": 1,
+              "characterDefinitionId": 1407,
+              "oldAura": 3,
+              "newAura": 0,
+              "elementType": 0,
+              "reaction": 108
+            }
+          ]
+        },
+        {
+          "characterDefinitionId": 1303,
+          "healthChange": 2,
+          "children": [
+            {
+              "type": "heal",
+              "who": 0,
+              "characterDefinitionId": 1303,
+              "healValue": 2,
+              "oldHealth": 2,
+              "newHealth": 4,
+              "healType": "immuneDefeated"
+            }
+          ]
+        }
+      ],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "removeEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 1605,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "type": "triggered",
+    "who": 1,
+    "callerDefinitionId": 1402,
+    "effectDefinitionId": 27022,
+    "children": [
+      {
+        "type": "forbidCard",
+        "who": 0,
+        "cardDefinitionId": 226031
+      },
+      {
+        "type": "removeEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 2302,
+        "entityDefinitionId": 116102
       },
       {
         "type": "apply",
         "who": 1,
         "characterDefinitionId": 2702,
-        "oldAura": 4,
-        "newAura": 7,
-        "elementType": 8
+        "oldAura": 7,
+        "newAura": 3,
+        "elementType": 6,
+        "reaction": 107
       },
       {
-        "type": "variableChange",
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 312009,
+        "target": "hands"
+      },
+      {
+        "type": "generateDice",
         "who": 1,
-        "cardDefinitionId": 330319,
-        "variableName": "usage",
-        "oldValue": 1,
-        "newValue": 1
+        "callerDefinitionId": 2702,
+        "diceType": 4,
+        "diceCount": 3
       }
     ],
     "summary": {
@@ -169,1236 +3563,10 @@
               "type": "apply",
               "who": 1,
               "characterDefinitionId": 2702,
-              "oldAura": 4,
-              "newAura": 7,
-              "elementType": 8
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "children": [
-            {
-              "type": "removeEntity",
-              "who": 1,
-              "entityType": "summon",
-              "characterDefinitionId": 2502,
-              "entityDefinitionId": 116102
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 332032,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 332032
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 0,
-    "callerDefinitionId": 332004,
-    "effectDefinitionId": 16103,
-    "children": [
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 312009
-      },
-      {
-        "type": "removeEntity",
-        "who": 0,
-        "entityType": "support",
-        "characterDefinitionId": 2202,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 1204,
-        "isTunning": true,
-        "diceType": 8
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "status",
-        "characterDefinitionId": 1501,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 1704,
-        "isTunning": false,
-        "diceType": 5
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 2402,
-        "healValue": 3,
-        "oldHealth": 2,
-        "newHealth": 4,
-        "healType": "immuneDefeated"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2402,
-          "healthChange": 2,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 2402,
-              "healValue": 3,
-              "oldHealth": 2,
-              "newHealth": 4,
-              "healType": "immuneDefeated"
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 312009,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 312009
-            }
-          ]
-        },
-        {
-          "children": [
-            {
-              "type": "removeEntity",
-              "who": 0,
-              "entityType": "support",
-              "characterDefinitionId": 2202,
-              "entityDefinitionId": 116102
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "useSkill",
-    "who": 1,
-    "skillDefinitionId": 15063,
-    "callerDefinitionId": 211011,
-    "skillType": "elemental",
-    "children": [
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 1303,
-        "isOverloaded": false
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 1402,
-        "energyValue": 1,
-        "oldEnergy": 5,
-        "newEnergy": 3,
-        "how": "gain"
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1407,
-        "healValue": 2,
-        "oldHealth": 5,
-        "newHealth": 4,
-        "healType": "revive"
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 321017
-      },
-      {
-        "type": "apply",
-        "who": 0,
-        "characterDefinitionId": 2602,
-        "oldAura": 2,
-        "newAura": 2,
-        "elementType": 5,
-        "reaction": 105
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332006,
-        "drawCardsCount": 3
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1303,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 1303,
-              "isOverloaded": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": -1,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1407,
-              "healValue": 2,
-              "oldHealth": 5,
-              "newHealth": 4,
-              "healType": "revive"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2602,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 0,
-              "characterDefinitionId": 2602,
-              "oldAura": 2,
-              "newAura": 2,
-              "elementType": 5,
-              "reaction": 105
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 321017,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 321017
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 223041,
-    "children": [
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 332006
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 332006
-      },
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 332042
-      },
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 2202,
-        "diceType": 6,
-        "diceCount": 1
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 332004
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 1105,
-        "isTunning": true,
-        "diceType": 2
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 332042
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 313002
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 331802,
-        "isTunning": false,
-        "diceType": 10
-      },
-      {
-        "type": "apply",
-        "who": 1,
-        "characterDefinitionId": 2102,
-        "oldAura": 113,
-        "newAura": 7,
-        "elementType": 1,
-        "reaction": 108
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 1110,
-        "isOverloaded": false
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 1,
-              "characterDefinitionId": 2102,
-              "oldAura": 113,
-              "newAura": 7,
-              "elementType": 1,
-              "reaction": 108
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1110,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 1110,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 332006,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 332006
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 313002,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 313002
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 211011,
-    "children": [
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1407,
-        "healValue": 1,
-        "oldHealth": 7,
-        "newHealth": 1,
-        "healType": "normal"
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1303,
-        "healValue": 5,
-        "oldHealth": 1,
-        "newHealth": 4,
-        "healType": "normal"
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 312009,
-        "variableName": "round",
-        "oldValue": 1,
-        "newValue": 5
-      },
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 321017
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 332041,
-        "target": "hands"
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 321015
-      },
-      {
-        "type": "transform",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "stage": "old"
-      },
-      {
-        "type": "stealHand",
-        "who": 1,
-        "cardDefinitionId": 312010
-      },
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1209,
-        "oldAura": 0,
-        "newAura": 3,
-        "damageType": 9,
-        "damageValue": 4,
-        "oldHealth": 2,
-        "newHealth": 1,
-        "causeDefeated": true
-      },
-      {
-        "type": "generateDice",
-        "who": 1,
-        "callerDefinitionId": 1605,
-        "diceType": 3,
-        "diceCount": 1
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 313002,
-        "target": "pile"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": -6,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1407,
-              "healValue": 1,
-              "oldHealth": 7,
-              "newHealth": 1,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1303,
-          "healthChange": 3,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1303,
-              "healValue": 5,
-              "oldHealth": 1,
-              "newHealth": 4,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1209,
-          "healthChange": -1,
-          "children": [
-            {
-              "type": "damage",
-              "who": 1,
-              "characterDefinitionId": 1209,
-              "oldAura": 0,
+              "oldAura": 7,
               "newAura": 3,
-              "damageType": 9,
-              "damageValue": 4,
-              "oldHealth": 2,
-              "newHealth": 1,
-              "causeDefeated": true
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 321015,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 321015
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 0,
-    "callerDefinitionId": 2102,
-    "effectDefinitionId": 223041,
-    "children": [],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 332004,
-    "children": [
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 332006,
-        "diceType": 3,
-        "diceCount": 1
-      },
-      {
-        "type": "variableChange",
-        "who": 0,
-        "cardDefinitionId": 312009,
-        "variableName": "usage",
-        "oldValue": 3,
-        "newValue": 0
-      },
-      {
-        "type": "damage",
-        "who": 0,
-        "characterDefinitionId": 1402,
-        "oldAura": 4,
-        "newAura": 113,
-        "damageType": 8,
-        "damageValue": 2,
-        "oldHealth": 3,
-        "newHealth": 10,
-        "reaction": 109,
-        "causeDefeated": false
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 226031
-      },
-      {
-        "type": "damage",
-        "who": 0,
-        "characterDefinitionId": 1105,
-        "oldAura": 3,
-        "newAura": 7,
-        "damageType": 3,
-        "damageValue": 5,
-        "oldHealth": 3,
-        "newHealth": 9,
-        "causeDefeated": false
-      },
-      {
-        "type": "apply",
-        "who": 0,
-        "characterDefinitionId": 1610,
-        "oldAura": 4,
-        "newAura": 1,
-        "elementType": 3
-      },
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 226031
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1402,
-          "healthChange": 7,
-          "children": [
-            {
-              "type": "damage",
-              "who": 0,
-              "characterDefinitionId": 1402,
-              "oldAura": 4,
-              "newAura": 113,
-              "damageType": 8,
-              "damageValue": 2,
-              "oldHealth": 3,
-              "newHealth": 10,
-              "reaction": 109,
-              "causeDefeated": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1105,
-          "healthChange": 6,
-          "children": [
-            {
-              "type": "damage",
-              "who": 0,
-              "characterDefinitionId": 1105,
-              "oldAura": 3,
-              "newAura": 7,
-              "damageType": 3,
-              "damageValue": 5,
-              "oldHealth": 3,
-              "newHealth": 9,
-              "causeDefeated": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1610,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 0,
-              "characterDefinitionId": 1610,
-              "oldAura": 4,
-              "newAura": 1,
-              "elementType": 3
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 226031,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 226031
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 1,
-    "cardDefinitionId": 226031,
-    "children": [
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 312010
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 0,
-    "callerDefinitionId": 322025,
-    "effectDefinitionId": 330320,
-    "children": [
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1308,
-        "healValue": 3,
-        "oldHealth": 10,
-        "newHealth": 6,
-        "healType": "normal"
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1402,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "variableChange",
-        "who": 0,
-        "cardDefinitionId": 321004,
-        "variableName": "usage",
-        "oldValue": 0,
-        "newValue": 3
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1308,
-          "healthChange": -4,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 1308,
-              "healValue": 3,
-              "oldHealth": 10,
-              "newHealth": 6,
-              "healType": "normal"
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 321002,
-    "children": [
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1209,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 332032
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 332006,
-        "variableName": "usage",
-        "oldValue": 0,
-        "newValue": 0
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 313002
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1105,
-        "healValue": 3,
-        "oldHealth": 10,
-        "newHealth": 8,
-        "healType": "normal"
-      },
-      {
-        "type": "generateDice",
-        "who": 1,
-        "callerDefinitionId": 312010,
-        "diceType": 5,
-        "diceCount": 3
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1209,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "combatStatus",
-              "characterDefinitionId": 1209,
-              "entityDefinitionId": 116102
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1105,
-          "healthChange": -2,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1105,
-              "healValue": 3,
-              "oldHealth": 10,
-              "newHealth": 8,
-              "healType": "normal"
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 313002,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 313002
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 1,
-    "cardDefinitionId": 332045,
-    "children": [
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 322025,
-        "target": "pile"
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "action",
-    "who": 0,
-    "actionType": "declareEnd"
-  },
-  {
-    "type": "action",
-    "who": 1,
-    "actionType": "declareEnd"
-  },
-  {
-    "type": "triggered",
-    "who": 1,
-    "callerDefinitionId": 332032,
-    "effectDefinitionId": 332041,
-    "children": [
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1110,
-        "healValue": 3,
-        "oldHealth": 6,
-        "newHealth": 5,
-        "healType": "normal"
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 226031,
-        "isTunning": false,
-        "diceType": 0
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1110,
-          "healthChange": -1,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 1110,
-              "healValue": 3,
-              "oldHealth": 6,
-              "newHealth": 5,
-              "healType": "normal"
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "playingCard",
-    "who": 0,
-    "cardDefinitionId": 332032,
-    "children": [
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 2402,
-        "diceType": 3,
-        "diceCount": 1
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 2402,
-        "isTunning": true,
-        "diceType": 0
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 332006,
-        "target": "pile"
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 0,
-    "cardDefinitionId": 211011,
-    "children": [
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "equipment",
-        "characterDefinitionId": 1204,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "transform",
-        "who": 0,
-        "cardDefinitionId": 313002,
-        "stage": "old"
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 2302,
-        "energyValue": 2,
-        "oldEnergy": 8,
-        "newEnergy": 7,
-        "how": "gain"
-      },
-      {
-        "type": "generateDice",
-        "who": 1,
-        "callerDefinitionId": 321015,
-        "diceType": 9,
-        "diceCount": 1
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 127033,
-        "variableName": "round",
-        "oldValue": 0,
-        "newValue": 1
-      },
-      {
-        "type": "variableChange",
-        "who": 0,
-        "cardDefinitionId": 332006,
-        "variableName": "usage",
-        "oldValue": 1,
-        "newValue": 2
-      },
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 127033
-      },
-      {
-        "type": "transform",
-        "who": 1,
-        "cardDefinitionId": 1204,
-        "stage": "new"
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 1,
-    "cardDefinitionId": 313002,
-    "children": [
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 332032,
-        "diceType": 10,
-        "diceCount": 3
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 2102,
-        "energyValue": 2,
-        "oldEnergy": 8,
-        "newEnergy": 2,
-        "how": "loss"
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332045
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 331802
-      },
-      {
-        "type": "forbidCard",
-        "who": 0,
-        "cardDefinitionId": 332041
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 1407,
-        "isOverloaded": true
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332032
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 312009
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332006
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "summon",
-        "characterDefinitionId": 2102,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 322008
-      },
-      {
-        "type": "createEntity",
-        "who": 1,
-        "entityType": "equipment",
-        "characterDefinitionId": 1402,
-        "entityDefinitionId": 112142
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 1407,
-              "isOverloaded": true
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 332045,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332045
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 331802,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 331802
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 332032,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332032
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 312009,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 312009
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 332006,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332006
-            }
-          ]
-        },
-        {
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "summon",
-              "characterDefinitionId": 2102,
-              "entityDefinitionId": 112142
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "playingCard",
-    "who": 0,
-    "cardDefinitionId": 321017,
-    "children": [
-      {
-        "type": "transform",
-        "who": 1,
-        "cardDefinitionId": 211011,
-        "stage": "new"
-      },
-      {
-        "type": "drawCard",
-        "who": 1,
-        "callerDefinitionId": 332041,
-        "drawCardsCount": 2
-      },
-      {
-        "type": "createEntity",
-        "who": 1,
-        "entityType": "summon",
-        "characterDefinitionId": 1402,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "status",
-        "characterDefinitionId": 1105,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 332041
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1110,
-        "healValue": 3,
-        "oldHealth": 5,
-        "newHealth": 8,
-        "healType": "revive"
-      },
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 332042
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332004,
-        "drawCardsCount": 2
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "status",
-        "characterDefinitionId": 1610,
-        "entityDefinitionId": 116102
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1105,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "status",
-              "characterDefinitionId": 1105,
-              "entityDefinitionId": 116102
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1110,
-          "healthChange": 3,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1110,
-              "healValue": 3,
-              "oldHealth": 5,
-              "newHealth": 8,
-              "healType": "revive"
+              "elementType": 6,
+              "reaction": 107
             }
           ]
         }
@@ -1407,171 +3575,11 @@
         {
           "children": [
             {
-              "type": "createEntity",
+              "type": "removeEntity",
               "who": 1,
               "entityType": "summon",
-              "characterDefinitionId": 1402,
-              "entityDefinitionId": 116102
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 1,
-    "callerDefinitionId": 2502,
-    "effectDefinitionId": 331804,
-    "children": [
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 2102,
-        "healValue": 4,
-        "oldHealth": 9,
-        "newHealth": 7,
-        "healType": "normal"
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 1308,
-        "isTunning": false,
-        "diceType": 6
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 312010
-      },
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 321017,
-        "diceType": 1,
-        "diceCount": 3
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 2502,
-        "healValue": 4,
-        "oldHealth": 8,
-        "newHealth": 9,
-        "healType": "revive"
-      },
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 321017
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 2202,
-        "healValue": 4,
-        "oldHealth": 8,
-        "newHealth": 8,
-        "healType": "immuneDefeated"
-      },
-      {
-        "type": "variableChange",
-        "who": 0,
-        "cardDefinitionId": 321002,
-        "variableName": "round",
-        "oldValue": 5,
-        "newValue": 4
-      },
-      {
-        "type": "damage",
-        "who": 0,
-        "characterDefinitionId": 2302,
-        "oldAura": 3,
-        "newAura": 0,
-        "damageType": 4,
-        "damageValue": 3,
-        "oldHealth": 6,
-        "newHealth": 4,
-        "reaction": 116,
-        "causeDefeated": true
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": -2,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 2102,
-              "healValue": 4,
-              "oldHealth": 9,
-              "newHealth": 7,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2502,
-          "healthChange": 1,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 2502,
-              "healValue": 4,
-              "oldHealth": 8,
-              "newHealth": 9,
-              "healType": "revive"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2202,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 2202,
-              "healValue": 4,
-              "oldHealth": 8,
-              "newHealth": 8,
-              "healType": "immuneDefeated"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2302,
-          "healthChange": -2,
-          "children": [
-            {
-              "type": "damage",
-              "who": 0,
               "characterDefinitionId": 2302,
-              "oldAura": 3,
-              "newAura": 0,
-              "damageType": 4,
-              "damageValue": 3,
-              "oldHealth": 6,
-              "newHealth": 4,
-              "reaction": 116,
-              "causeDefeated": true
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 312010,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 312010
+              "entityDefinitionId": 116102
             }
           ]
         }
@@ -1584,693 +3592,112 @@
     "actionType": "other"
   },
   {
-    "type": "switchActive",
-    "who": 0,
-    "characterDefinitionId": 1110,
-    "how": "select",
-    "children": [
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1110,
-        "oldAura": 2,
-        "newAura": 2,
-        "damageType": 1,
-        "damageValue": 4,
-        "oldHealth": 1,
-        "newHealth": 10,
-        "causeDefeated": false
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 332032
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 332032,
-        "target": "hands"
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "target": "hands"
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 1506,
-        "energyValue": 5,
-        "oldEnergy": 6,
-        "newEnergy": 1,
-        "how": "gain"
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "status",
-        "characterDefinitionId": 1501,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "transform",
-        "who": 0,
-        "cardDefinitionId": 226031,
-        "stage": "old"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1110,
-          "healthChange": 9,
-          "children": [
-            {
-              "type": "damage",
-              "who": 1,
-              "characterDefinitionId": 1110,
-              "oldAura": 2,
-              "newAura": 2,
-              "damageType": 1,
-              "damageValue": 4,
-              "oldHealth": 1,
-              "newHealth": 10,
-              "causeDefeated": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1501,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "status",
-              "characterDefinitionId": 1501,
-              "entityDefinitionId": 112142
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 332032,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 332032
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
     "type": "useSkill",
     "who": 1,
-    "skillDefinitionId": 16103,
-    "callerDefinitionId": 2202,
-    "skillType": "elemental",
+    "skillDefinitionId": 16052,
+    "callerDefinitionId": 332041,
+    "skillType": "burst",
     "children": [
       {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 1709,
-        "isOverloaded": false
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 312010,
-        "drawCardsCount": 3
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 331804,
-        "target": "hands"
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 2402,
-        "energyValue": 3,
-        "oldEnergy": 6,
-        "newEnergy": 7,
-        "how": "gain"
-      },
-      {
-        "type": "switchActive",
-        "who": 1,
-        "characterDefinitionId": 2102,
-        "isOverloaded": false
-      },
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 1105,
-        "diceType": 6,
-        "diceCount": 1
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 322012
-      },
-      {
-        "type": "forbidCard",
+        "type": "stealHand",
         "who": 1,
         "cardDefinitionId": 313002
       },
       {
-        "type": "switchActive",
+        "type": "heal",
         "who": 1,
         "characterDefinitionId": 1605,
-        "isOverloaded": false
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 1204,
-        "energyValue": 4,
-        "oldEnergy": 8,
-        "newEnergy": 10,
-        "how": "gain"
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 332042
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1709,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 1709,
-              "isOverloaded": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 1,
-              "characterDefinitionId": 2102,
-              "isOverloaded": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1605,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 1,
-              "characterDefinitionId": 1605,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 322012,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 322012
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 0,
-    "cardDefinitionId": 313002,
-    "children": [
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 2202,
-        "healValue": 4,
-        "oldHealth": 5,
-        "newHealth": 3,
-        "healType": "immuneDefeated"
-      },
-      {
-        "type": "generateDice",
-        "who": 1,
-        "callerDefinitionId": 321004,
-        "diceType": 8,
-        "diceCount": 2
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 332045
-      },
-      {
-        "type": "drawCard",
-        "who": 1,
-        "callerDefinitionId": 321004,
-        "drawCardsCount": 2
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 322012
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332032,
-        "drawCardsCount": 3
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 2202,
-        "energyValue": 1,
-        "oldEnergy": 5,
-        "newEnergy": 10,
-        "how": "loss"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2202,
-          "healthChange": -2,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 2202,
-              "healValue": 4,
-              "oldHealth": 5,
-              "newHealth": 3,
-              "healType": "immuneDefeated"
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 322012,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 322012
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "changePhase",
-    "roundNumber": 2,
-    "newPhase": "initSwitchActive"
-  },
-  {
-    "type": "triggered",
-    "who": 1,
-    "callerDefinitionId": 226031,
-    "effectDefinitionId": 321002,
-    "children": [
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 312009
-      },
-      {
-        "type": "createEntity",
-        "who": 1,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1105,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 332006,
-        "target": "hands"
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 322025
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 312009,
-        "variableName": "round",
-        "oldValue": 3,
-        "newValue": 3
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1506,
-        "healValue": 1,
-        "oldHealth": 8,
+        "healValue": 3,
+        "oldHealth": 3,
         "newHealth": 7,
-        "healType": "immuneDefeated"
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 312010,
-        "target": "pile"
-      },
-      {
-        "type": "removeEntity",
-        "who": 0,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 2402,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 321002
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1105,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 1,
-              "entityType": "combatStatus",
-              "characterDefinitionId": 1105,
-              "entityDefinitionId": 112142
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1506,
-          "healthChange": -1,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 1506,
-              "healValue": 1,
-              "oldHealth": 8,
-              "newHealth": 7,
-              "healType": "immuneDefeated"
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 321002,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 321002
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "changePhase",
-    "roundNumber": 2,
-    "newPhase": "end"
-  },
-  {
-    "type": "elementalTunning",
-    "who": 1,
-    "cardDefinitionId": 312009,
-    "children": [
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 2102,
-        "isOverloaded": false
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332032
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 2102,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 332032,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332032
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "useSkill",
-    "who": 1,
-    "skillDefinitionId": 15012,
-    "callerDefinitionId": 1501,
-    "skillType": "technique",
-    "children": [
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 312010,
-        "drawCardsCount": 1
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 1,
-    "cardDefinitionId": 332042,
-    "children": [
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332032,
-        "drawCardsCount": 1
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 332041,
-        "variableName": "round",
-        "oldValue": 0,
-        "newValue": 1
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 313002
-      },
-      {
-        "type": "createEntity",
-        "who": 1,
-        "entityType": "summon",
-        "characterDefinitionId": 1105,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332006,
-        "drawCardsCount": 3
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 2602,
-        "isOverloaded": true
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "target": "hands"
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1308,
-        "healValue": 2,
-        "oldHealth": 5,
-        "newHealth": 6,
         "healType": "normal"
       },
       {
-        "type": "convertDice",
+        "type": "stealHand",
         "who": 0,
-        "callerDefinitionId": 223041,
-        "isTunning": true,
-        "diceType": 1
+        "cardDefinitionId": 332042
+      },
+      {
+        "type": "disposeCard",
+        "who": 1,
+        "cardDefinitionId": 223041
       },
       {
         "type": "heal",
         "who": 0,
-        "characterDefinitionId": 2502,
-        "healValue": 5,
-        "oldHealth": 5,
-        "newHealth": 7,
-        "healType": "revive"
+        "characterDefinitionId": 2702,
+        "healValue": 4,
+        "oldHealth": 10,
+        "newHealth": 4,
+        "healType": "immuneDefeated"
       },
       {
         "type": "switchActive",
         "who": 1,
-        "characterDefinitionId": 2202,
-        "isOverloaded": true
+        "characterDefinitionId": 1303,
+        "isOverloaded": false
       },
       {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1204,
-        "healValue": 2,
-        "oldHealth": 10,
-        "newHealth": 7,
-        "healType": "immuneDefeated"
+        "type": "generateDice",
+        "who": 0,
+        "callerDefinitionId": 1209,
+        "diceType": 8,
+        "diceCount": 3
       }
     ],
     "summary": {
       "characterSummary": [
         {
-          "characterDefinitionId": 2602,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 2602,
-              "isOverloaded": true
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1308,
-          "healthChange": 1,
+          "characterDefinitionId": 1605,
+          "healthChange": 4,
           "children": [
             {
               "type": "heal",
               "who": 1,
-              "characterDefinitionId": 1308,
-              "healValue": 2,
-              "oldHealth": 5,
-              "newHealth": 6,
+              "characterDefinitionId": 1605,
+              "healValue": 3,
+              "oldHealth": 3,
+              "newHealth": 7,
               "healType": "normal"
             }
           ]
         },
         {
-          "characterDefinitionId": 2502,
-          "healthChange": 2,
+          "characterDefinitionId": 2702,
+          "healthChange": -6,
           "children": [
             {
               "type": "heal",
               "who": 0,
-              "characterDefinitionId": 2502,
-              "healValue": 5,
-              "oldHealth": 5,
-              "newHealth": 7,
-              "healType": "revive"
+              "characterDefinitionId": 2702,
+              "healValue": 4,
+              "oldHealth": 10,
+              "newHealth": 4,
+              "healType": "immuneDefeated"
             }
           ]
         },
         {
-          "characterDefinitionId": 2202,
+          "characterDefinitionId": 1303,
           "healthChange": 0,
           "children": [
             {
               "type": "switchActive",
               "who": 1,
-              "characterDefinitionId": 2202,
-              "isOverloaded": true
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1204,
-          "healthChange": -3,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 1204,
-              "healValue": 2,
-              "oldHealth": 10,
-              "newHealth": 7,
-              "healType": "immuneDefeated"
+              "characterDefinitionId": 1303,
+              "isOverloaded": false
             }
           ]
         }
       ],
       "cardSummary": [
         {
-          "cardDefinitionId": 313002,
+          "cardDefinitionId": 223041,
           "children": [
             {
               "type": "disposeCard",
               "who": 1,
-              "cardDefinitionId": 313002
-            }
-          ]
-        },
-        {
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 1,
-              "entityType": "summon",
-              "characterDefinitionId": 1105,
-              "entityDefinitionId": 116102
+              "cardDefinitionId": 223041
             }
           ]
         }
@@ -2278,46 +3705,46 @@
     }
   },
   {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 332004,
+    "type": "elementalTunning",
+    "who": 1,
+    "cardDefinitionId": 332045,
     "children": [
       {
-        "type": "apply",
+        "type": "transform",
+        "who": 0,
+        "cardDefinitionId": 322012,
+        "stage": "old"
+      },
+      {
+        "type": "damage",
         "who": 1,
-        "characterDefinitionId": 2302,
+        "characterDefinitionId": 1506,
+        "oldAura": 3,
+        "newAura": 0,
+        "damageType": 2,
+        "damageValue": 2,
+        "oldHealth": 3,
+        "newHealth": 0,
+        "causeDefeated": false
+      },
+      {
+        "type": "switchActive",
+        "who": 0,
+        "characterDefinitionId": 2602,
+        "isOverloaded": false
+      },
+      {
+        "type": "damage",
+        "who": 1,
+        "characterDefinitionId": 1402,
         "oldAura": 4,
-        "newAura": 2,
-        "elementType": 9,
-        "reaction": 117
-      },
-      {
-        "type": "removeEntity",
-        "who": 0,
-        "entityType": "support",
-        "characterDefinitionId": 2502,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 2402,
-        "energyValue": 5,
-        "oldEnergy": 2,
-        "newEnergy": 4,
-        "how": "loss"
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 1308,
-        "isTunning": false,
-        "diceType": 6
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 321004
+        "newAura": 3,
+        "damageType": 0,
+        "damageValue": 7,
+        "oldHealth": 2,
+        "newHealth": 1,
+        "reaction": 102,
+        "causeDefeated": false
       },
       {
         "type": "stealHand",
@@ -2325,1404 +3752,168 @@
         "cardDefinitionId": 211011
       },
       {
-        "type": "apply",
-        "who": 1,
-        "characterDefinitionId": 1110,
-        "oldAura": 1,
-        "newAura": 7,
-        "elementType": 0
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2302,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 1,
-              "characterDefinitionId": 2302,
-              "oldAura": 4,
-              "newAura": 2,
-              "elementType": 9,
-              "reaction": 117
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1110,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 1,
-              "characterDefinitionId": 1110,
-              "oldAura": 1,
-              "newAura": 7,
-              "elementType": 0
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "children": [
-            {
-              "type": "removeEntity",
-              "who": 0,
-              "entityType": "support",
-              "characterDefinitionId": 2502,
-              "entityDefinitionId": 116102
-            }
-          ]
-        },
-        {
-          "cardDefinitionId": 321004,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 321004
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "action",
-    "who": 0,
-    "actionType": "declareEnd"
-  },
-  {
-    "type": "playingCard",
-    "who": 1,
-    "cardDefinitionId": 322012,
-    "children": [
-      {
-        "type": "transform",
-        "who": 1,
-        "cardDefinitionId": 1709,
-        "stage": "new"
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 2702,
-        "healValue": 2,
-        "oldHealth": 8,
-        "newHealth": 5,
-        "healType": "normal"
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "status",
-        "characterDefinitionId": 2602,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "drawCard",
-        "who": 1,
-        "callerDefinitionId": 332042,
-        "drawCardsCount": 4
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 321015
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 1407,
-        "healValue": 4,
-        "oldHealth": 9,
-        "newHealth": 1,
-        "healType": "normal"
-      },
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 332032,
-        "target": "hands"
-      },
-      {
-        "type": "switchActive",
-        "who": 1,
-        "characterDefinitionId": 1402,
-        "isOverloaded": false
-      },
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332041,
-        "drawCardsCount": 3
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 331802
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2702,
-          "healthChange": -3,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 2702,
-              "healValue": 2,
-              "oldHealth": 8,
-              "newHealth": 5,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": -8,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 1407,
-              "healValue": 4,
-              "oldHealth": 9,
-              "newHealth": 1,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1402,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 1,
-              "characterDefinitionId": 1402,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 331802,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 331802
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 331804,
-    "children": [
-      {
-        "type": "removeEntity",
-        "who": 0,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1506,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "status",
-        "characterDefinitionId": 2102,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 1709,
-        "energyValue": 2,
-        "oldEnergy": 4,
-        "newEnergy": 5,
-        "how": "loss"
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 226031
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 321017,
-        "target": "pile"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "status",
-              "characterDefinitionId": 2102,
-              "entityDefinitionId": 112142
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 226031,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 226031
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 0,
-    "callerDefinitionId": 321017,
-    "effectDefinitionId": 330320,
-    "children": [
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 321017
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332041
-      },
-      {
-        "type": "switchActive",
-        "who": 1,
-        "characterDefinitionId": 1110,
-        "isOverloaded": true
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 312009
-      },
-      {
-        "type": "apply",
-        "who": 0,
-        "characterDefinitionId": 1704,
-        "oldAura": 3,
-        "newAura": 7,
-        "elementType": 6
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 331804,
-        "isTunning": false,
-        "diceType": 5
-      },
-      {
         "type": "damage",
         "who": 1,
-        "characterDefinitionId": 1501,
-        "oldAura": 113,
-        "newAura": 2,
-        "damageType": 3,
-        "damageValue": 1,
-        "oldHealth": 3,
-        "newHealth": 0,
+        "characterDefinitionId": 1709,
+        "oldAura": 2,
+        "newAura": 1,
+        "damageType": 0,
+        "damageValue": 8,
+        "oldHealth": 7,
+        "newHealth": 10,
         "causeDefeated": false
       },
       {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "summon",
-        "characterDefinitionId": 2202,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "stealHand",
+        "type": "generateDice",
         "who": 1,
-        "cardDefinitionId": 321015
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 1105,
-        "isTunning": true,
-        "diceType": 2
+        "callerDefinitionId": 332006,
+        "diceType": 4,
+        "diceCount": 1
       }
     ],
     "summary": {
       "characterSummary": [
         {
-          "characterDefinitionId": 1110,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 1,
-              "characterDefinitionId": 1110,
-              "isOverloaded": true
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1704,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 0,
-              "characterDefinitionId": 1704,
-              "oldAura": 3,
-              "newAura": 7,
-              "elementType": 6
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1501,
+          "characterDefinitionId": 1506,
           "healthChange": -3,
           "children": [
             {
               "type": "damage",
               "who": 1,
-              "characterDefinitionId": 1501,
-              "oldAura": 113,
-              "newAura": 2,
-              "damageType": 3,
-              "damageValue": 1,
+              "characterDefinitionId": 1506,
+              "oldAura": 3,
+              "newAura": 0,
+              "damageType": 2,
+              "damageValue": 2,
               "oldHealth": 3,
               "newHealth": 0,
               "causeDefeated": false
             }
           ]
-        }
-      ],
-      "cardSummary": [
+        },
         {
-          "cardDefinitionId": 332041,
+          "characterDefinitionId": 2602,
+          "healthChange": 0,
           "children": [
             {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332041
+              "type": "switchActive",
+              "who": 0,
+              "characterDefinitionId": 2602,
+              "isOverloaded": false
             }
           ]
         },
         {
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "summon",
-              "characterDefinitionId": 2202,
-              "entityDefinitionId": 112142
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "changePhase",
-    "roundNumber": 13,
-    "newPhase": "initSwitchActive"
-  },
-  {
-    "type": "selectCard",
-    "who": 1,
-    "cardDefinitionId": 223041,
-    "children": [
-      {
-        "type": "forbidCard",
-        "who": 0,
-        "cardDefinitionId": 226031
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 313002,
-        "target": "hands"
-      },
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1204,
-        "oldAura": 2,
-        "newAura": 7,
-        "damageType": 3,
-        "damageValue": 2,
-        "oldHealth": 6,
-        "newHealth": 5,
-        "causeDefeated": false
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 321017,
-        "isTunning": true,
-        "diceType": 4
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1407,
-        "entityDefinitionId": 112142
-      },
-      {
-        "type": "heal",
-        "who": 1,
-        "characterDefinitionId": 2502,
-        "healValue": 1,
-        "oldHealth": 7,
-        "newHealth": 2,
-        "healType": "normal"
-      },
-      {
-        "type": "apply",
-        "who": 1,
-        "characterDefinitionId": 2302,
-        "oldAura": 113,
-        "newAura": 4,
-        "elementType": 7,
-        "reaction": 103
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1204,
+          "characterDefinitionId": 1402,
           "healthChange": -1,
           "children": [
             {
               "type": "damage",
               "who": 1,
-              "characterDefinitionId": 1204,
-              "oldAura": 2,
-              "newAura": 7,
-              "damageType": 3,
-              "damageValue": 2,
-              "oldHealth": 6,
-              "newHealth": 5,
-              "causeDefeated": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "combatStatus",
-              "characterDefinitionId": 1407,
-              "entityDefinitionId": 112142
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2502,
-          "healthChange": -5,
-          "children": [
-            {
-              "type": "heal",
-              "who": 1,
-              "characterDefinitionId": 2502,
-              "healValue": 1,
-              "oldHealth": 7,
-              "newHealth": 2,
-              "healType": "normal"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2302,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 1,
-              "characterDefinitionId": 2302,
-              "oldAura": 113,
-              "newAura": 4,
-              "elementType": 7,
-              "reaction": 103
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "changePhase",
-    "roundNumber": 10,
-    "newPhase": "initSwitchHands"
-  },
-  {
-    "type": "playingCard",
-    "who": 0,
-    "cardDefinitionId": 226031,
-    "children": [
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "variableName": "round",
-        "oldValue": 1,
-        "newValue": 1
-      },
-      {
-        "type": "disposeCard",
-        "who": 1,
-        "cardDefinitionId": 332041
-      },
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "equipment",
-        "characterDefinitionId": 1209,
-        "entityDefinitionId": 112142
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 332041,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 1,
-              "cardDefinitionId": 332041
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 1,
-    "cardDefinitionId": 332041,
-    "children": [
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 313002
-      },
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1407,
-        "oldAura": 3,
-        "newAura": 0,
-        "damageType": 0,
-        "damageValue": 2,
-        "oldHealth": 2,
-        "newHealth": 2,
-        "reaction": 111,
-        "causeDefeated": false
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 1610,
-        "energyValue": 2,
-        "oldEnergy": 10,
-        "newEnergy": 3,
-        "how": "gain"
-      },
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 127033
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 2602,
-        "isTunning": true,
-        "diceType": 5
-      },
-      {
-        "type": "transform",
-        "who": 0,
-        "cardDefinitionId": 223041,
-        "stage": "old"
-      },
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1501,
-        "oldAura": 2,
-        "newAura": 2,
-        "damageType": 0,
-        "damageValue": 2,
-        "oldHealth": 4,
-        "newHealth": 7,
-        "causeDefeated": false
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 312010
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 312010,
-        "variableName": "usage",
-        "oldValue": 5,
-        "newValue": 1
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1407,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "damage",
-              "who": 1,
-              "characterDefinitionId": 1407,
-              "oldAura": 3,
-              "newAura": 0,
+              "characterDefinitionId": 1402,
+              "oldAura": 4,
+              "newAura": 3,
               "damageType": 0,
-              "damageValue": 2,
+              "damageValue": 7,
               "oldHealth": 2,
-              "newHealth": 2,
-              "reaction": 111,
+              "newHealth": 1,
+              "reaction": 102,
               "causeDefeated": false
             }
           ]
         },
         {
-          "characterDefinitionId": 1501,
+          "characterDefinitionId": 1709,
           "healthChange": 3,
           "children": [
             {
               "type": "damage",
               "who": 1,
-              "characterDefinitionId": 1501,
+              "characterDefinitionId": 1709,
               "oldAura": 2,
-              "newAura": 2,
-              "damageType": 0,
-              "damageValue": 2,
-              "oldHealth": 4,
-              "newHealth": 7,
-              "causeDefeated": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 211011,
-    "children": [
-      {
-        "type": "drawCard",
-        "who": 1,
-        "callerDefinitionId": 226031,
-        "drawCardsCount": 2
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1610,
-        "healValue": 3,
-        "oldHealth": 8,
-        "newHealth": 7,
-        "healType": "immuneDefeated"
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 1501,
-        "isOverloaded": true
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 2502,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "apply",
-        "who": 0,
-        "characterDefinitionId": 2302,
-        "oldAura": 1,
-        "newAura": 7,
-        "elementType": 6,
-        "reaction": 102
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1610,
-          "healthChange": -1,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1610,
-              "healValue": 3,
-              "oldHealth": 8,
-              "newHealth": 7,
-              "healType": "immuneDefeated"
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1501,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 1501,
-              "isOverloaded": true
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2302,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 0,
-              "characterDefinitionId": 2302,
-              "oldAura": 1,
-              "newAura": 7,
-              "elementType": 6,
-              "reaction": 102
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "triggered",
-    "who": 1,
-    "callerDefinitionId": 1605,
-    "effectDefinitionId": 332042,
-    "children": [
-      {
-        "type": "createEntity",
-        "who": 0,
-        "entityType": "status",
-        "characterDefinitionId": 2102,
-        "entityDefinitionId": 116102
-      },
-      {
-        "type": "heal",
-        "who": 0,
-        "characterDefinitionId": 1105,
-        "healValue": 2,
-        "oldHealth": 4,
-        "newHealth": 9,
-        "healType": "immuneDefeated"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "createEntity",
-              "who": 0,
-              "entityType": "status",
-              "characterDefinitionId": 2102,
-              "entityDefinitionId": 116102
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1105,
-          "healthChange": 5,
-          "children": [
-            {
-              "type": "heal",
-              "who": 0,
-              "characterDefinitionId": 1105,
-              "healValue": 2,
-              "oldHealth": 4,
-              "newHealth": 9,
-              "healType": "immuneDefeated"
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 1,
-    "cardDefinitionId": 312009,
-    "children": [],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 1,
-    "cardDefinitionId": 322012,
-    "children": [
-      {
-        "type": "transform",
-        "who": 0,
-        "cardDefinitionId": 223041,
-        "stage": "old"
-      },
-      {
-        "type": "variableChange",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "variableName": "usage",
-        "oldValue": 4,
-        "newValue": 0
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 0,
-    "cardDefinitionId": 332042,
-    "children": [
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1610,
-        "oldAura": 0,
-        "newAura": 3,
-        "damageType": 8,
-        "damageValue": 2,
-        "oldHealth": 10,
-        "newHealth": 4,
-        "causeDefeated": true
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 312010
-      },
-      {
-        "type": "forbidCard",
-        "who": 1,
-        "cardDefinitionId": 313002
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 226031
-      },
-      {
-        "type": "forbidCard",
-        "who": 0,
-        "cardDefinitionId": 322012
-      },
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 332006
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 2102,
-        "isOverloaded": false
-      },
-      {
-        "type": "damage",
-        "who": 0,
-        "characterDefinitionId": 1704,
-        "oldAura": 3,
-        "newAura": 7,
-        "damageType": 1,
-        "damageValue": 7,
-        "oldHealth": 4,
-        "newHealth": 4,
-        "causeDefeated": false
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 2502,
-        "energyValue": 2,
-        "oldEnergy": 6,
-        "newEnergy": 1,
-        "how": "loss"
-      },
-      {
-        "type": "removeEntity",
-        "who": 1,
-        "entityType": "combatStatus",
-        "characterDefinitionId": 1506,
-        "entityDefinitionId": 116102
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1610,
-          "healthChange": -6,
-          "children": [
-            {
-              "type": "damage",
-              "who": 1,
-              "characterDefinitionId": 1610,
-              "oldAura": 0,
-              "newAura": 3,
-              "damageType": 8,
-              "damageValue": 2,
-              "oldHealth": 10,
-              "newHealth": 4,
-              "causeDefeated": true
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 2102,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 2102,
-              "isOverloaded": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1704,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "damage",
-              "who": 0,
-              "characterDefinitionId": 1704,
-              "oldAura": 3,
-              "newAura": 7,
-              "damageType": 1,
-              "damageValue": 7,
-              "oldHealth": 4,
-              "newHealth": 4,
-              "causeDefeated": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 226031,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 226031
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "useSkill",
-    "who": 0,
-    "skillDefinitionId": 27022,
-    "callerDefinitionId": 1204,
-    "skillType": "elemental",
-    "children": [
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 312009,
-        "target": "hands"
-      }
-    ],
-    "summary": {
-      "characterSummary": [],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "switchActive",
-    "who": 0,
-    "characterDefinitionId": 1308,
-    "how": "select",
-    "children": [
-      {
-        "type": "triggered",
-        "who": 1,
-        "effectDefinitionId": 321004
-      },
-      {
-        "type": "stealHand",
-        "who": 1,
-        "cardDefinitionId": 312009
-      },
-      {
-        "type": "disposeCard",
-        "who": 0,
-        "cardDefinitionId": 226031
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 332004,
-        "target": "pile"
-      },
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 1204,
-        "diceType": 1,
-        "diceCount": 3
-      },
-      {
-        "type": "generateDice",
-        "who": 0,
-        "callerDefinitionId": 312009,
-        "diceType": 6,
-        "diceCount": 1
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 1407,
-        "energyValue": 4,
-        "oldEnergy": 2,
-        "newEnergy": 2,
-        "how": "gain"
-      },
-      {
-        "type": "damage",
-        "who": 1,
-        "characterDefinitionId": 1303,
-        "oldAura": 3,
-        "newAura": 7,
-        "damageType": 0,
-        "damageValue": 7,
-        "oldHealth": 8,
-        "newHealth": 2,
-        "causeDefeated": false
-      },
-      {
-        "type": "switchActive",
-        "who": 1,
-        "characterDefinitionId": 1308,
-        "isOverloaded": false
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 1303,
-          "healthChange": -6,
-          "children": [
-            {
-              "type": "damage",
-              "who": 1,
-              "characterDefinitionId": 1303,
-              "oldAura": 3,
-              "newAura": 7,
-              "damageType": 0,
-              "damageValue": 7,
-              "oldHealth": 8,
-              "newHealth": 2,
-              "causeDefeated": false
-            }
-          ]
-        },
-        {
-          "characterDefinitionId": 1308,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 1,
-              "characterDefinitionId": 1308,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": [
-        {
-          "cardDefinitionId": 226031,
-          "children": [
-            {
-              "type": "disposeCard",
-              "who": 0,
-              "cardDefinitionId": 226031
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "type": "elementalTunning",
-    "who": 0,
-    "cardDefinitionId": 312010,
-    "children": [
-      {
-        "type": "createCard",
-        "who": 0,
-        "cardDefinitionId": 322012,
-        "target": "pile"
-      },
-      {
-        "type": "apply",
-        "who": 0,
-        "characterDefinitionId": 2602,
-        "oldAura": 0,
-        "newAura": 2,
-        "elementType": 3,
-        "reaction": 105
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2602,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "apply",
-              "who": 0,
-              "characterDefinitionId": 2602,
-              "oldAura": 0,
-              "newAura": 2,
-              "elementType": 3,
-              "reaction": 105
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "playingCard",
-    "who": 1,
-    "cardDefinitionId": 211011,
-    "children": [
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 1303,
-        "energyValue": 1,
-        "oldEnergy": 5,
-        "newEnergy": 6,
-        "how": "gain"
-      },
-      {
-        "type": "convertDice",
-        "who": 1,
-        "callerDefinitionId": 2302,
-        "isTunning": true,
-        "diceType": 4
-      },
-      {
-        "type": "stealHand",
-        "who": 1,
-        "cardDefinitionId": 331804
-      },
-      {
-        "type": "transform",
-        "who": 1,
-        "cardDefinitionId": 223041,
-        "stage": "old"
-      },
-      {
-        "type": "forbidCard",
-        "who": 0,
-        "cardDefinitionId": 312010
-      },
-      {
-        "type": "switchActive",
-        "who": 0,
-        "characterDefinitionId": 2302,
-        "isOverloaded": false
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 312010,
-        "target": "hands"
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2302,
-          "healthChange": 0,
-          "children": [
-            {
-              "type": "switchActive",
-              "who": 0,
-              "characterDefinitionId": 2302,
-              "isOverloaded": false
-            }
-          ]
-        }
-      ],
-      "cardSummary": []
-    }
-  },
-  {
-    "type": "selectCard",
-    "who": 0,
-    "cardDefinitionId": 322025,
-    "children": [
-      {
-        "type": "drawCard",
-        "who": 0,
-        "callerDefinitionId": 332006,
-        "drawCardsCount": 4
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 332004,
-        "isTunning": true,
-        "diceType": 10
-      },
-      {
-        "type": "stealHand",
-        "who": 0,
-        "cardDefinitionId": 321015
-      },
-      {
-        "type": "energy",
-        "who": 0,
-        "characterDefinitionId": 1110,
-        "energyValue": 1,
-        "oldEnergy": 10,
-        "newEnergy": 10,
-        "how": "gain"
-      },
-      {
-        "type": "variableChange",
-        "who": 0,
-        "cardDefinitionId": 330319,
-        "variableName": "round",
-        "oldValue": 1,
-        "newValue": 5
-      },
-      {
-        "type": "energy",
-        "who": 1,
-        "characterDefinitionId": 2702,
-        "energyValue": 3,
-        "oldEnergy": 5,
-        "newEnergy": 6,
-        "how": "gain"
-      },
-      {
-        "type": "transform",
-        "who": 0,
-        "cardDefinitionId": 2302,
-        "stage": "new"
-      },
-      {
-        "type": "stealHand",
-        "who": 1,
-        "cardDefinitionId": 321017
-      },
-      {
-        "type": "triggered",
-        "who": 0,
-        "effectDefinitionId": 332045
-      },
-      {
-        "type": "createCard",
-        "who": 1,
-        "cardDefinitionId": 322012,
-        "target": "pile"
-      },
-      {
-        "type": "damage",
-        "who": 0,
-        "characterDefinitionId": 2602,
-        "oldAura": 113,
-        "newAura": 0,
-        "damageType": 0,
-        "damageValue": 8,
-        "oldHealth": 7,
-        "newHealth": 1,
-        "causeDefeated": true
-      },
-      {
-        "type": "convertDice",
-        "who": 0,
-        "callerDefinitionId": 312009,
-        "isTunning": true,
-        "diceType": 6
-      }
-    ],
-    "summary": {
-      "characterSummary": [
-        {
-          "characterDefinitionId": 2602,
-          "healthChange": -6,
-          "children": [
-            {
-              "type": "damage",
-              "who": 0,
-              "characterDefinitionId": 2602,
-              "oldAura": 113,
-              "newAura": 0,
+              "newAura": 1,
               "damageType": 0,
               "damageValue": 8,
               "oldHealth": 7,
-              "newHealth": 1,
-              "causeDefeated": true
+              "newHealth": 10,
+              "causeDefeated": false
             }
           ]
         }
       ],
       "cardSummary": []
+    }
+  },
+  {
+    "type": "elementalTunning",
+    "who": 0,
+    "cardDefinitionId": 312009,
+    "children": [
+      {
+        "type": "triggered",
+        "who": 0,
+        "effectDefinitionId": 117094
+      },
+      {
+        "type": "variableChange",
+        "who": 1,
+        "cardDefinitionId": 301104,
+        "variableName": "round",
+        "oldValue": 5,
+        "newValue": 4
+      },
+      {
+        "type": "stealHand",
+        "who": 0,
+        "cardDefinitionId": 312009
+      },
+      {
+        "type": "drawCard",
+        "who": 1,
+        "callerDefinitionId": 332004,
+        "drawCardsCount": 4
+      },
+      {
+        "type": "createEntity",
+        "who": 1,
+        "entityType": "summon",
+        "characterDefinitionId": 2702,
+        "entityDefinitionId": 112142
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 313002,
+        "target": "pile"
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 313002,
+        "target": "pile"
+      },
+      {
+        "type": "createCard",
+        "who": 0,
+        "cardDefinitionId": 332045,
+        "target": "hands"
+      }
+    ],
+    "summary": {
+      "characterSummary": [],
+      "cardSummary": [
+        {
+          "children": [
+            {
+              "type": "createEntity",
+              "who": 1,
+              "entityType": "summon",
+              "characterDefinitionId": 2702,
+              "entityDefinitionId": 112142
+            }
+          ]
+        }
+      ]
     }
   }
 ]

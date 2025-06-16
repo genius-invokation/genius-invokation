@@ -73,7 +73,7 @@ export function DicePanel(props: DicePanelProps) {
         </div>
         <div class="flex-grow h-full flex items-center justify-center">
           <Show when={props.state === "visible"}>
-            <ul class="grid grid-cols-2 gap-x-1 gap-y-2">
+            <ul class="grid grid-cols-2 gap-x-1 gap-y-2 -translate-y-5">
               <Index each={props.dice}>
                 {(dice, index) => (
                   <li
@@ -85,7 +85,7 @@ export function DicePanel(props: DicePanelProps) {
                   >
                     <Dice
                       type={dice()}
-                      size={50}
+                      size={48}
                       selected={props.selectedDice[index]}
                     />
                   </li>

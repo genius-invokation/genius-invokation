@@ -31,7 +31,7 @@ function parseTime(time: number) {
 export function TimerCapsule(props: TimerProps) {
   return (
     <Show when={props.timer && props.timer.current > 20}>
-      <div class="h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50">
+      <div class="h-8 w-20 flex items-center justify-center rounded-full b-1 line-height-none font-bold text-black/50 b-yellow-800/50 bg-yellow-50/50">
         {parseTime(props.timer!.current)}
       </div>
     </Show>

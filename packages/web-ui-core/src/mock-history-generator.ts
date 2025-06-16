@@ -36,7 +36,7 @@ const diceTypePool = Object.values(DiceType);
 const skillIdPool = [11052, 11103, 12042, 12093, 13032, 13083, 14022, 14073, 15012, 15063, 16052, 16103, 17042, 17093, 21022, 22023, 23022, 24023, 25022, 26023, 27022];
 const characterIdPool = [1105, 1110, 1204, 1209, 1303, 1308, 1402, 1407, 1501, 1506, 1605, 1610, 1704, 1709, 2102, 2202, 2302, 2402, 2502, 2602, 2702];
 const cardIdPool = [321015, 211011, 331804, 332045, 332042, 331802, 332006, 332042, 223041, 223041, 226031, 226031, 312009, 312009, 312010, 312010, 313002, 313002, 321002, 321004, 321017, 321017, 322008, 322012, 322012, 322025, 332004, 332004, 332006, 332032, 332032, 332041, 332041];
-const entityIdPool = [330319, 330320, 301104, 121013, 127033, 117091, 117094, 117092];
+const entityIdPool = [301104, 121013, 127033, 117091, 117094, 117092];
 
 /* ---------- HistoryChildren 生成 ---------- */
 function genChild(): HistoryChildren {
@@ -50,7 +50,7 @@ function genChild(): HistoryChildren {
         () => ({
             type: "triggered",
             who: rand(0, 1) as 0 | 1,
-            effectDefinitionId: pick([...entityIdPool, ...cardIdPool]),
+            effectDefinitionId: pick(entityIdPool),
         }),
         () => ({
             type: "createEntity",
@@ -246,7 +246,7 @@ function genBlock(): HistoryBlock {
         () => ({
             type: "changePhase",
             roundNumber: rand(1, 14),
-            newPhase: pick(["initSwitchHands", "initSwitchActive", "action", "end"] as const),
+            newPhase: pick(["initHands", "initActives", "action", "end"] as const),
         }),
         () => ({
             type: "action",
@@ -313,11 +313,27 @@ function genBlock(): HistoryBlock {
                 { length: rand(0, 12) },
                 () => genChild()
             );
+            const card = pick(cardIdPool);
             return {
                 type: "triggered",
                 who: rand(0, 1) as 0 | 1,
-                callerDefinitionId: pick([...characterIdPool, ...cardIdPool]),
-                effectDefinitionId: pick([...entityIdPool, ...cardIdPool, ...skillIdPool]),
+                callerDefinitionId: card,
+                effectDefinitionId: card,
+                children: children,
+                summary: buildSummary(children),
+            };
+        },
+        () => {
+            const children = Array.from(
+                { length: rand(0, 12) },
+                () => genChild()
+            );
+            const card = pick(cardIdPool);
+            return {
+                type: "triggered",
+                who: rand(0, 1) as 0 | 1,
+                callerDefinitionId: pick([...characterIdPool]),
+                effectDefinitionId: pick([...entityIdPool, ...skillIdPool]),
                 children: children,
                 summary: buildSummary(children),
             };
