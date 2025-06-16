@@ -189,15 +189,11 @@ class Player implements PlayerIOWithError {
     new BehaviorSubject<SSENotification | null>(null);
   public readonly notificationSse$: Observable<SSEPayload> = concat<
     (SSEPayload | null)[]
-  >(
-    this.initializedSubject,
-    defer(() => {
-      const currentAction = this.currentAction();
-      return of(currentAction);
-    }),
-    this.notificationSseSource,
-  ).pipe(
-    mergeWith(this.errorSseSource),
+  >(this.initializedSubject, this.notificationSseSource).pipe(
+    mergeWith(
+      defer(() => of(this.currentAction())),
+      this.errorSseSource,
+    ),
     filter((data): data is SSEPayload => data !== null),
     mergeWith(this.actionSseSource, this.oppRpcSseSource, pingInterval),
     takeUntil(this.completeSubject),
