@@ -657,6 +657,196 @@ interface blockDetailProps {
   content: JSX.Element;
 }
 
+function isCharacterEvent(c: HistoryChildren): c is CharacterHistoryChildren {
+  if (
+    c.type === "switchActive" ||
+    c.type === "damage" ||
+    c.type === "heal" ||
+    c.type === "apply"
+  ) {
+    return true;
+  }
+
+  if (c.type === "createEntity") {
+    const t = (c as CreateEntityHistoryChild).entityType;
+    return t === "status" || t === "combatStatus";
+  }
+
+  return false;
+}
+
+function isCardEvent(c: HistoryChildren): c is CardHistoryChildren {
+  if (c.type === "disposeCard") return true;
+
+  if (c.type === "createEntity") {
+    return (c as CreateEntityHistoryChild).entityType === "summon";
+  }
+
+  if (c.type === "removeEntity") {
+    const t = (c as RemoveEntityHistoryChild).entityType;
+    return t === "summon" || t === "support";
+  }
+
+  return false;
+}
+
+function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
+    const charMap = new Map<number, CharacterSummary>();
+    const cardMap = new Map<number, CardSummary>();
+
+    children.forEach((c) => {
+        if (isCharacterEvent(c)) {
+            const charId = c.characterDefinitionId;
+const who = c.who
+// 需增加功能，只有charId和who相同才视为同一个
+            if (!charMap.has(charId)) {
+                charMap.set(charId, {
+                    characterDefinitionId: charId,
+                    who: who,
+                    healthChange: 0,
+                    switchActive: false,
+element: [],
+status: [],
+combatStatus: [],
+                    children: [],
+                });
+            }
+            const summary = charMap.get(charId)!;
+            summary.children.push(c as CharacterHistoryChildren);
+
+            if (c.type === "damage" || c.type === "heal") {
+                const delta = (c.newHealth ?? 0) - (c.oldHealth ?? 0);
+                summary.healthChange += delta;
+  if (c.type === "switchActive") {
+    summary.switchActive = true;
+  }
+  if (c.type === "damage" && c.damageType > 0) {
+    if (c.reaction) {
+      summary.element.append(reactionTextMap[c.reaction].element as DamageType[]);
+    } else {
+      summary.element.append([c.DamageType]);
+    }
+  }
+  if (c.type === "apply") {
+    if (c.reaction) {
+      summary.element.append(reactionTextMap[c.reaction].element as DamageType[]);
+    } else {
+      summary.element.append([c.elementType]);
+    }
+  }
+  if (c.type === "createEntity") {
+    if (c.entityType === "status") {
+      summary.status.append(c.entityDefinedId)
+    } else if ()(c.entityType === "combatStatus") {
+      summary.combatStatus.append(c.entityDefinedId)
+    }
+  }
+            }
+        }
+
+        if (isCardEvent(c)) {
+            const cardId = c.cardDefinitionId;
+            if (!cardMap.has(cardId)) {
+                cardMap.set(cardId, {
+                    cardDefinitionId: cardId,
+                    children: [],
+                });
+            }
+            cardMap.get(cardId)!.children.push(c as CardHistoryChildren);
+        }
+    });
+    return {
+        characterSummary: Array.from(charMap.values()),
+        cardSummary: Array.from(cardMap.values()),
+    };
+}
+
+function renderSummary(children: HistoyChild[]): renderSummaryProps {
+    { characterSummary, cardSummary } = buildSummary(children);
+    const DamageList = CharacterHistoryChildren[];
+    const HealList = CharacterHistoryChildren[];
+    const ApplyList = CharacterHistoryChildren[];
+    const SwitchActiveList = CharacterHistoryChildren[];
+    const EntityList = CharacterHistoryChildren[];
+    const DisposeList = CardHistoryChildren[];
+    const CreateList = CardHistoryChildren[];
+    const RemoveList = CardHistoryChildren[];
+
+    characterSummary.forEach((c) => {
+        if (c.healthChange<0) {
+            DamageList.append(c);
+        } else if (c.healthChange>0) {
+            HealList.append(c);
+        } else if (c.child) {
+            DamageList.append(c);
+        } else if (c.healthChange>0) {
+            DamageList.append(c);
+        } else {
+            EntityList.append(c);
+        }
+    });
+}
+
+
+// bolck预览渲染逻辑
+// 遍历characterSummary
+//    if 一个character的healthChange<0，就将其加入DamageList
+//    elif 一个character的healthChange>0，就将其加入HealList
+//    elif 一个character包含附着元素事件，就将其加入ElementList
+//    elif 一个character包含切换角色事件，就将其加入SwitchList
+//    else 将剩余角色加入StateList
+// 遍历每个List
+//    if List内只有一个角色
+//      显示这个角色
+//      如果有healthChange，显示healthChange
+//      对于元素反应/附着、状态、出战状态
+//        如果有1个则直接显示，如果有多个则显示“···”
+//    else List内有多个角色
+//      显示第一个角色，其他折叠为牌堆
+//      如果有healthChange，显示“···”
+//      对于元素反应/附着、状态
+//        如果有则显示“···”
+//      对于出战状态
+//        如果有1个且List内角色阵营相同则直接显示，否则显示“···”
+// 遍历cardSummary
+//    if 仅含有DisposeCardHistoryChild，就将其加入DisposeList
+//    elif 仅含有CreateEntityHistoryChild，就将其加入CreateList
+//    elif 仅含有RemoveEntityHistoryChild:
+//      if entityType="summon" 就将其加入RemoveList
+//      elif entityType="support" 就将其加入DisposeList
+// 遍历每个List
+//    如果List内仅存在一个card则直接显示
+//    如果List内存在多个card则显示第一个，其他折叠为牌堆
+//    DisposeList为7:12, 其余为28:33
+export interface HistoryChildrenSummary {
+  characterSummary: CharacterSummary[];
+  cardSummary: CardSummary[];
+}
+// 对于child事件
+// 如果事件符合CharaterHistoryChildren类型及描述
+// 如果不存在CharacterSummary的id为该角色，则创建对应的CharacterSummary并将事件加入其中
+// 如果存在CharacterSummary的id为该角色，则将事件加入其中
+// 计算伤害事件和治疗事件后角色最终的血量变化
+export interface CharacterSummary {
+  characterDefinitionId: number;
+  who: 0 | 1;
+  healthChange: number;
+  switchActive: boolean;
+  elemental: DamageType[][];
+  status: number[]
+  combatStatus: number[];
+  children: CharacterHistoryChildren[];
+}
+// 对于child事件
+// 如果事件符合CardHistoryChildren类型及描述
+// 如果不存在CardSummary的id为该卡牌，则创建对应的CardSummary并将事件加入其中
+// 如果存在CardSummary的id为该卡牌，则将事件加入其中
+export interface CardSummary {
+  cardDefinitionId: number;
+  children: CardHistoryChildren[];
+}
+
+
 interface renderHistoryBlockProps {
   type: "switchActive" | "useSkill" | "triggered" | "playingCard" | "selectCard" | "elementalTunning";
   opp: boolean;
