@@ -293,3 +293,21 @@ export const PilgrimageOfTheReturnOfTheSacredFlame = card(330010)
     }
   })
   .done();
+
+/**
+ * @id 330011
+ * @name 为「死」而战
+ * @description
+ * 抓1张牌。
+ * 我方场上每存在一个被击倒的角色：我方剩余全体角色+2最大生命上限。
+ */
+export const FightForDeath = card(330011)
+  .since("v5.7.0")
+  .costSame(1)
+  .legend()
+  .drawCards(1)
+  .do((c) => {
+    const increasedValue = c.$$(`all my defeated characters`).length * 2;
+      c.increaseMaxHealth(increasedValue, `all my characters`)
+  })
+  .done();

@@ -106,7 +106,7 @@ export function collateActionCards(langCode: string) {
     const [name, englishName] = [locale, english].map((lc) =>
       sanitizeName(lc[obj[NAME_TEXT_MAP_HASH]] ?? ""),
     );
-    const obtainable = !!obj[IS_CAN_OBTAIN];
+    const obtainable = !!obj[IS_CAN_OBTAIN] && !name.includes("(test)");
     const tags = obj[TAG_LIST].filter((e: string) => e !== "GCG_TAG_NONE");
 
     const deckcardObj = xdeckcard.find((e) => e[ID] === id);
