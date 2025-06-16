@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, combatStatus, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, combatStatus, card, DamageType, DiceType } from "@gi-tcg/core/builder";
 
 /**
  * @id 115111
@@ -23,7 +23,7 @@ import { character, skill, status, combatStatus, card, DamageType } from "@gi-tc
  */
 export const NightsoulsBlessing = status(115111)
   .since("v5.7.0")
-  // TODO
+  .nightsoulsBlessing(2)
   .done();
 
 /**
@@ -38,7 +38,114 @@ export const NightsoulsBlessing = status(115111)
  */
 export const SoulsniperRitualStaff = card(115112)
   .since("v5.7.0")
-  // TODO
+  .nightsoulTechnique()
+  .provideSkill(1151121)
+  .costAnemo(2)
+  .filter((c) => c.self.master().hasNightsoulsBlessing()?.variables.nightsoul)
+  .consumeNightsoul("@master", 1)
+  .do((c) => {
+    c.damage(DamageType.Anemo, 1);
+    const cards = c.maxCostHands(3);
+    c.disposeCard(...cards);
+  })
+  .done();
+
+/**
+ * @id 115113
+ * @name 追影弹
+ * @description
+ * 加入手牌时：若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。
+ * 打出或弃置此牌时：造成1点风元素伤害，然后将一张追影弹随机放进牌库。
+ */
+export const ShadowhuntShell = card(115113)
+  .since("v5.7.0")
+  .unobtainable()
+  .costAnemo(3)
+  .onHCI((c) => {
+    const element = c.$(`my active`)?.element();
+    if (element === DiceType.Pyro) {
+      c.transformDefinition(c.self.state, ShiningShadowhuntShellPyro);
+    } else if (element === DiceType.Hydro) {
+      c.transformDefinition(c.self.state, ShiningShadowhuntShellHydro);
+    } else if (element === DiceType.Electro) {
+      c.transformDefinition(c.self.state, ShiningShadowhuntShellElectro);
+    } else if (element === DiceType.Cryo) {
+      c.transformDefinition(c.self.state, ShiningShadowhuntShellCryo);
+    }
+  })
+  .doSameWhenDisposed()
+  .damage(DamageType.Anemo, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115114
+ * @name 焕光追影弹·火
+ * @description
+ * 打出或弃置此牌时：造成1点火元素伤害，然后将一张追影弹随机放进牌库。
+ */
+export const ShiningShadowhuntShellPyro = card(115114)
+  .since("v5.7.0")
+  .unobtainable()
+  .costPyro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Pyro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115115
+ * @name 焕光追影弹·水
+ * @description
+ * 打出或弃置此牌时：造成1点水元素伤害，然后将一张追影弹随机放进牌库。
+ */
+export const ShiningShadowhuntShellHydro = card(115115)
+  .since("v5.7.0")
+  .unobtainable()
+  .costHydro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Hydro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115116
+ * @name 焕光追影弹·雷
+ * @description
+ * 打出或弃置此牌时：造成1点雷元素伤害，然后将一张追影弹随机放进牌库。
+ */
+export const ShiningShadowhuntShellElectro = card(115116)
+  .since("v5.7.0")
+  .unobtainable()
+  .costElectro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Electro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115117
+ * @name 焕光追影弹·冰
+ * @description
+ * 打出或弃置此牌时：造成1点冰元素伤害，然后将一张追影弹随机放进牌库。
+ */
+export const ShiningShadowhuntShellCryo = card(115117)
+  .since("v5.7.0")
+  .unobtainable()
+  .costCryo(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
   .done();
 
 /**
@@ -50,7 +157,9 @@ export const SoulsniperRitualStaff = card(115112)
  */
 export const IntentToCover = combatStatus(115118)
   .since("v5.7.0")
-  // TODO
+  .on("modifyAction", (c, e) => e.action.type === "switchActive")
+  .usage(2)
+  .drawCards(1)
   .done();
 
 /**
@@ -63,7 +172,7 @@ export const PhantomFeatherFlurry = skill(15111)
   .type("normal")
   .costAnemo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -77,7 +186,12 @@ export const PhantomFeatherFlurry = skill(15111)
 export const SpiritReinsShadowHunt = skill(15112)
   .type("elemental")
   .costAnemo(3)
-  // TODO
+  .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
+  .damage(DamageType.Anemo, 1)
+  .drawCards(1)
+  .gainNightsoul("@self", 2)
+  .equip(SoulsniperRitualStaff, "@self")
+  .combatStatus(IntentToCover)
   .done();
 
 /**
@@ -90,7 +204,9 @@ export const SoulReapersFatalRound = skill(15113)
   .type("burst")
   .costAnemo(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Piercing, 1, "opp standby")
+  .damage(DamageType.Anemo, 1)
+  .drawCards(3)
   .done();
 
 /**
@@ -99,9 +215,10 @@ export const SoulReapersFatalRound = skill(15113)
  * @description
  * 对局开始时，将6枚追影弹随机放置进牌库。
  */
-export const ShadowhuntShell = skill(15114)
+export const ShadowhuntShellPassive = skill(15114)
   .type("passive")
-  // TODO
+  .on("battleBegin")
+  .createPileCards(ShadowhuntShell, 6, "random")
   .done();
 
 /**
@@ -115,7 +232,8 @@ export const Chasca = character(1511)
   .tags("anemo", "bow", "natlan")
   .health(10)
   .energy(2)
-  .skills(PhantomFeatherFlurry, SpiritReinsShadowHunt, SoulReapersFatalRound, ShadowhuntShell)
+  .skills(PhantomFeatherFlurry, SpiritReinsShadowHunt, SoulReapersFatalRound, ShadowhuntShellPassive)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
@@ -128,6 +246,6 @@ export const Chasca = character(1511)
 export const BulletTrick = card(215111)
   .since("v5.7.0")
   .costAnemo(1)
-  .eventTalent(Chasca)
-  // TODO
+  .eventTalent(Chasca, "none")
+  .createHandCard(ShadowhuntShell)
   .done();

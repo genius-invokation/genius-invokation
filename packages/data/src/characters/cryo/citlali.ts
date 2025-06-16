@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, combatStatus, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, combatStatus, card, DamageType, CombatStatusHandle, Reaction } from "@gi-tcg/core/builder";
 
 /**
  * @id 111141
@@ -24,7 +24,8 @@ import { character, skill, status, combatStatus, card, DamageType } from "@gi-tc
  */
 export const NightsoulsBlessing = status(111141)
   .since("v5.7.0")
-  // TODO
+  .duration(2)
+  .nightsoulsBlessing(2)
   .done();
 
 /**
@@ -35,7 +36,7 @@ export const NightsoulsBlessing = status(111141)
  */
 export const OpalShield = combatStatus(111142)
   .since("v5.7.0")
-  // TODO
+  .shield(1, Infinity)
   .done();
 
 /**
@@ -46,9 +47,26 @@ export const OpalShield = combatStatus(111142)
  * 当茜特菈莉获得「夜魂值」并使自身「夜魂值」等于2时，优先对敌方出战角色造成1点冰元素伤害。
  * 持续回合：2
  */
-export const Itzpapa = combatStatus(111143)
+export const Itzpapa: CombatStatusHandle = combatStatus(111143)
   .since("v5.7.0")
-  // TODO
+  .duration(2)
+  .on("damaged", (c) => {
+    const st = c.$(`my character with definition id ${Citlali}`)?.hasNightsoulsBlessing();
+    return st && st.variables.nightsoul > 0
+  })
+  .listenToPlayer()
+  .do((c) => {
+    c.consumeNightsoul(`my character with definition id ${Citlali}`)
+  })
+  .combatStatus(OpalShield)
+  .on("gainNightsoul", (c, e) => {
+    if (e.character.definition.id !== Citlali) {
+      return false;
+    }
+    const st = c.of(e.character).hasNightsoulsBlessing();
+    return st && c.of(st).getVariable("nightsoul") === 2;
+  })
+  .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")
   .done();
 
 /**
@@ -61,7 +79,7 @@ export const ShadowstealingSpiritVessel = skill(11141)
   .type("normal")
   .costCryo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Cryo, 1)
   .done();
 
 /**
@@ -74,7 +92,11 @@ export const ShadowstealingSpiritVessel = skill(11141)
 export const DawnfrostDarkstar = skill(11142)
   .type("elemental")
   .costCryo(3)
-  // TODO
+  .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
+  .damage(DamageType.Cryo, 2)
+  .gainNightsoul("@self", 1)
+  .combatStatus(OpalShield)
+  .combatStatus(Itzpapa)
   .done();
 
 /**
@@ -87,7 +109,10 @@ export const EdictOfEntwinedSplendor = skill(11143)
   .type("burst")
   .costCryo(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Piercing, 1, "opp standby")
+  .damage(DamageType.Cryo, 2)
+  .if((c) => c.self.hasStatus(NightsoulsBlessing))
+  .gainNightsoul("@self", 2)
   .done();
 
 /**
@@ -98,7 +123,16 @@ export const EdictOfEntwinedSplendor = skill(11143)
  */
 export const SongsOfProfoundMystery = skill(11144)
   .type("passive")
-  // TODO
+  .variable("gainNightsoulUsagePerRound", 1)
+  .on("selectCard", (c) => c.getVariable("gainNightsoulUsagePerRound") > 0 && c.self.hasStatus(NightsoulsBlessing))
+  .gainNightsoul("@self")
+  .addVariable("gainNightsoulUsagePerRound", -1)
+  .on("dealDamage", (c, e) => e.getReaction() && c.getVariable("gainNightsoulUsagePerRound") > 0 && c.self.hasStatus(NightsoulsBlessing))
+  .listenToPlayer()
+  .gainNightsoul("@self")
+  .addVariable("gainNightsoulUsagePerRound", -1)
+  .on("roundEnd")
+  .setVariable("gainNightsoulUsagePerRound", 1)
   .done();
 
 /**
@@ -113,6 +147,25 @@ export const Citlali = character(1114)
   .health(10)
   .energy(2)
   .skills(ShadowstealingSpiritVessel, DawnfrostDarkstar, EdictOfEntwinedSplendor, SongsOfProfoundMystery)
+  .associateNightsoul(NightsoulsBlessing)
+  .done();
+
+/**
+ * @id 211142
+ * @name 五重天的寒雨（生效中）
+ * @description
+ * 我方造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点夜魂值。（每回合1次）
+ * 可用次数：2
+ */
+export const MamaloacosFrigidRainInEffect = combatStatus(211142)
+  .since("v5.7.0")
+  .on("enter")
+  .do((c) => {
+   c.gainNightsoul(`my character with definition id ${Citlali}`)
+  })
+  .on("increaseDamage", (c, e) => e.type === DamageType.Hydro || e.type === DamageType.Pyro)
+  .usage(2)
+  .increaseDamage(1)
   .done();
 
 /**
@@ -125,6 +178,11 @@ export const Citlali = character(1114)
 export const MamaloacosFrigidRain = card(211141)
   .since("v5.7.0")
   .costCryo(1)
-  .talent(Citlali)
-  // TODO
+  .talent(Citlali, "none")
+  .on("damaged", (c, e) =>
+    (e.getReaction() === Reaction.Frozen || e.getReaction() === Reaction.Melt) &&
+    !c.of(e.target).isMine())
+  .listenToAll()
+  .usagePerRound(1)
+  .combatStatus(MamaloacosFrigidRainInEffect)
   .done();
