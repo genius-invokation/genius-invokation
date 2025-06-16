@@ -23,26 +23,17 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import {
-  type ActionRequest,
-  type ActionResponse,
-  type ChooseActiveRequest,
-  type ChooseActiveResponse,
   type GameConfig,
   type GameStateLogEntry,
   GiTcgError,
   Game as InternalGame,
-  Player as InternalPlayer,
   type Notification,
   type PlayerIO,
-  type RerollDiceResponse,
-  type RpcMethod,
   type RpcRequest,
-  type SwitchHandsResponse,
   serializeGameStateLog,
   CORE_VERSION,
   VERSIONS,
   RpcResponse,
-  SelectCardResponse,
   CURRENT_VERSION,
   type Version,
 } from "@gi-tcg/core";
@@ -352,7 +343,7 @@ class Player implements PlayerIOWithError {
           if (resolver.timeout <= -2) {
             clearInterval(interval);
             setRoundTimeout(0);
-            this.timeoutRpc(request)
+            Promise.try(() => this.timeoutRpc(request))
               .then((r) => resolve(r))
               .catch((e) => reject(e));
           }
@@ -718,6 +709,7 @@ export class RoomsService {
     const room = new Room(roomId, roomConfig);
     this.rooms.set(roomId, room);
     this.roomIdPool.shift();
+    this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
     room.onStop(async (room, game) => {
       const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
