@@ -91,8 +91,8 @@ export const ParticularFieldFettersOfPhenomena = skill(17063)
           overrideVariables: {
             duration: 3 - duration
           }
-        }
-      });
+        });
+      }
     }
   })
   .done();
