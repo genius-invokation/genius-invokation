@@ -984,3 +984,51 @@ export const DemonwarriorsFeatherMask = card(312032)
   .usagePerRound(1)
   .gainEnergy(1, "@master")
   .done();
+
+/**
+ * @id 301205
+ * @name 诸圣的礼冠（生效中）
+ * @description
+ * 该角色下次技能或特技技能造成伤害+1。
+ */
+export const CrownOfTheSaintsInEffect = status(301205)
+  .on("increaseSkillDamage")
+  .increaseDamage(1)
+  .dispose()
+  .on("increaseTechniqueDamage")
+  .increaseDamage(1)
+  .dispose()
+  .done();
+
+/**
+ * @id 312033
+ * @name 诸圣的礼冠
+ * @description
+ * 附属角色消耗「夜魂值」后：该角色下次技能或特技造成伤害+1。（每回合2次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const CrownOfTheSaints = card(312033)
+  .since("v5.7.0")
+  .costSame(1)
+  .artifact()
+  .on("consumeNightsoul")
+  .usagePerRound(2)
+  .characterStatus(CrownOfTheSaintsInEffect, "@master")
+  .done();
+
+/**
+ * @id 312034
+ * @name 烬城勇者绘卷
+ * @description
+ * 附属角色消耗「夜魂值」后：使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const ScrollOfTheHeroOfCinderCity = card(312034)
+  .since("v5.7.0")
+  .costVoid(3)
+  .artifact()
+  .on("consumeNightsoul")
+  .usagePerRound(1)
+  .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
+  .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
+  .done();

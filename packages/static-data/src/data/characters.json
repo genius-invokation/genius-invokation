@@ -1260,6 +1260,108 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Rosaria"
   },
   {
+    "id": 1114,
+    "shareId": 477,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "name": "茜特菈莉",
+    "englishName": "Citlali",
+    "tags": [
+      "GCG_TAG_ELEMENT_CRYO",
+      "GCG_TAG_WEAPON_CATALYST",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "白星黑曜·茜特菈莉",
+    "storyText": "谜烟流彩，曜石映心。",
+    "skills": [
+      {
+        "id": 11141,
+        "name": "宿灵捕影",
+        "englishName": "Shadow-Stealing Spirit Vessel",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成1点冰元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_CRYO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_Catalyst_MD"
+      },
+      {
+        "id": 11142,
+        "name": "霜昼黑星",
+        "englishName": "Dawnfrost Darkstar",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。\\n自身进入<color=#FFFFFFFF>$[C111141]</color>，并获得1点<color=#FFFFFFFF>「夜魂值」</color>；生成1点<color=#FFFFFFFF>$[C111142]</color>和<color=#FFFFFFFF>$[C111143]</color>。（角色进入<color=#FFFFFFFF>$[C111141]</color>后不可使用此技能）",
+        "description": "造成2点冰元素伤害。\n自身进入夜魂加持，并获得1点「夜魂值」；生成1点白曜护盾和伊兹帕帕。（角色进入夜魂加持后不可使用此技能）",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_CRYO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
+          "D__KEY__DAMAGE": 2
+        }
+      },
+      {
+        "id": 11143,
+        "name": "诸曜饬令",
+        "englishName": "Edict of Entwined Splendor",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，对所有敌方后台角色造成1点$[K5]。如可能，获得2点<color=#FFFFFFFF>「夜魂值」</color>。",
+        "description": "造成2点冰元素伤害，对所有敌方后台角色造成1点穿透伤害。如可能，获得2点「夜魂值」。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_CRYO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
+          "D__KEY__DAMAGE": 2
+        }
+      },
+      {
+        "id": 11144,
+        "name": "奥秘传唱",
+        "englishName": "Songs of Profound Mystery",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "<color=#FFFFFFFF>我方进行$[K59]或造成元素反应伤害后：</color>如可能，获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）",
+        "description": "我方进行挑选或造成元素反应伤害后：如可能，获得1点「夜魂值」。（每回合1次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {}
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Citlali",
+    "icon": "UI_Gcg_Char_AvatarIcon_Citlali"
+  },
+  {
     "id": 1201,
     "shareId": 9,
     "sinceVersion": "v3.3.0",
@@ -1958,7 +2060,7 @@
         "icon": "Skill_S_Candace_01"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Candace",
     "icon": "UI_Gcg_Char_AvatarIcon_Candace"
@@ -2277,7 +2379,7 @@
         "icon": "Skill_A_Catalyst_MD"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Neuvillette",
     "icon": "UI_Gcg_Char_AvatarIcon_Neuvillette"
@@ -4154,6 +4256,124 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Arlecchino"
   },
   {
+    "id": 1315,
+    "shareId": 478,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "name": "玛薇卡",
+    "englishName": "Mavuika",
+    "tags": [
+      "GCG_TAG_ELEMENT_PYRO",
+      "GCG_TAG_WEAPON_CLAYMORE",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "焚夜以炎·玛薇卡",
+    "storyText": "至明、至炽、至烈的再临之火。",
+    "skills": [
+      {
+        "id": 13151,
+        "name": "以火织命",
+        "englishName": "Flames Weave Life",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_04"
+      },
+      {
+        "id": 13152,
+        "name": "称名之刻",
+        "englishName": "The Named Moment",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "本角色进入<color=#FFFFFFFF>$[C113151]</color>，获得2点<color=#FFFFFFFF>「夜魂值」</color>，并从3张<color=#FFFFFFFF>驰轮车</color>中$[K59]1张加入手牌。",
+        "description": "本角色进入夜魂加持，获得2点「夜魂值」，并从3张驰轮车中挑选1张加入手牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "hidden": false,
+        "keyMap": {}
+      },
+      {
+        "id": 13153,
+        "name": "燔天之时",
+        "englishName": "Hour of Burning Skies",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "本角色进入<color=#FFFFFFFF>$[C113151]</color>，获得1点<color=#FFFFFFFF>「夜魂值」</color>，消耗自身全部战意，对敌方前台造成等同于消耗战意数量的$[D__KEY__ELEMENT]。\\n若消耗了6点<color=#FFFFFFFF>战意</color>，则自身附属<color=#FFFFFFFF>$[C113152]</color>。",
+        "description": "本角色进入夜魂加持，获得1点「夜魂值」，消耗自身全部战意，对敌方前台造成等同于消耗战意数量的火元素伤害。\n若消耗了6点战意，则自身附属死生之炉。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 4
+          },
+          {
+            "type": "GCG_COST_SPECIAL_ENERGY",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO"
+        }
+      },
+      {
+        "id": 13154,
+        "name": "战意",
+        "englishName": "Fighting Spirit",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "角色不会获得<color=#FFFFFFFF>充能</color>。\\n在我方消耗<color=#FFFFFFFF>「夜魂值」</color>或使用「普通攻击」后，获得1点战意。\\n本角色使用<color=#FFFFFFFF>元素战技</color>或<color=#FFFFFFFF>元素爆发</color>时，附属<color=#FFFFFFFF>$[C113153]</color>。",
+        "description": "角色不会获得充能。\n在我方消耗「夜魂值」或使用「普通攻击」后，获得1点战意。\n本角色使用元素战技或元素爆发时，附属诸火武装·焚曜之环。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {}
+      },
+      {
+        "id": 13155,
+        "name": "驰轮车·疾驰",
+        "englishName": "Flamestrider: Full Throttle",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>生成2个万能元素骰。",
+        "description": "行动阶段开始时：生成2个万能元素骰。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 0,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Mavuika",
+    "icon": "UI_Gcg_Char_AvatarIcon_Mavuika"
+  },
+  {
     "id": 1401,
     "shareId": 26,
     "sinceVersion": "v3.3.0",
@@ -4637,7 +4857,7 @@
         "icon": "Skill_S_Beidou_01"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Beidou",
     "icon": "UI_Gcg_Char_AvatarIcon_Beidou"
@@ -4801,7 +5021,7 @@
         "playCost": [
           {
             "type": "GCG_COST_DICE_ELECTRO",
-            "count": 4
+            "count": 3
           },
           {
             "type": "GCG_COST_ENERGY",
@@ -6352,6 +6572,107 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Liuyun"
   },
   {
+    "id": 1511,
+    "shareId": 479,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "name": "恰斯卡",
+    "englishName": "Chasca",
+    "tags": [
+      "GCG_TAG_ELEMENT_ANEMO",
+      "GCG_TAG_WEAPON_BOW",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "巡宇翦定·恰斯卡",
+    "storyText": "风花铿锵，飞羽凌空。",
+    "skills": [
+      {
+        "id": 15111,
+        "name": "迷羽流击",
+        "englishName": "Phantom Feather Flurry",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_02"
+      },
+      {
+        "id": 15112,
+        "name": "灵缰追影",
+        "englishName": "Spirit Reins, Shadow Hunt",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，抓1张牌。\\n本角色附属<color=#FFFFFFFF>$[C115112]</color>，进入<color=#FFFFFFFF>$[C115111]</color>，并获得2点<color=#FFFFFFFF>「夜魂值」</color>。（角色进入<color=#FFFFFFFF>$[C115111]</color>后不可使用此技能）（附属<color=#FFFFFFFF>$[C115112]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1151121]</color>）\\n<color=#FFFFFFFF>我方接下来2次「切换角色」时：</color>抓1张牌。",
+        "description": "造成1点风元素伤害，抓1张牌。\n本角色附属灵枪·仪式杖，进入夜魂加持，并获得2点「夜魂值」。（角色进入夜魂加持后不可使用此技能）（附属灵枪·仪式杖的角色可以使用特技：多重瞄准）\n我方接下来2次「切换角色」时：抓1张牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        }
+      },
+      {
+        "id": 15113,
+        "name": "索魂命袭",
+        "englishName": "Soul Reaper's Fatal Round",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，对敌方所有后台角色造成1点穿透伤害，并抓3张牌。",
+        "description": "造成1点风元素伤害，对敌方所有后台角色造成1点穿透伤害，并抓3张牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        }
+      },
+      {
+        "id": 15114,
+        "name": "追影弹",
+        "englishName": "Shadowhunt Shell",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "对局开始时，将6枚<color=#FFFFFFFF>$[C115113]</color>随机放置进牌库。",
+        "description": "对局开始时，将6枚追影弹随机放置进牌库。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Chasca",
+    "icon": "UI_Gcg_Char_AvatarIcon_Chasca"
+  },
+  {
     "id": 1601,
     "shareId": 42,
     "sinceVersion": "v3.3.0",
@@ -6731,7 +7052,7 @@
         "icon": "Skill_E_Albedo_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Albedo",
     "icon": "UI_Gcg_Char_AvatarIcon_ALbedo"
@@ -7355,7 +7676,7 @@
         "name": "锐锋攫猎",
         "englishName": "Ehecatl's Roar",
         "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。若自身附属<color=#FFFFFFFF>$[C116111]</color>，则恢复1点「夜魂值」。",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。若自身附属<color=#FFFFFFFF>$[C116111]</color>，则恢复1点<color=#FFFFFFFF>「夜魂值」</color>。",
         "description": "造成2点物理伤害。若自身附属夜魂加持，则恢复1点「夜魂值」。",
         "playCost": [
           {
@@ -7917,7 +8238,7 @@
         "icon": "Skill_E_Baizhuer_01_HD"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Baizhuer",
     "icon": "UI_Gcg_Char_AvatarIcon_Baizhuer"
@@ -9479,7 +9800,7 @@
         "englishName": "Bubblefloat Blitz",
         "type": "GCG_SKILL_TAG_Q",
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，生成手牌<color=#FFFFFFFF>$[C122051]</color>。\\n（装备有<color=#FFFFFFFF>$[C122051]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1220511]</color>）",
-        "description": "造成3点水元素伤害，生成手牌水泡史莱姆。\n（装备有水泡史莱姆的角色可以使用特技：水泡战法）",
+        "description": "造成4点水元素伤害，生成手牌水泡史莱姆。\n（装备有水泡史莱姆的角色可以使用特技：水泡战法）",
         "playCost": [
           {
             "type": "GCG_COST_DICE_HYDRO",
@@ -9494,7 +9815,7 @@
         "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
-          "D__KEY__DAMAGE": 3
+          "D__KEY__DAMAGE": 4
         },
         "icon": "MonsterSkill_E_HilistrayWater_01_HD"
       },
@@ -9510,7 +9831,7 @@
         "hidden": true
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_HilistrayWater",
     "icon": "UI_Gcg_Char_MonsterIcon_HilistrayWater"

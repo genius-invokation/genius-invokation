@@ -108,14 +108,14 @@ export const SlashOfSurgingTides = skill(22052)
  * @id 22053
  * @name 浮泡攻势
  * @description
- * 造成3点水元素伤害，生成手牌水泡史莱姆。
+ * 造成4点水元素伤害，生成手牌水泡史莱姆。
  * （装备有水泡史莱姆的角色可以使用特技：水泡战法）
  */
 export const BubblefloatBlitz = skill(22053)
   .type("burst")
   .costHydro(3)
   .costEnergy(2)
-  .damage(DamageType.Hydro, 3)
+  .damage(DamageType.Hydro, 4)
   .createHandCard(MistBubbleSlime)
   .done();
 
@@ -142,7 +142,7 @@ export const SlashOfSurgingTidesPassive = skill(22054)
 export const HydroHilichurlRogue = character(2205)
   .since("v5.0.0")
   .tags("hydro", "monster", "hilichurl")
-  .health(10)
+  .health(11)
   .energy(2)
   .skills(WhirlingScythe, SlashOfSurgingTides, BubblefloatBlitz, SlashOfSurgingTidesPassive)
   .done();
