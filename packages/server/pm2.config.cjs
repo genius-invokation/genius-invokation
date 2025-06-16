@@ -19,7 +19,7 @@ module.exports = {
   apps: [
     {
       name: process.env.APP_NAME,
-      script: "src/main.ts",
+      script: "pm2_entry.ts",
       env: {
         NODE_ENV: "production",
       },
