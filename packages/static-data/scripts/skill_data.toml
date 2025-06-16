@@ -52,6 +52,9 @@ D__KEY__DAMAGE = 2
 [Card_Vehicle_3130081]
 
 
+[Card_Vehicle_3130092]
+
+
 [Char_Skill_11012]
 D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
 D__KEY__DAMAGE = 1
@@ -153,6 +156,17 @@ D__KEY__DAMAGE = 1
 [Char_Skill_11133]
 D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
 D__KEY__DAMAGE = 1
+
+[Char_Skill_11142]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+[Char_Skill_11143]
+D__KEY__ELEMENT = "GCG_ELEMENT_CRYO"
+D__KEY__DAMAGE = 2
+
+[Char_Skill_11144]
+
 
 [Char_Skill_12012]
 D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
@@ -424,6 +438,25 @@ D__KEY__DAMAGE = 4
 [Char_Skill_13146]
 
 
+[Char_Skill_13152]
+
+
+[Char_Skill_13153]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+
+[Char_Skill_13154]
+
+
+[Char_Skill_13154_Ex_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_PYRO"
+D__KEY__DAMAGE = 4
+
+[Char_Skill_13155_Ex_1]
+
+
+[Char_Skill_13156_Ex_1]
+
+
 [Char_Skill_14012]
 D__KEY__ELEMENT = "GCG_ELEMENT_ELECTRO"
 D__KEY__DAMAGE = 1
@@ -629,6 +662,18 @@ D__KEY__DAMAGE = 1
 
 
 [Char_Skill_15103]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+[Char_Skill_15111_Ex_1]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+[Char_Skill_15112]
+D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
+D__KEY__DAMAGE = 1
+
+[Char_Skill_15113]
 D__KEY__ELEMENT = "GCG_ELEMENT_ANEMO"
 D__KEY__DAMAGE = 1
 
@@ -924,7 +969,7 @@ D__KEY__DAMAGE = 3
 
 [Char_Skill_22053]
 D__KEY__ELEMENT = "GCG_ELEMENT_HYDRO"
-D__KEY__DAMAGE = 3
+D__KEY__DAMAGE = 4
 
 [Char_Skill_22053_Ex_1]
 

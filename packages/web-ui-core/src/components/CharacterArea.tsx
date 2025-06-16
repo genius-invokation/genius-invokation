@@ -209,12 +209,12 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <Image 
+                  <Image
                     class="w-6 h-6"
-                    imageId={et.data.definitionId} 
-                    type={"icon"} 
+                    imageId={et.data.definitionId}
+                    type={"icon"}
                   />
-                  <div 
+                  <div
                     class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full data-[usable]:bg-white/30"
                     bool:data-usable={et.data.hasUsagePerRound}
                   />
@@ -241,9 +241,8 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  
-                  <WeaponIcon class="w-7 h-7"/>
-                  <div 
+                  <WeaponIcon class="w-7 h-7" />
+                  <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
                   />
@@ -258,8 +257,8 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <ArtifactIcon class="w-7 h-7"/>
-                  <div 
+                  <ArtifactIcon class="w-7 h-7" />
+                  <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
                   />
@@ -274,8 +273,8 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et().animation === "disposing"}
                   bool:data-triggered={et().triggered}
                 >
-                  <TalentIcon class="w-7 h-7"/>
-                  <div 
+                  <TalentIcon class="w-7 h-7" />
+                  <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et().data.hasUsagePerRound}
                   />
@@ -319,20 +318,17 @@ export function CharacterArea(props: CharacterAreaProps) {
           statuses={statuses()}
         />
         <Show when={defeated()}>
-          <svg class="" />
-          <DefeatedIcon
-            class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]"
-          />
+          <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingConfirmIcon class="cursor-pointer h-20 w-20"/>
+              <SelectingConfirmIcon class="cursor-pointer h-20 w-20" />
             </div>
           </Match>
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingIcon class="w-24 h-24"/>
+              <SelectingIcon class="w-24 h-24" />
             </div>
           </Match>
         </Switch>
@@ -357,7 +353,12 @@ interface EnergyBarProps {
 function EnergyBar(props: EnergyBarProps) {
   return (
     <>
-      <For each={Array.from({ length: props.total }, (_, i) => i)}>
+      <For
+        each={Array.from(
+          { length: Math.max(props.total, props.current) },
+          (_, i) => i,
+        )}
+      >
         {(i) => (
           <WithDelicateUi
             assetId={

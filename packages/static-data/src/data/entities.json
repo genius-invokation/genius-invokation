@@ -1440,6 +1440,81 @@
     "buffIconHash": "3410616192897341730"
   },
   {
+    "id": 111141,
+    "type": "GCG_CARD_STATE",
+    "name": "夜魂加持",
+    "englishName": "Nightsoul's Blessing",
+    "tags": [
+      "GCG_TAG_NYX_STATE"
+    ],
+    "skills": [],
+    "rawDescription": "所附属角色可累积<color=#FFFFFFFF>「夜魂值」</color>。（最多累积到2点）\\n<color=#FFFFFFFF>$[K4]：2</color>",
+    "description": "所附属角色可累积「夜魂值」。（最多累积到2点）\n持续回合：2",
+    "buffType": "GCG_STATE_BUFF_CRYO",
+    "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "hidden": false,
+    "buffIconHash": "2917529476117449760"
+  },
+  {
+    "id": 111142,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "白曜护盾",
+    "englishName": "Opal Shield",
+    "tags": [
+      "GCG_TAG_SHEILD"
+    ],
+    "skills": [],
+    "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。（可叠加）",
+    "description": "为我方出战角色提供1点护盾。（可叠加）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "5061023585533575178"
+  },
+  {
+    "id": 111143,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "伊兹帕帕",
+    "englishName": "Itzpapa",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方角色受到伤害后：</color>减少1点<color=#FFFFFFFF>$[A1114]</color>的<color=#FFFFFFFF>「夜魂值」</color>，生成1层<color=#FFFFFFFF>$[C111142]</color>。\\n当<color=#FFFFFFFF>$[A1114]</color>获得<color=#FFFFFFFF>「夜魂值」</color>并使自身<color=#FFFFFFFF>「夜魂值」</color>等于2时，优先对敌方出战角色造成1点$[K101]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
+    "description": "我方角色受到伤害后：减少1点茜特菈莉的「夜魂值」，生成1层白曜护盾。\n当茜特菈莉获得「夜魂值」并使自身「夜魂值」等于2时，优先对敌方出战角色造成1点冰元素伤害。\n持续回合：2",
+    "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "hidden": false,
+    "buffIconHash": "8893031830162963973"
+  },
+  {
+    "id": 211141,
+    "type": "GCG_CARD_MODIFY",
+    "name": "五重天的寒雨",
+    "englishName": "Mamaloaco's Frigid Rain",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>敌方受到冻结或融化反应伤害后：</color>我方下2次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1，并使<color=#FFFFFFFF>$[A1114]</color>获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）\\n（牌组中包含$[A1114]，才能加入牌组）",
+    "description": "敌方受到冻结或融化反应伤害后：我方下2次造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点「夜魂值」。（每回合1次）\n（牌组中包含茜特菈莉，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>敌方受到冻结或融化反应后：</color>我方下2次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1，并使<color=#FFFFFFFF>$[A1114]</color>获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）",
+    "playingDescription": "敌方受到冻结或融化反应后：我方下2次造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点「夜魂值」。（每回合1次）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Talent",
+    "buffIconHash": "3410616192897341730"
+  },
+  {
+    "id": 211142,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "五重天的寒雨（生效中）",
+    "englishName": "Mamaloaco's Frigid Rain (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方下次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "description": "我方下次造成的水元素伤害和火元素伤害+1。\n可用次数：2",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
+    "buffIconHash": "1717076279127341445"
+  },
+  {
     "id": 112011,
     "type": "GCG_CARD_SUMMON",
     "name": "歌声之环",
@@ -2997,6 +3072,235 @@
     "buffIconHash": "3410616192897341730"
   },
   {
+    "id": 113151,
+    "type": "GCG_CARD_STATE",
+    "name": "夜魂加持",
+    "englishName": "Nightsoul's Blessing",
+    "tags": [
+      "GCG_TAG_NYX_STATE"
+    ],
+    "skills": [],
+    "rawDescription": "所附属角色可累积<color=#FFFFFFFF>「夜魂值」</color>。（最多累积到2点）\\n夜魂值为0时，退出<color=#FFFFFFFF>$[C113151]</color>。",
+    "description": "所附属角色可累积「夜魂值」。（最多累积到2点）\n夜魂值为0时，退出夜魂加持。",
+    "buffType": "GCG_STATE_BUFF_PYRO",
+    "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "hidden": false,
+    "buffIconHash": "15483081041525708262"
+  },
+  {
+    "id": 113152,
+    "type": "GCG_CARD_STATE",
+    "name": "死生之炉",
+    "englishName": "Crucible of Death and Life",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方全体角色的技能不消耗<color=#FFFFFFFF>「夜魂值」</color>。\\n我方全体角色<color=#FFFFFFFF>「普通攻击」</color>造成的伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "description": "我方全体角色的技能不消耗「夜魂值」。\n我方全体角色「普通攻击」造成的伤害+1。\n可用次数：2",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "16174251178153160798"
+  },
+  {
+    "id": 113153,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "诸火武装·焚曜之环",
+    "englishName": "All-Fire Armaments: Ring of Searing Radiance",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方其他角色使用「普通攻击」或$[K58]后：</color>消耗<color=#FFFFFFFF>$[A1315]</color>1点<color=#FFFFFFFF>「夜魂值」</color>，造成1点$[K103]。（<color=#FFFFFFFF>$[A1315]</color>退出<color=#FFFFFFFF>$[C113151]</color>后销毁）",
+    "description": "我方其他角色使用「普通攻击」或特技后：消耗玛薇卡1点「夜魂值」，造成1点火元素伤害。（玛薇卡退出夜魂加持后销毁）",
+    "hidden": false,
+    "buffIconHash": "13486851466270727868"
+  },
+  {
+    "id": 113154,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·跃升",
+    "englishName": "Flamestrider: Soaring Ascent",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 1131541,
+        "name": "跃升",
+        "englishName": "Soaring Ascent",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "消耗1点<color=#FFFFFFFF>「夜魂值」</color>，造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "消耗1点「夜魂值」，造成4点火元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 1
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 4
+        }
+      },
+      {
+        "id": 1131542,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此牌被$[K56]后：</color>对敌方出战角色造成1点$[K103]。\\n$[K58]：$[S1131541]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此牌被舍弃后：对敌方出战角色造成1点火元素伤害。\n特技：跃升\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131541]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "13954608050821572596"
+  },
+  {
+    "id": 113155,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·涉渡",
+    "englishName": "Flamestrider: Blazing Trail",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 1131551,
+        "name": "涉渡",
+        "englishName": "Blazing Trail",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "我方切换到下一个角色，将2个元素骰转换为$[K411]。（此技能释放后，我方可继续行动）",
+        "description": "我方切换到下一个角色，将2个元素骰转换为万能元素。（此技能释放后，我方可继续行动）",
+        "playCost": [],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "hidden": false,
+        "keyMap": {}
+      },
+      {
+        "id": 1131552,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌被打出时：</color>随机触发我方1个「召唤物」的「结束阶段」效果。\\n$[K58]：$[S1131551]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌被打出时：随机触发我方1个「召唤物」的「结束阶段」效果。\n特技：涉渡\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131551]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "9584603430320343196"
+  },
+  {
+    "id": 113156,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·疾驰",
+    "englishName": "Flamestrider: Full Throttle",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 1131561,
+        "name": "疾驰",
+        "englishName": "Full Throttle",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "消耗1点<color=#FFFFFFFF>「夜魂值」</color>，然后$[K53]：<color=#FFFFFFFF>$[S13155]</color>。",
+        "description": "消耗1点「夜魂值」，然后准备技能：驰轮车·疾驰。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "hidden": false,
+        "keyMap": {}
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌可使用次数为0时：抓4张牌。\n特技：疾驰\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131561]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "4149205189526487547"
+  },
+  {
+    "id": 113157,
+    "type": "GCG_CARD_STATE",
+    "name": "驰轮车·疾驰（生效中）",
+    "englishName": "Flamestrider: Full Throttle (In Effect)",
+    "tags": [
+      "GCG_TAG_PREPARE_SKILL"
+    ],
+    "skills": [],
+    "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S13155]</color>。",
+    "description": "本角色将在下次行动时，直接使用技能：驰轮车·疾驰。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
+    "id": 113158,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "驰轮车·疾驰（生效中）",
+    "englishName": "Flamestrider: Full Throttle (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>生成2个$[K411]。",
+    "description": "行动阶段开始时：生成2个万能元素。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
+    "id": 213151,
+    "type": "GCG_CARD_MODIFY",
+    "name": "「人之名」解放",
+    "englishName": "\"Humanity's Name\" Unfettered",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "skills": [],
+    "rawDescription": "从3张<color=#FFFFFFFF>驰轮车</color>中$[K59]1张加入手牌。\\n<color=#FFFFFFFF>我方打出特技牌后：</color>若可能，<color=#FFFFFFFF>$[A1315]</color>恢复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）\\n（牌组中包含$[A1315]，才能加入牌组）",
+    "description": "从3张驰轮车中挑选1张加入手牌。\n我方打出特技牌后：若可能，玛薇卡恢复1点「夜魂值」。（每回合1次）\n（牌组中包含玛薇卡，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>我方打出特技牌后：</color>若可能，<color=#FFFFFFFF>$[A1315]</color>恢复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）",
+    "playingDescription": "我方打出特技牌后：若可能，玛薇卡恢复1点「夜魂值」。（每回合1次）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Talent",
+    "buffIconHash": "3410616192897341730"
+  },
+  {
     "id": 114011,
     "type": "GCG_CARD_SUMMON",
     "name": "奥兹",
@@ -4366,6 +4670,84 @@
     "buffIconHash": "3410616192897341730"
   },
   {
+    "id": 115111,
+    "type": "GCG_CARD_STATE",
+    "name": "夜魂加持",
+    "englishName": "Nightsoul's Blessing",
+    "tags": [
+      "GCG_TAG_NYX_STATE"
+    ],
+    "skills": [],
+    "rawDescription": "所附属角色可累积<color=#FFFFFFFF>「夜魂值」</color>。（最多累积到2点）",
+    "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
+    "buffType": "GCG_STATE_BUFF_ANEMO",
+    "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "hidden": false,
+    "buffIconHash": "3028331885048275547"
+  },
+  {
+    "id": 115112,
+    "type": "GCG_CARD_MODIFY",
+    "name": "灵枪·仪式杖",
+    "englishName": "Soulsniper: Ritual Staff",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 1151121,
+        "name": "多重瞄准",
+        "englishName": "Multitarget Fire",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "消耗1点<color=#FFFFFFFF>「夜魂值」</color>，造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，然后随机$[K56]3张原本元素骰费用最高的手牌。",
+        "description": "消耗1点「夜魂值」，造成1点风元素伤害，然后随机舍弃3张原本元素骰费用最高的手牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        }
+      },
+      {
+        "id": 1151122,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false
+      }
+    ],
+    "rawDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。",
+    "playingDescription": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。",
+    "hidden": false,
+    "buffIconHash": "12693188579484903893"
+  },
+  {
+    "id": 115118,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "掩护的心意",
+    "englishName": "Intent to Cover",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方「切换角色」时：</color>抓1张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "description": "我方「切换角色」时：抓1张牌。\n可用次数：2",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Special",
+    "buffIconHash": "13225239691945994096"
+  },
+  {
     "id": 116011,
     "type": "GCG_CARD_ONSTAGE",
     "name": "璇玑屏",
@@ -4502,10 +4884,10 @@
       "GCG_TAG_SLOWLY"
     ],
     "skills": [],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1603]</color>时，装备此牌。\\n$[A1603]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16033]</color>。\\n装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。\\n（牌组中包含$[A1603]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为钟离时，装备此牌。\n钟离装备此牌后，立刻使用一次地心·磐礴。\n装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。\n（牌组中包含钟离，才能加入牌组）",
-    "rawPlayingDescription": "装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。",
-    "playingDescription": "装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1603]</color>时，装备此牌。\\n$[A1603]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16033]</color>。\\n装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。（每回合3次）\\n（牌组中包含$[A1603]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为钟离时，装备此牌。\n钟离装备此牌后，立刻使用一次地心·磐礴。\n装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。（每回合3次）\n（牌组中包含钟离，才能加入牌组）",
+    "rawPlayingDescription": "装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。（每回合3次）",
+    "playingDescription": "装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。（每回合3次）",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -4946,7 +5328,7 @@
         "description": "附属角色消耗1点「夜魂值」，造成2点岩元素伤害，对敌方下一个后台角色造成1点穿透伤害。",
         "playCost": [
           {
-            "type": "GCG_COST_DICE_VOID",
+            "type": "GCG_COST_DICE_GEO",
             "count": 1
           }
         ],
@@ -5147,7 +5529,7 @@
     "englishName": "Source Sample: Geo",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216113]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216113]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的岩元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -5161,7 +5543,7 @@
     "englishName": "Source Sample: Hydro",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216114]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216114]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的水元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -5175,7 +5557,7 @@
     "englishName": "Source Sample: Pyro",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216115]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216115]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的火元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -5189,7 +5571,7 @@
     "englishName": "Source Sample: Cryo",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216116]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216116]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的冰元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -5203,7 +5585,7 @@
     "englishName": "Source Sample: Electro",
     "tags": [],
     "skills": [],
-    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点「夜魂值」，则在敌方场上生成<color=#FFFFFFFF>$[C216117]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点「夜魂值」。",
+    "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216117]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的雷元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
@@ -5220,10 +5602,10 @@
       "GCG_TAG_SLOWLY"
     ],
     "skills": [],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）",
-    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点「夜魂值」。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合2次）",
+    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点「夜魂值」。（每回合2次）",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -9984,6 +10366,25 @@
     "buffIconHash": "7531918440982790537"
   },
   {
+    "id": 311509,
+    "type": "GCG_CARD_MODIFY",
+    "name": "船坞长剑",
+    "englishName": "The Dockhand's Assistant",
+    "tags": [
+      "GCG_TAG_WEAPON",
+      "GCG_TAG_WEAPON_SWORD"
+    ],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3205}单手剑」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
+    "description": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。\n（「单手剑」角色才能装备。角色最多装备1件「武器」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。",
+    "playingDescription": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
+    "buffIconHash": "7531918440982790537"
+  },
+  {
     "id": 301101,
     "type": "GCG_CARD_STATE",
     "name": "千岩之护",
@@ -10699,6 +11100,40 @@
     "buffIconHash": "15282951538599148947"
   },
   {
+    "id": 312033,
+    "type": "GCG_CARD_MODIFY",
+    "name": "诸圣的礼冠",
+    "englishName": "Crown of the Saints",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>该角色下次技能或{SPRITE_PRESET#3008}特技造成伤害+1。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色消耗「夜魂值」后：该角色下次技能或特技造成伤害+1。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>该角色下次技能或{SPRITE_PRESET#3008}特技造成伤害+1。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "playingDescription": "附属角色消耗「夜魂值」后：该角色下次技能或特技造成伤害+1。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Relic",
+    "buffIconHash": "15282951538599148947"
+  },
+  {
+    "id": 312034,
+    "type": "GCG_CARD_MODIFY",
+    "name": "烬城勇者绘卷",
+    "englishName": "Scroll of the Hero of Cinder City",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>使我方充能未满的一个角色获得1点$[K310]，重复1次。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色消耗「夜魂值」后：使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "playingDescription": "附属角色消耗「夜魂值」后：使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Equip_Relic",
+    "buffIconHash": "15282951538599148947"
+  },
+  {
     "id": 301201,
     "type": "GCG_CARD_STATE",
     "name": "重嶂不移",
@@ -10736,6 +11171,19 @@
     "skills": [],
     "rawDescription": "<color=#FFFFFFFF>对角色打出「{SPRITE_PRESET#3006}天赋」或角色使用技能时：</color>少花费1个元素骰。\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "description": "对角色打出「天赋」或角色使用技能时：少花费1个元素骰。\n可用次数：1",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
+    "id": 301205,
+    "type": "GCG_CARD_STATE",
+    "name": "诸圣的礼冠（生效中）",
+    "englishName": "Crown of the Saints (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "所附属角色下次造成的伤害或特技伤害+1。",
+    "description": "所附属角色下次造成的伤害或特技伤害+1。",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -11414,6 +11862,61 @@
     "buffIconHash": "13973771076860340647"
   },
   {
+    "id": 313009,
+    "type": "GCG_CARD_MODIFY",
+    "name": "呀！呀！",
+    "englishName": "Rawr! Rawr!",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "skills": [
+      {
+        "id": 3130091,
+        "name": "",
+        "englishName": "",
+        "type": "GCG_SKILL_TAG_NONE",
+        "rawDescription": "",
+        "description": "",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false
+      },
+      {
+        "id": 3130092,
+        "name": "呀！呀！",
+        "englishName": "Rawr! Rawr!",
+        "type": "GCG_SKILL_TAG_VEHICLE",
+        "rawDescription": "从牌库中抓1张<color=#FFFFFFFF>特技牌</color>，下次我方打出<color=#FFFFFFFF>特技牌</color>少花费2个元素骰。",
+        "description": "从牌库中抓1张特技牌，下次我方打出特技牌少花费2个元素骰。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [
+          {
+            "id": 102,
+            "type": "GCG_CARD_CHARACTER",
+            "camp": "FRIENDLY",
+            "tags": [],
+            "rawHintText": "对我方出战角色生效",
+            "hintText": "对我方出战角色生效"
+          }
+        ],
+        "hidden": false,
+        "keyMap": {}
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌入场时：</color>创建<color=#FFFFFFFF>$[C301306]</color>。（<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>）\\n$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌入场时：创建呀——！。（我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害）\n特技：呀！呀！\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：呀！呀！\n可用次数：2",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIconHash": "14068779508272467101"
+  },
+  {
     "id": 301301,
     "type": "GCG_CARD_STATE",
     "name": "掘进的收获",
@@ -11491,6 +11994,48 @@
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
+  },
+  {
+    "id": 301306,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "呀——！",
+    "englishName": "Yikes!",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>。",
+    "description": "我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "14068779508272467101"
+  },
+  {
+    "id": 301307,
+    "type": "GCG_CARD_STATE",
+    "name": "龙伙伴的声援！",
+    "englishName": "Saurian Buddy Cheers!",
+    "tags": [
+      "GCG_TAG_SHEILD"
+    ],
+    "skills": [],
+    "rawDescription": "提供3点$[K6]，保护所附属角色。",
+    "description": "提供3点护盾，保护所附属角色。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Shield",
+    "buffIconHash": "3779803221919782355"
+  },
+  {
+    "id": 301308,
+    "type": "GCG_CARD_ONSTAGE",
+    "name": "龙伙伴的鼓舞！",
+    "englishName": "Saurian Moral Support!",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "我方下次打出<color=#FFFFFFFF>特技牌</color>少花费2个元素骰。",
+    "description": "我方下次打出特技牌少花费2个元素骰。",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
   },
   {
     "id": 321001,
@@ -13290,6 +13835,45 @@
     "buffIconHash": "10756566743744805222"
   },
   {
+    "id": 303240,
+    "type": "GCG_CARD_STATE",
+    "name": "还魂诗",
+    "englishName": "Ode of Resurrection",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>本回合内，所附属角色被击倒时：</color>如可能，消耗等同于此牌<color=#FFFFFFFF>「重燃」</color>的元素骰，使角色$[K54]，并治疗该角色到1点生命值。然后此牌<color=#FFFFFFFF>「重燃」</color>+1。",
+    "description": "本回合内，所附属角色被击倒时：如可能，消耗等同于此牌「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值。然后此牌「重燃」+1。",
+    "shownToken": "GCG_TOKEN_COUNTER",
+    "hidden": false,
+    "buffIconHash": "2350086969044856312"
+  },
+  {
+    "id": 303241,
+    "type": "GCG_CARD_STATE",
+    "name": "健身的成果（生效中）",
+    "englishName": "Fruits of Training (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>我方其他角色准备技能时：</color>所选角色下次元素战技少花费1个元素骰。（至多触发2次，不可叠加）",
+    "description": "我方其他角色准备技能时：所选角色下次元素战技少花费1个元素骰。（至多触发2次，不可叠加）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
+    "id": 303242,
+    "type": "GCG_CARD_STATE",
+    "name": "健身的成果（生效中）",
+    "englishName": "Fruits of Training (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "该角色下次元素战技少花费1个元素骰。（不可叠加）",
+    "description": "该角色下次元素战技少花费1个元素骰。（不可叠加）",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
     "id": 303300,
     "type": "GCG_CARD_STATE",
     "name": "饱腹",
@@ -13579,6 +14163,20 @@
     "skills": [],
     "rawDescription": "下次切换角色少花费1个$[K309]。",
     "description": "下次切换角色少花费1个无色元素。",
+    "shownToken": "GCG_TOKEN_LIFE",
+    "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Common_Buff",
+    "buffIconHash": "10756566743744805222"
+  },
+  {
+    "id": 303322,
+    "type": "GCG_CARD_STATE",
+    "name": "丰稔之赐（生效中）",
+    "englishName": "Harvest's Boon (In Effect)",
+    "tags": [],
+    "skills": [],
+    "rawDescription": "<color=#FFFFFFFF>该角色准备技能时：</color>治疗自身1点。\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "description": "该角色准备技能时：治疗自身1点。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",

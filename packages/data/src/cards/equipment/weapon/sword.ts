@@ -195,3 +195,29 @@ export const SplendorOfTranquilWaters = card(311508)
  */
 export const SkywardSword = card(133089) // 骗骗花
   .reserve();
+
+/**
+ * @id 311509
+ * @name 船坞长剑
+ * @description
+ * 所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）
+ * 角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。
+ * （「单手剑」角色才能装备。角色最多装备1件「武器」）
+ */
+export const TheDockhandsAssistant = card(311509)
+  .since("v5.7.0")
+  .costSame(2)
+  .weapon("sword")
+  .variable("solidarity", 0)
+  .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
+  .usagePerRound(1)
+  .disposeMaxCostHands(1)
+  .decreaseDamage(1)
+  .addVariable("solidarity", 1)
+  .on("increaseSkillDamage", (c) => c.getVariable("solidarity") > 0)
+  .do((c, e) => {
+    e.increaseDamage(1);
+    c.drawCards(c.getVariable("solidarity"));
+    c.setVariable("solidarity", 0);
+  })
+  .done();

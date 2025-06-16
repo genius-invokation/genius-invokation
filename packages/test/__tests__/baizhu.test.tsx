@@ -30,7 +30,7 @@ test("baizhu shield: onDispose", async () => {
   const baizhu = ref();
   const oppActive = ref();
   const c = setup(
-    <State>
+    <State dataVersion="v5.6.0">
       <Character my active def={Baizhu} ref={baizhu} energy={2} />
       <Character opp active def={Keqing} ref={oppActive} />
     </State>,

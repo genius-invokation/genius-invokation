@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { CardDefinition } from "@gi-tcg/core";
-import { card, DamageType, status, StatusHandle } from "@gi-tcg/core/builder";
+import { card, combatStatus, DamageType, extension, pair, status, StatusHandle } from "@gi-tcg/core/builder";
 
 /**
  * @id 313001
@@ -289,4 +289,85 @@ export const Tatankasaurus = card(313008)
   .usage(2)
   .costVoid(3)
   .characterStatus(TatankasaurusStatus01, "@master")
+  .done();
+
+export const TechniquesPlayedCountExtension = extension(301306, { techniquesPlayedCount: pair(0) })
+  .description("记录本场对局中双方打出特技牌的数量")
+  .mutateWhen("onPlayCard", (c, e) => {
+    if (e.card.definition.tags.includes("technique")) {
+      c.techniquesPlayedCount[e.who]++;
+    }
+  })
+  .done();
+
+/**
+ * @id 301306
+ * @name 呀——
+ * @description
+ * 我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方前台获得3点护盾，然后造成3点物理伤害。
+ */
+export const Yikes = combatStatus(301306)
+  .associateExtension(TechniquesPlayedCountExtension)
+  .variable("techniquesPlayedCount", 0)
+  .defineSnippet("checkCount", (c) => {
+    if (c.getVariable("techniquesPlayedCount") >= 6){
+      c.characterStatus(SaurianBuddyCheers, "my active")
+      c.damage(DamageType.Physical, 3)
+      c.dispose();
+    }
+  })
+  .on("enter")
+  .do((c) => {
+    c.setVariable("techniquesPlayedCount", c.getExtensionState().techniquesPlayedCount[c.self.who]);
+  })
+  .callSnippet("checkCount")
+  .on("playCard", (c, e) => e.card.definition.tags.includes("technique"))
+  .addVariable("techniquesPlayedCount", 1)
+  .callSnippet("checkCount")
+  .done();
+
+/**
+ * @id 301307
+ * @name 龙伙伴的声援！
+ * @description
+ * 提供3点护盾，保护所附属角色。
+ */
+export const SaurianBuddyCheers = status(301307)
+  .shield(3)
+  .done();
+
+/**
+ * @id 301308
+ * @name 龙伙伴的鼓舞！
+ * @description
+ * 我方下次打出特技牌费用-2。
+ */
+export const SaurianMoralSupport = combatStatus(301308)
+  .once("deductOmniDiceCard", (c, e) => e.hasCardTag("technique"))
+  .deductOmniCost(2)
+  .done();
+
+/**
+ * @id 313009
+ * @name 呀！呀！
+ * @description
+ * 此卡牌入场时：创建呀——！。（我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害）
+ * 特技：呀！呀！
+ * 可用次数：2
+ * （角色最多装备1个「特技」）
+ * [3130091: ] ()
+ * [3130092: 呀！呀！] (2*Void) 从牌库中抓1张特技牌，下次我方打出特技牌少花费2个元素骰。
+ */
+export const RawrRawr = card(313009)
+  .since("v5.7.0")
+  .costSame(2)
+  .technique()
+  .on("enter")
+  .combatStatus(Yikes)
+  .endOn()
+  .provideSkill(3130092)
+  .usage(2)
+  .costVoid(2)
+  .drawCards(1, { withTag: "technique" })
+  .combatStatus(SaurianMoralSupport)
   .done();

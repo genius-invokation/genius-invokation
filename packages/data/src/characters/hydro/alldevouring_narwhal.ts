@@ -112,7 +112,7 @@ export const DeepDevourersDomain = combatStatus(122041)
   .variable("totalMaxCostCount", 0, { visible: false })
   .variable("card0Cost", 0, { visible: false })
   .variable("card1Cost", 0, { visible: false })
-  .variable("extraMaxHealth", 0)
+  .variable("extraMaxHealth", 0, { visible: false })
   .replaceDescription("[GCG_TOKEN_SHIELD]", (_, self) => self.variables.extraMaxHealth)
   .on("disposeOrTuneCard")
   .do((c, e) => {

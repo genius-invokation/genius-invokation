@@ -157,7 +157,7 @@ export const SacredRiteWagtailsTide: SkillHandle = skill(12073)
 export const Candace = character(1207)
   .since("v3.8.0")
   .tags("hydro", "pole", "sumeru")
-  .health(10)
+  .health(11)
   .energy(2)
   .skills(GleamingSpearGuardianStance, SacredRiteHeronsSanctum, SacredRiteWagtailsTide, HeronStrike)
   .done();
