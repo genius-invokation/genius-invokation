@@ -13,12 +13,52 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PbExposedMutation, PbGameState } from "@gi-tcg/typings";
-import type { HistoryBlock } from "./history";
+import {
+  flattenPbOneof,
+  PbPhaseType,
+  type PbExposedMutation,
+  type PbGameState,
+} from "@gi-tcg/typings";
+import type { HistoryBlock, UseSkillHistoryBlock } from "./history";
 
 export function parseToHistory(
   previousState: PbGameState | undefined,
   mutations: PbExposedMutation[],
 ): HistoryBlock[] {
+  const result: HistoryBlock[] = [];
+  let currentSkillBlock: Extract<HistoryBlock, { children: unknown[] }> | null =
+    null;
+  const currentDone = () => {
+    if (currentSkillBlock) {
+      result.push(currentSkillBlock);
+    }
+    currentSkillBlock = null;
+  };
+  for (const pbm of mutations) {
+    const m = flattenPbOneof(pbm.mutation!);
+    switch (m.$case) {
+      case "changePhase": {
+        const newPhase = (
+          {
+            [PbPhaseType.INIT_HANDS]: "initHands",
+            [PbPhaseType.INIT_ACTIVES]: "initActives",
+            [PbPhaseType.ACTION]: "action",
+            [PbPhaseType.END]: "end",
+            [PbPhaseType.ROLL]: null,
+            [PbPhaseType.GAME_END]: null,
+          } as const
+        )[m.newPhase];
+        if (!newPhase) {
+          continue;
+        }
+        currentDone();
+        result.push({
+          type: "changePhase",
+          roundNumber: previousState?.roundNumber ?? 0,
+          newPhase,
+        });
+      }
+    }
+  }
   throw new Error(`unimplemented`);
 }

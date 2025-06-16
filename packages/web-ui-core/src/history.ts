@@ -76,7 +76,7 @@ export type CardHistoryChildren =
 export interface ChangePhaseHistoryBlock {
   type: "changePhase";
   roundNumber: number;
-  newPhase: "initSwitchHands" | "initSwitchActive" | "action" | "end";
+  newPhase: "initHands" | "initActives" | "action" | "end";
 }
 
 // 行动标记
