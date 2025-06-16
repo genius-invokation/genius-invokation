@@ -673,6 +673,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Rosaria"
   },
   {
+    "id": 211141,
+    "shareId": 480,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "五重天的寒雨",
+    "englishName": "Mamaloaco's Frigid Rain",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11114,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>茜特菈莉</color>",
+        "hintText": "装备给我方的茜特菈莉"
+      }
+    ],
+    "relatedCharacterId": 1114,
+    "relatedCharacterTags": [],
+    "storyTitle": "茜特菈莉·五重天的寒雨",
+    "storyText": "「茜特菈琳、伊兹帕帕，给我上！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_CRYO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>敌方受到冻结或融化反应伤害后：</color>我方下2次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1，并使<color=#FFFFFFFF>$[A1114]</color>获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）\\n（牌组中包含$[A1114]，才能加入牌组）",
+    "description": "敌方受到冻结或融化反应伤害后：我方下2次造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点「夜魂值」。（每回合1次）\n（牌组中包含茜特菈莉，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>敌方受到冻结或融化反应后：</color>我方下2次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1，并使<color=#FFFFFFFF>$[A1114]</color>获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）",
+    "playingDescription": "敌方受到冻结或融化反应后：我方下2次造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点「夜魂值」。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Citlali"
+  },
+  {
     "id": 212011,
     "shareId": 69,
     "sinceVersion": "v3.3.0",
@@ -1846,6 +1883,142 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Arlecchino"
   },
   {
+    "id": 113154,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·跃升",
+    "englishName": "Flamestrider: Soaring Ascent",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此牌被$[K56]后：</color>对敌方出战角色造成1点$[K103]。\\n$[K58]：$[S1131541]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此牌被舍弃后：对敌方出战角色造成1点火元素伤害。\n特技：跃升\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131541]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sky"
+  },
+  {
+    "id": 113155,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·涉渡",
+    "englishName": "Flamestrider: Blazing Trail",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌被打出时：</color>随机触发我方1个「召唤物」的「结束阶段」效果。\\n$[K58]：$[S1131551]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌被打出时：随机触发我方1个「召唤物」的「结束阶段」效果。\n特技：涉渡\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131551]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sea"
+  },
+  {
+    "id": 113156,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·疾驰",
+    "englishName": "Flamestrider: Full Throttle",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌可使用次数为0时：抓4张牌。\n特技：疾驰\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131561]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Land"
+  },
+  {
+    "id": 213151,
+    "shareId": 481,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "「人之名」解放",
+    "englishName": "\"Humanity's Name\" Unfettered",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": 1315,
+    "relatedCharacterTags": [],
+    "storyTitle": "玛薇卡·「人之名」解放",
+    "storyText": "「恭听太阳的轰鸣！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "从3张<color=#FFFFFFFF>驰轮车</color>中$[K59]1张加入手牌。\\n<color=#FFFFFFFF>我方打出特技牌后：</color>若可能，<color=#FFFFFFFF>$[A1315]</color>恢复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）\\n（牌组中包含$[A1315]，才能加入牌组）",
+    "description": "从3张驰轮车中挑选1张加入手牌。\n我方打出特技牌后：若可能，玛薇卡恢复1点「夜魂值」。（每回合1次）\n（牌组中包含玛薇卡，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>我方打出特技牌后：</color>若可能，<color=#FFFFFFFF>$[A1315]</color>恢复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）",
+    "playingDescription": "我方打出特技牌后：若可能，玛薇卡恢复1点「夜魂值」。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Mavuika"
+  },
+  {
     "id": 214011,
     "shareId": 86,
     "sinceVersion": "v3.3.0",
@@ -2134,7 +2307,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_ELECTRO",
-        "count": 4
+        "count": 3
       },
       {
         "type": "GCG_COST_ENERGY",
@@ -2810,6 +2983,162 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Liuyun"
   },
   {
+    "id": 115112,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "灵枪·仪式杖",
+    "englishName": "Soulsniper: Ritual Staff",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。",
+    "playingDescription": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Gun"
+  },
+  {
+    "id": 115113,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "追影弹",
+    "englishName": "Shadowhunt Shell",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>加入手牌时：</color>若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\\n<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K105]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "加入手牌时：若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\n打出或舍弃此牌时：优先对敌方出战角色造成1点风元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Wind"
+  },
+  {
+    "id": 115114,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·火",
+    "englishName": "Shining Shadowhunt Shell: Pyro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K103]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点火元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Fire"
+  },
+  {
+    "id": 115115,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·水",
+    "englishName": "Shining Shadowhunt Shell: Hydro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_HYDRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K102]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点水元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Water"
+  },
+  {
+    "id": 115116,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·雷",
+    "englishName": "Shining Shadowhunt Shell: Electro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ELECTRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K104]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点雷元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Elec"
+  },
+  {
+    "id": 115117,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·冰",
+    "englishName": "Shining Shadowhunt Shell: Cryo",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_CRYO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K101]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点冰元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Ice"
+  },
+  {
+    "id": 215111,
+    "shareId": 482,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "子弹的戏法",
+    "englishName": "Bullet Trick",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 11511,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "对我方的<color=#FFD780FF>恰斯卡</color>生效",
+        "hintText": "对我方的恰斯卡生效"
+      }
+    ],
+    "relatedCharacterId": 1511,
+    "relatedCharacterTags": [],
+    "storyTitle": "恰斯卡·子弹的戏法",
+    "storyText": "「全弹…发射！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "$[K2]：我方<color=#FFFFFFFF>$[A1511]</color>在场时，对该角色打出。将一张<color=#FFFFFFFF>$[C115113]</color>加入手牌。\\n（牌组中包含$[A1511]，才能加入牌组）",
+    "description": "快速行动：我方恰斯卡在场时，对该角色打出。将一张追影弹加入手牌。\n（牌组中包含恰斯卡，才能加入牌组）",
+    "rawPlayingDescription": "将一张<color=#FFFFFFFF>$[C115113]</color>加入手牌。",
+    "playingDescription": "将一张追影弹加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Chasca"
+  },
+  {
     "id": 216011,
     "shareId": 102,
     "sinceVersion": "v3.3.0",
@@ -2917,10 +3246,10 @@
         "count": 5
       }
     ],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1603]</color>时，装备此牌。\\n$[A1603]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16033]</color>。\\n装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。\\n（牌组中包含$[A1603]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为钟离时，装备此牌。\n钟离装备此牌后，立刻使用一次地心·磐礴。\n装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。\n（牌组中包含钟离，才能加入牌组）",
-    "rawPlayingDescription": "装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。",
-    "playingDescription": "装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1603]</color>时，装备此牌。\\n$[A1603]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16033]</color>。\\n装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。（每回合3次）\\n（牌组中包含$[A1603]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为钟离时，装备此牌。\n钟离装备此牌后，立刻使用一次地心·磐礴。\n装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。（每回合3次）\n（牌组中包含钟离，才能加入牌组）",
+    "rawPlayingDescription": "装备有此牌的$[A1603]生命值至少为7时，$[A1603]造成的伤害和我方召唤物造成的$[K106]+1。（每回合3次）",
+    "playingDescription": "装备有此牌的钟离生命值至少为7时，钟离造成的伤害和我方召唤物造成的岩元素伤害+1。（每回合3次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Zhongli"
   },
   {
@@ -3291,10 +3620,10 @@
         "count": 2
       }
     ],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点夜魂值。（每回合2次）",
-    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点夜魂值。（每回合2次）",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1611]</color>时，装备此牌。\\n$[A1611]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16112]</color>。\\n<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合2次）\\n（牌组中包含$[A1611]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为希诺宁时，装备此牌。\n希诺宁装备此牌后，立刻使用一次音火锻淬。\n装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点「夜魂值」。（每回合2次）\n（牌组中包含希诺宁，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的<color=#FFFFFFFF>$[A1611]</color>在场时：</color>切换至$[A1611]或由$[A1611]切换至其他角色时，若目标处于<color=#FFFFFFFF>夜魂加持</color>状态，则回复1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合2次）",
+    "playingDescription": "装备有此牌的希诺宁在场时：切换至希诺宁或由希诺宁切换至其他角色时，若目标处于夜魂加持状态，则回复1点「夜魂值」。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Xilonen"
   },
   {
@@ -6580,6 +6909,46 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Weapon_Jinshuiliuyong"
   },
   {
+    "id": 311509,
+    "shareId": 483,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "船坞长剑",
+    "englishName": "The Dockhand's Assistant",
+    "tags": [
+      "GCG_TAG_WEAPON",
+      "GCG_TAG_WEAPON_SWORD"
+    ],
+    "targetList": [
+      {
+        "id": 115,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [
+          "GCG_TAG_WEAPON_SWORD"
+        ],
+        "rawHintText": "请选择要装备<color=#FFD780FF>单手剑</color>的角色",
+        "hintText": "请选择要装备单手剑的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "船工号子·船坞长剑",
+    "storyText": "「虽说工具的所有权不归操使它的人所有，但仰赖它的人将其视为自身肢体的衍伸，因此常在手柄及申领的刀片上刻上名字，避免遗失。这把剑上的名字属于白淞镇的一任镇长。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3205}单手剑」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
+    "description": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。\n（「单手剑」角色才能装备。角色最多装备1件「武器」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。",
+    "playingDescription": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_ChuanwuJian"
+  },
+  {
     "id": 312001,
     "shareId": 148,
     "sinceVersion": "v3.3.0",
@@ -7744,6 +8113,80 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Mozhanshi"
   },
   {
+    "id": 312033,
+    "shareId": 484,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "诸圣的礼冠",
+    "englishName": "Crown of the Saints",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "王酋之证·诸圣的礼冠",
+    "storyText": "「在日轮的辉光下，各部族的战酋订下休战的盟约，夜域的诸圣也放下争执为他献上礼冠。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>该角色下次技能或{SPRITE_PRESET#3008}特技造成伤害+1。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色消耗「夜魂值」后：该角色下次技能或特技造成伤害+1。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>该角色下次技能或{SPRITE_PRESET#3008}特技造成伤害+1。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "playingDescription": "附属角色消耗「夜魂值」后：该角色下次技能或特技造成伤害+1。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_HeiyaoXiao"
+  },
+  {
+    "id": 312034,
+    "shareId": 485,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "烬城勇者绘卷",
+    "englishName": "Scroll of the Hero of Cinder City",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "不归旅途·烬城勇者绘卷",
+    "storyText": "「地狱的红门是由勇者的鲜血染成的。我愿献上鲜血，而将开门的钥匙留给我的孩子。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>使我方充能未满的一个角色获得1点$[K310]，重复1次。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色消耗「夜魂值」后：使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色消耗<color=#FFFFFFFF>「夜魂值」</color>后：</color>使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "playingDescription": "附属角色消耗「夜魂值」后：使我方充能未满的一个角色获得1点充能，重复1次。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_JinchengYongzhe"
+  },
+  {
     "id": 312101,
     "shareId": 165,
     "sinceVersion": "v3.3.0",
@@ -8551,6 +8994,43 @@
     "rawPlayingDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：昂扬状态\n可用次数：2",
     "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_TujiaoLong"
+  },
+  {
+    "id": 313009,
+    "shareId": 486,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "呀！呀！",
+    "englishName": "Rawr! Rawr!",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "呀！呀！",
+    "storyText": "「在纳塔邂逅，第二好的伙伴。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌入场时：</color>创建<color=#FFFFFFFF>$[C301306]</color>。（<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>）\\n$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌入场时：创建呀——！。（我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害）\n特技：呀！呀！\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：呀！呀！\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Modify_Vehicle_Xiaokonglong"
   },
   {
     "id": 321001,
@@ -10672,6 +11152,36 @@
     "cardFace": "UI_Gcg_CardFace_Summon_ShenyeXunli"
   },
   {
+    "id": 330011,
+    "shareId": 487,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "为「死」而战",
+    "englishName": "Fight for Death",
+    "tags": [
+      "GCG_TAG_LEGEND"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "为「死」而战",
+    "storyText": "「英雄不能无家可归。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      },
+      {
+        "type": "GCG_COST_LEGEND",
+        "count": 1
+      }
+    ],
+    "rawDescription": "抓1张牌。\\n<color=#FFFFFFFF>我方场上每存在一个被击倒的角色：</color>我方剩余全体角色+2最大生命上限。",
+    "description": "抓1张牌。\n我方场上每存在一个被击倒的角色：我方剩余全体角色+2最大生命上限。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Yongye"
+  },
+  {
     "id": 331101,
     "shareId": 223,
     "sinceVersion": "v3.3.0",
@@ -11184,6 +11694,42 @@
     "rawDescription": "平均分配我方未被击倒的角色的生命值，然后治疗所有我方角色1点。\\n（牌组包含至少2个「{SPRITE_PRESET#3405}枫丹」角色，才能加入牌组）",
     "description": "平均分配我方未被击倒的角色的生命值，然后治疗所有我方角色1点。\n（牌组包含至少2个「枫丹」角色，才能加入牌组）",
     "cardFace": "UI_Gcg_CardFace_Event_Event_WaterJustice"
+  },
+  {
+    "id": 331806,
+    "shareId": 489,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "火与战争",
+    "englishName": "Fire and War",
+    "tags": [],
+    "targetList": [
+      {
+        "id": 157,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "对所选角色生效",
+        "hintText": "对所选角色生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [
+      "GCG_TAG_NATION_NATLAN",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "火与战争",
+    "storyText": "「我们继承了记忆与传说。我们和太阳与风一同成长。我们铸造了命运与未来。这些都是纳塔的火，纳塔的血液。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "选一个我方角色，使其附属<color=#FFFFFFFF>「重燃」</color>为1的<color=#FFFFFFFF>$[C303240]</color>。（本回合内该角色被击倒时，消耗等同于<color=#FFFFFFFF>「重燃」</color>的元素骰，使角色$[K54]，并治疗该角色到1点生命值，然后<color=#FFFFFFFF>「重燃」</color>+1） \\n（牌组包含至少2个「{SPRITE_PRESET#3406}纳塔」角色，才能加入牌组）",
+    "description": "选一个我方角色，使其附属「重燃」为1的还魂诗。（本回合内该角色被击倒时，消耗等同于「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值，然后「重燃」+1） \n（牌组包含至少2个「纳塔」角色，才能加入牌组）",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_FireWar"
   },
   {
     "id": 332001,
@@ -12290,6 +12836,87 @@
     "cardFace": "UI_Gcg_CardFace_Event_Event_MingshiLong"
   },
   {
+    "id": 332046,
+    "shareId": 488,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "飞行队出击！",
+    "englishName": "Flying Squad, Attack!",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "飞行队出击！",
+    "storyText": "「『花羽会』曾经承担梭巡援护纳塔全境的职责，飞行队里更集结了全纳塔最精锐、最迅猛的战士。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "随机$[K56]至多2张原本元素骰费用最高的手牌，随后抓牌直至手牌中有4张牌。\\n<color=#FFFFFFFF>此牌在手牌被$[K56]后：</color>抓1张牌。",
+    "description": "随机舍弃至多2张原本元素骰费用最高的手牌，随后抓牌直至手牌中有4张牌。\n此牌在手牌被舍弃后：抓1张牌。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_RongyiLong"
+  },
+  {
+    "id": 332047,
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "火与战争（test）",
+    "englishName": "Fire and War (test)",
+    "tags": [],
+    "targetList": [
+      {
+        "id": 157,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "对所选角色生效",
+        "hintText": "对所选角色生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 3
+      }
+    ],
+    "rawDescription": "此卡牌废弃。",
+    "description": "此卡牌废弃。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_FireWar"
+  },
+  {
+    "id": 332048,
+    "shareId": 490,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "健身的成果",
+    "englishName": "Fruits of Training",
+    "tags": [],
+    "targetList": [
+      {
+        "id": 157,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "对所选角色生效",
+        "hintText": "对所选角色生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "健身的成果",
+    "storyText": "「都说了是健身的成果，怎么就不信呢？」",
+    "playCost": [],
+    "rawDescription": "选一个我方角色，<color=#FFFFFFFF>我方其他角色准备技能时：</color>所选角色下次<color=#FFFFFFFF>元素战技</color>少花费1个元素骰。（至多触发2次，不可叠加）",
+    "description": "选一个我方角色，我方其他角色准备技能时：所选角色下次元素战技少花费1个元素骰。（至多触发2次，不可叠加）",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_TujiaoLong"
+  },
+  {
     "id": 333001,
     "shareId": 265,
     "sinceVersion": "v3.3.0",
@@ -13069,5 +13696,40 @@
     "rawDescription": "所有我方角色获得<color=#FFFFFFFF>$[C303300]</color>，抓3张牌，下2次切换角色少花费1个元素骰。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
     "description": "所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。\n（每回合每个角色最多食用1次「料理」）",
     "cardFace": "UI_Gcg_CardFace_Event_Food_Rongyi"
+  },
+  {
+    "id": 333028,
+    "shareId": 491,
+    "sinceVersion": "v5.7.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "丰稔之赐",
+    "englishName": "Harvest's Boon",
+    "tags": [
+      "GCG_TAG_FOOD"
+    ],
+    "targetList": [
+      {
+        "id": 101,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择一个角色食用<color=#FFD780FF>料理</color>",
+        "hintText": "请选择一个角色食用料理"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "丰稔之赐",
+    "storyText": "颗粒果为主的菜肴。将碎肉馅炒熟，放在烤盘上，添上肉块与蛋，最后铺上搅碎的颗粒果糊糊，送入烤箱，直至颜色变得诱人。这道用料丰厚的菜肴，通常会在庆祝大丰收之时被端上「沃陆之邦」的餐桌。",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "治疗目标角色1点，目标角色之后2次$[K53]时：治疗自身1点。\\n（每回合每个角色最多食用1次「{SPRITE_PRESET#3101}料理」）",
+    "description": "治疗目标角色1点，目标角色之后2次准备技能时：治疗自身1点。\n（每回合每个角色最多食用1次「料理」）",
+    "cardFace": "UI_Gcg_CardFace_Event_Food_TujiaoLong"
   }
 ]
