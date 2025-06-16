@@ -85,13 +85,13 @@ export const ParticularFieldFettersOfPhenomena = skill(17063)
         }
       });
       c.drawCards(1);
-    } else {
-      c.self.addStatus(ChisellightMirror, {
-        overrideVariables: {
-          duration: 3 - duration
-        }
-      });
-    }
+    } else if (duration < 3){
+        c.self.addStatus(ChisellightMirror, {
+          overrideVariables: {
+            duration: 3 - duration
+          }
+        });
+      }
   })
   .done();
 
