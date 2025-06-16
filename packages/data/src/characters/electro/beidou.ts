@@ -134,7 +134,7 @@ export const Stormbreaker = skill(14053)
 export const Beidou = character(1405)
   .since("v3.4.0")
   .tags("electro", "claymore", "liyue")
-  .health(10)
+  .health(11)
   .energy(3)
   .skills(Oceanborne, Tidecaller, Stormbreaker, Wavestrider)
   .done();

@@ -290,3 +290,21 @@ export const Tatankasaurus = card(313008)
   .costVoid(3)
   .characterStatus(TatankasaurusStatus01, "@master")
   .done();
+
+/**
+ * @id 313009
+ * @name 呀！呀！
+ * @description
+ * 此卡牌入场时：创建呀——！。（我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害）
+ * 特技：呀！呀！
+ * 可用次数：2
+ * （角色最多装备1个「特技」）
+ * [3130091: ] ()
+ * [3130092: 呀！呀！] (2*Void) 从牌库中抓1张特技牌，下次我方打出特技牌少花费2个元素骰。
+ */
+export const RawrRawr = card(313009)
+  .since("v5.7.0")
+  .costSame(2)
+  .technique()
+  // TODO
+  .done();

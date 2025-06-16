@@ -81,7 +81,7 @@ export const RiteOfProgenitureTectonicTide = skill(16043)
 export const Albedo = character(1604)
   .since("v4.0.0")
   .tags("geo", "sword", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(FavoniusBladeworkWeiss, AbiogenesisSolarIsotoma, RiteOfProgenitureTectonicTide)
   .done();

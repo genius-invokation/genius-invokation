@@ -145,7 +145,7 @@ export const SourcewaterDropletSkill = skill(12105)
 export const Neuvillette = character(1210)
   .since("v4.5.0")
   .tags("hydro", "catalyst", "fontaine", "ousia")
-  .health(10)
+  .health(11)
   .energy(2)
   .skills(AsWaterSeeksEquilibrium, OTearsIShallRepay, OTidesIHaveReturned, EquitableJudgment, SourcewaterDropletSkill)
   .done();

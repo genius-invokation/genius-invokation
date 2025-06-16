@@ -500,3 +500,17 @@ export const [SingYourHeartOut] = card(333027)
   .usage(2)
   .deductOmniCost(1)
   .done();
+
+/**
+ * @id 333028
+ * @name 丰稔之赐
+ * @description
+ * 治疗目标角色1点，目标角色之后2次准备技能时：治疗自身1点。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const HarvestsBoon = card(333028)
+  .since("v5.7.0")
+  .costSame(1)
+  .tags("food")
+  // TODO
+  .done();

@@ -1719,3 +1719,52 @@ export const ArtOfSleepyMeditation = card(332045)
     c.combatStatus(ArtOfSleepyMeditationInEffect);
   })
   .done();
+
+/**
+ * @id 331806
+ * @name 火与战争
+ * @description
+ * 选一个我方角色，使其附属「重燃」为1的还魂诗。（本回合内该角色被击倒时，消耗等同于「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值，然后「重燃」+1）
+ * （牌组包含至少2个「纳塔」角色，才能加入牌组）
+ */
+export const FireAndWar = card(331806)
+  .since("v5.7.0")
+  .costSame(1)
+  // TODO
+  .done();
+
+/**
+ * @id 332046
+ * @name 飞行队出击！
+ * @description
+ * 随机舍弃至多2张原本元素骰费用最高的手牌，随后抓牌直至手牌中有4张牌。
+ * 此牌在手牌被舍弃后：抓1张牌。
+ */
+export const FlyingSquadAttack = card(332046)
+  .since("v5.7.0")
+  .costVoid(3)
+  // TODO
+  .done();
+
+/**
+ * @id 332047
+ * @name 火与战争（test）
+ * @description
+ * 此卡牌废弃。
+ */
+export const FireAndWarTest = card(332047)
+  .since("v5.7.0")
+  .costSame(3)
+  // TODO
+  .done();
+
+/**
+ * @id 332048
+ * @name 健身的成果
+ * @description
+ * 选一个我方角色，我方其他角色准备技能时：所选角色下次元素战技少花费1个元素骰。（至多触发2次，不可叠加）
+ */
+export const FruitsOfTraining = card(332048)
+  .since("v5.7.0")
+  // TODO
+  .done();
