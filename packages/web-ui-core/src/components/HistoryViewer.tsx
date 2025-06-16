@@ -52,6 +52,7 @@ import {
 import { Image } from "./Image";
 import { DICE_COLOR, DiceIcon } from "./Dice";
 import type { ActionCardRawData, CharacterRawData, EntityRawData, KeywordRawData, SkillRawData } from "@gi-tcg/static-data";
+import TunningIcon from "../svg/TunningIcon.svg?component-solid";
 
 const reactionTextMap: Record<number, renderReactionProps> = {
   [Reaction.Melt]: { element: [DamageType.Cryo, DamageType.Pyro], name: "融化" },
@@ -349,7 +350,7 @@ const renderHistoryChild = (
                 class="h-3 w-3"
               />
             </Show>
-            <span style={{ color: `var(--c-${DICE_COLOR[child.damageType]})]` }}>
+            <span style={(child.damageType >= 1 && child.damageType <=7) ? { color: `var(--c-${DICE_COLOR[child.damageType]})` } : undefined}>
               {`${damageTypeTextMap[child.damageType]}伤害`}
             </span>
             <Show when={child.reaction}>
@@ -413,7 +414,7 @@ const renderHistoryChild = (
               imageId={child.elementType}
               class="h-3 w-3"
             />
-            <span style={{ color: `var(--c-${DICE_COLOR[child.elementType]})]` }}>
+            <span style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}>
               {`${damageTypeTextMap[child.elementType]}`}
             </span>
             <Show when={child.reaction}>
@@ -1233,12 +1234,37 @@ const renderHistoryBlock = (
 
 function HistoryChildBox(props: { data: renderHistoryChildProps }) {
   return (
-    <div class="w-full h-10 flex flex-col shrink-0 bg-black/10">
-      <div>
-        {props.data.title}
+    <div class="w-full h-10 flex flex-row shrink-0 bg-black/10 gap-1">
+      <div 
+      class="w-1 h-10 shrink-0 bg-#d9b48d data-[opp]:bg-#7e98cb"
+      bool:data-opp={props.data.opp}
+      />
+      <div class="w-5 h-10 shrink-0 items-center justify-center flex">
+        <Switch>
+          <Match when={props.data.imageId === undefined}>
+            <div class="w-5 h-8.6 bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0"/>
+          </Match>
+          <Match when={props.data.imageId === "tuning"}>
+            <div class="w-5 h-5">
+              <TunningIcon />
+            </div>
+          </Match>
+          <Match when={true}>
+            <Image
+              imageId={props.data.imageId as number}
+              type={props.data.imageType}
+              class="w-5 h-auto rounded-0.75"
+            />
+          </Match>
+        </Switch>
       </div>
-      <div class="flex flex-row">
-        {props.data.content}
+      <div class="w-full h-10 flex flex-col justify-center">
+        <div class="text-3">
+          {props.data.title}
+        </div>
+        <div class="flex flex-row text-2.5">
+          {props.data.content}
+        </div>
       </div>
     </div>
   );
