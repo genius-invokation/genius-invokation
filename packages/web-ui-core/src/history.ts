@@ -100,7 +100,6 @@ export interface SwitchOrSelectActiveHistoryBlock {
   characterDefinitionId: number;
   how: "init" | "switch" | "select";
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 // 使用技能|特技
@@ -114,7 +113,6 @@ export interface UseSkillHistoryBlock {
   callerDefinitionId: number;
   skillType: "normal" | "elemental" | "burst" | "technique";
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 // 触发效果
@@ -134,7 +132,6 @@ export interface TriggeredHistoryBlock {
   callerDefinitionId: number;
   effectDefinitionId: number;
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 // 打出手牌
@@ -146,7 +143,6 @@ export interface PlayCardHistoryBlock {
   who: 0 | 1;
   cardDefinitionId: number;
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 // 挑选结果
@@ -163,7 +159,6 @@ export interface SelectCardHistoryBlock {
   who: 0 | 1;
   cardDefinitionId: number; // 被选择的牌
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 // 元素调和
@@ -180,7 +175,6 @@ export interface ElementalTunningHistoryBlock {
   who: 0 | 1;
   cardDefinitionId: number;
   children: HistoryChildren[];
-  summary: HistoryChildrenSummary;
 }
 
 /////////////// child部分 ////////////////
@@ -382,61 +376,6 @@ export interface TransformHistoryChild {
     who: 0 | 1;
     cardDefinitionId: number; // 对应新旧形态
     stage: "old" | "new";
-}
-
-/////////////// block如何对自己的child生成预览 ////////////////
-
-// bolck预览渲染逻辑
-// 遍历characterSummary
-//    if 一个character的healthChange<0，就将其加入DamageList
-//    elif 一个character的healthChange>0，就将其加入HealList
-//    elif 一个character包含附着元素事件，就将其加入ElementList
-//    elif 一个character包含切换角色事件，就将其加入SwitchList
-//    else 将剩余角色加入StateList
-// 遍历每个List
-//    if List内只有一个角色
-//      显示这个角色
-//      如果有healthChange，显示healthChange
-//      对于元素反应/附着、状态、出战状态
-//        如果有1个则直接显示，如果有多个则显示“···”
-//    else List内有多个角色
-//      显示第一个角色，其他折叠为牌堆
-//      如果有healthChange，显示“···”
-//      对于元素反应/附着、状态
-//        如果有则显示“···”
-//      对于出战状态
-//        如果有1个且List内角色阵营相同则直接显示，否则显示“···”
-// 遍历cardSummary
-//    if 仅含有DisposeCardHistoryChild，就将其加入DisposeList
-//    elif 仅含有CreateEntityHistoryChild，就将其加入CreateList
-//    elif 仅含有RemoveEntityHistoryChild:
-//      if entityType="summon" 就将其加入RemoveList
-//      elif entityType="support" 就将其加入DisposeList
-// 遍历每个List
-//    如果List内仅存在一个card则直接显示
-//    如果List内存在多个card则显示第一个，其他折叠为牌堆
-//    DisposeList为7:12, 其余为28:33
-export interface HistoryChildrenSummary {
-  characterSummary: CharacterSummary[];
-  cardSummary: CardSummary[];
-}
-// 对于child事件
-// 如果事件符合CharaterHistoryChildren类型及描述
-// 如果不存在CharacterSummary的id为该角色，则创建对应的CharacterSummary并将事件加入其中
-// 如果存在CharacterSummary的id为该角色，则将事件加入其中
-// 计算伤害事件和治疗事件后角色最终的血量变化
-export interface CharacterSummary {
-  characterDefinitionId: number;
-  healthChange: number;
-  children: CharacterHistoryChildren[];
-}
-// 对于child事件
-// 如果事件符合CardHistoryChildren类型及描述
-// 如果不存在CardSummary的id为该卡牌，则创建对应的CardSummary并将事件加入其中
-// 如果存在CardSummary的id为该卡牌，则将事件加入其中
-export interface CardSummary {
-  cardDefinitionId: number;
-  children: CardHistoryChildren[];
 }
 
 /////////////// 用于生成赛后统计的全局记录量，我也不知道怎么实现 ////////////////

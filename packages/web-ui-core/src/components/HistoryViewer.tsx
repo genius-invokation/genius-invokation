@@ -53,7 +53,11 @@ import { Image } from "./Image";
 import { DICE_COLOR, DiceIcon } from "./Dice";
 import type { ActionCardRawData, CharacterRawData, EntityRawData, KeywordRawData, SkillRawData } from "@gi-tcg/static-data";
 import TunningIcon from "../svg/TunningIcon.svg?component-solid";
+import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
+import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
+import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg?component-solid";
 import { CardFace } from "./Card";
+import { StrokedText } from "./StrokedText";
 
 const reactionTextMap: Record<number, renderReactionProps> = {
   [Reaction.Melt]: { element: [DamageType.Cryo, DamageType.Pyro], name: "融化" },
@@ -861,8 +865,8 @@ interface SummaryShot {
   aura: DamageType[] | "more" | undefined;
   inner: "damage" | "heal" | "switch" | "defeated" | undefined;
   innerValue?: number | "more";
-  status: number | "more" | undefined;
-  combat: number | "more" | undefined;
+  status: number[] | "more" | undefined;
+  combat: number[] | "more" | undefined;
 }
 
 function renderSummary(children: HistoryChildren[]): SummaryShot[] {
@@ -921,9 +925,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
     l.length === 1
       ? l[0].status.length === 0
         ? undefined
-        : l[0].status.length === 1
-          ? l[0].status[0]
-          : "more"
+        : l[0].status
       : l.some((c) => c.status.length)
         ? "more"
         : undefined;
@@ -942,16 +944,18 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
         if (combatMy?.length) {
           const target = shotMy ?? shotBoth;
           if (target) {
-            target.combat = combatMy.length === 1 ? combatMy[0] : "more";
+            target.combat = combatMy;
           }
         }
         if (combatOpp?.length) {
-          const target =
-            shotOpp ??
-            (shotBoth && shotBoth.combat === undefined ? shotBoth : undefined);
-
-          if (target) {
-            target.combat = combatOpp.length === 1 ? combatOpp[0] : "more";
+          if (shotOpp) {
+            shotOpp.combat = combatOpp;
+          } else if (shotBoth) {
+            if (shotBoth.combat === undefined) {
+              shotBoth.combat = combatOpp;
+            } else if (shotBoth.combat !== undefined) {
+              shotBoth.combat = "more";
+            }
           }
         }
       }
@@ -1090,7 +1094,7 @@ const renderHistoryBlock = (
           name: assetsManager.getNameSync(block.characterDefinitionId),
           content:
             <>
-              <span class="text-3 text-#d4bc8e mt-1">
+              <span class="text-3 text-#d4bc8e">
                 {`角色出战`}
               </span>
             </>,
@@ -1121,7 +1125,7 @@ const renderHistoryBlock = (
           name: assetsManager.getNameSync(block.callerDefinitionId),
           content:
             <>
-              <div class="flex flex-col gap-2 mt-1">
+              <div class="flex flex-col gap-1">
                 <div class="text-3 text-#d4bc8e">
                   {`${block.skillType === "technique" ? "使用特技" : "使用技能"}`}
                 </div>
@@ -1173,7 +1177,7 @@ const renderHistoryBlock = (
                 </>
               ) : (
                 <>
-                  <div class="flex flex-col gap-2 mt-1">
+                  <div class="flex flex-col gap-1">
                     <div class="text-3 text-#d4bc8e">
                       {`触发效果`}
                     </div>
@@ -1231,10 +1235,10 @@ const renderHistoryBlock = (
           name: opp(block.who) ? undefined : assetsManager.getNameSync(block.cardDefinitionId),
           content:
             <>
-              <span class="text-3 text-#d4bc8e mt-1">
+              <span class="text-3 text-#d4bc8e">
                 {`${subject(opp(block.who))}`}
               </span>
-              <span class="text-3 text-#d4bc8e mt-1">
+              <span class="text-3 text-#d4bc8e">
                 {`触发挑选效果`}
               </span>
             </>
@@ -1294,8 +1298,6 @@ const renderHistoryBlock = (
   return result;
 };
 
-
-
 function HistoryChildBox(props: { data: renderHistoryChildProps }) {
   return (
     <div class="w-full h-11 flex flex-row shrink-0 bg-white/4 gap-2 justify-center">
@@ -1323,12 +1325,180 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
         </Switch>
       </div>
       <div class="w-full h-full flex flex-col justify-center gap-1">
-        <div class="text-2.8 text-white/95 text-stroke-0.2 text-stroke-op-70">
-          {props.data.title}
+        <div class="flex flex-row gap-1">
+          <div class="text-2.8 text-white/95 text-stroke-0.2 text-stroke-op-70">
+            {props.data.title}
+          </div>
+          <Show when={props.data.healthChange}>
+            {(healthChange) => (
+              <div 
+                class="h-4 px-3 min-w-12 flex flex-row items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51 data-[increase]:bg-#6e9b3a"
+                bool:data-increase={healthChange().type==="heal"}
+              >
+                <Show when={healthChange().special}>
+                  <div class="h-5 w-5 flex-shrink-0 -translate-x-1">
+                    <Switch>
+                      <Match when={healthChange().type==="heal"}>
+                        <RevivePreviewIcon class="h-5 w-5" />
+                      </Match>
+                      <Match when={healthChange().type==="damage"}>
+                        <DefeatedPreviewIcon class="h-5 w-5" />
+                      </Match>
+                    </Switch>
+                  </div>  
+                </Show>
+                <StrokedText 
+                  text={`${healthChange().type==="heal" ? "+" : "-"}${healthChange().value}`} 
+                  strokeWidth={1.5} 
+                  strokeColor="black"
+                />
+              </div>
+            )}
+          </Show>
         </div>
         <div class="flex flex-row text-2.5 text-#b2afa8 font-bold">
           {props.data.content}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function More() {
+  return(
+    <img
+      class="h-3 w-3"
+      // TODO: replace this with an API endpoint
+      src="https://assets.gi-tcg.guyutongxue.site/assets/UI_Gcg_Buff_Common_More.webp"
+    />
+  );
+}
+
+function HistorySummaryShot(props: { data: SummaryShot }) {
+  return (
+    <div class="h-24 flex flex-col">
+      <div class="h-3 w-10.5 flex flex-row items-center justify-center">
+        <Switch>
+          <Match when={props.data.aura === "more"}>
+            <More />
+          </Match>
+          <Match when={props.data.aura !== undefined}>
+            <For each={props.data.aura as DamageType[]}>
+              {(damageType) => (
+                <Image
+                  imageId={damageType}
+                  class="h-3 w-3"
+                />                
+              )}
+            </For>
+          </Match>
+        </Switch>
+      </div>
+      <div 
+      class="h-18 relative"
+      style={{width: `${2.375 + props.data.cardface.length * 0.25}rem`}}
+      >
+        <Switch>
+          <Match when={props.data.size==="normal"}>
+            <For each={props.data.cardface.reverse()}>
+              {(imageId, index)=>(
+                <div 
+                  class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                  style={{
+                    right: `${index() * 0.25}rem`,
+                  }}
+                >
+                  <CardFace definitionId={imageId} />
+                </div>
+              )}
+            </For>
+          </Match>
+          <Match when={props.data.size==="summon"}>
+            <For each={props.data.cardface.reverse()}>
+              {(imageId, index)=>(
+                <div 
+                  class="absolute w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden top-50% -translate-y-50%"
+                  style={{
+                    right: `${index() * 0.25}rem`,
+                  }}
+                >
+                  <Image
+                    imageId={imageId}
+                    class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                  />
+                </div>
+              )}
+            </For>
+          </Match>
+        </Switch>
+        <div class="h-8 w-8 absolute top-50% left-5.25 -translate-x-50% -translate-y-50%">
+          <Switch>
+            <Match when={props.data.inner==="switch"}>
+              <SwitchActiveIcon class="h-full w-full"/>
+            </Match>
+            <Match when={props.data.inner==="defeated"}>
+              <DefeatedPreviewIcon class="h-full w-full"/>
+            </Match>
+          </Switch>
+        </div>
+        <div class="h-4 w-12 absolute top-50% left-5.25 -translate-x-50% -translate-y-50%">
+          <Switch>
+            <Match when={props.data.inner==="damage"}>
+              <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
+                <StrokedText 
+                  text={props.data.innerValue === "more" ? "···" : `${props.data.innerValue}`} 
+                  strokeWidth={1.5} 
+                  strokeColor="black"
+                />
+              </div>
+            </Match>
+            <Match when={props.data.inner==="heal"}>
+              <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
+                <StrokedText 
+                  text={props.data.innerValue === "more" ? "···" : `+${props.data.innerValue}`} 
+                  strokeWidth={1.5} 
+                  strokeColor="black"
+                />
+              </div>
+            </Match>
+          </Switch>
+        </div>
+        <div class="absolute bottom-0.5 left-0.5 h-3 w-9.5 flex flex-row items-center">
+          <Switch>
+            <Match when={props.data.status === "more"}>
+              <More />
+            </Match>
+            <Match when={props.data.status !== undefined}>
+              <For each={props.data.status as number[]}>
+                {(status) => (
+                  <Image
+                    imageId={status}
+                    type="icon"
+                    class="h-3 w-3"
+                  />                
+                )}
+              </For>
+            </Match>
+          </Switch>
+        </div>
+      </div>
+      <div class="h-3 w-10.5 flex flex-row items-center">
+        <Switch>
+          <Match when={props.data.combat === "more"}>
+            <More />
+          </Match>
+          <Match when={props.data.combat !== undefined}>
+            <For each={props.data.combat as number[]}>
+              {(combat) => (
+                <Image
+                  imageId={combat}
+                  type="icon"
+                  class="h-3 w-3"
+                />                
+              )}
+            </For>
+          </Match>
+        </Switch>
       </div>
     </div>
   );
@@ -1348,18 +1518,61 @@ function HistoryBlockBox(
   };
   return (
     <div
-      class={`w-full h-30 rounded-0.8 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5`}
+      class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5`}
       onClick={() => props.onClick()}
     >
-      <div class="w-full h-6 bg-[var(--title-color)] rounded-t-0.8 flex items-center">
+      <div class="w-full h-6 bg-[var(--title-color)] rounded-t-0.6 flex items-center">
         <div 
-          class="text-#efb264 data-[opp]:text-#9bc6ff text-2.8 font-bold ml-1.5"
+          class="text-#e5aa5f data-[opp]:text-#7eb5ff text-2.8 font-bold ml-1.5"
           bool:data-opp={props.data.opp}
         >
           {props.data.title}
         </div>        
       </div>
-
+      <div class="flex flex-row items-center justify-center h-24 gap-1.5">
+        <div class="h-24 flex flex-col">
+          <div class="h-3"/>
+          <div class="w-10.5 h-18 relative">
+            <Show 
+              when={props.data.imageId}
+              fallback={
+                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+              }
+            >
+              {(imageId) => ( 
+                <div class="relative w-10.5 h-18">
+                  <CardFace definitionId={imageId()} />
+                </div>
+              )}
+            </Show>
+            <div class="h-8 w-8 absolute top-50% left-50% -translate-x-50% -translate-y-50%">
+              <Switch>
+                <Match when={props.data.type==="switchActive"}>
+                  <SwitchActiveIcon class="h-full w-full"/>
+                </Match>
+                <Match when={props.data.type==="triggered"}>
+                  <SwitchActiveIcon class="h-full w-full"/>
+                </Match>
+                <Match when={props.data.type==="elementalTunning"}>
+                  <TunningIcon class="h-full w-full"/>
+                </Match>
+              </Switch>              
+            </div>
+          </div>
+          <div class="h-3"/>
+        </div>
+        <Show when={props.data.summary.length}>
+          <div class="h-24 w-4 flex items-center justify-center font-bold text-white text-5 text-stroke-1">→</div>
+          <For each={props.data.summary.slice(0, 3)}>
+            {(summary) => (
+              <HistorySummaryShot data={summary} />
+            )}
+          </For>
+          <Show when={props.data.summary.length > 3}>
+            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">···</div>
+          </Show>
+        </Show>
+      </div>
     </div>
   );
 }
@@ -1388,7 +1601,6 @@ function HistoryHintBox(props: { data: renderHistoryHintProps }) {
         </div>
       </Match>
     </Switch>
-
   );
 }
 
@@ -1469,10 +1681,10 @@ export function HistoryPanel(props: HistoryPanelProps) {
         </div>
         <Show when={showBackToBottom()}>
           <button
-            class="absolute w-66 h-8 bottom-4 b-1 border-#735a3f right-2 bg-#e9e2d3 text-#735a3f font-bold rounded-1 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)]"
+            class="absolute w-66 h-6 bottom-3 right-2 bg-#e9e2d3 opacity-80 text-#3b4255 text-3 font-bold rounded-full hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(216,212,204,1),0_0_8px_rgba(255,255,255,0.2)] hover:b-white hover:b-2 hover:opacity-100"
             onClick={scrollToBottom}
           >
-            回到底部
+            跳转至最新
           </button>
         </Show>
         <Show when={selectedBlock()}>
@@ -1500,27 +1712,27 @@ function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: ()
       onClick={e => e.stopPropagation()}
     >
       <div ref={el => (panelRef = el)} class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply">
-        <div class="relative w-full min-h-28 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
+        <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
           <div 
             class="absolute top-1px left-1px w-3.5 h-3.5 rounded-lt-1 bg-#806440 data-[opp]:bg-#48678b history-card-hint"
             bool:data-opp={blockDescription().opp}
           />
-          <div class="w-18 h-28 p-2">
+          <div class="w-14.5 h-22 p-2">
             <Show 
               when={blockDescription().imageId}
               fallback={
-                <div class="w-14 h-24 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
               }
             >
               {(imageId) => ( 
-                <div class="relative w-14 h-24">
+                <div class="relative w-10.5 h-18">
                   <CardFace definitionId={imageId()} />
                 </div>
               )}
             </Show>
           </div>
-          <div class="w-full min-h-28 py-1.5 pr-2 flex flex-col">
-            <div class="text-4 text-#fff3e0/98 font-bold">
+          <div class="w-full min-h-22 py-1.5 pr-2 flex flex-col">
+            <div class="text-3.5 text-#fff3e0/98 font-bold">
               {blockDescription().name ? blockDescription().name : "???"}
             </div>
             <div class="flex text-2.5 text-#b2afa8 font-bold">
