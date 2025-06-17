@@ -36,7 +36,7 @@ message ExposedMutation {
     TransformDefinitionEM transform_definition = 13;
     ResetDiceEM reset_dice = 14;
     DamageEM damage = 15;
-    ElementalReactionEM elemental_reaction = 16;
+    ApplyAuraEM apply_aura = 16;
     SkillUsedEM skill_used = 18;
     PlayerStatusChangeEM player_status_change = 19;
     SwapCharacterPositionEM swap_character_position = 20;
@@ -166,6 +166,15 @@ message ResetDiceEM {
   ResetDiceReason reason = 3;
 }
 
+enum HealKind {
+  HEAL_KIND_NOT_A_HEAL = 0;
+  HEAL_KIND_COMMON = 1;
+  HEAL_KIND_IMMUNE_DEFEATED = 2;
+  HEAL_KIND_REVIVE = 3;
+  HEAL_KIND_INCREASE_MAX_HEALTH = 4;
+  HEAL_KIND_DISTRIBUTION = 5;
+}
+
 message DamageEM {
   DamageType damage_type = 1;
   int32 value = 2;
@@ -176,13 +185,20 @@ message DamageEM {
   bool is_skill_main_damage = 7;
   ReactionType reaction_type = 8;
   bool cause_defeated = 9;
+  AuraType old_aura = 10;
+  AuraType new_aura = 11;
+  int32 old_health = 12;
+  int32 new_health = 13;
+  HealKind heal_kind = 14;
 }
 
-message ElementalReactionEM {
-  reserved 1;
+message ApplyAuraEM {
+  DamageType element_type = 1;
   sint32 target_id = 3;
   int32 target_definition_id = 4;
   ReactionType reaction_type = 8;
+  AuraType old_aura = 10;
+  AuraType new_aura = 11;
 }
 
 enum SkillType {

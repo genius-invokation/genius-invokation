@@ -17,6 +17,7 @@ import {
   DamageType,
   DiceType,
   type ExposedMutation,
+  PbHealKind,
   PbReactionType,
   Reaction,
 } from "@gi-tcg/typings";
@@ -114,6 +115,7 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
+import { exposeHealKind } from "../../io";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -734,6 +736,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
           isSkillMainDamage: false,
           reactionType: PbReactionType.UNSPECIFIED,
           causeDefeated: false,
+          oldAura: targetState.variables.aura,
+          newAura: targetState.variables.aura,
+          oldHealth: targetState.variables.health,
+          newHealth: targetState.variables.health + healInfo.value,
+          healKind: exposeHealKind(healInfo.healKind),
         },
       ],
     });
@@ -840,6 +847,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
         direction: "decrease",
       });
       if (damageInfo.target.variables.alive) {
+        const [newAura, reaction] =
+          damageInfo.type === DamageType.Piercing ||
+          damageInfo.type === DamageType.Physical
+            ? [damageInfo.target.variables.aura, null]
+            : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
         this.mutator.notify({
           mutations: [
             {
@@ -851,9 +863,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
               targetId: damageInfo.target.id,
               targetDefinitionId: damageInfo.target.definition.id,
               isSkillMainDamage: damageInfo.isSkillMainDamage,
-              reactionType:
-                getReaction(damageInfo) ?? PbReactionType.UNSPECIFIED,
+              reactionType: reaction ?? PbReactionType.UNSPECIFIED,
               causeDefeated: damageInfo.causeDefeated,
+              oldAura: damageInfo.target.variables.aura,
+              newAura,
+              oldHealth: damageInfo.target.variables.health,
+              newHealth: finalHealth,
+              healKind: PbHealKind.NOT_A_HEAL,
             },
           ],
         });
@@ -910,20 +926,22 @@ export class SkillContext<Meta extends ContextMetaBase> {
       value: newAura,
       direction: null,
     });
+    if (!fromDamage) {
+      this.mutator.notify({
+        mutations: [
+          {
+            $case: "applyAura",
+            elementType: type,
+            targetId: target.state.id,
+            targetDefinitionId: target.state.definition.id,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            oldAura: aura,
+            newAura,
+          },
+        ],
+      });
+    }
     if (reaction !== null) {
-      if (!fromDamage) {
-        // 来自伤害的反应在 $case: "damage" 中通知前端
-        this.mutator.notify({
-          mutations: [
-            {
-              $case: "elementalReaction",
-              reactionType: reaction,
-              targetId: target.state.id,
-              targetDefinitionId: target.state.definition.id,
-            },
-          ],
-        });
-      }
       this.mutator.log(
         DetailLogType.Other,
         `Apply reaction ${reaction} to ${stringifyState(target.state)}`,

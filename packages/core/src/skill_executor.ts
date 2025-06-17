@@ -40,6 +40,7 @@ import {
 import {
   Aura,
   DamageType,
+  PbHealKind,
   PbReactionType,
   PbSkillType,
   Reaction,
@@ -297,7 +298,7 @@ export class SkillExecutor {
         const healInfo: HealInfo = {
           type: DamageType.Heal,
           cancelled: false,
-          healKind: "revive",
+          healKind: "immuneDefeated",
           source,
           via: arg._immuneInfo.skill,
           target: arg.target,
@@ -326,6 +327,11 @@ export class SkillExecutor {
               isSkillMainDamage: false,
               reactionType: PbReactionType.UNSPECIFIED,
               causeDefeated: false,
+              oldAura: arg.target.variables.aura,
+              newAura: arg.target.variables.aura,
+              oldHealth: 0,
+              newHealth: healValue,
+              healKind: PbHealKind.IMMUNE_DEFEATED,
             },
           ],
         });
@@ -547,7 +553,10 @@ export class SkillExecutor {
           ({ skill }) => skill.id === arg.requestingSkillId,
         );
         if (!skillAndCaller) {
-          console.log(availableSkills.map(({ skill }) => skill.id), arg.requestingSkillId)
+          console.log(
+            availableSkills.map(({ skill }) => skill.id),
+            arg.requestingSkillId,
+          );
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
