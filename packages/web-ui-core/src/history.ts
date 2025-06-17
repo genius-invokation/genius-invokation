@@ -193,7 +193,7 @@ export interface SwitchActiveHistoryChild {
 export interface TriggeredHistoryChild {
   type: "triggered";
   who: 0 | 1;
-  effectDefinitionId: number;
+  callerDefinitionId: number;
 }
 
 // 抓牌
@@ -223,7 +223,7 @@ export interface CreateEntityHistoryChild {
   type: "createEntity";
   who: 0 | 1;
   entityType: "combatStatus" | "status" | "equipment" | "summon";
-  characterDefinitionId?: number;
+  masterDefinitionId?: number;
   entityDefinitionId: number;
 }
 
@@ -355,7 +355,7 @@ export interface RemoveEntityHistoryChild {
   type: "removeEntity";
   who: 0 | 1;
   entityType: "combatStatus" | "status" | "equipment" | "summon" | "support";
-  characterDefinitionId?: number; // 状态、装备：所属角色区
+  masterDefinitionId?: number; // 状态、装备：所属角色区
   entityDefinitionId: number;
 }
 

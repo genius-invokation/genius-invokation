@@ -203,9 +203,9 @@ const renderHistoryChild = (
     case "triggered": {
       result = {
         opp: opp(child.who),
-        imageId: child.effectDefinitionId,
+        imageId: child.callerDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.effectDefinitionId),
+        title: assetsManager.getNameSync(child.callerDefinitionId),
         content:
           <>
             <span>
@@ -255,9 +255,9 @@ const renderHistoryChild = (
       if (child.entityType === "status" || child.entityType === "equipment") {
         result = {
           opp: opp(child.who),
-          imageId: child.characterDefinitionId,
+          imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.characterDefinitionId ? assetsManager.getNameSync(child.characterDefinitionId) : "???",
+          title: child.masterDefinitionId ? assetsManager.getNameSync(child.masterDefinitionId) : "???",
           content:
             <>
               <span>
@@ -456,6 +456,7 @@ const renderHistoryChild = (
       break;
     }
     case "increaseMaxHealth":{
+      const increaseValue = child.newMaxHealth - child.oldMaxHealth;
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -464,7 +465,7 @@ const renderHistoryChild = (
         content:
           <>
             <span>
-              {`获得${child.increaseValue}点最大生命值`}
+              {`获得${increaseValue}点最大生命值`}
             </span>
             <span>
               {`，最大生命值${child.oldMaxHealth}→${child.newMaxHealth}`}
@@ -535,9 +536,9 @@ const renderHistoryChild = (
       if (child.entityType === "status" || child.entityType === "equipment") {
         result = {
           opp: opp(child.who),
-          imageId: child.characterDefinitionId,
+          imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.characterDefinitionId ? assetsManager.getNameSync(child.characterDefinitionId) : "???",
+          title: child.masterDefinitionId ? assetsManager.getNameSync(child.masterDefinitionId) : "???",
           content:
             <>
               <span>
@@ -803,11 +804,11 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       }
     } else if (c.type === "createEntity") {
       if (c.entityType === "status") {
-        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: c.characterDefinitionId!, who: c.who });
+        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: c.masterDefinitionId!, who: c.who });
         summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "state" }>);
         summary.status.push(c.entityDefinitionId);
       } else if (c.entityType === "combatStatus") {
-        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: -1, who: c.who });
+        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: c.masterDefinitionId!, who: c.who });
         summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "combatStatus" }>);
         summary.combatStatus.push(c.entityDefinitionId);
       } else if (c.entityType === "summon") {
@@ -828,7 +829,6 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
         summary = getOrCreateCardSummary(cardMap, { cardDefinitionId: c.entityDefinitionId, who: c.who })
         summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "support" }>);
         summary.type.push("disposeCard");
-
       }
     }
   });
@@ -871,14 +871,13 @@ interface SummaryShot {
 
 function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   const { characterSummary, cardSummary } = buildSummary(children);
-  type shotType = "damage" | "heal" | "apply" | "switch" | "status" | "combat" | "dispose" | "create" | "remove";
+  type shotType = "damage" | "heal" | "apply" | "switch" | "status" | "dispose" | "create" | "remove";
   const shotGroups: Record<shotType, (CharacterSummary | CardSummary)[]> = {
     damage: [] as CharacterSummary[],
     heal: [] as CharacterSummary[],
     apply: [] as CharacterSummary[],
     switch: [] as CharacterSummary[],
     status: [] as CharacterSummary[],
-    combat: [] as CharacterSummary[],
     dispose: [] as CardSummary[],
     create: [] as CardSummary[],
     remove: [] as CardSummary[],
@@ -896,7 +895,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
     } else if (c.status.length > 0) {
       shotGroups.status.push(c);
     } else if (c.combatStatus.length > 0) {
-      shotGroups.combat.push(c);
+      shotGroups.status.push(c);
     }
   });
   cardSummary.forEach((c) => {
@@ -929,38 +928,19 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
       : l.some((c) => c.status.length)
         ? "more"
         : undefined;
+  const makeCombat = (l: CharacterSummary[]) =>
+    l.length === 1
+      ? l[0].combatStatus.length === 0
+        ? undefined
+        : l[0].combatStatus
+      : l.some((c) => c.combatStatus.length)
+        ? "more"
+        : undefined;
 
   const summaryShot: SummaryShot[] = [];
   (Object.keys(shotGroups) as shotType[]).forEach((type) => {
     const list = shotGroups[type];
     if (!list.length) return;
-    if (type === "combat") {
-      if (summaryShot.length) {
-        const combatMy = (list.find(c => c.who === 0) as CharacterSummary | null)?.combatStatus;
-        const combatOpp = (list.find(c => c.who === 1) as CharacterSummary | null)?.combatStatus;
-        const shotMy = summaryShot.find(s => s.who === 0);
-        const shotOpp = summaryShot.find(s => s.who === 1);
-        const shotBoth = summaryShot.find(s => s.who === "both");
-        if (combatMy?.length) {
-          const target = shotMy ?? shotBoth;
-          if (target) {
-            target.combat = combatMy;
-          }
-        }
-        if (combatOpp?.length) {
-          if (shotOpp) {
-            shotOpp.combat = combatOpp;
-          } else if (shotBoth) {
-            if (shotBoth.combat === undefined) {
-              shotBoth.combat = combatOpp;
-            } else if (shotBoth.combat !== undefined) {
-              shotBoth.combat = "more";
-            }
-          }
-        }
-      }
-      return;
-    }
     const uniqueWhos = new Set(list.map(c => c.who));
     const shot: SummaryShot = {
       size:
@@ -999,7 +979,10 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
         (type === "remove" || type === "create" || type === "dispose")
           ? undefined
           : makeStatus(list as CharacterSummary[]),
-      combat: undefined,
+      combat: 
+        (type === "remove" || type === "create" || type === "dispose")
+          ? undefined
+          : makeCombat(list as CharacterSummary[]),
     };
     summaryShot.push(shot);
   });
@@ -1154,25 +1137,25 @@ const renderHistoryBlock = (
         type: block.type,
         opp: opp(block.who),
         title: "触发效果",
-        imageId: block.callerDefinitionId,
+        imageId: block.masterOrCallerDefinitionId,
         energyChange:
           extractBlockEnergyProps(
             {
-              characterDefinitionId: block.callerDefinitionId,
+              characterDefinitionId: block.masterOrCallerDefinitionId,
               children: block.children
             },
             0, // 可填写maxEnergy
           ),
         content: {
           opp: opp(block.who),
-          imageId: block.callerDefinitionId,
-          name: assetsManager.getNameSync(block.callerDefinitionId),
+          imageId: block.masterOrCallerDefinitionId,
+          name: assetsManager.getNameSync(block.masterOrCallerDefinitionId),
           content:
-            block.effectDefinitionId === block.callerDefinitionId
+            block.callerOrSkillDefinitionId === block.masterOrCallerDefinitionId
               ? (
                 <>
                   <div>
-                    <CardDescriptionPart cardDefinitionId={block.callerDefinitionId} />
+                    <CardDescriptionPart cardDefinitionId={block.masterOrCallerDefinitionId} />
                   </div>
                 </>
               ) : (
@@ -1184,13 +1167,13 @@ const renderHistoryBlock = (
                     <div class="flex flex-row items-center gap-1">
                       <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
                         <Image
-                          imageId={block.effectDefinitionId}
+                          imageId={block.callerOrSkillDefinitionId}
                           type="icon"
                           class="h-7 w-7"
                         />
                       </div>
                       <span class="text-#fff3e0/98 text-3">
-                        {`${assetsManager.getNameSync(block.effectDefinitionId)}`}
+                        {`${assetsManager.getNameSync(block.callerOrSkillDefinitionId)}`}
                       </span>
                     </div>
                   </div>
