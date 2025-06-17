@@ -17,6 +17,7 @@ import {
   DamageType,
   DiceType,
   type ExposedMutation,
+  PbReactionType,
   Reaction,
 } from "@gi-tcg/typings";
 
@@ -87,7 +88,11 @@ import type {
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
-import { REACTION_MAP, type NontrivialDamageType } from "../../base/reaction";
+import {
+  getReaction,
+  REACTION_MAP,
+  type NontrivialDamageType,
+} from "../../base/reaction";
 import {
   CALLED_FROM_REACTION,
   type ReactionDescriptionEventArg,
@@ -727,6 +732,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetId: targetState.id,
           targetDefinitionId: targetState.definition.id,
           isSkillMainDamage: false,
+          reactionType: PbReactionType.UNSPECIFIED,
+          causeDefeated: false,
         },
       ],
     });
@@ -844,6 +851,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
               targetId: damageInfo.target.id,
               targetDefinitionId: damageInfo.target.definition.id,
               isSkillMainDamage: damageInfo.isSkillMainDamage,
+              reactionType:
+                getReaction(damageInfo) ?? PbReactionType.UNSPECIFIED,
+              causeDefeated: damageInfo.causeDefeated,
             },
           ],
         });
@@ -901,6 +911,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
       direction: null,
     });
     if (reaction !== null) {
+      if (!fromDamage) {
+        // 来自伤害的反应在 $case: "damage" 中通知前端
+        this.mutator.notify({
+          mutations: [
+            {
+              $case: "elementalReaction",
+              reactionType: reaction,
+              targetId: target.state.id,
+              targetDefinitionId: target.state.definition.id,
+            },
+          ],
+        });
+      }
       this.mutator.log(
         DetailLogType.Other,
         `Apply reaction ${reaction} to ${stringifyState(target.state)}`,
@@ -911,16 +934,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         via: this.skillInfo,
         fromDamage,
       };
-      this.mutator.notify({
-        mutations: [
-          {
-            $case: "elementalReaction",
-            reactionType: reaction,
-            characterId: target.state.id,
-            characterDefinitionId: target.state.definition.id,
-          },
-        ],
-      });
       this.emitEvent("onReaction", this.state, reactionInfo);
       const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
         where: target.who === this.callerArea.who ? "my" : "opp",

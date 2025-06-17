@@ -40,6 +40,7 @@ import {
 import {
   Aura,
   DamageType,
+  PbReactionType,
   PbSkillType,
   Reaction,
   type ExposedMutation,
@@ -323,6 +324,8 @@ export class SkillExecutor {
               targetId: healInfo.target.id,
               targetDefinitionId: healInfo.target.definition.id,
               isSkillMainDamage: false,
+              reactionType: PbReactionType.UNSPECIFIED,
+              causeDefeated: false,
             },
           ],
         });

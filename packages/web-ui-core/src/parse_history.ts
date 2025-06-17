@@ -14,34 +14,50 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  CreateCharacterEM,
+  CreateEntityEM,
   DamageEM,
+  ElementalReactionEM,
   flattenPbOneof,
   ModifyEntityVarEM,
+  PbCharacterState,
+  PbEntityState,
   PbPhaseType,
   type PbExposedMutation,
   type PbGameState,
 } from "@gi-tcg/typings";
 import type {
+  ApplyHistoryChild,
   DamageHistoryChild,
+  EnergyHistoryChild,
   HistoryBlock,
   UseSkillHistoryBlock,
   VariableChangeHistoryChild,
 } from "./history";
 
+interface VariableRecordEntry {
+  oldValue: number;
+  newValue: number;
+}
+
 class VariableRecord {
-  private _current: number;
-  constructor(private _init: number = 0) {
-    this._current = _init;
-  }
+  readonly records: VariableRecordEntry[] = [];
+  constructor(private readonly initValue = 0) {}
+
   set(current: number) {
-    this._current = current;
+    const oldValue = this.records.at(-1)?.newValue ?? this.initValue;
+    this.records.push({
+      oldValue,
+      newValue: current,
+    });
   }
+
+  peek() {
+    return this.records[0];
+  }
+
   take() {
-    const result = {
-      init: this._init,
-      current: this._current,
-    };
-    this._init = this._current;
+    const result = this.records.shift();
     return result;
   }
 }
@@ -57,45 +73,140 @@ class VariableRecorder {
   readonly auraVarRecords = new Map<number, VariableRecord>();
   readonly energyVarRecords = new Map<number, VariableRecord>();
   readonly maxHealthVarRecords = new Map<number, VariableRecord>();
+
+  readonly maxEnergies = new Map<number, number>();
   readonly visibleVarNames = new Map<number, string>();
+  readonly area = new Map<number, 0 | 1>();
 
   constructor(private readonly previousState: PbGameState | undefined) {
     if (!previousState) {
       return;
     }
-    for (const player of previousState.player) {
+    for (const who of [0, 1] as const) {
+      const player = previousState.player[who];
       for (const ch of player.character) {
-        this.healthVarRecords.set(ch.id, new VariableRecord(ch.health));
-        this.auraVarRecords.set(ch.id, new VariableRecord(ch.aura));
-        this.energyVarRecords.set(ch.id, new VariableRecord(ch.energy));
-        this.maxHealthVarRecords.set(ch.id, new VariableRecord(ch.maxHealth));
-        for (const entity of ch.entity) {
-          if (entity.variableName) {
-            this.visibleVarNames.set(entity.id, entity.variableName);
-            this.visibleVarRecords.set(
-              entity.id,
-              new VariableRecord(entity.variableValue ?? 0),
-            );
-          }
-        }
+        this.initializeCharacter(who, ch);
       }
       for (const prop of ["combatStatus", "summon", "support"] as const) {
         for (const entity of player[prop]) {
-          if (entity.variableName) {
-            this.visibleVarNames.set(entity.id, entity.variableName);
-            this.visibleVarRecords.set(
-              entity.id,
-              new VariableRecord(entity.variableValue ?? 0),
-            );
-          }
+          this.initializeEntity(who, entity);
         }
       }
     }
   }
 
-  receive(varMut: ModifyEntityVarEM): VariableChangeHistoryChild | null {}
+  private initializeEntity(who: 0 | 1, entity: PbEntityState) {
+    this.area.set(entity.id, who);
+    if (entity.variableName) {
+      this.visibleVarNames.set(entity.id, entity.variableName);
+      this.visibleVarRecords.set(
+        entity.id,
+        new VariableRecord(entity.variableValue ?? 0),
+      );
+    }
+  }
 
-  composeDamage(dmgMut: DamageEM): DamageHistoryChild {}
+  private initializeCharacter(who: 0 | 1, character: PbCharacterState) {
+    this.area.set(character.id, who);
+    this.healthVarRecords.set(character.id, new VariableRecord(character.health));
+    this.auraVarRecords.set(character.id, new VariableRecord(character.aura));
+    this.energyVarRecords.set(
+      character.id,
+      new VariableRecord(character.energy),
+    );
+    this.maxHealthVarRecords.set(
+      character.id,
+      new VariableRecord(character.maxHealth),
+    );
+    this.maxEnergies.set(character.id, character.maxEnergy);
+    for (const entity of character.entity) {
+      this.initializeEntity(who, entity);
+    }
+  }
+
+  receive(
+    varMut: ModifyEntityVarEM,
+  ): VariableChangeHistoryChild | EnergyHistoryChild | null {
+    const { entityId, entityDefinitionId, variableName, variableValue } =
+      varMut;
+    let record: VariableRecord | undefined;
+    if (
+      variableName === "health" &&
+      (record = this.healthVarRecords.get(varMut.entityId))
+    ) {
+      record.set(variableValue);
+      return null; // 在 composeDamage 中返回
+    }
+    if (
+      variableName === "aura" &&
+      (record = this.auraVarRecords.get(varMut.entityId))
+    ) {
+      record.set(variableValue);
+      return null; // 在 composeDamage / composeApply 中返回
+    }
+    if (
+      variableName === "energy" &&
+      (record = this.energyVarRecords.get(varMut.entityId))
+    ) {
+      record.set(variableValue);
+      const { oldValue = 0, newValue = 0 } = record.take() ?? {};
+      return {
+        type: "energy",
+        who: this.area.get(entityId) ?? 0,
+        characterDefinitionId: entityDefinitionId,
+        oldEnergy: oldValue,
+        newEnergy: newValue,
+      };
+    }
+
+    if (this.visibleVarNames.get(entityId) === variableName) {
+      const record = this.visibleVarRecords.get(entityId);
+      if (record) {
+        record.set(variableValue);
+        const { oldValue = 0, newValue = 0 } = record.take() ?? {};
+        return {
+          type: "variableChange",
+          who: this.area.get(entityId) ?? 0,
+          cardDefinitionId: entityDefinitionId,
+          variableName,
+          oldValue,
+          newValue,
+        };
+      }
+    }
+    return null;
+  }
+
+  onNewEntity(mut: CreateEntityEM) {
+    const { who, entity } = mut as CreateEntityEM & { entity: PbEntityState };
+    this.initializeEntity(who as 0 | 1, entity);
+  }
+  onNewCharacter(mut: CreateCharacterEM) {
+    const { who, character } = mut as CreateCharacterEM & {
+      character: PbEntityState;
+    };
+    this.initializeCharacter(who as 0 | 1, character);
+  }
+
+  composeDamage(dmgMut: DamageEM): DamageHistoryChild {
+    const { oldValue = 0, newValue = 0 } =
+      this.healthVarRecords.get(dmgMut.targetId)?.take() ?? {};
+    if (dmgMut.reactionType !== )
+    return {
+      type: "damage",
+      who: this.area.get(dmgMut.targetId) ?? 0,
+      characterDefinitionId: dmgMut.targetDefinitionId,
+      oldHealth: oldValue,
+      newHealth: newValue,
+      damageType: dmgMut.damageType,
+      oldAura,
+      newAura,
+      causeDefeated,
+      damageValue,
+      reaction
+    }
+  }
+  composeApply(applyMut: ElementalReactionEM): ApplyHistoryChild {}
 }
 
 export function parseToHistory(

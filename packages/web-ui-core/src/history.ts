@@ -297,10 +297,8 @@ export interface EnergyHistoryChild {
   type: "energy";
   who: 0 | 1;
   characterDefinitionId: number;
-  energyValue: number;
   oldEnergy: number;
   newEnergy: number;
-  how: "gain" | "loss";
 }
 
 // 舍弃

@@ -174,12 +174,15 @@ message DamageEM {
   sint32 source_id = 5;
   int32 source_definition_id = 6;
   bool is_skill_main_damage = 7;
+  ReactionType reaction_type = 8;
+  bool cause_defeated = 9;
 }
 
 message ElementalReactionEM {
-  ReactionType reaction_type = 1;
-  sint32 character_id = 3;
-  int32 character_definition_id = 4;
+  reserved 1;
+  sint32 target_id = 3;
+  int32 target_definition_id = 4;
+  ReactionType reaction_type = 8;
 }
 
 enum SkillType {
