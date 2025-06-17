@@ -49,6 +49,8 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
+import { parseToHistory } from "./parse_history";
+import type { HistoryBlock } from "./history";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -113,6 +115,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     },
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
+    history: [],
     playerStatus: [null, null],
     animatingCards: [],
     playingCard: null,
@@ -228,6 +231,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     setData({
       previousState: savedState,
       state: savedState,
+      history,
       ...parsed,
     } satisfies ChessboardData);
   };
@@ -240,6 +244,8 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     actionResolvers.switchHands?.reject();
   };
 
+  const history: HistoryBlock[] = [];
+
   const io: PlayerIOWithCancellation = {
     cancelRpc,
     notify: ({ mutation, state }) => {
@@ -250,10 +256,12 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         who === 0 &&
         console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
+        history.push(...parseToHistory(savedState, mutation));
         const { promise, resolve } = Promise.withResolvers<void>();
         setData({
           previousState: savedState ?? state,
           state,
+          history,
           onAnimationFinish: resolve,
           ...parsed,
         } satisfies ChessboardData);

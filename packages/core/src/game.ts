@@ -786,7 +786,7 @@ export class Game {
           break;
         }
         case "switchActive": {
-          await this.switchActive(who, actionInfo.to);
+          await this.switchActive(who, actionInfo.to, actionInfo.fast);
           break;
         }
         case "elementalTuning": {
@@ -1093,7 +1093,7 @@ export class Game {
     return selectedDefinitionId;
   }
 
-  private async switchActive(who: 0 | 1, to: CharacterState) {
+  private async switchActive(who: 0 | 1, to: CharacterState, fast: boolean | null) {
     const player = this.state.players[who];
     const from = player.characters[getActiveCharacterIndex(player)];
     const oldState = this.state;
@@ -1110,6 +1110,7 @@ export class Game {
         from,
         to,
         fromReaction: false,
+        fast,
       }),
     );
   }

@@ -87,7 +87,7 @@ export interface ChangePhaseHistoryBlock {
 export interface ActionHistoryBlock {
   type: "action";
   who: 0 | 1;
-  actionType: "other" | "declareEnd";
+  actionType: "action" | "declareEnd";
 }
 
 // 切换出战角色
@@ -98,7 +98,7 @@ export interface SwitchOrSelectActiveHistoryBlock {
   type: "switchActive";
   who: 0 | 1;
   characterDefinitionId: number;
-  how: "init" | "switch" | "select";
+  how: "init" | "switch" | "choose";
   children: HistoryChildren[];
 }
 
@@ -222,7 +222,7 @@ export interface StealHandHistoryChild {
 export interface CreateEntityHistoryChild {
   type: "createEntity";
   who: 0 | 1;
-  entityType: "combatStatus" | "status" | "equipment" | "summon";
+  entityType: "combatStatus" | "status" | "equipment" | "summon" | "support";
   masterDefinitionId?: number;
   entityDefinitionId: number;
 }
@@ -371,7 +371,7 @@ export interface ForbidCardHistoryChild {
 // 角色、召唤物
 // content: Cardface <-> cardName \n ("转换形态···" || "转换形态完成")
 export interface TransformHistoryChild {
-    type: "transform";
+    type: "transformDefinition";
     who: 0 | 1;
     cardDefinitionId: number; // 对应新旧形态
     stage: "old" | "new";

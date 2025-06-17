@@ -231,6 +231,7 @@ export interface ChessboardData extends ParsedMutation {
   /** 保存上一个状态以计算动画效果 */
   previousState: PbGameState;
   state: PbGameState;
+  history: HistoryBlock[];
   onAnimationFinish?: () => void;
 }
 
@@ -1832,7 +1833,7 @@ export function Chessboard(props: ChessboardProps) {
             <CardDataViewer />
           </div>
           <Show when={showMutationPanel()}>
-            <HistoryPanel who={localProps.who} history={testHistory()} />
+            <HistoryPanel who={localProps.who} history={props.data.history} />
           </Show>
           {/* 左上角部件 */}
           <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">

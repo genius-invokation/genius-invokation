@@ -62,6 +62,7 @@ export {
   ResetDiceEM,
   SetWinnerEM,
   StepRoundEM,
+  SwitchActiveFromAction as PbSwitchActiveFromAction,
   SwitchActiveEM,
   SwitchTurnEM,
   TransferCardEM,

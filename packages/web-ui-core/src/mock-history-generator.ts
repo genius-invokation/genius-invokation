@@ -56,7 +56,7 @@ function genChild(): HistoryChildren {
             type: "createEntity",
             who: rand(0, 1) as 0 | 1,
             entityType: pick(["combatStatus", "status", "equipment", "summon"] as const),
-            characterDefinitionId: pick(characterIdPool),
+            masterDefinitionId: pick(characterIdPool),
             entityDefinitionId: pick([116102, 112142]),
         }),
         () => ({
@@ -134,7 +134,7 @@ function genChild(): HistoryChildren {
             target: pick(["pile", "hands"] as const),
         }),
         () => ({
-            type: "transform",
+            type: "transformDefinition",
             who: rand(0, 1) as 0 | 1,
             cardDefinitionId: pick([...characterIdPool, ...cardIdPool]),
             stage: pick(["old", "new"] as const),
@@ -251,7 +251,7 @@ function genBlock(): HistoryBlock {
         () => ({
             type: "action",
             who: rand(0, 1) as 0 | 1,
-            actionType: pick(["other", "declareEnd"] as const),
+            actionType: pick(["action", "declareEnd"] as const),
         }),
         () => {
             const children = Array.from(
@@ -262,7 +262,7 @@ function genBlock(): HistoryBlock {
                 type: "switchActive",
                 who: rand(0, 1) as 0 | 1,
                 characterDefinitionId: pick(characterIdPool),
-                how: pick(["init", "switch", "select"] as const),
+                how: pick(["init", "switch", "choose"] as const),
                 children: children,
                 summary: buildSummary(children),
             };

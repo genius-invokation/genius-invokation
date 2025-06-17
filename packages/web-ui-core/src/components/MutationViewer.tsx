@@ -154,10 +154,6 @@ const mutationText = (
     result = `${assetsManager.getNameSync(m.entity!.definitionId)} 创建了`;
   } else if (m.$case === "removeEntity") {
     result = `${assetsManager.getNameSync(m.entity!.definitionId)} 移除了`;
-  } else if (m.$case === "elementalReaction") {
-    result = `${assetsManager.getNameSync(
-      m.characterDefinitionId,
-    )} 上触发了元素反应 ${reactionText(m.reactionType)}`;
   }
   return result;
 };

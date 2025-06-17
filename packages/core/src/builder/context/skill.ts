@@ -635,8 +635,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who: playerWho,
       from: from,
       via: this.skillInfo,
-      fromReaction: this.fromReaction !== null,
       to: switchToTarget.state,
+      fromReaction: this.fromReaction !== null,
+      fast: null,
     });
     return RET;
   }

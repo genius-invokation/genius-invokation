@@ -72,11 +72,18 @@ message TransferCardEM {
   CardState card = 8;
 }
 
+enum SwitchActiveFromAction {
+  SWITCH_ACTIVE_FROM_ACTION_NONE = 0;
+  SWITCH_ACTIVE_FROM_ACTION_SLOW = 1;
+  SWITCH_ACTIVE_FROM_ACTION_FAST = 2;
+}
+
 message SwitchActiveEM {
   int32 who = 1;
   sint32 character_id = 2;
   int32 character_definition_id = 3;
   optional int32 via_skill_definition_id = 4;
+  SwitchActiveFromAction from_action = 5;
 }
 
 enum RemoveCardReason {

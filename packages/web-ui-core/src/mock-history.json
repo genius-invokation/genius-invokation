@@ -184,7 +184,7 @@
     "how": "init",
     "children": [
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 332006,
         "stage": "new"
@@ -202,7 +202,7 @@
         "cardDefinitionId": 331802
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 211011,
         "stage": "old"
@@ -275,7 +275,7 @@
         "diceCount": 2
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 1,
         "cardDefinitionId": 332032,
         "stage": "old"
@@ -375,7 +375,7 @@
         "target": "pile"
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 1605,
         "stage": "new"
@@ -574,7 +574,7 @@
         "isOverloaded": false
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 223041,
         "stage": "old"
@@ -907,13 +907,13 @@
         "cardDefinitionId": 313002
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 2102,
         "stage": "old"
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 1,
         "cardDefinitionId": 2402,
         "stage": "old"
@@ -1010,7 +1010,7 @@
         "cardDefinitionId": 321015
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 331804,
         "stage": "new"
@@ -1372,7 +1372,7 @@
         "target": "hands"
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 1,
         "cardDefinitionId": 312009,
         "stage": "new"
@@ -1531,7 +1531,7 @@
     "type": "switchActive",
     "who": 1,
     "characterDefinitionId": 2502,
-    "how": "select",
+    "how": "choose",
     "children": [
       {
         "type": "stealHand",
@@ -1718,7 +1718,7 @@
     "effectDefinitionId": 226031,
     "children": [
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 1,
         "cardDefinitionId": 1204,
         "stage": "old"
@@ -2006,7 +2006,7 @@
     "cardDefinitionId": 312010,
     "children": [
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 1709,
         "stage": "old"
@@ -2368,7 +2368,7 @@
         "causeDefeated": true
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 332004,
         "stage": "old"
@@ -2720,7 +2720,7 @@
         "isOverloaded": false
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 312009,
         "stage": "new"
@@ -3224,7 +3224,7 @@
         "isOverloaded": false
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 332004,
         "stage": "old"
@@ -3451,7 +3451,7 @@
         "diceCount": 3
       },
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 1704,
         "stage": "old"
@@ -3589,7 +3589,7 @@
   {
     "type": "action",
     "who": 0,
-    "actionType": "other"
+    "actionType": "action"
   },
   {
     "type": "useSkill",
@@ -3710,7 +3710,7 @@
     "cardDefinitionId": 332045,
     "children": [
       {
-        "type": "transform",
+        "type": "transformDefinition",
         "who": 0,
         "cardDefinitionId": 322012,
         "stage": "old"

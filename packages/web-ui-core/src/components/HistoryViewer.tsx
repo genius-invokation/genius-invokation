@@ -623,7 +623,7 @@ const renderHistoryChild = (
       };
       break;
     }
-    case "transform":{
+    case "transformDefinition":{
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -704,7 +704,7 @@ const renderHistoryHint = (
     }
     case "action":{
       switch (block.actionType) {
-        case "other":
+        case "action":
           result = {
             type: block.type,
             opp: opp(block.who),

@@ -21,6 +21,7 @@ import {
   PbPhaseType,
   PbPlayerFlag,
   PbPlayerStatus,
+  PbReactionType,
   PbRemoveCardReason,
   PbSkillType,
   Reaction,
@@ -168,17 +169,19 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         }
         break;
       }
-      case "elementalReaction": {
-        const targetId = mutation.value.characterId;
-        if (!reactionsByTarget.has(targetId)) {
-          reactionsByTarget.set(targetId, []);
+      case "applyAura": {
+        const targetId = mutation.value.targetId;
+        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
+          if (!reactionsByTarget.has(targetId)) {
+            reactionsByTarget.set(targetId, []);
+          }
+          const targetReactions = reactionsByTarget.get(targetId)!;
+          targetReactions.push({
+            reactionType: mutation.value.reactionType,
+            targetId,
+            delay: targetReactions.length,
+          });
         }
-        const targetReactions = reactionsByTarget.get(targetId)!;
-        targetReactions.push({
-          reactionType: mutation.value.reactionType as Reaction,
-          targetId,
-          delay: targetReactions.length,
-        });
         break;
       }
       case "damage": {
@@ -195,6 +198,17 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           isSkillMainDamage: mutation.value.isSkillMainDamage,
           delay: targetDamages.length,
         });
+        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
+          if (!reactionsByTarget.has(targetId)) {
+            reactionsByTarget.set(targetId, []);
+          }
+          const targetReactions = reactionsByTarget.get(targetId)!;
+          targetReactions.push({
+            reactionType: mutation.value.reactionType,
+            targetId,
+            delay: targetReactions.length,
+          });
+        }
         break;
       }
       case "skillUsed": {

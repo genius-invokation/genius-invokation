@@ -27,6 +27,15 @@ import {
   type PbExposedMutation,
   type PbGameState,
   PbSkillType,
+  PbCardArea,
+  PbEntityArea,
+  SwitchActiveAction,
+  SwitchActiveEM,
+  PbPlayerFlag,
+  Reaction,
+  PbPlayerStatus,
+  PbSwitchActiveFromAction,
+  PbRemoveCardReason,
 } from "@gi-tcg/typings";
 import type {
   ApplyHistoryChild,
@@ -62,19 +71,33 @@ class VariableRecord {
 }
 
 type Area = { who: 0 | 1; masterDefinitionId: number | null };
+type EntityType =
+  | "equipment"
+  | "status"
+  | "combatStatus"
+  | "summon"
+  | "support";
 
 /**
  * 收集所有的 ModifyEntityVarEM，以记录 VariableChangeHistoryChild
  * 等需要使用的旧值
  */
-class VariableRecorder {
+class StateRecorder {
   readonly visibleVarRecords = new Map<number, VariableRecord>();
   readonly energyVarRecords = new Map<number, VariableRecord>();
   readonly maxHealthVarRecords = new Map<number, VariableRecord>();
 
   readonly maxEnergies = new Map<number, number>();
-  readonly visibleVarNames = new Map<number, string>();
+  readonly entityInitStates = new Map<
+    number,
+    PbEntityState & { type: EntityType }
+  >();
   readonly area = new Map<number, Area>();
+  readonly activeCharacterDefinitionIds = [void 0, void 0] as [
+    number | undefined,
+    number | undefined,
+  ];
+  readonly isChoosingActive = [false, false] as [boolean, boolean];
 
   constructor(private readonly previousState: PbGameState | undefined) {
     if (!previousState) {
@@ -83,21 +106,28 @@ class VariableRecorder {
     for (const who of [0, 1] as const) {
       const player = previousState.player[who];
       for (const ch of player.character) {
+        if (ch.id === player.activeCharacterId) {
+          this.activeCharacterDefinitionIds[who] = ch.definitionId;
+        }
         this.initializeCharacter(who, ch);
       }
       for (const prop of ["combatStatus", "summon", "support"] as const) {
         const area = { who, masterDefinitionId: null };
         for (const entity of player[prop]) {
-          this.initializeEntity(area, entity);
+          this.initializeEntity(area, entity, prop);
         }
       }
     }
   }
 
-  private initializeEntity(area: Area, entity: PbEntityState) {
+  private initializeEntity(
+    area: Area,
+    entity: PbEntityState,
+    entityType: EntityType,
+  ) {
     this.area.set(entity.id, area);
     if (entity.variableName) {
-      this.visibleVarNames.set(entity.id, entity.variableName);
+      this.entityInitStates.set(entity.id, { ...entity, type: entityType });
       this.visibleVarRecords.set(
         entity.id,
         new VariableRecord(entity.variableValue ?? 0),
@@ -118,7 +148,11 @@ class VariableRecorder {
     );
     this.maxEnergies.set(character.id, character.maxEnergy);
     for (const entity of character.entity) {
-      this.initializeEntity(area, entity);
+      this.initializeEntity(
+        area,
+        entity,
+        entity.equipment ? "equipment" : "status",
+      );
     }
   }
 
@@ -143,7 +177,7 @@ class VariableRecorder {
       };
     }
 
-    if (this.visibleVarNames.get(entityId) === variableName) {
+    if (this.entityInitStates.get(entityId)?.variableName === variableName) {
       const record = this.visibleVarRecords.get(entityId);
       if (record) {
         record.set(variableValue);
@@ -161,8 +195,18 @@ class VariableRecorder {
     return null;
   }
 
+  getMasterDefinitionId(entityId: number) {
+    const { who = 0, masterDefinitionId = null } =
+      this.area.get(entityId) ?? {};
+    console.log(this.entityInitStates.get(entityId));
+    if (this.entityInitStates.get(entityId)?.type === "combatStatus") {
+      return this.activeCharacterDefinitionIds[who];
+    }
+    return masterDefinitionId ?? void 0;
+  }
+
   onNewEntity(mut: CreateEntityEM) {
-    const { who, masterCharacterId, entity } = mut as CreateEntityEM & {
+    const { who, where, masterCharacterId, entity } = mut as CreateEntityEM & {
       entity: PbEntityState;
     };
     let masterDefinitionId: number | null = null;
@@ -170,13 +214,42 @@ class VariableRecorder {
       masterDefinitionId =
         this.area.get(masterCharacterId)?.masterDefinitionId ?? null;
     }
-    this.initializeEntity({ who: who as 0 | 1, masterDefinitionId }, entity);
+    let entityType:
+      | "equipment"
+      | "status"
+      | "combatStatus"
+      | "summon"
+      | "support";
+    if (where === PbEntityArea.CHARACTER) {
+      if (entity.equipment) {
+        entityType = "equipment";
+      } else {
+        entityType = "status";
+      }
+    } else if (where === PbEntityArea.COMBAT_STATUS) {
+      entityType = "combatStatus";
+    } else if (where === PbEntityArea.SUMMON) {
+      entityType = "summon";
+    } else if (where === PbEntityArea.SUPPORT) {
+      entityType = "support";
+    } else {
+      return;
+    }
+    this.initializeEntity(
+      { who: who as 0 | 1, masterDefinitionId },
+      entity,
+      entityType,
+    );
   }
   onNewCharacter(mut: CreateCharacterEM) {
     const { who, character } = mut as CreateCharacterEM & {
       character: PbEntityState;
     };
     this.initializeCharacter(who as 0 | 1, character);
+  }
+  onSwitchActive(mut: SwitchActiveEM) {
+    this.activeCharacterDefinitionIds[mut.who as 0 | 1] =
+      mut.characterDefinitionId;
   }
 }
 
@@ -192,7 +265,8 @@ export function parseToHistory(
     : never;
   type LooseChildren = LossChildrenImpl<HistoryChildren>;
   const children: LooseChildren[] = [];
-  const varRecorder = new VariableRecorder(previousState);
+  const stateRecorder = new StateRecorder(previousState);
+
   for (const pbm of mutations) {
     const m = flattenPbOneof(pbm.mutation!);
     switch (m.$case) {
@@ -222,7 +296,7 @@ export function parseToHistory(
         break;
       }
       case "modifyEntityVar": {
-        const child = varRecorder.receive(m);
+        const child = stateRecorder.receive(m);
         if (child) {
           children.push(child);
         }
@@ -231,7 +305,7 @@ export function parseToHistory(
       case "applyAura": {
         children.push({
           type: "apply",
-          who: null,
+          who: stateRecorder.area.get(m.targetId)?.who ?? null,
           characterDefinitionId: m.targetDefinitionId,
           elementType: m.elementType,
           reaction:
@@ -246,7 +320,7 @@ export function parseToHistory(
       case "damage": {
         children.push({
           type: "damage",
-          who: varRecorder.area.get(m.targetId)?.who ?? null,
+          who: stateRecorder.area.get(m.targetId)?.who ?? null,
           characterDefinitionId: m.targetDefinitionId,
           damageType: m.damageType,
           damageValue: m.value,
@@ -263,32 +337,117 @@ export function parseToHistory(
         break;
       }
       case "createCard": {
-        // TODO
+        children.push({
+          type: "createCard",
+          who: m.who as 0 | 1,
+          cardDefinitionId: m.card!.definitionId,
+          target: m.to === PbCardArea.HAND ? "hands" : "pile",
+        });
         break;
       }
       case "createCharacter": {
-        varRecorder.onNewCharacter(m);
+        stateRecorder.onNewCharacter(m);
         break;
       }
       case "createEntity": {
-        // TODO
-        varRecorder.onNewEntity(m);
+        stateRecorder.onNewEntity(m);
+        const { definitionId, id } = m.entity!;
+        const { type } = stateRecorder.entityInitStates.get(id)!;
+        children.push({
+          type: "createEntity",
+          who: m.who as 0 | 1,
+          masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+          entityDefinitionId: definitionId,
+          entityType: type,
+        });
         break;
       }
       case "removeCard": {
-        // TODO
+        const definitionId = m.card!.definitionId;
+        if (
+          m.reason === PbRemoveCardReason.PLAY ||
+          m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
+        ) {
+          mainBlock = {
+            type: "triggered",
+            who: m.who as 0 | 1,
+            masterOrCallerDefinitionId: definitionId,
+            callerOrSkillDefinitionId: definitionId,
+            children:
+              m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
+                ? [
+                    {
+                      type: "forbidCard",
+                      who: m.who as 0 | 1,
+                      cardDefinitionId: definitionId,
+                    },
+                  ]
+                : [],
+          };
+        } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
+          children.push({
+            type: "disposeCard",
+            who: m.who as 0 | 1,
+            cardDefinitionId: definitionId,
+          });
+        }
         break;
       }
       case "removeEntity": {
-        // TODO
+        const { definitionId, id } = m.entity!;
+        const area = stateRecorder.area.get(id);
+        const { type } = stateRecorder.entityInitStates.get(id)!;
+        children.push({
+          type: "removeEntity",
+          who: area?.who ?? 0,
+          masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+          entityDefinitionId: definitionId,
+          entityType: type,
+        });
         break;
       }
       case "setPlayerFlag": {
-        // TODO
+        if (m.flagName === PbPlayerFlag.DECLARED_END) {
+          result.push({
+            type: "action",
+            who: m.who as 0 | 1,
+            actionType: "declareEnd",
+          });
+        }
         break;
       }
       case "switchActive": {
-        // TODO
+        stateRecorder.onSwitchActive(m);
+        const who = m.who as 0 | 1;
+        console.log(m);
+        if (m.fromAction === PbSwitchActiveFromAction.NONE) {
+          children.push({
+            type: "switchActive",
+            who,
+            characterDefinitionId: m.characterDefinitionId,
+            isOverloaded: m.viaSkillDefinitionId === Reaction.Overloaded,
+          });
+        } else if (stateRecorder.isChoosingActive[who]) {
+          stateRecorder.isChoosingActive[who] = false;
+          result.push({
+            type: "switchActive",
+            who,
+            characterDefinitionId: m.characterDefinitionId,
+            how:
+              (previousState?.phase ?? PbPhaseType.ACTION) < PbPhaseType.ACTION
+                ? "init"
+                : "choose",
+            children: [],
+          });
+        } else {
+          result.push({
+            type: "switchActive",
+            who: m.who as 0 | 1,
+            characterDefinitionId: m.characterDefinitionId,
+            children: [],
+            how: "switch",
+          });
+        }
         break;
       }
       case "transferCard": {
@@ -296,7 +455,26 @@ export function parseToHistory(
         break;
       }
       case "transformDefinition": {
-        // TODO
+        const area = stateRecorder.area.get(m.entityId);
+        const state = stateRecorder.entityInitStates.get(m.entityId);
+        const oldDefinitionId = state?.definitionId ?? 0;
+        if (state) {
+          state.definitionId = m.newEntityDefinitionId;
+        }
+        children.push(
+          {
+            type: "transformDefinition",
+            who: area?.who ?? 0,
+            cardDefinitionId: oldDefinitionId,
+            stage: "old",
+          },
+          {
+            type: "transformDefinition",
+            who: area?.who ?? 0,
+            cardDefinitionId: m.newEntityDefinitionId,
+            stage: "new",
+          },
+        );
         break;
       }
       case "skillUsed": {
@@ -305,7 +483,7 @@ export function parseToHistory(
             type: "triggered",
             who: m.who as 0 | 1,
             masterOrCallerDefinitionId:
-              varRecorder.area.get(m.callerId)?.masterDefinitionId ??
+              stateRecorder.area.get(m.callerId)?.masterDefinitionId ??
               m.callerDefinitionId,
             callerOrSkillDefinitionId: m.callerDefinitionId,
             children: [],
@@ -340,10 +518,21 @@ export function parseToHistory(
         roundNumber++;
         break;
       }
+      case "playerStatusChange": {
+        if (m.status === PbPlayerStatus.ACTING) {
+          result.push({
+            type: "action",
+            who: m.who as 0 | 1,
+            actionType: "action",
+          });
+        } else if (m.status === PbPlayerStatus.CHOOSING_ACTIVE) {
+          stateRecorder.isChoosingActive[m.who as 0 | 1] = true;
+        }
+        break;
+      }
       case "switchTurn":
       case "setWinner":
-      case "swapCharacterPosition":
-      case "playerStatusChange": {
+      case "swapCharacterPosition": {
         break;
       }
       default: {
@@ -353,10 +542,12 @@ export function parseToHistory(
     }
   }
   if (mainBlock) {
-    mainBlock.children = children.map((child) => ({
-      ...child,
-      who: child.who ?? mainBlock.who,
-    }));
+    mainBlock.children.push(
+      ...children.map((child) => ({
+        ...child,
+        who: child.who ?? mainBlock.who,
+      })),
+    );
     result.push(mainBlock);
   }
   return result;

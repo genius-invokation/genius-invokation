@@ -43,6 +43,7 @@ import {
   PbHealKind,
   PbReactionType,
   PbSkillType,
+  PbSwitchActiveFromAction,
   Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
@@ -418,6 +419,7 @@ export class SkillExecutor {
             from: activeCh,
             to,
             fromReaction: false,
+            fast: null,
           }),
       );
     }
@@ -633,6 +635,12 @@ export class SkillExecutor {
                 viaSkillDefinitionId: arg.switchInfo.fromReaction
                   ? Reaction.Overloaded
                   : arg.switchInfo.via?.definition.id,
+                fromAction:
+                  arg.switchInfo.fast === null
+                    ? PbSwitchActiveFromAction.NONE
+                    : arg.switchInfo.fast
+                      ? PbSwitchActiveFromAction.FAST
+                      : PbSwitchActiveFromAction.SLOW,
               },
             ],
           });
