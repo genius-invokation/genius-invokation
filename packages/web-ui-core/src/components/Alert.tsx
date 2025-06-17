@@ -44,10 +44,6 @@ export const createAlert = (): [
     }, 0);
   };
 
-  createEffect(() => {
-    console.log("alert", showAlert());
-  });
-
   const hide = () => {
     setShowAlert(false);
   };
