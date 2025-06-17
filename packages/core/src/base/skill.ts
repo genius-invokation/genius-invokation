@@ -210,6 +210,7 @@ export interface DamageInfo {
 
 export type HealKind =
   | "common" // 常规治疗
+  | "immuneDefeated" // 免于被击倒
   | "revive" // 复苏
   | "distribution" // 平衡生命值（水与正义）
   | "increaseMaxHealth"; // 增加最大生命值（吞星之鲸）

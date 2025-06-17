@@ -43,6 +43,7 @@ import {
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_NIGHTSOULS_BLESSING,
   PbResetDiceReason,
+  PbHealKind,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -54,7 +55,7 @@ import type {
   PlayerState,
 } from "./base/state";
 import type { Mutation, PlayerFlag } from "./base/mutation";
-import type { ActionInfo, InitiativeSkillDefinition } from "./base/skill";
+import type { ActionInfo, HealKind, InitiativeSkillDefinition } from "./base/skill";
 import { GiTcgIoError } from "./error";
 import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
 import { costOfCard, initiativeSkillsOfPlayer } from "./utils";
@@ -641,4 +642,17 @@ export function exposeAction(action: ActionInfo): Action {
       };
     }
   }
+}
+
+export function exposeHealKind(healKind: HealKind | null): PbHealKind {
+  if (healKind === null) {
+    return PbHealKind.NOT_A_HEAL;
+  }
+  return {
+    common: PbHealKind.COMMON,
+    immuneDefeated: PbHealKind.IMMUNE_DEFEATED,
+    revive: PbHealKind.REVIVE,
+    increaseMaxHealth: PbHealKind.INCREASE_MAX_HEALTH,
+    distribution: PbHealKind.DISTRIBUTION,
+  }[healKind];
 }

@@ -17,12 +17,13 @@ import {
   CreateCharacterEM,
   CreateEntityEM,
   DamageEM,
-  ElementalReactionEM,
+  ApplyAuraEM,
   flattenPbOneof,
   ModifyEntityVarEM,
   PbCharacterState,
   PbEntityState,
   PbPhaseType,
+  PbReactionType,
   type PbExposedMutation,
   type PbGameState,
 } from "@gi-tcg/typings";
@@ -108,7 +109,10 @@ class VariableRecorder {
 
   private initializeCharacter(who: 0 | 1, character: PbCharacterState) {
     this.area.set(character.id, who);
-    this.healthVarRecords.set(character.id, new VariableRecord(character.health));
+    this.healthVarRecords.set(
+      character.id,
+      new VariableRecord(character.health),
+    );
     this.auraVarRecords.set(character.id, new VariableRecord(character.aura));
     this.energyVarRecords.set(
       character.id,
@@ -191,22 +195,34 @@ class VariableRecorder {
   composeDamage(dmgMut: DamageEM): DamageHistoryChild {
     const { oldValue = 0, newValue = 0 } =
       this.healthVarRecords.get(dmgMut.targetId)?.take() ?? {};
-    if (dmgMut.reactionType !== )
-    return {
-      type: "damage",
-      who: this.area.get(dmgMut.targetId) ?? 0,
-      characterDefinitionId: dmgMut.targetDefinitionId,
-      oldHealth: oldValue,
-      newHealth: newValue,
-      damageType: dmgMut.damageType,
-      oldAura,
-      newAura,
-      causeDefeated,
-      damageValue,
-      reaction
+    if (dmgMut.reactionType !== PbReactionType.UNSPECIFIED) {
+      return {
+        type: "damage",
+        who: this.area.get(dmgMut.targetId) ?? 0,
+        characterDefinitionId: dmgMut.targetDefinitionId,
+        oldHealth: oldValue,
+        newHealth: newValue,
+        damageType: dmgMut.damageType,
+        oldAura,
+        newAura,
+        causeDefeated,
+        damageValue,
+        reaction,
+      };
     }
   }
-  composeApply(applyMut: ElementalReactionEM): ApplyHistoryChild {}
+  composeApply(applyMut: ApplyAuraEM): ApplyHistoryChild {
+    const { oldValue = 0, newValue = 0 } =
+      this.auraVarRecords.get(applyMut.targetId)?.take() ?? {};
+    return {
+      type: "apply",
+      elementType: applyMut.elementType,
+      who: this.area.get(applyMut.targetId) ?? 0,
+      characterDefinitionId: applyMut.targetDefinitionId,
+      oldAura: oldValue,
+      newAura: newValue,
+    };
+  }
 }
 
 export function parseToHistory(

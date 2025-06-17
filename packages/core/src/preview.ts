@@ -117,7 +117,7 @@ class PreviewContext {
   getPreviewData(): PreviewData[] {
     const result: ExposedMutation[] = [];
     for (const em of this.exposedMutations) {
-      if (em.$case === "elementalReaction") {
+      if (em.$case === "damage" || em.$case === "applyAura") {
         result.push(em);
       }
     }

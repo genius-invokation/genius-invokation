@@ -259,9 +259,10 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         }
         break;
       }
-      case "elementalReaction": {
+      case "damage":
+      case "applyAura": {
         const info =
-          result.characters.get(value.characterId) ?? newPreviewingCharacter();
+          result.characters.get(value.targetId) ?? newPreviewingCharacter();
         info.reactions.push(value.reactionType as Reaction);
         break;
       }
