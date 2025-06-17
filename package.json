@@ -28,6 +28,7 @@
   },
   "patchedDependencies": {
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
-    "importx@0.5.1": "patches/importx@0.5.1.patch"
+    "importx@0.5.1": "patches/importx@0.5.1.patch",
+    "vite-plugin-solid-svg@0.8.1": "patches/vite-plugin-solid-svg@0.8.1.patch"
   }
 }

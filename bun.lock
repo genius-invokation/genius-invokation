@@ -102,7 +102,7 @@
     },
     "packages/custom-data-loader": {
       "name": "@gi-tcg/custom-data-loader",
-      "version": "0.17.1-5-4-0",
+      "version": "0.17.1-5-7-0",
       "dependencies": {
         "@gi-tcg/data": "workspace:*",
       },
@@ -120,7 +120,7 @@
     },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.17.1-5-6-0",
+      "version": "0.17.1-5-7-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -255,7 +255,7 @@
     },
     "packages/static-data": {
       "name": "@gi-tcg/static-data",
-      "version": "0.17.1-5-6-0",
+      "version": "0.17.1-5-7-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",
@@ -373,12 +373,13 @@
   },
   "patchedDependencies": {
     "importx@0.5.1": "patches/importx@0.5.1.patch",
+    "vite-plugin-solid-svg@0.8.1": "patches/vite-plugin-solid-svg@0.8.1.patch",
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
   },
   "overrides": {
     "babel-plugin-jsx-dom-expressions": "0.39.6",
-    "esbuild": "0.19.11",
     "caniuse-lite": "1.0.30001690",
+    "esbuild": "0.19.11",
   },
   "packages": {
     "@ampproject/remapping": ["@ampproject/remapping@2.3.0", "", { "dependencies": { "@jridgewell/gen-mapping": "^0.3.5", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw=="],
