@@ -58,7 +58,7 @@ import type { Mutation, PlayerFlag } from "./base/mutation";
 import type { ActionInfo, HealKind, InitiativeSkillDefinition } from "./base/skill";
 import { GiTcgIoError } from "./error";
 import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
-import { costOfCard, initiativeSkillsOfPlayer } from "./utils";
+import { costOfCard, getEntityById, initiativeSkillsOfPlayer } from "./utils";
 
 export interface PlayerIO {
   notify: (notification: Notification) => void;
@@ -342,6 +342,7 @@ export function exposeMutation(
         who: m.where.who,
         where,
         entity: exposeEntity(null, m.value),
+        masterCharacterId: m.where.type === "characters" ? m.where.characterId : void 0,
       };
     }
     case "removeEntity": {

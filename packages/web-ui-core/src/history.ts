@@ -129,8 +129,8 @@ export interface UseSkillHistoryBlock {
 export interface TriggeredHistoryBlock {
   type: "triggered";
   who: 0 | 1;
-  callerDefinitionId: number;
-  effectDefinitionId: number;
+  masterOrCallerDefinitionId: number;
+  callerOrSkillDefinitionId: number;
   children: HistoryChildren[];
 }
 
@@ -312,7 +312,6 @@ export interface IncreaseMaxHealthHistoryChild {
   type: "increaseMaxHealth";
   who: 0 | 1;
   characterDefinitionId: number;
-  increaseValue: number;
   oldMaxHealth: number;
   newMaxHealth: number;
 }

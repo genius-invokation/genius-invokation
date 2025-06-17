@@ -247,9 +247,10 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         return;
       }
       uiQueue.push(async () => {
+        who === 0 &&
+        console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
         const { promise, resolve } = Promise.withResolvers<void>();
-        // console.log(parsed);
         setData({
           previousState: savedState ?? state,
           state,

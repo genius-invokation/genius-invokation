@@ -124,6 +124,7 @@ message CreateEntityEM {
   reserved 2, 3;
   EntityArea where = 4;
   EntityState entity = 5;
+  optional sint32 master_character_id = 6;
 }
 
 message RemoveEntityEM {

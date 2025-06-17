@@ -26,12 +26,14 @@ import {
   PbReactionType,
   type PbExposedMutation,
   type PbGameState,
+  PbSkillType,
 } from "@gi-tcg/typings";
 import type {
   ApplyHistoryChild,
   DamageHistoryChild,
   EnergyHistoryChild,
   HistoryBlock,
+  HistoryChildren,
   UseSkillHistoryBlock,
   VariableChangeHistoryChild,
 } from "./history";
@@ -53,31 +55,26 @@ class VariableRecord {
     });
   }
 
-  peek() {
-    return this.records[0];
-  }
-
   take() {
     const result = this.records.shift();
-    return result;
+    return result ?? null;
   }
 }
 
+type Area = { who: 0 | 1; masterDefinitionId: number | null };
+
 /**
- * 收集所有的 ModifyEntityVarEM。
- * - 将生命值和 Aura 与 DamageEM 合并为 DamageHistoryChild
- * - 将 Entity 的可见变量，角色的能量值、最大生命值记录为 VariableChangeHistoryChild
+ * 收集所有的 ModifyEntityVarEM，以记录 VariableChangeHistoryChild
+ * 等需要使用的旧值
  */
 class VariableRecorder {
   readonly visibleVarRecords = new Map<number, VariableRecord>();
-  readonly healthVarRecords = new Map<number, VariableRecord>();
-  readonly auraVarRecords = new Map<number, VariableRecord>();
   readonly energyVarRecords = new Map<number, VariableRecord>();
   readonly maxHealthVarRecords = new Map<number, VariableRecord>();
 
   readonly maxEnergies = new Map<number, number>();
   readonly visibleVarNames = new Map<number, string>();
-  readonly area = new Map<number, 0 | 1>();
+  readonly area = new Map<number, Area>();
 
   constructor(private readonly previousState: PbGameState | undefined) {
     if (!previousState) {
@@ -89,15 +86,16 @@ class VariableRecorder {
         this.initializeCharacter(who, ch);
       }
       for (const prop of ["combatStatus", "summon", "support"] as const) {
+        const area = { who, masterDefinitionId: null };
         for (const entity of player[prop]) {
-          this.initializeEntity(who, entity);
+          this.initializeEntity(area, entity);
         }
       }
     }
   }
 
-  private initializeEntity(who: 0 | 1, entity: PbEntityState) {
-    this.area.set(entity.id, who);
+  private initializeEntity(area: Area, entity: PbEntityState) {
+    this.area.set(entity.id, area);
     if (entity.variableName) {
       this.visibleVarNames.set(entity.id, entity.variableName);
       this.visibleVarRecords.set(
@@ -108,12 +106,8 @@ class VariableRecorder {
   }
 
   private initializeCharacter(who: 0 | 1, character: PbCharacterState) {
-    this.area.set(character.id, who);
-    this.healthVarRecords.set(
-      character.id,
-      new VariableRecord(character.health),
-    );
-    this.auraVarRecords.set(character.id, new VariableRecord(character.aura));
+    const area = { who, masterDefinitionId: character.definitionId };
+    this.area.set(character.id, area);
     this.energyVarRecords.set(
       character.id,
       new VariableRecord(character.energy),
@@ -124,7 +118,7 @@ class VariableRecorder {
     );
     this.maxEnergies.set(character.id, character.maxEnergy);
     for (const entity of character.entity) {
-      this.initializeEntity(who, entity);
+      this.initializeEntity(area, entity);
     }
   }
 
@@ -135,20 +129,6 @@ class VariableRecorder {
       varMut;
     let record: VariableRecord | undefined;
     if (
-      variableName === "health" &&
-      (record = this.healthVarRecords.get(varMut.entityId))
-    ) {
-      record.set(variableValue);
-      return null; // 在 composeDamage 中返回
-    }
-    if (
-      variableName === "aura" &&
-      (record = this.auraVarRecords.get(varMut.entityId))
-    ) {
-      record.set(variableValue);
-      return null; // 在 composeDamage / composeApply 中返回
-    }
-    if (
       variableName === "energy" &&
       (record = this.energyVarRecords.get(varMut.entityId))
     ) {
@@ -156,7 +136,7 @@ class VariableRecorder {
       const { oldValue = 0, newValue = 0 } = record.take() ?? {};
       return {
         type: "energy",
-        who: this.area.get(entityId) ?? 0,
+        who: this.area.get(entityId)?.who ?? 0,
         characterDefinitionId: entityDefinitionId,
         oldEnergy: oldValue,
         newEnergy: newValue,
@@ -170,7 +150,7 @@ class VariableRecorder {
         const { oldValue = 0, newValue = 0 } = record.take() ?? {};
         return {
           type: "variableChange",
-          who: this.area.get(entityId) ?? 0,
+          who: this.area.get(entityId)?.who ?? 0,
           cardDefinitionId: entityDefinitionId,
           variableName,
           oldValue,
@@ -182,46 +162,21 @@ class VariableRecorder {
   }
 
   onNewEntity(mut: CreateEntityEM) {
-    const { who, entity } = mut as CreateEntityEM & { entity: PbEntityState };
-    this.initializeEntity(who as 0 | 1, entity);
+    const { who, masterCharacterId, entity } = mut as CreateEntityEM & {
+      entity: PbEntityState;
+    };
+    let masterDefinitionId: number | null = null;
+    if (masterCharacterId) {
+      masterDefinitionId =
+        this.area.get(masterCharacterId)?.masterDefinitionId ?? null;
+    }
+    this.initializeEntity({ who: who as 0 | 1, masterDefinitionId }, entity);
   }
   onNewCharacter(mut: CreateCharacterEM) {
     const { who, character } = mut as CreateCharacterEM & {
       character: PbEntityState;
     };
     this.initializeCharacter(who as 0 | 1, character);
-  }
-
-  composeDamage(dmgMut: DamageEM): DamageHistoryChild {
-    const { oldValue = 0, newValue = 0 } =
-      this.healthVarRecords.get(dmgMut.targetId)?.take() ?? {};
-    if (dmgMut.reactionType !== PbReactionType.UNSPECIFIED) {
-      return {
-        type: "damage",
-        who: this.area.get(dmgMut.targetId) ?? 0,
-        characterDefinitionId: dmgMut.targetDefinitionId,
-        oldHealth: oldValue,
-        newHealth: newValue,
-        damageType: dmgMut.damageType,
-        oldAura,
-        newAura,
-        causeDefeated,
-        damageValue,
-        reaction,
-      };
-    }
-  }
-  composeApply(applyMut: ApplyAuraEM): ApplyHistoryChild {
-    const { oldValue = 0, newValue = 0 } =
-      this.auraVarRecords.get(applyMut.targetId)?.take() ?? {};
-    return {
-      type: "apply",
-      elementType: applyMut.elementType,
-      who: this.area.get(applyMut.targetId) ?? 0,
-      characterDefinitionId: applyMut.targetDefinitionId,
-      oldAura: oldValue,
-      newAura: newValue,
-    };
   }
 }
 
@@ -230,14 +185,13 @@ export function parseToHistory(
   mutations: PbExposedMutation[],
 ): HistoryBlock[] {
   const result: HistoryBlock[] = [];
-  let currentSkillBlock: Extract<HistoryBlock, { children: unknown[] }> | null =
-    null;
-  const currentDone = () => {
-    if (currentSkillBlock) {
-      result.push(currentSkillBlock);
-    }
-    currentSkillBlock = null;
-  };
+  let roundNumber = previousState?.roundNumber ?? 0;
+  let mainBlock: Extract<HistoryBlock, { children: unknown }> | null = null;
+  type LossChildrenImpl<T> = T extends any
+    ? { [K in Exclude<keyof T, "who">]: T[K] } & { who: 0 | 1 | null }
+    : never;
+  type LooseChildren = LossChildrenImpl<HistoryChildren>;
+  const children: LooseChildren[] = [];
   const varRecorder = new VariableRecorder(previousState);
   for (const pbm of mutations) {
     const m = flattenPbOneof(pbm.mutation!);
@@ -256,10 +210,9 @@ export function parseToHistory(
         if (!newPhase) {
           continue;
         }
-        currentDone();
         result.push({
           type: "changePhase",
-          roundNumber: previousState?.roundNumber ?? 0,
+          roundNumber,
           newPhase,
         });
         break;
@@ -269,13 +222,142 @@ export function parseToHistory(
         break;
       }
       case "modifyEntityVar": {
-        varRecorder.receive(m);
+        const child = varRecorder.receive(m);
+        if (child) {
+          children.push(child);
+        }
+        break;
+      }
+      case "applyAura": {
+        children.push({
+          type: "apply",
+          who: null,
+          characterDefinitionId: m.targetDefinitionId,
+          elementType: m.elementType,
+          reaction:
+            m.reactionType === PbReactionType.UNSPECIFIED
+              ? void 0
+              : m.reactionType,
+          oldAura: m.oldAura,
+          newAura: m.newAura,
+        });
         break;
       }
       case "damage": {
+        children.push({
+          type: "damage",
+          who: varRecorder.area.get(m.targetId)?.who ?? null,
+          characterDefinitionId: m.targetDefinitionId,
+          damageType: m.damageType,
+          damageValue: m.value,
+          causeDefeated: m.causeDefeated,
+          reaction:
+            m.reactionType === PbReactionType.UNSPECIFIED
+              ? void 0
+              : m.reactionType,
+          oldAura: m.oldAura,
+          newAura: m.newAura,
+          newHealth: m.newHealth,
+          oldHealth: m.oldHealth,
+        });
         break;
+      }
+      case "createCard": {
+        // TODO
+        break;
+      }
+      case "createCharacter": {
+        varRecorder.onNewCharacter(m);
+        break;
+      }
+      case "createEntity": {
+        // TODO
+        varRecorder.onNewEntity(m);
+        break;
+      }
+      case "removeCard": {
+        // TODO
+        break;
+      }
+      case "removeEntity": {
+        // TODO
+        break;
+      }
+      case "setPlayerFlag": {
+        // TODO
+        break;
+      }
+      case "switchActive": {
+        // TODO
+        break;
+      }
+      case "transferCard": {
+        // TODO
+        break;
+      }
+      case "transformDefinition": {
+        // TODO
+        break;
+      }
+      case "skillUsed": {
+        if (m.skillType === PbSkillType.TRIGGERED) {
+          mainBlock = {
+            type: "triggered",
+            who: m.who as 0 | 1,
+            masterOrCallerDefinitionId:
+              varRecorder.area.get(m.callerId)?.masterDefinitionId ??
+              m.callerDefinitionId,
+            callerOrSkillDefinitionId: m.callerDefinitionId,
+            children: [],
+          };
+        } else if (m.skillType === PbSkillType.CHARACTER_PASSIVE) {
+          mainBlock = {
+            type: "triggered",
+            who: m.who as 0 | 1,
+            masterOrCallerDefinitionId: m.callerDefinitionId,
+            callerOrSkillDefinitionId: m.skillDefinitionId,
+            children: [],
+          };
+        } else {
+          const SKILL_TYPE_MAP = {
+            [PbSkillType.NORMAL]: "normal",
+            [PbSkillType.ELEMENTAL]: "elemental",
+            [PbSkillType.BURST]: "burst",
+            [PbSkillType.TECHNIQUE]: "technique",
+          } as const;
+          mainBlock = {
+            type: "useSkill",
+            who: m.who as 0 | 1,
+            callerDefinitionId: m.callerDefinitionId,
+            skillDefinitionId: m.skillDefinitionId,
+            skillType: SKILL_TYPE_MAP[m.skillType],
+            children: [],
+          };
+        }
+        break;
+      }
+      case "stepRound": {
+        roundNumber++;
+        break;
+      }
+      case "switchTurn":
+      case "setWinner":
+      case "swapCharacterPosition":
+      case "playerStatusChange": {
+        break;
+      }
+      default: {
+        const _: never = m;
+        continue;
       }
     }
   }
-  throw new Error(`unimplemented`);
+  if (mainBlock) {
+    mainBlock.children = children.map((child) => ({
+      ...child,
+      who: child.who ?? mainBlock.who,
+    }));
+    result.push(mainBlock);
+  }
+  return result;
 }
