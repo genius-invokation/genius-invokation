@@ -53,6 +53,7 @@ import { Image } from "./Image";
 import { DICE_COLOR, DiceIcon } from "./Dice";
 import type { ActionCardRawData, CharacterRawData, EntityRawData, KeywordRawData, SkillRawData } from "@gi-tcg/static-data";
 import TunningIcon from "../svg/TunningIcon.svg?component-solid";
+import { CardFace } from "./Card";
 
 const reactionTextMap: Record<number, renderReactionProps> = {
   [Reaction.Melt]: { element: [DamageType.Cryo, DamageType.Pyro], name: "融化" },
@@ -75,6 +76,7 @@ const reactionTextMap: Record<number, renderReactionProps> = {
 };
 
 const diceTypeTextMap: Record<number, string> = {
+  [DiceType.Void]: "未知元素骰",
   [DiceType.Cryo]: "冰元素",
   [DiceType.Hydro]: "水元素",
   [DiceType.Pyro]: "火元素",
@@ -152,10 +154,6 @@ const renderHistoryChild = (
     old: "转换形态···",
     new: "转换形态完成",
   };
-  const energyDirectionTextMap: Record<string, string> = {
-    gain: "获得",
-    loss: "消耗",
-  };
 
   const renderReaction = (reaction: Reaction, apply: DamageType) => {
     const { element, name } = reactionTextMap[reaction];
@@ -165,11 +163,11 @@ const renderHistoryChild = (
         <span>{`（`}</span>
         <Image
           imageId={base}
-          class="h-3 w-3"
+          class="h-3.5 w-3.5"
         />
         <Image
           imageId={apply}
-          class="h-3 w-3"
+          class="h-3.5 w-3.5"
         />
         <span>
           {`${name}`}
@@ -180,7 +178,7 @@ const renderHistoryChild = (
   };
 
   switch (child.type) {
-    case "switchActive":
+    case "switchActive": {
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -197,7 +195,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "triggered":
+    }
+    case "triggered": {
       result = {
         opp: opp(child.who),
         imageId: child.effectDefinitionId,
@@ -211,7 +210,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "drawCard":
+    }
+    case "drawCard": {
       result = {
         opp: opp(child.who),
         imageId: child.callerDefinitionId,
@@ -228,7 +228,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "stealHand":
+    }
+    case "stealHand": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -245,7 +246,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "createEntity":
+    }
+    case "createEntity": {
       if (child.entityType === "status" || child.entityType === "equipment") {
         result = {
           opp: opp(child.who),
@@ -260,7 +262,7 @@ const renderHistoryChild = (
               <Image
                 imageId={child.entityDefinitionId}
                 type="icon"
-                class="h-3 w-3"
+                class="h-3.5 w-3.5"
               />
               <span>
                 {`${assetsManager.getNameSync(child.entityDefinitionId)}`}
@@ -285,7 +287,8 @@ const renderHistoryChild = (
         };
       }
       break;
-    case "generateDice":
+    }
+    case "generateDice": {
       result = {
         opp: opp(child.who),
         imageId: child.callerDefinitionId,
@@ -299,18 +302,39 @@ const renderHistoryChild = (
             <span>
               {`生成${child.diceCount}个`}
             </span>
-            <DiceIcon
-              size={12}
-              type={child.diceType}
-              selected={false}
-            />
+            <Show when={child.diceType > 0}>
+              <DiceIcon
+                size={14}
+                type={child.diceType}
+                selected={false}
+              />
+            </Show>  
             <span>
               {`${diceTypeTextMap[child.diceType]}`}
             </span>
           </>,
       };
       break;
-    case "createCard":
+    }
+    case "absorbDice": {
+      result = {
+        opp: opp(child.who),
+        imageId: child.callerDefinitionId,
+        imageType: undefined,
+        title: assetsManager.getNameSync(child.callerDefinitionId),
+        content:
+          <>
+            <span>
+              {`${subject(opp(child.who))}`}
+            </span>
+            <span>
+              {`弃置了${child.diceCount}个元素骰`}
+            </span>
+          </>,
+      };
+      break;
+    }
+    case "createCard": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -327,7 +351,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "damage":
+    }
+    case "damage": {
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -347,7 +372,7 @@ const renderHistoryChild = (
               <Image
                 imageId={child.damageType}
                 zero="physic"
-                class="h-3 w-3"
+                class="h-3.5 w-3.5"
               />
             </Show>
             <span style={(child.damageType >= 1 && child.damageType <=7) ? { color: `var(--c-${DICE_COLOR[child.damageType]})` } : undefined}>
@@ -365,7 +390,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "heal":
+    }
+    case "heal":{
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -399,7 +425,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "apply":
+    }
+    case "apply":{
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -412,7 +439,7 @@ const renderHistoryChild = (
             </span>
             <Image
               imageId={child.elementType}
-              class="h-3 w-3"
+              class="h-3.5 w-3.5"
             />
             <span style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}>
               {`${damageTypeTextMap[child.elementType]}`}
@@ -423,7 +450,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "energy":
+    }
+    case "increaseMaxHealth":{
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -432,10 +460,29 @@ const renderHistoryChild = (
         content:
           <>
             <span>
-              {`${energyDirectionTextMap[child.how]}`}
+              {`获得${child.increaseValue}点最大生命值`}
             </span>
             <span>
-              {`${child.energyValue}点充能`}
+              {`，最大生命值${child.oldMaxHealth}→${child.newMaxHealth}`}
+            </span>
+          </>,
+      };
+      break;
+    }
+    case "energy": {
+      const energyValue = child.newEnergy - child.oldEnergy;
+      result = {
+        opp: opp(child.who),
+        imageId: child.characterDefinitionId,
+        imageType: "cardFace",
+        title: assetsManager.getNameSync(child.characterDefinitionId),
+        content:
+          <>
+            <span>
+              {`${energyValue>0 ? "获得" : "消耗"}`}
+            </span>
+            <span>
+              {`${Math.abs(energyValue)}点充能`}
             </span>
             <span>
               {`，充能值${child.oldEnergy}→${child.newEnergy}`}
@@ -443,7 +490,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "disposeCard":
+    }
+    case "disposeCard":{
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -460,7 +508,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "variableChange":
+    }
+    case "variableChange":{
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -477,7 +526,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "removeEntity":
+    }
+    case "removeEntity":{
       if (child.entityType === "status" || child.entityType === "equipment") {
         result = {
           opp: opp(child.who),
@@ -492,7 +542,7 @@ const renderHistoryChild = (
               <Image
                 imageId={child.entityDefinitionId}
                 type="icon"
-                class="h-3 w-3"
+                class="h-3.5 w-3.5"
               />
               <span>
                 {`${assetsManager.getNameSync(child.entityDefinitionId)}`}
@@ -514,7 +564,8 @@ const renderHistoryChild = (
         };
       }
       break;
-    case "convertDice":
+    }
+    case "convertDice":{
       result = {
         opp: opp(child.who),
         imageId: (
@@ -538,18 +589,21 @@ const renderHistoryChild = (
             <span>
               {`将1个元素骰转换为`}
             </span>
-            <DiceIcon
-              size={12}
-              type={child.diceType}
-              selected={false}
-            />
+            <Show when={child.diceType > 0}>
+              <DiceIcon
+                size={14}
+                type={child.diceType}
+                selected={false}
+              />              
+            </Show>
             <span>
               {`${diceTypeTextMap[child.diceType]}`}
             </span>
           </>,
       };
       break;
-    case "forbidCard":
+    }
+    case "forbidCard":{
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -563,7 +617,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    case "transform":
+    }
+    case "transform":{
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -577,7 +632,8 @@ const renderHistoryChild = (
           </>,
       };
       break;
-    default:
+    }
+    default:{
       result = {
         opp: false,
         imageId: undefined,
@@ -586,6 +642,7 @@ const renderHistoryChild = (
         content: <></>,
       };
       break;
+    }
   }
   return result;
 };
@@ -605,7 +662,7 @@ const renderHistoryHint = (
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
 
   switch (block.type) {
-    case "changePhase":
+    case "changePhase":{
       switch (block.newPhase) {
         case "initHands":
           result = {
@@ -639,7 +696,8 @@ const renderHistoryHint = (
           break;
       }
       break;
-    case "action":
+    }
+    case "action":{
       switch (block.actionType) {
         case "other":
           result = {
@@ -657,6 +715,7 @@ const renderHistoryHint = (
           break;
       }
       break;
+    }
   }
   return result;
 };
@@ -951,7 +1010,7 @@ const CardDescriptionPart = (props: { cardDefinitionId: number }) => {
       <Match when={data.loading}>加载中···</Match>
       <Match when={data.error}>加载失败</Match>
       <Match when={data()}>
-        {(data) => <p>{(data() as ActionCardRawData | EntityRawData).description}</p>}
+        {(data) => <p class="whitespace-pre-wrap">{(data() as ActionCardRawData | EntityRawData).description}</p>}
       </Match>
     </Switch>
   );
@@ -1007,9 +1066,7 @@ const renderHistoryBlock = (
     if (energyChildren.length === 0) return undefined;
     const first = energyChildren[0];
     const last = energyChildren[energyChildren.length - 1];
-    const energyValue = energyChildren.reduce((sum, c) => {
-      return c.how === "gain" ? sum + c.energyValue : sum - c.energyValue;
-    }, 0);
+    const energyValue = last.newEnergy - first.oldEnergy;
     return {
       oldEnergy: first.oldEnergy,
       newEnergy: last.newEnergy,
@@ -1020,7 +1077,7 @@ const renderHistoryBlock = (
   }
 
   switch (block.type) {
-    case "switchActive":
+    case "switchActive":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1033,7 +1090,7 @@ const renderHistoryBlock = (
           name: assetsManager.getNameSync(block.characterDefinitionId),
           content:
             <>
-              <span>
+              <span class="text-3 text-#d4bc8e mt-1">
                 {`角色出战`}
               </span>
             </>,
@@ -1041,7 +1098,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    case "useSkill":
+    }
+    case "useSkill":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1063,19 +1121,19 @@ const renderHistoryBlock = (
           name: assetsManager.getNameSync(block.callerDefinitionId),
           content:
             <>
-              <div class="felx flex-col">
-                <div>
+              <div class="flex flex-col gap-2 mt-1">
+                <div class="text-3 text-#d4bc8e">
                   {`${block.skillType === "technique" ? "使用特技" : "使用技能"}`}
                 </div>
-                <div class="felx flex-row">
-                  <div class="h-4 w-4 rounded-full b-1 b-white/60 items-center justify-center">
+                <div class="flex flex-row items-center gap-1">
+                  <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
                     <Image
                       imageId={block.skillDefinitionId}
                       type="icon"
-                      class="h-4 w-4"
+                      class="h-7 w-7"
                     />
                   </div>
-                  <span>
+                  <span class="text-#fff3e0/98 text-3">
                     {`${assetsManager.getNameSync(block.skillDefinitionId)}`}
                   </span>
                 </div>
@@ -1086,7 +1144,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    case "triggered":
+    }
+    case "triggered":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1114,19 +1173,19 @@ const renderHistoryBlock = (
                 </>
               ) : (
                 <>
-                  <div class="felx flex-col">
-                    <div>
+                  <div class="flex flex-col gap-2 mt-1">
+                    <div class="text-3 text-#d4bc8e">
                       {`触发效果`}
                     </div>
-                    <div class="felx flex-row">
-                      <div class="h-4 w-4 rounded-full b-1 b-white/60 items-center justify-center">
+                    <div class="flex flex-row items-center gap-1">
+                      <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
                         <Image
                           imageId={block.effectDefinitionId}
                           type="icon"
-                          class="h-4 w-4"
+                          class="h-7 w-7"
                         />
                       </div>
-                      <span>
+                      <span class="text-#fff3e0/98 text-3">
                         {`${assetsManager.getNameSync(block.effectDefinitionId)}`}
                       </span>
                     </div>
@@ -1136,7 +1195,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    case "playingCard":
+    }
+    case "playingCard":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1157,7 +1217,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    case "selectCard":
+    }
+    case "selectCard":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1170,10 +1231,10 @@ const renderHistoryBlock = (
           name: opp(block.who) ? undefined : assetsManager.getNameSync(block.cardDefinitionId),
           content:
             <>
-              <span>
+              <span class="text-3 text-#d4bc8e mt-1">
                 {`${subject(opp(block.who))}`}
               </span>
-              <span>
+              <span class="text-3 text-#d4bc8e mt-1">
                 {`触发挑选效果`}
               </span>
             </>
@@ -1181,7 +1242,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    case "elementalTunning":
+    }
+    case "elementalTunning":{
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1210,7 +1272,8 @@ const renderHistoryBlock = (
         summary: renderSummary(block.children),
       };
       break;
-    default:
+    }
+    default:{
       result = {
         type: "playingCard",
         opp: false,
@@ -1226,6 +1289,7 @@ const renderHistoryBlock = (
         summary: [],
       };
       break;
+    }
   }
   return result;
 };
@@ -1234,12 +1298,12 @@ const renderHistoryBlock = (
 
 function HistoryChildBox(props: { data: renderHistoryChildProps }) {
   return (
-    <div class="w-full h-10 flex flex-row shrink-0 bg-black/10 gap-1">
+    <div class="w-full h-11 flex flex-row shrink-0 bg-white/4 gap-2 justify-center">
       <div 
-      class="w-1 h-10 shrink-0 bg-#d9b48d data-[opp]:bg-#7e98cb"
+      class="w-1 h-full shrink-0 bg-#806440 data-[opp]:bg-#48678b"
       bool:data-opp={props.data.opp}
       />
-      <div class="w-5 h-10 shrink-0 items-center justify-center flex">
+      <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
           <Match when={props.data.imageId === undefined}>
             <div class="w-5 h-8.6 bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0"/>
@@ -1258,11 +1322,11 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
           </Match>
         </Switch>
       </div>
-      <div class="w-full h-10 flex flex-col justify-center">
-        <div class="text-3">
+      <div class="w-full h-full flex flex-col justify-center gap-1">
+        <div class="text-2.8 text-white/95 text-stroke-0.2 text-stroke-op-70">
           {props.data.title}
         </div>
-        <div class="flex flex-row text-2.5">
+        <div class="flex flex-row text-2.5 text-#b2afa8 font-bold">
           {props.data.content}
         </div>
       </div>
@@ -1270,26 +1334,61 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
   );
 }
 
-function HistoryBlockBox(props: { data: renderHistoryBlockProps, onClick: () => void }) {
+function HistoryBlockBox(
+  props: { 
+    data: renderHistoryBlockProps, 
+    isSelected: boolean;
+    onClick: () => void;
+  }) {
+  const blockStyle = () => {
+    if (props.isSelected && props.data.opp) return "block-opp-selected";
+    if (props.isSelected && !props.data.opp) return "block-my-selected";
+    if (!props.isSelected && props.data.opp) return "block-opp-normal";
+    return "block-my-normal";
+  };
   return (
     <div
-      class="w-full h-30 bg-black/20 rounded-3 shrink-0"
+      class={`w-full h-30 rounded-0.8 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5`}
       onClick={() => props.onClick()}
     >
-      <div>
-        {props.data.title}
+      <div class="w-full h-6 bg-[var(--title-color)] rounded-t-0.8 flex items-center">
+        <div 
+          class="text-#efb264 data-[opp]:text-#9bc6ff text-2.8 font-bold ml-1.5"
+          bool:data-opp={props.data.opp}
+        >
+          {props.data.title}
+        </div>        
       </div>
+
     </div>
   );
 }
 
 function HistoryHintBox(props: { data: renderHistoryHintProps }) {
   return (
-    <div class="w-full h-5 text-center b-black b-1 rounded-3 shrink-0">
-      <div>
-        {props.data.content}
-      </div>
-    </div>
+    <Switch>
+      <Match when={props.data.type === "changePhase"}>
+        <div class="w-full h-6 text-center bg-#212933 rounded-0.5 shrink-0 flex  items-center justify-center">
+          <div class="text-#b1ada8 text-3.2 font-bold">
+            {props.data.content}
+          </div>
+        </div>
+      </Match>
+      <Match when={props.data.type === "action"}>
+        <div 
+          class="w-full h-6 text-center bg-#885e2e data-[opp]:bg-#3e69a8 rounded-0.5 shrink-0 flex  items-center justify-center"
+          bool:data-opp={props.data.opp}
+        >
+          <div 
+            class="text-#efb264 data-[opp]:text-#9bc6ff text-3.2 font-bold"
+            bool:data-opp={props.data.opp}
+          >
+            {props.data.content}
+          </div>
+        </div>
+      </Match>
+    </Switch>
+
   );
 }
 
@@ -1341,14 +1440,15 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div class="fixed inset-0 z-0" onClick={() => setSelectedBlock(null)} />
-      <div class="fixed right-0 top-0 bottom-0 w-80 bg-white border-l shadow-lg">
+      <div class="fixed right-0 top-0 bottom-0 w-70 shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
+        <div class="w-full h-12"/>
         <div
-          class="h-full overflow-y-auto py-12 px-2 space-y-2 relative flex flex-col"
+          class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar history-scrollbar-simply"
           ref={el => (scrollRef = el)}
           onScroll={handleScroll}
         >
           <For each={props.history}>
-            {(block) =>
+            {(block, index) =>
               <Switch>
                 <Match when={block.type === "changePhase" || block.type === "action"}>
                   <HistoryHintBox data={renderHistoryHint(block as HistoryHintBlock)} />
@@ -1356,6 +1456,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
                 <Match when={true}>
                   <HistoryBlockBox
                     data={renderHistoryBlock(block as HistoryDetailBlock)}
+                    isSelected={selectedBlock() === block}
                     onClick={() => {
                       if (block.type !== "changePhase" && block.type !== "action")
                         setSelectedBlock(block);
@@ -1368,7 +1469,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
         </div>
         <Show when={showBackToBottom()}>
           <button
-            class="absolute bottom-4 right-4 z-20 px-3 py-1 bg-blue-500 text-white rounded"
+            class="absolute w-66 h-8 bottom-4 b-1 border-#735a3f right-2 bg-#e9e2d3 text-#735a3f font-bold rounded-1 hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(255,255,255,1)]"
             onClick={scrollToBottom}
           >
             回到底部
@@ -1376,7 +1477,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
         </Show>
         <Show when={selectedBlock()}>
           {(block) =>
-            <div class="fixed right-81 inset-0 z--0.1" onClick={() => setSelectedBlock(null)}>
+            <div class="fixed right-70 inset-0 z--0.1" onClick={() => setSelectedBlock(null)}>
               <HistoryBlockDetailPanel
                 block={block() as HistoryDetailBlock}
                 onClose={() => setSelectedBlock(null)}
@@ -1391,17 +1492,43 @@ export function HistoryPanel(props: HistoryPanelProps) {
 
 function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: () => void }) {
   let panelRef: HTMLDivElement | undefined;
-  const blockDescription = () => renderHistoryBlock(props.block);
-
+  const blockDescription = () => renderHistoryBlock(props.block).content;
   return (
     <div
-      class={`fixed right-81 w-80 max-h-120 bg-white border shadow-xl overflow-hidden
+      class={`fixed right-71 w-90 p-3 max-h-120 bg-#2f333b/98 b-#404a56 b-1 rounded-1 shadow-xl overflow-hidden
       top-1/2 -translate-y-1/2`}
       onClick={e => e.stopPropagation()}
     >
-      <div ref={el => (panelRef = el)} class="overflow-y-auto max-h-116 p-4 space-y-2">
-        <div class="">Block Detail</div>
-        <div class="space-y-1">
+      <div ref={el => (panelRef = el)} class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply">
+        <div class="relative w-full min-h-28 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
+          <div 
+            class="absolute top-1px left-1px w-3.5 h-3.5 rounded-lt-1 bg-#806440 data-[opp]:bg-#48678b history-card-hint"
+            bool:data-opp={blockDescription().opp}
+          />
+          <div class="w-18 h-28 p-2">
+            <Show 
+              when={blockDescription().imageId}
+              fallback={
+                <div class="w-14 h-24 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+              }
+            >
+              {(imageId) => ( 
+                <div class="relative w-14 h-24">
+                  <CardFace definitionId={imageId()} />
+                </div>
+              )}
+            </Show>
+          </div>
+          <div class="w-full min-h-28 py-1.5 pr-2 flex flex-col">
+            <div class="text-4 text-#fff3e0/98 font-bold">
+              {blockDescription().name ? blockDescription().name : "???"}
+            </div>
+            <div class="flex text-2.5 text-#b2afa8 font-bold">
+              {blockDescription().content}
+            </div>
+          </div>
+        </div>
+        <div class="space-y-0.5">
           <For each={(props.block as HistoryDetailBlock).children}>
             {(child) =>
               <HistoryChildBox

@@ -106,21 +106,17 @@
   }
 
   .dice-panel {
-    background: linear-gradient(
-      to right,
-      #9d907bff 2px,
-      #86795eff 2px,
-      #5e4223ff 50px,
-      #5e4223ff 90%,
-      #5e422300 100%
-    );
-    mask-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 6%,
-      rgba(0, 0, 0, 0.9) 12%,
-      rgba(0, 0, 0, 0.9) 82%,
-      rgba(0, 0, 0, 0) 92%
-    );
+    background: linear-gradient(to right,
+        #9d907bff 2px,
+        #86795eff 2px,
+        #5e4223ff 50px,
+        #5e4223ff 90%,
+        #5e422300 100%);
+    mask-image: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0) 6%,
+        rgba(0, 0, 0, 0.9) 12%,
+        rgba(0, 0, 0, 0.9) 82%,
+        rgba(0, 0, 0, 0) 92%);
 
     .delicate-dice {
       --blink-opacity: 1;
@@ -168,13 +164,60 @@
     --bg-color: #7e98cb;
   }
 
+  .block-opp-selected {
+    --bg-color: #334355dd;
+    --bd-color: #6993d8;
+    --title-color: #334f76;
+  }
+
+  .block-my-selected {
+    --bg-color: #4f4536dd;
+    --bd-color: #c58438;
+    --title-color: #684f30;
+  }
+
+  .block-opp-normal {
+    --bg-color: #323d4ccc;
+    --bd-color: #425675;
+    --title-color: #32445f;
+  }
+
+  .block-my-normal {
+    --bg-color: #454039cc;
+    --bd-color: #6c5639;
+    --title-color: #544635;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .history-scrollbar-simply {
+      scrollbar-width: thin;
+      scrollbar-color: #5c6983 #2c2e36;
+    }
+  }
+
+  .history-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .history-scrollbar::-webkit-scrollbar-track {
+    background: #2c2e36;
+  }
+
+  .history-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #5c6983;
+    border-radius: 2px;
+    border: 0px solid transparent;
+  }
+
+  .history-card-hint {
+    clip-path: polygon(0 0, 0 100%, 100% 0);
+  }
+
   .chessboard-bg {
-    background-image: linear-gradient(
-      to bottom,
-      #f0fdf4ff 49.5%,
-      #ddeeddff 50%,
-      #f0fdf4ff 50.5%
-    );
+    background-image: linear-gradient(to bottom,
+        #f0fdf4ff 49.5%,
+        #ddeeddff 50%,
+        #f0fdf4ff 50.5%);
     box-shadow:
       inset 0 0 18px #000000,
       0 0 40px #63524a;
@@ -188,28 +231,24 @@
   }
 
   .burst-progress {
-    mask-image: linear-gradient(
-      to top,
-      #ffffffff var(--progress-value),
-      transparent var(--progress-value)
-    );
+    mask-image: linear-gradient(to top,
+        #ffffffff var(--progress-value),
+        transparent var(--progress-value));
   }
 
   .variable-diff {
     --dy: 3px;
     --dx: 10px;
     --radius: 14px;
-    clip-path: shape(
-      from var(--dx) 0px,
-      line to var(--dx) var(--dy),
-      arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
-      line to var(--dx) 100%,
-      line to calc(100% - var(--dx)) 100%,
-      line to calc(100% - var(--dx)) calc(100% - var(--dy)),
-      arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
-      line to calc(100% - var(--dx)) 0px,
-      close
-    );
+    clip-path: shape(from var(--dx) 0px,
+        line to var(--dx) var(--dy),
+        arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
+        line to var(--dx) 100%,
+        line to calc(100% - var(--dx)) 100%,
+        line to calc(100% - var(--dx)) calc(100% - var(--dy)),
+        arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
+        line to calc(100% - var(--dx)) 0px,
+        close);
     border-radius: var(--radius);
     background-color: black;
 
@@ -220,32 +259,28 @@
       inset: 1px;
       content: " ";
       background-color: var(--bg-color);
-      clip-path: shape(
-        from var(--dx) 0px,
-        line to var(--dx) var(--dy),
-        arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
-        line to var(--dx) 100%,
-        line to calc(100% - var(--dx)) 100%,
-        line to calc(100% - var(--dx)) calc(100% - var(--dy)),
-        arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
-        line to calc(100% - var(--dx)) 0px,
-        close
-      );
-    border-radius: var(--radius);
+      clip-path: shape(from var(--dx) 0px,
+          line to var(--dx) var(--dy),
+          arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
+          line to var(--dx) 100%,
+          line to calc(100% - var(--dx)) 100%,
+          line to calc(100% - var(--dx)) calc(100% - var(--dy)),
+          arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
+          line to calc(100% - var(--dx)) 0px,
+          close);
+      border-radius: var(--radius);
     }
   }
 
   .equipment-usage[data-usable] {
-    background-image: radial-gradient(
-      circle at center,
-      #ffffbb00 0%,
-      #ffffbb33 35%,
-      #ffffbbff 55%,
-      #8c6b4400 58%,
-      #8c6b4400 61%,
-      #ffaa00ff 61%,
-      #ffffbb00 69%
-    );
+    background-image: radial-gradient(circle at center,
+        #ffffbb00 0%,
+        #ffffbb33 35%,
+        #ffffbbff 55%,
+        #8c6b4400 58%,
+        #8c6b4400 61%,
+        #ffaa00ff 61%,
+        #ffffbb00 69%);
   }
 }
 
@@ -386,6 +421,7 @@
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: var(--blink-opacity, 1);
@@ -496,9 +532,11 @@
   0% {
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }

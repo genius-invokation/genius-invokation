@@ -44,15 +44,17 @@ export type HistoryChildren =
   | StealHandHistoryChild
   | CreateEntityHistoryChild
   | GenerateDiceHistoryChild
+  | AbsorbDiceHistoryChild
+  | ConvertDiceHistoryChild  
   | CreateCardHistoryChild
   | DamageHistoryChild
   | HealHistoryChild
   | ApplyHistoryChild
+  | IncreaseMaxHealthHistoryChild
   | EnergyHistoryChild
   | DisposeCardHistoryChild
   | VariableChangeHistoryChild
   | RemoveEntityHistoryChild
-  | ConvertDiceHistoryChild
   | ForbidCardHistoryChild
   | TransformHistoryChild;
 
@@ -241,6 +243,26 @@ export interface GenerateDiceHistoryChild {
   diceCount: number;
 }
 
+// 弃置元素骰
+// 桓那兰那等
+// content: {callerCardface || callerIcon} <-> callerName \n who + "弃置了${diceCount}个元素骰"
+export interface AbsorbDiceHistoryChild {
+  type: "absorbDice";
+  who: 0 | 1;
+  callerDefinitionId: number;
+  diceCount: number;
+}
+
+// 元素调和|某些卡牌转化元素骰的效果
+// content: (Cardface || cardIcon || TuningIcon) <-> (cardName || "元素调和") \n who + "将1个元素骰转换为inlineIcon[DiceType]${DiceType}"
+export interface ConvertDiceHistoryChild {
+  type: "convertDice";
+  who: 0 | 1;
+  callerDefinitionId?: number; // 某些卡牌转化元素骰的效果
+  isTunning: boolean;
+  diceType: DiceType;
+}
+
 // 生成卡牌|复制卡牌
 // content: Cardface <-> cardName \n who + ("生成卡牌, 并将其置入牌库"|| "获得手牌")
 export interface CreateCardHistoryChild {
@@ -290,6 +312,17 @@ export interface ApplyHistoryChild {
   reaction?: Reaction;
 }
 
+// 获得最大生命值
+// content: characterCardface <-> characterName \n "获得${healValue}点最大生命值, 最大生命值${oldHealth}→${newHealth}"
+export interface IncreaseMaxHealthHistoryChild {
+  type: "increaseMaxHealth";
+  who: 0 | 1;
+  characterDefinitionId: number;
+  increaseValue: number;
+  oldMaxHealth: number;
+  newMaxHealth: number;
+}
+
 // 获得充能|消耗充能
 // 被动减少也显示消耗
 // content: characterCardface <-> characterName \n "(获得 || 消耗)${energyValue}点充能, 充能值${oldEnergy}→${newEnergy}"
@@ -331,16 +364,6 @@ export interface RemoveEntityHistoryChild {
   entityType: "combatStatus" | "status" | "equipment" | "summon" | "support";
   characterDefinitionId?: number; // 状态、装备：所属角色区
   entityDefinitionId: number;
-}
-
-// 元素调和|某些卡牌转化元素骰的效果
-// content: (Cardface || cardIcon || TuningIcon) <-> (cardName || "元素调和") \n who + "将1个元素骰转换为inlineIcon[DiceType]${DiceType}"
-export interface ConvertDiceHistoryChild {
-  type: "convertDice";
-  who: 0 | 1;
-  callerDefinitionId?: number; // 某些卡牌转化元素骰的效果
-  isTunning: boolean;
-  diceType: DiceType;
 }
 
 // 裁定之时, 梅洛彼得堡
