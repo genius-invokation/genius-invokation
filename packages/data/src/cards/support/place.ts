@@ -580,10 +580,15 @@ export const StageTepetl = card(321023)
 export const ScionsOfTheCanopy = card(321024)
   .since("v5.2.0")
   .support("place")
-  .variable("point", 1) // 神奇
+  .variable("point", 0)
+  .defineSnippet((c) => {
+    c.generateDice("randomElement", 1);
+    c.addVariable("point", 1);
+  })
+  .on("enter", (c, e) => !c.isInInitialPile(c.self.definition))
+  .callSnippet()
   .on("playCard", (c, e) => !c.isInInitialPile(e.card) && diceCostOfCard(e.card.definition) >= c.getVariable("point"))
-  .generateDice("randomElement", 1)
-  .addVariable("point", 1)
+  .callSnippet()
   .done();
 
 /**
