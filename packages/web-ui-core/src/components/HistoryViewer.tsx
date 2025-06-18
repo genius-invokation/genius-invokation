@@ -195,13 +195,14 @@ const renderHistoryChild = (
     status: "附属状态：",
     equipment: "附属装备：",
     summon: "生成召唤物",
+    support: "生成支援区卡牌",
   };
   const removeEntityTextMap: Record<string, string> = {
     combatStatus: "出战状态消失",
     status: "失去状态：",
     equipment: "失去装备：",
-    summon: "卡牌弃置",
-    support: "卡牌弃置",
+    summon: "召唤物卡牌弃置",
+    support: "支援区卡牌弃置",
   };
   const createCardTextMap: Record<string, string> = {
     pile: "生成卡牌, 并将其置入牌库",
@@ -304,7 +305,7 @@ const renderHistoryChild = (
           ),
         };
       } else {
-        // child.entityType === "combatStatus" | "summon"
+        // child.entityType === "combatStatus" | "summon" | "support"
         result = {
           opp: opp(child.who),
           imageId: child.entityDefinitionId,
@@ -1551,7 +1552,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             <Match when={props.data.status === "more"}>
               <More />
             </Match>
-            <Match when={!props.data.status}>
+            <Match when={!!props.data.status}>
               <For each={props.data.status as number[]}>
                 {(status) => (
                   <Image imageId={status} type="icon" class="h-3 w-3" />
@@ -1566,7 +1567,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           <Match when={props.data.combat === "more"}>
             <More />
           </Match>
-          <Match when={!props.data.combat}>
+          <Match when={!!props.data.combat}>
             <For each={props.data.combat as number[]}>
               {(combat) => (
                 <Image imageId={combat} type="icon" class="h-3 w-3" />
