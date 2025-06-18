@@ -16,8 +16,6 @@
 export * from "./common_enums";
 
 export {
-  Action,
-  ActionValidity,
   UseSkillAction,
   PlayCardAction,
   SwitchActiveAction,
@@ -36,6 +34,7 @@ export {
   SkillInfo as PbSkillInfo,
   State as PbGameState,
   EquipmentType as PbEquipmentType,
+  PlayerStatus as PbPlayerStatus,
 } from "./gen/state";
 
 export { Notification } from "./gen/notification";
@@ -43,7 +42,6 @@ export { Notification } from "./gen/notification";
 export {
   CardArea as PbCardArea,
   EntityArea as PbEntityArea,
-  PlayerStatus as PbPlayerStatus,
   RemoveCardReason as PbRemoveCardReason,
   SkillType as PbSkillType,
   ModifyDirection as PbModifyDirection,
@@ -70,8 +68,11 @@ export {
   SkillUsedEM,
   PlayerFlag as PbPlayerFlag,
   SetPlayerFlagEM,
+  SelectCardDoneEM,
 } from "./gen/mutation";
 export {
+  Action,
+  ActionValidity,
   ActionRequest,
   ActionResponse,
   ChooseActiveRequest,

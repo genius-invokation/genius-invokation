@@ -287,6 +287,8 @@ export class Game {
       .map((m) => exposeMutation(who, m))
       .filter((em): em is ExposedMutation => !!em);
     const state = exposeState(who, opt.state);
+    state.player[0].status = this.players[0].status;
+    state.player[1].status = this.players[1].status;
     const mutation: PbExposedMutation[] = [
       ...stateMutations,
       ...opt.exposedMutations,
@@ -446,6 +448,8 @@ export class Game {
         },
       ],
     });
+    // @ts-expect-error writing private props
+    this.players[who]._status = status;
   }
 
   private async rpc<M extends RpcMethod>(
@@ -499,6 +503,7 @@ export class Game {
       this.mutator.chooseActive(0),
       this.mutator.chooseActive(1),
     ]);
+    this.mutator.postChooseActive(a0, a1);
     this.mutate({
       type: "switchActive",
       who: 0,
@@ -532,6 +537,7 @@ export class Game {
         `Invalid active character id ${activeCharacterId}`,
       );
     }
+    this.notifyOne;
     return activeCharacterId;
   }
 
@@ -1090,10 +1096,24 @@ export class Game {
     if (!candidateDefinitionIds.includes(selectedDefinitionId)) {
       throw new GiTcgIoError(who, `Selected card not in candidates`);
     }
+    this.notifyOne(who, {
+      $case: "selectCardDone",
+      who,
+      selectedDefinitionId,
+    });
+    this.notifyOne(flip(who), {
+      $case: "selectCardDone",
+      who,
+      selectedDefinitionId: 0,
+    });
     return selectedDefinitionId;
   }
 
-  private async switchActive(who: 0 | 1, to: CharacterState, fast: boolean | null) {
+  private async switchActive(
+    who: 0 | 1,
+    to: CharacterState,
+    fast: boolean | null,
+  ) {
     const player = this.state.players[who];
     const from = player.characters[getActiveCharacterIndex(player)];
     const oldState = this.state;

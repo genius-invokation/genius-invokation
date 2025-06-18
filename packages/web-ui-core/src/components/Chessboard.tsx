@@ -1150,19 +1150,6 @@ export function Chessboard(props: ChessboardProps) {
     ),
   );
 
-  const [playerStatus, setPlayerStatus] = createStore<PbPlayerStatus[]>([
-    PbPlayerStatus.UNSPECIFIED,
-    PbPlayerStatus.UNSPECIFIED,
-  ]);
-
-  createEffect(() => {
-    for (const who of [0, 1]) {
-      if (localProps.data.playerStatus[who] !== null) {
-        setPlayerStatus(who, localProps.data.playerStatus[who]);
-      }
-    }
-  });
-
   /**
    * on actionState change:
    * - set/unset selected dice
@@ -1274,7 +1261,7 @@ export function Chessboard(props: ChessboardProps) {
       declaredEnd: player.declaredEnd,
       diceCount: player.dice.length,
       legendUsed: player.legendUsed,
-      status: playerStatus[who],
+      status: player.status,
     };
   };
   const myDice = createMemo(

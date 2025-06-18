@@ -1,4 +1,5 @@
 
+import { PbPlayerStatus } from "@gi-tcg/typings";
 import type { PlayerIO } from "./io";
 
 export interface PlayerConfig {
@@ -22,5 +23,9 @@ export class Player {
   public config: PlayerConfig = { ...DEFAULT_PLAYER_CONFIG };
   constructor() {
     Object.seal(this);
+  }
+  private _status: PbPlayerStatus = PbPlayerStatus.UNSPECIFIED;
+  get status() {
+    return this._status;
   }
 }

@@ -591,6 +591,8 @@ declare global {
     shiftLeft: typeof shiftLeft;
     last: typeof arrayLast;
     toSortedBy: typeof toSortedBy;
+
+    map<This extends [unknown, unknown], U>(this: This, fn: (v: T) => U): { [K in keyof This]: U }
   }
 }
 

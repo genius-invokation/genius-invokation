@@ -395,7 +395,7 @@ export class SkillExecutor {
     if (criticalDamageEvents.length === 0) {
       return;
     }
-    const switchEvents: [
+    const switchEventArgPromises: [
       null | Promise<SwitchActiveEventArg>,
       null | Promise<SwitchActiveEventArg>,
     ] = [null, null];
@@ -411,7 +411,7 @@ export class SkillExecutor {
         DetailLogType.Other,
         `Active character of player ${who} is defeated. Waiting user choice`,
       );
-      switchEvents[who] = this.mutator.chooseActive(who).then(
+      switchEventArgPromises[who] = this.mutator.chooseActive(who).then(
         (to) =>
           new SwitchActiveEventArg(this.state, {
             type: "switchActive",
@@ -423,9 +423,12 @@ export class SkillExecutor {
           }),
       );
     }
-    const args = await Promise.all(switchEvents);
+    const switchEventArgs = await Promise.all(switchEventArgPromises);
+    this.mutator.postChooseActive(
+      ...switchEventArgs.map((arg) => arg?.switchInfo.to ?? null),
+    );
     const currentTurn = this.state.currentTurn;
-    for (const arg of args) {
+    for (const arg of switchEventArgs) {
       if (arg) {
         using l = this.mutator.subLog(
           DetailLogType.Primitive,
@@ -441,7 +444,7 @@ export class SkillExecutor {
       }
     }
     for (const who of [currentTurn, flip(currentTurn)]) {
-      const arg = args[who];
+      const arg = switchEventArgs[who];
       if (arg) {
         await this.handleEvent(["onSwitchActive", arg]);
       }

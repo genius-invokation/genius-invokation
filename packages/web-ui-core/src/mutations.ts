@@ -70,7 +70,6 @@ export interface RoundAndPhaseNotificationInfo {
 export interface ParsedMutation {
   raw: PbExposedMutation[];
   roundAndPhase: RoundAndPhaseNotificationInfo;
-  playerStatus: (PbPlayerStatus | null)[];
   animatingCards: AnimatingCardInfo[];
   playingCard: PlayingCardInfo | null;
   damages: DamageInfo[];
@@ -82,7 +81,6 @@ export interface ParsedMutation {
 }
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
-  const playerStatus: (PbPlayerStatus | null)[] = [null, null];
   let playingCard: PlayingCardInfo | null = null;
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
@@ -256,7 +254,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "playerStatusChange": {
-        playerStatus[mutation.value.who] = mutation.value.status;
         if (mutation.value.status === PbPlayerStatus.ACTING) {
           roundAndPhase.who = mutation.value.who as 0 | 1;
           roundAndPhase.value = "action";
@@ -289,7 +286,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   return {
     raw: mutations,
     roundAndPhase,
-    playerStatus,
     playingCard,
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),

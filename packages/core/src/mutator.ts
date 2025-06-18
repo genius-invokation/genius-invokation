@@ -363,6 +363,29 @@ export class StateMutator {
     return getEntityById(this.state, activeChId) as CharacterState;
   }
 
+  async postChooseActive(
+    p0chosen: CharacterState | null,
+    p1chosen: CharacterState | null,
+  ) {
+    const states = [p0chosen, p1chosen] as const;
+    for (const who of [0, 1] as const) {
+      const state = states[who];
+      if (!state) {
+        continue;
+      }
+      this.notify({
+        mutations: [
+          {
+            $case: "chooseActiveDone",
+            who,
+            characterId: state.id,
+            characterDefinitionId: state.definition.id,
+          },
+        ],
+      });
+    }
+  }
+
   async selectCard(
     who: 0 | 1,
     via: SkillInfo,

@@ -24,20 +24,9 @@ export type HistoryDetailBlock =
   | ElementalTunningHistoryBlock
   | SelectCardHistoryBlock;
 
-export type HistoryHintBlock =
-  | ChangePhaseHistoryBlock
-  | ActionHistoryBlock;
+export type HistoryHintBlock = ChangePhaseHistoryBlock | ActionHistoryBlock;
 
-export type HistoryBlock =
-  | ChangePhaseHistoryBlock
-  | ActionHistoryBlock
-  | PocketHistoryBlock
-  | SwitchOrSelectActiveHistoryBlock
-  | UseSkillHistoryBlock
-  | TriggeredHistoryBlock
-  | PlayCardHistoryBlock
-  | ElementalTunningHistoryBlock
-  | SelectCardHistoryBlock;
+export type HistoryBlock = HistoryDetailBlock | HistoryHintBlock;
 
 export type HistoryChildren =
   | SwitchActiveHistoryChild
@@ -47,7 +36,7 @@ export type HistoryChildren =
   | CreateEntityHistoryChild
   | GenerateDiceHistoryChild
   | AbsorbDiceHistoryChild
-  | ConvertDiceHistoryChild  
+  | ConvertDiceHistoryChild
   | CreateCardHistoryChild
   | DamageHistoryChild
   | HealHistoryChild
@@ -68,7 +57,7 @@ export type CharacterHistoryChildren =
   | ApplyHistoryChild;
 
 export type CardHistoryChildren =
-  | Extract<CreateEntityHistoryChild, { entityType:"summon" }>
+  | Extract<CreateEntityHistoryChild, { entityType: "summon" }>
   | DisposeCardHistoryChild
   | Extract<RemoveEntityHistoryChild, { entityType: "summon" | "support" }>;
 
@@ -212,7 +201,6 @@ export interface TriggeredHistoryChild {
 export interface DrawCardHistoryChild {
   type: "drawCard";
   who: 0 | 1;
-  callerDefinitionId: number;
   drawCardsCount: number;
 }
 
@@ -373,19 +361,19 @@ export interface RemoveEntityHistoryChild {
 // 裁定之时, 梅洛彼得堡
 // content: Cardface <-> cardName \n "遭到反制，未能生效"
 export interface ForbidCardHistoryChild {
-    type: "forbidCard";
-    who: 0 | 1;
-    cardDefinitionId: number;
+  type: "forbidCard";
+  who: 0 | 1;
+  cardDefinitionId: number;
 }
 
 // 转换形态
 // 角色、召唤物
 // content: Cardface <-> cardName \n ("转换形态···" || "转换形态完成")
 export interface TransformHistoryChild {
-    type: "transformDefinition";
-    who: 0 | 1;
-    cardDefinitionId: number; // 对应新旧形态
-    stage: "old" | "new";
+  type: "transformDefinition";
+  who: 0 | 1;
+  cardDefinitionId: number; // 对应新旧形态
+  stage: "old" | "new";
 }
 
 /////////////// 用于生成赛后统计的全局记录量，我也不知道怎么实现 ////////////////

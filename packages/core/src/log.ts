@@ -95,7 +95,7 @@ interface SerializedLogEntry {
 }
 
 export interface SerializedLog {
-  v: string;  // 模拟核心库版本
+  v: string; // 模拟核心库版本
   store: any[];
   log: SerializedLogEntry[];
 }
@@ -160,16 +160,24 @@ function deserializeImpl(
       }
       return restoredStore[v.$];
     }
-    if ("$$" in v && "id" in v && typeof v.id === "number" && isValidDefKey(v.$$)) {
+    if (
+      "$$" in v &&
+      "id" in v &&
+      typeof v.id === "number" &&
+      isValidDefKey(v.$$)
+    ) {
       return data[v.$$].get(v.id);
     }
     if ("__type" in v) {
       if (v.__type === "map" && "entries" in v && Array.isArray(v.entries)) {
         return new Map(
-          v.entries.map(([key, value]: [any, any]) => [
-            deserializeImpl(data, store, restoredStore, key),
-            deserializeImpl(data, store, restoredStore, value),
-          ]),
+          v.entries.map(
+            ([key, value]: [any, any]) =>
+              [
+                deserializeImpl(data, store, restoredStore, key),
+                deserializeImpl(data, store, restoredStore, value),
+              ] as const,
+          ),
         );
       }
       if (v.__type === "set" && "values" in v && Array.isArray(v.values)) {

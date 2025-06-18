@@ -11,7 +11,7 @@ index 913e0fad1f52e8a96b9ec0f635b3c9b7a11d9db4..082dc9b74bd71fa4f61c67c8183f91cd
 +export default (props = {}) => {
 +  let div;
 +  return (
-+    <div ref={div}>
++    <div ref={div} {...props}>
 +      <Portal mount={div} useShadow={true}>${svgWithProps}</Portal>
 +    </div>
 +  );

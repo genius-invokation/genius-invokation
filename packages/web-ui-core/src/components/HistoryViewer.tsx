@@ -13,16 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { AssetsManager } from "@gi-tcg/assets-manager";
-import {
-  DamageType,
-  DiceType,
-  flattenPbOneof,
-  PbRemoveCardReason,
-  PbSkillType,
-  Reaction,
-  type PbReactionType,
-} from "@gi-tcg/typings";
+import { DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 import {
   createEffect,
   createSignal,
@@ -34,8 +25,8 @@ import {
   Show,
   Switch,
   type JSX,
-  untrack,
-  createResource
+  createResource,
+  createMemo,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
 import {
@@ -51,7 +42,13 @@ import {
 } from "../history";
 import { Image } from "./Image";
 import { DICE_COLOR, DiceIcon } from "./Dice";
-import type { ActionCardRawData, CharacterRawData, EntityRawData, KeywordRawData, SkillRawData } from "@gi-tcg/static-data";
+import type {
+  ActionCardRawData,
+  CharacterRawData,
+  EntityRawData,
+  KeywordRawData,
+  SkillRawData,
+} from "@gi-tcg/static-data";
 import TunningIcon from "../svg/TunningIcon.svg?component-solid";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
@@ -60,23 +57,74 @@ import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
 const reactionTextMap: Record<number, renderReactionProps> = {
-  [Reaction.Melt]: { element: [DamageType.Cryo, DamageType.Pyro], name: "融化" },
-  [Reaction.Vaporize]: { element: [DamageType.Hydro, DamageType.Pyro], name: "蒸发" },
-  [Reaction.Overloaded]: { element: [DamageType.Electro, DamageType.Pyro], name: "超载" },
-  [Reaction.Superconduct]: { element: [DamageType.Cryo, DamageType.Electro], name: "超导" },
-  [Reaction.ElectroCharged]: { element: [DamageType.Electro, DamageType.Hydro], name: "感电" },
-  [Reaction.Frozen]: { element: [DamageType.Cryo, DamageType.Hydro], name: "冻结" },
-  [Reaction.SwirlCryo]: { element: [DamageType.Cryo, DamageType.Anemo], name: "扩散" },
-  [Reaction.SwirlHydro]: { element: [DamageType.Hydro, DamageType.Anemo], name: "扩散" },
-  [Reaction.SwirlPyro]: { element: [DamageType.Pyro, DamageType.Anemo], name: "扩散" },
-  [Reaction.SwirlElectro]: { element: [DamageType.Electro, DamageType.Anemo], name: "扩散" },
-  [Reaction.CrystallizeCryo]: { element: [DamageType.Cryo, DamageType.Geo], name: "结晶" },
-  [Reaction.CrystallizeHydro]: { element: [DamageType.Hydro, DamageType.Geo], name: "结晶" },
-  [Reaction.CrystallizePyro]: { element: [DamageType.Pyro, DamageType.Geo], name: "结晶" },
-  [Reaction.CrystallizeElectro]: { element: [DamageType.Electro, DamageType.Geo], name: "结晶" },
-  [Reaction.Burning]: { element: [DamageType.Dendro, DamageType.Pyro], name: "燃烧" },
-  [Reaction.Bloom]: { element: [DamageType.Dendro, DamageType.Hydro], name: "绽放" },
-  [Reaction.Quicken]: { element: [DamageType.Dendro, DamageType.Electro], name: "激化" },
+  [Reaction.Melt]: {
+    element: [DamageType.Cryo, DamageType.Pyro],
+    name: "融化",
+  },
+  [Reaction.Vaporize]: {
+    element: [DamageType.Hydro, DamageType.Pyro],
+    name: "蒸发",
+  },
+  [Reaction.Overloaded]: {
+    element: [DamageType.Electro, DamageType.Pyro],
+    name: "超载",
+  },
+  [Reaction.Superconduct]: {
+    element: [DamageType.Cryo, DamageType.Electro],
+    name: "超导",
+  },
+  [Reaction.ElectroCharged]: {
+    element: [DamageType.Electro, DamageType.Hydro],
+    name: "感电",
+  },
+  [Reaction.Frozen]: {
+    element: [DamageType.Cryo, DamageType.Hydro],
+    name: "冻结",
+  },
+  [Reaction.SwirlCryo]: {
+    element: [DamageType.Cryo, DamageType.Anemo],
+    name: "扩散",
+  },
+  [Reaction.SwirlHydro]: {
+    element: [DamageType.Hydro, DamageType.Anemo],
+    name: "扩散",
+  },
+  [Reaction.SwirlPyro]: {
+    element: [DamageType.Pyro, DamageType.Anemo],
+    name: "扩散",
+  },
+  [Reaction.SwirlElectro]: {
+    element: [DamageType.Electro, DamageType.Anemo],
+    name: "扩散",
+  },
+  [Reaction.CrystallizeCryo]: {
+    element: [DamageType.Cryo, DamageType.Geo],
+    name: "结晶",
+  },
+  [Reaction.CrystallizeHydro]: {
+    element: [DamageType.Hydro, DamageType.Geo],
+    name: "结晶",
+  },
+  [Reaction.CrystallizePyro]: {
+    element: [DamageType.Pyro, DamageType.Geo],
+    name: "结晶",
+  },
+  [Reaction.CrystallizeElectro]: {
+    element: [DamageType.Electro, DamageType.Geo],
+    name: "结晶",
+  },
+  [Reaction.Burning]: {
+    element: [DamageType.Dendro, DamageType.Pyro],
+    name: "燃烧",
+  },
+  [Reaction.Bloom]: {
+    element: [DamageType.Dendro, DamageType.Hydro],
+    name: "绽放",
+  },
+  [Reaction.Quicken]: {
+    element: [DamageType.Dendro, DamageType.Electro],
+    name: "激化",
+  },
 };
 
 const diceTypeTextMap: Record<number, string> = {
@@ -130,11 +178,12 @@ export function useWho() {
 
 const renderHistoryChild = (
   child: HistoryChildren,
+  parentCallerDefinitionId: number | undefined,
 ) => {
   const who = useWho();
   const { assetsManager } = useUiContext();
   let result: renderHistoryChildProps;
-  const opp = (historyOwner: 0 | 1) => (historyOwner !== who());
+  const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
 
   const createEntityTextMap: Record<string, string> = {
@@ -165,17 +214,9 @@ const renderHistoryChild = (
     return (
       <>
         <span>{`（`}</span>
-        <Image
-          imageId={base}
-          class="h-3.5 w-3.5"
-        />
-        <Image
-          imageId={apply}
-          class="h-3.5 w-3.5"
-        />
-        <span>
-          {`${name}`}
-        </span>
+        <Image imageId={base} class="h-3.5 w-3.5" />
+        <Image imageId={apply} class="h-3.5 w-3.5" />
+        <span>{`${name}`}</span>
         <span>{`）`}</span>
       </>
     );
@@ -188,15 +229,12 @@ const renderHistoryChild = (
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.characterDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`角色出战`}
-            </span>
-            <span>
-              {`（${child.isOverloaded ? `超载` : `卡牌效果`}）`}
-            </span>
-          </>,
+            <span>{`角色出战`}</span>
+            <span>{`（${child.isOverloaded ? `超载` : `卡牌效果`}）`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -206,30 +244,28 @@ const renderHistoryChild = (
         imageId: child.callerDefinitionId,
         imageType: undefined,
         title: assetsManager.getNameSync(child.callerDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`触发效果`}
-            </span>
-          </>,
+            <span>{`触发效果`}</span>
+          </>
+        ),
       };
       break;
     }
     case "drawCard": {
       result = {
         opp: opp(child.who),
-        imageId: child.callerDefinitionId,
+        imageId: parentCallerDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.callerDefinitionId),
-        content:
+        title: parentCallerDefinitionId
+          ? assetsManager.getNameSync(parentCallerDefinitionId)
+          : void 0,
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`抓${child.drawCardsCount}张牌`}
-            </span>
-          </>,
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`抓${child.drawCardsCount}张牌`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -239,15 +275,12 @@ const renderHistoryChild = (
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`夺取${subject(!opp(child.who))}手牌`}
-            </span>
-          </>,
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`夺取${subject(!opp(child.who))}手牌`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -257,12 +290,12 @@ const renderHistoryChild = (
           opp: opp(child.who),
           imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.masterDefinitionId ? assetsManager.getNameSync(child.masterDefinitionId) : "???",
-          content:
+          title: child.masterDefinitionId
+            ? assetsManager.getNameSync(child.masterDefinitionId)
+            : "???",
+          content: (
             <>
-              <span>
-                {`${createEntityTextMap[child.entityType]}`}
-              </span>
+              <span>{`${createEntityTextMap[child.entityType]}`}</span>
               <Image
                 imageId={child.entityDefinitionId}
                 type="icon"
@@ -271,23 +304,22 @@ const renderHistoryChild = (
               <span>
                 {`${assetsManager.getNameSync(child.entityDefinitionId)}`}
               </span>
-            </>,
+            </>
+          ),
         };
-      } else { // child.entityType === "combatStatus" | "summon"
+      } else {
+        // child.entityType === "combatStatus" | "summon"
         result = {
           opp: opp(child.who),
           imageId: child.entityDefinitionId,
           imageType: undefined,
           title: assetsManager.getNameSync(child.entityDefinitionId),
-          content:
+          content: (
             <>
-              <span>
-                {`${subject(opp(child.who))}`}
-              </span>
-              <span>
-                {`${createEntityTextMap[child.entityType]}`}
-              </span>
-            </>,
+              <span>{`${subject(opp(child.who))}`}</span>
+              <span>{`${createEntityTextMap[child.entityType]}`}</span>
+            </>
+          ),
         };
       }
       break;
@@ -298,25 +330,16 @@ const renderHistoryChild = (
         imageId: child.callerDefinitionId,
         imageType: undefined,
         title: assetsManager.getNameSync(child.callerDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`生成${child.diceCount}个`}
-            </span>
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`生成${child.diceCount}个`}</span>
             <Show when={child.diceType > 0}>
-              <DiceIcon
-                size={14}
-                type={child.diceType}
-                selected={false}
-              />
-            </Show>  
-            <span>
-              {`${diceTypeTextMap[child.diceType]}`}
-            </span>
-          </>,
+              <DiceIcon size={14} type={child.diceType} selected={false} />
+            </Show>
+            <span>{`${diceTypeTextMap[child.diceType]}`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -326,15 +349,12 @@ const renderHistoryChild = (
         imageId: child.callerDefinitionId,
         imageType: undefined,
         title: assetsManager.getNameSync(child.callerDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`弃置了${child.diceCount}个元素骰`}
-            </span>
-          </>,
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`弃置了${child.diceCount}个元素骰`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -344,15 +364,12 @@ const renderHistoryChild = (
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`${createCardTextMap[child.target]}`}
-            </span>
-          </>,
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`${createCardTextMap[child.target]}`}</span>
+          </>
+        ),
       };
       break;
     }
@@ -367,11 +384,9 @@ const renderHistoryChild = (
           value: child.damageValue,
           special: child.causeDefeated,
         },
-        content:
+        content: (
           <>
-            <span>
-              {`受到${child.damageValue}点`}
-            </span>
+            <span>{`受到${child.damageValue}点`}</span>
             <Show when={child.damageType <= 7}>
               <Image
                 imageId={child.damageType}
@@ -379,23 +394,26 @@ const renderHistoryChild = (
                 class="h-3.5 w-3.5"
               />
             </Show>
-            <span style={(child.damageType >= 1 && child.damageType <=7) ? { color: `var(--c-${DICE_COLOR[child.damageType]})` } : undefined}>
+            <span
+              style={
+                child.damageType >= 1 && child.damageType <= 7
+                  ? { color: `var(--c-${DICE_COLOR[child.damageType]})` }
+                  : undefined
+              }
+            >
               {`${damageTypeTextMap[child.damageType]}伤害`}
             </span>
             <Show when={child.reaction}>
               {(reaction) => renderReaction(reaction(), child.damageType)}
             </Show>
-            <span>
-              {`，生命值${child.oldHealth}→${child.newHealth}`}
-            </span>
-            <span>
-              {child.causeDefeated ? `，被击倒` : ``}
-            </span>
-          </>,
+            <span>{`，生命值${child.oldHealth}→${child.newHealth}`}</span>
+            <span>{child.causeDefeated ? `，被击倒` : ``}</span>
+          </>
+        ),
       };
       break;
     }
-    case "heal":{
+    case "heal": {
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
@@ -404,73 +422,63 @@ const renderHistoryChild = (
         healthChange: {
           type: "heal",
           value: child.healValue,
-          special: (child.healType !== "normal"),
+          special: child.healType !== "normal",
         },
-        content:
+        content: (
           <>
-            <Switch >
+            <Switch>
               <Match when={child.healType === "revive"}>
-                <span>
-                  {`复苏，并`}
-                </span>
+                <span>{`复苏，并`}</span>
               </Match>
               <Match when={child.healType === "immuneDefeated"}>
-                <span>
-                  {`角色免于被击倒，并`}
-                </span>
+                <span>{`角色免于被击倒，并`}</span>
               </Match>
             </Switch>
-            <span>
-              {`受到${child.healValue}点治疗`}
-            </span>
-            <span>
-              {`，生命值${child.oldHealth}→${child.newHealth}`}
-            </span>
-          </>,
+            <span>{`受到${child.healValue}点治疗`}</span>
+            <span>{`，生命值${child.oldHealth}→${child.newHealth}`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "apply":{
+    case "apply": {
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.characterDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`附着`}
-            </span>
-            <Image
-              imageId={child.elementType}
-              class="h-3.5 w-3.5"
-            />
-            <span style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}>
+            <span>{`附着`}</span>
+            <Image imageId={child.elementType} class="h-3.5 w-3.5" />
+            <span
+              style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}
+            >
               {`${damageTypeTextMap[child.elementType]}`}
             </span>
             <Show when={child.reaction}>
               {(reaction) => renderReaction(reaction(), child.elementType)}
             </Show>
-          </>,
+          </>
+        ),
       };
       break;
     }
-    case "increaseMaxHealth":{
+    case "increaseMaxHealth": {
       const increaseValue = child.newMaxHealth - child.oldMaxHealth;
       result = {
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.characterDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`获得${increaseValue}点最大生命值`}
-            </span>
+            <span>{`获得${increaseValue}点最大生命值`}</span>
             <span>
               {`，最大生命值${child.oldMaxHealth}→${child.newMaxHealth}`}
             </span>
-          </>,
+          </>
+        ),
       };
       break;
     }
@@ -481,69 +489,58 @@ const renderHistoryChild = (
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.characterDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${energyValue>0 ? "获得" : "消耗"}`}
-            </span>
-            <span>
-              {`${Math.abs(energyValue)}点充能`}
-            </span>
-            <span>
-              {`，充能值${child.oldEnergy}→${child.newEnergy}`}
-            </span>
-          </>,
+            <span>{`${energyValue > 0 ? "获得" : "消耗"}`}</span>
+            <span>{`${Math.abs(energyValue)}点充能`}</span>
+            <span>{`，充能值${child.oldEnergy}→${child.newEnergy}`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "disposeCard":{
+    case "disposeCard": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`舍弃手牌`}
-            </span>
-          </>,
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`舍弃手牌`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "variableChange":{
+    case "variableChange": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: undefined,
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${child.variableName}：`}
-            </span>
-            <span>
-              {`${child.oldValue}→${child.newValue}`}
-            </span>
-          </>,
+            <span>{`${child.variableName}：`}</span>
+            <span>{`${child.oldValue}→${child.newValue}`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "removeEntity":{
+    case "removeEntity": {
       if (child.entityType === "status" || child.entityType === "equipment") {
         result = {
           opp: opp(child.who),
           imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.masterDefinitionId ? assetsManager.getNameSync(child.masterDefinitionId) : "???",
-          content:
+          title: child.masterDefinitionId
+            ? assetsManager.getNameSync(child.masterDefinitionId)
+            : "???",
+          content: (
             <>
-              <span>
-                {`${removeEntityTextMap[child.entityType]}`}
-              </span>
+              <span>{`${removeEntityTextMap[child.entityType]}`}</span>
               <Image
                 imageId={child.entityDefinitionId}
                 type="icon"
@@ -552,93 +549,77 @@ const renderHistoryChild = (
               <span>
                 {`${assetsManager.getNameSync(child.entityDefinitionId)}`}
               </span>
-            </>,
+            </>
+          ),
         };
-      } else { // child.entityType === "combatStatus" | "summon" | "support"
+      } else {
+        // child.entityType === "combatStatus" | "summon" | "support"
         result = {
           opp: opp(child.who),
           imageId: child.entityDefinitionId,
           imageType: undefined,
           title: assetsManager.getNameSync(child.entityDefinitionId),
-          content:
+          content: (
             <>
-              <span>
-                {`${removeEntityTextMap[child.entityType]}`}
-              </span>
-            </>,
+              <span>{`${removeEntityTextMap[child.entityType]}`}</span>
+            </>
+          ),
         };
       }
       break;
     }
-    case "convertDice":{
+    case "convertDice": {
       result = {
         opp: opp(child.who),
-        imageId: (
-          child.isTunning
-            ? "tuning"
-            : child.callerDefinitionId
-        ),
+        imageId: child.isTunning ? "tuning" : child.callerDefinitionId,
         imageType: undefined,
-        title: (
-          child.isTunning
-            ? "元素调和"
-            : child.callerDefinitionId
-              ? assetsManager.getNameSync(child.callerDefinitionId)
-              : "???"
-        ),
-        content:
+        title: child.isTunning
+          ? "元素调和"
+          : child.callerDefinitionId
+            ? assetsManager.getNameSync(child.callerDefinitionId)
+            : "???",
+        content: (
           <>
-            <span>
-              {`${subject(opp(child.who))}`}
-            </span>
-            <span>
-              {`将1个元素骰转换为`}
-            </span>
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`将1个元素骰转换为`}</span>
             <Show when={child.diceType > 0}>
-              <DiceIcon
-                size={14}
-                type={child.diceType}
-                selected={false}
-              />              
+              <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
-            <span>
-              {`${diceTypeTextMap[child.diceType]}`}
-            </span>
-          </>,
+            <span>{`${diceTypeTextMap[child.diceType]}`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "forbidCard":{
+    case "forbidCard": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`遭到反制，未能生效`}
-            </span>
-          </>,
+            <span>{`遭到反制，未能生效`}</span>
+          </>
+        ),
       };
       break;
     }
-    case "transformDefinition":{
+    case "transformDefinition": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: undefined,
         title: assetsManager.getNameSync(child.cardDefinitionId),
-        content:
+        content: (
           <>
-            <span>
-              {`${TransformTextMap[child.stage]}`}
-            </span>
-          </>,
+            <span>{`${TransformTextMap[child.stage]}`}</span>
+          </>
+        ),
       };
       break;
     }
-    default:{
+    default: {
       result = {
         opp: false,
         imageId: undefined,
@@ -658,16 +639,14 @@ interface renderHistoryHintProps {
   content: string;
 }
 
-const renderHistoryHint = (
-  block: HistoryHintBlock,
-) => {
+const renderHistoryHint = (block: HistoryHintBlock) => {
   const who = useWho();
   let result: renderHistoryHintProps;
-  const opp = (historyOwner: 0 | 1) => (historyOwner !== who());
+  const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
 
   switch (block.type) {
-    case "changePhase":{
+    case "changePhase": {
       switch (block.newPhase) {
         case "initHands":
           result = {
@@ -702,7 +681,7 @@ const renderHistoryHint = (
       }
       break;
     }
-    case "action":{
+    case "action": {
       switch (block.actionType) {
         case "action":
           result = {
@@ -730,7 +709,7 @@ function getOrCreateCharacterSummary(
   c: {
     characterDefinitionId: number;
     who: 0 | 1;
-  }
+  },
 ): CharacterSummary {
   const charId = c.characterDefinitionId;
   const who = c.who;
@@ -755,7 +734,7 @@ function getOrCreateCardSummary(
   c: {
     cardDefinitionId: number;
     who: 0 | 1;
-  }
+  },
 ): CardSummary {
   const charId = c.cardDefinitionId;
   const who = c.who;
@@ -785,8 +764,10 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary.healthChange += delta;
       if (c.type === "damage") {
         if (c.reaction) {
-          summary.elemental.push(reactionTextMap[c.reaction].element as DamageType[]);
-        } else {
+          summary.elemental.push(
+            reactionTextMap[c.reaction].element as DamageType[],
+          );
+        } else if (c.damageType >= 1 && c.damageType <= 7) {
           summary.elemental.push([c.damageType]);
         }
       }
@@ -798,36 +779,66 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary = getOrCreateCharacterSummary(charMap, c);
       summary.children.push(c);
       if (c.reaction) {
-        summary.elemental.push(reactionTextMap[c.reaction].element as DamageType[]);
+        summary.elemental.push(
+          reactionTextMap[c.reaction].element as DamageType[],
+        );
       } else {
         summary.elemental.push([c.elementType]);
       }
     } else if (c.type === "createEntity") {
       if (c.entityType === "status") {
-        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: c.masterDefinitionId!, who: c.who });
-        summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "state" }>);
+        summary = getOrCreateCharacterSummary(charMap, {
+          characterDefinitionId: c.masterDefinitionId!,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<CreateEntityHistoryChild, { entityType: "state" }>,
+        );
         summary.status.push(c.entityDefinitionId);
       } else if (c.entityType === "combatStatus") {
-        summary = getOrCreateCharacterSummary(charMap, { characterDefinitionId: c.masterDefinitionId!, who: c.who });
-        summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "combatStatus" }>);
+        summary = getOrCreateCharacterSummary(charMap, {
+          characterDefinitionId: c.masterDefinitionId!,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<
+            CreateEntityHistoryChild,
+            { entityType: "combatStatus" }
+          >,
+        );
         summary.combatStatus.push(c.entityDefinitionId);
       } else if (c.entityType === "summon") {
-        summary = getOrCreateCardSummary(cardMap, { cardDefinitionId: c.entityDefinitionId, who: c.who });
-        summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "summon" }>);
+        summary = getOrCreateCardSummary(cardMap, {
+          cardDefinitionId: c.entityDefinitionId,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<CreateEntityHistoryChild, { entityType: "summon" }>,
+        );
         summary.type.push(c.type);
       }
     } else if (c.type === "disposeCard") {
-      summary = getOrCreateCardSummary(cardMap, c)
+      summary = getOrCreateCardSummary(cardMap, c);
       summary.children.push(c);
       summary.type.push(c.type);
     } else if (c.type === "removeEntity") {
       if (c.entityType === "summon") {
-        summary = getOrCreateCardSummary(cardMap, { cardDefinitionId: c.entityDefinitionId, who: c.who })
-        summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "summon" }>);
+        summary = getOrCreateCardSummary(cardMap, {
+          cardDefinitionId: c.entityDefinitionId,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<CreateEntityHistoryChild, { entityType: "summon" }>,
+        );
         summary.type.push(c.type);
       } else if (c.entityType === "support") {
-        summary = getOrCreateCardSummary(cardMap, { cardDefinitionId: c.entityDefinitionId, who: c.who })
-        summary.children.push(c as Extract<CreateEntityHistoryChild, { entityType: "support" }>);
+        summary = getOrCreateCardSummary(cardMap, {
+          cardDefinitionId: c.entityDefinitionId,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<CreateEntityHistoryChild, { entityType: "support" }>,
+        );
         summary.type.push("disposeCard");
       }
     }
@@ -848,7 +859,7 @@ interface CharacterSummary {
   healthChange: number;
   switchActive: boolean;
   elemental: DamageType[][];
-  status: number[]
+  status: number[];
   combatStatus: number[];
   children: CharacterHistoryChildren[];
 }
@@ -871,7 +882,15 @@ interface SummaryShot {
 
 function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   const { characterSummary, cardSummary } = buildSummary(children);
-  type shotType = "damage" | "heal" | "apply" | "switch" | "status" | "dispose" | "create" | "remove";
+  type shotType =
+    | "damage"
+    | "heal"
+    | "apply"
+    | "switch"
+    | "status"
+    | "dispose"
+    | "create"
+    | "remove";
   const shotGroups: Record<shotType, (CharacterSummary | CardSummary)[]> = {
     damage: [] as CharacterSummary[],
     heal: [] as CharacterSummary[],
@@ -941,22 +960,16 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   (Object.keys(shotGroups) as shotType[]).forEach((type) => {
     const list = shotGroups[type];
     if (!list.length) return;
-    const uniqueWhos = new Set(list.map(c => c.who));
+    const uniqueWhos = new Set(list.map((c) => c.who));
     const shot: SummaryShot = {
-      size:
-        (type === "remove" || type === "create")
-          ? "summon"
-          : "normal",
-      who:
-        uniqueWhos.size === 1
-          ? [...uniqueWhos][0]
-          : "both",
+      size: type === "remove" || type === "create" ? "summon" : "normal",
+      who: uniqueWhos.size === 1 ? [...uniqueWhos][0] : "both",
       cardface:
-        (type === "remove" || type === "create" || type === "dispose")
+        type === "remove" || type === "create" || type === "dispose"
           ? list.map((c) => (c as CardSummary).cardDefinitionId)
           : list.map((c) => (c as CharacterSummary).characterDefinitionId),
       aura:
-        (type === "remove" || type === "create" || type === "dispose")
+        type === "remove" || type === "create" || type === "dispose"
           ? undefined
           : makeAura(list as CharacterSummary[]),
       inner:
@@ -966,21 +979,21 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
             ? "heal"
             : type === "switch"
               ? "switch"
-              : (type === "remove" || type === "dispose")
+              : type === "remove" || type === "dispose"
                 ? "defeated"
                 : undefined,
       innerValue:
-        (type === "damage" || type === "heal")
+        type === "damage" || type === "heal"
           ? list.length === 1
             ? (list[0] as CharacterSummary).healthChange
             : "more"
           : undefined,
       status:
-        (type === "remove" || type === "create" || type === "dispose")
+        type === "remove" || type === "create" || type === "dispose"
           ? undefined
           : makeStatus(list as CharacterSummary[]),
-      combat: 
-        (type === "remove" || type === "create" || type === "dispose")
+      combat:
+        type === "remove" || type === "create" || type === "dispose"
           ? undefined
           : makeCombat(list as CharacterSummary[]),
     };
@@ -991,20 +1004,34 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
 
 const CardDescriptionPart = (props: { cardDefinitionId: number }) => {
   const { assetsManager } = useUiContext();
-  const [data] = createResource(() => props.cardDefinitionId, (id) => assetsManager.getData(id));
+  const [data] = createResource(
+    () => props.cardDefinitionId,
+    (id) => assetsManager.getData(id),
+  );
   return (
     <Switch>
       <Match when={data.loading}>加载中···</Match>
       <Match when={data.error}>加载失败</Match>
       <Match when={data()}>
-        {(data) => <p class="whitespace-pre-wrap">{(data() as ActionCardRawData | EntityRawData).description}</p>}
+        {(data) => (
+          <p class="whitespace-pre-wrap">
+            {(data() as ActionCardRawData | EntityRawData).description}
+          </p>
+        )}
       </Match>
     </Switch>
   );
-}
+};
 
 interface renderHistoryBlockProps {
-  type: "switchActive" | "useSkill" | "triggered" | "playingCard" | "selectCard" | "elementalTunning" | "pocket";
+  type:
+    | "switchActive"
+    | "useSkill"
+    | "triggered"
+    | "playingCard"
+    | "selectCard"
+    | "elementalTunning"
+    | "pocket";
   opp: boolean;
   title: string;
   imageId: number | undefined;
@@ -1028,13 +1055,11 @@ interface blockEnergyProps {
   maxEnergy: number;
 }
 
-const renderHistoryBlock = (
-  block: HistoryDetailBlock,
-) => {
+const renderHistoryBlock = (block: HistoryDetailBlock) => {
   const who = useWho();
   const { assetsManager } = useUiContext();
   let result: renderHistoryBlockProps;
-  const opp = (historyOwner: 0 | 1) => (historyOwner !== who());
+  const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
   const switchActiveTextMap: Record<string, string> = {
     init: "初始出战角色",
@@ -1042,13 +1067,17 @@ const renderHistoryBlock = (
     choose: "选择出战角色",
   };
 
-  function extractBlockEnergyProps(block: {
-    characterDefinitionId: number;
-    children: HistoryChildren[];
-  }, maxEnergy: number): blockEnergyProps | undefined {
+  function extractBlockEnergyProps(
+    block: {
+      characterDefinitionId: number;
+      children: HistoryChildren[];
+    },
+    maxEnergy: number,
+  ): blockEnergyProps | undefined {
     const energyChildren = block.children.filter(
       (c): c is EnergyHistoryChild =>
-        c.type === "energy" && c.characterDefinitionId === block.characterDefinitionId
+        c.type === "energy" &&
+        c.characterDefinitionId === block.characterDefinitionId,
     );
     if (energyChildren.length === 0) return undefined;
     const first = energyChildren[0];
@@ -1064,7 +1093,7 @@ const renderHistoryBlock = (
   }
 
   switch (block.type) {
-    case "switchActive":{
+    case "switchActive": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1075,42 +1104,45 @@ const renderHistoryBlock = (
           opp: opp(block.who),
           imageId: block.characterDefinitionId,
           name: assetsManager.getNameSync(block.characterDefinitionId),
-          content:
+          content: (
             <>
-              <span class="text-3 text-#d4bc8e">
-                {`角色出战`}
-              </span>
-            </>,
+              <span class="text-3 text-#d4bc8e">{`角色出战`}</span>
+            </>
+          ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "useSkill":{
+    case "useSkill": {
       result = {
         type: block.type,
         opp: opp(block.who),
-        title: `${subject(opp(block.who))}${block.skillType === "technique" ? "使用特技" : "使用技能"}`,
+        title: `${subject(opp(block.who))}${
+          block.skillType === "technique" ? "使用特技" : "使用技能"
+        }`,
         imageId: block.callerDefinitionId,
         energyChange:
           block.skillType === "technique"
             ? undefined
             : extractBlockEnergyProps(
-              {
-                characterDefinitionId: block.callerDefinitionId,
-                children: block.children
-              },
-              0, // 可填写maxEnergy
-            ),
+                {
+                  characterDefinitionId: block.callerDefinitionId,
+                  children: block.children,
+                },
+                0, // 可填写maxEnergy
+              ),
         content: {
           opp: opp(block.who),
           imageId: block.callerDefinitionId,
           name: assetsManager.getNameSync(block.callerDefinitionId),
-          content:
+          content: (
             <>
               <div class="flex flex-col gap-1">
                 <div class="text-3 text-#d4bc8e">
-                  {`${block.skillType === "technique" ? "使用特技" : "使用技能"}`}
+                  {`${
+                    block.skillType === "technique" ? "使用特技" : "使用技能"
+                  }`}
                 </div>
                 <div class="flex flex-row items-center gap-1">
                   <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
@@ -1125,65 +1157,67 @@ const renderHistoryBlock = (
                   </span>
                 </div>
               </div>
-
-            </>,
+            </>
+          ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "triggered":{
+    case "triggered": {
       result = {
         type: block.type,
         opp: opp(block.who),
         title: "触发效果",
         imageId: block.masterOrCallerDefinitionId,
-        energyChange:
-          extractBlockEnergyProps(
-            {
-              characterDefinitionId: block.masterOrCallerDefinitionId,
-              children: block.children
-            },
-            0, // 可填写maxEnergy
-          ),
+        energyChange: extractBlockEnergyProps(
+          {
+            characterDefinitionId: block.masterOrCallerDefinitionId,
+            children: block.children,
+          },
+          0, // 可填写maxEnergy
+        ),
         content: {
           opp: opp(block.who),
           imageId: block.masterOrCallerDefinitionId,
           name: assetsManager.getNameSync(block.masterOrCallerDefinitionId),
           content:
-            block.callerOrSkillDefinitionId === block.masterOrCallerDefinitionId
-              ? (
-                <>
-                  <div>
-                    <CardDescriptionPart cardDefinitionId={block.masterOrCallerDefinitionId} />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div class="flex flex-col gap-1">
-                    <div class="text-3 text-#d4bc8e">
-                      {`触发效果`}
+            block.callerOrSkillDefinitionId ===
+            block.masterOrCallerDefinitionId ? (
+              <>
+                <div>
+                  <CardDescriptionPart
+                    cardDefinitionId={block.masterOrCallerDefinitionId}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div class="flex flex-col gap-1">
+                  <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
+                  <div class="flex flex-row items-center gap-1">
+                    <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
+                      <Image
+                        imageId={block.callerOrSkillDefinitionId}
+                        type="icon"
+                        class="h-7 w-7"
+                      />
                     </div>
-                    <div class="flex flex-row items-center gap-1">
-                      <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
-                        <Image
-                          imageId={block.callerOrSkillDefinitionId}
-                          type="icon"
-                          class="h-7 w-7"
-                        />
-                      </div>
-                      <span class="text-#fff3e0/98 text-3">
-                        {`${assetsManager.getNameSync(block.callerOrSkillDefinitionId)}`}
-                      </span>
-                    </div>
+                    <span class="text-#fff3e0/98 text-3">
+                      {`${assetsManager.getNameSync(
+                        block.callerOrSkillDefinitionId,
+                      )}`}
+                    </span>
                   </div>
-                </>),
+                </div>
+              </>
+            ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "playingCard":{
+    case "playingCard": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1194,18 +1228,21 @@ const renderHistoryBlock = (
           opp: opp(block.who),
           imageId: block.cardDefinitionId,
           name: assetsManager.getNameSync(block.cardDefinitionId),
-          content:
+          content: (
             <>
               <div>
-                <CardDescriptionPart cardDefinitionId={block.cardDefinitionId} />
+                <CardDescriptionPart
+                  cardDefinitionId={block.cardDefinitionId}
+                />
               </div>
             </>
+          ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "selectCard":{
+    case "selectCard": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1215,22 +1252,23 @@ const renderHistoryBlock = (
         content: {
           opp: opp(block.who),
           imageId: opp(block.who) ? undefined : block.cardDefinitionId,
-          name: opp(block.who) ? undefined : assetsManager.getNameSync(block.cardDefinitionId),
-          content:
+          name: opp(block.who)
+            ? undefined
+            : assetsManager.getNameSync(block.cardDefinitionId),
+          content: (
             <>
               <span class="text-3 text-#d4bc8e">
                 {`${subject(opp(block.who))}`}
               </span>
-              <span class="text-3 text-#d4bc8e">
-                {`触发挑选效果`}
-              </span>
+              <span class="text-3 text-#d4bc8e">{`触发挑选效果`}</span>
             </>
+          ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "elementalTunning":{
+    case "elementalTunning": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1240,27 +1278,28 @@ const renderHistoryBlock = (
         content: {
           opp: opp(block.who),
           imageId: opp(block.who) ? undefined : block.cardDefinitionId,
-          name: opp(block.who) ? undefined : assetsManager.getNameSync(block.cardDefinitionId),
-          content:
-            opp(block.who)
-              ? (
-                <>
-                  <span>
-                    {`???`}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <CardDescriptionPart cardDefinitionId={block.cardDefinitionId} />
-                  </div>
-                </>)
+          name: opp(block.who)
+            ? undefined
+            : assetsManager.getNameSync(block.cardDefinitionId),
+          content: opp(block.who) ? (
+            <>
+              <span>{`???`}</span>
+            </>
+          ) : (
+            <>
+              <div>
+                <CardDescriptionPart
+                  cardDefinitionId={block.cardDefinitionId}
+                />
+              </div>
+            </>
+          ),
         },
         summary: renderSummary(block.children),
       };
       break;
     }
-    case "pocket":{
+    case "pocket": {
       result = {
         type: "pocket",
         opp: false,
@@ -1277,7 +1316,7 @@ const renderHistoryBlock = (
       };
       break;
     }
-    default:{
+    default: {
       result = {
         type: "pocket",
         opp: false,
@@ -1301,14 +1340,14 @@ const renderHistoryBlock = (
 function HistoryChildBox(props: { data: renderHistoryChildProps }) {
   return (
     <div class="w-full h-11 flex flex-row shrink-0 bg-white/4 gap-2 justify-center">
-      <div 
-      class="w-1 h-full shrink-0 bg-#806440 data-[opp]:bg-#48678b"
-      bool:data-opp={props.data.opp}
+      <div
+        class="w-1 h-full shrink-0 bg-#806440 data-[opp]:bg-#48678b"
+        bool:data-opp={props.data.opp}
       />
       <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
           <Match when={props.data.imageId === undefined}>
-            <div class="w-5 h-8.6 bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0"/>
+            <div class="w-5 h-8.6 bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0" />
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
@@ -1331,25 +1370,27 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
           </div>
           <Show when={props.data.healthChange}>
             {(healthChange) => (
-              <div 
+              <div
                 class="h-4 px-3 min-w-12 flex flex-row items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51 data-[increase]:bg-#6e9b3a"
-                bool:data-increase={healthChange().type==="heal"}
+                bool:data-increase={healthChange().type === "heal"}
               >
                 <Show when={healthChange().special}>
                   <div class="h-5 w-5 flex-shrink-0 -translate-x-1">
                     <Switch>
-                      <Match when={healthChange().type==="heal"}>
+                      <Match when={healthChange().type === "heal"}>
                         <RevivePreviewIcon class="h-5 w-5" />
                       </Match>
-                      <Match when={healthChange().type==="damage"}>
+                      <Match when={healthChange().type === "damage"}>
                         <DefeatedPreviewIcon class="h-5 w-5" />
                       </Match>
                     </Switch>
-                  </div>  
+                  </div>
                 </Show>
-                <StrokedText 
-                  text={`${healthChange().type==="heal" ? "+" : "-"}${healthChange().value}`} 
-                  strokeWidth={1.5} 
+                <StrokedText
+                  text={`${healthChange().type === "heal" ? "+" : "-"}${
+                    healthChange().value
+                  }`}
+                  strokeWidth={1.5}
                   strokeColor="black"
                 />
               </div>
@@ -1365,7 +1406,7 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
 }
 
 function More() {
-  return(
+  return (
     <img
       class="h-3 w-3"
       // TODO: replace this with an API endpoint
@@ -1384,25 +1425,20 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           </Match>
           <Match when={props.data.aura !== undefined}>
             <For each={props.data.aura as DamageType[]}>
-              {(damageType) => (
-                <Image
-                  imageId={damageType}
-                  class="h-3 w-3"
-                />                
-              )}
+              {(damageType) => <Image imageId={damageType} class="h-3 w-3" />}
             </For>
           </Match>
         </Switch>
       </div>
-      <div 
-      class="h-18 relative"
-      style={{width: `${2.375 + props.data.cardface.length * 0.25}rem`}}
+      <div
+        class="h-18 relative"
+        style={{ width: `${2.375 + props.data.cardface.length * 0.25}rem` }}
       >
         <Switch>
-          <Match when={props.data.size==="normal"}>
+          <Match when={props.data.size === "normal"}>
             <For each={props.data.cardface.reverse()}>
-              {(imageId, index)=>(
-                <div 
+              {(imageId, index) => (
+                <div
                   class="absolute w-10.5 h-18 top-50% -translate-y-50%"
                   style={{
                     right: `${index() * 0.25}rem`,
@@ -1413,10 +1449,10 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               )}
             </For>
           </Match>
-          <Match when={props.data.size==="summon"}>
+          <Match when={props.data.size === "summon"}>
             <For each={props.data.cardface.reverse()}>
-              {(imageId, index)=>(
-                <div 
+              {(imageId, index) => (
+                <div
                   class="absolute w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden top-50% -translate-y-50%"
                   style={{
                     right: `${index() * 0.25}rem`,
@@ -1433,30 +1469,38 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         </Switch>
         <div class="h-8 w-8 absolute top-50% left-5.25 -translate-x-50% -translate-y-50%">
           <Switch>
-            <Match when={props.data.inner==="switch"}>
-              <SwitchActiveIcon class="h-full w-full"/>
+            <Match when={props.data.inner === "switch"}>
+              <SwitchActiveIcon class="h-full w-full" />
             </Match>
-            <Match when={props.data.inner==="defeated"}>
-              <DefeatedPreviewIcon class="h-full w-full"/>
+            <Match when={props.data.inner === "defeated"}>
+              <DefeatedPreviewIcon class="h-full w-full" />
             </Match>
           </Switch>
         </div>
         <div class="h-4 w-12 absolute top-50% left-5.25 -translate-x-50% -translate-y-50%">
           <Switch>
-            <Match when={props.data.inner==="damage"}>
+            <Match when={props.data.inner === "damage"}>
               <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
-                <StrokedText 
-                  text={props.data.innerValue === "more" ? "···" : `${props.data.innerValue}`} 
-                  strokeWidth={1.5} 
+                <StrokedText
+                  text={
+                    props.data.innerValue === "more"
+                      ? "···"
+                      : `${props.data.innerValue}`
+                  }
+                  strokeWidth={1.5}
                   strokeColor="black"
                 />
               </div>
             </Match>
-            <Match when={props.data.inner==="heal"}>
+            <Match when={props.data.inner === "heal"}>
               <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
-                <StrokedText 
-                  text={props.data.innerValue === "more" ? "···" : `+${props.data.innerValue}`} 
-                  strokeWidth={1.5} 
+                <StrokedText
+                  text={
+                    props.data.innerValue === "more"
+                      ? "···"
+                      : `+${props.data.innerValue}`
+                  }
+                  strokeWidth={1.5}
                   strokeColor="black"
                 />
               </div>
@@ -1471,11 +1515,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             <Match when={props.data.status !== undefined}>
               <For each={props.data.status as number[]}>
                 {(status) => (
-                  <Image
-                    imageId={status}
-                    type="icon"
-                    class="h-3 w-3"
-                  />                
+                  <Image imageId={status} type="icon" class="h-3 w-3" />
                 )}
               </For>
             </Match>
@@ -1490,11 +1530,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           <Match when={props.data.combat !== undefined}>
             <For each={props.data.combat as number[]}>
               {(combat) => (
-                <Image
-                  imageId={combat}
-                  type="icon"
-                  class="h-3 w-3"
-                />                
+                <Image imageId={combat} type="icon" class="h-3 w-3" />
               )}
             </For>
           </Match>
@@ -1504,12 +1540,11 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
   );
 }
 
-function HistoryBlockBox(
-  props: { 
-    data: renderHistoryBlockProps, 
-    isSelected: boolean;
-    onClick: () => void;
-  }) {
+function HistoryBlockBox(props: {
+  data: renderHistoryBlockProps;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
   const blockStyle = () => {
     if (props.isSelected && props.data.opp) return "block-opp-selected";
     if (props.isSelected && !props.data.opp) return "block-my-selected";
@@ -1522,24 +1557,24 @@ function HistoryBlockBox(
       onClick={() => props.onClick()}
     >
       <div class="w-full h-6 bg-[var(--title-color)] flex items-center">
-        <div 
+        <div
           class="text-#e5aa5f data-[opp]:text-#7eb5ff text-2.8 font-bold ml-1.5"
           bool:data-opp={props.data.opp}
         >
           {props.data.title}
-        </div>        
+        </div>
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
-          <div class="h-3"/>
+          <div class="h-3" />
           <div class="w-10.5 h-18 relative">
-            <Show 
+            <Show
               when={props.data.imageId}
               fallback={
-                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0" />
               }
             >
-              {(imageId) => ( 
+              {(imageId) => (
                 <div class="relative w-10.5 h-18">
                   <CardFace definitionId={imageId()} />
                 </div>
@@ -1547,29 +1582,31 @@ function HistoryBlockBox(
             </Show>
             <div class="h-8 w-8 absolute top-50% left-50% -translate-x-50% -translate-y-50%">
               <Switch>
-                <Match when={props.data.type==="switchActive"}>
-                  <SwitchActiveIcon class="h-full w-full"/>
+                <Match when={props.data.type === "switchActive"}>
+                  <SwitchActiveIcon class="h-full w-full" />
                 </Match>
-                <Match when={props.data.type==="triggered"}>
-                  <SwitchActiveIcon class="h-full w-full"/>
+                <Match when={props.data.type === "triggered"}>
+                  <SwitchActiveIcon class="h-full w-full" />
                 </Match>
-                <Match when={props.data.type==="elementalTunning"}>
-                  <TunningIcon class="h-full w-full"/>
+                <Match when={props.data.type === "elementalTunning"}>
+                  <TunningIcon class="h-full w-full" />
                 </Match>
-              </Switch>              
+              </Switch>
             </div>
           </div>
-          <div class="h-3"/>
+          <div class="h-3" />
         </div>
         <Show when={props.data.summary.length}>
-          <div class="h-24 w-4 flex items-center justify-center font-bold text-white text-5 text-stroke-1">→</div>
+          <div class="h-24 w-4 flex items-center justify-center font-bold text-white text-5 text-stroke-1">
+            →
+          </div>
           <For each={props.data.summary.slice(0, 3)}>
-            {(summary) => (
-              <HistorySummaryShot data={summary} />
-            )}
+            {(summary) => <HistorySummaryShot data={summary} />}
           </For>
           <Show when={props.data.summary.length > 3}>
-            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">···</div>
+            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">
+              ···
+            </div>
           </Show>
         </Show>
       </div>
@@ -1577,14 +1614,13 @@ function HistoryBlockBox(
   );
 }
 
-function PocketHistoryBlockBox(
-  props: { 
-    data: renderHistoryBlockProps, 
-    isSelected: boolean;
-    onClick: () => void;
-  }) {
+function PocketHistoryBlockBox(props: {
+  data: renderHistoryBlockProps;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
   return (
-    <Show 
+    <Show
       when={props.data.summary.length}
       fallback={
         <div
@@ -1592,13 +1628,13 @@ function PocketHistoryBlockBox(
           bool:data-selected={props.isSelected}
           onClick={() => props.onClick()}
         >
-          <div 
+          <div
             class="w-full h-6 bg-#b1ada8 rounded-t-0 flex items-center opacity-60 data-[selected]:opacity-80"
             bool:data-selected={props.isSelected}
           >
             <div class="text-#212933 text-2.8 font-bold ml-1.5">
               {props.data.title}
-            </div>        
+            </div>
           </div>
         </div>
       }
@@ -1608,7 +1644,7 @@ function PocketHistoryBlockBox(
         bool:data-selected={props.isSelected}
         onClick={() => props.onClick()}
       >
-        <div 
+        <div
           class="w-full h-6 bg-#b1ada8 flex items-center opacity-60 data-[selected]:opacity-80"
           bool:data-selected={props.isSelected}
         >
@@ -1618,15 +1654,15 @@ function PocketHistoryBlockBox(
         </div>
         <div class="flex flex-row items-center justify-center h-24 gap-1.5">
           <For each={props.data.summary.slice(0, 4)}>
-            {(summary) => (
-              <HistorySummaryShot data={summary} />
-            )}
+            {(summary) => <HistorySummaryShot data={summary} />}
           </For>
           <Show when={props.data.summary.length > 4}>
-            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">···</div>
+            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">
+              ···
+            </div>
           </Show>
         </div>
-      </div> 
+      </div>
     </Show>
   );
 }
@@ -1642,11 +1678,11 @@ function HistoryHintBox(props: { data: renderHistoryHintProps }) {
         </div>
       </Match>
       <Match when={props.data.type === "action"}>
-        <div 
+        <div
           class="w-full h-6 text-center bg-#885e2e data-[opp]:bg-#3e69a8 rounded-0.5 shrink-0 flex  items-center justify-center"
           bool:data-opp={props.data.opp}
         >
-          <div 
+          <div
             class="text-#efb264 data-[opp]:text-#9bc6ff text-3.2 font-bold"
             bool:data-opp={props.data.opp}
           >
@@ -1681,7 +1717,9 @@ export function HistoryToggleButton(props: HistoryToggleButtonProps) {
 }
 
 export function HistoryPanel(props: HistoryPanelProps) {
-  const [selectedBlock, setSelectedBlock] = createSignal<HistoryBlock | null>(null);
+  const [selectedBlock, setSelectedBlock] = createSignal<HistoryBlock | null>(
+    null,
+  );
   const [showBackToBottom, setShowBackToBottom] = createSignal(false);
   let scrollRef: HTMLDivElement | undefined;
 
@@ -1691,40 +1729,46 @@ export function HistoryPanel(props: HistoryPanelProps) {
 
   const handleScroll = () => {
     if (!scrollRef) return;
-    const distance = scrollRef.scrollHeight - scrollRef.scrollTop - scrollRef.clientHeight;
+    const distance =
+      scrollRef.scrollHeight - scrollRef.scrollTop - scrollRef.clientHeight;
     setShowBackToBottom(distance > 100);
   };
 
   const who = () => props.who;
 
-  createEffect(
-    () => {
-      scrollToBottom();
-    },
-  );
+  createEffect(() => {
+    scrollToBottom();
+  });
 
   return (
     <WhoContext.Provider value={who}>
       <div class="fixed inset-0 z-0" onClick={() => setSelectedBlock(null)} />
       <div class="fixed right-0 top-0 bottom-0 w-70 shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
-        <div class="w-full h-12"/>
+        <div class="w-full h-12" />
         <div
           class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar history-scrollbar-simply"
-          ref={el => (scrollRef = el)}
+          ref={(el) => (scrollRef = el)}
           onScroll={handleScroll}
         >
           <For each={props.history}>
-            {(block, index) =>
+            {(block, index) => (
               <Switch>
-                <Match when={block.type === "changePhase" || block.type === "action"}>
-                  <HistoryHintBox data={renderHistoryHint(block as HistoryHintBlock)} />
+                <Match
+                  when={block.type === "changePhase" || block.type === "action"}
+                >
+                  <HistoryHintBox
+                    data={renderHistoryHint(block as HistoryHintBlock)}
+                  />
                 </Match>
                 <Match when={block.type === "pocket"}>
                   <PocketHistoryBlockBox
                     data={renderHistoryBlock(block as HistoryDetailBlock)}
                     isSelected={selectedBlock() === block}
                     onClick={() => {
-                      if (block.type !== "changePhase" && block.type !== "action")
+                      if (
+                        block.type !== "changePhase" &&
+                        block.type !== "action"
+                      )
                         setSelectedBlock(block);
                     }}
                   />
@@ -1734,13 +1778,16 @@ export function HistoryPanel(props: HistoryPanelProps) {
                     data={renderHistoryBlock(block as HistoryDetailBlock)}
                     isSelected={selectedBlock() === block}
                     onClick={() => {
-                      if (block.type !== "changePhase" && block.type !== "action")
+                      if (
+                        block.type !== "changePhase" &&
+                        block.type !== "action"
+                      )
                         setSelectedBlock(block);
                     }}
                   />
                 </Match>
               </Switch>
-            }
+            )}
           </For>
         </div>
         <Show when={showBackToBottom()}>
@@ -1752,44 +1799,53 @@ export function HistoryPanel(props: HistoryPanelProps) {
           </button>
         </Show>
         <Show when={selectedBlock()}>
-          {(block) =>
-            <div class="fixed right-70 inset-0 z--0.1" onClick={() => setSelectedBlock(null)}>
+          {(block) => (
+            <div
+              class="fixed right-70 inset-0 z--0.1"
+              onClick={() => setSelectedBlock(null)}
+            >
               <HistoryBlockDetailPanel
                 block={block() as HistoryDetailBlock}
                 onClose={() => setSelectedBlock(null)}
               />
             </div>
-          }
+          )}
         </Show>
       </div>
     </WhoContext.Provider>
   );
 }
 
-function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: () => void }) {
+function HistoryBlockDetailPanel(props: {
+  block: HistoryDetailBlock;
+  onClose: () => void;
+}) {
   let panelRef: HTMLDivElement | undefined;
-  const renderBlock = () => renderHistoryBlock(props.block);
+  const renderBlock = createMemo(() => renderHistoryBlock(props.block));
   return (
     <div
       class={`fixed right-71 w-90 p-3 max-h-120 bg-#2f333b/98 b-#404a56 b-1 rounded-1 shadow-xl overflow-hidden
       top-1/2 -translate-y-1/2`}
-      onClick={e => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
     >
-      <div ref={el => (panelRef = el)} class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply">
+      <div
+        ref={(el) => (panelRef = el)}
+        class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply"
+      >
         <Show when={renderBlock().type !== "pocket"}>
           <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
-            <div 
+            <div
               class="absolute top-1px left-1px w-3.5 h-3.5 rounded-lt-1 bg-#806440 data-[opp]:bg-#48678b history-card-hint"
               bool:data-opp={renderBlock().content.opp}
             />
             <div class="w-14.5 h-22 p-2">
-              <Show 
+              <Show
                 when={renderBlock().content.imageId}
                 fallback={
-                  <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+                  <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0" />
                 }
               >
-                {(imageId) => ( 
+                {(imageId) => (
                   <div class="relative w-10.5 h-18">
                     <CardFace definitionId={imageId()} />
                   </div>
@@ -1798,20 +1854,23 @@ function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: ()
             </div>
             <div class="w-full min-h-22 py-1.5 pr-2 flex flex-col">
               <div class="text-3.5 text-#fff3e0/98 font-bold">
-                {renderBlock().content.name ? renderBlock().content.name : "???"}
+                {renderBlock().content.name
+                  ? renderBlock().content.name
+                  : "???"}
               </div>
               <div class="flex text-2.5 text-#b2afa8 font-bold">
                 {renderBlock().content.content}
               </div>
             </div>
-          </div>          
+          </div>
         </Show>
         <div class="space-y-0.5">
-          <For each={(props.block as HistoryDetailBlock).children}>
-            {(child) =>
+          <For each={props.block.children}>
+            {(child) => (
               <HistoryChildBox
-                data={renderHistoryChild(child)}
-              />}
+                data={renderHistoryChild(child, renderBlock().imageId)}
+              />
+            )}
           </For>
         </div>
       </div>

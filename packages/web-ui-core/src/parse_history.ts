@@ -36,6 +36,8 @@ import {
   PbPlayerStatus,
   PbSwitchActiveFromAction,
   PbRemoveCardReason,
+  PbDamageType,
+  PbHealKind,
 } from "@gi-tcg/typings";
 import type {
   ApplyHistoryChild,
@@ -97,8 +99,6 @@ class StateRecorder {
     number | undefined,
     number | undefined,
   ];
-  readonly isChoosingActive = [false, false] as [boolean, boolean];
-
   constructor(private readonly previousState: PbGameState | undefined) {
     if (!previousState) {
       return;
@@ -126,8 +126,8 @@ class StateRecorder {
     entityType: EntityType,
   ) {
     this.area.set(entity.id, area);
+    this.entityInitStates.set(entity.id, { ...entity, type: entityType });
     if (entity.variableName) {
-      this.entityInitStates.set(entity.id, { ...entity, type: entityType });
       this.visibleVarRecords.set(
         entity.id,
         new VariableRecord(entity.variableValue ?? 0),
@@ -233,6 +233,7 @@ class StateRecorder {
     } else if (where === PbEntityArea.SUPPORT) {
       entityType = "support";
     } else {
+      console.error(mut);
       return;
     }
     this.initializeEntity(
@@ -256,299 +257,372 @@ class StateRecorder {
 export function parseToHistory(
   previousState: PbGameState | undefined,
   mutations: PbExposedMutation[],
+  lastMainBlock?: HistoryBlock | undefined,
 ): HistoryBlock[] {
-  const result: HistoryBlock[] = [];
-  let roundNumber = previousState?.roundNumber ?? 0;
-  let mainBlock: Extract<HistoryBlock, { children: unknown }> | null = null;
-  type LossChildrenImpl<T> = T extends any
-    ? { [K in Exclude<keyof T, "who">]: T[K] } & { who: 0 | 1 | null }
-    : never;
-  type LooseChildren = LossChildrenImpl<HistoryChildren>;
-  const children: LooseChildren[] = [];
-  const stateRecorder = new StateRecorder(previousState);
+  try {
+    const result: HistoryBlock[] = [];
+    let roundNumber = previousState?.roundNumber ?? 0;
+    let phase = previousState?.phase ?? PbPhaseType.ACTION;
 
-  for (const pbm of mutations) {
-    const m = flattenPbOneof(pbm.mutation!);
-    switch (m.$case) {
-      case "changePhase": {
-        const newPhase = (
-          {
-            [PbPhaseType.INIT_HANDS]: "initHands",
-            [PbPhaseType.INIT_ACTIVES]: "initActives",
-            [PbPhaseType.ACTION]: "action",
-            [PbPhaseType.END]: "end",
-            [PbPhaseType.ROLL]: null,
-            [PbPhaseType.GAME_END]: null,
-          } as const
-        )[m.newPhase];
-        if (!newPhase) {
-          continue;
+    let maybeEndPhaseDrawing = false;
+
+    let mainBlock: Extract<HistoryBlock, { children: unknown }> | null = null;
+    const children: HistoryChildren[] = [];
+    const stateRecorder = new StateRecorder(previousState);
+
+    for (const pbm of mutations) {
+      const m = flattenPbOneof(pbm.mutation!);
+      switch (m.$case) {
+        case "changePhase": {
+          const newPhase = (
+            {
+              [PbPhaseType.INIT_HANDS]: "initHands",
+              [PbPhaseType.INIT_ACTIVES]: "initActives",
+              [PbPhaseType.ACTION]: "action",
+              [PbPhaseType.END]: "end",
+              [PbPhaseType.ROLL]: null,
+              [PbPhaseType.GAME_END]: null,
+            } as const
+          )[m.newPhase];
+          if (!newPhase) {
+            continue;
+          }
+          result.push({
+            type: "changePhase",
+            roundNumber,
+            newPhase,
+          });
+          phase = m.newPhase;
+          break;
         }
-        result.push({
-          type: "changePhase",
-          roundNumber,
-          newPhase,
-        });
-        break;
-      }
-      case "resetDice": {
-        // TODO
-        break;
-      }
-      case "modifyEntityVar": {
-        const child = stateRecorder.receive(m);
-        if (child) {
-          children.push(child);
+        case "resetDice": {
+          // TODO
+          break;
         }
-        break;
-      }
-      case "applyAura": {
-        children.push({
-          type: "apply",
-          who: stateRecorder.area.get(m.targetId)?.who ?? null,
-          characterDefinitionId: m.targetDefinitionId,
-          elementType: m.elementType,
-          reaction:
-            m.reactionType === PbReactionType.UNSPECIFIED
-              ? void 0
-              : m.reactionType,
-          oldAura: m.oldAura,
-          newAura: m.newAura,
-        });
-        break;
-      }
-      case "damage": {
-        children.push({
-          type: "damage",
-          who: stateRecorder.area.get(m.targetId)?.who ?? null,
-          characterDefinitionId: m.targetDefinitionId,
-          damageType: m.damageType,
-          damageValue: m.value,
-          causeDefeated: m.causeDefeated,
-          reaction:
-            m.reactionType === PbReactionType.UNSPECIFIED
-              ? void 0
-              : m.reactionType,
-          oldAura: m.oldAura,
-          newAura: m.newAura,
-          newHealth: m.newHealth,
-          oldHealth: m.oldHealth,
-        });
-        break;
-      }
-      case "createCard": {
-        children.push({
-          type: "createCard",
-          who: m.who as 0 | 1,
-          cardDefinitionId: m.card!.definitionId,
-          target: m.to === PbCardArea.HAND ? "hands" : "pile",
-        });
-        break;
-      }
-      case "createCharacter": {
-        stateRecorder.onNewCharacter(m);
-        break;
-      }
-      case "createEntity": {
-        stateRecorder.onNewEntity(m);
-        const { definitionId, id } = m.entity!;
-        const { type } = stateRecorder.entityInitStates.get(id)!;
-        children.push({
-          type: "createEntity",
-          who: m.who as 0 | 1,
-          masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
-          entityDefinitionId: definitionId,
-          entityType: type,
-        });
-        break;
-      }
-      case "removeCard": {
-        const definitionId = m.card!.definitionId;
-        if (
-          m.reason === PbRemoveCardReason.PLAY ||
-          m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
-        ) {
+        case "modifyEntityVar": {
+          const child = stateRecorder.receive(m);
+          if (child) {
+            children.push(child);
+          }
+          break;
+        }
+        case "applyAura": {
+          children.push({
+            type: "apply",
+            who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+            characterDefinitionId: m.targetDefinitionId,
+            elementType: m.elementType,
+            reaction:
+              m.reactionType === PbReactionType.UNSPECIFIED
+                ? void 0
+                : m.reactionType,
+            oldAura: m.oldAura,
+            newAura: m.newAura,
+          });
+          break;
+        }
+        case "damage": {
+          if (m.damageType === PbDamageType.HEAL) {
+            children.push({
+              type: "heal",
+              who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+              characterDefinitionId: m.targetDefinitionId,
+              healValue: m.value,
+              oldHealth: m.oldHealth,
+              newHealth: m.newHealth,
+              healType:
+                m.healKind === PbHealKind.IMMUNE_DEFEATED
+                  ? "immuneDefeated"
+                  : m.healKind === PbHealKind.REVIVE
+                    ? "revive"
+                    : "normal",
+            });
+          } else {
+            children.push({
+              type: "damage",
+              who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+              characterDefinitionId: m.targetDefinitionId,
+              damageType: m.damageType,
+              damageValue: m.value,
+              causeDefeated: m.causeDefeated,
+              reaction:
+                m.reactionType === PbReactionType.UNSPECIFIED
+                  ? void 0
+                  : m.reactionType,
+              oldAura: m.oldAura,
+              newAura: m.newAura,
+              newHealth: m.newHealth,
+              oldHealth: m.oldHealth,
+            });
+          }
+          break;
+        }
+        case "createCard": {
+          children.push({
+            type: "createCard",
+            who: m.who as 0 | 1,
+            cardDefinitionId: m.card!.definitionId,
+            target: m.to === PbCardArea.HAND ? "hands" : "pile",
+          });
+          break;
+        }
+        case "createCharacter": {
+          stateRecorder.onNewCharacter(m);
+          break;
+        }
+        case "createEntity": {
+          stateRecorder.onNewEntity(m);
+          const { definitionId, id } = m.entity!;
+          const { type } = stateRecorder.entityInitStates.get(id)!;
+          children.push({
+            type: "createEntity",
+            who: m.who as 0 | 1,
+            masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+            entityDefinitionId: definitionId,
+            entityType: type,
+          });
+          break;
+        }
+        case "removeCard": {
+          const definitionId = m.card!.definitionId;
+          if (
+            m.reason === PbRemoveCardReason.PLAY ||
+            m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
+          ) {
+            mainBlock = {
+              type: "playingCard",
+              who: m.who as 0 | 1,
+              cardDefinitionId: definitionId,
+              children: [],
+            };
+            if (m.reason === PbRemoveCardReason.PLAY_NO_EFFECT) {
+              children.push({
+                type: "forbidCard",
+                who: m.who as 0 | 1,
+                cardDefinitionId: definitionId,
+              });
+            }
+          } else if (m.reason === PbRemoveCardReason.ELEMENTAL_TUNING) {
+            mainBlock = {
+              type: "elementalTunning",
+              who: m.who as 0 | 1,
+              cardDefinitionId: definitionId,
+              children: [],
+            };
+          } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
+            children.push({
+              type: "disposeCard",
+              who: m.who as 0 | 1,
+              cardDefinitionId: definitionId,
+            });
+          }
+          break;
+        }
+        case "removeEntity": {
+          const { definitionId, id } = m.entity!;
+          const area = stateRecorder.area.get(id);
+          const { type } = stateRecorder.entityInitStates.get(id)!;
+          children.push({
+            type: "removeEntity",
+            who: area?.who ?? 0,
+            masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+            entityDefinitionId: definitionId,
+            entityType: type,
+          });
+          break;
+        }
+        case "setPlayerFlag": {
+          if (m.flagName === PbPlayerFlag.DECLARED_END && m.flagValue) {
+            result.push({
+              type: "action",
+              who: m.who as 0 | 1,
+              actionType: "declareEnd",
+            });
+          }
+          break;
+        }
+        case "switchActive": {
+          stateRecorder.onSwitchActive(m);
+          const who = m.who as 0 | 1;
+          console.log(m);
+          if (m.fromAction === PbSwitchActiveFromAction.NONE) {
+            children.push({
+              type: "switchActive",
+              who,
+              characterDefinitionId: m.characterDefinitionId,
+              isOverloaded: m.viaSkillDefinitionId === Reaction.Overloaded,
+            });
+          } else {
+            result.push({
+              type: "switchActive",
+              who: m.who as 0 | 1,
+              characterDefinitionId: m.characterDefinitionId,
+              children: [],
+              how: "switch",
+            });
+          }
+          break;
+        }
+        case "transferCard": {
+          if (m.from === PbCardArea.PILE && m.to === PbCardArea.HAND) {
+            if (!mainBlock && phase === PbPhaseType.END) {
+              maybeEndPhaseDrawing = true;
+            }
+            const lastChild = children.at(-1);
+            if (lastChild?.type === "drawCard") {
+              lastChild.drawCardsCount += 1;
+            } else {
+              children.push({
+                type: "drawCard",
+                who: m.who as 0 | 1,
+                drawCardsCount: 1,
+              });
+            }
+          }
+          // TODO
+          break;
+        }
+        case "transformDefinition": {
+          const area = stateRecorder.area.get(m.entityId);
+          const state = stateRecorder.entityInitStates.get(m.entityId);
+          const oldDefinitionId = state?.definitionId ?? 0;
+          if (state) {
+            state.definitionId = m.newEntityDefinitionId;
+          }
+          children.push(
+            {
+              type: "transformDefinition",
+              who: area?.who ?? 0,
+              cardDefinitionId: oldDefinitionId,
+              stage: "old",
+            },
+            {
+              type: "transformDefinition",
+              who: area?.who ?? 0,
+              cardDefinitionId: m.newEntityDefinitionId,
+              stage: "new",
+            },
+          );
+          break;
+        }
+        case "skillUsed": {
+          if (m.skillType === PbSkillType.TRIGGERED) {
+            mainBlock = {
+              type: "triggered",
+              who: m.who as 0 | 1,
+              masterOrCallerDefinitionId:
+                stateRecorder.getMasterDefinitionId(m.callerId) ??
+                m.callerDefinitionId,
+              callerOrSkillDefinitionId: m.callerDefinitionId,
+              children: [],
+            };
+          } else if (m.skillType === PbSkillType.CHARACTER_PASSIVE) {
+            mainBlock = {
+              type: "triggered",
+              who: m.who as 0 | 1,
+              masterOrCallerDefinitionId: m.callerDefinitionId,
+              callerOrSkillDefinitionId: Math.floor(m.skillDefinitionId),
+              children: [],
+            };
+          } else {
+            const SKILL_TYPE_MAP = {
+              [PbSkillType.NORMAL]: "normal",
+              [PbSkillType.ELEMENTAL]: "elemental",
+              [PbSkillType.BURST]: "burst",
+              [PbSkillType.TECHNIQUE]: "technique",
+            } as const;
+            mainBlock = {
+              type: "useSkill",
+              who: m.who as 0 | 1,
+              callerDefinitionId: m.callerDefinitionId,
+              skillDefinitionId: m.skillDefinitionId,
+              skillType: SKILL_TYPE_MAP[m.skillType],
+              children: [],
+            };
+          }
+          break;
+        }
+        case "stepRound": {
+          roundNumber++;
+          break;
+        }
+        case "playerStatusChange": {
+          if (m.status === PbPlayerStatus.ACTING) {
+            result.push({
+              type: "action",
+              who: m.who as 0 | 1,
+              actionType: "action",
+            });
+          }
+          break;
+        }
+        case "chooseActiveDone": {
           mainBlock = {
-            type: "triggered",
-            who: m.who as 0 | 1,
-            masterOrCallerDefinitionId: definitionId,
-            callerOrSkillDefinitionId: definitionId,
-            children:
-              m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
-                ? [
-                    {
-                      type: "forbidCard",
-                      who: m.who as 0 | 1,
-                      cardDefinitionId: definitionId,
-                    },
-                  ]
-                : [],
-          };
-        } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
-          children.push({
-            type: "disposeCard",
-            who: m.who as 0 | 1,
-            cardDefinitionId: definitionId,
-          });
-        }
-        break;
-      }
-      case "removeEntity": {
-        const { definitionId, id } = m.entity!;
-        const area = stateRecorder.area.get(id);
-        const { type } = stateRecorder.entityInitStates.get(id)!;
-        children.push({
-          type: "removeEntity",
-          who: area?.who ?? 0,
-          masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
-          entityDefinitionId: definitionId,
-          entityType: type,
-        });
-        break;
-      }
-      case "setPlayerFlag": {
-        if (m.flagName === PbPlayerFlag.DECLARED_END) {
-          result.push({
-            type: "action",
-            who: m.who as 0 | 1,
-            actionType: "declareEnd",
-          });
-        }
-        break;
-      }
-      case "switchActive": {
-        stateRecorder.onSwitchActive(m);
-        const who = m.who as 0 | 1;
-        console.log(m);
-        if (m.fromAction === PbSwitchActiveFromAction.NONE) {
-          children.push({
             type: "switchActive",
-            who,
-            characterDefinitionId: m.characterDefinitionId,
-            isOverloaded: m.viaSkillDefinitionId === Reaction.Overloaded,
-          });
-        } else if (stateRecorder.isChoosingActive[who]) {
-          stateRecorder.isChoosingActive[who] = false;
-          result.push({
-            type: "switchActive",
-            who,
+            who: m.who as 0 | 1,
             characterDefinitionId: m.characterDefinitionId,
             how:
               (previousState?.phase ?? PbPhaseType.ACTION) < PbPhaseType.ACTION
                 ? "init"
                 : "choose",
             children: [],
-          });
-        } else {
-          result.push({
-            type: "switchActive",
-            who: m.who as 0 | 1,
-            characterDefinitionId: m.characterDefinitionId,
-            children: [],
-            how: "switch",
-          });
+          };
+          break;
         }
-        break;
-      }
-      case "transferCard": {
-        // TODO
-        break;
-      }
-      case "transformDefinition": {
-        const area = stateRecorder.area.get(m.entityId);
-        const state = stateRecorder.entityInitStates.get(m.entityId);
-        const oldDefinitionId = state?.definitionId ?? 0;
-        if (state) {
-          state.definitionId = m.newEntityDefinitionId;
-        }
-        children.push(
-          {
-            type: "transformDefinition",
-            who: area?.who ?? 0,
-            cardDefinitionId: oldDefinitionId,
-            stage: "old",
-          },
-          {
-            type: "transformDefinition",
-            who: area?.who ?? 0,
-            cardDefinitionId: m.newEntityDefinitionId,
-            stage: "new",
-          },
-        );
-        break;
-      }
-      case "skillUsed": {
-        if (m.skillType === PbSkillType.TRIGGERED) {
+        case "selectCardDone": {
           mainBlock = {
-            type: "triggered",
+            type: "selectCard",
             who: m.who as 0 | 1,
-            masterOrCallerDefinitionId:
-              stateRecorder.area.get(m.callerId)?.masterDefinitionId ??
-              m.callerDefinitionId,
-            callerOrSkillDefinitionId: m.callerDefinitionId,
+            cardDefinitionId: m.selectedDefinitionId,
             children: [],
           };
-        } else if (m.skillType === PbSkillType.CHARACTER_PASSIVE) {
-          mainBlock = {
-            type: "triggered",
-            who: m.who as 0 | 1,
-            masterOrCallerDefinitionId: m.callerDefinitionId,
-            callerOrSkillDefinitionId: Math.floor(m.skillDefinitionId),
-            children: [],
-          };
-        } else {
-          const SKILL_TYPE_MAP = {
-            [PbSkillType.NORMAL]: "normal",
-            [PbSkillType.ELEMENTAL]: "elemental",
-            [PbSkillType.BURST]: "burst",
-            [PbSkillType.TECHNIQUE]: "technique",
-          } as const;
-          mainBlock = {
-            type: "useSkill",
-            who: m.who as 0 | 1,
-            callerDefinitionId: m.callerDefinitionId,
-            skillDefinitionId: m.skillDefinitionId,
-            skillType: SKILL_TYPE_MAP[m.skillType],
-            children: [],
-          };
+          break;
         }
-        break;
-      }
-      case "stepRound": {
-        roundNumber++;
-        break;
-      }
-      case "playerStatusChange": {
-        if (m.status === PbPlayerStatus.ACTING) {
-          result.push({
-            type: "action",
-            who: m.who as 0 | 1,
-            actionType: "action",
-          });
-        } else if (m.status === PbPlayerStatus.CHOOSING_ACTIVE) {
-          stateRecorder.isChoosingActive[m.who as 0 | 1] = true;
+        case "switchTurn":
+        case "setWinner":
+        case "swapCharacterPosition": {
+          break;
         }
-        break;
-      }
-      case "switchTurn":
-      case "setWinner":
-      case "swapCharacterPosition": {
-        break;
-      }
-      default: {
-        const _: never = m;
-        continue;
+        default: {
+          const _: never = m;
+          continue;
+        }
       }
     }
+    if (mainBlock) {
+      mainBlock.children.push(...children);
+      result.unshift(mainBlock);
+      if (lastMainBlock) {
+        result.unshift(lastMainBlock);
+      }
+    } else if (maybeEndPhaseDrawing) {
+      // TODO use a endPhaseDraw block?
+      result.unshift({
+        type: "pocket",
+        children,
+      });
+      if (lastMainBlock) {
+        result.unshift(lastMainBlock);
+      }
+    } else if (lastMainBlock && "children" in lastMainBlock) {
+      result.unshift({
+        ...lastMainBlock,
+        children: [...lastMainBlock.children, ...children],
+      });
+    } else {
+      if (children.length > 0) {
+        result.unshift({
+          type: "pocket",
+          children,
+        });
+      }
+      if (lastMainBlock) {
+        result.unshift(lastMainBlock);
+      }
+    }
+    return result;
+  } catch (e) {
+    console.log("Error while parsing history:", e);
+    return lastMainBlock ? [lastMainBlock] : [];
   }
-  if (mainBlock) {
-    mainBlock.children.push(
-      ...children.map((child) => ({
-        ...child,
-        who: child.who ?? mainBlock.who,
-      })),
-    );
-    result.push(mainBlock);
-  }
-  return result;
 }

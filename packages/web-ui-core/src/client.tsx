@@ -24,6 +24,7 @@ import {
   SelectCardResponse,
   RerollDiceResponse,
   PbPhaseType,
+  PbPlayerStatus,
 } from "@gi-tcg/typings";
 import { createSignal, type ComponentProps, type JSX } from "solid-js";
 import {
@@ -51,6 +52,7 @@ import {
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 import { parseToHistory } from "./parse_history";
 import type { HistoryBlock } from "./history";
+import { createStore, produce } from "solid-js/store";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -64,6 +66,7 @@ const EMPTY_PLAYER_DATA: PbPlayerState = {
   initiativeSkill: [],
   declaredEnd: false,
   legendUsed: false,
+  status: PbPlayerStatus.UNSPECIFIED,
 };
 
 export const EMPTY_GAME_STATE: PbGameState = {
@@ -116,7 +119,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
     history: [],
-    playerStatus: [null, null],
     animatingCards: [],
     playingCard: null,
     enteringEntities: [],
@@ -244,7 +246,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     actionResolvers.switchHands?.reject();
   };
 
-  const history: HistoryBlock[] = [];
+  const [history, setHistory] = createStore<HistoryBlock[]>([]);
 
   const io: PlayerIOWithCancellation = {
     cancelRpc,
@@ -254,9 +256,14 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
       }
       uiQueue.push(async () => {
         who === 0 &&
-        console.log(...mutation.map(({ mutation }) => mutation?.$case));
+          console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
-        history.push(...parseToHistory(savedState, mutation));
+        setHistory(
+          produce((history) => {
+            const lastBlock = history.pop();
+            history.push(...parseToHistory(savedState, mutation, lastBlock));
+          }),
+        );
         const { promise, resolve } = Promise.withResolvers<void>();
         setData({
           previousState: savedState ?? state,

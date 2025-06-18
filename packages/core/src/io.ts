@@ -44,6 +44,7 @@ import {
   CHARACTER_TAG_NIGHTSOULS_BLESSING,
   PbResetDiceReason,
   PbHealKind,
+  PbPlayerStatus,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -569,6 +570,7 @@ export function exposeState(who: 0 | 1, state: GameState): PbGameState {
         initiativeSkill: i === who ? skills.map(exposeInitiativeSkill) : [],
         declaredEnd: p.declaredEnd,
         legendUsed: p.legendUsed,
+        status: PbPlayerStatus.UNSPECIFIED,
       };
     }),
   };
