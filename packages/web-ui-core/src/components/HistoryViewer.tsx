@@ -176,6 +176,17 @@ export function useWho() {
   return useContext(WhoContext);
 }
 
+const renderName = (definedId: number | undefined) => {
+  const { assetsManager } = useUiContext();
+  return (
+    definedId 
+      ? definedId === 0 
+        ? "???" 
+        : assetsManager.getNameSync(definedId) 
+      : "???"
+  );
+};
+
 const renderHistoryChild = (
   child: HistoryChildren,
   parentCallerDefinitionId: number | undefined,
@@ -228,7 +239,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         content: (
           <>
             <span>{`角色出战`}</span>
@@ -243,7 +254,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.callerDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.callerDefinitionId),
+        title: renderName(child.callerDefinitionId),
         content: (
           <>
             <span>{`触发效果`}</span>
@@ -257,9 +268,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: parentCallerDefinitionId,
         imageType: undefined,
-        title: parentCallerDefinitionId
-          ? assetsManager.getNameSync(parentCallerDefinitionId)
-          : void 0,
+        title: renderName(parentCallerDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
@@ -274,7 +283,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
@@ -290,9 +299,7 @@ const renderHistoryChild = (
           opp: opp(child.who),
           imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.masterDefinitionId
-            ? assetsManager.getNameSync(child.masterDefinitionId)
-            : "???",
+          title: renderName(child.masterDefinitionId),
           content: (
             <>
               <span>{`${createEntityTextMap[child.entityType]}`}</span>
@@ -302,7 +309,7 @@ const renderHistoryChild = (
                 class="h-3.5 w-3.5"
               />
               <span>
-                {`${assetsManager.getNameSync(child.entityDefinitionId)}`}
+                {`${renderName(child.entityDefinitionId)}`}
               </span>
             </>
           ),
@@ -313,7 +320,7 @@ const renderHistoryChild = (
           opp: opp(child.who),
           imageId: child.entityDefinitionId,
           imageType: undefined,
-          title: assetsManager.getNameSync(child.entityDefinitionId),
+          title: renderName(child.entityDefinitionId),
           content: (
             <>
               <span>{`${subject(opp(child.who))}`}</span>
@@ -327,13 +334,13 @@ const renderHistoryChild = (
     case "generateDice": {
       result = {
         opp: opp(child.who),
-        imageId: child.callerDefinitionId,
+        imageId: parentCallerDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.callerDefinitionId),
+        title: renderName(parentCallerDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
-            <span>{`生成${child.diceCount}个`}</span>
+            <span>{`生成1个`}</span>
             <Show when={child.diceType > 0}>
               <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
@@ -346,9 +353,9 @@ const renderHistoryChild = (
     case "absorbDice": {
       result = {
         opp: opp(child.who),
-        imageId: child.callerDefinitionId,
+        imageId: parentCallerDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.callerDefinitionId),
+        title: renderName(parentCallerDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
@@ -363,11 +370,56 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
             <span>{`${createCardTextMap[child.target]}`}</span>
+          </>
+        ),
+      };
+      break;
+    }
+    case "switchCard": {
+      result = {
+        opp: opp(child.who),
+        imageId: parentCallerDefinitionId,
+        imageType: undefined,
+        title: renderName(parentCallerDefinitionId),
+        content: (
+          <>
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`替换了1次手牌`}</span>
+          </>
+        ),
+      };
+      break;
+    }
+    case "undrawCard": {
+      result = {
+        opp: opp(child.who),
+        imageId: parentCallerDefinitionId,
+        imageType: undefined,
+        title: renderName(parentCallerDefinitionId),
+        content: (
+          <>
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`将${child.count}张手牌置入牌库`}</span>
+          </>
+        ),
+      };
+      break;
+    }
+    case "rerollDice": {
+      result = {
+        opp: opp(child.who),
+        imageId: parentCallerDefinitionId,
+        imageType: undefined,
+        title: renderName(parentCallerDefinitionId),
+        content: (
+          <>
+            <span>{`${subject(opp(child.who))}`}</span>
+            <span>{`进行了${child.count}次重投`}</span>
           </>
         ),
       };
@@ -378,7 +430,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         healthChange: {
           type: "damage",
           value: child.damageValue,
@@ -418,7 +470,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         healthChange: {
           type: "heal",
           value: child.healValue,
@@ -446,7 +498,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         content: (
           <>
             <span>{`附着`}</span>
@@ -470,7 +522,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         content: (
           <>
             <span>{`获得${increaseValue}点最大生命值`}</span>
@@ -488,7 +540,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.characterDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.characterDefinitionId),
+        title: renderName(child.characterDefinitionId),
         content: (
           <>
             <span>{`${energyValue > 0 ? "获得" : "消耗"}`}</span>
@@ -504,7 +556,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
@@ -519,7 +571,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`${child.variableName}：`}</span>
@@ -535,9 +587,7 @@ const renderHistoryChild = (
           opp: opp(child.who),
           imageId: child.masterDefinitionId,
           imageType: "cardFace",
-          title: child.masterDefinitionId
-            ? assetsManager.getNameSync(child.masterDefinitionId)
-            : "???",
+          title: renderName(child.masterDefinitionId),
           content: (
             <>
               <span>{`${removeEntityTextMap[child.entityType]}`}</span>
@@ -558,7 +608,7 @@ const renderHistoryChild = (
           opp: opp(child.who),
           imageId: child.entityDefinitionId,
           imageType: undefined,
-          title: assetsManager.getNameSync(child.entityDefinitionId),
+          title: renderName(child.entityDefinitionId),
           content: (
             <>
               <span>{`${removeEntityTextMap[child.entityType]}`}</span>
@@ -571,17 +621,15 @@ const renderHistoryChild = (
     case "convertDice": {
       result = {
         opp: opp(child.who),
-        imageId: child.isTunning ? "tuning" : child.callerDefinitionId,
+        imageId: child.isTunning ? "tuning" : parentCallerDefinitionId,
         imageType: undefined,
         title: child.isTunning
           ? "元素调和"
-          : child.callerDefinitionId
-            ? assetsManager.getNameSync(child.callerDefinitionId)
-            : "???",
+          : renderName(parentCallerDefinitionId),
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
-            <span>{`将1个元素骰转换为`}</span>
+            <span>{`将${child.count}个元素骰转换为`}</span>
             <Show when={child.diceType > 0}>
               <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
@@ -596,7 +644,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: "cardFace",
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`遭到反制，未能生效`}</span>
@@ -610,7 +658,7 @@ const renderHistoryChild = (
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
         imageType: undefined,
-        title: assetsManager.getNameSync(child.cardDefinitionId),
+        title: renderName(child.cardDefinitionId),
         content: (
           <>
             <span>{`${TransformTextMap[child.stage]}`}</span>
@@ -1035,6 +1083,7 @@ interface renderHistoryBlockProps {
   opp: boolean;
   title: string;
   imageId: number | undefined;
+  callerId: number | undefined;
   energyChange: blockEnergyProps | undefined;
   content: blockDetailProps;
   summary: SummaryShot[];
@@ -1099,11 +1148,12 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: opp(block.who),
         title: `${subject(opp(block.who))}${switchActiveTextMap[block.how]}`,
         imageId: block.characterDefinitionId,
+        callerId: block.characterDefinitionId,
         energyChange: extractBlockEnergyProps(block, 0), // 可填写maxEnergy
         content: {
           opp: opp(block.who),
           imageId: block.characterDefinitionId,
-          name: assetsManager.getNameSync(block.characterDefinitionId),
+          name: renderName(block.characterDefinitionId),
           content: (
             <>
               <span class="text-3 text-#d4bc8e">{`角色出战`}</span>
@@ -1122,6 +1172,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           block.skillType === "technique" ? "使用特技" : "使用技能"
         }`,
         imageId: block.callerDefinitionId,
+        callerId: block.callerDefinitionId,
         energyChange:
           block.skillType === "technique"
             ? undefined
@@ -1135,7 +1186,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         content: {
           opp: opp(block.who),
           imageId: block.callerDefinitionId,
-          name: assetsManager.getNameSync(block.callerDefinitionId),
+          name: renderName(block.callerDefinitionId),
           content: (
             <>
               <div class="flex flex-col gap-1">
@@ -1170,6 +1221,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: opp(block.who),
         title: "触发效果",
         imageId: block.masterOrCallerDefinitionId,
+        callerId: block.callerOrSkillDefinitionId,
         energyChange: extractBlockEnergyProps(
           {
             characterDefinitionId: block.masterOrCallerDefinitionId,
@@ -1180,38 +1232,41 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         content: {
           opp: opp(block.who),
           imageId: block.masterOrCallerDefinitionId,
-          name: assetsManager.getNameSync(block.masterOrCallerDefinitionId),
+          name: renderName(block.masterOrCallerDefinitionId),
           content:
-            block.callerOrSkillDefinitionId ===
-            block.masterOrCallerDefinitionId ? (
-              <>
-                <div>
-                  <CardDescriptionPart
-                    cardDefinitionId={block.masterOrCallerDefinitionId}
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div class="flex flex-col gap-1">
+            (block.callerOrSkillDefinitionId === undefined || block.callerOrSkillDefinitionId === 0)
+              ? (
+                <>
                   <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
-                  <div class="flex flex-row items-center gap-1">
-                    <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
-                      <Image
-                        imageId={block.callerOrSkillDefinitionId}
-                        type="icon"
-                        class="h-7 w-7"
+                </>
+              ) : block.callerOrSkillDefinitionId === block.masterOrCallerDefinitionId 
+                ? (
+                  <>
+                    <div>
+                      <CardDescriptionPart
+                        cardDefinitionId={block.masterOrCallerDefinitionId}
                       />
                     </div>
-                    <span class="text-#fff3e0/98 text-3">
-                      {`${assetsManager.getNameSync(
-                        block.callerOrSkillDefinitionId,
-                      )}`}
-                    </span>
-                  </div>
-                </div>
-              </>
-            ),
+                  </>
+                ) : (
+                  <>
+                    <div class="flex flex-col gap-1">
+                      <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
+                      <div class="flex flex-row items-center gap-1">
+                        <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
+                          <Image
+                            imageId={block.callerOrSkillDefinitionId}
+                            type="icon"
+                            class="h-7 w-7"
+                          />
+                        </div>
+                        <span class="text-#fff3e0/98 text-3">
+                          {`${renderName(block.callerOrSkillDefinitionId)}`}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                ),
         },
         summary: renderSummary(block.children),
       };
@@ -1223,12 +1278,18 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: opp(block.who),
         title: `${subject(opp(block.who))}打出手牌`,
         imageId: block.cardDefinitionId,
+        callerId: block.cardDefinitionId,
         energyChange: undefined,
         content: {
           opp: opp(block.who),
           imageId: block.cardDefinitionId,
-          name: assetsManager.getNameSync(block.cardDefinitionId),
-          content: (
+          name: renderName(block.cardDefinitionId),
+          content: block.cardDefinitionId === 0 
+            ? (
+              <>
+                <span>{`???`}</span>
+              </>
+            ) : (
             <>
               <div>
                 <CardDescriptionPart
@@ -1247,14 +1308,13 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}执行挑选`,
-        imageId: opp(block.who) ? undefined : block.cardDefinitionId,
+        imageId: block.cardDefinitionId,
+        callerId: block.cardDefinitionId,
         energyChange: undefined,
         content: {
           opp: opp(block.who),
-          imageId: opp(block.who) ? undefined : block.cardDefinitionId,
-          name: opp(block.who)
-            ? undefined
-            : assetsManager.getNameSync(block.cardDefinitionId),
+          imageId: block.cardDefinitionId,
+          name: renderName(block.cardDefinitionId),
           content: (
             <>
               <span class="text-3 text-#d4bc8e">
@@ -1273,27 +1333,27 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}进行「元素调和」`,
-        imageId: opp(block.who) ? undefined : block.cardDefinitionId,
+        imageId: block.cardDefinitionId,
+        callerId: block.cardDefinitionId,
         energyChange: undefined,
         content: {
           opp: opp(block.who),
-          imageId: opp(block.who) ? undefined : block.cardDefinitionId,
-          name: opp(block.who)
-            ? undefined
-            : assetsManager.getNameSync(block.cardDefinitionId),
-          content: opp(block.who) ? (
-            <>
-              <span>{`???`}</span>
-            </>
-          ) : (
-            <>
-              <div>
-                <CardDescriptionPart
-                  cardDefinitionId={block.cardDefinitionId}
-                />
-              </div>
-            </>
-          ),
+          imageId: block.cardDefinitionId,
+          name: renderName(block.cardDefinitionId),
+          content: block.cardDefinitionId === 0 
+            ? (
+              <>
+                <span>{`???`}</span>
+              </>
+            ) : (
+              <>
+                <div>
+                  <CardDescriptionPart
+                    cardDefinitionId={block.cardDefinitionId}
+                  />
+                </div>
+              </>
+            ),
         },
         summary: renderSummary(block.children),
       };
@@ -1305,6 +1365,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: false,
         title: "继续结算···",
         imageId: undefined,
+        callerId: undefined,
         energyChange: undefined,
         content: {
           opp: false,
@@ -1322,6 +1383,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: false,
         title: "",
         imageId: undefined,
+        callerId: undefined,
         energyChange: undefined,
         content: {
           opp: false,
@@ -1346,8 +1408,8 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
       />
       <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
-          <Match when={props.data.imageId === undefined}>
-            <div class="w-5 h-8.6 bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0" />
+          <Match when={props.data.imageId === undefined || props.data.imageId === 0}>
+              <CardBack class="w-5 h-8.6"/>
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
@@ -1415,6 +1477,12 @@ function More() {
   );
 }
 
+function CardBack(props: {class?: string}) {
+  return (
+    <div class={`bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0 ${props.class}`} />
+  );
+}
+
 function HistorySummaryShot(props: { data: SummaryShot }) {
   return (
     <div class="h-24 flex flex-col">
@@ -1458,10 +1526,17 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                     right: `${index() * 0.25}rem`,
                   }}
                 >
-                  <Image
-                    imageId={imageId}
-                    class="absolute w-10.5 h-18 top-50% -translate-y-50%"
-                  />
+                  <Show 
+                    when={imageId !== 0}
+                    fallback={
+                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%"/>
+                    }
+                  >
+                    <Image
+                      imageId={imageId}
+                      class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                    />
+                  </Show>
                 </div>
               )}
             </For>
@@ -1569,16 +1644,14 @@ function HistoryBlockBox(props: {
           <div class="h-3" />
           <div class="w-10.5 h-18 relative">
             <Show
-              when={props.data.imageId}
+              when={props.data.imageId !== undefined && props.data.imageId !== 0}
               fallback={
-                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0" />
+                <CardBack class="w-10.5 h-18" />
               }
             >
-              {(imageId) => (
-                <div class="relative w-10.5 h-18">
-                  <CardFace definitionId={imageId()} />
-                </div>
-              )}
+              <div class="relative w-10.5 h-18">
+                <CardFace definitionId={props.data.imageId as number} />
+              </div>
             </Show>
             <div class="h-8 w-8 absolute top-50% left-50% -translate-x-50% -translate-y-50%">
               <Switch>
@@ -1840,23 +1913,19 @@ function HistoryBlockDetailPanel(props: {
             />
             <div class="w-14.5 h-22 p-2">
               <Show
-                when={renderBlock().content.imageId}
+                when={renderBlock().content.imageId !== undefined && renderBlock().content.imageId !== 0}
                 fallback={
-                  <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0" />
+                  <CardBack class="w-10.5 h-18" />
                 }
               >
-                {(imageId) => (
-                  <div class="relative w-10.5 h-18">
-                    <CardFace definitionId={imageId()} />
-                  </div>
-                )}
+                <div class="relative w-10.5 h-18">
+                  <CardFace definitionId={renderBlock().content.imageId as number} />
+                </div>
               </Show>
             </div>
             <div class="w-full min-h-22 py-1.5 pr-2 flex flex-col">
               <div class="text-3.5 text-#fff3e0/98 font-bold">
-                {renderBlock().content.name
-                  ? renderBlock().content.name
-                  : "???"}
+                {renderBlock().content.name}
               </div>
               <div class="flex text-2.5 text-#b2afa8 font-bold">
                 {renderBlock().content.content}
@@ -1868,7 +1937,7 @@ function HistoryBlockDetailPanel(props: {
           <For each={props.block.children}>
             {(child) => (
               <HistoryChildBox
-                data={renderHistoryChild(child, renderBlock().imageId)}
+                data={renderHistoryChild(child, renderBlock().callerId)}
               />
             )}
           </For>

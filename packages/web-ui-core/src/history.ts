@@ -38,6 +38,9 @@ export type HistoryChildren =
   | AbsorbDiceHistoryChild
   | ConvertDiceHistoryChild
   | CreateCardHistoryChild
+  | SwitchCardHistoryChild
+  | UndrawCardHistoryChild
+  | RerollDiceHistoryChild
   | DamageHistoryChild
   | HealHistoryChild
   | ApplyHistoryChild
@@ -231,9 +234,7 @@ export interface CreateEntityHistoryChild {
 export interface GenerateDiceHistoryChild {
   type: "generateDice";
   who: 0 | 1;
-  callerDefinitionId: number;
   diceType: DiceType;
-  diceCount: number;
 }
 
 // 弃置元素骰
@@ -242,7 +243,6 @@ export interface GenerateDiceHistoryChild {
 export interface AbsorbDiceHistoryChild {
   type: "absorbDice";
   who: 0 | 1;
-  callerDefinitionId: number;
   diceCount: number;
 }
 
@@ -251,9 +251,9 @@ export interface AbsorbDiceHistoryChild {
 export interface ConvertDiceHistoryChild {
   type: "convertDice";
   who: 0 | 1;
-  callerDefinitionId?: number; // 某些卡牌转化元素骰的效果
   isTunning: boolean;
   diceType: DiceType;
+  count: number;
 }
 
 // 生成卡牌|复制卡牌
@@ -263,6 +263,31 @@ export interface CreateCardHistoryChild {
   who: 0 | 1;
   cardDefinitionId: number;
   target: "pile" | "hands";
+}
+
+// 替换手牌
+// 草与智慧
+// content: Cardface <-> cardName \n who + ("替换了1次手牌")
+export interface SwitchCardHistoryChild {
+  type: "switchCard";
+  who: 0 | 1;
+}
+
+// 置入牌库
+// 菲米尼潜猎模式
+// content: Cardface <-> cardName \n who + ("将n张手牌置入牌库")
+export interface UndrawCardHistoryChild {
+  type: "undrawCard";
+  who: 0 | 1;
+  count: number;
+}
+
+// 重投
+// content: {callerCardface || callerIcon} <-> callerName \n who + "进行了N次重投"
+export interface RerollDiceHistoryChild {
+  type: "rerollDice";
+  who: 0 | 1;
+  count: number;
 }
 
 // 受到伤害
