@@ -1004,7 +1004,7 @@ const CardDescriptionPart = (props: { cardDefinitionId: number }) => {
 }
 
 interface renderHistoryBlockProps {
-  type: "switchActive" | "useSkill" | "triggered" | "playingCard" | "selectCard" | "elementalTunning";
+  type: "switchActive" | "useSkill" | "triggered" | "playingCard" | "selectCard" | "elementalTunning" | "pocket";
   opp: boolean;
   title: string;
   imageId: number | undefined;
@@ -1039,7 +1039,7 @@ const renderHistoryBlock = (
   const switchActiveTextMap: Record<string, string> = {
     init: "初始出战角色",
     switch: "切换角色",
-    select: "选择出战角色",
+    choose: "选择出战角色",
   };
 
   function extractBlockEnergyProps(block: {
@@ -1260,9 +1260,26 @@ const renderHistoryBlock = (
       };
       break;
     }
+    case "pocket":{
+      result = {
+        type: "pocket",
+        opp: false,
+        title: "继续结算···",
+        imageId: undefined,
+        energyChange: undefined,
+        content: {
+          opp: false,
+          imageId: undefined,
+          name: undefined,
+          content: <></>,
+        },
+        summary: renderSummary(block.children),
+      };
+      break;
+    }
     default:{
       result = {
-        type: "playingCard",
+        type: "pocket",
         opp: false,
         title: "",
         imageId: undefined,
@@ -1504,7 +1521,7 @@ function HistoryBlockBox(
       class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5`}
       onClick={() => props.onClick()}
     >
-      <div class="w-full h-6 bg-[var(--title-color)] rounded-t-0.6 flex items-center">
+      <div class="w-full h-6 bg-[var(--title-color)] flex items-center">
         <div 
           class="text-#e5aa5f data-[opp]:text-#7eb5ff text-2.8 font-bold ml-1.5"
           bool:data-opp={props.data.opp}
@@ -1557,6 +1574,60 @@ function HistoryBlockBox(
         </Show>
       </div>
     </div>
+  );
+}
+
+function PocketHistoryBlockBox(
+  props: { 
+    data: renderHistoryBlockProps, 
+    isSelected: boolean;
+    onClick: () => void;
+  }) {
+  return (
+    <Show 
+      when={props.data.summary.length}
+      fallback={
+        <div
+          class={`w-full h-6 flex flex-col rounded-0.6 shrink-0 cursor-pointer bg-white/4 b-white/60 b-1.5 data-[selected]:bg-white/12 data-[selected]:b-white/90`}
+          bool:data-selected={props.isSelected}
+          onClick={() => props.onClick()}
+        >
+          <div 
+            class="w-full h-6 bg-#b1ada8 rounded-t-0 flex items-center opacity-60 data-[selected]:opacity-80"
+            bool:data-selected={props.isSelected}
+          >
+            <div class="text-#212933 text-2.8 font-bold ml-1.5">
+              {props.data.title}
+            </div>        
+          </div>
+        </div>
+      }
+    >
+      <div
+        class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer bg-white/4 b-white/60 b-1.5 data-[selected]:bg-white/8 data-[selected]:b-white/90`}
+        bool:data-selected={props.isSelected}
+        onClick={() => props.onClick()}
+      >
+        <div 
+          class="w-full h-6 bg-#b1ada8 flex items-center opacity-60 data-[selected]:opacity-80"
+          bool:data-selected={props.isSelected}
+        >
+          <div class="text-#212933 text-2.8 font-bold ml-1.5">
+            {props.data.title}
+          </div>
+        </div>
+        <div class="flex flex-row items-center justify-center h-24 gap-1.5">
+          <For each={props.data.summary.slice(0, 4)}>
+            {(summary) => (
+              <HistorySummaryShot data={summary} />
+            )}
+          </For>
+          <Show when={props.data.summary.length > 4}>
+            <div class="h-24 w-4 flex items-center justify-center font-bold text-4 text-white/60 text-3">···</div>
+          </Show>
+        </div>
+      </div> 
+    </Show>
   );
 }
 
@@ -1648,6 +1719,16 @@ export function HistoryPanel(props: HistoryPanelProps) {
                 <Match when={block.type === "changePhase" || block.type === "action"}>
                   <HistoryHintBox data={renderHistoryHint(block as HistoryHintBlock)} />
                 </Match>
+                <Match when={block.type === "pocket"}>
+                  <PocketHistoryBlockBox
+                    data={renderHistoryBlock(block as HistoryDetailBlock)}
+                    isSelected={selectedBlock() === block}
+                    onClick={() => {
+                      if (block.type !== "changePhase" && block.type !== "action")
+                        setSelectedBlock(block);
+                    }}
+                  />
+                </Match>
                 <Match when={true}>
                   <HistoryBlockBox
                     data={renderHistoryBlock(block as HistoryDetailBlock)}
@@ -1687,7 +1768,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
 
 function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: () => void }) {
   let panelRef: HTMLDivElement | undefined;
-  const blockDescription = () => renderHistoryBlock(props.block).content;
+  const renderBlock = () => renderHistoryBlock(props.block);
   return (
     <div
       class={`fixed right-71 w-90 p-3 max-h-120 bg-#2f333b/98 b-#404a56 b-1 rounded-1 shadow-xl overflow-hidden
@@ -1695,34 +1776,36 @@ function HistoryBlockDetailPanel(props: { block: HistoryDetailBlock; onClose: ()
       onClick={e => e.stopPropagation()}
     >
       <div ref={el => (panelRef = el)} class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply">
-        <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
-          <div 
-            class="absolute top-1px left-1px w-3.5 h-3.5 rounded-lt-1 bg-#806440 data-[opp]:bg-#48678b history-card-hint"
-            bool:data-opp={blockDescription().opp}
-          />
-          <div class="w-14.5 h-22 p-2">
-            <Show 
-              when={blockDescription().imageId}
-              fallback={
-                <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
-              }
-            >
-              {(imageId) => ( 
-                <div class="relative w-10.5 h-18">
-                  <CardFace definitionId={imageId()} />
-                </div>
-              )}
-            </Show>
-          </div>
-          <div class="w-full min-h-22 py-1.5 pr-2 flex flex-col">
-            <div class="text-3.5 text-#fff3e0/98 font-bold">
-              {blockDescription().name ? blockDescription().name : "???"}
+        <Show when={renderBlock().type !== "pocket"}>
+          <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
+            <div 
+              class="absolute top-1px left-1px w-3.5 h-3.5 rounded-lt-1 bg-#806440 data-[opp]:bg-#48678b history-card-hint"
+              bool:data-opp={renderBlock().content.opp}
+            />
+            <div class="w-14.5 h-22 p-2">
+              <Show 
+                when={renderBlock().content.imageId}
+                fallback={
+                  <div class="w-10.5 h-18 bg-gray-600 rounded-1.5 b-gray-700 b-2 shrink-0"/>
+                }
+              >
+                {(imageId) => ( 
+                  <div class="relative w-10.5 h-18">
+                    <CardFace definitionId={imageId()} />
+                  </div>
+                )}
+              </Show>
             </div>
-            <div class="flex text-2.5 text-#b2afa8 font-bold">
-              {blockDescription().content}
+            <div class="w-full min-h-22 py-1.5 pr-2 flex flex-col">
+              <div class="text-3.5 text-#fff3e0/98 font-bold">
+                {renderBlock().content.name ? renderBlock().content.name : "???"}
+              </div>
+              <div class="flex text-2.5 text-#b2afa8 font-bold">
+                {renderBlock().content.content}
+              </div>
             </div>
-          </div>
-        </div>
+          </div>          
+        </Show>
         <div class="space-y-0.5">
           <For each={(props.block as HistoryDetailBlock).children}>
             {(child) =>

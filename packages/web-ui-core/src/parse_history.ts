@@ -493,7 +493,7 @@ export function parseToHistory(
             type: "triggered",
             who: m.who as 0 | 1,
             masterOrCallerDefinitionId: m.callerDefinitionId,
-            callerOrSkillDefinitionId: m.skillDefinitionId,
+            callerOrSkillDefinitionId: Math.floor(m.skillDefinitionId),
             children: [],
           };
         } else {

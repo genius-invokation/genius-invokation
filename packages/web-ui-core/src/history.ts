@@ -16,6 +16,7 @@
 import { Aura, DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
 export type HistoryDetailBlock =
+  | PocketHistoryBlock
   | SwitchOrSelectActiveHistoryBlock
   | UseSkillHistoryBlock
   | TriggeredHistoryBlock
@@ -30,6 +31,7 @@ export type HistoryHintBlock =
 export type HistoryBlock =
   | ChangePhaseHistoryBlock
   | ActionHistoryBlock
+  | PocketHistoryBlock
   | SwitchOrSelectActiveHistoryBlock
   | UseSkillHistoryBlock
   | TriggeredHistoryBlock
@@ -88,6 +90,15 @@ export interface ActionHistoryBlock {
   type: "action";
   who: 0 | 1;
   actionType: "action" | "declareEnd";
+}
+
+// 继续结算
+// title: 继续结算···
+// image: [###预览###]
+// click_description: undifined
+export interface PocketHistoryBlock {
+  type: "pocket";
+  children: HistoryChildren[];
 }
 
 // 切换出战角色
