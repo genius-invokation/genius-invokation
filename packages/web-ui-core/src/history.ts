@@ -30,7 +30,7 @@ export type HistoryBlock = HistoryDetailBlock | HistoryHintBlock;
 
 export type HistoryChildren =
   | SwitchActiveHistoryChild
-  | TriggeredHistoryChild
+  | WillTriggeredHistoryChild
   | DrawCardHistoryChild
   | StealHandHistoryChild
   | CreateEntityHistoryChild
@@ -193,10 +193,11 @@ export interface SwitchActiveHistoryChild {
 
 // 触发效果
 // content: {effectCardface || effectIcon} <-> effectName \n "触发效果"
-export interface TriggeredHistoryChild {
-  type: "triggered";
+export interface WillTriggeredHistoryChild {
+  type: "willTriggered";
   who: 0 | 1;
   callerDefinitionId: number;
+  entityType: "combatStatus" | "status" | "equipment" | "summon" | "support" | "card" | undefined;
 }
 
 // 抓牌
@@ -317,7 +318,7 @@ export interface HealHistoryChild {
   healValue: number;
   oldHealth: number;
   newHealth: number;
-  healType: "normal" | "revive" | "immuneDefeated"; // TODO
+  healType: "normal" | "revive" | "immuneDefeated";
 }
 
 // 附着元素

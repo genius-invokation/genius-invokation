@@ -242,7 +242,7 @@ const renderHistoryChild = (
       };
       break;
     }
-    case "triggered": {
+    case "willTriggered": {
       result = {
         opp: opp(child.who),
         imageId: child.callerDefinitionId,
