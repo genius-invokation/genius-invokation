@@ -235,6 +235,7 @@ export interface GenerateDiceHistoryChild {
   type: "generateDice";
   who: 0 | 1;
   diceType: DiceType;
+  diceCount: number;
 }
 
 // 弃置元素骰
@@ -271,6 +272,7 @@ export interface CreateCardHistoryChild {
 export interface SwitchCardHistoryChild {
   type: "switchCard";
   who: 0 | 1;
+  count: number;
 }
 
 // 置入牌库

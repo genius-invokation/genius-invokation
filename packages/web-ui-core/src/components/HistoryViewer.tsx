@@ -178,13 +178,11 @@ export function useWho() {
 
 const renderName = (definedId: number | undefined) => {
   const { assetsManager } = useUiContext();
-  return (
-    definedId 
-      ? definedId === 0 
-        ? "???" 
-        : assetsManager.getNameSync(definedId) 
-      : "???"
-  );
+  return definedId
+    ? definedId === 0
+      ? "???"
+      : assetsManager.getNameSync(definedId)
+    : "???";
 };
 
 const renderHistoryChild = (
@@ -308,9 +306,7 @@ const renderHistoryChild = (
                 type="icon"
                 class="h-3.5 w-3.5"
               />
-              <span>
-                {`${renderName(child.entityDefinitionId)}`}
-              </span>
+              <span>{`${renderName(child.entityDefinitionId)}`}</span>
             </>
           ),
         };
@@ -340,7 +336,7 @@ const renderHistoryChild = (
         content: (
           <>
             <span>{`${subject(opp(child.who))}`}</span>
-            <span>{`生成1个`}</span>
+            <span>{`生成${child.diceCount}个`}</span>
             <Show when={child.diceType > 0}>
               <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
@@ -1234,39 +1230,39 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           imageId: block.masterOrCallerDefinitionId,
           name: renderName(block.masterOrCallerDefinitionId),
           content:
-            (block.callerOrSkillDefinitionId === undefined || block.callerOrSkillDefinitionId === 0)
-              ? (
-                <>
+            block.callerOrSkillDefinitionId === undefined ||
+            block.callerOrSkillDefinitionId === 0 ? (
+              <>
+                <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
+              </>
+            ) : block.callerOrSkillDefinitionId ===
+              block.masterOrCallerDefinitionId ? (
+              <>
+                <div>
+                  <CardDescriptionPart
+                    cardDefinitionId={block.masterOrCallerDefinitionId}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div class="flex flex-col gap-1">
                   <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
-                </>
-              ) : block.callerOrSkillDefinitionId === block.masterOrCallerDefinitionId 
-                ? (
-                  <>
-                    <div>
-                      <CardDescriptionPart
-                        cardDefinitionId={block.masterOrCallerDefinitionId}
+                  <div class="flex flex-row items-center gap-1">
+                    <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
+                      <Image
+                        imageId={block.callerOrSkillDefinitionId}
+                        type="icon"
+                        class="h-7 w-7"
                       />
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <div class="flex flex-col gap-1">
-                      <div class="text-3 text-#d4bc8e">{`触发效果`}</div>
-                      <div class="flex flex-row items-center gap-1">
-                        <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
-                          <Image
-                            imageId={block.callerOrSkillDefinitionId}
-                            type="icon"
-                            class="h-7 w-7"
-                          />
-                        </div>
-                        <span class="text-#fff3e0/98 text-3">
-                          {`${renderName(block.callerOrSkillDefinitionId)}`}
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                ),
+                    <span class="text-#fff3e0/98 text-3">
+                      {`${renderName(block.callerOrSkillDefinitionId)}`}
+                    </span>
+                  </div>
+                </div>
+              </>
+            ),
         },
         summary: renderSummary(block.children),
       };
@@ -1284,20 +1280,20 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           opp: opp(block.who),
           imageId: block.cardDefinitionId,
           name: renderName(block.cardDefinitionId),
-          content: block.cardDefinitionId === 0 
-            ? (
+          content:
+            block.cardDefinitionId === 0 ? (
               <>
                 <span>{`???`}</span>
               </>
             ) : (
-            <>
-              <div>
-                <CardDescriptionPart
-                  cardDefinitionId={block.cardDefinitionId}
-                />
-              </div>
-            </>
-          ),
+              <>
+                <div>
+                  <CardDescriptionPart
+                    cardDefinitionId={block.cardDefinitionId}
+                  />
+                </div>
+              </>
+            ),
         },
         summary: renderSummary(block.children),
       };
@@ -1340,8 +1336,8 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           opp: opp(block.who),
           imageId: block.cardDefinitionId,
           name: renderName(block.cardDefinitionId),
-          content: block.cardDefinitionId === 0 
-            ? (
+          content:
+            block.cardDefinitionId === 0 ? (
               <>
                 <span>{`???`}</span>
               </>
@@ -1408,8 +1404,10 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
       />
       <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
-          <Match when={props.data.imageId === undefined || props.data.imageId === 0}>
-              <CardBack class="w-5 h-8.6"/>
+          <Match
+            when={props.data.imageId === undefined || props.data.imageId === 0}
+          >
+            <CardBack class="w-5 h-8.6" />
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
@@ -1477,9 +1475,11 @@ function More() {
   );
 }
 
-function CardBack(props: {class?: string}) {
+function CardBack(props: { class?: string }) {
   return (
-    <div class={`bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0 ${props.class}`} />
+    <div
+      class={`bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0 ${props.class}`}
+    />
   );
 }
 
@@ -1526,10 +1526,10 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                     right: `${index() * 0.25}rem`,
                   }}
                 >
-                  <Show 
+                  <Show
                     when={imageId !== 0}
                     fallback={
-                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%"/>
+                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
                     }
                   >
                     <Image
@@ -1644,10 +1644,10 @@ function HistoryBlockBox(props: {
           <div class="h-3" />
           <div class="w-10.5 h-18 relative">
             <Show
-              when={props.data.imageId !== undefined && props.data.imageId !== 0}
-              fallback={
-                <CardBack class="w-10.5 h-18" />
+              when={
+                props.data.imageId !== undefined && props.data.imageId !== 0
               }
+              fallback={<CardBack class="w-10.5 h-18" />}
             >
               <div class="relative w-10.5 h-18">
                 <CardFace definitionId={props.data.imageId as number} />
@@ -1913,13 +1913,16 @@ function HistoryBlockDetailPanel(props: {
             />
             <div class="w-14.5 h-22 p-2">
               <Show
-                when={renderBlock().content.imageId !== undefined && renderBlock().content.imageId !== 0}
-                fallback={
-                  <CardBack class="w-10.5 h-18" />
+                when={
+                  renderBlock().content.imageId !== undefined &&
+                  renderBlock().content.imageId !== 0
                 }
+                fallback={<CardBack class="w-10.5 h-18" />}
               >
                 <div class="relative w-10.5 h-18">
-                  <CardFace definitionId={renderBlock().content.imageId as number} />
+                  <CardFace
+                    definitionId={renderBlock().content.imageId as number}
+                  />
                 </div>
               </Show>
             </div>

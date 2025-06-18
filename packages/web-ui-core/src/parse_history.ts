@@ -230,7 +230,7 @@ class StateRecorder {
             type: "convertDice",
             who: mut.who as 0 | 1,
             diceType: target,
-            diceCount,
+            count: diceCount,
             isTuning: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING,
           },
         ];
@@ -566,12 +566,12 @@ export function parseToHistory(
           } else if (m.reason === PbTransferCardReason.UNDRAW) {
             const lastChild = children.at(-1);
             if (lastChild?.type === "undrawCard" && lastChild.who === m.who) {
-              lastChild.undrawCardsCount += 1;
+              lastChild.count += 1;
             } else {
               children.push({
                 type: "undrawCard",
                 who: m.who as 0 | 1,
-                undrawCardsCount: 1,
+                count: 1,
               });
             }
           }
@@ -666,11 +666,11 @@ export function parseToHistory(
         }
         case "rerollDone": {
           const lastChild = children.at(-1);
-          if (lastChild?.type === "reroll" && lastChild.who === m.who) {
+          if (lastChild?.type === "rerollDice" && lastChild.who === m.who) {
             lastChild.count += 1;
           } else {
             children.push({
-              type: "reroll",
+              type: "rerollDice",
               who: m.who as 0 | 1,
               count: 1,
             });
@@ -679,11 +679,11 @@ export function parseToHistory(
         }
         case "switchHandsDone": {
           const lastChild = children.at(-1);
-          if (lastChild?.type === "switchHands" && lastChild.who === m.who) {
+          if (lastChild?.type === "switchCard" && lastChild.who === m.who) {
             lastChild.count += 1;
           } else {
             children.push({
-              type: "switchHands",
+              type: "switchCard",
               who: m.who as 0 | 1,
               count: 1,
             });
