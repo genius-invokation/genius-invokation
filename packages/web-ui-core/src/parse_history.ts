@@ -48,6 +48,7 @@ import type {
   HistoryBlock,
   HistoryChildren,
   HistoryDetailBlock,
+  IncreaseMaxHealthHistoryChild,
   UseSkillHistoryBlock,
   VariableChangeHistoryChild,
 } from "./history";
@@ -165,7 +166,11 @@ class StateRecorder {
 
   receiveModifyVar(
     varMut: ModifyEntityVarEM,
-  ): VariableChangeHistoryChild | EnergyHistoryChild | null {
+  ):
+    | VariableChangeHistoryChild
+    | IncreaseMaxHealthHistoryChild
+    | EnergyHistoryChild
+    | null {
     const { entityId, entityDefinitionId, variableName, variableValue } =
       varMut;
     let record: VariableRecord | undefined;
@@ -181,6 +186,20 @@ class StateRecorder {
         characterDefinitionId: entityDefinitionId,
         oldEnergy: oldValue,
         newEnergy: newValue,
+      };
+    }
+    if (
+      variableName === "maxHealth" &&
+      (record = this.maxHealthVarRecords.get(varMut.entityId))
+    ) {
+      record.set(variableValue);
+      const { oldValue = 0, newValue = 0 } = record.take() ?? {};
+      return {
+        type: "increaseMaxHealth",
+        who: this.area.get(entityId)?.who ?? 0,
+        characterDefinitionId: entityDefinitionId,
+        oldMaxHealth: oldValue,
+        newMaxHealth: newValue,
       };
     }
 
@@ -546,6 +565,9 @@ export function parseToHistory(
           break;
         }
         case "transferCard": {
+          if (phase < PbPhaseType.ACTION) {
+            break;
+          }
           if (m.reason === PbTransferCardReason.DRAW) {
             if (!mainBlock && phase === PbPhaseType.END) {
               maybeEndPhaseDrawing = true;
@@ -668,6 +690,9 @@ export function parseToHistory(
           break;
         }
         case "rerollDone": {
+          if (phase < PbPhaseType.ACTION) {
+            break;
+          }
           const lastChild = getLastChild();
           if (lastChild?.type === "rerollDice" && lastChild.who === m.who) {
             lastChild.count += 1;
@@ -681,6 +706,9 @@ export function parseToHistory(
           break;
         }
         case "switchHandsDone": {
+          if (phase < PbPhaseType.ACTION) {
+            break;
+          }
           const lastChild = getLastChild();
           if (lastChild?.type === "switchCard" && lastChild.who === m.who) {
             lastChild.count += 1;
