@@ -1317,7 +1317,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
-        }
+        },
+        "icon": "Skill_S_Citlali_01"
       },
       {
         "id": 11143,
@@ -1341,7 +1342,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
           "D__KEY__DAMAGE": 2
-        }
+        },
+        "icon": "Skill_E_Citlali_01_HD"
       },
       {
         "id": 11144,
@@ -1353,7 +1355,8 @@
         "playCost": [],
         "targetList": [],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Citlali_02"
       }
     ],
     "hp": 10,
@@ -4319,7 +4322,8 @@
           }
         ],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Mavuika_01"
       },
       {
         "id": 13153,
@@ -4342,7 +4346,8 @@
         "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO"
-        }
+        },
+        "icon": "Skill_E_Mavuika_01_HD"
       },
       {
         "id": 13154,
@@ -4354,7 +4359,8 @@
         "playCost": [],
         "targetList": [],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Mavuika_06"
       },
       {
         "id": 13155,
@@ -4365,7 +4371,8 @@
         "description": "行动阶段开始时：生成2个万能元素骰。",
         "playCost": [],
         "targetList": [],
-        "hidden": true
+        "hidden": true,
+        "icon": "Skill_S_Mavuika_02"
       }
     ],
     "hp": 10,
@@ -6629,7 +6636,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
-        }
+        },
+        "icon": "Skill_S_Chasca_01"
       },
       {
         "id": 15113,
@@ -6653,7 +6661,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
-        }
+        },
+        "icon": "Skill_E_Chasca_01_HD"
       },
       {
         "id": 15114,
@@ -6664,7 +6673,8 @@
         "description": "对局开始时，将6枚追影弹随机放置进牌库。",
         "playCost": [],
         "targetList": [],
-        "hidden": false
+        "hidden": false,
+        "icon": "Skill_S_Chasca_06"
       }
     ],
     "hp": 10,
