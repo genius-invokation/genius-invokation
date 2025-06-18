@@ -23,26 +23,17 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import {
-  type ActionRequest,
-  type ActionResponse,
-  type ChooseActiveRequest,
-  type ChooseActiveResponse,
   type GameConfig,
   type GameStateLogEntry,
   GiTcgError,
   Game as InternalGame,
-  Player as InternalPlayer,
   type Notification,
   type PlayerIO,
-  type RerollDiceResponse,
-  type RpcMethod,
   type RpcRequest,
-  type SwitchHandsResponse,
   serializeGameStateLog,
   CORE_VERSION,
   VERSIONS,
   RpcResponse,
-  SelectCardResponse,
   CURRENT_VERSION,
   type Version,
 } from "@gi-tcg/core";
@@ -189,15 +180,11 @@ class Player implements PlayerIOWithError {
     new BehaviorSubject<SSENotification | null>(null);
   public readonly notificationSse$: Observable<SSEPayload> = concat<
     (SSEPayload | null)[]
-  >(
-    this.initializedSubject,
-    defer(() => {
-      const currentAction = this.currentAction();
-      return of(currentAction);
-    }),
-    this.notificationSseSource,
-  ).pipe(
-    mergeWith(this.errorSseSource),
+  >(this.initializedSubject, this.notificationSseSource).pipe(
+    mergeWith(
+      defer(() => of(this.currentAction())),
+      this.errorSseSource,
+    ),
     filter((data): data is SSEPayload => data !== null),
     mergeWith(this.actionSseSource, this.oppRpcSseSource, pingInterval),
     takeUntil(this.completeSubject),
@@ -356,7 +343,7 @@ class Player implements PlayerIOWithError {
           if (resolver.timeout <= -2) {
             clearInterval(interval);
             setRoundTimeout(0);
-            this.timeoutRpc(request)
+            Promise.try(() => this.timeoutRpc(request))
               .then((r) => resolve(r))
               .catch((e) => reject(e));
           }
@@ -722,6 +709,7 @@ export class RoomsService {
     const room = new Room(roomId, roomConfig);
     this.rooms.set(roomId, room);
     this.roomIdPool.shift();
+    this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
     room.onStop(async (room, game) => {
       const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
@@ -730,7 +718,7 @@ export class RoomsService {
       );
       this.logger.log(`Room ${room.id} game phase: ${game?.state.phase}`);
       if (room.status !== RoomStatus.Waiting) {
-        await Bun.sleep(keepRoomDuration);
+        await new Promise((r) => setTimeout(r, keepRoomDuration));
       }
       this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);

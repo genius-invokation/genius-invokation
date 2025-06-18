@@ -169,7 +169,11 @@ export function initiativeSkillsOfPlayer(
   return [
     ...activeCh.entities.flatMap((st) =>
       st.definition.skills
-        .filter((sk) => sk.triggerOn === "initiative")
+        .filter(
+          (sk): sk is InitiativeSkillDefinition =>
+            sk.triggerOn === "initiative" &&
+            (includesHidden || !sk.initiativeSkillConfig.hidden),
+        )
         .map((sk) => ({
           caller: st,
           skill: sk,

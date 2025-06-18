@@ -126,7 +126,7 @@ export const TargetedTreatment = skill(12131)
 export const ReboundHydrotherapy = skill(12132)
   .type("elemental")
   .costHydro(3)
-  .createPileCards(LargeBolsteringBubblebalm, 1, "topIndex3")
+  .createPileCards(LargeBolsteringBubblebalm, 1, "topIndex2")
   .characterStatus(BondOfLife, "@self", {
     overrideVariables: {
       usage: 3
