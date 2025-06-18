@@ -349,6 +349,15 @@ export function parseToHistory(
     const children: HistoryChildren[] = [];
     const stateRecorder = new StateRecorder(previousState);
 
+    const getLastChild = () => {
+      return (
+        children.at(-1) ??
+        (lastMainBlock && "children" in lastMainBlock
+          ? lastMainBlock.children.at(-1)
+          : void 0)
+      );
+    };
+
     for (const pbm of mutations) {
       const m = flattenPbOneof(pbm.mutation!);
       switch (m.$case) {
@@ -547,7 +556,7 @@ export function parseToHistory(
             if (!mainBlock && phase === PbPhaseType.END) {
               maybeEndPhaseDrawing = true;
             }
-            const lastChild = children.at(-1);
+            const lastChild = getLastChild();
             if (lastChild?.type === "drawCard" && lastChild.who === m.who) {
               lastChild.drawCardsCount += 1;
             } else {
@@ -564,7 +573,7 @@ export function parseToHistory(
               cardDefinitionId: m.card!.definitionId,
             });
           } else if (m.reason === PbTransferCardReason.UNDRAW) {
-            const lastChild = children.at(-1);
+            const lastChild = getLastChild();
             if (lastChild?.type === "undrawCard" && lastChild.who === m.who) {
               lastChild.count += 1;
             } else {
@@ -665,7 +674,7 @@ export function parseToHistory(
           break;
         }
         case "rerollDone": {
-          const lastChild = children.at(-1);
+          const lastChild = getLastChild();
           if (lastChild?.type === "rerollDice" && lastChild.who === m.who) {
             lastChild.count += 1;
           } else {
@@ -678,7 +687,7 @@ export function parseToHistory(
           break;
         }
         case "switchHandsDone": {
-          const lastChild = children.at(-1);
+          const lastChild = getLastChild();
           if (lastChild?.type === "switchCard" && lastChild.who === m.who) {
             lastChild.count += 1;
           } else {
