@@ -238,7 +238,12 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "createEntity": {
-        enteringEntities.push(mutation.value.entity!.id);
+        const id = mutation.value.entity!.id;
+        if (disposingEntities.includes(id)) {
+          disposingEntities.splice(disposingEntities.indexOf(id), 1);
+        } else {
+          enteringEntities.push(id);
+        }
         break;
       }
       case "removeEntity": {

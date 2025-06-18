@@ -48,6 +48,9 @@ export const SpiritOfOmenPyroScorpion = card(123031)
   .technique()
   .on("decreaseDamaged", (c, e) => c.self.master().energy > 0)
   .usagePerRound(2)
+  .do((c) => {
+    c.self.master().loseEnergy(1);
+  })
   .decreaseDamage(1)
   .combatStatus(ScorpionBlessing)
   .endOn()
