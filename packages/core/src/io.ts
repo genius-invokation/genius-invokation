@@ -45,6 +45,7 @@ import {
   PbResetDiceReason,
   PbHealKind,
   PbPlayerStatus,
+  PbTransferCardReason,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -55,8 +56,17 @@ import type {
   PhaseType,
   PlayerState,
 } from "./base/state";
-import type { Mutation, PlayerFlag } from "./base/mutation";
-import type { ActionInfo, HealKind, InitiativeSkillDefinition } from "./base/skill";
+import type {
+  Mutation,
+  PlayerFlag,
+  RemoveCardM,
+  TransferCardM,
+} from "./base/mutation";
+import type {
+  ActionInfo,
+  HealKind,
+  InitiativeSkillDefinition,
+} from "./base/skill";
 import { GiTcgIoError } from "./error";
 import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
 import { costOfCard, getEntityById, initiativeSkillsOfPlayer } from "./utils";
@@ -256,6 +266,14 @@ export function exposeMutation(
         }
       }
       const hidden = m.who !== who && !transferToOpp;
+      const REASON_MAP: Record<TransferCardM["reason"], PbTransferCardReason> =
+        {
+          draw: PbTransferCardReason.DRAW,
+          undraw: PbTransferCardReason.UNDRAW,
+          steal: PbTransferCardReason.STEAL,
+          switch: PbTransferCardReason.SWITCH,
+          swap: PbTransferCardReason.SWAP,
+        };
       return {
         $case: "transferCard",
         who: m.who,
@@ -264,39 +282,22 @@ export function exposeMutation(
         transferToOpp,
         targetIndex: m.targetIndex,
         card: exposeCard(null, m.value, hidden),
+        reason: REASON_MAP[m.reason] ?? PbTransferCardReason.UNSPECIFIED,
       };
     }
     case "removeCard": {
       const hide =
         m.who !== who && ["overflow", "elementalTuning"].includes(m.reason);
       const from = exposeCardWhere(m.where);
-      let reason: PbRemoveCardReason;
-      switch (m.reason) {
-        case "play": {
-          reason = PbRemoveCardReason.PLAY;
-          break;
-        }
-        case "elementalTuning": {
-          reason = PbRemoveCardReason.ELEMENTAL_TUNING;
-          break;
-        }
-        case "overflow": {
-          reason = PbRemoveCardReason.HANDS_OVERFLOW;
-          break;
-        }
-        case "disposed": {
-          reason = PbRemoveCardReason.DISPOSED;
-          break;
-        }
-        case "playNoEffect": {
-          reason = PbRemoveCardReason.PLAY_NO_EFFECT;
-          break;
-        }
-        case "onDrawTriggered": {
-          reason = PbRemoveCardReason.ON_DRAW_TRIGGERED;
-          break;
-        }
-      }
+      const REASON_MAP: Record<RemoveCardM["reason"], PbRemoveCardReason> = {
+        play: PbRemoveCardReason.PLAY,
+        elementalTuning: PbRemoveCardReason.ELEMENTAL_TUNING,
+        overflow: PbRemoveCardReason.HANDS_OVERFLOW,
+        disposed: PbRemoveCardReason.DISPOSED,
+        playNoEffect: PbRemoveCardReason.PLAY_NO_EFFECT,
+        onDrawTriggered: PbRemoveCardReason.ON_DRAW_TRIGGERED,
+      };
+      const reason = REASON_MAP[m.reason];
       return {
         $case: "removeCard",
         who: m.who,
@@ -343,7 +344,8 @@ export function exposeMutation(
         who: m.where.who,
         where,
         entity: exposeEntity(null, m.value),
-        masterCharacterId: m.where.type === "characters" ? m.where.characterId : void 0,
+        masterCharacterId:
+          m.where.type === "characters" ? m.where.characterId : void 0,
       };
     }
     case "removeEntity": {
@@ -384,7 +386,7 @@ export function exposeMutation(
         {
           roll: PbResetDiceReason.ROLL,
           consume: PbResetDiceReason.CONSUME,
-          elementalTunning: PbResetDiceReason.ELEMENTAL_TUNING,
+          elementalTuning: PbResetDiceReason.ELEMENTAL_TUNING,
           generate: PbResetDiceReason.GENERATE,
           convert: PbResetDiceReason.CONVERT,
           absorb: PbResetDiceReason.ABSORB,
@@ -395,6 +397,7 @@ export function exposeMutation(
         who: m.who,
         dice,
         reason,
+        conversionTargetHint: m.conversionTargetHint as PbDiceType | undefined,
       };
     }
     default: {

@@ -679,7 +679,7 @@ export class Game {
       ) {
         throw new GiTcgIoError(
           who,
-          `Elemental tunning cannot use omni dice or active character's element`,
+          `Elemental tuning cannot use omni dice or active character's element`,
         );
       }
       // 消耗骰子
@@ -808,14 +808,13 @@ export class Game {
             oldState: actionInfo.card,
             reason: "elementalTuning",
           });
+          const targetDice = elementOfCharacter(activeCh().definition);
           this.mutate({
             type: "resetDice",
             who,
-            value: sortDice(player(), [
-              ...player().dice,
-              elementOfCharacter(activeCh().definition),
-            ]),
-            reason: "elementalTunning",
+            value: sortDice(player(), [...player().dice, targetDice]),
+            reason: "elementalTuning",
+            conversionTargetHint: targetDice,
           });
           await this.handleEvent("onDisposeOrTuneCard", tuneCardEventArg);
           break;
@@ -1081,11 +1080,31 @@ export class Game {
 
   private async rpcSwitchHands(who: 0 | 1) {
     const { removedHandIds } = await this.rpc(who, "switchHands", {});
+    this.notifyOne(who, {
+      $case: "switchHandsDone",
+      who,
+      count: removedHandIds.length,
+    });
+    this.notifyOne(flip(who), {
+      $case: "switchHandsDone",
+      who,
+      count: removedHandIds.length,
+    });
     return removedHandIds;
   }
 
   private async rpcReroll(who: 0 | 1) {
     const { diceToReroll } = await this.rpc(who, "rerollDice", {});
+    this.notifyOne(who, {
+      $case: "rerollDone",
+      who,
+      count: diceToReroll.length,
+    });
+    this.notifyOne(flip(who), {
+      $case: "rerollDone",
+      who,
+      count: 0,
+    });
     return diceToReroll;
   }
 

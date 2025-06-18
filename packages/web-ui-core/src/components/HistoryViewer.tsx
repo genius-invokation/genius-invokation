@@ -49,7 +49,7 @@ import type {
   KeywordRawData,
   SkillRawData,
 } from "@gi-tcg/static-data";
-import TunningIcon from "../svg/TunningIcon.svg?component-solid";
+import TuningIcon from "../svg/TuningIcon.svg?component-solid";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg?component-solid";
@@ -621,9 +621,9 @@ const renderHistoryChild = (
     case "convertDice": {
       result = {
         opp: opp(child.who),
-        imageId: child.isTunning ? "tuning" : parentCallerDefinitionId,
+        imageId: child.isTuning ? "tuning" : parentCallerDefinitionId,
         imageType: undefined,
-        title: child.isTunning
+        title: child.isTuning
           ? "元素调和"
           : renderName(parentCallerDefinitionId),
         content: (
@@ -1078,7 +1078,7 @@ interface renderHistoryBlockProps {
     | "triggered"
     | "playingCard"
     | "selectCard"
-    | "elementalTunning"
+    | "elementalTuning"
     | "pocket";
   opp: boolean;
   title: string;
@@ -1328,7 +1328,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
       };
       break;
     }
-    case "elementalTunning": {
+    case "elementalTuning": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1413,7 +1413,7 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
-              <TunningIcon />
+              <TuningIcon />
             </div>
           </Match>
           <Match when={true}>
@@ -1661,8 +1661,8 @@ function HistoryBlockBox(props: {
                 <Match when={props.data.type === "triggered"}>
                   <SwitchActiveIcon class="h-full w-full" />
                 </Match>
-                <Match when={props.data.type === "elementalTunning"}>
-                  <TunningIcon class="h-full w-full" />
+                <Match when={props.data.type === "elementalTuning"}>
+                  <TuningIcon class="h-full w-full" />
                 </Match>
               </Switch>
             </div>

@@ -1410,6 +1410,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who,
       value: finalDice,
       reason: "convert",
+      conversionTargetHint: target,
     });
     return this.enableShortcut();
   }
@@ -1526,6 +1527,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           to: "hands",
           who,
           value: chosen,
+          reason: "draw",
         });
         cards.push(chosen);
         if (player().hands.length > this.state.config.maxHandsCount) {
@@ -1686,6 +1688,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           to: "pile",
           who,
           value: card,
+          reason: "undraw",
         }) as const,
     );
     this.insertPileCards(payloads, strategy, "my");
@@ -1698,6 +1701,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       to: "oppHands",
       who: flip(this.callerArea.who),
       value: card,
+      reason: "steal",
     });
     this.emitEvent(
       "onHandCardInserted",
@@ -1718,6 +1722,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         to: "oppHands",
         who: flip(this.callerArea.who),
         value: card,
+        reason: "swap",
       });
       this.emitEvent(
         "onHandCardInserted",
@@ -1734,6 +1739,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         to: "oppHands",
         who: this.callerArea.who,
         value: card,
+        reason: "swap",
       });
       this.emitEvent(
         "onHandCardInserted",

@@ -411,8 +411,8 @@ export function applyAutoSelectedDiceToAction(
     if (!config.allowTuningAnyDice) {
       disallowed.push(DiceType.Omni);
     }
-    const tunningDice = player.dice.find((d) => !disallowed.includes(d));
-    if (!tunningDice) {
+    const tuningDice = player.dice.find((d) => !disallowed.includes(d));
+    if (!tuningDice) {
       return {
         ...actionInfo,
         validity: ActionValidity.NO_DICE,
@@ -420,7 +420,7 @@ export function applyAutoSelectedDiceToAction(
     } else {
       return {
         ...actionInfo,
-        autoSelectedDice: [tunningDice],
+        autoSelectedDice: [tuningDice],
       };
     }
   }

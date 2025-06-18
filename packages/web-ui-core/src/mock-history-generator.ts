@@ -3,11 +3,11 @@
  */
 
 import type {
-    CardSummary,
-    CharacterSummary,
+    // CardSummary,
+    // CharacterSummary,
     HistoryBlock,
     HistoryChildren,
-    HistoryChildrenSummary,
+    // HistoryChildrenSummary,
     CharacterHistoryChildren,
     CardHistoryChildren,
     CreateEntityHistoryChild,
@@ -47,11 +47,11 @@ function genChild(): HistoryChildren {
             characterDefinitionId: pick(characterIdPool),
             isOverloaded: Math.random() < 0.3,
         }),
-        () => ({
-            type: "triggered",
-            who: rand(0, 1) as 0 | 1,
-            effectDefinitionId: pick(entityIdPool),
-        }),
+        // () => ({
+        //     type: "triggered",
+        //     who: rand(0, 1) as 0 | 1,
+        //     effectDefinitionId: pick(entityIdPool),
+        // }),
         () => ({
             type: "createEntity",
             who: rand(0, 1) as 0 | 1,
@@ -150,7 +150,7 @@ function genChild(): HistoryChildren {
             type: "convertDice",
             who: rand(0, 1) as 0 | 1,
             callerDefinitionId: pick([...characterIdPool, ...cardIdPool]),
-            isTunning: Math.random() < 0.5,
+            isTuning: Math.random() < 0.5,
             diceType: pick(diceTypePool),
         }),
         () => ({
@@ -200,45 +200,45 @@ function isCardEvent(c: HistoryChildren): c is CardHistoryChildren {
   return false;
 }
 
-function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
-    const charMap = new Map<number, CharacterSummary>();
-    const cardMap = new Map<number, CardSummary>();
+// function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
+//     const charMap = new Map<number, CharacterSummary>();
+//     const cardMap = new Map<number, CardSummary>();
 
-    children.forEach((c) => {
-        if (isCharacterEvent(c)) {
-            const charId = c.characterDefinitionId;
-            if (!charMap.has(charId)) {
-                charMap.set(charId, {
-                    characterDefinitionId: charId,
-                    healthChange: 0,
-                    children: [],
-                });
-            }
-            const summary = charMap.get(charId)!;
-            summary.children.push(c as CharacterHistoryChildren);
+//     children.forEach((c) => {
+//         if (isCharacterEvent(c)) {
+//             const charId = c.characterDefinitionId;
+//             if (!charMap.has(charId)) {
+//                 charMap.set(charId, {
+//                     characterDefinitionId: charId,
+//                     healthChange: 0,
+//                     children: [],
+//                 });
+//             }
+//             const summary = charMap.get(charId)!;
+//             summary.children.push(c as CharacterHistoryChildren);
 
-            if (c.type === "damage" || c.type === "heal") {
-                const delta = (c.newHealth ?? 0) - (c.oldHealth ?? 0);
-                summary.healthChange += delta;
-            }
-        }
+//             if (c.type === "damage" || c.type === "heal") {
+//                 const delta = (c.newHealth ?? 0) - (c.oldHealth ?? 0);
+//                 summary.healthChange += delta;
+//             }
+//         }
 
-        if (isCardEvent(c)) {
-            const cardId = c.cardDefinitionId;
-            if (!cardMap.has(cardId)) {
-                cardMap.set(cardId, {
-                    cardDefinitionId: cardId,
-                    children: [],
-                });
-            }
-            cardMap.get(cardId)!.children.push(c as CardHistoryChildren);
-        }
-    });
-    return {
-        characterSummary: Array.from(charMap.values()),
-        cardSummary: Array.from(cardMap.values()),
-    };
-}
+//         if (isCardEvent(c)) {
+//             const cardId = c.cardDefinitionId;
+//             if (!cardMap.has(cardId)) {
+//                 cardMap.set(cardId, {
+//                     cardDefinitionId: cardId,
+//                     children: [],
+//                 });
+//             }
+//             cardMap.get(cardId)!.children.push(c as CardHistoryChildren);
+//         }
+//     });
+//     return {
+//         characterSummary: Array.from(charMap.values()),
+//         cardSummary: Array.from(cardMap.values()),
+//     };
+// }
 
 /* ---------- HistoryBlock 生成 ---------- */
 function genBlock(): HistoryBlock {
@@ -264,7 +264,7 @@ function genBlock(): HistoryBlock {
                 characterDefinitionId: pick(characterIdPool),
                 how: pick(["init", "switch", "choose"] as const),
                 children: children,
-                summary: buildSummary(children),
+                // summary: buildSummary(children),
             };
         },
         () => {
@@ -279,7 +279,7 @@ function genBlock(): HistoryBlock {
                 callerDefinitionId: pick([...characterIdPool, ...cardIdPool]),
                 skillType: pick(["normal", "elemental", "burst", "technique"] as const),
                 children: children,
-                summary: buildSummary(children),
+                // summary: buildSummary(children),
             };
         },
         () => {
@@ -292,7 +292,7 @@ function genBlock(): HistoryBlock {
                 who: rand(0, 1) as 0 | 1,
                 cardDefinitionId: pick(cardIdPool),
                 children: children,
-                summary: buildSummary(children),
+                // summary: buildSummary(children),
             };
         },
         () => {
@@ -301,43 +301,43 @@ function genBlock(): HistoryBlock {
                 () => genChild()
             );
             return {
-                type: "elementalTunning",
+                type: "elementalTuning",
                 who: rand(0, 1) as 0 | 1,
                 cardDefinitionId: pick(cardIdPool),
                 children: children,
-                summary: buildSummary(children),
+                // summary: buildSummary(children),
             };
         },
-        () => {
-            const children = Array.from(
-                { length: rand(0, 12) },
-                () => genChild()
-            );
-            const card = pick(cardIdPool);
-            return {
-                type: "triggered",
-                who: rand(0, 1) as 0 | 1,
-                callerDefinitionId: card,
-                effectDefinitionId: card,
-                children: children,
-                summary: buildSummary(children),
-            };
-        },
-        () => {
-            const children = Array.from(
-                { length: rand(0, 12) },
-                () => genChild()
-            );
-            const card = pick(cardIdPool);
-            return {
-                type: "triggered",
-                who: rand(0, 1) as 0 | 1,
-                callerDefinitionId: pick([...characterIdPool]),
-                effectDefinitionId: pick([...entityIdPool, ...skillIdPool]),
-                children: children,
-                summary: buildSummary(children),
-            };
-        },
+        // () => {
+        //     const children = Array.from(
+        //         { length: rand(0, 12) },
+        //         () => genChild()
+        //     );
+        //     const card = pick(cardIdPool);
+        //     return {
+        //         type: "triggered",
+        //         who: rand(0, 1) as 0 | 1,
+        //         callerDefinitionId: card,
+        //         effectDefinitionId: card,
+        //         children: children,
+        //         summary: buildSummary(children),
+        //     };
+        // },
+        // () => {
+        //     const children = Array.from(
+        //         { length: rand(0, 12) },
+        //         () => genChild()
+        //     );
+        //     const card = pick(cardIdPool);
+        //     return {
+        //         type: "triggered",
+        //         who: rand(0, 1) as 0 | 1,
+        //         callerDefinitionId: pick([...characterIdPool]),
+        //         effectDefinitionId: pick([...entityIdPool, ...skillIdPool]),
+        //         children: children,
+        //         summary: buildSummary(children),
+        //     };
+        // },
         () => {
             const children = Array.from(
                 { length: rand(0, 12) },
@@ -348,7 +348,7 @@ function genBlock(): HistoryBlock {
                 who: rand(0, 1) as 0 | 1,
                 cardDefinitionId: pick(cardIdPool),
                 children: children,
-                summary: buildSummary(children),
+                // summary: buildSummary(children),
             };
         },
     ];

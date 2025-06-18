@@ -217,6 +217,7 @@ export class StateMutator {
       from: "pile",
       to: "hands",
       value: candidate,
+      reason: "draw",
     });
     if (
       this.state.players[who].hands.length > this.state.config.maxHandsCount
@@ -269,6 +270,7 @@ export class StateMutator {
         who,
         value: card,
         targetIndex: index,
+        reason: "switch",
       });
     }
     // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
@@ -293,6 +295,7 @@ export class StateMutator {
         to: "hands",
         who,
         value: candidate,
+        reason: "switch",
       });
     }
     this.notify();

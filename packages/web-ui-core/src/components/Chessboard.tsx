@@ -56,7 +56,7 @@ import {
   getPileHintPos,
   getPilePos,
   getShowingCardPos,
-  getTunningAreaPos,
+  getTuningAreaPos,
   MINIMUM_HEIGHT,
   MINIMUM_WIDTH,
   PERSPECTIVE,
@@ -106,7 +106,7 @@ import {
   type ClickEntityActionStep,
   type ClickSkillButtonActionStep,
   type ClickSwitchActiveButtonActionStep,
-  type ElementalTunningActionStep,
+  type ElementalTuningActionStep,
   type ParsedPreviewData,
   type PlayCardActionStep,
   type PreviewingCharacterInfo,
@@ -142,7 +142,7 @@ export interface CardInfo {
   enableShadow: boolean;
   enableTransition: boolean;
   playStep: PlayCardActionStep | null;
-  tuneStep: ElementalTunningActionStep | null;
+  tuneStep: ElementalTuningActionStep | null;
 }
 
 export interface DraggingCardInfo {
@@ -151,7 +151,7 @@ export interface DraggingCardInfo {
   x: number;
   y: number;
   status: "start" | "moving" | "end";
-  tuneStep: ElementalTunningActionStep | null;
+  tuneStep: ElementalTuningActionStep | null;
   updatePos: (e: PointerEvent) => Pos;
 }
 
@@ -369,8 +369,8 @@ function calcCardsInfo(
         ) ?? null;
       const tuneStep =
         availableSteps.find(
-          (step): step is ElementalTunningActionStep =>
-            step.type === "elementalTunning" && step.cardId === card.id,
+          (step): step is ElementalTuningActionStep =>
+            step.type === "elementalTuning" && step.cardId === card.id,
         ) ?? null;
 
       if (ctx.draggingHand?.id === card.id) {
@@ -430,8 +430,8 @@ function calcCardsInfo(
       ) ?? null;
     const tuneStep =
       availableSteps.find(
-        (step): step is ElementalTunningActionStep =>
-          step.type === "elementalTunning" && step.cardId === id,
+        (step): step is ElementalTuningActionStep =>
+          step.type === "elementalTuning" && step.cardId === id,
       ) ?? null;
 
     cards.push({
@@ -559,7 +559,7 @@ export interface CardCountHintInfo {
   transform: Transform;
 }
 
-export interface TunningAreaInfo {
+export interface TuningAreaInfo {
   draggingHand: DraggingCardInfo | null;
   cardHovering: boolean;
   transform: Transform;
@@ -570,7 +570,7 @@ interface ChessboardChildren {
   cards: CardInfo[];
   entities: EntityInfo[];
   cardCountHints: CardCountHintInfo[];
-  tunningArea: TunningAreaInfo | null;
+  tuningArea: TuningAreaInfo | null;
 }
 
 function rerenderChildren(opt: {
@@ -901,15 +901,15 @@ function rerenderChildren(opt: {
     ...currentEntities[1].summons,
   ];
 
-  const [tunningAreaX, tunningAreaY] = getTunningAreaPos(size, draggingHand);
-  const tunningArea: TunningAreaInfo = {
+  const [tuningAreaX, tuningAreaY] = getTuningAreaPos(size, draggingHand);
+  const tuningArea: TuningAreaInfo = {
     draggingHand,
     cardHovering: draggingHand
-      ? draggingHand.x + CARD_WIDTH > tunningAreaX
+      ? draggingHand.x + CARD_WIDTH > tuningAreaX
       : false,
     transform: {
-      x: tunningAreaX,
-      y: tunningAreaY,
+      x: tuningAreaX,
+      y: tuningAreaY,
       z: 11.99,
       ry: 0,
       rz: 0,
@@ -921,7 +921,7 @@ function rerenderChildren(opt: {
     characters,
     entities,
     cardCountHints,
-    tunningArea,
+    tuningArea,
   };
 }
 
@@ -1068,7 +1068,7 @@ export function Chessboard(props: ChessboardProps) {
     cards: [],
     entities: [],
     cardCountHints: [],
-    tunningArea: null,
+    tuningArea: null,
   });
 
   const [allMutations, setAllMutations] = createSignal<PbExposedMutation[][]>(
@@ -1499,8 +1499,8 @@ export function Chessboard(props: ChessboardProps) {
     if (dragging?.id !== cardInfo.id) {
       return;
     }
-    const [tunningAreaX] = getTunningAreaPos([height(), width()], dragging);
-    if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tunningAreaX) {
+    const [tuningAreaX] = getTuningAreaPos([height(), width()], dragging);
+    if (cardInfo.tuneStep && dragging.x + CARD_WIDTH > tuningAreaX) {
       localProps.onStepActionState?.(cardInfo.tuneStep, selectedDiceValue());
       setDraggingHand({ ...dragging, status: "end" });
       return;
@@ -1693,8 +1693,8 @@ export function Chessboard(props: ChessboardProps) {
             shown={localProps.actionState?.showBackdrop}
             onClick={onChessboardClick}
           />
-          <Show when={children().tunningArea}>
-            {(tunningArea) => <TuningArea {...tunningArea()} />}
+          <Show when={children().tuningArea}>
+            {(tuningArea) => <TuningArea {...tuningArea()} />}
           </Show>
         </div>
         {/* 下层 UI 组件 */}

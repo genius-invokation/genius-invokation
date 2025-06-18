@@ -114,7 +114,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 322012,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 2
       },
       {
@@ -243,7 +243,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 321017,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 1
       },
       {
@@ -324,7 +324,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 1,
     "cardDefinitionId": 332042,
     "children": [
@@ -530,7 +530,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 0,
     "cardDefinitionId": 223041,
     "children": [
@@ -592,7 +592,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 223041,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 3
       },
       {
@@ -749,14 +749,14 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 1402,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 4
       },
       {
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 1402,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 4
       },
       {
@@ -1197,7 +1197,7 @@
         "type": "convertDice",
         "who": 0,
         "callerDefinitionId": 2602,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 2
       },
       {
@@ -1271,7 +1271,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 1,
     "cardDefinitionId": 321002,
     "children": [
@@ -1362,7 +1362,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 1303,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 6
       },
       {
@@ -1451,7 +1451,7 @@
         "type": "convertDice",
         "who": 0,
         "callerDefinitionId": 226031,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 6
       },
       {
@@ -1857,7 +1857,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 223041,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 0
       },
       {
@@ -2049,7 +2049,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 321017,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 4
       }
     ],
@@ -2178,7 +2178,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 321015,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 0
       },
       {
@@ -2345,7 +2345,7 @@
         "type": "convertDice",
         "who": 0,
         "callerDefinitionId": 332041,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 8
       },
       {
@@ -2734,7 +2734,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 1506,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 9
       },
       {
@@ -2804,7 +2804,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 0,
     "cardDefinitionId": 332032,
     "children": [
@@ -2812,7 +2812,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 223041,
-        "isTunning": true,
+        "isTuning": true,
         "diceType": 3
       },
       {
@@ -2940,7 +2940,7 @@
         "type": "convertDice",
         "who": 0,
         "callerDefinitionId": 312010,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 5
       },
       {
@@ -3093,7 +3093,7 @@
         "type": "convertDice",
         "who": 1,
         "callerDefinitionId": 1402,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 7
       },
       {
@@ -3346,7 +3346,7 @@
         "type": "convertDice",
         "who": 0,
         "callerDefinitionId": 2402,
-        "isTunning": false,
+        "isTuning": false,
         "diceType": 7
       }
     ],
@@ -3705,7 +3705,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 1,
     "cardDefinitionId": 332045,
     "children": [
@@ -3845,7 +3845,7 @@
     }
   },
   {
-    "type": "elementalTunning",
+    "type": "elementalTuning",
     "who": 0,
     "cardDefinitionId": 312009,
     "children": [

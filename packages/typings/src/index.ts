@@ -43,6 +43,7 @@ export {
   CardArea as PbCardArea,
   EntityArea as PbEntityArea,
   RemoveCardReason as PbRemoveCardReason,
+  TransferCardReason as PbTransferCardReason,
   SkillType as PbSkillType,
   ModifyDirection as PbModifyDirection,
   ChangePhaseEM,
@@ -68,6 +69,9 @@ export {
   SkillUsedEM,
   PlayerFlag as PbPlayerFlag,
   SetPlayerFlagEM,
+  RerollDoneEM,
+  SwitchHandsDoneEM,
+  ChooseActiveDoneEM,
   SelectCardDoneEM,
 } from "./gen/mutation";
 export {

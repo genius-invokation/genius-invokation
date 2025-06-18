@@ -60,8 +60,8 @@ export interface PlayCardActionStep {
   readonly cardId: number;
   readonly playable: boolean;
 }
-export interface ElementalTunningActionStep {
-  readonly type: "elementalTunning";
+export interface ElementalTuningActionStep {
+  readonly type: "elementalTuning";
   readonly cardId: number;
 }
 
@@ -105,7 +105,7 @@ export const CANCEL_ACTION_STEP = {
 
 export type ActionStep =
   | PlayCardActionStep
-  | ElementalTunningActionStep
+  | ElementalTuningActionStep
   | ClickEntityActionStep
   | ClickSkillButtonActionStep
   | ClickSwitchActiveButtonActionStep
@@ -814,14 +814,14 @@ function createUseSkillActionState(
   ctx.skillSingleStepStates.set(ENTER_STEP, resultState);
 }
 
-interface CreateElementalTunningActionStateContext {
+interface CreateElementalTuningActionStateContext {
   action: Action & { value: ElementalTuningAction };
   index: number;
 }
 
-function createElementalTunningActionState(
+function createElementalTuningActionState(
   root: ActionState,
-  ctx: CreateElementalTunningActionStateContext,
+  ctx: CreateElementalTuningActionStateContext,
 ): ActionState {
   const CONFIRM_BUTTON_ACTION: ClickConfirmButtonActionStep = {
     type: "clickConfirmButton",
@@ -1095,11 +1095,11 @@ export function createActionState(
         if (validity !== ActionValidity.VALID) {
           continue;
         }
-        const step: ElementalTunningActionStep = {
-          type: "elementalTunning",
+        const step: ElementalTuningActionStep = {
+          type: "elementalTuning",
           cardId: action.value.removedCardId,
         };
-        const state = createElementalTunningActionState(root, {
+        const state = createElementalTuningActionState(root, {
           action: { value: action.value, ...actions[i] },
           index: i,
         });

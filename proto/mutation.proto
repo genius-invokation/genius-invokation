@@ -41,8 +41,8 @@ message ExposedMutation {
     PlayerStatusChangeEM player_status_change = 19;
     SwapCharacterPositionEM swap_character_position = 20;
     SetPlayerFlagEM set_player_flag = 21;
-    // reserved: Reroll 22
-    // reserved: SwitchHands 23
+    RerollDoneEM reroll_done = 22;
+    SwitchHandsDoneEM switch_hands_done = 23;
     ChooseActiveDoneEM choose_active_done = 24;
     // reserved: Action 25
     SelectCardDoneEM select_card_done = 26;
@@ -67,6 +67,14 @@ enum CardArea {
   CARD_AREA_PILE = 1;
 }
 
+enum TransferCardReason {
+  TRANSFER_CARD_REASON_UNSPECIFIED = 0;
+  TRANSFER_CARD_REASON_SWITCH = 1;
+  TRANSFER_CARD_REASON_DRAW = 2;
+  TRANSFER_CARD_REASON_UNDRAW = 3;
+  TRANSFER_CARD_REASON_STEAL = 4;
+  TRANSFER_CARD_REASON_SWAP = 5;
+}
 message TransferCardEM {
   int32 who = 1;
   reserved 2, 3;
@@ -75,6 +83,7 @@ message TransferCardEM {
   bool transfer_to_opp = 6;
   optional int32 target_index = 7;
   CardState card = 8;
+  TransferCardReason reason = 9;
 }
 
 enum SwitchActiveFromAction {
@@ -177,6 +186,7 @@ message ResetDiceEM {
   int32 who = 1;
   repeated DiceType dice = 2;
   ResetDiceReason reason = 3;
+  optional DiceType conversion_target_hint = 4;
 }
 
 enum HealKind {
@@ -230,6 +240,7 @@ message SkillUsedEM {
   int32 skill_definition_id = 3;
   SkillType skill_type = 4;
   int32 who = 5;
+  optional string triggered_on = 6;
 }
 
 message PlayerStatusChangeEM {
@@ -257,10 +268,20 @@ message SetPlayerFlagEM {
   bool flag_value = 3;
 }
 
+message RerollDoneEM {
+  int32 who = 1;
+  uint32 count = 2;
+}
+
 message ChooseActiveDoneEM {
   int32 who = 1;
   sint32 character_id = 2;
   int32 character_definition_id = 3;
+}
+
+message SwitchHandsDoneEM {
+  int32 who = 1;
+  uint32 count = 2;
 }
 
 message SelectCardDoneEM {

@@ -74,6 +74,7 @@ export interface TransferCardM {
   readonly from: "pile" | "hands";
   readonly to: "pile" | "hands" | "oppPile" | "oppHands";
   readonly value: CardState;
+  readonly reason: "switch" | "draw" | "undraw" | "steal" | "swap";
 }
 
 export interface SwitchActiveM {
@@ -147,7 +148,7 @@ export interface TransformDefinitionM {
 export type ResetDiceReason =
   | "roll"
   | "consume"
-  | "elementalTunning"
+  | "elementalTuning"
   | "generate"
   | "convert"
   | "absorb"
@@ -158,6 +159,7 @@ export interface ResetDiceM {
   readonly who: 0 | 1;
   readonly value: readonly DiceType[];
   readonly reason: ResetDiceReason;
+  readonly conversionTargetHint?: DiceType;
 }
 
 export type PlayerFlag = {

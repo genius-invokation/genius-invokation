@@ -274,7 +274,7 @@ export function getHandHintPos(size: Size, opp: boolean, value: number) {
 
 export const TUNNING_AREA_WIDTH = 20;
 
-export function getTunningAreaPos(
+export function getTuningAreaPos(
   [height, width]: Size,
   draggingHand: DraggingCardInfo | null,
 ) {

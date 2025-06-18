@@ -154,6 +154,7 @@ export class SkillExecutor {
           callerDefinitionId: skillInfo.caller.definition.id,
           skillDefinitionId: skillDef.id,
           skillType,
+          triggeredOn: skillDef.triggerOn,
         });
       }
     }

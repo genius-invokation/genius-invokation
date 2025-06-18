@@ -21,7 +21,7 @@ export type HistoryDetailBlock =
   | UseSkillHistoryBlock
   | TriggeredHistoryBlock
   | PlayCardHistoryBlock
-  | ElementalTunningHistoryBlock
+  | ElementalTuningHistoryBlock
   | SelectCardHistoryBlock;
 
 export type HistoryHintBlock = ChangePhaseHistoryBlock | ActionHistoryBlock;
@@ -173,8 +173,8 @@ export interface SelectCardHistoryBlock {
 // else:
 //   return (Cardback <-> "???" \n "???");
 // }
-export interface ElementalTunningHistoryBlock {
-  type: "elementalTunning";
+export interface ElementalTuningHistoryBlock {
+  type: "elementalTuning";
   who: 0 | 1;
   cardDefinitionId: number;
   children: HistoryChildren[];
@@ -251,7 +251,7 @@ export interface AbsorbDiceHistoryChild {
 export interface ConvertDiceHistoryChild {
   type: "convertDice";
   who: 0 | 1;
-  isTunning: boolean;
+  isTuning: boolean;
   diceType: DiceType;
   count: number;
 }

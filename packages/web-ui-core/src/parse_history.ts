@@ -38,16 +38,23 @@ import {
   PbRemoveCardReason,
   PbDamageType,
   PbHealKind,
+  PbTransferCardReason,
+  DiceType,
+  ResetDiceEM,
+  PbResetDiceReason,
 } from "@gi-tcg/typings";
 import type {
-  ApplyHistoryChild,
-  DamageHistoryChild,
+  AbsorbDiceHistoryChild,
+  ConvertDiceHistoryChild,
   EnergyHistoryChild,
+  GenerateDiceHistoryChild,
   HistoryBlock,
   HistoryChildren,
+  HistoryDetailBlock,
   UseSkillHistoryBlock,
   VariableChangeHistoryChild,
 } from "./history";
+import { flip } from "@gi-tcg/utils";
 
 interface VariableRecordEntry {
   oldValue: number;
@@ -99,6 +106,8 @@ class StateRecorder {
     number | undefined,
     number | undefined,
   ];
+  readonly dice: [DiceType[], DiceType[]] = [[], []];
+
   constructor(private readonly previousState: PbGameState | undefined) {
     if (!previousState) {
       return;
@@ -117,6 +126,7 @@ class StateRecorder {
           this.initializeEntity(area, entity, prop);
         }
       }
+      this.dice[who] = [...player.dice] as DiceType[];
     }
   }
 
@@ -156,7 +166,7 @@ class StateRecorder {
     }
   }
 
-  receive(
+  receiveModifyVar(
     varMut: ModifyEntityVarEM,
   ): VariableChangeHistoryChild | EnergyHistoryChild | null {
     const { entityId, entityDefinitionId, variableName, variableValue } =
@@ -193,6 +203,75 @@ class StateRecorder {
       }
     }
     return null;
+  }
+
+  receiveResetDice(
+    mut: ResetDiceEM,
+  ):
+    | AbsorbDiceHistoryChild[]
+    | ConvertDiceHistoryChild[]
+    | GenerateDiceHistoryChild[] {
+    const new_ = [...mut.dice] as DiceType[];
+    const old = this.dice[mut.who as 0 | 1];
+    this.dice[mut.who as 0 | 1] = new_;
+
+    switch (mut.reason) {
+      case PbResetDiceReason.CONVERT:
+      case PbResetDiceReason.ELEMENTAL_TUNING: {
+        const target = mut.conversionTargetHint as DiceType;
+        if (!target) {
+          return [];
+        }
+        const oldCount = old.filter((d) => d === target).length;
+        const newCount = new_.filter((d) => d === target).length;
+        const diceCount = newCount - oldCount;
+        return [
+          {
+            type: "convertDice",
+            who: mut.who as 0 | 1,
+            diceType: target,
+            diceCount,
+            isTuning: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING,
+          },
+        ];
+      }
+      case PbResetDiceReason.GENERATE: {
+        const generated: DiceType[] = [];
+        for (let i = 0; i < new_.length; ) {
+          const idx = generated.indexOf(new_[i]);
+          if (idx === -1) {
+            generated.push(new_[i]);
+            i++;
+          } else {
+            new_.splice(i, 1);
+          }
+        }
+        return Map.groupBy(generated, (i) => i)
+          .entries()
+          .toArray()
+          .map(
+            ([d, arr]): GenerateDiceHistoryChild => ({
+              type: "generateDice",
+              who: mut.who as 0 | 1,
+              diceType: d,
+              diceCount: arr.length,
+            }),
+          );
+      }
+      case PbResetDiceReason.ABSORB: {
+        const diceCount = new_.length - old.length;
+        return [
+          {
+            type: "absorbDice",
+            who: mut.who as 0 | 1,
+            diceCount,
+          },
+        ];
+      }
+      default: {
+        return [];
+      }
+    }
   }
 
   getMasterDefinitionId(entityId: number) {
@@ -266,7 +345,7 @@ export function parseToHistory(
 
     let maybeEndPhaseDrawing = false;
 
-    let mainBlock: Extract<HistoryBlock, { children: unknown }> | null = null;
+    let mainBlock: HistoryDetailBlock | null = null;
     const children: HistoryChildren[] = [];
     const stateRecorder = new StateRecorder(previousState);
 
@@ -296,11 +375,11 @@ export function parseToHistory(
           break;
         }
         case "resetDice": {
-          // TODO
+          children.push(...stateRecorder.receiveResetDice(m));
           break;
         }
         case "modifyEntityVar": {
-          const child = stateRecorder.receive(m);
+          const child = stateRecorder.receiveModifyVar(m);
           if (child) {
             children.push(child);
           }
@@ -404,7 +483,7 @@ export function parseToHistory(
             }
           } else if (m.reason === PbRemoveCardReason.ELEMENTAL_TUNING) {
             mainBlock = {
-              type: "elementalTunning",
+              type: "elementalTuning",
               who: m.who as 0 | 1,
               cardDefinitionId: definitionId,
               children: [],
@@ -464,12 +543,12 @@ export function parseToHistory(
           break;
         }
         case "transferCard": {
-          if (m.from === PbCardArea.PILE && m.to === PbCardArea.HAND) {
+          if (m.reason === PbTransferCardReason.DRAW) {
             if (!mainBlock && phase === PbPhaseType.END) {
               maybeEndPhaseDrawing = true;
             }
             const lastChild = children.at(-1);
-            if (lastChild?.type === "drawCard") {
+            if (lastChild?.type === "drawCard" && lastChild.who === m.who) {
               lastChild.drawCardsCount += 1;
             } else {
               children.push({
@@ -478,8 +557,24 @@ export function parseToHistory(
                 drawCardsCount: 1,
               });
             }
+          } else if (m.transferToOpp) {
+            children.push({
+              type: "stealHand",
+              who: flip(m.who as 0 | 1),
+              cardDefinitionId: m.card!.definitionId,
+            });
+          } else if (m.reason === PbTransferCardReason.UNDRAW) {
+            const lastChild = children.at(-1);
+            if (lastChild?.type === "undrawCard" && lastChild.who === m.who) {
+              lastChild.undrawCardsCount += 1;
+            } else {
+              children.push({
+                type: "undrawCard",
+                who: m.who as 0 | 1,
+                undrawCardsCount: 1,
+              });
+            }
           }
-          // TODO
           break;
         }
         case "transformDefinition": {
@@ -569,6 +664,32 @@ export function parseToHistory(
           };
           break;
         }
+        case "rerollDone": {
+          const lastChild = children.at(-1);
+          if (lastChild?.type === "reroll" && lastChild.who === m.who) {
+            lastChild.count += 1;
+          } else {
+            children.push({
+              type: "reroll",
+              who: m.who as 0 | 1,
+              count: 1,
+            });
+          }
+          break;
+        }
+        case "switchHandsDone": {
+          const lastChild = children.at(-1);
+          if (lastChild?.type === "switchHands" && lastChild.who === m.who) {
+            lastChild.count += 1;
+          } else {
+            children.push({
+              type: "switchHands",
+              who: m.who as 0 | 1,
+              count: 1,
+            });
+          }
+          break;
+        }
         case "selectCardDone": {
           mainBlock = {
             type: "selectCard",
@@ -591,7 +712,7 @@ export function parseToHistory(
     }
     if (mainBlock) {
       mainBlock.children.push(...children);
-      result.unshift(mainBlock);
+      result.push(mainBlock);
       if (lastMainBlock) {
         result.unshift(lastMainBlock);
       }
