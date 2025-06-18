@@ -14,12 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  CreateCharacterEM,
-  CreateEntityEM,
-  DamageEM,
-  ApplyAuraEM,
+  type CreateCharacterEM,
+  type CreateEntityEM,
   flattenPbOneof,
-  ModifyEntityVarEM,
+  type ModifyEntityVarEM,
   PbCharacterState,
   PbEntityState,
   PbPhaseType,
@@ -29,8 +27,7 @@ import {
   PbSkillType,
   PbCardArea,
   PbEntityArea,
-  SwitchActiveAction,
-  SwitchActiveEM,
+  type SwitchActiveEM,
   PbPlayerFlag,
   Reaction,
   PbPlayerStatus,
@@ -40,7 +37,7 @@ import {
   PbHealKind,
   PbTransferCardReason,
   DiceType,
-  ResetDiceEM,
+  type ResetDiceEM,
   PbResetDiceReason,
 } from "@gi-tcg/typings";
 import type {
@@ -237,15 +234,15 @@ class StateRecorder {
       }
       case PbResetDiceReason.GENERATE: {
         const generated: DiceType[] = [];
-        for (let i = 0; i < new_.length; ) {
-          const idx = generated.indexOf(new_[i]);
+        for (const d of new_) {
+          const idx = old.indexOf(d);
           if (idx === -1) {
-            generated.push(new_[i]);
-            i++;
+            generated.push(d);
           } else {
-            new_.splice(i, 1);
+            old.splice(idx, 1);
           }
         }
+        console.log(generated);
         return Map.groupBy(generated, (i) => i)
           .entries()
           .toArray()
@@ -259,7 +256,7 @@ class StateRecorder {
           );
       }
       case PbResetDiceReason.ABSORB: {
-        const diceCount = new_.length - old.length;
+        const diceCount = old.length - new_.length;
         return [
           {
             type: "absorbDice",
@@ -277,7 +274,6 @@ class StateRecorder {
   getMasterDefinitionId(entityId: number) {
     const { who = 0, masterDefinitionId = null } =
       this.area.get(entityId) ?? {};
-    console.log(this.entityInitStates.get(entityId));
     if (this.entityInitStates.get(entityId)?.type === "combatStatus") {
       return this.activeCharacterDefinitionIds[who];
     }
@@ -312,8 +308,7 @@ class StateRecorder {
     } else if (where === PbEntityArea.SUPPORT) {
       entityType = "support";
     } else {
-      console.error(mut);
-      return;
+      throw new Error(`Unknown entity area: ${where}`);
     }
     this.initializeEntity(
       { who: who as 0 | 1, masterDefinitionId },
@@ -532,7 +527,6 @@ export function parseToHistory(
         case "switchActive": {
           stateRecorder.onSwitchActive(m);
           const who = m.who as 0 | 1;
-          console.log(m);
           if (m.fromAction === PbSwitchActiveFromAction.NONE) {
             children.push({
               type: "switchActive",
@@ -752,7 +746,7 @@ export function parseToHistory(
     }
     return result;
   } catch (e) {
-    console.log("Error while parsing history:", e);
+    console.error("Error while parsing history:", e);
     return lastMainBlock ? [lastMainBlock] : [];
   }
 }
