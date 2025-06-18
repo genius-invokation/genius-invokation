@@ -157,7 +157,7 @@ export const ShiningShadowhuntShellCryo = card(115117)
  */
 export const IntentToCover = combatStatus(115118)
   .since("v5.7.0")
-  .on("modifyAction", (c, e) => e.action.type === "switchActive")
+  .on("switchActive")
   .usage(2)
   .drawCards(1)
   .done();
