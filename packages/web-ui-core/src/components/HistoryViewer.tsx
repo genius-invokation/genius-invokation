@@ -882,6 +882,15 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
           c as Extract<CreateEntityHistoryChild, { entityType: "summon" }>,
         );
         summary.type.push(c.type);
+      } else if (c.entityType === "support") {
+        summary = getOrCreateCardSummary(cardMap, {
+          cardDefinitionId: c.entityDefinitionId,
+          who: c.who,
+        });
+        summary.children.push(
+          c as Extract<CreateEntityHistoryChild, { entityType: "support" }>,
+        );
+        summary.type.push(c.type);
       }
     } else if (c.type === "disposeCard") {
       summary = getOrCreateCardSummary(cardMap, c);
@@ -905,7 +914,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
         summary.children.push(
           c as Extract<CreateEntityHistoryChild, { entityType: "support" }>,
         );
-        summary.type.push("disposeCard");
+        summary.type.push(c.type);
       }
     }
   }
