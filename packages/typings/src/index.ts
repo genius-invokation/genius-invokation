@@ -73,6 +73,7 @@ export {
   SwitchHandsDoneEM,
   ChooseActiveDoneEM,
   SelectCardDoneEM,
+  HandleEventEM,
 } from "./gen/mutation";
 export {
   Action,

@@ -188,7 +188,6 @@ class StateRecorder {
       (record = this.energyVarRecords.get(varMut.entityId))
     ) {
       record.set(variableValue);
-      console.log("ENERGY", variableValue, record.take());
       const { oldValue = 0, newValue = 0 } = record.take() ?? {};
       return {
         type: "energy",
@@ -271,7 +270,6 @@ class StateRecorder {
             old.splice(idx, 1);
           }
         }
-        console.log(generated);
         return Map.groupBy(generated, (i) => i)
           .entries()
           .toArray()
@@ -392,6 +390,7 @@ export function updateHistory(
 
     for (const pbm of mutations) {
       const m = flattenPbOneof(pbm.mutation!);
+      console.log(m);
       switch (m.$case) {
         case "changePhase": {
           const newPhase = (
@@ -649,6 +648,8 @@ export function updateHistory(
         }
         case "skillUsed": {
           if (m.skillType === PbSkillType.TRIGGERED) {
+            const { type } =
+              stateRecorder.entityInitStates.get(m.callerId) ?? {};
             mainBlock = {
               type: "triggered",
               who: m.who as 0 | 1,
@@ -658,7 +659,18 @@ export function updateHistory(
               callerOrSkillDefinitionId: m.callerDefinitionId,
               children: [],
               indent: history.currentIndent,
+              entityType: type,
             };
+            const parentBlock = history.blocks.findLast(
+              (b) => "indent" in b && b.indent < history.currentIndent,
+            );
+            if (parentBlock && "children" in parentBlock) {
+              parentBlock.children.push({
+                type: "willTriggered",
+                who: m.who as 0 | 1,
+                callerDefinitionId: m.callerDefinitionId,
+              });
+            }
           } else if (m.skillType === PbSkillType.CHARACTER_PASSIVE) {
             mainBlock = {
               type: "triggered",
@@ -761,6 +773,14 @@ export function updateHistory(
           };
           break;
         }
+        case "handleEvent": {
+          if (m.isClose) {
+            history.currentIndent = Math.max(0, history.currentIndent - 1);
+          } else {
+            history.currentIndent++;
+          }
+          break;
+        }
         case "switchTurn":
         case "setWinner":
         case "swapCharacterPosition": {
@@ -784,10 +804,8 @@ export function updateHistory(
         history.blocks.pop();
       }
       mainBlock.children.push(...children);
-
       history.blocks.push(mainBlock);
     } else if (maybeEndPhaseDrawing) {
-      // TODO use a endPhaseDraw block?
       history.blocks.push({
         type: "pocket",
         children,

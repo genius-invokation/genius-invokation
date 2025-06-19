@@ -30,6 +30,7 @@ import {
   type EventAndRequest,
   type InitiativeSkillEventArg,
   type InitiativeSkillInfo,
+  type SwitchActiveInfo,
   type WithActionDetail,
 } from "./base/skill";
 import type { GameState } from "./base/state";
@@ -70,6 +71,10 @@ class PreviewContext {
 
   mutate(mutation: Mutation) {
     this.mutator.mutate(mutation);
+  }
+  /** @deprecated see TODO in StateMutator#postSwitchActive */
+  postSwitchActive(switchInfo: SwitchActiveInfo) {
+    this.mutator.postSwitchActive(switchInfo);
   }
 
   async previewSkill(
@@ -155,7 +160,8 @@ class PreviewContext {
               newVisibleVar.set(m.state.id, {
                 ...m,
                 // keep first direction
-                direction: newVisibleVar.get(m.state.id)?.direction ?? m.direction,
+                direction:
+                  newVisibleVar.get(m.state.id)?.direction ?? m.direction,
               });
             }
           }
@@ -313,6 +319,15 @@ export class ActionPreviewer {
           who: this.who,
           value: newActionInfo.to,
         });
+        const switchInfo: SwitchActiveInfo = {
+          type: "switchActive",
+          who: this.who,
+          from: newActionInfo.from,
+          to: newActionInfo.to,
+          fromReaction: false,
+          fast: newActionInfo.fast,
+        };
+        ctx.postSwitchActive(switchInfo);
         await ctx.previewEvent(
           "onSwitchActive",
           new SwitchActiveEventArg(ctx.state, newActionInfo),

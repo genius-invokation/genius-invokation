@@ -26,6 +26,8 @@ import {
   type PbExposedMutation,
   unFlattenOneof,
   ActionValidity,
+  Reaction,
+  PbSwitchActiveFromAction,
 } from "@gi-tcg/typings";
 import type {
   AnyState,
@@ -75,6 +77,7 @@ import {
   UseSkillEventArg,
   type InitiativeSkillEventArg,
   defineSkillInfo,
+  type SwitchActiveInfo,
 } from "./base/skill";
 import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
@@ -1141,16 +1144,18 @@ export class Game {
       who,
       value: to,
     });
+    const switchInfo: SwitchActiveInfo = {
+      type: "switchActive",
+      who,
+      from,
+      to,
+      fromReaction: false,
+      fast,
+    };
+    this.mutator.postSwitchActive(switchInfo);
     await this.handleEvent(
       "onSwitchActive",
-      new SwitchActiveEventArg(oldState, {
-        type: "switchActive",
-        who,
-        from,
-        to,
-        fromReaction: false,
-        fast,
-      }),
+      new SwitchActiveEventArg(oldState, switchInfo),
     );
   }
 
