@@ -52,6 +52,7 @@ import TuningIcon from "../svg/TuningIcon.svg?component-solid";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg?component-solid";
+import TriggerIcon from "../svg/TriggerIcon.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
@@ -1761,16 +1762,16 @@ function HistoryBlockBox(props: {
                 </div>
               </Match>
             </Switch>            
-            <div class="h-8 w-8 absolute top-50% left-50% -translate-x-50% -translate-y-50%">
+            <div class="h-10 w-10 absolute top-50% left-50% -translate-x-50% -translate-y-50% flex items-center justify-center">
               <Switch>
                 <Match when={props.data.type === "switchActive"}>
-                  <SwitchActiveIcon class="h-full w-full" />
+                  <SwitchActiveIcon class="h-8 w-8" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
-                  <SwitchActiveIcon class="h-full w-full" />
+                  <TriggerIcon class="h-10 w-10" />
                 </Match>
                 <Match when={props.data.type === "elementalTuning"}>
-                  <TuningIcon class="h-full w-full" />
+                  <TuningIcon class="h-8 w-8" />
                 </Match>
               </Switch>
             </div>
