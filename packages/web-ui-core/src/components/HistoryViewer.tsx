@@ -26,6 +26,7 @@ import {
   type JSX,
   createResource,
   createMemo,
+  onMount,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
 import type {
@@ -1729,13 +1730,7 @@ function HistoryBlockBox(props: {
       onClick={() => props.onClick()}
     >
       <div class="w-full h-6 bg-[var(--title-color)] flex flex-row items-center">
-        <div class="flex flex-row h-6 items-center pl-1.5 pr-0.5 bg-[var(--bd-color)]">
-          <div
-            class="text-[var(--text-color)] text-2.8 font-bold whitespace-nowrap"
-            bool:data-opp={props.data.opp}
-          >
-            {props.data.title}
-          </div>
+        <div class="flex flex-row h-6 items-center pl-1 pr-0.5 bg-[var(--bd-color)]">
           <For each={Array.from({ length: props.data.indent }, (_, i) => i)}>
             {() => (
               <div class="relative w-4 h-6 overflow-visible">
@@ -1757,6 +1752,12 @@ function HistoryBlockBox(props: {
             />
           </div>
         </div>
+        <div
+          class="text-[var(--text-color)] text-2.8 ml-0.5 font-bold whitespace-nowrap"
+          bool:data-opp={props.data.opp}
+        >
+          {props.data.title}
+        </div>         
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
@@ -1962,7 +1963,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
 
   const who = createMemo(() => props.who);
 
-  createEffect(() => {
+  onMount(() => {
     scrollToBottom();
   });
 
