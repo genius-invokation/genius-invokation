@@ -955,32 +955,27 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
     }
   }
 
-  const makeAura = (l: CharacterSummary[]) =>
-    l.length === 1
-      ? l[0].elemental.length === 0
-        ? undefined
-        : l[0].elemental.length === 1
-          ? l[0].elemental[0]
-          : "more"
-      : l.some((c) => c.elemental.length)
-        ? "more"
-        : undefined;
-  const makeStatus = (l: CharacterSummary[]) =>
-    l.length === 1
-      ? l[0].status.length === 0
-        ? undefined
-        : l[0].status
-      : l.some((c) => c.status.length)
-        ? "more"
-        : undefined;
-  const makeCombat = (l: CharacterSummary[]) =>
-    l.length === 1
-      ? l[0].combatStatus.length === 0
-        ? undefined
-        : l[0].combatStatus
-      : l.some((c) => c.combatStatus.length)
-        ? "more"
-        : undefined;
+  const makeAura = (l: CharacterSummary[]) => {
+    const all = l.flatMap((ch) => ch.elemental);
+    if (!all.length) { 
+      return; 
+    }
+    return l.length === 1 && all.length === 1 ? all[0] : "more";
+  };
+  const makeStatus = (l: CharacterSummary[]) => {
+    const all = l.flatMap((ch) => ch.status);
+    if (!all.length) { 
+      return; 
+    }
+    return l.length === 1 ? all : "more";
+  };
+  const makeCombat = (l: CharacterSummary[]) => {
+    const all = l.flatMap((ch) => ch.combatStatus);
+    if (!all.length) { 
+      return; 
+    }
+    return l.length === 1 ? all : "more";
+  };
 
   const summaryShot: SummaryShot[] = [];
   for (const type of Object.keys(shotGroups) as shotType[]) {
@@ -1345,7 +1340,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
       result = {
         type: "pocket",
         opp: false,
-        title: "继续结算···",
+        title: "···",
         indent: block.indent,
         content: {
           opp: false,
@@ -1684,7 +1679,7 @@ function PocketHistoryBlockBox(props: {
           onClick={() => props.onClick()}
         >
           <div
-            class="w-full h-6 bg-#b1ada8 rounded-t-0 flex items-center opacity-60 data-[selected]:opacity-80"
+            class="w-full h-6 bg-#b1ada8 rounded-t-0 flex items-center justify-center opacity-60 data-[selected]:opacity-80"
             bool:data-selected={props.isSelected}
           >
             <div class="text-#212933 text-2.8 font-bold ml-1.5">
