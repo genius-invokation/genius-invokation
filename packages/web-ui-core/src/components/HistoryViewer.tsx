@@ -1062,6 +1062,7 @@ interface renderHistoryBlockProps {
     | "pocket";
   opp: boolean;
   title: string;
+  indent: number;
   imageId?: number;
   callerId?: number;
   energyChange?: blockEnergyProps;
@@ -1127,6 +1128,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}${switchActiveTextMap[block.how]}`,
+        indent: block.indent,
         imageId: block.characterDefinitionId,
         callerId: block.characterDefinitionId,
         energyChange: extractBlockEnergyProps(block, 0), // 可填写maxEnergy
@@ -1151,6 +1153,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: `${subject(opp(block.who))}${
           block.skillType === "technique" ? "使用特技" : "使用技能"
         }`,
+        indent: block.indent,
         imageId: block.callerDefinitionId,
         callerId: block.callerDefinitionId,
         energyChange:
@@ -1200,6 +1203,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: "触发效果",
+        indent: block.indent,
         imageId: block.masterOrCallerDefinitionId,
         callerId: block.callerOrSkillDefinitionId,
         energyChange: extractBlockEnergyProps(
@@ -1255,6 +1259,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}打出手牌`,
+        indent: block.indent,
         imageId: block.cardDefinitionId,
         callerId: block.cardDefinitionId,
         content: {
@@ -1285,6 +1290,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}执行挑选`,
+        indent: block.indent,
         imageId: block.cardDefinitionId,
         callerId: block.cardDefinitionId,
         content: {
@@ -1309,6 +1315,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: block.type,
         opp: opp(block.who),
         title: `${subject(opp(block.who))}进行「元素调和」`,
+        indent: block.indent,
         imageId: block.cardDefinitionId,
         callerId: block.cardDefinitionId,
         content: {
@@ -1339,6 +1346,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: "pocket",
         opp: false,
         title: "继续结算···",
+        indent: block.indent,
         content: {
           opp: false,
         },
@@ -1351,6 +1359,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         type: "pocket",
         opp: false,
         title: "",
+        indent: 0,
         content: {
           opp: false,
         },
@@ -1593,7 +1602,7 @@ function HistoryBlockBox(props: {
   };
   return (
     <div
-      class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5`}
+      class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5 relative`}
       onClick={() => props.onClick()}
     >
       <div class="w-full h-6 bg-[var(--title-color)] flex items-center">
@@ -1603,6 +1612,22 @@ function HistoryBlockBox(props: {
         >
           {props.data.title}
         </div>
+      </div>
+      <div class="absolute top-7 left-0 w-4 flex flex-col gap-0.8">
+        <For
+          each={Array.from({ length: props.data.indent }, (_, i) => i)}
+        >
+          {() => (
+            <div
+              class="w-3.5 h-2 bg-[var(--bd-color)] history-indent-hint opacity-25"
+              bool:data-opp={props.data.opp}
+            />
+          )}
+        </For>
+        <div
+          class="w-3.5 h-2 bg-[var(--bd-color)] history-indent-hint opacity-100 scale-105%"
+          bool:data-opp={props.data.opp}
+        />
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">

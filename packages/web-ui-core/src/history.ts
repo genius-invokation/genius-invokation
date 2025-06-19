@@ -90,6 +90,7 @@ export interface ActionHistoryBlock {
 // click_description: undifined
 export interface PocketHistoryBlock {
   type: "pocket";
+  indent: number;
   children: HistoryChildren[];
 }
 
@@ -99,6 +100,7 @@ export interface PocketHistoryBlock {
 // click_description: characterCardface <-> characterName \n "角色出战"
 export interface SwitchOrSelectActiveHistoryBlock {
   type: "switchActive";
+  indent: number;
   who: 0 | 1;
   characterDefinitionId: number;
   how: "init" | "switch" | "choose";
@@ -111,6 +113,7 @@ export interface SwitchOrSelectActiveHistoryBlock {
 // click_description: callerCardface <-> callerName \n "使用技能" \n skillIcon + skillName
 export interface UseSkillHistoryBlock {
   type: "useSkill";
+  indent: number;
   who: 0 | 1;
   skillDefinitionId: number;
   callerDefinitionId: number;
@@ -131,6 +134,7 @@ export interface UseSkillHistoryBlock {
 // }
 export interface TriggeredHistoryBlock {
   type: "triggered";
+  indent: number;
   who: 0 | 1;
   masterOrCallerDefinitionId: number;
   callerOrSkillDefinitionId: number;
@@ -143,6 +147,7 @@ export interface TriggeredHistoryBlock {
 // click_description: Cardface <-> cardName \n cardDescription
 export interface PlayCardHistoryBlock {
   type: "playingCard";
+  indent: number;
   who: 0 | 1;
   cardDefinitionId: number;
   children: HistoryChildren[];
@@ -159,6 +164,7 @@ export interface PlayCardHistoryBlock {
 // }
 export interface SelectCardHistoryBlock {
   type: "selectCard";
+  indent: number;
   who: 0 | 1;
   cardDefinitionId: number; // 被选择的牌
   children: HistoryChildren[];
@@ -175,6 +181,7 @@ export interface SelectCardHistoryBlock {
 // }
 export interface ElementalTuningHistoryBlock {
   type: "elementalTuning";
+  indent: number;
   who: 0 | 1;
   cardDefinitionId: number;
   children: HistoryChildren[];

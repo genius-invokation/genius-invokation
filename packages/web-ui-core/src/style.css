@@ -213,6 +213,10 @@
     clip-path: polygon(0 0, 0 100%, 100% 0);
   }
 
+  .history-indent-hint {
+    clip-path: polygon(0 0, 71% 0, 100% 50%, 71% 100%, 0 100%);
+  }
+
   .chessboard-bg {
     background-image: linear-gradient(to bottom,
         #f0fdf4ff 49.5%,
