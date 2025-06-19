@@ -1294,7 +1294,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: opp(block.who),
         title: "触发效果",
         indent: block.indent,
-        imageId: block.masterOrCallerDefinitionId,
+        imageId: block.entityType === "equipment" ? block.callerOrSkillDefinitionId : block.masterOrCallerDefinitionId,
         imageSize : block.entityType === "summon" || block.entityType === "support" ? "summon" : "normal",
         callerId: block.callerOrSkillDefinitionId,
         energyChange: extractBlockEnergyProps(

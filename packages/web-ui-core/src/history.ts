@@ -138,7 +138,7 @@ export interface TriggeredHistoryBlock {
   who: 0 | 1;
   masterOrCallerDefinitionId: number;
   callerOrSkillDefinitionId: number;
-  entityType?: "combatStatus" | "status" | "summon" | "support";
+  entityType?: "combatStatus" | "status" | "equipment" | "summon" | "support";
   children: HistoryChildren[];
 }
 
