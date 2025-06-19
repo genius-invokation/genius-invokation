@@ -730,6 +730,32 @@ const renderHistoryHint = (block: HistoryHintBlock) => {
   return result;
 };
 
+interface HistoryChildrenSummary {
+  characterSummary: CharacterSummary[];
+  cardSummary: CardSummary[];
+}
+interface CharacterSummary {
+  characterDefinitionId: number;
+  who: 0 | 1;
+  damage: boolean;
+  damageSum: number;
+  defeated: boolean;
+  heal: boolean;
+  healSum: number;
+  rivive: boolean;
+  switchActive: boolean;
+  elemental: DamageType[][];
+  status: number[];
+  combatStatus: number[];
+  children: CharacterHistoryChildren[];
+}
+interface CardSummary {
+  cardDefinitionId: number;
+  who: 0 | 1;
+  type: ("disposeCard" | "removeEntity" | "createEntity")[];
+  children: CardHistoryChildren[];
+}
+
 function getOrCreateCharacterSummary(
   charMap: Map<string, CharacterSummary>,
   c: {
@@ -744,7 +770,12 @@ function getOrCreateCharacterSummary(
     charMap.set(key, {
       characterDefinitionId: charId,
       who: who,
-      healthChange: 0,
+      damage: false,
+      damageSum: 0,
+      defeated: false,
+      heal: false,
+      healSum: 0,
+      rivive: false,
       switchActive: false,
       elemental: [],
       status: [],
@@ -783,19 +814,28 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
   let summary: CharacterSummary | CardSummary | undefined;
 
   for (const c of children) {
-    if (c.type === "damage" || c.type === "heal") {
+    if (c.type === "damage") {
       summary = getOrCreateCharacterSummary(charMap, c);
       summary.children.push(c);
-      const delta = (c.newHealth ?? 0) - (c.oldHealth ?? 0);
-      summary.healthChange += delta;
-      if (c.type === "damage") {
-        if (c.reaction) {
-          summary.elemental.push(
-            reactionTextMap[c.reaction].element as DamageType[],
-          );
-        } else if (c.damageType >= 1 && c.damageType <= 7) {
-          summary.elemental.push([c.damageType]);
-        }
+      summary.damage = true;
+      summary.damageSum += c.damageValue;
+      if (c.causeDefeated) {
+        summary.defeated = true;
+      }
+      if (c.reaction) {
+        summary.elemental.push(
+          reactionTextMap[c.reaction].element as DamageType[],
+        );
+      } else if (c.damageType >= 1 && c.damageType <= 7) {
+        summary.elemental.push([c.damageType]);
+      }
+    } else if (c.type === "heal") {
+      summary = getOrCreateCharacterSummary(charMap, c);
+      summary.children.push(c);
+      summary.heal = true;
+      summary.healSum += c.healValue;
+      if (c.healType === "revive" || c.healType === "immuneDefeated") {
+        summary.rivive = true;
       }
     } else if (c.type === "switchActive") {
       summary = getOrCreateCharacterSummary(charMap, c);
@@ -875,26 +915,6 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
   };
 }
 
-interface HistoryChildrenSummary {
-  characterSummary: CharacterSummary[];
-  cardSummary: CardSummary[];
-}
-interface CharacterSummary {
-  characterDefinitionId: number;
-  who: 0 | 1;
-  healthChange: number;
-  switchActive: boolean;
-  elemental: DamageType[][];
-  status: number[];
-  combatStatus: number[];
-  children: CharacterHistoryChildren[];
-}
-interface CardSummary {
-  cardDefinitionId: number;
-  who: 0 | 1;
-  type: ("disposeCard" | "removeEntity" | "createEntity")[];
-  children: CardHistoryChildren[];
-}
 interface SummaryShot {
   size: "normal" | "summon";
   who: 0 | 1 | "both";
@@ -902,6 +922,7 @@ interface SummaryShot {
   aura?: DamageType[] | "more";
   inner?: "damage" | "heal" | "switch" | "defeated";
   innerValue?: number | "more";
+  innerValueSpecial?: boolean;
   status?: number[] | "more";
   combat?: number[] | "more";
 }
@@ -929,14 +950,59 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   };
 
   for (const c of characterSummary) {
-    if (c.healthChange < 0) {
-      shotGroups.damage.push(c);
-    } else if (c.healthChange > 0) {
-      shotGroups.heal.push(c);
-    } else if (c.elemental.length > 0) {
-      shotGroups.apply.push(c);
-    } else if (c.switchActive) {
-      shotGroups.switch.push(c);
+    if (c.damage || c.heal || c.elemental.length || c.switchActive) {
+      if (c.damage) {
+        shotGroups.damage.push(c);
+      } 
+      if (c.heal && !c.damage) {
+        shotGroups.heal.push(c);
+      }       
+      if (c.heal && c.damage) {
+        shotGroups.heal.push({
+          ...c,
+          damage: false,
+          damageSum: 0,
+          defeated: false,
+          switchActive: false,
+          elemental: [],
+          status: [],
+          combatStatus: [],
+        });
+      }
+      if (c.elemental.length && !c.damage && !c.heal) {
+        shotGroups.apply.push(c);
+      }
+      if (c.elemental.length && !c.damage && c.heal) {
+        shotGroups.apply.push({
+          ...c,
+          damage: false,
+          damageSum: 0,
+          defeated: false,
+          heal: false,
+          healSum: 0,
+          rivive: false,
+          switchActive: false,
+          status: [],
+          combatStatus: [],
+        });
+      }
+      if (c.switchActive && !c.damage && !c.heal && !c.elemental.length) {
+        shotGroups.switch.push(c);
+      }
+      if (c.switchActive && (c.damage || c.heal || c.elemental.length)) {
+        shotGroups.switch.push({
+          ...c,
+          damage: false,
+          damageSum: 0,
+          defeated: false,
+          heal: false,
+          healSum: 0,
+          rivive: false,
+          elemental: [],
+          status: [],
+          combatStatus: [],
+        }); 
+      } 
     } else if (c.status.length > 0) {
       shotGroups.status.push(c);
     } else if (c.combatStatus.length > 0) {
@@ -1006,11 +1072,25 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
                 ? "defeated"
                 : undefined,
       innerValue:
-        type === "damage" || type === "heal"
+        type === "damage"
           ? list.length === 1
-            ? (list[0] as CharacterSummary).healthChange
+            ? (list[0] as CharacterSummary).damageSum
             : "more"
-          : undefined,
+          : type === "heal"
+            ? list.length === 1
+              ? (list[0] as CharacterSummary).healSum
+              : "more"
+            : undefined,
+      innerValueSpecial:
+        type === "damage"
+          ? list.length === 1
+            ? (list[0] as CharacterSummary).defeated
+            : undefined
+          : type === "heal"
+            ? list.length === 1
+              ? (list[0] as CharacterSummary).rivive
+              : undefined
+            : undefined,
       status:
         type === "remove" || type === "create" || type === "dispose"
           ? undefined
@@ -1174,11 +1254,11 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
                   }`}
                 </div>
                 <div class="flex flex-row items-center gap-1">
-                  <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full b-1 b-white/30 flex items-center justify-center">
                     <Image
                       imageId={block.skillDefinitionId}
                       type="icon"
-                      class="h-7 w-7"
+                      class="h-6.5 w-6.5"
                     />
                   </div>
                   <span class="text-#fff3e0/98 text-3">
@@ -1230,11 +1310,11 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
               <div class="flex flex-col gap-1">
                 <div class="text-3 text-#d4bc8e">触发效果</div>
                 <div class="flex flex-row items-center gap-1">
-                  <div class="h-8 w-8 rounded-full b-1 b-white/30 flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full b-1 b-white/30 flex items-center justify-center">
                     <Image
                       imageId={block.callerOrSkillDefinitionId}
                       type="icon"
-                      class="h-7 w-7"
+                      class="h-6.5 w-6.5"
                     />
                   </div>
                   <span class="text-#fff3e0/98 text-3">
@@ -1340,7 +1420,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
       result = {
         type: "pocket",
         opp: false,
-        title: "···",
+        title: "裁判行动",
         indent: block.indent,
         content: {
           opp: false,
@@ -1400,17 +1480,17 @@ function HistoryChildBox(props: { data: renderHistoryChildProps }) {
           <Show when={props.data.healthChange}>
             {(healthChange) => (
               <div
-                class="h-4 px-3 min-w-12 flex flex-row items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51 data-[increase]:bg-#6e9b3a"
+                class="h-4 px-3 min-w-12 flex flex-row gap-1 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51 data-[increase]:bg-#6e9b3a"
                 bool:data-increase={healthChange().type === "heal"}
               >
                 <Show when={healthChange().special}>
-                  <div class="h-5 w-5 flex-shrink-0 -translate-x-1">
+                  <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
                     <Switch>
                       <Match when={healthChange().type === "heal"}>
-                        <RevivePreviewIcon class="h-5 w-5" />
+                        <RevivePreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                       </Match>
                       <Match when={healthChange().type === "damage"}>
-                        <DefeatedPreviewIcon class="h-5 w-5" />
+                        <DefeatedPreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                       </Match>
                     </Switch>
                   </div>
@@ -1518,12 +1598,17 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         <div class="h-4 w-12 absolute top-50% left-5.25 -translate-x-50% -translate-y-50%">
           <Switch>
             <Match when={props.data.inner === "damage"}>
-              <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
+              <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
+                <Show when={props.data.innerValueSpecial}>
+                  <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
+                    <DefeatedPreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
+                  </div>
+                </Show>
                 <StrokedText
                   text={
                     props.data.innerValue === "more"
                       ? "···"
-                      : `${props.data.innerValue}`
+                      : `-${props.data.innerValue}`
                   }
                   strokeWidth={1.5}
                   strokeColor="black"
@@ -1531,7 +1616,12 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               </div>
             </Match>
             <Match when={props.data.inner === "heal"}>
-              <div class="h-4 w-12 flex items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
+              <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
+                <Show when={props.data.innerValueSpecial}>
+                  <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
+                    <RevivePreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
+                  </div>
+                </Show>
                 <StrokedText
                   text={
                     props.data.innerValue === "more"
@@ -1682,7 +1772,7 @@ function PocketHistoryBlockBox(props: {
             class="w-full h-6 bg-#b1ada8 rounded-t-0 flex items-center justify-center opacity-60 data-[selected]:opacity-80"
             bool:data-selected={props.isSelected}
           >
-            <div class="text-#212933 text-2.8 font-bold ml-1.5">
+            <div class="text-#212933 text-3.2 font-bold">
               {props.data.title}
             </div>
           </div>

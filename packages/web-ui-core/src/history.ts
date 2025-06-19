@@ -138,6 +138,7 @@ export interface TriggeredHistoryBlock {
   who: 0 | 1;
   masterOrCallerDefinitionId: number;
   callerOrSkillDefinitionId: number;
+  entityType: "combatStatus" | "status" | "equipment" | "summon" | "support" | "card" | undefined;
   children: HistoryChildren[];
 }
 
@@ -204,7 +205,6 @@ export interface WillTriggeredHistoryChild {
   type: "willTriggered";
   who: 0 | 1;
   callerDefinitionId: number;
-  entityType: "combatStatus" | "status" | "equipment" | "summon" | "support" | "card" | undefined;
 }
 
 // 抓牌
