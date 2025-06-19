@@ -50,7 +50,7 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
-import { updateHistory, type HistoryData } from "./parse_history";
+import { updateHistory, type HistoryData } from "./history/parser";
 import { createStore, produce } from "solid-js/store";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {

@@ -28,17 +28,17 @@ import {
   createMemo,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
-import {
-  type CardHistoryChildren,
-  type CharacterHistoryChildren,
-  type CreateEntityHistoryChild,
-  type EnergyHistoryChild,
-  type HistoryBlock,
-  type HistoryChildren,
-  type HistoryDetailBlock,
-  type HistoryHintBlock,
-  type RemoveEntityHistoryChild,
-} from "../history";
+import type {
+  CardHistoryChildren,
+  CharacterHistoryChildren,
+  CreateEntityHistoryChild,
+  EnergyHistoryChild,
+  HistoryBlock,
+  HistoryChildren,
+  HistoryDetailBlock,
+  HistoryHintBlock,
+  RemoveEntityHistoryChild,
+} from "../history/typings";
 import { Image } from "./Image";
 import { DICE_COLOR, DiceIcon } from "./Dice";
 import type {
@@ -56,7 +56,7 @@ import TriggerIcon from "../svg/TriggerIcon.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
-const reactionTextMap: Record<number, renderReactionProps> = {
+const reactionTextMap: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
     element: [DamageType.Cryo, DamageType.Pyro],
     name: "融化",
@@ -127,47 +127,43 @@ const reactionTextMap: Record<number, renderReactionProps> = {
   },
 };
 
-const diceTypeTextMap: Record<number, string> = {
-  [DiceType.Void]: "未知元素骰",
-  [DiceType.Cryo]: "冰元素",
-  [DiceType.Hydro]: "水元素",
-  [DiceType.Pyro]: "火元素",
-  [DiceType.Electro]: "雷元素",
-  [DiceType.Anemo]: "风元素",
-  [DiceType.Geo]: "岩元素",
-  [DiceType.Dendro]: "草元素",
-  [DiceType.Omni]: "万能元素",
+const getDiceTypeText = (type: DiceType) => {
+  const { assetsManager } = useUiContext();
+  if (type === DiceType.Void) {
+    return "未知元素骰";
+  }
+  if (type === DiceType.Omni) {
+    return assetsManager.getNameSync(-411);
+  }
+  return assetsManager.getNameSync(-300 - type);
 };
 
-const damageTypeTextMap: Record<number, string> = {
-  [DamageType.Physical]: "物理",
-  [DamageType.Cryo]: "冰元素",
-  [DamageType.Hydro]: "水元素",
-  [DamageType.Pyro]: "火元素",
-  [DamageType.Electro]: "雷元素",
-  [DamageType.Anemo]: "风元素",
-  [DamageType.Geo]: "岩元素",
-  [DamageType.Dendro]: "草元素",
-  [DamageType.Piercing]: "穿透",
+const getDamageTypeText = (type: DamageType) => {
+  const { assetsManager } = useUiContext();
+  if (type === DamageType.Piercing) {
+    return assetsManager.getNameSync(-5);
+  } else {
+    return assetsManager.getNameSync(-100 - type);
+  }
 };
 
-interface renderReactionProps {
+interface ReactionRenderingData {
   element: DamageType[];
   name: string;
 }
 
-interface childHealthChange {
+interface ChildHealthChange {
   type: "damage" | "heal";
   value: number;
   special: boolean;
 }
 
-interface renderHistoryChildProps {
+interface HistoryChildData {
   opp: boolean;
   imageId?: number | "tuning";
   imageType?: "cardFace" | "icon" | "unspecified";
   title?: string;
-  healthChange?: childHealthChange;
+  healthChange?: ChildHealthChange;
   content: JSX.Element;
 }
 
@@ -187,7 +183,7 @@ const renderHistoryChild = (
 ) => {
   const who = useWho();
   const { assetsManager } = useUiContext();
-  let result: renderHistoryChildProps;
+  let result: HistoryChildData;
   const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
 
@@ -329,11 +325,11 @@ const renderHistoryChild = (
         content: (
           <>
             <span>{subject(opp(child.who))}</span>
-            <span>生成{child.diceCount}个</span>
+            <span>生成{child.count}个</span>
             <Show when={child.diceType > 0}>
               <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
-            <span>{diceTypeTextMap[child.diceType]}</span>
+            <span>{getDiceTypeText(child.diceType)}</span>
           </>
         ),
       };
@@ -347,7 +343,7 @@ const renderHistoryChild = (
         content: (
           <>
             <span>{subject(opp(child.who))}</span>
-            <span>弃置了{child.diceCount}个元素骰</span>
+            <span>弃置了{child.count}个元素骰</span>
           </>
         ),
       };
@@ -438,12 +434,14 @@ const renderHistoryChild = (
                   : void 0
               }
             >
-              {damageTypeTextMap[child.damageType]}伤害
+              {getDamageTypeText(child.damageType)}
             </span>
             <Show when={child.reaction}>
               {(reaction) => renderReaction(reaction(), child.damageType)}
             </Show>
-            <span>，生命值{child.oldHealth}→{child.newHealth}</span>
+            <span>
+              ，生命值{child.oldHealth}→{child.newHealth}
+            </span>
             <span>{child.causeDefeated ? "，被击倒" : ""}</span>
           </>
         ),
@@ -472,7 +470,9 @@ const renderHistoryChild = (
               </Match>
             </Switch>
             <span>受到{child.healValue}点治疗</span>
-            <span>，生命值{child.oldHealth}→{child.newHealth}</span>
+            <span>
+              ，生命值{child.oldHealth}→{child.newHealth}
+            </span>
           </>
         ),
       };
@@ -491,7 +491,7 @@ const renderHistoryChild = (
             <span
               style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}
             >
-              {damageTypeTextMap[child.elementType]}
+              {getDamageTypeText(child.elementType)}
             </span>
             <Show when={child.reaction}>
               {(reaction) => renderReaction(reaction(), child.elementType)}
@@ -530,13 +530,15 @@ const renderHistoryChild = (
           <>
             <span>{energyValue > 0 ? "获得" : "消耗"}</span>
             <span>{Math.abs(energyValue)}点充能</span>
-            <span>，充能值{child.oldEnergy}→{child.newEnergy}</span>
+            <span>
+              ，充能值{child.oldEnergy}→{child.newEnergy}
+            </span>
           </>
         ),
       };
       break;
     }
-    case "disposeCard": {
+    case "removeCard": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -559,7 +561,9 @@ const renderHistoryChild = (
         content: (
           <>
             <span>{child.variableName}：</span>
-            <span>{child.oldValue}→{child.newValue}</span>
+            <span>
+              {child.oldValue}→{child.newValue}
+            </span>
           </>
         ),
       };
@@ -580,9 +584,7 @@ const renderHistoryChild = (
                 type="icon"
                 class="h-3.5 w-3.5"
               />
-              <span>
-                {assetsManager.getNameSync(child.entityDefinitionId)}
-              </span>
+              <span>{assetsManager.getNameSync(child.entityDefinitionId)}</span>
             </>
           ),
         };
@@ -615,13 +617,13 @@ const renderHistoryChild = (
             <Show when={child.diceType > 0}>
               <DiceIcon size={14} type={child.diceType} selected={false} />
             </Show>
-            <span>{diceTypeTextMap[child.diceType]}</span>
+            <span>{getDiceTypeText(child.diceType)}</span>
           </>
         ),
       };
       break;
     }
-    case "forbidCard": {
+    case "playCardNoEffect": {
       result = {
         opp: opp(child.who),
         imageId: child.cardDefinitionId,
@@ -660,7 +662,7 @@ const renderHistoryChild = (
   return result;
 };
 
-interface renderHistoryHintProps {
+interface HistoryHintData {
   type: "changePhase" | "action";
   opp?: boolean;
   content: string;
@@ -668,7 +670,7 @@ interface renderHistoryHintProps {
 
 const renderHistoryHint = (block: HistoryHintBlock) => {
   const who = useWho();
-  let result: renderHistoryHintProps;
+  let result: HistoryHintData;
   const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
 
@@ -743,7 +745,7 @@ interface CharacterSummary {
   defeated: boolean;
   heal: boolean;
   healSum: number;
-  rivive: boolean;
+  revive: boolean;
   switchActive: boolean;
   elemental: DamageType[][];
   status: number[];
@@ -753,7 +755,7 @@ interface CharacterSummary {
 interface CardSummary {
   cardDefinitionId: number;
   who: 0 | 1;
-  type: ("disposeCard" | "removeEntity" | "createEntity")[];
+  type: ("removeCard" | "removeEntity" | "createEntity")[];
   children: CardHistoryChildren[];
 }
 
@@ -776,7 +778,7 @@ function getOrCreateCharacterSummary(
       defeated: false,
       heal: false,
       healSum: 0,
-      rivive: false,
+      revive: false,
       switchActive: false,
       elemental: [],
       status: [],
@@ -836,7 +838,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary.heal = true;
       summary.healSum += c.healValue;
       if (c.healType === "revive" || c.healType === "immuneDefeated") {
-        summary.rivive = true;
+        summary.revive = true;
       }
     } else if (c.type === "switchActive") {
       summary = getOrCreateCharacterSummary(charMap, c);
@@ -893,7 +895,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
         );
         summary.type.push(c.type);
       }
-    } else if (c.type === "disposeCard") {
+    } else if (c.type === "removeCard") {
       summary = getOrCreateCardSummary(cardMap, c);
       summary.children.push(c);
       summary.type.push(c.type);
@@ -928,7 +930,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
 interface SummaryShot {
   size: "normal" | "summon";
   who: 0 | 1 | "both";
-  cardface: number[];
+  cardFace: number[];
   aura?: DamageType[] | "more";
   inner?: "damage" | "heal" | "switch" | "defeated";
   innerValue?: number | "more";
@@ -939,34 +941,59 @@ interface SummaryShot {
 
 function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   const { characterSummary, cardSummary } = buildSummary(children);
-  type shotType =
-    | "damage"
-    | "heal"
-    | "apply"
-    | "switch"
-    | "status"
-    | "dispose"
-    | "create"
-    | "remove";
-  const shotGroups: Record<shotType, (CharacterSummary | CardSummary)[]> = {
+  const shotGroups = {
     damage: [] as CharacterSummary[],
     heal: [] as CharacterSummary[],
     apply: [] as CharacterSummary[],
     switch: [] as CharacterSummary[],
     status: [] as CharacterSummary[],
-    dispose: [] as CardSummary[],
+    discard: [] as CardSummary[],
     create: [] as CardSummary[],
     remove: [] as CardSummary[],
+  } as const;
+  const INNER_MAP: Partial<Record<ShotType, SummaryShot["inner"]>> = {
+    damage: "damage",
+    heal: "heal",
+    switch: "switch",
+    remove: "defeated",
+    discard: "defeated",
+  };
+
+  type ShotGroup = typeof shotGroups;
+  type ShotType = keyof ShotGroup;
+  type ShotGroupEntry = {
+    [K in ShotType]: ShotGroup[K] & { KEY: K };
+  }[ShotType];
+  type CardSummaryEntry = Extract<ShotGroupEntry, CardSummary[]>;
+  type CharacterSummaryEntry = Extract<ShotGroupEntry, CharacterSummary[]>;
+
+  const allSummaries = (): ShotGroupEntry[] => {
+    return Object.entries(shotGroups).map(([key, value]) => {
+      Object.defineProperty(value, "KEY", {
+        value: key,
+        configurable: true,
+        enumerable: true,
+      });
+      return value as ShotGroupEntry;
+    });
+  };
+  const isCharacterSummary = (
+    e: ShotGroupEntry,
+  ): e is CharacterSummaryEntry => {
+    return ["damage", "heal", "apply", "switch", "status"].includes(e.KEY);
+  };
+  const isCardSummary = (e: ShotGroupEntry): e is CardSummaryEntry => {
+    return ["discard", "create", "remove"].includes(e.KEY);
   };
 
   for (const c of characterSummary) {
     if (c.damage || c.heal || !!c.elemental.length || c.switchActive) {
       if (c.damage) {
         shotGroups.damage.push(c);
-      } 
+      }
       if (c.heal && !c.damage) {
         shotGroups.heal.push(c);
-      }       
+      }
       if (c.heal && c.damage) {
         shotGroups.heal.push({
           ...c,
@@ -990,7 +1017,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
           defeated: false,
           heal: false,
           healSum: 0,
-          rivive: false,
+          revive: false,
           switchActive: false,
           status: [],
           combatStatus: [],
@@ -1007,12 +1034,12 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
           defeated: false,
           heal: false,
           healSum: 0,
-          rivive: false,
+          revive: false,
           elemental: [],
           status: [],
           combatStatus: [],
-        }); 
-      } 
+        });
+      }
     } else if (c.status.length > 0) {
       shotGroups.status.push(c);
     } else if (c.combatStatus.length > 0) {
@@ -1021,8 +1048,8 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   }
   for (const c of cardSummary) {
     if (c.type.length === 1) {
-      if (c.type[0] === "disposeCard") {
-        shotGroups.dispose.push(c);
+      if (c.type[0] === "removeCard") {
+        shotGroups.discard.push(c);
       } else if (c.type[0] === "createEntity") {
         shotGroups.create.push(c);
       } else if (c.type[0] === "removeEntity") {
@@ -1033,82 +1060,66 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
 
   const makeAura = (l: CharacterSummary[]) => {
     const all = l.flatMap((ch) => ch.elemental);
-    if (!all.length) { 
-      return; 
+    if (!all.length) {
+      return;
     }
     return l.length === 1 && all.length === 1 ? all[0] : "more";
   };
   const makeStatus = (l: CharacterSummary[]) => {
     const all = l.flatMap((ch) => ch.status);
-    if (!all.length) { 
-      return; 
+    if (!all.length) {
+      return;
     }
     return l.length === 1 ? all : "more";
   };
   const makeCombat = (l: CharacterSummary[]) => {
     const all = l.flatMap((ch) => ch.combatStatus);
-    if (!all.length) { 
-      return; 
+    if (!all.length) {
+      return;
     }
     return l.length === 1 ? all : "more";
   };
+  const makeValue = <T, K extends keyof T, const More>(
+    list: T[],
+    prop: K,
+    more: More,
+  ): T[K] | More => {
+    if (list.length === 1) {
+      return list[0][prop];
+    }
+    return more;
+  };
 
   const summaryShot: SummaryShot[] = [];
-  for (const type of Object.keys(shotGroups) as shotType[]) {
-    const list = shotGroups[type];
+  for (const list of allSummaries()) {
+    const type = list.KEY;
     if (!list.length) {
       continue;
     }
+
     const uniqueWhos = new Set(list.map((c) => c.who));
     const shot: SummaryShot = {
-      size: type === "remove" || type === "create" ? "summon" : "normal",
+      size: ["remove", "create"].includes(type) ? "summon" : "normal",
       who: uniqueWhos.size === 1 ? [...uniqueWhos][0] : "both",
-      cardface:
-        type === "remove" || type === "create" || type === "dispose"
-          ? list.map((c) => (c as CardSummary).cardDefinitionId)
-          : list.map((c) => (c as CharacterSummary).characterDefinitionId),
-      aura:
-        type === "remove" || type === "create" || type === "dispose"
-          ? undefined
-          : makeAura(list as CharacterSummary[]),
-      inner:
-        type === "damage"
-          ? "damage"
-          : type === "heal"
-            ? "heal"
-            : type === "switch"
-              ? "switch"
-              : type === "remove" || type === "dispose"
-                ? "defeated"
-                : undefined,
+      cardFace: isCardSummary(list)
+        ? list.map((c) => c.cardDefinitionId)
+        : list.map((c) => c.characterDefinitionId),
+      aura: isCharacterSummary(list) ? makeAura(list) : void 0,
+      inner: INNER_MAP[type],
       innerValue:
         type === "damage"
-          ? list.length === 1
-            ? (list[0] as CharacterSummary).damageSum
-            : "more"
+          ? makeValue(list, "damageSum", "more")
           : type === "heal"
-            ? list.length === 1
-              ? (list[0] as CharacterSummary).healSum
-              : "more"
+            ? makeValue(list, "healSum", "more")
             : undefined,
       innerValueSpecial:
         type === "damage"
-          ? list.length === 1
-            ? (list[0] as CharacterSummary).defeated
-            : undefined
+          ? makeValue(list, "defeated", void 0)
           : type === "heal"
-            ? list.length === 1
-              ? (list[0] as CharacterSummary).rivive
-              : undefined
-            : undefined,
-      status:
-        type === "remove" || type === "create" || type === "dispose"
-          ? undefined
-          : makeStatus(list as CharacterSummary[]),
-      combat:
-        type === "remove" || type === "create" || type === "dispose"
-          ? undefined
-          : makeCombat(list as CharacterSummary[]),
+            ? makeValue(list, "revive", void 0)
+            : void 0,
+      status: isCharacterSummary(list) ? makeStatus(list) : void 0,
+      combat: isCharacterSummary(list) ? makeCombat(list) : void 0,
     };
     summaryShot.push(shot);
   }
@@ -1136,12 +1147,12 @@ const CardDescriptionPart = (props: { cardDefinitionId: number }) => {
   );
 };
 
-interface renderHistoryBlockProps {
+interface HistoryBlockData {
   type:
-    | "switchActive"
+    | "switchOrChooseActive"
     | "useSkill"
     | "triggered"
-    | "playingCard"
+    | "playCard"
     | "selectCard"
     | "elementalTuning"
     | "pocket";
@@ -1176,7 +1187,7 @@ interface blockEnergyProps {
 const renderHistoryBlock = (block: HistoryDetailBlock) => {
   const who = useWho();
   const { assetsManager } = useUiContext();
-  let result: renderHistoryBlockProps;
+  let result: HistoryBlockData;
   const opp = (historyOwner: 0 | 1) => historyOwner !== who();
   const subject = (opp: boolean) => (opp ? "对方" : "我方");
   const switchActiveTextMap: Record<string, string> = {
@@ -1211,7 +1222,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
   }
 
   switch (block.type) {
-    case "switchActive": {
+    case "switchOrChooseActive": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1294,8 +1305,14 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: opp(block.who),
         title: "触发效果",
         indent: block.indent,
-        imageId: block.entityType === "equipment" ? block.callerOrSkillDefinitionId : block.masterOrCallerDefinitionId,
-        imageSize : block.entityType === "summon" || block.entityType === "support" ? "summon" : "normal",
+        imageId:
+          block.entityType === "equipment"
+            ? block.callerOrSkillDefinitionId
+            : block.masterOrCallerDefinitionId,
+        imageSize:
+          block.entityType === "summon" || block.entityType === "support"
+            ? "summon"
+            : "normal",
         callerId: block.callerOrSkillDefinitionId,
         energyChange: extractBlockEnergyProps(
           {
@@ -1304,8 +1321,14 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           },
           0, // 可填写maxEnergy
         ),
-        status: block.entityType === "status" ? block.callerOrSkillDefinitionId : undefined,
-        combatStatus: block.entityType === "combatStatus" ? block.callerOrSkillDefinitionId : undefined,
+        status:
+          block.entityType === "status"
+            ? block.callerOrSkillDefinitionId
+            : undefined,
+        combatStatus:
+          block.entityType === "combatStatus"
+            ? block.callerOrSkillDefinitionId
+            : undefined,
         content: {
           opp: opp(block.who),
           imageId: block.masterOrCallerDefinitionId,
@@ -1347,7 +1370,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
       };
       break;
     }
-    case "playingCard": {
+    case "playCard": {
       result = {
         type: block.type,
         opp: opp(block.who),
@@ -1394,9 +1417,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           name: renderName(block.cardDefinitionId),
           content: (
             <>
-              <span class="text-3 text-#d4bc8e">
-                {subject(opp(block.who))}
-              </span>
+              <span class="text-3 text-#d4bc8e">{subject(opp(block.who))}</span>
               <span class="text-3 text-#d4bc8e">触发挑选效果</span>
             </>
           ),
@@ -1469,7 +1490,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
   return result;
 };
 
-function HistoryChildBox(props: { data: renderHistoryChildProps }) {
+function HistoryChildBox(props: { data: HistoryChildData }) {
   return (
     <div class="w-full h-11 flex flex-row shrink-0 bg-white/4 gap-2 justify-center">
       <div
@@ -1572,11 +1593,11 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
       </div>
       <div
         class="h-18 relative flex flex-row-reverse items-center"
-        style={{ width: `${2.375 + props.data.cardface.length * 0.25}rem` }}
+        style={{ width: `${2.375 + props.data.cardFace.length * 0.25}rem` }}
       >
         <Switch>
           <Match when={props.data.size === "normal"}>
-            <For each={props.data.cardface.toReversed()}>
+            <For each={props.data.cardFace.toReversed()}>
               {(imageId) => (
                 <div class="relative w-1 h-18 overflow-visible">
                   <div class="absolute w-10.5 h-18 right-0">
@@ -1587,7 +1608,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             </For>
           </Match>
           <Match when={props.data.size === "summon"}>
-            <For each={props.data.cardface.toReversed()}>
+            <For each={props.data.cardFace.toReversed()}>
               {(imageId) => (
                 <div class="relative w-1 h-12.375 overflow-visible">
                   <div class="absolute w-10.5 h-12.375 right-0 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
@@ -1596,11 +1617,11 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                       fallback={
                         <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
                       }
-                    >                    
+                    >
                       <Image
                         imageId={imageId}
                         class="absolute w-10.5 h-18 top-50% -translate-y-50%"
-                      /> 
+                      />
                     </Show>
                   </div>
                 </div>
@@ -1692,7 +1713,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
 }
 
 function HistoryBlockBox(props: {
-  data: renderHistoryBlockProps;
+  data: HistoryBlockData;
   isSelected: boolean;
   onClick: () => void;
 }) {
@@ -1716,9 +1737,7 @@ function HistoryBlockBox(props: {
         </div>
       </div>
       <div class="absolute top-7 left-0 w-4 flex flex-col gap-0.8">
-        <For
-          each={Array.from({ length: props.data.indent }, (_, i) => i)}
-        >
+        <For each={Array.from({ length: props.data.indent }, (_, i) => i)}>
           {() => (
             <div
               class="w-3.5 h-2 bg-[var(--bd-color)] history-indent-hint opacity-25"
@@ -1753,18 +1772,18 @@ function HistoryBlockBox(props: {
                     fallback={
                       <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
                     }
-                  >                    
+                  >
                     <Image
                       imageId={props.data.imageId as number}
                       class="absolute w-10.5 h-18 top-50% -translate-y-50%"
-                    /> 
+                    />
                   </Show>
                 </div>
               </Match>
-            </Switch>            
+            </Switch>
             <div class="h-10 w-10 absolute top-50% left-50% -translate-x-50% -translate-y-50% flex items-center justify-center">
               <Switch>
-                <Match when={props.data.type === "switchActive"}>
+                <Match when={props.data.type === "switchOrChooseActive"}>
                   <SwitchActiveIcon class="h-8 w-8" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
@@ -1777,13 +1796,21 @@ function HistoryBlockBox(props: {
             </div>
             <div class="absolute bottom-0.5 left-0.5 h-3 w-9.5 flex flex-row items-center">
               <Show when={!!props.data.status}>
-                <Image imageId={props.data.status as number} type="icon" class="h-3 w-3" />
+                <Image
+                  imageId={props.data.status as number}
+                  type="icon"
+                  class="h-3 w-3"
+                />
               </Show>
             </div>
           </div>
           <div class="h-3 w-10.5 flex flex-row items-center">
             <Show when={!!props.data.combatStatus}>
-              <Image imageId={props.data.combatStatus as number} type="icon" class="h-3 w-3" />
+              <Image
+                imageId={props.data.combatStatus as number}
+                type="icon"
+                class="h-3 w-3"
+              />
             </Show>
           </div>
         </div>
@@ -1806,7 +1833,7 @@ function HistoryBlockBox(props: {
 }
 
 function PocketHistoryBlockBox(props: {
-  data: renderHistoryBlockProps;
+  data: HistoryBlockData;
   isSelected: boolean;
   onClick: () => void;
 }) {
@@ -1858,7 +1885,7 @@ function PocketHistoryBlockBox(props: {
   );
 }
 
-function HistoryHintBox(props: { data: renderHistoryHintProps }) {
+function HistoryHintBox(props: { data: HistoryHintData }) {
   return (
     <Switch>
       <Match when={props.data.type === "changePhase"}>
@@ -1925,7 +1952,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
     setShowBackToBottom(distance > 100);
   };
 
-  const who = () => props.who;
+  const who = createMemo(() => props.who);
 
   createEffect(() => {
     scrollToBottom();

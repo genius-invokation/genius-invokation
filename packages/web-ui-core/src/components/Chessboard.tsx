@@ -128,9 +128,7 @@ import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
-// 测试用
-import historyData from '../mock-history.json';
-import type { HistoryBlock } from "../history";
+import type { HistoryBlock } from "../history/typings";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1071,13 +1069,6 @@ export function Chessboard(props: ChessboardProps) {
     tuningArea: null,
   });
 
-  const [allMutations, setAllMutations] = createSignal<PbExposedMutation[][]>(
-    [],
-  );
-
-  // 测试用
-  const testHistory = () => historyData as HistoryBlock[];
-
   const getHandState = (
     focusing: boolean,
     viewType: ChessboardViewType,
@@ -1112,7 +1103,6 @@ export function Chessboard(props: ChessboardProps) {
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: true });
-        setAllMutations((prev) => [...prev, data.raw]);
       },
     ),
   );

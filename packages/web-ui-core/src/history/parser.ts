@@ -52,7 +52,7 @@ import type {
   IncreaseMaxHealthHistoryChild,
   UseSkillHistoryBlock,
   VariableChangeHistoryChild,
-} from "./history";
+} from "./typings";
 import { flip } from "@gi-tcg/utils";
 
 export interface HistoryData {
@@ -278,7 +278,7 @@ class StateRecorder {
               type: "generateDice",
               who: mut.who as 0 | 1,
               diceType: d,
-              diceCount: arr.length,
+              count: arr.length,
             }),
           );
       }
@@ -288,7 +288,7 @@ class StateRecorder {
           {
             type: "absorbDice",
             who: mut.who as 0 | 1,
-            diceCount,
+            count: diceCount,
           },
         ];
       }
@@ -510,7 +510,7 @@ export function updateHistory(
             m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
           ) {
             mainBlock = {
-              type: "playingCard",
+              type: "playCard",
               who: m.who as 0 | 1,
               cardDefinitionId: definitionId,
               children: [],
@@ -518,7 +518,7 @@ export function updateHistory(
             };
             if (m.reason === PbRemoveCardReason.PLAY_NO_EFFECT) {
               children.push({
-                type: "forbidCard",
+                type: "playCardNoEffect",
                 who: m.who as 0 | 1,
                 cardDefinitionId: definitionId,
               });
@@ -533,7 +533,7 @@ export function updateHistory(
             };
           } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
             children.push({
-              type: "disposeCard",
+              type: "removeCard",
               who: m.who as 0 | 1,
               cardDefinitionId: definitionId,
             });
@@ -575,7 +575,7 @@ export function updateHistory(
             });
           } else {
             history.blocks.push({
-              type: "switchActive",
+              type: "switchOrChooseActive",
               who: m.who as 0 | 1,
               characterDefinitionId: m.characterDefinitionId,
               children: [],
@@ -719,7 +719,7 @@ export function updateHistory(
         }
         case "chooseActiveDone": {
           mainBlock = {
-            type: "switchActive",
+            type: "switchOrChooseActive",
             who: m.who as 0 | 1,
             characterDefinitionId: m.characterDefinitionId,
             how:

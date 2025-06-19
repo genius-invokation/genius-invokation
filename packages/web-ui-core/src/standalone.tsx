@@ -19,8 +19,8 @@ import { Chessboard, type ChessboardData } from "./components/Chessboard";
 import { UiContext } from "./hooks/context";
 import { parseMutations } from "./mutations";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
-import { updateHistory, type HistoryData } from "./parse_history";
-import type { HistoryBlock } from "./history";
+import { updateHistory, type HistoryData } from "./history/parser";
+import type { HistoryBlock } from "./history/typings";
 
 export interface StandaloneChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;

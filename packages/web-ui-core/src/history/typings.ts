@@ -17,7 +17,7 @@ import { Aura, DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
 export type HistoryDetailBlock =
   | PocketHistoryBlock
-  | SwitchOrSelectActiveHistoryBlock
+  | SwitchOrChooseActiveHistoryBlock
   | UseSkillHistoryBlock
   | TriggeredHistoryBlock
   | PlayCardHistoryBlock
@@ -38,19 +38,19 @@ export type HistoryChildren =
   | AbsorbDiceHistoryChild
   | ConvertDiceHistoryChild
   | CreateCardHistoryChild
-  | SwitchCardHistoryChild
+  | RemoveCardHistoryChild
   | UndrawCardHistoryChild
-  | RerollDiceHistoryChild
+  | SwitchHandsHistoryChild
+  | RerollHistoryChild
   | DamageHistoryChild
   | HealHistoryChild
   | ApplyHistoryChild
   | IncreaseMaxHealthHistoryChild
   | EnergyHistoryChild
-  | DisposeCardHistoryChild
   | VariableChangeHistoryChild
   | RemoveEntityHistoryChild
-  | ForbidCardHistoryChild
-  | TransformHistoryChild;
+  | PlayCardNoEffectHistoryChild
+  | TransformDefinitionHistoryChild;
 
 export type CharacterHistoryChildren =
   | SwitchActiveHistoryChild
@@ -61,7 +61,7 @@ export type CharacterHistoryChildren =
 
 export type CardHistoryChildren =
   | Extract<CreateEntityHistoryChild, { entityType: "summon" }>
-  | DisposeCardHistoryChild
+  | RemoveCardHistoryChild
   | Extract<RemoveEntityHistoryChild, { entityType: "summon" | "support" }>;
 
 /////////////// block部分 ////////////////
@@ -98,8 +98,8 @@ export interface PocketHistoryBlock {
 // title: who + ("初始出战角色" | "切换角色" | "选择出战角色")
 // image: characterCardface ^ SwitchActiveIcon + icon[->] + [###预览###]
 // click_description: characterCardface <-> characterName \n "角色出战"
-export interface SwitchOrSelectActiveHistoryBlock {
-  type: "switchActive";
+export interface SwitchOrChooseActiveHistoryBlock {
+  type: "switchOrChooseActive";
   indent: number;
   who: 0 | 1;
   characterDefinitionId: number;
@@ -147,7 +147,7 @@ export interface TriggeredHistoryBlock {
 // image: Cardface + icon[->] + [###预览###]
 // click_description: Cardface <-> cardName \n cardDescription
 export interface PlayCardHistoryBlock {
-  type: "playingCard";
+  type: "playCard";
   indent: number;
   who: 0 | 1;
   cardDefinitionId: number;
@@ -238,21 +238,21 @@ export interface CreateEntityHistoryChild {
 }
 
 // 生成骰子
-// content: {callerCardface || callerIcon} <-> callerName \n who + "生成${diceCount}个${diceType}"
+// content: {callerCardface || callerIcon} <-> callerName \n who + "生成${count}个${diceType}"
 export interface GenerateDiceHistoryChild {
   type: "generateDice";
   who: 0 | 1;
   diceType: DiceType;
-  diceCount: number;
+  count: number;
 }
 
 // 弃置元素骰
 // 桓那兰那等
-// content: {callerCardface || callerIcon} <-> callerName \n who + "弃置了${diceCount}个元素骰"
+// content: {callerCardface || callerIcon} <-> callerName \n who + "弃置了${count}个元素骰"
 export interface AbsorbDiceHistoryChild {
   type: "absorbDice";
   who: 0 | 1;
-  diceCount: number;
+  count: number;
 }
 
 // 元素调和|某些卡牌转化元素骰的效果
@@ -277,7 +277,7 @@ export interface CreateCardHistoryChild {
 // 替换手牌
 // 草与智慧
 // content: Cardface <-> cardName \n who + ("替换了1次手牌")
-export interface SwitchCardHistoryChild {
+export interface SwitchHandsHistoryChild {
   type: "switchCard";
   who: 0 | 1;
   count: number;
@@ -294,7 +294,7 @@ export interface UndrawCardHistoryChild {
 
 // 重投
 // content: {callerCardface || callerIcon} <-> callerName \n who + "进行了N次重投"
-export interface RerollDiceHistoryChild {
+export interface RerollHistoryChild {
   type: "rerollDice";
   who: 0 | 1;
   count: number;
@@ -363,8 +363,8 @@ export interface EnergyHistoryChild {
 
 // 舍弃
 // content: Cardface <-> cardName \n who + "舍弃手牌"
-export interface DisposeCardHistoryChild {
-  type: "disposeCard";
+export interface RemoveCardHistoryChild {
+  type: "removeCard";
   who: 0 | 1;
   cardDefinitionId: number;
 }
@@ -395,8 +395,8 @@ export interface RemoveEntityHistoryChild {
 
 // 裁定之时, 梅洛彼得堡
 // content: Cardface <-> cardName \n "遭到反制，未能生效"
-export interface ForbidCardHistoryChild {
-  type: "forbidCard";
+export interface PlayCardNoEffectHistoryChild {
+  type: "playCardNoEffect";
   who: 0 | 1;
   cardDefinitionId: number;
 }
@@ -404,7 +404,7 @@ export interface ForbidCardHistoryChild {
 // 转换形态
 // 角色、召唤物
 // content: Cardface <-> cardName \n ("转换形态···" || "转换形态完成")
-export interface TransformHistoryChild {
+export interface TransformDefinitionHistoryChild {
   type: "transformDefinition";
   who: 0 | 1;
   cardDefinitionId: number; // 对应新旧形态
