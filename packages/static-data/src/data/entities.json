@@ -3147,6 +3147,7 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 4
         },
+        "icon": "Skill_S_Mavuika_04",
         "iconHash": "9236943251512022441"
       },
       {
@@ -3199,6 +3200,7 @@
         ],
         "hidden": false,
         "keyMap": {},
+        "icon": "Skill_S_Mavuika_03",
         "iconHash": "2421043733456980541"
       },
       {
