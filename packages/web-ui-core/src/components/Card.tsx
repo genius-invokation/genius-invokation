@@ -25,6 +25,7 @@ import type { CardInfo } from "./Chessboard";
 import type { PbDiceRequirement } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 
 export interface CardProps extends CardInfo {
   selected: boolean;
@@ -123,27 +124,11 @@ export interface CardFaceProps {
 export function CardFace(props: CardFaceProps) {
   return (
     <div class="absolute h-full w-full backface-hidden">
-      <WithDelicateUi
-        assetId="UI_TeyvatCard_CardFrame_Common"
-        fallback={
-          <Image
-            class="h-full w-full rounded-xl b-white b-3"
-            imageId={props.definitionId}
-          />
-        }
-      >
-        {(frame) => (
-          <>
-            <Image
-              class="absolute inset-0 h-full w-full p-1px"
-              imageId={props.definitionId}
-            />
-            <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-              {frame}
-            </div>
-          </>
-        )}
-      </WithDelicateUi>
+      <Image
+        class="absolute inset-0 h-full w-full p-1px"
+        imageId={props.definitionId}
+      />
+      <CardFrameNormal class="absolute inset-0 h-full w-full"/>
     </div>
   );
 }

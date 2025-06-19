@@ -22,6 +22,7 @@ import { ActionStepEntityUi } from "../action";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
@@ -45,27 +46,11 @@ export function Entity(props: EntityProps) {
         props.onClick?.(e, e.currentTarget);
       }}
     >
-      <WithDelicateUi
-        assetId="UI_TeyvatCard_CardFrame_Summon"
-        fallback={
-          <Image
-            class="absolute inset-0 h-full w-full rounded-lg b-white b-2"
-            imageId={data().definitionId}
-          />
-        }
-      >
-        {(frame) => (
-          <>
-            <Image
-              class="absolute inset-0 h-full w-full p-1px rounded-lg"
-              imageId={data().definitionId}
-            />
-            <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-              {frame}
-            </div>
-          </>
-        )}
-      </WithDelicateUi>
+      <Image
+        class="absolute inset-0 h-full w-full p-2px rounded-lg"
+        imageId={data().definitionId}
+      />
+      <CardFrameSummon class="absolute inset-0 h-full w-full" />
       <Show when={data().hasUsagePerRound}>
         <div class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite" />
       </Show>
