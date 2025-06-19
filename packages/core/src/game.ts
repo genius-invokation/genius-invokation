@@ -26,6 +26,8 @@ import {
   type PbExposedMutation,
   unFlattenOneof,
   ActionValidity,
+  Reaction,
+  PbSwitchActiveFromAction,
 } from "@gi-tcg/typings";
 import type {
   AnyState,
@@ -75,6 +77,7 @@ import {
   UseSkillEventArg,
   type InitiativeSkillEventArg,
   defineSkillInfo,
+  type SwitchActiveInfo,
 } from "./base/skill";
 import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
@@ -287,6 +290,8 @@ export class Game {
       .map((m) => exposeMutation(who, m))
       .filter((em): em is ExposedMutation => !!em);
     const state = exposeState(who, opt.state);
+    state.player[0].status = this.players[0].status;
+    state.player[1].status = this.players[1].status;
     const mutation: PbExposedMutation[] = [
       ...stateMutations,
       ...opt.exposedMutations,
@@ -446,6 +451,8 @@ export class Game {
         },
       ],
     });
+    // @ts-expect-error writing private props
+    this.players[who]._status = status;
   }
 
   private async rpc<M extends RpcMethod>(
@@ -499,6 +506,7 @@ export class Game {
       this.mutator.chooseActive(0),
       this.mutator.chooseActive(1),
     ]);
+    this.mutator.postChooseActive(a0, a1);
     this.mutate({
       type: "switchActive",
       who: 0,
@@ -532,6 +540,7 @@ export class Game {
         `Invalid active character id ${activeCharacterId}`,
       );
     }
+    this.notifyOne;
     return activeCharacterId;
   }
 
@@ -570,6 +579,7 @@ export class Game {
           type: "resetDice",
           who,
           value: initDice,
+          reason: "roll",
         });
         this.notifyOne(who);
         await this.mutator.reroll(who, count);
@@ -672,7 +682,7 @@ export class Game {
       ) {
         throw new GiTcgIoError(
           who,
-          `Elemental tunning cannot use omni dice or active character's element`,
+          `Elemental tuning cannot use omni dice or active character's element`,
         );
       }
       // 消耗骰子
@@ -691,6 +701,7 @@ export class Game {
         type: "resetDice",
         who,
         value: operatingDice,
+        reason: "consume",
       });
       // 消耗能量
       const requiredEnergy = actionInfo.cost.get(DiceType.Energy) ?? 0;
@@ -784,7 +795,7 @@ export class Game {
           break;
         }
         case "switchActive": {
-          await this.switchActive(who, actionInfo.to);
+          await this.switchActive(who, actionInfo.to, actionInfo.fast);
           break;
         }
         case "elementalTuning": {
@@ -800,13 +811,13 @@ export class Game {
             oldState: actionInfo.card,
             reason: "elementalTuning",
           });
+          const targetDice = elementOfCharacter(activeCh().definition);
           this.mutate({
             type: "resetDice",
             who,
-            value: sortDice(player(), [
-              ...player().dice,
-              elementOfCharacter(activeCh().definition),
-            ]),
+            value: sortDice(player(), [...player().dice, targetDice]),
+            reason: "elementalTuning",
+            conversionTargetHint: targetDice,
           });
           await this.handleEvent("onDisposeOrTuneCard", tuneCardEventArg);
           break;
@@ -1072,11 +1083,31 @@ export class Game {
 
   private async rpcSwitchHands(who: 0 | 1) {
     const { removedHandIds } = await this.rpc(who, "switchHands", {});
+    this.notifyOne(who, {
+      $case: "switchHandsDone",
+      who,
+      count: removedHandIds.length,
+    });
+    this.notifyOne(flip(who), {
+      $case: "switchHandsDone",
+      who,
+      count: removedHandIds.length,
+    });
     return removedHandIds;
   }
 
   private async rpcReroll(who: 0 | 1) {
     const { diceToReroll } = await this.rpc(who, "rerollDice", {});
+    this.notifyOne(who, {
+      $case: "rerollDone",
+      who,
+      count: diceToReroll.length,
+    });
+    this.notifyOne(flip(who), {
+      $case: "rerollDone",
+      who,
+      count: 0,
+    });
     return diceToReroll;
   }
 
@@ -1087,10 +1118,24 @@ export class Game {
     if (!candidateDefinitionIds.includes(selectedDefinitionId)) {
       throw new GiTcgIoError(who, `Selected card not in candidates`);
     }
+    this.notifyOne(who, {
+      $case: "selectCardDone",
+      who,
+      selectedDefinitionId,
+    });
+    this.notifyOne(flip(who), {
+      $case: "selectCardDone",
+      who,
+      selectedDefinitionId: 0,
+    });
     return selectedDefinitionId;
   }
 
-  private async switchActive(who: 0 | 1, to: CharacterState) {
+  private async switchActive(
+    who: 0 | 1,
+    to: CharacterState,
+    fast: boolean | null,
+  ) {
     const player = this.state.players[who];
     const from = player.characters[getActiveCharacterIndex(player)];
     const oldState = this.state;
@@ -1099,15 +1144,18 @@ export class Game {
       who,
       value: to,
     });
+    const switchInfo: SwitchActiveInfo = {
+      type: "switchActive",
+      who,
+      from,
+      to,
+      fromReaction: false,
+      fast,
+    };
+    this.mutator.postSwitchActive(switchInfo);
     await this.handleEvent(
       "onSwitchActive",
-      new SwitchActiveEventArg(oldState, {
-        type: "switchActive",
-        who,
-        from,
-        to,
-        fromReaction: false,
-      }),
+      new SwitchActiveEventArg(oldState, switchInfo),
     );
   }
 

@@ -48,8 +48,8 @@ export function RerollDiceView(props: RerollViewProps) {
       class="absolute inset-0  flex flex-col items-center justify-center gap-10 select-none"
       onPointerUp={() => setSelectingOn(null)}
     >
-      <h3 class="font-bold text-3xl z-1">重投骰子</h3>
-      <ul class="grid grid-rows-2 grid-flow-col gap-6 z-1">
+      <h3 class="font-bold text-3xl">重投骰子</h3>
+      <ul class="grid grid-rows-2 grid-flow-col gap-6">
         <Index each={props.dice}>
           {(dice, index) => (
             <li>
@@ -62,7 +62,7 @@ export function RerollDiceView(props: RerollViewProps) {
                 />
                 {/* 点选、滑动点选触发区域 */}
                 <div
-                  class="cursor-pointer absolute z-1 w-60px h-60px left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-cyan opacity-0"
+                  class="cursor-pointer absolute w-60px h-60px left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-cyan opacity-0"
                   onPointerDown={(e) => {
                     if (checkPointerEvent(e)) {
                       toggleDice(index);
@@ -85,7 +85,7 @@ export function RerollDiceView(props: RerollViewProps) {
         </Index>
       </ul>
       <div
-        class="visible data-[hidden]:invisible z-1"
+        class="visible data-[hidden]:invisible"
         bool:data-hidden={props.noConfirmButton}
       >
         <Button onClick={() => props.onConfirm()}>确定</Button>

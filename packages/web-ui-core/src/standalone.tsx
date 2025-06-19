@@ -19,6 +19,8 @@ import { Chessboard, type ChessboardData } from "./components/Chessboard";
 import { UiContext } from "./hooks/context";
 import { parseMutations } from "./mutations";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
+import { updateHistory, type HistoryData } from "./history/parser";
+import type { HistoryBlock } from "./history/typings";
 
 export interface StandaloneChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
@@ -34,6 +36,10 @@ export function StandaloneChessboard(props: StandaloneChessboardProps) {
     "state",
     "mutations",
   ]);
+
+  const history = createMemo<HistoryBlock[]>(() => {
+    return [];
+  });
 
   const data = createMemo<ChessboardData>(() => {
     const parsed = parseMutations(props.mutations);
@@ -54,6 +60,7 @@ export function StandaloneChessboard(props: StandaloneChessboardProps) {
         who={localProps.who}
         data={data()}
         actionState={null}
+        history={history()}
         viewType="normal"
         selectCardCandidates={[]}
         doingRpc={false}

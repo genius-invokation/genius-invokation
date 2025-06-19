@@ -17,6 +17,8 @@ import {
   DamageType,
   DiceType,
   type ExposedMutation,
+  PbHealKind,
+  PbReactionType,
   Reaction,
 } from "@gi-tcg/typings";
 
@@ -51,6 +53,7 @@ import {
   CustomEventEventArg,
   type UseSkillRequestOption,
   BeforeNightsoulEventArg,
+  type SwitchActiveInfo,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -87,7 +90,11 @@ import type {
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
-import { REACTION_MAP, type NontrivialDamageType } from "../../base/reaction";
+import {
+  getReaction,
+  REACTION_MAP,
+  type NontrivialDamageType,
+} from "../../base/reaction";
 import {
   CALLED_FROM_REACTION,
   type ReactionDescriptionEventArg,
@@ -109,6 +116,7 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
+import { exposeHealKind } from "../../io";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -623,14 +631,17 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who: playerWho,
       value: switchToTarget.state,
     });
-    this.emitEvent("onSwitchActive", this.state, {
+    const switchInfo: SwitchActiveInfo = {
       type: "switchActive",
       who: playerWho,
       from: from,
       via: this.skillInfo,
-      fromReaction: this.fromReaction !== null,
       to: switchToTarget.state,
-    });
+      fromReaction: this.fromReaction !== null,
+      fast: null,
+    };
+    this.mutator.postSwitchActive(switchInfo);
+    this.emitEvent("onSwitchActive", this.state, switchInfo);
     return RET;
   }
 
@@ -727,6 +738,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetId: targetState.id,
           targetDefinitionId: targetState.definition.id,
           isSkillMainDamage: false,
+          reactionType: PbReactionType.UNSPECIFIED,
+          causeDefeated: false,
+          oldAura: targetState.variables.aura,
+          newAura: targetState.variables.aura,
+          oldHealth: targetState.variables.health,
+          newHealth: targetState.variables.health + healInfo.value,
+          healKind: exposeHealKind(healInfo.healKind),
         },
       ],
     });
@@ -833,6 +851,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
         direction: "decrease",
       });
       if (damageInfo.target.variables.alive) {
+        const [newAura, reaction] =
+          damageInfo.type === DamageType.Piercing ||
+          damageInfo.type === DamageType.Physical
+            ? [damageInfo.target.variables.aura, null]
+            : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
         this.mutator.notify({
           mutations: [
             {
@@ -844,6 +867,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
               targetId: damageInfo.target.id,
               targetDefinitionId: damageInfo.target.definition.id,
               isSkillMainDamage: damageInfo.isSkillMainDamage,
+              reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+              causeDefeated: damageInfo.causeDefeated,
+              oldAura: damageInfo.target.variables.aura,
+              newAura,
+              oldHealth: damageInfo.target.variables.health,
+              newHealth: finalHealth,
+              healKind: PbHealKind.NOT_A_HEAL,
             },
           ],
         });
@@ -900,6 +930,21 @@ export class SkillContext<Meta extends ContextMetaBase> {
       value: newAura,
       direction: null,
     });
+    if (!fromDamage) {
+      this.mutator.notify({
+        mutations: [
+          {
+            $case: "applyAura",
+            elementType: type,
+            targetId: target.state.id,
+            targetDefinitionId: target.state.definition.id,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            oldAura: aura,
+            newAura,
+          },
+        ],
+      });
+    }
     if (reaction !== null) {
       this.mutator.log(
         DetailLogType.Other,
@@ -911,16 +956,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         via: this.skillInfo,
         fromDamage,
       };
-      this.mutator.notify({
-        mutations: [
-          {
-            $case: "elementalReaction",
-            reactionType: reaction,
-            characterId: target.state.id,
-            characterDefinitionId: target.state.definition.id,
-          },
-        ],
-      });
       this.emitEvent("onReaction", this.state, reactionInfo);
       const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
         where: target.who === this.callerArea.who ? "my" : "opp",
@@ -1316,6 +1351,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           type: "resetDice",
           who: this.callerArea.who,
           value: sorted.slice(count),
+          reason: "absorb",
         });
         return newDice;
       }
@@ -1341,6 +1377,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           type: "resetDice",
           who: this.callerArea.who,
           value: dice,
+          reason: "absorb",
         });
         return collected;
       }
@@ -1375,6 +1412,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
       type: "resetDice",
       who,
       value: finalDice,
+      reason: "convert",
+      conversionTargetHint: target,
     });
     return this.enableShortcut();
   }
@@ -1424,6 +1463,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       type: "resetDice",
       who: this.callerArea.who,
       value: newDice,
+      reason: "generate",
     });
     for (const d of insertedDice) {
       this.emitEvent(
@@ -1490,6 +1530,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           to: "hands",
           who,
           value: chosen,
+          reason: "draw",
         });
         cards.push(chosen);
         if (player().hands.length > this.state.config.maxHandsCount) {
@@ -1650,6 +1691,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           to: "pile",
           who,
           value: card,
+          reason: "undraw",
         }) as const,
     );
     this.insertPileCards(payloads, strategy, "my");
@@ -1662,6 +1704,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       to: "oppHands",
       who: flip(this.callerArea.who),
       value: card,
+      reason: "steal",
     });
     this.emitEvent(
       "onHandCardInserted",
@@ -1682,6 +1725,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         to: "oppHands",
         who: flip(this.callerArea.who),
         value: card,
+        reason: "swap",
       });
       this.emitEvent(
         "onHandCardInserted",
@@ -1698,6 +1742,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         to: "oppHands",
         who: this.callerArea.who,
         value: card,
+        reason: "swap",
       });
       this.emitEvent(
         "onHandCardInserted",

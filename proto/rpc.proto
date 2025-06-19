@@ -18,6 +18,7 @@ option csharp_namespace = "GiTcg.Proto";
 
 import "enums.proto";
 import "action.proto";
+import "preview.proto";
 
 message RerollDiceRequest {}
 
@@ -26,6 +27,30 @@ message SwitchHandsRequest {}
 message ChooseActiveRequest {
   repeated sint32 candidate_ids = 1;
 }
+
+enum ActionValidity {
+  ACTION_VALIDITY_VALID = 0;
+  ACTION_VALIDITY_CONDITION_NOT_MET = 1;
+  ACTION_VALIDITY_NO_TARGET = 2;
+  ACTION_VALIDITY_NO_DICE = 3;
+  ACTION_VALIDITY_NO_ENERGY = 4;
+  ACTION_VALIDITY_DISABLED = 5;
+}
+
+message Action {
+  oneof action {
+    SwitchActiveAction switch_active = 1;
+    PlayCardAction play_card = 2;
+    UseSkillAction use_skill = 3;
+    ElementalTuningAction elemental_tuning = 4;
+    DeclareEndAction declare_end = 5;
+  }
+  repeated PreviewData preview = 10;
+  repeated DiceRequirement required_cost = 11;
+  repeated DiceType auto_selected_dice = 12;
+  ActionValidity validity = 13;
+}
+
 message ActionRequest {
   repeated Action action = 1;
 }

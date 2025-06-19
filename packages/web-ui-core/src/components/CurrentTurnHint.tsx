@@ -12,7 +12,7 @@ export function CurrentTurnHint(props: CurrentTurnHintProps) {
   return (
     <Show when={props.phase <= PbPhaseType.ROLL}>
       <div
-        class="h-8 w-24 flex items-center justify-center rounded-full b-1 line-height-none z-1 font-bold current-turn-hint text-color-[var(--fg-color)] border-[var(--fg-color)] bg-[var(--bg-color)]"
+        class="h-8 w-24 flex items-center justify-center rounded-full b-1 line-height-none font-bold current-turn-hint text-color-[var(--fg-color)] border-[var(--fg-color)] bg-[var(--bg-color)]"
         data-opp={props.opp}
       >
         {props.opp ? "对方先手" : "我方先手"}

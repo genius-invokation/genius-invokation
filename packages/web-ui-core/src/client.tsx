@@ -24,6 +24,7 @@ import {
   SelectCardResponse,
   RerollDiceResponse,
   PbPhaseType,
+  PbPlayerStatus,
 } from "@gi-tcg/typings";
 import { createSignal, type ComponentProps, type JSX } from "solid-js";
 import {
@@ -49,6 +50,8 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
+import { updateHistory, type HistoryData } from "./history/parser";
+import { createStore, produce } from "solid-js/store";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -62,6 +65,7 @@ const EMPTY_PLAYER_DATA: PbPlayerState = {
   initiativeSkill: [],
   declaredEnd: false,
   legendUsed: false,
+  status: PbPlayerStatus.UNSPECIFIED,
 };
 
 export const EMPTY_GAME_STATE: PbGameState = {
@@ -113,7 +117,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     },
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
-    playerStatus: [null, null],
     animatingCards: [],
     playingCard: null,
     enteringEntities: [],
@@ -240,6 +243,11 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     actionResolvers.switchHands?.reject();
   };
 
+  const [history, setHistory] = createStore<HistoryData>({
+    blocks: [],
+    currentIndent: 0,
+  });
+
   const io: PlayerIOWithCancellation = {
     cancelRpc,
     notify: ({ mutation, state }) => {
@@ -247,9 +255,13 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         return;
       }
       uiQueue.push(async () => {
+        who === 0 &&
+          console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
+        setHistory(
+          produce((history) => updateHistory(savedState, mutation, history)),
+        );
         const { promise, resolve } = Promise.withResolvers<void>();
-        // console.log(parsed);
         setData({
           previousState: savedState ?? state,
           state,
@@ -335,6 +347,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         who={who}
         data={data()}
         actionState={actionState()}
+        history={history.blocks}
         viewType={viewType()}
         selectCardCandidates={selectCardCandidates()}
         doingRpc={doingRpc()}

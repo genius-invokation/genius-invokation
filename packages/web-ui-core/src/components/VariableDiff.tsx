@@ -39,7 +39,7 @@ export function VariableDiff(props: VariableDiffProps) {
   );
   return (
     <div
-      class={`scale-85%  text-white  h-8 py-1 px-5 variable-diff flex items-center justify-center ${
+      class={`scale-85% text-white h-8 py-1 px-5 variable-diff flex flex-row items-center justify-center ${
         props.class ?? ""
       }`}
       style={{
@@ -47,10 +47,14 @@ export function VariableDiff(props: VariableDiffProps) {
       }}
     >
       <Show when={props.defeated}>
-        <DefeatedPreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
+        <div class="relative h-6 w-8 overflow-visible flex-shrink-0">
+          <DefeatedPreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
+        </div>
       </Show>
       <Show when={props.revive}>
-        <RevivePreviewIcon class="h-full flex-shrink-0 scale-120% translate-x--20%" />
+        <div class="relative h-6 w-8 overflow-visible flex-shrink-0">
+          <RevivePreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
+        </div>
       </Show>
       <StrokedText
         class="flex-shrink-0 font-bold font-size-4.5 line-height-none"

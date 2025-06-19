@@ -210,6 +210,7 @@ export interface DamageInfo {
 
 export type HealKind =
   | "common" // 常规治疗
+  | "immuneDefeated" // 免于被击倒
   | "revive" // 复苏
   | "distribution" // 平衡生命值（水与正义）
   | "increaseMaxHealth"; // 增加最大生命值（吞星之鲸）
@@ -256,8 +257,9 @@ export interface SwitchActiveInfo {
   readonly who: 0 | 1;
   readonly from: CharacterState;
   readonly via?: SkillInfo;
-  readonly fromReaction: boolean;
   readonly to: CharacterState;
+  readonly fromReaction: boolean;
+  readonly fast: boolean | null;
 }
 
 export interface ElementalTuningInfo {

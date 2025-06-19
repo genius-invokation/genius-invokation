@@ -31,8 +31,8 @@ export function SelectCardView(props: SelectCardViewProps) {
 
   return (
     <div class="absolute inset-0 flex flex-col items-center justify-center gap-10 select-none">
-      <h3 class="font-bold text-3xl z-1">挑选卡牌</h3>
-      <ul class="flex flex-row gap-1 z-1">
+      <h3 class="font-bold text-3xl">挑选卡牌</h3>
+      <ul class="flex flex-row gap-1">
         <For each={props.candidateIds}>
           {(cardId) => (
             <li class="flex flex-col items-center">
@@ -63,7 +63,7 @@ export function SelectCardView(props: SelectCardViewProps) {
         </For>
       </ul>
       <div
-        class="invisible pointer-events-none data-[shown]:visible data-[shown]:pointer-events-auto z-1"
+        class="invisible pointer-events-none data-[shown]:visible data-[shown]:pointer-events-auto"
         bool:data-shown={selectedId() !== null}
       >
         <Button

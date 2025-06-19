@@ -40,7 +40,10 @@ import {
 import {
   Aura,
   DamageType,
+  PbHealKind,
+  PbReactionType,
   PbSkillType,
+  PbSwitchActiveFromAction,
   Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
@@ -119,7 +122,7 @@ export class SkillExecutor {
     );
 
     const prependMutations: ExposedMutation[] = [];
-    if (skillDef.ownerType !== "extension" && skillDef.ownerType !== "card") {
+    if (skillDef.ownerType !== "extension" && (skillDef.initiativeSkillConfig?.skillType !== "playCard")) {
       let skillType: PbSkillType;
       switch (skillDef.initiativeSkillConfig?.skillType) {
         case "normal":
@@ -151,6 +154,7 @@ export class SkillExecutor {
           callerDefinitionId: skillInfo.caller.definition.id,
           skillDefinitionId: skillDef.id,
           skillType,
+          triggeredOn: skillDef.triggerOn,
         });
       }
     }
@@ -296,7 +300,7 @@ export class SkillExecutor {
         const healInfo: HealInfo = {
           type: DamageType.Heal,
           cancelled: false,
-          healKind: "revive",
+          healKind: "immuneDefeated",
           source,
           via: arg._immuneInfo.skill,
           target: arg.target,
@@ -323,6 +327,13 @@ export class SkillExecutor {
               targetId: healInfo.target.id,
               targetDefinitionId: healInfo.target.definition.id,
               isSkillMainDamage: false,
+              reactionType: PbReactionType.UNSPECIFIED,
+              causeDefeated: false,
+              oldAura: arg.target.variables.aura,
+              newAura: arg.target.variables.aura,
+              oldHealth: 0,
+              newHealth: healValue,
+              healKind: PbHealKind.IMMUNE_DEFEATED,
             },
           ],
         });
@@ -385,7 +396,7 @@ export class SkillExecutor {
     if (criticalDamageEvents.length === 0) {
       return;
     }
-    const switchEvents: [
+    const switchEventArgPromises: [
       null | Promise<SwitchActiveEventArg>,
       null | Promise<SwitchActiveEventArg>,
     ] = [null, null];
@@ -401,7 +412,7 @@ export class SkillExecutor {
         DetailLogType.Other,
         `Active character of player ${who} is defeated. Waiting user choice`,
       );
-      switchEvents[who] = this.mutator.chooseActive(who).then(
+      switchEventArgPromises[who] = this.mutator.chooseActive(who).then(
         (to) =>
           new SwitchActiveEventArg(this.state, {
             type: "switchActive",
@@ -409,12 +420,16 @@ export class SkillExecutor {
             from: activeCh,
             to,
             fromReaction: false,
+            fast: null,
           }),
       );
     }
-    const args = await Promise.all(switchEvents);
+    const switchEventArgs = await Promise.all(switchEventArgPromises);
+    this.mutator.postChooseActive(
+      ...switchEventArgs.map((arg) => arg?.switchInfo.to ?? null),
+    );
     const currentTurn = this.state.currentTurn;
-    for (const arg of args) {
+    for (const arg of switchEventArgs) {
       if (arg) {
         using l = this.mutator.subLog(
           DetailLogType.Primitive,
@@ -427,10 +442,11 @@ export class SkillExecutor {
           who: arg.switchInfo.who,
           value: arg.switchInfo.to,
         });
+        this.mutator.postSwitchActive(arg.switchInfo);
       }
     }
     for (const who of [currentTurn, flip(currentTurn)]) {
-      const arg = args[who];
+      const arg = switchEventArgs[who];
       if (arg) {
         await this.handleEvent(["onSwitchActive", arg]);
       }
@@ -467,6 +483,7 @@ export class SkillExecutor {
    */
   private handleEventShallow(event: Event): EventAndRequest[] {
     const [name, arg] = event;
+    using guard = this.createHandleEventNotifies(name);
     const callerAndSkills = this.broadcastEvent(event);
     const result: EventAndRequest[] = [];
     for (const { caller, skill } of callerAndSkills) {
@@ -484,6 +501,31 @@ export class SkillExecutor {
     return result;
   }
 
+  private createHandleEventNotifies(name: string) {
+    this.mutator.notify({
+      mutations: [
+        {
+          $case: "handleEvent",
+          isClose: false,
+          eventName: name,
+        },
+      ],
+    });
+    return {
+      [Symbol.dispose]: () => {
+        this.mutator.notify({
+          mutations: [
+            {
+              $case: "handleEvent",
+              isClose: true,
+              eventName: name,
+            },
+          ],
+        });
+      },
+    };
+  }
+
   /**
    * 处理事件 `events`。监听它们的技能将会被递归结算。
    * @param events
@@ -491,6 +533,7 @@ export class SkillExecutor {
   async handleEvent(...events: EventAndRequest[]) {
     for (const event of events) {
       const [name, arg] = event;
+      using guard = this.createHandleEventNotifies(name);
       if (name === "requestReroll") {
         using l = this.mutator.subLog(
           DetailLogType.Event,
@@ -544,7 +587,10 @@ export class SkillExecutor {
           ({ skill }) => skill.id === arg.requestingSkillId,
         );
         if (!skillAndCaller) {
-          console.log(availableSkills.map(({ skill }) => skill.id), arg.requestingSkillId)
+          console.log(
+            availableSkills.map(({ skill }) => skill.id),
+            arg.requestingSkillId,
+          );
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
@@ -606,31 +652,6 @@ export class SkillExecutor {
           await this.finalizeSkill(skillInfo, eventArg);
         }
       } else {
-        if (name === "onSwitchActive") {
-          // 处理切人时额外的操作：
-          // - 通知前端
-          // - 设置下落攻击 flag
-          // TODO: 问题：可否将这类逻辑移动到 Mutator 中，直接在 switchActive 内处理？
-          this.mutator.notify({
-            mutations: [
-              {
-                $case: "switchActive",
-                who: arg.switchInfo.who,
-                characterId: arg.switchInfo.to.id,
-                characterDefinitionId: arg.switchInfo.to.definition.id,
-                viaSkillDefinitionId: arg.switchInfo.fromReaction
-                  ? Reaction.Overloaded
-                  : arg.switchInfo.via?.definition.id,
-              },
-            ],
-          });
-          this.mutate({
-            type: "setPlayerFlag",
-            who: arg.switchInfo.who,
-            flagName: "canPlunging",
-            value: true,
-          });
-        }
         // onDamageOrHeal / onReaction 事件可以被延迟到 onUseSkill 事件后处理
         // 故在发生事件时将 events 记录，并在 useSkill 之前清空记录
         /** @see TriggeredSkillBuilder#delayedToSkill */

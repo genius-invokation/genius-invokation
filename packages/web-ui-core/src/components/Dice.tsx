@@ -86,7 +86,7 @@ function LegendIcon(props: { size: number }) {
   );
 }
 
-function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
+export function DiceIcon(props: { size: number; type: DiceType; selected: boolean }) {
   return (
     <svg // 骰子图标
       width="14"

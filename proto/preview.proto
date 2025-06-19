@@ -25,6 +25,7 @@ message PreviewData {
     RemoveEntityEM remove_entity = 11;
     ModifyEntityVarEM modify_entity_var = 12;
     TransformDefinitionEM transform_definition = 13;
-    ElementalReactionEM elemental_reaction = 16;
+    DamageEM damage = 15;
+    ApplyAuraEM apply_aura = 16;
   }
 }

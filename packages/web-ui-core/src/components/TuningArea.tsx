@@ -14,11 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { createMemo } from "solid-js";
-import type { TunningAreaInfo } from "./Chessboard";
+import type { TuningAreaInfo } from "./Chessboard";
 import { cssPropertyOfTransform } from "../ui_state";
-import TunningIcon from "../svg/TunningIcon.svg?component-solid";
+import TuningIcon from "../svg/TuningIcon.svg?component-solid";
 
-export interface TuningAreaProps extends TunningAreaInfo {}
+export interface TuningAreaProps extends TuningAreaInfo {}
 
 export function TuningArea(props: TuningAreaProps) {
   const status = () => {
@@ -41,7 +41,7 @@ export function TuningArea(props: TuningAreaProps) {
       style={cssPropertyOfTransform(props.transform)}
     >
       <div class="w-8 h-8">
-        <TunningIcon />
+        <TuningIcon />
       </div>
     </div>
   );

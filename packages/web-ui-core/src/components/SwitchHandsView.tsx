@@ -24,12 +24,12 @@ export interface SwitchHandsViewProps {
 export function SwitchHandsView(props: SwitchHandsViewProps) {
   return (
     <div class="absolute pointer-events-none inset-0 flex flex-col items-center">
-      <h3 class="absolute top-50% -translate-y-40 font-bold text-3xl text-black z-1">
+      <h3 class="absolute top-50% -translate-y-40 font-bold text-3xl text-black">
         替换手牌
       </h3>
       <div class="flex-grow" />
       <Button
-        class="absolute top-50% translate-y-30 pointer-events-auto z-1"
+        class="absolute top-50% translate-y-30 pointer-events-auto"
         onClick={props.onConfirm}
       >
         确认

@@ -34,6 +34,7 @@ function App() {
         maxHealth: 10,
         energy: 2,
         maxEnergy: 2,
+        tags: 0,
         entity: [
           {
             id: -500002,

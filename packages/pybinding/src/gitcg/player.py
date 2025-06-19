@@ -136,7 +136,7 @@ class Player(ABC):
         """
         Implement the logic of how to `action`. The `ActionRequest` contains a list of actions you can perform. The returned `ActionResponse` must be presented with an index of the action you want to perform, and some `used_dice` values as this action's cost requirement.
 
-        There are 5 kind of actions, called `use_skill`, `play_card`, `elemenental_tunning`, `switch_active` and `declare_end`. While enumerating `action` on `ActionRequest`, check `action.HasField("use_skill")` to determine which kind of this action is. Then `action.use_skill` will contains detailed information of this action. The detailed data structure of `ActionRequest` can be found [here](https://github.com/guyutongxue/genius-invokation/blob/main/proto/action.proto).
+        There are 5 kind of actions, called `use_skill`, `play_card`, `elemenental_tuning`, `switch_active` and `declare_end`. While enumerating `action` on `ActionRequest`, check `action.HasField("use_skill")` to determine which kind of this action is. Then `action.use_skill` will contains detailed information of this action. The detailed data structure of `ActionRequest` can be found [here](https://github.com/guyutongxue/genius-invokation/blob/main/proto/action.proto).
 
         For example, choose the `declare_end` action:
         ```py

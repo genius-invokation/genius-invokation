@@ -21,6 +21,7 @@ import {
   PbPhaseType,
   PbPlayerFlag,
   PbPlayerStatus,
+  PbReactionType,
   PbRemoveCardReason,
   PbSkillType,
   Reaction,
@@ -69,7 +70,6 @@ export interface RoundAndPhaseNotificationInfo {
 export interface ParsedMutation {
   raw: PbExposedMutation[];
   roundAndPhase: RoundAndPhaseNotificationInfo;
-  playerStatus: (PbPlayerStatus | null)[];
   animatingCards: AnimatingCardInfo[];
   playingCard: PlayingCardInfo | null;
   damages: DamageInfo[];
@@ -81,7 +81,6 @@ export interface ParsedMutation {
 }
 
 export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
-  const playerStatus: (PbPlayerStatus | null)[] = [null, null];
   let playingCard: PlayingCardInfo | null = null;
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
@@ -168,17 +167,19 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         }
         break;
       }
-      case "elementalReaction": {
-        const targetId = mutation.value.characterId;
-        if (!reactionsByTarget.has(targetId)) {
-          reactionsByTarget.set(targetId, []);
+      case "applyAura": {
+        const targetId = mutation.value.targetId;
+        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
+          if (!reactionsByTarget.has(targetId)) {
+            reactionsByTarget.set(targetId, []);
+          }
+          const targetReactions = reactionsByTarget.get(targetId)!;
+          targetReactions.push({
+            reactionType: mutation.value.reactionType,
+            targetId,
+            delay: targetReactions.length,
+          });
         }
-        const targetReactions = reactionsByTarget.get(targetId)!;
-        targetReactions.push({
-          reactionType: mutation.value.reactionType as Reaction,
-          targetId,
-          delay: targetReactions.length,
-        });
         break;
       }
       case "damage": {
@@ -195,6 +196,17 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           isSkillMainDamage: mutation.value.isSkillMainDamage,
           delay: targetDamages.length,
         });
+        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
+          if (!reactionsByTarget.has(targetId)) {
+            reactionsByTarget.set(targetId, []);
+          }
+          const targetReactions = reactionsByTarget.get(targetId)!;
+          targetReactions.push({
+            reactionType: mutation.value.reactionType,
+            targetId,
+            delay: targetReactions.length,
+          });
+        }
         break;
       }
       case "skillUsed": {
@@ -242,7 +254,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         break;
       }
       case "playerStatusChange": {
-        playerStatus[mutation.value.who] = mutation.value.status;
         if (mutation.value.status === PbPlayerStatus.ACTING) {
           roundAndPhase.who = mutation.value.who as 0 | 1;
           roundAndPhase.value = "action";
@@ -275,7 +286,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   return {
     raw: mutations,
     roundAndPhase,
-    playerStatus,
     playingCard,
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),

@@ -36,11 +36,17 @@ message ExposedMutation {
     TransformDefinitionEM transform_definition = 13;
     ResetDiceEM reset_dice = 14;
     DamageEM damage = 15;
-    ElementalReactionEM elemental_reaction = 16;
+    ApplyAuraEM apply_aura = 16;
     SkillUsedEM skill_used = 18;
     PlayerStatusChangeEM player_status_change = 19;
     SwapCharacterPositionEM swap_character_position = 20;
     SetPlayerFlagEM set_player_flag = 21;
+    RerollDoneEM reroll_done = 22;
+    SwitchHandsDoneEM switch_hands_done = 23;
+    ChooseActiveDoneEM choose_active_done = 24;
+    // reserved: Action 25
+    SelectCardDoneEM select_card_done = 26;
+    HandleEventEM handle_event = 27;
   }
   reserved 17;
 }
@@ -62,6 +68,14 @@ enum CardArea {
   CARD_AREA_PILE = 1;
 }
 
+enum TransferCardReason {
+  TRANSFER_CARD_REASON_UNSPECIFIED = 0;
+  TRANSFER_CARD_REASON_SWITCH = 1;
+  TRANSFER_CARD_REASON_DRAW = 2;
+  TRANSFER_CARD_REASON_UNDRAW = 3;
+  TRANSFER_CARD_REASON_STEAL = 4;
+  TRANSFER_CARD_REASON_SWAP = 5;
+}
 message TransferCardEM {
   int32 who = 1;
   reserved 2, 3;
@@ -70,6 +84,13 @@ message TransferCardEM {
   bool transfer_to_opp = 6;
   optional int32 target_index = 7;
   CardState card = 8;
+  TransferCardReason reason = 9;
+}
+
+enum SwitchActiveFromAction {
+  SWITCH_ACTIVE_FROM_ACTION_NONE = 0;
+  SWITCH_ACTIVE_FROM_ACTION_SLOW = 1;
+  SWITCH_ACTIVE_FROM_ACTION_FAST = 2;
 }
 
 message SwitchActiveEM {
@@ -77,6 +98,7 @@ message SwitchActiveEM {
   sint32 character_id = 2;
   int32 character_definition_id = 3;
   optional int32 via_skill_definition_id = 4;
+  SwitchActiveFromAction from_action = 5;
 }
 
 enum RemoveCardReason {
@@ -124,6 +146,7 @@ message CreateEntityEM {
   reserved 2, 3;
   EntityArea where = 4;
   EntityState entity = 5;
+  optional sint32 master_character_id = 6;
 }
 
 message RemoveEntityEM {
@@ -150,9 +173,30 @@ message TransformDefinitionEM {
   int32 new_entity_definition_id = 3;
 }
 
+enum ResetDiceReason {
+  RESET_DICE_REASON_UNSPECIFIED = 0;
+  RESET_DICE_REASON_ROLL = 1;
+  RESET_DICE_REASON_CONSUME = 2;
+  RESET_DICE_REASON_ELEMENTAL_TUNING = 3;
+  RESET_DICE_REASON_GENERATE = 4;
+  RESET_DICE_REASON_CONVERT = 5;
+  RESET_DICE_REASON_ABSORB = 6;
+}
+
 message ResetDiceEM {
   int32 who = 1;
   repeated DiceType dice = 2;
+  ResetDiceReason reason = 3;
+  optional DiceType conversion_target_hint = 4;
+}
+
+enum HealKind {
+  HEAL_KIND_NOT_A_HEAL = 0;
+  HEAL_KIND_COMMON = 1;
+  HEAL_KIND_IMMUNE_DEFEATED = 2;
+  HEAL_KIND_REVIVE = 3;
+  HEAL_KIND_INCREASE_MAX_HEALTH = 4;
+  HEAL_KIND_DISTRIBUTION = 5;
 }
 
 message DamageEM {
@@ -163,12 +207,22 @@ message DamageEM {
   sint32 source_id = 5;
   int32 source_definition_id = 6;
   bool is_skill_main_damage = 7;
+  ReactionType reaction_type = 8;
+  bool cause_defeated = 9;
+  AuraType old_aura = 10;
+  AuraType new_aura = 11;
+  int32 old_health = 12;
+  int32 new_health = 13;
+  HealKind heal_kind = 14;
 }
 
-message ElementalReactionEM {
-  ReactionType reaction_type = 1;
-  sint32 character_id = 3;
-  int32 character_definition_id = 4;
+message ApplyAuraEM {
+  DamageType element_type = 1;
+  sint32 target_id = 3;
+  int32 target_definition_id = 4;
+  ReactionType reaction_type = 8;
+  AuraType old_aura = 10;
+  AuraType new_aura = 11;
 }
 
 enum SkillType {
@@ -187,16 +241,7 @@ message SkillUsedEM {
   int32 skill_definition_id = 3;
   SkillType skill_type = 4;
   int32 who = 5;
-}
-
-// 玩家的当前 IO 状态
-enum PlayerStatus {
-  PLAYER_STATUS_UNSPECIFIED = 0;
-  PLAYER_STATUS_CHOOSING_ACTIVE = 1;
-  PLAYER_STATUS_SWITCHING_HANDS = 2;
-  PLAYER_STATUS_REROLLING = 3;
-  PLAYER_STATUS_ACTING = 4;
-  PLAYER_STATUS_SELECTING_CARDS = 5;
+  optional string triggered_on = 6;
 }
 
 message PlayerStatusChangeEM {
@@ -222,4 +267,30 @@ message SetPlayerFlagEM {
   int32 who = 1;
   PlayerFlag flag_name = 2;
   bool flag_value = 3;
+}
+
+message RerollDoneEM {
+  int32 who = 1;
+  uint32 count = 2;
+}
+
+message ChooseActiveDoneEM {
+  int32 who = 1;
+  sint32 character_id = 2;
+  int32 character_definition_id = 3;
+}
+
+message SwitchHandsDoneEM {
+  int32 who = 1;
+  uint32 count = 2;
+}
+
+message SelectCardDoneEM {
+  int32 who = 1;
+  int32 selected_definition_id = 2;
+}
+
+message HandleEventEM {
+  bool is_close = 1;
+  string event_name = 2;
 }
