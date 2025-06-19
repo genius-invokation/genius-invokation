@@ -1473,44 +1473,38 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         </Switch>
       </div>
       <div
-        class="h-18 relative"
+        class="h-18 relative flex flex-row-reverse items-center"
         style={{ width: `${2.375 + props.data.cardface.length * 0.25}rem` }}
       >
         <Switch>
           <Match when={props.data.size === "normal"}>
             <For each={props.data.cardface.toReversed()}>
-              {(imageId, index) => (
-                <div
-                  class="absolute w-10.5 h-18 top-50% -translate-y-50%"
-                  style={{
-                    right: `${index() * 0.25}rem`,
-                  }}
-                >
-                  <CardFace definitionId={imageId} />
+              {(imageId) => (
+                <div class="relative w-1 h-18 overflow-visible">
+                  <div class="absolute w-10.5 h-18 right-0">
+                    <CardFace definitionId={imageId} />
+                  </div>
                 </div>
               )}
             </For>
           </Match>
           <Match when={props.data.size === "summon"}>
             <For each={props.data.cardface.toReversed()}>
-              {(imageId, index) => (
-                <div
-                  class="absolute w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden top-50% -translate-y-50%"
-                  style={{
-                    right: `${index() * 0.25}rem`,
-                  }}
-                >
-                  <Show
-                    when={imageId !== 0}
-                    fallback={
-                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
-                    }
-                  >
-                    <Image
-                      imageId={imageId}
-                      class="absolute w-10.5 h-18 top-50% -translate-y-50%"
-                    />
-                  </Show>
+              {(imageId) => (
+                <div class="relative w-1 h-12.375 overflow-visible">
+                  <div class="absolute w-10.5 h-12.375 right-0 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
+                    <Show
+                      when={imageId !== 0}
+                      fallback={
+                        <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
+                      }
+                    >                    
+                      <Image
+                        imageId={imageId}
+                        class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                      /> 
+                    </Show>
+                  </div>
                 </div>
               )}
             </For>
