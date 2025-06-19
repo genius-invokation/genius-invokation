@@ -959,7 +959,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
   };
 
   for (const c of characterSummary) {
-    if (c.damage || c.heal || c.elemental.length || c.switchActive) {
+    if (c.damage || c.heal || !!c.elemental.length || c.switchActive) {
       if (c.damage) {
         shotGroups.damage.push(c);
       } 
@@ -978,10 +978,10 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
           combatStatus: [],
         });
       }
-      if (c.elemental.length && !c.damage && !c.heal) {
+      if (!!c.elemental.length && !c.damage && !c.heal) {
         shotGroups.apply.push(c);
       }
-      if (c.elemental.length && !c.damage && c.heal) {
+      if (!!c.elemental.length && !c.damage && c.heal) {
         shotGroups.apply.push({
           ...c,
           damage: false,
@@ -998,7 +998,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
       if (c.switchActive && !c.damage && !c.heal && !c.elemental.length) {
         shotGroups.switch.push(c);
       }
-      if (c.switchActive && (c.damage || c.heal || c.elemental.length)) {
+      if (c.switchActive && (c.damage || c.heal || !!c.elemental.length)) {
         shotGroups.switch.push({
           ...c,
           damage: false,
@@ -1148,8 +1148,11 @@ interface renderHistoryBlockProps {
   title: string;
   indent: number;
   imageId?: number;
+  imageSize: "normal" | "summon";
   callerId?: number;
   energyChange?: blockEnergyProps;
+  status?: number;
+  combatStatus?: number;
   content: blockDetailProps;
   summary: SummaryShot[];
 }
@@ -1214,6 +1217,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: `${subject(opp(block.who))}${switchActiveTextMap[block.how]}`,
         indent: block.indent,
         imageId: block.characterDefinitionId,
+        imageSize: "normal",
         callerId: block.characterDefinitionId,
         energyChange: extractBlockEnergyProps(block, 0), // 可填写maxEnergy
         content: {
@@ -1239,6 +1243,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         }`,
         indent: block.indent,
         imageId: block.callerDefinitionId,
+        imageSize: "normal",
         callerId: block.callerDefinitionId,
         energyChange:
           block.skillType === "technique"
@@ -1289,6 +1294,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: "触发效果",
         indent: block.indent,
         imageId: block.masterOrCallerDefinitionId,
+        imageSize : block.entityType === "summon" || block.entityType === "support" ? "summon" : "normal",
         callerId: block.callerOrSkillDefinitionId,
         energyChange: extractBlockEnergyProps(
           {
@@ -1297,6 +1303,8 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
           },
           0, // 可填写maxEnergy
         ),
+        status: block.entityType === "status" ? block.callerOrSkillDefinitionId : undefined,
+        combatStatus: block.entityType === "combatStatus" ? block.callerOrSkillDefinitionId : undefined,
         content: {
           opp: opp(block.who),
           imageId: block.masterOrCallerDefinitionId,
@@ -1345,6 +1353,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: `${subject(opp(block.who))}打出手牌`,
         indent: block.indent,
         imageId: block.cardDefinitionId,
+        imageSize: "normal",
         callerId: block.cardDefinitionId,
         content: {
           opp: opp(block.who),
@@ -1376,6 +1385,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: `${subject(opp(block.who))}执行挑选`,
         indent: block.indent,
         imageId: block.cardDefinitionId,
+        imageSize: "normal",
         callerId: block.cardDefinitionId,
         content: {
           opp: opp(block.who),
@@ -1401,6 +1411,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         title: `${subject(opp(block.who))}进行「元素调和」`,
         indent: block.indent,
         imageId: block.cardDefinitionId,
+        imageSize: "normal",
         callerId: block.cardDefinitionId,
         content: {
           opp: opp(block.who),
@@ -1431,6 +1442,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: false,
         title: "裁判行动",
         indent: block.indent,
+        imageSize: "normal",
         content: {
           opp: false,
         },
@@ -1444,6 +1456,7 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
         opp: false,
         title: "",
         indent: 0,
+        imageSize: "normal",
         content: {
           opp: false,
         },
@@ -1720,15 +1733,34 @@ function HistoryBlockBox(props: {
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
           <div class="h-3" />
-          <div class="w-10.5 h-18 relative">
-            <Show
-              when={props.data.imageId}
-              fallback={<CardBack class="w-10.5 h-18" />}
-            >
-              <div class="relative w-10.5 h-18">
-                <CardFace definitionId={props.data.imageId as number} />
-              </div>
-            </Show>
+          <div class="w-10.5 h-18 relative items-center justify-center">
+            <Switch>
+              <Match when={props.data.imageSize === "normal"}>
+                <Show
+                  when={!!props.data.imageId}
+                  fallback={<CardBack class="w-10.5 h-18" />}
+                >
+                  <div class="relative w-10.5 h-18">
+                    <CardFace definitionId={props.data.imageId as number} />
+                  </div>
+                </Show>
+              </Match>
+              <Match when={props.data.imageSize === "summon"}>
+                <div class="w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
+                  <Show
+                    when={!!props.data.imageId}
+                    fallback={
+                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
+                    }
+                  >                    
+                    <Image
+                      imageId={props.data.imageId as number}
+                      class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                    /> 
+                  </Show>
+                </div>
+              </Match>
+            </Switch>            
             <div class="h-8 w-8 absolute top-50% left-50% -translate-x-50% -translate-y-50%">
               <Switch>
                 <Match when={props.data.type === "switchActive"}>
@@ -1742,8 +1774,17 @@ function HistoryBlockBox(props: {
                 </Match>
               </Switch>
             </div>
+            <div class="absolute bottom-0.5 left-0.5 h-3 w-9.5 flex flex-row items-center">
+              <Show when={!!props.data.status}>
+                <Image imageId={props.data.status as number} type="icon" class="h-3 w-3" />
+              </Show>
+            </div>
           </div>
-          <div class="h-3" />
+          <div class="h-3 w-10.5 flex flex-row items-center">
+            <Show when={!!props.data.combatStatus}>
+              <Image imageId={props.data.combatStatus as number} type="icon" class="h-3 w-3" />
+            </Show>
+          </div>
         </div>
         <Show when={props.data.summary.length}>
           <div class="h-24 w-4 flex items-center justify-center font-bold text-white text-5 text-stroke-1">
