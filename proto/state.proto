@@ -107,6 +107,7 @@ message CardState {
   map<string, string> description_dictionary = 4;
   // 原本费用
   repeated DiceRequirement definition_cost = 5;
+  uint32 tags = 6;
 }
 
 message SkillInfo {
