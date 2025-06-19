@@ -1,4 +1,9 @@
-import { DiceType, type ExposedMutation } from "@gi-tcg/typings";
+import {
+  DiceType,
+  PbSwitchActiveFromAction,
+  Reaction,
+  type ExposedMutation,
+} from "@gi-tcg/typings";
 import type { CardState, CharacterState, GameState } from "./base/state";
 import { DetailLogType, type IDetailLogger } from "./log";
 import {
@@ -22,6 +27,7 @@ import {
   type SelectCardInfo,
   type SkillInfo,
   type StateMutationAndExposedMutation,
+  type SwitchActiveInfo,
 } from "./base/skill";
 import {
   type EntityArea,
@@ -602,5 +608,38 @@ export class StateMutator {
       const newState = getEntityById(this.state, initState.id) as EntityState;
       return { oldState: null, newState };
     }
+  }
+
+  /** @deprecated */
+  public postSwitchActive(switchInfo: SwitchActiveInfo) {
+    // 处理切人时额外的操作：
+    // - 通知前端
+    // - 设置下落攻击 flag
+    // TODO: mutator 引入 switchActive，直接在其中处理？
+    this.notify({
+      mutations: [
+        {
+          $case: "switchActive",
+          who: switchInfo.who,
+          characterId: switchInfo.to.id,
+          characterDefinitionId: switchInfo.to.definition.id,
+          viaSkillDefinitionId: switchInfo.fromReaction
+            ? Reaction.Overloaded
+            : switchInfo.via?.definition.id,
+          fromAction:
+            switchInfo.fast === null
+              ? PbSwitchActiveFromAction.NONE
+              : switchInfo.fast
+                ? PbSwitchActiveFromAction.FAST
+                : PbSwitchActiveFromAction.SLOW,
+        },
+      ],
+    });
+    this.mutate({
+      type: "setPlayerFlag",
+      who: switchInfo.who,
+      flagName: "canPlunging",
+      value: true,
+    });
   }
 }

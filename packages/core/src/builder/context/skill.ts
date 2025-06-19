@@ -53,6 +53,7 @@ import {
   CustomEventEventArg,
   type UseSkillRequestOption,
   BeforeNightsoulEventArg,
+  type SwitchActiveInfo,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -630,7 +631,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       who: playerWho,
       value: switchToTarget.state,
     });
-    this.emitEvent("onSwitchActive", this.state, {
+    const switchInfo: SwitchActiveInfo = {
       type: "switchActive",
       who: playerWho,
       from: from,
@@ -638,7 +639,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
       to: switchToTarget.state,
       fromReaction: this.fromReaction !== null,
       fast: null,
-    });
+    };
+    this.mutator.postSwitchActive(switchInfo);
+    this.emitEvent("onSwitchActive", this.state, switchInfo);
     return RET;
   }
 

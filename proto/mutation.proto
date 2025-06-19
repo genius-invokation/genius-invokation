@@ -46,6 +46,7 @@ message ExposedMutation {
     ChooseActiveDoneEM choose_active_done = 24;
     // reserved: Action 25
     SelectCardDoneEM select_card_done = 26;
+    HandleEventEM handle_event = 27;
   }
   reserved 17;
 }
@@ -287,4 +288,9 @@ message SwitchHandsDoneEM {
 message SelectCardDoneEM {
   int32 who = 1;
   int32 selected_definition_id = 2;
+}
+
+message HandleEventEM {
+  bool is_close = 1;
+  string event_name = 2;
 }
