@@ -1111,7 +1111,7 @@ function renderSummary(children: HistoryChildren[]): SummaryShot[] {
           ? makeValue(list, "damageSum", "more")
           : type === "heal"
             ? makeValue(list, "healSum", "more")
-            : undefined,
+            : void 0,
       innerValueSpecial:
         type === "damage"
           ? makeValue(list, "defeated", void 0)
@@ -1736,9 +1736,7 @@ function HistoryBlockBox(props: {
           >
             {props.data.title}
           </div>
-          <For
-            each={Array.from({ length: props.data.indent }, (_, i) => i)}
-          >
+          <For each={Array.from({ length: props.data.indent }, (_, i) => i)}>
             {() => (
               <div class="relative w-4 h-6 overflow-visible">
                 <div class="absolute w-4 h-6 overflow-hidden top-0 left-0">
@@ -1749,7 +1747,7 @@ function HistoryBlockBox(props: {
                 </div>
               </div>
             )}
-          </For>          
+          </For>
         </div>
         <div class="relative w-4 h-6">
           <div class="absolute w-3 h-6 overflow-hidden">
@@ -1757,8 +1755,8 @@ function HistoryBlockBox(props: {
               class="absolute top-0 left--4.15 w-6 h-6 bg-[var(--bd-color)] rotate-45"
               bool:data-opp={props.data.opp}
             />
-          </div>              
-        </div>        
+          </div>
+        </div>
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
