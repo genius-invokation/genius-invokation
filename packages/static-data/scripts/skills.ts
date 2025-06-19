@@ -60,6 +60,7 @@ export interface SkillRawData {
   targetList: ChooseTarget[];
   hidden: boolean;
   keyMap?: Record<string, any>;
+  iconHash?: string;
   icon?: string;
 }
 
@@ -106,7 +107,9 @@ export async function collateSkill(
   );
   const hidden = !!skillObj[IS_HIDDEN];
 
-  const iconHash = skillObj[SKILL_ICON_HASH];
+  const iconHash = skillObj[SKILL_ICON_HASH]
+        ? String(skillObj[SKILL_ICON_HASH])
+        : void 0;
   const icon = await getSkillIcon(id, iconHash);
   if (!keyMap && description.includes("D__")) {
     console.log(`This might be a new skill that missing keyMap: ${skillObj[SKILL_JSON]} (${name}), please check!!`);
@@ -143,5 +146,6 @@ export async function collateSkill(
     hidden,
     keyMap,
     icon,
+    iconHash,
   };
 }

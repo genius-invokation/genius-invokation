@@ -2296,7 +2296,8 @@
         "targetList": [],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Mualani_03"
+        "icon": "Skill_S_Mualani_03",
+        "iconHash": "9375543048506856265"
       },
       {
         "id": 1121423,
@@ -3145,7 +3146,8 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 4
-        }
+        },
+        "iconHash": "9236943251512022441"
       },
       {
         "id": 1131542,
@@ -3196,7 +3198,8 @@
           }
         ],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "iconHash": "2421043733456980541"
       },
       {
         "id": 1131552,
@@ -3253,7 +3256,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Mavuika_02"
+        "icon": "Skill_S_Mavuika_02",
+        "iconHash": "4561666289799168597"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -4617,7 +4621,8 @@
         "targetList": [],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Liuyun_04"
+        "icon": "Skill_S_Liuyun_04",
+        "iconHash": "1667311271245681748"
       }
     ],
     "rawDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -4724,7 +4729,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "Skill_S_Chasca_02"
+        "icon": "Skill_S_Chasca_02",
+        "iconHash": "3881373672398019245"
       },
       {
         "id": 1151122,
@@ -5351,7 +5357,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Skill_S_Kachina_04"
+        "icon": "Skill_S_Kachina_04",
+        "iconHash": "17103744697500399081"
       },
       {
         "id": 1161022,
@@ -5493,7 +5500,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Xilonen_04"
+        "icon": "Skill_S_Xilonen_04",
+        "iconHash": "15902699072103096518"
       },
       {
         "id": 1161122,
@@ -7045,7 +7053,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       },
       {
         "id": 1220512,
@@ -7061,7 +7070,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       },
       {
         "id": 1220513,
@@ -7074,7 +7084,8 @@
         "targetList": [],
         "hidden": true,
         "keyMap": {},
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       }
     ],
     "rawDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -7326,7 +7337,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "MonsterSkill_S_EremiteOracle_03"
+        "icon": "MonsterSkill_S_EremiteOracle_03",
+        "iconHash": "13102655697580940627"
       },
       {
         "id": 1230312,
@@ -8473,7 +8485,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "MonsterSkill_S_EremiteGrass_02"
+        "icon": "MonsterSkill_S_EremiteGrass_02",
+        "iconHash": "13808436191547094956"
       },
       {
         "id": 2270312,
@@ -11467,7 +11480,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Skill_Diving_Slash"
+        "icon": "Skill_Diving_Slash",
+        "iconHash": "8938238543188921156"
       }
     ],
     "rawDescription": "$[K58]：$[S3130011]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11507,7 +11521,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "Btn_Natsaurus_Hookwalker_ElementalArt_Free"
+        "icon": "Btn_Natsaurus_Hookwalker_ElementalArt_Free",
+        "iconHash": "1280491973837764819"
       },
       {
         "id": 3130022,
@@ -11564,7 +11579,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01"
+        "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01",
+        "iconHash": "14993489490979801198"
       },
       {
         "id": 3130032,
@@ -11621,7 +11637,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l"
+        "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l",
+        "iconHash": "10695666907312981537"
       }
     ],
     "rawDescription": "$[K58]：$[S3130041]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11667,7 +11684,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt"
+        "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt",
+        "iconHash": "7799724174870740612"
       }
     ],
     "rawDescription": "$[K58]：$[S3130051]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11753,7 +11771,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Flamingo_ElementalArt"
+        "icon": "Btn_Natsaurus_Flamingo_ElementalArt",
+        "iconHash": "4652916209906729909"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>入场时：</color>敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>。\\n<color=#FFFFFFFF>附属角色切换为出战角色，且敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，将此次切换视为「$[K2]」而非「$[K1]」，少花费1个元素骰，并移除对方所有角色的<color=#FFFFFFFF>$[C301302]</color>。\\n$[K58]：$[S3130063]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11793,7 +11812,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Btn_Vehicle_Skiff_CannonFire_Big"
+        "icon": "Btn_Vehicle_Skiff_CannonFire_Big",
+        "iconHash": "6846738817799866864"
       },
       {
         "id": 3130072,
@@ -11862,7 +11882,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash"
+        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash",
+        "iconHash": "10801014346923560255"
       }
     ],
     "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11919,7 +11940,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_GCG_SaurusBaby"
+        "icon": "Skill_GCG_SaurusBaby",
+        "iconHash": "1100816836599636677"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>此卡牌入场时：</color>创建<color=#FFFFFFFF>$[C301306]</color>。（<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>）\\n$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
