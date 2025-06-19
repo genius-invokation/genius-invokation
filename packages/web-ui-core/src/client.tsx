@@ -50,8 +50,7 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
-import { parseToHistory } from "./parse_history";
-import type { HistoryBlock } from "./history";
+import { updateHistory, type HistoryData } from "./parse_history";
 import { createStore, produce } from "solid-js/store";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
@@ -118,7 +117,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     },
     state: EMPTY_GAME_STATE,
     previousState: EMPTY_GAME_STATE,
-    history: [],
     animatingCards: [],
     playingCard: null,
     enteringEntities: [],
@@ -233,7 +231,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     setData({
       previousState: savedState,
       state: savedState,
-      history,
       ...parsed,
     } satisfies ChessboardData);
   };
@@ -246,7 +243,10 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
     actionResolvers.switchHands?.reject();
   };
 
-  const [history, setHistory] = createStore<HistoryBlock[]>([]);
+  const [history, setHistory] = createStore<HistoryData>({
+    blocks: [],
+    currentIndent: 0,
+  });
 
   const io: PlayerIOWithCancellation = {
     cancelRpc,
@@ -259,16 +259,12 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
           console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
         setHistory(
-          produce((history) => {
-            const lastBlock = history.pop();
-            history.push(...parseToHistory(savedState, mutation, lastBlock));
-          }),
+          produce((history) => updateHistory(savedState, mutation, history)),
         );
         const { promise, resolve } = Promise.withResolvers<void>();
         setData({
           previousState: savedState ?? state,
           state,
-          history,
           onAnimationFinish: resolve,
           ...parsed,
         } satisfies ChessboardData);
@@ -351,6 +347,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         who={who}
         data={data()}
         actionState={actionState()}
+        history={history.blocks}
         viewType={viewType()}
         selectCardCandidates={selectCardCandidates()}
         doingRpc={doingRpc()}

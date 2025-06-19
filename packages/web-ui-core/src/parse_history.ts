@@ -39,6 +39,7 @@ import {
   DiceType,
   type ResetDiceEM,
   PbResetDiceReason,
+  CreateCardEM,
 } from "@gi-tcg/typings";
 import type {
   AbsorbDiceHistoryChild,
@@ -53,6 +54,11 @@ import type {
   VariableChangeHistoryChild,
 } from "./history";
 import { flip } from "@gi-tcg/utils";
+
+export interface HistoryData {
+  blocks: HistoryBlock[];
+  currentIndent: number;
+}
 
 interface VariableRecordEntry {
   oldValue: number;
@@ -72,7 +78,7 @@ class VariableRecord {
   }
 
   take() {
-    const result = this.records.shift();
+    const result = this.records.at(-1);
     return result ?? null;
   }
 }
@@ -123,6 +129,9 @@ class StateRecorder {
         for (const entity of player[prop]) {
           this.initializeEntity(area, entity, prop);
         }
+      }
+      for (const card of [...player.pileCard, ...player.handCard]) {
+        this.area.set(card.id, { who, masterDefinitionId: null });
       }
       this.dice[who] = [...player.dice] as DiceType[];
     }
@@ -179,6 +188,7 @@ class StateRecorder {
       (record = this.energyVarRecords.get(varMut.entityId))
     ) {
       record.set(variableValue);
+      console.log("ENERGY", variableValue, record.take());
       const { oldValue = 0, newValue = 0 } = record.take() ?? {};
       return {
         type: "energy",
@@ -341,19 +351,27 @@ class StateRecorder {
     };
     this.initializeCharacter(who as 0 | 1, character);
   }
+  onNewCard(mut: CreateCardEM) {
+    this.area.set(mut.card!.id, {
+      who: mut.who as 0 | 1,
+      masterDefinitionId: null,
+    });
+  }
   onSwitchActive(mut: SwitchActiveEM) {
     this.activeCharacterDefinitionIds[mut.who as 0 | 1] =
       mut.characterDefinitionId;
   }
 }
 
-export function parseToHistory(
+export function updateHistory(
   previousState: PbGameState | undefined,
   mutations: PbExposedMutation[],
-  lastMainBlock?: HistoryBlock | undefined,
-): HistoryBlock[] {
+  history: HistoryData,
+) {
   try {
-    const result: HistoryBlock[] = [];
+    const lastMainBlock = history.blocks.at(-1);
+    const lastHintBlock = history.blocks.findLast((b) => !("children" in b));
+
     let roundNumber = previousState?.roundNumber ?? 0;
     let phase = previousState?.phase ?? PbPhaseType.ACTION;
 
@@ -389,7 +407,7 @@ export function parseToHistory(
           if (!newPhase) {
             continue;
           }
-          result.push({
+          history.blocks.push({
             type: "changePhase",
             roundNumber,
             newPhase,
@@ -460,6 +478,7 @@ export function parseToHistory(
           break;
         }
         case "createCard": {
+          stateRecorder.onNewCard(m as CreateCardEM);
           children.push({
             type: "createCard",
             who: m.who as 0 | 1,
@@ -496,6 +515,7 @@ export function parseToHistory(
               who: m.who as 0 | 1,
               cardDefinitionId: definitionId,
               children: [],
+              indent: history.currentIndent,
             };
             if (m.reason === PbRemoveCardReason.PLAY_NO_EFFECT) {
               children.push({
@@ -510,6 +530,7 @@ export function parseToHistory(
               who: m.who as 0 | 1,
               cardDefinitionId: definitionId,
               children: [],
+              indent: history.currentIndent,
             };
           } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
             children.push({
@@ -535,7 +556,7 @@ export function parseToHistory(
         }
         case "setPlayerFlag": {
           if (m.flagName === PbPlayerFlag.DECLARED_END && m.flagValue) {
-            result.push({
+            history.blocks.push({
               type: "action",
               who: m.who as 0 | 1,
               actionType: "declareEnd",
@@ -554,12 +575,13 @@ export function parseToHistory(
               isOverloaded: m.viaSkillDefinitionId === Reaction.Overloaded,
             });
           } else {
-            result.push({
+            history.blocks.push({
               type: "switchActive",
               who: m.who as 0 | 1,
               characterDefinitionId: m.characterDefinitionId,
               children: [],
               how: "switch",
+              indent: history.currentIndent,
             });
           }
           break;
@@ -635,6 +657,7 @@ export function parseToHistory(
                 m.callerDefinitionId,
               callerOrSkillDefinitionId: m.callerDefinitionId,
               children: [],
+              indent: history.currentIndent,
             };
           } else if (m.skillType === PbSkillType.CHARACTER_PASSIVE) {
             mainBlock = {
@@ -643,6 +666,7 @@ export function parseToHistory(
               masterOrCallerDefinitionId: m.callerDefinitionId,
               callerOrSkillDefinitionId: Math.floor(m.skillDefinitionId),
               children: [],
+              indent: history.currentIndent,
             };
           } else {
             const SKILL_TYPE_MAP = {
@@ -658,6 +682,7 @@ export function parseToHistory(
               skillDefinitionId: m.skillDefinitionId,
               skillType: SKILL_TYPE_MAP[m.skillType],
               children: [],
+              indent: history.currentIndent,
             };
           }
           break;
@@ -668,11 +693,15 @@ export function parseToHistory(
         }
         case "playerStatusChange": {
           if (m.status === PbPlayerStatus.ACTING) {
-            result.push({
-              type: "action",
-              who: m.who as 0 | 1,
-              actionType: "action",
-            });
+            const skip =
+              lastHintBlock?.type === "action" && lastHintBlock.who === m.who;
+            if (!skip) {
+              history.blocks.push({
+                type: "action",
+                who: m.who as 0 | 1,
+                actionType: "action",
+              });
+            }
           }
           break;
         }
@@ -686,6 +715,7 @@ export function parseToHistory(
                 ? "init"
                 : "choose",
             children: [],
+            indent: history.currentIndent,
           };
           break;
         }
@@ -727,6 +757,7 @@ export function parseToHistory(
             who: m.who as 0 | 1,
             cardDefinitionId: m.selectedDefinitionId,
             children: [],
+            indent: history.currentIndent,
           };
           break;
         }
@@ -742,39 +773,38 @@ export function parseToHistory(
       }
     }
     if (mainBlock) {
-      mainBlock.children.push(...children);
-      result.push(mainBlock);
-      if (lastMainBlock) {
-        result.unshift(lastMainBlock);
+      // trailing consume energy
+      if (
+        mainBlock.type === "useSkill" &&
+        lastMainBlock?.type === "pocket" &&
+        lastMainBlock.children.length === 1 &&
+        lastMainBlock.children[0].type === "energy"
+      ) {
+        children.unshift(...lastMainBlock.children);
+        history.blocks.pop();
       }
+      mainBlock.children.push(...children);
+
+      history.blocks.push(mainBlock);
     } else if (maybeEndPhaseDrawing) {
       // TODO use a endPhaseDraw block?
-      result.unshift({
+      history.blocks.push({
         type: "pocket",
         children,
+        indent: history.currentIndent,
       });
-      if (lastMainBlock) {
-        result.unshift(lastMainBlock);
-      }
     } else if (lastMainBlock && "children" in lastMainBlock) {
-      result.unshift({
-        ...lastMainBlock,
-        children: [...lastMainBlock.children, ...children],
-      });
+      lastMainBlock.children.push(...children);
     } else {
       if (children.length > 0) {
-        result.unshift({
+        history.blocks.push({
           type: "pocket",
           children,
+          indent: history.currentIndent,
         });
       }
-      if (lastMainBlock) {
-        result.unshift(lastMainBlock);
-      }
     }
-    return result;
   } catch (e) {
     console.error("Error while parsing history:", e);
-    return lastMainBlock ? [lastMainBlock] : [];
   }
 }

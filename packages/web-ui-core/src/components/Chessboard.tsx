@@ -231,7 +231,6 @@ export interface ChessboardData extends ParsedMutation {
   /** 保存上一个状态以计算动画效果 */
   previousState: PbGameState;
   state: PbGameState;
-  history: HistoryBlock[];
   onAnimationFinish?: () => void;
 }
 
@@ -278,6 +277,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
    * 从 rpc 解析后的状态
    */
   actionState: ActionState | null;
+  history: HistoryBlock[];
   viewType: ChessboardViewType;
   selectCardCandidates: number[];
   doingRpc: boolean;
@@ -1593,6 +1593,8 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
+  createEffect(on(() => props.history, (v) => console.log(JSON.parse(JSON.stringify(v)))));
+
   onMount(() => {
     onResize();
     onContainerResize();
@@ -1820,7 +1822,7 @@ export function Chessboard(props: ChessboardProps) {
             <CardDataViewer />
           </div>
           <Show when={showMutationPanel()}>
-            <HistoryPanel who={localProps.who} history={props.data.history} />
+            <HistoryPanel who={localProps.who} history={props.history} />
           </Show>
           {/* 左上角部件 */}
           <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
