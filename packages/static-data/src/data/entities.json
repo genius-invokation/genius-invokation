@@ -1453,6 +1453,7 @@
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Nightsoul_Ice",
     "buffIconHash": "2917529476117449760"
   },
   {
@@ -1468,6 +1469,7 @@
     "description": "为我方出战角色提供1点护盾。（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Citlali_Shiled",
     "buffIconHash": "5061023585533575178"
   },
   {
@@ -1481,6 +1483,7 @@
     "description": "我方角色受到伤害后：减少1点茜特菈莉的「夜魂值」，生成1层白曜护盾。\n当茜特菈莉获得「夜魂值」并使自身「夜魂值」等于2时，优先对敌方出战角色造成1点冰元素伤害。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Citlali_E1",
     "buffIconHash": "8893031830162963973"
   },
   {
@@ -2293,7 +2296,8 @@
         "targetList": [],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Mualani_03"
+        "icon": "Skill_S_Mualani_03",
+        "iconHash": "9375543048506856265"
       },
       {
         "id": 1121423,
@@ -3085,6 +3089,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Nightsoul_Fire",
     "buffIconHash": "15483081041525708262"
   },
   {
@@ -3098,6 +3103,7 @@
     "description": "我方全体角色的技能不消耗「夜魂值」。\n我方全体角色「普通攻击」造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Mavuika_S",
     "buffIconHash": "16174251178153160798"
   },
   {
@@ -3110,6 +3116,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方其他角色使用「普通攻击」或$[K58]后：</color>消耗<color=#FFFFFFFF>$[A1315]</color>1点<color=#FFFFFFFF>「夜魂值」</color>，造成1点$[K103]。（<color=#FFFFFFFF>$[A1315]</color>退出<color=#FFFFFFFF>$[C113151]</color>后销毁）",
     "description": "我方其他角色使用「普通攻击」或特技后：消耗玛薇卡1点「夜魂值」，造成1点火元素伤害。（玛薇卡退出夜魂加持后销毁）",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Mavuika_E",
     "buffIconHash": "13486851466270727868"
   },
   {
@@ -3139,7 +3146,9 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 4
-        }
+        },
+        "icon": "Skill_S_Mavuika_04",
+        "iconHash": "9236943251512022441"
       },
       {
         "id": 1131542,
@@ -3159,6 +3168,7 @@
     "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika1",
     "buffIconHash": "13954608050821572596"
   },
   {
@@ -3189,7 +3199,9 @@
           }
         ],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Mavuika_03",
+        "iconHash": "2421043733456980541"
       },
       {
         "id": 1131552,
@@ -3209,6 +3221,7 @@
     "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika3",
     "buffIconHash": "9584603430320343196"
   },
   {
@@ -3244,7 +3257,9 @@
           }
         ],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_S_Mavuika_02",
+        "iconHash": "4561666289799168597"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -3253,6 +3268,7 @@
     "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika2",
     "buffIconHash": "4149205189526487547"
   },
   {
@@ -4607,7 +4623,8 @@
         "targetList": [],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Liuyun_04"
+        "icon": "Skill_S_Liuyun_04",
+        "iconHash": "1667311271245681748"
       }
     ],
     "rawDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -4683,6 +4700,7 @@
     "buffType": "GCG_STATE_BUFF_ANEMO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Nightsoul_Wind",
     "buffIconHash": "3028331885048275547"
   },
   {
@@ -4712,7 +4730,9 @@
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
           "D__KEY__DAMAGE": 1
-        }
+        },
+        "icon": "Skill_S_Chasca_02",
+        "iconHash": "3881373672398019245"
       },
       {
         "id": 1151122,
@@ -4731,6 +4751,7 @@
     "rawPlayingDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。",
     "playingDescription": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_Chasca",
     "buffIconHash": "12693188579484903893"
   },
   {
@@ -5338,7 +5359,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Skill_S_Kachina_04"
+        "icon": "Skill_S_Kachina_04",
+        "iconHash": "17103744697500399081"
       },
       {
         "id": 1161022,
@@ -5480,7 +5502,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Skill_S_Xilonen_04"
+        "icon": "Skill_S_Xilonen_04",
+        "iconHash": "15902699072103096518"
       },
       {
         "id": 1161122,
@@ -7032,7 +7055,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       },
       {
         "id": 1220512,
@@ -7048,7 +7072,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_HYDRO",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       },
       {
         "id": 1220513,
@@ -7061,7 +7086,8 @@
         "targetList": [],
         "hidden": true,
         "keyMap": {},
-        "icon": "MonsterSkill_S_HilistrayWater_02"
+        "icon": "MonsterSkill_S_HilistrayWater_02",
+        "iconHash": "1722816486809287155"
       }
     ],
     "rawDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -7313,7 +7339,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "MonsterSkill_S_EremiteOracle_03"
+        "icon": "MonsterSkill_S_EremiteOracle_03",
+        "iconHash": "13102655697580940627"
       },
       {
         "id": 1230312,
@@ -8460,7 +8487,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "MonsterSkill_S_EremiteGrass_02"
+        "icon": "MonsterSkill_S_EremiteGrass_02",
+        "iconHash": "13808436191547094956"
       },
       {
         "id": 2270312,
@@ -11454,7 +11482,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Skill_Diving_Slash"
+        "icon": "Skill_Diving_Slash",
+        "iconHash": "8938238543188921156"
       }
     ],
     "rawDescription": "$[K58]：$[S3130011]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11494,7 +11523,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 1
         },
-        "icon": "Btn_Natsaurus_Hookwalker_ElementalArt_Free"
+        "icon": "Btn_Natsaurus_Hookwalker_ElementalArt_Free",
+        "iconHash": "1280491973837764819"
       },
       {
         "id": 3130022,
@@ -11551,7 +11581,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01"
+        "icon": "Btn_Natsaurus_Mosasaurus_ElementalArt_01",
+        "iconHash": "14993489490979801198"
       },
       {
         "id": 3130032,
@@ -11608,7 +11639,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l"
+        "icon": "Btn_Natsaurus_Drillhead_ElementalArt_0l",
+        "iconHash": "10695666907312981537"
       }
     ],
     "rawDescription": "$[K58]：$[S3130041]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11654,7 +11686,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt"
+        "icon": "Btn_Natsaurus_Shamansaurus_ElementalArt",
+        "iconHash": "7799724174870740612"
       }
     ],
     "rawDescription": "$[K58]：$[S3130051]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11740,7 +11773,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Flamingo_ElementalArt"
+        "icon": "Btn_Natsaurus_Flamingo_ElementalArt",
+        "iconHash": "4652916209906729909"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>入场时：</color>敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>。\\n<color=#FFFFFFFF>附属角色切换为出战角色，且敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，将此次切换视为「$[K2]」而非「$[K1]」，少花费1个元素骰，并移除对方所有角色的<color=#FFFFFFFF>$[C301302]</color>。\\n$[K58]：$[S3130063]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11780,7 +11814,8 @@
           "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
           "D__KEY__DAMAGE": 2
         },
-        "icon": "Btn_Vehicle_Skiff_CannonFire_Big"
+        "icon": "Btn_Vehicle_Skiff_CannonFire_Big",
+        "iconHash": "6846738817799866864"
       },
       {
         "id": 3130072,
@@ -11849,7 +11884,8 @@
         ],
         "hidden": false,
         "keyMap": {},
-        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash"
+        "icon": "Btn_Natsaurus_Bisonsaurus_SprintDash",
+        "iconHash": "10801014346923560255"
       }
     ],
     "rawDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11905,7 +11941,9 @@
           }
         ],
         "hidden": false,
-        "keyMap": {}
+        "keyMap": {},
+        "icon": "Skill_GCG_SaurusBaby",
+        "iconHash": "1100816836599636677"
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>此卡牌入场时：</color>创建<color=#FFFFFFFF>$[C301306]</color>。（<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>）\\n$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
@@ -11914,6 +11952,7 @@
     "playingDescription": "特技：呀！呀！\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_SaurusBaby",
     "buffIconHash": "14068779508272467101"
   },
   {
@@ -12006,6 +12045,7 @@
     "description": "我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Vehicle_SaurusBaby",
     "buffIconHash": "14068779508272467101"
   },
   {
@@ -13845,6 +13885,7 @@
     "description": "本回合内，所附属角色被击倒时：如可能，消耗等同于此牌「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值。然后此牌「重燃」+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
     "hidden": false,
+    "buffIcon": "UI_Gcg_Buff_Resurrection",
     "buffIconHash": "2350086969044856312"
   },
   {

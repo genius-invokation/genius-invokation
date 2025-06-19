@@ -48,6 +48,7 @@ function App() {
             },
           },
         ],
+        tags: 0,
       },
       [
         {
@@ -67,6 +68,7 @@ function App() {
       descriptionDictionary: {
         "[T]": "2",
       },
+      tags: 0,
     });
     // showState("summon", {
     //   id: -5000001,

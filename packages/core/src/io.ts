@@ -46,6 +46,7 @@ import {
   PbHealKind,
   PbPlayerStatus,
   PbTransferCardReason,
+  CARD_TAG_NO_TUNNING,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -504,6 +505,8 @@ function exposeCard(
     descriptionDictionary,
     definitionId: hide ? 0 : c.definition.id,
     definitionCost,
+    // TODO: using a lookup table instead
+    tags: c.definition.tags.includes("noTuning") ? CARD_TAG_NO_TUNNING : 0,
   };
 }
 
