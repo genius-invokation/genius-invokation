@@ -216,7 +216,7 @@ const renderHistoryChild = (
 
   const renderReaction = (reaction: Reaction, apply: DamageType) => {
     const { element, name } = reactionTextMap[reaction];
-    const base = element.find((e) => e !== apply)! as DamageType;
+    const base = element.find((e) => e !== apply) as DamageType;
     return (
       <>
         <span>（</span>
@@ -1707,34 +1707,42 @@ function HistoryBlockBox(props: {
       class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5 relative`}
       onClick={() => props.onClick()}
     >
-      <div class="w-full h-6 bg-[var(--title-color)] flex items-center">
-        <div
-          class="text-#e5aa5f data-[opp]:text-#7eb5ff text-2.8 font-bold ml-1.5"
-          bool:data-opp={props.data.opp}
-        >
-          {props.data.title}
+      <div class="w-full h-6 bg-[var(--title-color)] flex flex-row items-center">
+        <div class="flex flex-row h-6 items-center pl-1.5 pr-0.5 bg-[var(--bd-color)]">
+          <div
+            class="text-[var(--text-color)] text-2.8 font-bold whitespace-nowrap"
+            bool:data-opp={props.data.opp}
+          >
+            {props.data.title}
+          </div>
+          <For
+            each={Array.from({ length: props.data.indent }, (_, i) => i)}
+          >
+            {() => (
+              <div class="relative w-4 h-6 overflow-visible">
+                <div class="absolute w-4 h-6 overflow-hidden top-0 left-0">
+                  <div
+                    class="absolute left--3.15 top-0 w-6 h-6 b-[var(--title-color)] b-2 rotate-45"
+                    bool:data-opp={props.data.opp}
+                  />
+                </div>
+              </div>
+            )}
+          </For>          
         </div>
-      </div>
-      <div class="absolute top-7 left-0 w-4 flex flex-col gap-0.8">
-        <For
-          each={Array.from({ length: props.data.indent }, (_, i) => i)}
-        >
-          {() => (
+        <div class="relative w-4 h-6">
+          <div class="absolute w-3 h-6 overflow-hidden">
             <div
-              class="w-3.5 h-2 bg-[var(--bd-color)] history-indent-hint opacity-25"
+              class="absolute top-0 left--4.15 w-6 h-6 bg-[var(--bd-color)] rotate-45"
               bool:data-opp={props.data.opp}
             />
-          )}
-        </For>
-        <div
-          class="w-3.5 h-2 bg-[var(--bd-color)] history-indent-hint opacity-100 scale-105%"
-          bool:data-opp={props.data.opp}
-        />
+          </div>              
+        </div>        
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
           <div class="h-3" />
-          <div class="w-10.5 h-18 relative items-center justify-center">
+          <div class="w-10.5 h-18 relative flex items-center justify-center">
             <Switch>
               <Match when={props.data.imageSize === "normal"}>
                 <Show
@@ -1747,7 +1755,7 @@ function HistoryBlockBox(props: {
                 </Show>
               </Match>
               <Match when={props.data.imageSize === "summon"}>
-                <div class="w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
+                <div class="relative w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
                   <Show
                     when={!!props.data.imageId}
                     fallback={
@@ -1768,7 +1776,7 @@ function HistoryBlockBox(props: {
                   <SwitchActiveIcon class="h-8 w-8" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
-                  <TriggerIcon class="h-10 w-10" />
+                  <TriggerIcon class="h-9 w-9" />
                 </Match>
                 <Match when={props.data.type === "elementalTuning"}>
                   <TuningIcon class="h-8 w-8" />
@@ -1942,7 +1950,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
           onScroll={handleScroll}
         >
           <For each={props.history}>
-            {(block, index) => (
+            {(block) => (
               <Switch>
                 <Match
                   when={block.type === "changePhase" || block.type === "action"}
