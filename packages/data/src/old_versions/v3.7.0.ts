@@ -133,7 +133,7 @@ const Grimheart = status(111061)
  */
 const LightfallSword = summon(111062)
   .until("v3.7.0")
-  .hintText("3+")
+  .hint(DamageType.Physical, "3+")
   .usage(0, { autoDispose: false })
   .on("useSkill", (c, e) => 
     e.skill.definition.id === FavoniusBladeworkEdel || 

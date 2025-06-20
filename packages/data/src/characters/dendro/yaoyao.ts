@@ -24,8 +24,7 @@ import { character, skill, summon, combatStatus, card, DamageType, SkillHandle }
  */
 export const YueguiThrowingMode01 = summon(117042)
   .conflictWith(117041)
-  .hintIcon(DamageType.Dendro)
-  .hintText("1")
+  .hint(DamageType.Dendro, "1")
   .on("endPhase")
   .usage(2)
   .do((c) => {

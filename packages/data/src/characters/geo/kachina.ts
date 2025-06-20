@@ -26,8 +26,7 @@ export const TurboTwirlyTriggered = customEvent("turboTwirlyTriggered");
  */
 export const TurboTwirlyLetItRip = summon(116103)
   .since("v5.5.0")
-  .hintIcon(DamageType.Geo)
-  .hintText("1")
+  .hint(DamageType.Geo, "1")
   .on("endPhase")
   .usage(1)
   .do((c) => {

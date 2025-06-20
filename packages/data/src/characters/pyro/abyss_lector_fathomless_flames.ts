@@ -23,8 +23,7 @@ import { character, skill, summon, status, card, DamageType } from "@gi-tcg/core
  * 可用次数：2
  */
 export const DarkfireFurnace = summon(123021)
-  .hintIcon(DamageType.Pyro)
-  .hintText("1")
+  .hint(DamageType.Pyro, "1")
   .on("endPhase")
   .usage(2)
   .damage(DamageType.Piercing, 1, "opp standby")
