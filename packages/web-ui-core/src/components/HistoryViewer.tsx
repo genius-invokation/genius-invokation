@@ -1764,7 +1764,7 @@ function HistoryBlockBox(props: {
           bool:data-opp={props.data.opp}
         >
           {props.data.title}
-        </div>         
+        </div>
       </div>
       <div class="flex flex-row items-center justify-center h-24 gap-1.5">
         <div class="h-24 flex flex-col">
@@ -1932,6 +1932,7 @@ function HistoryHintBox(props: { data: HistoryHintData }) {
 export interface HistoryPanelProps {
   who: 0 | 1;
   history: HistoryBlock[];
+  onBackdropClick: () => void;
 }
 
 export interface HistoryToggleButtonProps {
@@ -1977,8 +1978,17 @@ export function HistoryPanel(props: HistoryPanelProps) {
 
   return (
     <WhoContext.Provider value={who}>
-      <div class="fixed inset-0 z-0" onClick={() => setSelectedBlock(null)} />
-      <div class="fixed right-0 top-0 bottom-0 w-70 shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
+      <div
+        class="absolute inset-0 z-0 bg-black/20"
+        onClick={() => {
+          if (selectedBlock()) {
+            setSelectedBlock(null);
+          } else {
+            props.onBackdropClick();
+          }
+        }}
+      />
+      <div class="absolute right-0 top-0 bottom-0 w-70 shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
         <div class="w-full h-12" />
         <div
           class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar history-scrollbar-simply"
@@ -2036,7 +2046,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
         <Show when={selectedBlock()}>
           {(block) => (
             <div
-              class="fixed right-70 inset-0 z--0.1"
+              class="absolute right-70 inset-0 z--0.1"
               onClick={() => setSelectedBlock(null)}
             >
               <HistoryBlockDetailPanel
@@ -2059,7 +2069,7 @@ function HistoryBlockDetailPanel(props: {
   const renderBlock = createMemo(() => renderHistoryBlock(props.block));
   return (
     <div
-      class={`fixed right-71 w-90 p-3 max-h-120 bg-#2f333b/98 b-#404a56 b-1 rounded-1 shadow-xl overflow-hidden
+      class={`absolute right-1 w-90 p-3 max-h-120 bg-#2f333b/98 b-#404a56 b-1 rounded-1 shadow-xl overflow-hidden
       top-50% -translate-y-50%`}
       onClick={(e) => e.stopPropagation()}
     >
