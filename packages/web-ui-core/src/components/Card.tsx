@@ -128,7 +128,7 @@ export function CardFace(props: CardFaceProps) {
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}
       />
-      <CardFrameNormal class="absolute inset-0 h-full w-full"/>
+      <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
     </div>
   );
 }
@@ -194,7 +194,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d touch-none transform-origin-tl card data-[dragging-end]:pointer-events-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transform-origin-tl card data-[dragging-end]:pointer-events-none"
       style={style()}
       bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}

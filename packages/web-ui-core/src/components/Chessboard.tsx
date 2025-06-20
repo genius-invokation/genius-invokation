@@ -952,6 +952,7 @@ export function Chessboard(props: ChessboardProps) {
     "gameEndExtra",
     "data",
     "actionState",
+    "history",
     "viewType",
     "selectCardCandidates",
     "doingRpc",
@@ -1344,7 +1345,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [switchedCards, setSwitchedCards] = createSignal<number[]>([]);
-  const [showMutationPanel, setShowMutationPanel] = createSignal(false);
+  const [showHistory, setShowHistory] = createSignal(false);
   const onCardClick = (
     e: MouseEvent,
     currentTarget: HTMLElement,
@@ -1583,8 +1584,6 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
-  createEffect(on(() => props.history, (v) => console.log(JSON.parse(JSON.stringify(v)))));
-
   onMount(() => {
     onResize();
     onContainerResize();
@@ -1598,7 +1597,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset ${localProps.class ?? ""}`}
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none ${localProps.class ?? ""}`}
       {...elProps}
       ref={containerEl}
     >
@@ -1807,13 +1806,17 @@ export function Chessboard(props: ChessboardProps) {
           />
         </Show>
         {/* 上层 UI 组件 */}
+        <Show when={showHistory()}>
+          <HistoryPanel
+            who={localProps.who}
+            history={localProps.history}
+            onBackdropClick={() => setShowHistory(false)}
+          />
+        </Show>
         <AspectRatioContainer>
-          <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
+          <div class="absolute inset-3 pointer-events-none touch-pan scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
-          <Show when={showMutationPanel()}>
-            <HistoryPanel who={localProps.who} history={props.history} />
-          </Show>
           {/* 左上角部件 */}
           <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
             <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
@@ -1829,9 +1832,7 @@ export function Chessboard(props: ChessboardProps) {
                 &#10005;
               </button>
             </Show>
-            <HistoryToggleButton
-              onClick={() => setShowMutationPanel((v) => !v)}
-            />
+            <HistoryToggleButton onClick={() => setShowHistory((v) => !v)} />
             <Show when={hasSpecialView()}>
               <SpecialViewToggleButton
                 onClick={() => setSpecialViewVisible((v) => !v)}
