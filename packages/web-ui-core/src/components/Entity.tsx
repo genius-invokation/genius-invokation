@@ -50,7 +50,7 @@ export function Entity(props: EntityProps) {
         class="absolute inset-0 h-full w-full p-2px rounded-lg"
         imageId={data().definitionId}
       />
-      <CardFrameSummon class="absolute inset-0 h-full w-full" />
+      <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
       <Show when={data().hasUsagePerRound}>
         <div class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite" />
       </Show>

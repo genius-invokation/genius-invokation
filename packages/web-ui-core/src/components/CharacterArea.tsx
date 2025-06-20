@@ -296,7 +296,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
           />
-          <CardFrameNormal class="absolute inset-0 h-full w-full"/>
+          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
@@ -407,7 +407,7 @@ function CharacterTagMasks(props: CharacterTagMasksProps) {
   return (
     <WithDelicateUi assetId={Object.values(assets)} fallback={<></>}>
       {(...imgs) => (
-        <div class="absolute inset-0 children-absolute children-inset-1/2 children--translate-x-1/2 children--translate-y-1/2 children-h-92% children-w-full children-scale-125%">
+        <div class="absolute inset-0 pointer-events-none children-absolute children-inset-1/2 children--translate-x-1/2 children--translate-y-1/2 children-h-92% children-w-full children-scale-125%">
           <Index each={Object.keys(assets)}>
             {(flag, i) => (
               <Show when={props.tags & Number(flag())}>{imgs[i]}</Show>

@@ -1629,7 +1629,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                         imageId={imageId}
                         class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                       />
-                      <CardFrameSummon class="absolute inset-0 h-full w-full" />
+                      <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
                     </Show>
                   </div>
                 </div>
@@ -1793,7 +1793,7 @@ function HistoryBlockBox(props: {
                       imageId={props.data.imageId as number}
                       class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                     />
-                    <CardFrameSummon class="absolute inset-0 h-full w-full" />
+                    <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
                   </Show>
                 </div>
               </Match>
@@ -1988,7 +1988,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
           }
         }}
       />
-      <div class="absolute right-0 top-0 bottom-0 w-70 shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
+      <div class="absolute right-0 top-0 bottom-0 w-70 touch-pan shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
         <div class="w-full h-12" />
         <div
           class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar history-scrollbar-simply"
