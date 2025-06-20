@@ -517,7 +517,7 @@ export class CardBuilder<
       );
     }
     if (this._satiatedTarget !== null) {
-      const target = this._satiatedTarget;
+      const target = `(${this._satiatedTarget}) and not with tags (neverSatiate)`;
       this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
     }
     const skills: SkillDefinition[] = [];

@@ -36,7 +36,7 @@ export const WEAPON_TAGS = [
   "otherWeapon",
 ] as const;
 
-export type WeaponTag = typeof WEAPON_TAGS[number];
+export type WeaponTag = (typeof WEAPON_TAGS)[number];
 
 export const NATION_TAGS = [
   "mondstadt",
@@ -52,14 +52,21 @@ export const NATION_TAGS = [
   "sacread",
 ] as const;
 
-export type NationTag = typeof NATION_TAGS[number];
+export type NationTag = (typeof NATION_TAGS)[number];
 
 // 虽然荒的英文是 Ousia，但是在代码里使用 pneuma 表示荒
 export type ArkheTag =
   | "pneuma" // 荒
   | "ousia"; // 芒
 
-export type CharacterTag = ElementTag | WeaponTag | NationTag | ArkheTag;
+export type InternalCharacterTag = "neverSatiate";
+
+export type CharacterTag =
+  | ElementTag
+  | WeaponTag
+  | NationTag
+  | ArkheTag
+  | InternalCharacterTag;
 
 export interface CharacterDefinition extends WithVersionInfo {
   readonly __definition: "characters";
