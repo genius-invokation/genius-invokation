@@ -47,6 +47,7 @@ import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
 import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
+import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -291,27 +292,11 @@ export function CharacterArea(props: CharacterAreaProps) {
           }
           bool:data-defeated={defeated()}
         >
-          <WithDelicateUi
-            assetId="UI_TeyvatCard_CardFrame_Common"
-            fallback={
-              <Image
-                imageId={data().definitionId}
-                class="h-full rounded-xl b-white b-3"
-              />
-            }
-          >
-            {(frame) => (
-              <>
-                <Image
-                  imageId={data().definitionId}
-                  class="absolute inset-0 h-full w-full p-1px"
-                />
-                <div class="absolute inset-0 h-full w-full children-h-full children-w-full">
-                  {frame}
-                </div>
-              </>
-            )}
-          </WithDelicateUi>
+          <Image
+            imageId={data().definitionId}
+            class="absolute inset-0 h-full w-full p-1px"
+          />
+          <CardFrameNormal class="absolute inset-0 h-full w-full"/>
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"

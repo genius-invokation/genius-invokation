@@ -54,6 +54,7 @@ import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid"
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?component-solid";
 import TriggerIcon from "../svg/TriggerIcon.svg?component-solid";
+import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
@@ -1612,17 +1613,18 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             <For each={props.data.cardFace.toReversed()}>
               {(imageId) => (
                 <div class="relative w-1 h-12.375 overflow-visible">
-                  <div class="absolute w-10.5 h-12.375 right-0 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
+                  <div class="absolute w-10.5 h-12.375 right-0">
                     <Show
                       when={imageId !== 0}
                       fallback={
-                        <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
+                        <CardBack class="absolute inset-0 w-full h-full" />
                       }
                     >
                       <Image
                         imageId={imageId}
-                        class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                        class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                       />
+                      <CardFrameSummon class="absolute inset-0 h-full w-full" />
                     </Show>
                   </div>
                 </div>
@@ -1775,17 +1777,18 @@ function HistoryBlockBox(props: {
                 </Show>
               </Match>
               <Match when={props.data.imageSize === "summon"}>
-                <div class="relative w-10.5 h-12.375 rounded-1 b-#ded4c4 b-1.5 overflow-hidden">
+                <div class="relative w-10.5 h-12.375">
                   <Show
                     when={!!props.data.imageId}
                     fallback={
-                      <CardBack class="absolute w-10.5 h-18 top-50% -translate-y-50%" />
+                      <CardBack class="absolute inset-0 w-full h-full" />
                     }
                   >
                     <Image
                       imageId={props.data.imageId as number}
-                      class="absolute w-10.5 h-18 top-50% -translate-y-50%"
+                      class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                     />
+                    <CardFrameSummon class="absolute inset-0 h-full w-full" />
                   </Show>
                 </div>
               </Match>
