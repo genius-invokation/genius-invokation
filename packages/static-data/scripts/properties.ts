@@ -77,6 +77,7 @@ export const COST_LIST = match(
 export const STATE_BUFF_TYPE = match(xcard, ID, 111031, "GCG_STATE_BUFF_CRYO");
 export const HINT_TYPE = match(xcard, ID, 111031, "GCG_HINT_CRYO");
 export const TOKEN_TO_SHOW = match(xcard, ID, 111031, "GCG_TOKEN_LIFE");
+export const ICON_TO_SHOW = match(xcard, ID, 111031, "GCG_TOKEN_ICON_CLOCK");
 export const BUFF_ICON_HASH = match(xcard, ID, 111031, 3032486446292491317n);
 export const IS_HIDDEN = match(xcard, ID, 112044, true); // 断流
 

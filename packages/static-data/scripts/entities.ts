@@ -29,6 +29,7 @@ import {
   STATE_BUFF_TYPE,
   TAG_LIST,
   TOKEN_TO_SHOW,
+  ICON_TO_SHOW,
 } from "./properties";
 import { collateSkill, type SkillRawData } from "./skills";
 import {
@@ -58,6 +59,7 @@ export interface EntityRawData {
   buffType?: string;
   hintType?: string;
   shownToken?: string;
+  shownIcon?: string;
 
   /** summons only */
   cardFace?: string;
@@ -154,6 +156,8 @@ export async function collateEntities(langCode: string) {
       obj[HINT_TYPE] === "GCG_HINT_INVALID" ? void 0 : obj[HINT_TYPE];
     const shownToken =
       obj[TOKEN_TO_SHOW] === "GCG_TOKEN_NONE" ? void 0 : obj[TOKEN_TO_SHOW];
+    const shownIcon =
+      obj[ICON_TO_SHOW] === "GCG_TOKEN_ICON_NONE" ? void 0 : obj[ICON_TO_SHOW];
     const buffIcon = getBuffIconFileName(obj[BUFF_ICON_HASH]);
     if (obj[BUFF_ICON_HASH] && !buffIcon) {
       console.warn(
@@ -178,6 +182,7 @@ export async function collateEntities(langCode: string) {
       buffType,
       hintType,
       shownToken,
+      shownIcon,
       hidden,
       buffIcon,
       buffIconHash,
