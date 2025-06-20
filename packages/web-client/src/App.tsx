@@ -31,6 +31,8 @@ import { Decks } from "./pages/Decks";
 import { EditDeck } from "./pages/EditDeck";
 import { Room } from "./pages/Room";
 import { NotFound } from "./pages/NotFound";
+import { Disclaimer } from "./pages/Disclaimer";
+import { Privacy } from "./pages/Privacy";
 
 export interface VersionContextValue {
   versionInfo: Resource<any>;
@@ -73,6 +75,8 @@ function App() {
           <Route path="/decks/:id" component={EditDeck} />
           <Route path="/decks" component={Decks} />
           <Route path="/rooms/:code" component={Room} />
+          <Route path="/disclaimer" component={Disclaimer} />
+          <Route path="/privacy" component={Privacy} />
           <Route path="*" component={NotFound} />
         </Router>
       </MobileContext.Provider>
