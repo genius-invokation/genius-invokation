@@ -149,6 +149,11 @@ const getDamageTypeText = (type: DamageType) => {
   }
 };
 
+const getApplyTypeText = (type: DamageType) => {
+  const { assetsManager } = useUiContext();
+  return assetsManager.getNameSync(-300 - type);
+};
+
 interface ReactionRenderingData {
   element: DamageType[];
   name: string;
@@ -493,7 +498,7 @@ const renderHistoryChild = (
             <span
               style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}
             >
-              {getDamageTypeText(child.elementType)}
+              {getApplyTypeText(child.elementType)}
             </span>
             <Show when={child.reaction}>
               {(reaction) => renderReaction(reaction(), child.elementType)}
@@ -1586,7 +1591,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           <Match when={props.data.aura === "more"}>
             <More />
           </Match>
-          <Match when={!props.data.aura}>
+          <Match when={!!props.data.aura}>
             <For each={props.data.aura as DamageType[]}>
               {(damageType) => <Image imageId={damageType} class="h-3 w-3" />}
             </For>
