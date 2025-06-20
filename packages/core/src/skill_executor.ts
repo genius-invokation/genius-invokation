@@ -122,7 +122,10 @@ export class SkillExecutor {
     );
 
     const prependMutations: ExposedMutation[] = [];
-    if (skillDef.ownerType !== "extension" && (skillDef.initiativeSkillConfig?.skillType !== "playCard")) {
+    if (
+      skillDef.ownerType !== "extension" &&
+      skillDef.initiativeSkillConfig?.skillType !== "playCard"
+    ) {
       let skillType: PbSkillType;
       switch (skillDef.initiativeSkillConfig?.skillType) {
         case "normal":
@@ -208,10 +211,12 @@ export class SkillExecutor {
                 value: 0,
                 direction: "decrease",
               });
+              const energyVarName =
+                ch.definition.specialEnergy?.variableName ?? "energy";
               this.mutate({
                 type: "modifyEntityVar",
                 state: ch,
-                varName: "energy",
+                varName: energyVarName,
                 value: 0,
                 direction: "decrease",
               });

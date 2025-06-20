@@ -81,6 +81,7 @@ message CharacterState {
   AuraType aura = 56;
   // bitor of CharacterTag
   uint32 tags = 57;
+  optional string special_energy_name = 58;
 }
 
 message EntityState {
