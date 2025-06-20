@@ -37,8 +37,7 @@ export const AftersalesServiceRounds = summon(114101)
  */
 export const Jinni01 = summon(114103)
   .conflictWith(114102)
-  .hintIcon(DamageType.Heal)
-  .hintText("2")
+  .hint(DamageType.Heal, "2")
   .on("endPhase")
   .usage(2)
   .do((c) => {

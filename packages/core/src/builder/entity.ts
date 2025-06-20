@@ -45,6 +45,7 @@ import {
 } from "./skill";
 import type {
   CardHandle,
+  CombatStatusHandle,
   ExEntityType,
   ExtensionHandle,
   HandleT,
@@ -560,17 +561,28 @@ export class EntityBuilder<
     this._hintText = text;
     return this;
   }
-  hintIcon(damageType: DamageType) {
+  hintIcon(damageType: DamageType | CombatStatusHandle) {
     return this.variable("hintIcon", damageType, { visible: false });
   }
+  hint(
+    icon: DamageType | CombatStatusHandle,
+    text?: string | EntityDescriptionDictionaryGetter<AssociatedExt>,
+  ) {
+    if (typeof text === "function") {
+      const hintReplacement = "[GCG_TOKEN_HINT_TEXT]";
+      this.hintText(hintReplacement).replaceDescription(hintReplacement, text);
+    } else {
+      this.hintText(text ?? "");
+    }
+    return this.hintIcon(icon);
+  }
 
-  onMasterDefeated(){
-    if (this._type === "status" || this._type === "equipment"){
+  onMasterDefeated() {
+    if (this._type === "status" || this._type === "equipment") {
       return this.on("defeated").beforeDefaultDispose();
     } else {
       throw new GiTcgDataError("Type error when onMasterDefeated");
     }
-
   }
   /**
    * Same as

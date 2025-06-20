@@ -25,8 +25,7 @@ import { character, skill, summon, card, DamageType, SummonHandle } from "@gi-tc
  */
 export const OceanicMimicFrog = summon(122013)
   .tags("barrier")
-  .hintIcon(DamageType.Hydro)
-  .hintText("2")
+  .hint(DamageType.Hydro, "2")
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
@@ -83,8 +82,7 @@ export const OceanicMimicRaptorPreview = summon(122010) // 这是纯水幻形·�
  * 蛙：抵挡1点出战角色受到的伤害，可用1次；耗尽后，在结束阶段造成2点水元素伤害。
  */
 export const OceanicMimicFrogPreview = summon(122014) // 这是纯水幻形·蛙的预览版本
-  .hintIcon(DamageType.Hydro)
-  .hintText("2")
+  .hint(DamageType.Hydro, "2")
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)

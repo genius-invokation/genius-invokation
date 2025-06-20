@@ -23,8 +23,7 @@ import { character, skill, summon, status, card, DamageType, SummonHandle } from
  * 可用次数：2（可叠加，最多叠加到4次）
  */
 export const BakeKurage: SummonHandle = summon(112051)
-  .hintIcon(DamageType.Hydro)
-  .hintText("1")
+  .hint(DamageType.Hydro, "1")
   .on("endPhase")
   .usageCanAppend(2, 4)
   .if((c) => c.$(`my equipment with definition id ${TamakushiCasket}`) && c.$(`my status with definition id ${CeremonialGarment}`))

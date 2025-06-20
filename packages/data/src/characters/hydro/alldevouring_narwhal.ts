@@ -29,9 +29,7 @@ export const DarkShadow = summon(122043)
   .tags("barrier")
   .usage(0)
   .variable("atk", 0, { visible: false })
-  .hintIcon(DamageType.Electro)
-  .hintText("$[GCG_TOKEN_ATK]")
-  .replaceDescription("[GCG_TOKEN_ATK]", (c, e) => e.variables.atk)
+  .hint(DamageType.Electro, (c, e) => e.variables.atk)
   .on("enter")
   .do((c) => {
     const domain = c.$(`my combat status with definition id ${DeepDevourersDomain}`)!;

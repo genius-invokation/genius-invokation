@@ -24,8 +24,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, DiceT
  * 我方宣布结束时：如果此牌的可用次数至少为2，则造成2点草元素伤害。（需消耗可用次数）
  */
 export const BountifulCore = summon(112082)
-  .hintIcon(DamageType.Dendro)
-  .hintText("2")
+  .hint(DamageType.Dendro, "2")
   .on("endPhase")
   .usageCanAppend(1, 3)
   .if((c) => c.$(`my equipment with definition id ${TheStarrySkiesTheirFlowersRain}`))

@@ -48,8 +48,7 @@ export const LightningRod: StatusHandle = status(124022)
  * 可用次数：1
  */
 export const ThunderingShacklesSummon = summon(124023)
-  .hintIcon(DamageType.Electro)
-  .hintText("3")
+  .hint(DamageType.Electro, "3")
   .on("endPhase")
   .usage(1)
   .do((c) => {

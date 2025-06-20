@@ -85,7 +85,7 @@ export class AssetsManager {
   }
 
   private setupCustomData(data: CustomData) {
-    const CHARACTER_TAG_MAP: Record<CharacterTag, string> = {
+    const CHARACTER_TAG_MAP: Partial<Record<CharacterTag, string>> = {
       cryo: "GCG_TAG_ELEMENT_CRYO",
       hydro: "GCG_TAG_ELEMENT_HYDRO",
       pyro: "GCG_TAG_ELEMENT_PYRO",
@@ -215,7 +215,9 @@ export class AssetsManager {
         englishName: "",
         hp: ch.hp,
         maxEnergy: ch.maxEnergy,
-        tags: ch.tags.map((tag) => CHARACTER_TAG_MAP[tag]),
+        tags: ch.tags
+          .map((tag) => CHARACTER_TAG_MAP[tag])
+          .filter((s): s is string => !!s),
         cardFace: "",
         icon: "",
         obtainable: ch.obtainable,

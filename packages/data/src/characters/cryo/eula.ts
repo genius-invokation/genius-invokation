@@ -24,8 +24,7 @@ import { character, skill, summon, status, card, DamageType, CharacterState, Ski
  * （影响此牌「可用次数」的效果会作用于「能量层数」。）
  */
 export const LightfallSword = summon(111062)
-  .hintText("3+")
-  .hintIcon(DamageType.Physical)
+  .hint(DamageType.Physical, "3+")
   .usage(0, { autoDispose: false })
   .on("useSkill", (c, e) =>
     e.skill.definition.id === FavoniusBladeworkEdel ||

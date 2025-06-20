@@ -25,9 +25,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, DiceT
  */
 export const SesshouSakura = summon(114081)
   .variable("atk", 1)
-  .hintIcon(DamageType.Electro)
-  .hintText("$[GCG_TOKEN_ATK]")
-  .replaceDescription("[GCG_TOKEN_ATK]", (c, e) => e.variables.atk)
+  .hint(DamageType.Electro, (c, e) => e.variables.atk)
   .on("endPhase")
   .usageCanAppend(3, 6)
   .do((c) => {
