@@ -16,6 +16,11 @@
 
   overflow: clip;
 
+  .touch-pan:not(#notExists),
+  .touch-pan * {
+    touch-action: pan-x pan-y;
+  }
+
   [data-entering] {
     animation: entity-entering 0.5s both;
   }

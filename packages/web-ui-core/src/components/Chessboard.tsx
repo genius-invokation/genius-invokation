@@ -952,6 +952,7 @@ export function Chessboard(props: ChessboardProps) {
     "gameEndExtra",
     "data",
     "actionState",
+    "history",
     "viewType",
     "selectCardCandidates",
     "doingRpc",
@@ -1583,13 +1584,6 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
-  createEffect(
-    on(
-      () => props.history,
-      (v) => console.log(JSON.parse(JSON.stringify(v))),
-    ),
-  );
-
   onMount(() => {
     onResize();
     onContainerResize();
@@ -1603,7 +1597,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset ${localProps.class ?? ""}`}
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none ${localProps.class ?? ""}`}
       {...elProps}
       ref={containerEl}
     >
@@ -1815,12 +1809,12 @@ export function Chessboard(props: ChessboardProps) {
         <Show when={showHistory()}>
           <HistoryPanel
             who={localProps.who}
-            history={props.history}
+            history={localProps.history}
             onBackdropClick={() => setShowHistory(false)}
           />
         </Show>
         <AspectRatioContainer>
-          <div class="absolute inset-3 pointer-events-none scale-68% translate-x--16% translate-y--16%">
+          <div class="absolute inset-3 pointer-events-none touch-pan scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
           {/* 左上角部件 */}
