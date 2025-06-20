@@ -238,15 +238,15 @@ export const TheNamedMoment = skill(13152)
 export const HourOfBurningSkies = skill(13153)
   .type("burst")
   .costPyro(4)
-  .filter((c) => c.self.getVariable("spirit") >= 3)
+  .filter((c) => c.self.getVariable("fightingSpirit") >= 3)
   .gainNightsoul("@self", 1)
   .do((c) => {
-    const spirit = c.self.getVariable("spirit");
+    const spirit = c.self.getVariable("fightingSpirit");
     c.damage(DamageType.Pyro, spirit);
     if (spirit >= 6){
     c.characterStatus(CrucibleOfDeathAndLife);
     }
-    c.self.setVariable("spirit", 0);
+    c.self.setVariable("fightingSpirit", 0);
   })
   .done();
 
@@ -260,13 +260,13 @@ export const HourOfBurningSkies = skill(13153)
  */
 export const FightingSpirit = skill(13154)
   .type("passive")
-  .variable("spirit", 0)
+  .variable("fightingSpirit", 0)
   .on("consumeNightsoul")
   .listenToPlayer()
-  .addVariableWithMax("spirit", 1, 6)
+  .addVariableWithMax("fightingSpirit", 1, 6)
   .on("useSkill", (c, e) => e.isSkillType("normal"))
   .listenToPlayer()
-  .addVariableWithMax("spirit", 1, 6)
+  .addVariableWithMax("fightingSpirit", 1, 6)
   .on("useSkill", (c, e) => e.isSkillType("elemental") || e.isSkillType("burst"))
   .combatStatus(AllfireArmamentsRingOfSearingRadiance)
   .done();
@@ -282,7 +282,7 @@ export const Mavuika = character(1315)
   .tags("pyro", "claymore", "natlan")
   .health(10)
   .energy(0)
-  .specialEnergy("spirit", 3)
+  .specialEnergy("fightingSpirit", 3)
   .skills(FlamesWeaveLife, TheNamedMoment, HourOfBurningSkies, FightingSpirit, FlamestriderFullThrottlePreparedSkill)
   .associateNightsoul(NightsoulsBlessing)
   .done();
