@@ -523,23 +523,26 @@ function exposeCharacter(
       ...ch.entities,
     ].flatMap((e) => e.definition.tags),
   );
+  let energy = ch.variables.energy;
+  let maxEnergy = ch.variables.maxEnergy;
+  let specialEnergyName: string | undefined = void 0;
+  if (ch.definition.specialEnergy) {
+    specialEnergyName = ch.definition.specialEnergy.variableName;
+    energy = ch.variables[specialEnergyName];
+    maxEnergy = ch.definition.specialEnergy.slotSize;
+  }
   return {
     id: ch.id,
     definitionId: ch.definition.id,
     defeated: !ch.variables.alive,
     entity: ch.entities.map((e) => exposeEntity(state, e)),
     health: ch.variables.health,
-    energy:
-      ch.definition.specialEnergy === null
-        ? ch.variables.energy
-        : ch.variables[ch.definition.specialEnergy.variableName],
+    energy,
     maxHealth: ch.variables.maxHealth,
-    maxEnergy:
-      ch.definition.specialEnergy === null
-        ? ch.variables.maxEnergy
-        : ch.definition.specialEnergy.slotSize,
+    maxEnergy,
     aura: ch.variables.aura,
     tags,
+    specialEnergyName,
   };
 }
 
