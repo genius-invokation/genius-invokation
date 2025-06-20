@@ -64,7 +64,7 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={props.selecting}>
         <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-          <SelectingIcon class="w-24 h-24"/>
+          <SelectingIcon class="w-24 h-24" />
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
@@ -95,7 +95,12 @@ export function Entity(props: EntityProps) {
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
-          <Image imageId={data().hintIcon!} zero="physic" class="h-4 w-4" />
+          <Image
+            imageId={data().hintIcon!}
+            zero="physic"
+            type="icon"
+            class="h-4 w-4"
+          />
           {data().hintText?.replace(
             /\$\{([^}]+)\}/g,
             (_, g1) => data().descriptionDictionary[g1],
