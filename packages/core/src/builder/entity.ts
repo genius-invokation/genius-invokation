@@ -570,7 +570,7 @@ export class EntityBuilder<
   ) {
     if (typeof text === "function") {
       const hintReplacement = "[GCG_TOKEN_HINT_TEXT]";
-      this.hintText(hintReplacement).replaceDescription(hintReplacement, text);
+      this.hintText(`\${${hintReplacement}}`).replaceDescription(hintReplacement, text);
     } else {
       this.hintText(text ?? "");
     }
