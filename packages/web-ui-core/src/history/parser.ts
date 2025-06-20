@@ -168,7 +168,7 @@ class StateRecorder {
       this.initializeEntity(
         area,
         entity,
-        entity.equipment ? "equipment" : "status",
+        typeof entity.equipment === "number" ? "equipment" : "status",
       );
     }
   }
@@ -255,7 +255,7 @@ class StateRecorder {
             type: "convertDice",
             who: mut.who as 0 | 1,
             diceType: target,
-            count: diceCount,
+            count: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING ? 1 : diceCount,
             isTuning: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING,
           },
         ];
@@ -323,7 +323,7 @@ class StateRecorder {
       | "summon"
       | "support";
     if (where === PbEntityArea.CHARACTER) {
-      if (entity.equipment) {
+      if (typeof entity.equipment === "number") {
         entityType = "equipment";
       } else {
         entityType = "status";
