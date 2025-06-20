@@ -1733,7 +1733,7 @@ function HistoryBlockBox(props: {
   };
   return (
     <div
-      class={`w-full h-30 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5 relative`}
+      class={`w-full h-30.5 flex flex-col rounded-0.6 shrink-0 cursor-pointer ${blockStyle()} bg-[var(--bg-color)] border-[var(--bd-color)] b-1.5 relative`}
       onClick={() => props.onClick()}
     >
       <div class="w-full h-6 bg-[var(--title-color)] flex flex-row items-center">
@@ -1979,7 +1979,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div
-        class="absolute inset-0 z-0 bg-black/20"
+        class="absolute inset-0 z-0 bg-black/30"
         onClick={() => {
           if (selectedBlock()) {
             setSelectedBlock(null);
