@@ -34,7 +34,10 @@ export const DraconicMajesty = status(125024)
 export const UltimateCleansing = skill(25026)
   .type("elemental")
   .prepared()
-  .damage(DamageType.Anemo, 2, "opp prev or active")
+  .if((c) => c.$("opp prev"))
+  .damage(DamageType.Anemo, 2, "opp prev")
+  .else()
+  .damage(DamageType.Anemo, 2)
   .done();
 
 /**
@@ -57,7 +60,10 @@ export const DvalinsSigh01 = status(125023)
 export const PerpetualCleansing = skill(25025)
   .type("elemental")
   .prepared()
-  .damage(DamageType.Anemo, 1, "opp next or opp active")
+  .if((c) => c.$("opp next"))
+  .damage(DamageType.Anemo, 1, "opp next")
+  .else()
+  .damage(DamageType.Anemo, 1)
   .characterStatus(DvalinsSigh01)
   .done();
 
