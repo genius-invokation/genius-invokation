@@ -442,6 +442,8 @@ export class Game {
       default:
         status = PbPlayerStatus.UNSPECIFIED;
     }
+    // @ts-expect-error writing private props    
+    this.players[who]._status = status;    
     this.mutator.notify({
       mutations: [
         {
@@ -451,8 +453,6 @@ export class Game {
         },
       ],
     });
-    // @ts-expect-error writing private props
-    this.players[who]._status = status;
   }
 
   private async rpc<M extends RpcMethod>(
