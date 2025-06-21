@@ -638,6 +638,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
       this.operations.push(op);
     }
     this.applyIfFilter = false;
+    this.applyElseFilter = false;
     return this;
   }
 
