@@ -313,7 +313,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </Match>
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingIcon class="w-24 h-24" />
+              <SelectingIcon class="w-21 h-21" />
             </div>
           </Match>
         </Switch>
