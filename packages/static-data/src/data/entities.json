@@ -134,6 +134,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。（可叠加，最多叠加到2点）",
     "description": "为我方出战角色提供1点护盾。（可叠加，最多叠加到2点）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -151,6 +152,7 @@
     "description": "结束阶段：造成1点火元素伤害。\n可用次数：1（可叠加，最多叠加到2次）",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Ranshaolieyan"
   },
@@ -166,6 +168,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方对敌方出战角色造成$[K103]或$[K104]时，</color>伤害值+2。\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "description": "我方对敌方出战角色造成火元素伤害或雷元素伤害时，伤害值+2。\n可用次数：1",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Reaction_116",
     "buffIconHash": "3150306063293112355"
@@ -182,6 +185,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方对敌方出战角色造成$[K104]或$[K107]时</color>，伤害值+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方对敌方出战角色造成雷元素伤害或草元素伤害时，伤害值+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Reaction_117",
     "buffIconHash": "1435833357154190054"
@@ -224,6 +228,7 @@
     "rawDescription": "每层使得我方造成的$[K154]或$[K157]+1。",
     "description": "每层使得我方造成的雷元素伤害或草元素伤害+1。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Reaction_117",
     "buffIconHash": "1435833357154190054"
@@ -238,6 +243,7 @@
     "rawDescription": "到达4层后，每次我方触发绽放反应，敌方全体受到2点穿透伤害。",
     "description": "到达4层后，每次我方触发绽放反应，敌方全体受到2点穿透伤害。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Reaction_116",
     "buffIconHash": "3150306063293112355"
@@ -253,6 +259,7 @@
     "description": "附属角色使用技能后：每层对附属角色造成1点火元素伤害。（可叠加，没有上限）。\n结束阶段：层数减半。",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Fire",
     "buffIconHash": "6240999780642787685"
@@ -269,6 +276,7 @@
     "rawDescription": "每层抵消1点此角色受到的伤害。（可叠加，没有上限）。",
     "description": "每层抵消1点此角色受到的伤害。（可叠加，没有上限）。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -285,6 +293,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。（可叠加，没有上限）",
     "description": "为我方出战角色提供1点护盾。（可叠加，没有上限）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -313,6 +322,7 @@
     "rawDescription": "角色受到的伤害减半。（向上取整）",
     "description": "角色受到的伤害减半。（向上取整）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -327,6 +337,7 @@
     "rawDescription": "角色受到的伤害减半。（向上取整）",
     "description": "角色受到的伤害减半。（向上取整）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -426,6 +437,7 @@
     "skills": [],
     "rawDescription": "角色受到的伤害减半。（向上取整）",
     "description": "角色受到的伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -439,6 +451,7 @@
     "skills": [],
     "rawDescription": "我方出战角色受到的伤害减半。（向上取整）",
     "description": "我方出战角色受到的伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -483,6 +496,7 @@
     "rawDescription": "<color=#FFFFFFFF>触发绽放反应时：</color>对随机敌方造成自身层数三分之一的$[K5]。\\n<color=#FFFFFFFF>我方造成$[K153]后：</color>对敌方全体造成自身层数的$[K153]，然后消灭自身。\\n<color=#FFFFFFFF>我方造成$[K154]后：</color>对敌方生命值最低2名角色造成自身层数的$[K5]，然后消灭自身。\\n（可叠加，没有上限）",
     "description": "触发绽放反应时：对随机敌方造成自身层数三分之一的穿透伤害。\n我方造成火元素伤害后：对敌方全体造成自身层数的火元素伤害，然后消灭自身。\n我方造成雷元素伤害后：对敌方生命值最低2名角色造成自身层数的穿透伤害，然后消灭自身。\n（可叠加，没有上限）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Reaction_116",
     "buffIconHash": "3150306063293112355"
@@ -511,6 +525,7 @@
     "rawDescription": "每层使得角色下次受到的伤害为0（可叠加，没有上限）。",
     "description": "每层使得角色下次受到的伤害为0（可叠加，没有上限）。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -671,6 +686,7 @@
     "rawDescription": "下次受到的伤害为0（可叠加）",
     "description": "下次受到的伤害为0（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -685,6 +701,7 @@
     "rawDescription": "下次受到的伤害为0（可叠加）",
     "description": "下次受到的伤害为0（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -744,6 +761,7 @@
     "description": "结束阶段：造成1点冰元素伤害，对所有敌方后台角色造成1点穿透伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_IceBall"
   },
@@ -758,6 +776,7 @@
     "description": "我方出战角色受到伤害时：抵消1点伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -792,6 +811,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。",
     "description": "为我方出战角色提供1点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -808,6 +828,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>2点$[K6]</color>。",
     "description": "为我方出战角色提供2点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -823,6 +844,7 @@
     "description": "结束阶段：造成1点冰元素伤害，治疗我方出战角色2点。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Diona"
   },
@@ -856,6 +878,7 @@
     "buffType": "GCG_STATE_BUFF_CRYO",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kaeya_E",
     "buffIconHash": "3032486446292491317"
@@ -888,6 +911,7 @@
     "rawDescription": "我方单手剑、双手剑或长柄武器角色造成的$[K100]变为$[K101]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "我方单手剑、双手剑或长柄武器角色造成的物理伤害变为冰元素伤害。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Ice",
     "buffIconHash": "10999086512073142945"
@@ -902,6 +926,7 @@
     "rawDescription": "我方单手剑、双手剑或长柄武器角色造成的$[K100]变为$[K101]，<color=#FFFFFFFF>普通攻击</color>造成的伤害+1。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "我方单手剑、双手剑或长柄武器角色造成的物理伤害变为冰元素伤害，普通攻击造成的伤害+1。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Ice",
     "buffIconHash": "10999086512073142945"
@@ -935,6 +960,7 @@
     "description": "结束阶段：造成2点冰元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_KamisatoRyu"
   },
@@ -948,6 +974,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K101]。\\n（持续到回合结束）",
     "description": "所附属角色造成的物理伤害变为冰元素伤害。\n（持续到回合结束）",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Ice",
     "buffIconHash": "10999086512073142945"
@@ -962,6 +989,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K101]，且角色造成的$[K101]+1。\\n（持续到回合结束）",
     "description": "所附属角色造成的物理伤害变为冰元素伤害，且角色造成的冰元素伤害+1。\n（持续到回合结束）",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Ice",
     "buffIconHash": "12254757871367105629"
@@ -1007,6 +1035,7 @@
     "description": "优菈使用「普通攻击」或「元素战技」时：此牌累积2点「能量层数」，但是优菈不会获得充能。\n结束阶段：弃置此牌，造成3点物理伤害；每有1点「能量层数」，都使此伤害+1。\n（影响此牌「可用次数」的效果会作用于「能量层数」。）",
     "hintType": "GCG_HINT_VOID",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Eula"
   },
@@ -1038,6 +1067,7 @@
     "rawDescription": "我方角色造成的$[K101]+1。（包括角色引发的<color=#99FFFFFF>{SPRITE_PRESET#2101}冰元素</color>扩散的伤害）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方角色造成的冰元素伤害+1。（包括角色引发的冰元素扩散的伤害）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Ice",
     "buffIconHash": "12254757871367105629"
@@ -1052,6 +1082,7 @@
     "rawDescription": "我方角色造成的$[K101]+1。（包括角色引发的<color=#99FFFFFF>{SPRITE_PRESET#2101}冰元素</color>扩散的伤害）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n我方角色通过<color=#FFFFFFFF>「普通攻击」</color>触发此效果时，不消耗可用次数。（每回合1次）",
     "description": "我方角色造成的冰元素伤害+1。（包括角色引发的冰元素扩散的伤害）\n可用次数：2\n我方角色通过「普通攻击」触发此效果时，不消耗可用次数。（每回合1次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Ice",
     "buffIconHash": "12254757871367105629"
@@ -1067,6 +1098,7 @@
     "description": "结束阶段：造成1点冰元素伤害。\n可用次数：2\n此召唤物在场时：敌方角色受到的冰元素伤害和物理伤害+1。",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Shenhe"
   },
@@ -1112,6 +1144,7 @@
     "description": "结束阶段：造成1点冰元素伤害。\n可用次数：3\n此召唤物在场时，七七使用「普通攻击」后：治疗受伤最多的我方角色1点；每回合1次：再治疗我方出战角色1点。",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Qiqi"
   },
@@ -1127,6 +1160,7 @@
     "buffType": "GCG_STATE_BUFF_CRYO",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Qiqi_E",
     "buffIconHash": "534674945968521932"
@@ -1162,6 +1196,7 @@
     "description": "提供2点护盾，保护我方出战角色。",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -1178,6 +1213,7 @@
     "buffType": "GCG_STATE_BUFF_CRYO",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Layla_S",
     "buffIconHash": "17061304703875202006"
@@ -1193,6 +1229,7 @@
     "description": "结束阶段：造成1点冰元素伤害。如果飞星在场，则使其累积1枚「晚星」。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Layla"
   },
@@ -1226,6 +1263,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Ice",
     "buffIconHash": "17354387950982528195"
@@ -1241,6 +1279,7 @@
     "description": "结束阶段：造成1点冰元素伤害，治疗我方出战角色1点。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Charlotte"
   },
@@ -1273,6 +1312,7 @@
     "description": "所附属角色进行普通攻击时：造成的伤害+1。如果角色生命至少为6，则此技能少花费1个冰元素。\n技能结算后，如果角色生命至少为6，则对角色造成1点穿透伤害；如果角色生命不多于5，则治疗角色2点。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Wriothesley_E",
     "buffIconHash": "2944956060000690524"
@@ -1289,6 +1329,7 @@
     "buffType": "GCG_STATE_BUFF_CRYO",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Wriothesley_S",
     "buffIconHash": "12398234916231916691"
@@ -1308,6 +1349,7 @@
     "rawPlayingDescription": "装备有此牌的$[A1111]受到伤害或治疗后，此牌累积1点<color=#FFFFFFFF>「惩戒计数」</color>。\\n装备有此牌的莱欧斯利使用技能时：如果已有3点<color=#FFFFFFFF>「惩戒计数」</color>，则消耗3点使此技能伤害+1。",
     "playingDescription": "装备有此牌的莱欧斯利受到伤害或治疗后，此牌累积1点「惩戒计数」。\n装备有此牌的莱欧斯利使用技能时：如果已有3点「惩戒计数」，则消耗3点使此技能伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -1322,6 +1364,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方每抓1张牌后：</color>此牌累积1层<color=#FFFFFFFF>「压力阶级」</color>。\\n<color=#FFFFFFFF>所附属角色使用$[S11122]时：</color>如果<color=#FFFFFFFF>「压力阶级」</color>至少有2层，则移除此效果，使技能少花费1元素骰，且如果此技能结算后「压力阶级」至少有4层，则再额外造成2点$[K100]。",
     "description": "我方每抓1张牌后：此牌累积1层「压力阶级」。\n所附属角色使用浮冰增压时：如果「压力阶级」至少有2层，则移除此效果，使技能少花费1元素骰，且如果此技能结算后「压力阶级」至少有4层，则再额外造成2点物理伤害。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -1339,6 +1382,7 @@
     "playingDescription": "我方抓3张牌后：提供1点护盾，保护所附属角色。（可叠加，最多叠加至2点；当前已抓${[GCG_TOKEN_COUNTER]}张牌）。\n所附属角色使用普通攻击或元素战技后：将原本元素骰费用最高的至多2张手牌置于牌库底，然后抓等量的牌。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_ANEMO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Freminet_E",
     "buffIconHash": "3076701746796333867"
@@ -1355,6 +1399,7 @@
     "rawDescription": "提供1点$[K6]，保护所附属角色。（可叠加，最多叠加到2点）",
     "description": "提供1点护盾，保护所附属角色。（可叠加，最多叠加到2点）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -1374,6 +1419,7 @@
     "rawPlayingDescription": "装备有此牌的$[A1112]使用技能后，抓1张牌。（每回合至多触发2次）",
     "playingDescription": "装备有此牌的菲米尼使用技能后，抓1张牌。（每回合至多触发2次）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -1388,6 +1434,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方角色使用技能后：</color>此效果每有1层，就有10%的概率生成<color=#FFFFFFFF>$[C111133]</color>。如果生成了<color=#FFFFFFFF>$[C111133]</color>，就使此效果层数减半。（向下取整）",
     "description": "我方角色使用技能后：此效果每有1层，就有10%的概率生成强攻破绽。如果生成了强攻破绽，就使此效果层数减半。（向下取整）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Rosaria",
     "buffIconHash": "2764850688134773648"
@@ -1403,6 +1450,7 @@
     "description": "结束阶段：造成1点冰元素伤害，生成2层洞察破绽。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222",
@@ -1452,6 +1500,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Ice",
     "buffIconHash": "2917529476117449760"
@@ -1468,6 +1517,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。（可叠加）",
     "description": "为我方出战角色提供1点护盾。（可叠加）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Citlali_Shiled",
     "buffIconHash": "5061023585533575178"
@@ -1513,6 +1563,7 @@
     "rawDescription": "我方下次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方下次造成的水元素伤害和火元素伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -1528,6 +1579,7 @@
     "description": "结束阶段：治疗所有我方角色1点，然后对我方出战角色附着水元素。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Heal",
     "buffIconHash": "1740465556921293923",
@@ -1561,6 +1613,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战角色受到至少为3的伤害时：</color>抵消1点伤害。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方出战角色受到至少为3的伤害时：抵消1点伤害。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -1577,6 +1630,7 @@
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xingqiu_E",
     "buffIconHash": "10683155388468413986"
@@ -1591,6 +1645,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战角色受到至少为2的伤害时：</color>抵消1点伤害。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方出战角色受到至少为2的伤害时：抵消1点伤害。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -1624,6 +1679,7 @@
     "description": "我方出战角色受到伤害时：抵消1点伤害。\n可用次数：1，耗尽时不弃置此牌。\n结束阶段：弃置此牌，造成1点水元素伤害。",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179",
@@ -1760,6 +1816,7 @@
     "description": "结束阶段：造成1点水元素伤害，治疗我方出战角色1点。\n可用次数：2（可叠加，最多叠加到4次）",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Kokomi"
   },
@@ -1774,6 +1831,7 @@
     "description": "所附属角色普通攻击造成的伤害+1。\n所附属角色普通攻击后：治疗所有我方角色1点。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kokomi_E",
     "buffIconHash": "4250334258193478701"
@@ -1806,6 +1864,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>普通攻击</color>造成的伤害+1，造成的$[K100]变为$[K102]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色普通攻击造成的伤害+1，造成的物理伤害变为水元素伤害。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Water",
     "buffIconHash": "5025369979990014013"
@@ -1821,6 +1880,7 @@
     "description": "结束阶段：造成2点水元素伤害。\n可用次数：2\n\n此召唤物在场时：我方角色「普通攻击」造成的伤害+1。",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Ayato"
   },
@@ -1854,6 +1914,7 @@
     "rawDescription": "准备技能期间：提供2点$[K6]，保护所附属的角色。",
     "description": "准备技能期间：提供2点护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -1869,6 +1930,7 @@
     "description": "我方角色普通攻击造成的伤害+1。\n我方单手剑、双手剑或长柄武器角色造成的物理伤害变为水元素伤害。\n我方切换角色后：造成1点水元素伤害。（每回合1次）\n\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Candace_E",
     "buffIconHash": "15888866333350918790"
@@ -1884,6 +1946,7 @@
     "description": "我方角色普通攻击造成的伤害+1。\n我方单手剑、双手剑或长柄武器角色造成的物理伤害变为水元素伤害。\n我方切换角色后：造成1点水元素伤害。（每回合1次）\n我方角色普通攻击后：造成1点水元素伤害。（每回合1次）\n\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Candace_E",
     "buffIconHash": "15888866333350918790"
@@ -1946,6 +2009,7 @@
     "description": "结束阶段：造成2点草元素伤害。\n可用次数：1（可叠加，最多叠加到3次）\n我方宣布结束时：如果此牌的可用次数至少为2，则造成2点草元素伤害。（需消耗可用次数）",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Nilou"
   },
@@ -1992,6 +2056,7 @@
     "rawDescription": "此状态初始具有1层<color=#FFFFFFFF>「破局」</color>；重复附属时，叠加1层<color=#FFFFFFFF>「破局」</color>。<color=#FFFFFFFF>「破局」</color>最多可以叠加到3层。\\n<color=#FFFFFFFF>结束阶段：</color>叠加1层<color=#FFFFFFFF>「破局」</color>。\\n\\n<color=#FFFFFFFF>所附属角色普通攻击时：</color>如果<color=#FFFFFFFF>「破局」</color>已有2层，则消耗2层<color=#FFFFFFFF>「破局」</color>，使造成的$[K100]转换为$[K102]，并抓1张牌。",
     "description": "此状态初始具有1层「破局」；重复附属时，叠加1层「破局」。「破局」最多可以叠加到3层。\n结束阶段：叠加1层「破局」。\n\n所附属角色普通攻击时：如果「破局」已有2层，则消耗2层「破局」，使造成的物理伤害转换为水元素伤害，并抓1张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Water",
     "buffIconHash": "12663029804863493750"
@@ -2008,6 +2073,7 @@
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Yelan_E",
     "buffIconHash": "6616694683529440922"
@@ -2041,6 +2107,7 @@
     "description": "那维莱特进行普通攻击后：治疗那维莱特2点。如果那维莱特是我方「出战角色」，则准备技能：衡平推裁。\n可用次数：1（可叠加，最多叠加到3次）",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Neuvillette_S",
     "buffIconHash": "6481884488901540842"
@@ -2070,6 +2137,7 @@
     "rawDescription": "角色造成的伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "角色造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -2103,6 +2171,7 @@
     "description": "结束阶段：造成1点水元素伤害。如果我方存在生命值至少为6的角色，则对一位受伤最少的我方角色造成1点穿透伤害，然后再造成1点水元素伤害。\n可用次数：2（可叠加，最多叠加到4次）",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Furina"
   },
@@ -2117,6 +2186,7 @@
     "description": "结束阶段：治疗所有我方角色1点。如果我方存在生命值不多于5的角色，则再治疗一位受伤最多的角色1点。\n可用次数：2（可叠加，最多叠加到4次）",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_FurinaOusia"
   },
@@ -2131,6 +2201,7 @@
     "description": "我方出战角色受到伤害或治疗后：叠加1点狂欢值。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Furina_E_01",
     "buffIconHash": "17614116235506402706"
@@ -2146,6 +2217,7 @@
     "description": "我方造成的伤害+1。（包括角色引发的扩散伤害）\n可用次数：1（可叠加，没有上限）",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Furina_E_02",
     "buffIconHash": "7783892255259251264"
@@ -2161,6 +2233,7 @@
     "description": "角色进行普通攻击时：使角色造成的物理伤害变为水元素伤害。如果角色处于「荒」形态，则治疗我方所有后台角色1点；如果角色处于「芒」形态，则此伤害+2，但是对一位受伤最少的我方角色造成1点穿透伤害。\n可用次数：1",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -2208,6 +2281,7 @@
     "rawDescription": "我方「元素战技」或召唤物造成的伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方「元素战技」或召唤物造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Sigewinne_02",
     "buffIconHash": "16497814589753159545"
@@ -2256,6 +2330,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Water",
     "buffIconHash": "17349447189506549639"
@@ -2343,6 +2418,7 @@
     "description": "结束阶段：造成2点水元素伤害。\n可用次数：2（可叠加，没有上限）",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096",
@@ -2375,6 +2451,7 @@
     "rawDescription": "所附属角色造成的$[K100]，变为$[K103]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "所附属角色造成的物理伤害，变为火元素伤害。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Fire",
     "buffIconHash": "14897886812770199489"
@@ -2408,6 +2485,7 @@
     "description": "结束阶段：造成2点火元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Guoba"
   },
@@ -2423,6 +2501,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xiangling_E",
     "buffIconHash": "4590807182751802760"
@@ -2456,6 +2535,7 @@
     "description": "我方角色使用技能时：如果该角色生命值至少为7，则使此伤害额外+2；技能结算后，如果该角色生命值不多于6，则治疗该角色2点。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Bennett_E",
     "buffIconHash": "8273214632846203383"
@@ -2471,6 +2551,7 @@
     "description": "我方角色使用技能时：此技能伤害+2；技能结算后，如果该角色生命值不多于6，则治疗该角色2点。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Bennett_E",
     "buffIconHash": "8273214632846203383"
@@ -2504,6 +2585,7 @@
     "description": "我方出战角色受到伤害时：抵消2点伤害。\n可用次数：1，耗尽时不弃置此牌。\n结束阶段，如果可用次数已耗尽：弃置此牌，以造成2点火元素伤害。",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179",
@@ -2537,6 +2619,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>普通攻击</color>伤害+1，造成的$[K100]变为$[K103]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色普通攻击伤害+1，造成的物理伤害变为火元素伤害。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Fire",
     "buffIconHash": "1389332644098324264"
@@ -2553,6 +2636,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Yoimiya_E",
     "buffIconHash": "7621926853939923289"
@@ -2567,6 +2651,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>普通攻击</color>伤害+1，造成的$[K100]变为$[K103]。\\n<color=#FFFFFFFF>所附属角色使用普通攻击后：</color>造成1点$[K103]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色普通攻击伤害+1，造成的物理伤害变为火元素伤害。\n所附属角色使用普通攻击后：造成1点火元素伤害。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Fire",
     "buffIconHash": "1389332644098324264"
@@ -2599,6 +2684,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>少花费1个<color=#FF9999FF>$[K303]</color>，并且伤害+1。\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "description": "所附属角色进行重击时：少花费1个火元素，并且伤害+1。\n可用次数：1",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -2613,6 +2699,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>少花费1个<color=#FF9999FF>$[K303]</color>，并且伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "所附属角色进行重击时：少花费1个火元素，并且伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -2629,6 +2716,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Klee_E",
     "buffIconHash": "16048063400618212927"
@@ -2661,6 +2749,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K103]，且角色造成的$[K103]+1。\\n<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>目标角色附属$[K1009]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "所附属角色造成的物理伤害变为火元素伤害，且角色造成的火元素伤害+1。\n所附属角色进行重击时：目标角色附属血梅香。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -2677,6 +2766,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Dot",
     "buffIconHash": "2018013804103745197"
@@ -2709,6 +2799,7 @@
     "rawDescription": "<color=#FFFFFFFF>角色进行$[K51]时：</color>造成的伤害+2。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到2次）",
     "description": "角色进行重击时：造成的伤害+2。\n可用次数：1（可叠加，最多叠加到2次）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -2724,6 +2815,7 @@
     "description": "角色进行重击时：少花费1个火元素。（每回合1次）\n结束阶段：角色附属丹火印。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Feiyan_E",
     "buffIconHash": "18253679909927471143"
@@ -2789,6 +2881,7 @@
     "description": "结束阶段：造成1点火元素伤害。\n可用次数：3\n当此召唤物在场且迪希雅在我方后台，我方出战角色受到伤害时：抵消1点伤害；然后，如果迪希雅生命值至少为7，则对其造成1点穿透伤害。（每回合1次）",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Dehya"
   },
@@ -2802,6 +2895,7 @@
     "rawDescription": "<color=#FFFFFFFF>当$[C113093]在场且$[A1309]在我方后台，我方出战角色受到伤害时：</color>抵消1点伤害；然后，如果$[A1309]生命值至少为7，则其受到1点$[K5]。（每回合1次）",
     "description": "当净焰剑狱领域在场且迪希雅在我方后台，我方出战角色受到伤害时：抵消1点伤害；然后，如果迪希雅生命值至少为7，则其受到1点穿透伤害。（每回合1次）",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -2835,6 +2929,7 @@
     "description": "结束阶段：造成1点火元素伤害。\n可用次数：1（可叠加，最多叠加到2次）",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Liney"
   },
@@ -2848,6 +2943,7 @@
     "rawDescription": "<color=#FFFFFFFF>$[C113102]</color>最多可以叠加到3层。\\n<color=#FFFFFFFF>角色使用<color=#FFFFFFFF>$[S13103]</color>时：</color>每层<color=#FFFFFFFF>$[C113102]</color>使伤害+1。技能结算后，耗尽<color=#FFFFFFFF>$[C113102]</color>，每层治疗角色1点。",
     "description": "隐具余数最多可以叠加到3层。\n角色使用眩惑光戏法时：每层隐具余数使伤害+1。技能结算后，耗尽隐具余数，每层治疗角色1点。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -2882,6 +2978,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。（可叠加，最多叠加到3点）",
     "description": "为我方出战角色提供1点护盾。（可叠加，最多叠加到3点）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -2898,6 +2995,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Tohma_E",
     "buffIconHash": "5282736277068994426"
@@ -2914,6 +3012,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Tohma_E",
     "buffIconHash": "5282736277068994426"
@@ -2948,6 +3047,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>2点$[K6]</color>。",
     "description": "为我方出战角色提供2点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -2964,6 +3064,7 @@
     "buffType": "GCG_STATE_BUFF_PYRO",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xinyan_E",
     "buffIconHash": "7359759295113426951"
@@ -3088,6 +3189,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）\n夜魂值为0时，退出夜魂加持。",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Fire",
     "buffIconHash": "15483081041525708262"
@@ -3102,6 +3204,7 @@
     "rawDescription": "我方全体角色的技能不消耗<color=#FFFFFFFF>「夜魂值」</color>。\\n我方全体角色<color=#FFFFFFFF>「普通攻击」</color>造成的伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方全体角色的技能不消耗「夜魂值」。\n我方全体角色「普通攻击」造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Mavuika_S",
     "buffIconHash": "16174251178153160798"
@@ -3167,6 +3270,7 @@
     "rawPlayingDescription": "$[K58]：$[S1131541]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
     "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika1",
     "buffIconHash": "13954608050821572596"
@@ -3220,6 +3324,7 @@
     "rawPlayingDescription": "$[K58]：$[S1131551]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
     "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika3",
     "buffIconHash": "9584603430320343196"
@@ -3267,6 +3372,7 @@
     "rawPlayingDescription": "$[K58]：$[S1131561]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
     "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Mavuika2",
     "buffIconHash": "4149205189526487547"
@@ -3327,6 +3433,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Crow"
   },
@@ -3341,6 +3448,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：2\n菲谢尔普通攻击后：造成2点雷元素伤害。（需消耗可用次数）",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Crow"
   },
@@ -3374,6 +3482,7 @@
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Razor_E",
     "buffIconHash": "1791229123383737699"
@@ -3406,6 +3515,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K104]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "所附属角色造成的物理伤害变为雷元素伤害。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Elec",
     "buffIconHash": "11385781541522232135"
@@ -3420,6 +3530,7 @@
     "rawDescription": "本次$[S14032]不会生成$[C114031]。",
     "description": "本次星斗归位不会生成雷楔。",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -3434,6 +3545,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K104]，且角色造成的$[K104]+1。\\n<color=#FFFFFFFF>$[K4]：3</color>",
     "description": "所附属角色造成的物理伤害变为雷元素伤害，且角色造成的雷元素伤害+1。\n持续回合：3",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Elec",
     "buffIconHash": "12298399737515936658"
@@ -3467,6 +3579,7 @@
     "description": "结束阶段：累积1级「凭依」。如果「凭依」级数至少为8，则「凭依」级数-6。\n根据「凭依」级数，提供效果：\n大于等于2级：物理伤害转化为雷元素伤害；\n大于等于4级：造成的伤害+2。",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Cyno_E",
     "buffIconHash": "15532535293477991610"
@@ -3501,6 +3614,7 @@
     "rawDescription": "准备技能期间：提供2点$[K6]，保护所附属的角色。",
     "description": "准备技能期间：提供2点护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -3515,6 +3629,7 @@
     "rawDescription": "本回合内，所附属的角色普通攻击少花费1个$[K309]。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "本回合内，所附属的角色普通攻击少花费1个无色元素。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -3531,6 +3646,7 @@
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Beidou_E",
     "buffIconHash": "6078111946345045687"
@@ -3592,6 +3708,7 @@
     "description": "结束阶段：造成1点雷元素伤害，我方出战角色附属鸣煌护持。\n可用次数：1",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_SaraA"
   },
@@ -3606,6 +3723,7 @@
     "description": "结束阶段：造成2点雷元素伤害，我方出战角色附属鸣煌护持。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_SaraB"
   },
@@ -3619,6 +3737,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>元素战技</color>和<color=#FFFFFFFF>元素爆发</color>造成的伤害+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "所附属角色元素战技和元素爆发造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -3652,6 +3771,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：3\n此召唤物在场时：我方角色「元素爆发」造成的伤害+1。",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Shougun"
   },
@@ -3665,6 +3785,7 @@
     "rawDescription": "<color=#FFFFFFFF>其他我方角色使用「元素爆发」后：</color>累积1点<color=#FFFFFFFF>「愿力」</color>。（最多累积3点）\\n<color=#FFFFFFFF>所附属角色使用$[S14073]时：</color>消耗所有<color=#FFFFFFFF>「愿力」</color>，每点<color=#FFFFFFFF>「愿力」</color>使造成的伤害+1。",
     "description": "其他我方角色使用「元素爆发」后：累积1点「愿力」。（最多累积3点）\n所附属角色使用奥义·梦想真说时：消耗所有「愿力」，每点「愿力」使造成的伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Shougun_E",
     "buffIconHash": "11623858318287003201"
@@ -3698,6 +3819,7 @@
     "description": "结束阶段：造成1点雷元素伤害；\n可用次数：3（可叠加，最多叠加到6次）\n我方宣布结束时：如果此牌的可用次数至少为4，则造成1点雷元素伤害。（需消耗可用次数）",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Yae"
   },
@@ -3756,6 +3878,7 @@
     "rawDescription": "此状态初始具有2层「引雷」；重复附属时，叠加1层「引雷」。「引雷」最多可以叠加到4层。\\n<color=#FFFFFFFF>结束阶段：</color>叠加1层「引雷」。\\n\\n<color=#FFFFFFFF>所附属角色受到$[S14092]或$[C114092]的伤害时：</color>移除此状态，每层「引雷」使此伤害+1。",
     "description": "此状态初始具有2层「引雷」；重复附属时，叠加1层「引雷」。「引雷」最多可以叠加到4层。\n结束阶段：叠加1层「引雷」。\n\n所附属角色受到苍雷或蔷薇雷光的伤害时：移除此状态，每层「引雷」使此伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -3771,6 +3894,7 @@
     "description": "结束阶段：造成2点雷元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Lisa"
   },
@@ -3802,6 +3926,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_DoriE"
   },
@@ -3816,6 +3941,7 @@
     "description": "结束阶段：治疗我方出战角色2点，并使其获得1点充能。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_DoriQ"
   },
@@ -3830,6 +3956,7 @@
     "description": "结束阶段：治疗我方出战角色2点，并使其获得1点充能。\n治疗生命值不多于6的角色时，治疗量+1；使没有充能的角色获得充能时，获得量+1。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_DoriQ"
   },
@@ -3862,6 +3989,7 @@
     "description": "我方切换角色后：造成1点雷元素伤害，治疗我方受伤最多的角色1点。（每回合1次）\n可用次数：3",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Shinobu_E",
     "buffIconHash": "1169012384017136282"
@@ -3895,6 +4023,7 @@
     "description": "角色受到狩夜之巡以外的治疗时，改为附属等量的生命之契。\n所附属角色使用普通攻击时：造成的物理伤害变为雷元素伤害，并使自身附属2层生命之契。\n持续回合：1",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Clorinde_S",
     "buffIconHash": "42360170292122356"
@@ -3910,6 +4039,7 @@
     "description": "本回合克洛琳德下次造成的伤害+1。\n可用次数：1(可叠加，最多叠加到+3)",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -3943,6 +4073,7 @@
     "description": "所附属角色使用普通攻击时：造成的物理伤害变为雷元素伤害，伤害+1，少花费1个无色元素，并且对敌方生命值最低的角色造成1点穿透伤害。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Sethos_S",
     "buffIconHash": "14965258367551053254"
@@ -3974,6 +4105,7 @@
     "rawPlayingDescription": "我方$[A1413]因<color=#FFFFFFFF>$[S14134]</color>扣除$[K310]后，获得1点$[K310]。（每回合1次）",
     "playingDescription": "我方赛索斯因黑鸢的密喻扣除充能后，获得1点充能。（每回合1次）",
     "shownToken": "GCG_TOKEN_COUNTER_2",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -3989,6 +4121,7 @@
     "description": "结束阶段：造成2点风元素伤害。\n可用次数：3\n\n我方角色或召唤物引发扩散反应后：转换此牌的元素类型，改为造成被扩散的元素类型的伤害。（离场前仅限一次）",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_LargeWindSpirit"
   },
@@ -4003,6 +4136,7 @@
     "description": "结束阶段：造成2点风元素伤害。\n可用次数：3\n\n我方角色或召唤物引发扩散反应后：转换此牌的元素类型，改为造成被扩散的元素类型的伤害。（离场前仅限一次）\n此召唤物在场时：如果此牌的元素类型已转换，则使我方造成的此类元素伤害+1。",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_LargeWindSpirit"
   },
@@ -4035,6 +4169,7 @@
     "description": "结束阶段：造成1点风元素伤害，治疗我方出战角色1点。\n可用次数：3",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_DandelionBreeze"
   },
@@ -4066,6 +4201,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方执行「切换角色」行动时：</color>少花费1个元素骰。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方执行「切换角色」行动时：少花费1个元素骰。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -4080,6 +4216,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方执行「切换角色」行动时：</color>少花费1个元素骰。触发该效果后，使本回合中我方角色下次「普通攻击」少花费1个$[K309]。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方执行「切换角色」行动时：少花费1个元素骰。触发该效果后，使本回合中我方角色下次「普通攻击」少花费1个无色元素。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -4108,6 +4245,7 @@
     "description": "结束阶段：造成2点风元素伤害，对方切换到距离我方出战角色最近的角色。\n可用次数：2\n\n我方角色或召唤物引发扩散反应后：转换此牌的元素类型，改为造成被扩散的元素类型的伤害。（离场前仅限一次）",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Venti"
   },
@@ -4139,6 +4277,7 @@
     "rawDescription": "所附属角色造成的$[K100]变为$[K105]，且角色造成的$[K105]+1。\\n<color=#FFFFFFFF>所附属角色进行$[K52]时：</color>伤害额外+2。\\n<color=#FFFFFFFF>所附属角色为出战角色，我方执行「切换角色」行动时：</color>少花费1个元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "所附属角色造成的物理伤害变为风元素伤害，且角色造成的风元素伤害+1。\n所附属角色进行下落攻击时：伤害额外+2。\n所附属角色为出战角色，我方执行「切换角色」行动时：少花费1个元素骰。（每回合1次）\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xiao_E",
     "buffIconHash": "17008134057490418356"
@@ -4153,6 +4292,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色使用$[S15042]时：</color>少花费1个{SPRITE_PRESET#1105}<color=#80FFD7FF>风元素</color>。\\n<color=#FFFFFFFF>$[K3]：2</color>\\n\\n<color=#FFFFFFFF>所附属角色不再附属$[C115041]时：</color>移除此效果。",
     "description": "所附属角色使用风轮两立时：少花费1个风元素。\n可用次数：2\n\n所附属角色不再附属夜叉傩面时：移除此效果。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -4199,6 +4339,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：3\n\n我方角色或召唤物引发扩散反应后：转换此牌的元素类型，改为造成被扩散的元素类型的伤害。（离场前仅限一次）",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Kazuha"
   },
@@ -4338,6 +4479,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行「普通攻击」时：</color>造成的伤害+2；如果敌方存在后台角色，则此技能改为对下一个敌方后台角色造成伤害。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "所附属角色进行「普通攻击」时：造成的伤害+2；如果敌方存在后台角色，则此技能改为对下一个敌方后台角色造成伤害。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -4353,6 +4495,7 @@
     "description": "所附属角色为出战角色，我方执行「切换角色」行动时：少花费1个元素骰；此效果触发后，造成1点风元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Self",
     "buffIconHash": "13550440653998112109"
@@ -4386,6 +4529,7 @@
     "skills": [],
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S15074]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：风风轮舞踢。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -4401,6 +4545,7 @@
     "description": "结束阶段：造成1点风元素伤害，治疗我方受伤最多的角色2点。\n可用次数：2",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Sayu"
   },
@@ -4433,6 +4578,7 @@
     "description": "结束阶段：如果角色生命值至少为6，则受到2点穿透伤害。\n持续回合：1",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -4448,6 +4594,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：2\n\n我方出战角色受到伤害时：抵消1点伤害。（每回合1次）\n我方角色受到冰/水/火/雷伤害时：转换此牌的元素类型，改为造成所受到的元素类型的伤害。（离场前仅限一次）",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Linette"
   },
@@ -4461,6 +4608,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战角色受到伤害时：</color>抵消1点伤害。（每回合1次）",
     "description": "我方出战角色受到伤害时：抵消1点伤害。（每回合1次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -4493,6 +4641,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>少花费1个<color=#80FFD7FF>$[K309]</color>，造成的$[K100]变为$[K105]，并且使目标角色附属<color=#FFFFFFFF>$[K1024]</color>。\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "description": "所附属角色进行重击时：少花费1个无色元素，造成的物理伤害变为风元素伤害，并且使目标角色附属风压坍陷。\n可用次数：1",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Wind",
     "buffIconHash": "4010929770888314899"
@@ -4508,6 +4657,7 @@
     "description": "结束阶段：将所附属角色切换为「出战角色」。\n可用次数：1\n（同一方场上最多存在一个此状态）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Faruzan_E",
     "buffIconHash": "16040592587013004153"
@@ -4523,6 +4673,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：3\n此召唤物在场时：敌方角色受到的风元素伤害+1。",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Faruzan"
   },
@@ -4563,6 +4714,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：3\n此召唤物在场时：敌方角色受到的风元素伤害+1。\n入场时和行动阶段开始时：生成1个风元素。",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Faruzan"
   },
@@ -4594,6 +4746,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方执行「切换角色」行动时：</color>少花费1个元素骰。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到2次）",
     "description": "我方执行「切换角色」行动时：少花费1个元素骰。\n可用次数：1（可叠加，最多叠加到2次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -4632,6 +4785,7 @@
     "rawPlayingDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：仙力助推\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Liuyun",
     "buffIconHash": "5990260102784795240"
@@ -4663,6 +4817,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方切换到所附属角色后：</color>造成1点$[K105]。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到2次）",
     "description": "我方切换到所附属角色后：造成1点风元素伤害。\n可用次数：1（可叠加，最多叠加到2次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Self",
     "buffIconHash": "13550440653998112109"
@@ -4682,6 +4837,7 @@
     "rawPlayingDescription": "我方切换角色时，此牌累积1层<color=#FFFFFFFF>「风翎」</color>。（每回合最多累积2层）\\n装备有此牌的$[A1510]使用<color=#FFFFFFFF>$[S15101]</color>时，消耗所有<color=#FFFFFFFF>「风翎」</color>，每消耗1层都使伤害+1。",
     "playingDescription": "我方切换角色时，此牌累积1层「风翎」。（每回合最多累积2层）\n装备有此牌的闲云使用清风散花词时，消耗所有「风翎」，每消耗1层都使伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -4699,6 +4855,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
     "buffType": "GCG_STATE_BUFF_ANEMO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Wind",
     "buffIconHash": "3028331885048275547"
@@ -4764,6 +4921,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方「切换角色」时：</color>抓1张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方「切换角色」时：抓1张牌。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -4778,6 +4936,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战角色受到至少为2的伤害时：</color>抵消1点伤害。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方出战角色受到至少为2的伤害时：抵消1点伤害。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -4812,6 +4971,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n此$[K6]耗尽前，我方受到的$[K100]减半。（向上取整）",
     "description": "为我方出战角色提供2点护盾。\n此护盾耗尽前，我方受到的物理伤害减半。（向上取整）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -4827,6 +4987,7 @@
     "description": "角色使用普通攻击时：少花费1个岩元素。（每回合1次）\n角色普通攻击造成的伤害+2，造成的物理伤害变为岩元素伤害。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Noel_E",
     "buffIconHash": "2740696252017497021"
@@ -4860,6 +5021,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Zhongli"
   },
@@ -4875,6 +5037,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>2点$[K6]</color>。",
     "description": "为我方出战角色提供2点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -4891,6 +5054,7 @@
     "rawDescription": "<color=#FFFFFFFF>角色无法使用技能。</color>（持续到回合结束）",
     "description": "角色无法使用技能。（持续到回合结束）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Zhongli_E",
     "buffIconHash": "7476715263609535719"
@@ -4924,6 +5088,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：3\n此召唤物在场，我方执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。（每回合1次）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Albedo"
   },
@@ -4956,6 +5121,7 @@
     "description": "我方出战角色受到伤害时：抵消1点伤害。\n可用次数：1，耗尽时不弃置此牌。\n此召唤物在场期间可触发1次：我方角色受到伤害后，为荒泷一斗附属乱神之怪力。\n结束阶段：弃置此牌，造成1点岩元素伤害。",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179",
@@ -4985,6 +5151,7 @@
     "description": "所附属角色普通攻击造成的伤害+1，造成的物理伤害变为岩元素伤害。\n持续回合：2\n所附属角色普通攻击后：为其附属乱神之怪力。（每回合1次）",
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Itto_E",
     "buffIconHash": "4707295284769711626"
@@ -4999,6 +5166,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>造成的伤害+1。如果$[K3]至少为2，则少花费1个$[K309]。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到3次）",
     "description": "所附属角色进行重击时：造成的伤害+1。如果可用次数至少为2，则少花费1个无色元素。\n可用次数：1（可叠加，最多叠加到3次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Rock",
     "buffIconHash": "6742127679835144995"
@@ -5047,6 +5215,7 @@
     "description": "结束阶段：造成1点岩元素伤害；如果队伍中存在2名岩元素角色，则生成结晶。\n可用次数：2",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Gorou"
   },
@@ -5080,6 +5249,7 @@
     "rawDescription": "<color=#FFFFFFFF>准备技能期间：</color>提供2点$[K6]，保护所附属的角色。",
     "description": "准备技能期间：提供2点护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -5110,6 +5280,7 @@
     "description": "我方角色进行普通攻击时：如果我方手牌数量不多于1，则此技能少花费1个元素骰。\n可用次数：1（可叠加，最多叠加到4次）",
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Yunjin_E",
     "buffIconHash": "5677291162531548780"
@@ -5124,6 +5295,7 @@
     "rawDescription": "普通攻击造成的伤害额外+2。",
     "description": "普通攻击造成的伤害额外+2。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": true
   },
   {
@@ -5155,6 +5327,7 @@
     "description": "结束阶段：造成1点岩元素伤害，抓1张裂晶弹片。\n可用次数：2",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Navia"
   },
@@ -5168,6 +5341,7 @@
     "rawDescription": "所附属角色造成的$[K100]，变为$[K106]。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "所附属角色造成的物理伤害，变为岩元素伤害。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Rock",
     "buffIconHash": "11353914616627406301"
@@ -5201,6 +5375,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2\n此牌在场时：我方千织造成的物理伤害变为岩元素伤害，且普通攻击造成的岩元素伤害+1。",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_3"
   },
@@ -5215,6 +5390,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2\n此牌在场时，我方使用技能后：切换至下一个我方角色。（每回合1次）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_6"
   },
@@ -5229,6 +5405,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2\n此牌在场时，千织以外的我方角色使用技能后：造成1点岩元素伤害。（每回合1次）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_5"
   },
@@ -5243,6 +5420,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_4"
   },
@@ -5257,6 +5435,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2\n此牌在场时：我方千织及千织的自动制御人形造成的岩元素伤害+1。（每回合2次）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_1"
   },
@@ -5271,6 +5450,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：2\n千织进行普通攻击时：少花费1个元素骰。（每回合1次）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Chiori_2"
   },
@@ -5327,6 +5507,7 @@
     "rawDescription": "我方<color=#FFFFFFFF>冲天转转</color>造成的$[K106]+1，造成的$[K5]+1。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方冲天转转造成的岩元素伤害+1，造成的穿透伤害+1。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kachina_S",
     "buffIconHash": "4730368055557500692"
@@ -5413,6 +5594,7 @@
     "description": "结束阶段：造成1点岩元素伤害，对下一个敌方后台角色造成1点穿透伤害。\n可用次数：1",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Kachina"
   },
@@ -5429,6 +5611,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Rock",
     "buffIconHash": "1771263630888988054"
@@ -5447,6 +5630,7 @@
     "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）",
     "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Talent",
     "buffIconHash": "3410616192897341730"
@@ -5464,6 +5648,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
     "buffType": "GCG_STATE_BUFF_GEO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Rock",
     "buffIconHash": "1771263630888988054"
@@ -5541,6 +5726,7 @@
     ],
     "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
     "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Xilonen",
     "buffIconHash": "109313225968952660"
@@ -5555,6 +5741,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216113]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的岩元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xilonen_E_Rock",
     "buffIconHash": "12347441073172741799"
@@ -5569,6 +5756,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216114]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的水元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xilonen_E_Water",
     "buffIconHash": "1540385361181519710"
@@ -5583,6 +5771,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216115]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的火元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xilonen_E_Fire",
     "buffIconHash": "17361273181820187726"
@@ -5597,6 +5786,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216116]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的冰元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xilonen_E_Ice",
     "buffIconHash": "3026383335067153380"
@@ -5611,6 +5801,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合开始时：</color>如果所附属角色拥有2点<color=#FFFFFFFF>「夜魂值」</color>，则在敌方场上生成<color=#FFFFFFFF>$[C216117]</color>。激活全部<color=#FFFFFFFF>「源音采样」</color>后，消耗2点<color=#FFFFFFFF>「夜魂值」</color>。",
     "description": "回合开始时：如果所附属角色拥有2点「夜魂值」，则在敌方场上生成受到的雷元素伤害增加。激活全部「源音采样」后，消耗2点「夜魂值」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Xilonen_E_Elec",
     "buffIconHash": "18268791121792179358"
@@ -5709,6 +5900,7 @@
     "description": "结束阶段：造成2点草元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Collei"
   },
@@ -5723,6 +5915,7 @@
     "description": "我方角色使用技能引发草元素相关反应后：造成1点草元素伤害。（每回合1次）\n持续回合：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Self",
     "buffIconHash": "13550440653998112109"
@@ -5738,6 +5931,7 @@
     "description": "本回合中无法再生成新的新叶。",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Self",
     "buffIconHash": "13550440653998112109"
@@ -5770,6 +5964,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色进行$[K51]时：</color>造成的$[K100]变为$[K107]，并且会在技能结算后召唤$[K1008]。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "所附属角色进行重击时：造成的物理伤害变为草元素伤害，并且会在技能结算后召唤藏蕴花矢。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Grass",
     "buffIconHash": "10037574082875714184"
@@ -5785,6 +5980,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n可用次数：1（可叠加，最多叠加到2次）",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Tighnari"
   },
@@ -5817,6 +6013,7 @@
     "description": "任意具有「蕴种印」的所在阵营角色受到元素反应伤害后：对所附属角色造成1点穿透伤害。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nahida_S",
     "buffIconHash": "13753351376042450243"
@@ -5831,6 +6028,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方引发元素反应时：</color>伤害额外+1。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "我方引发元素反应时：伤害额外+1。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nahida_E",
     "buffIconHash": "12089224502448400982"
@@ -5845,6 +6043,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方引发元素反应时：</color>伤害额外+1。\\n<color=#FFFFFFFF>$[K4]：3</color>",
     "description": "我方引发元素反应时：伤害额外+1。\n持续回合：3",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nahida_E",
     "buffIconHash": "12089224502448400982"
@@ -5917,6 +6116,7 @@
     "description": "结束阶段：造成1点草元素伤害，治疗我方受伤最多的角色1点。\n可用次数：2",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Yaoyao"
   },
@@ -5931,6 +6131,7 @@
     "description": "结束阶段：造成1点草元素伤害，治疗我方受伤最多的角色1点；如果可用次数仅剩余1，则此效果造成的伤害和治疗各+1。\n可用次数：2",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Yaoyao"
   },
@@ -5945,6 +6146,7 @@
     "description": "我方切换角色后：造成1点草元素伤害，治疗我方出战角色1点。\n可用次数：3",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Yaoyao_E",
     "buffIconHash": "5463813853820810934"
@@ -5978,6 +6180,7 @@
     "description": "结束阶段：造成1点草元素伤害，治疗我方出战角色1点。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Baizhuer"
   },
@@ -5992,6 +6195,7 @@
     "description": "行动阶段开始时：生成无郤气护盾。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Baizhu_E",
     "buffIconHash": "12720236156571908075"
@@ -6008,6 +6212,7 @@
     "rawDescription": "提供<color=#FFFFFFFF>1点$[K6]</color>，保护我方出战角色。\\n<color=#FFFFFFFF>此效果被移除，或被重复生成时：</color>造成1点$[K107]，治疗我方出战角色1点。",
     "description": "提供1点护盾，保护我方出战角色。\n此效果被移除，或被重复生成时：造成1点草元素伤害，治疗我方出战角色1点。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -6068,6 +6273,7 @@
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Alhatham_S",
     "buffIconHash": "3876621864634749627"
@@ -6101,6 +6307,7 @@
     "description": "绮良良为出战角色时，我方切换角色后：造成1点草元素伤害，抓1张牌。\n可用次数：1（可叠加，最多叠加到2次）",
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Momoka_S",
     "buffIconHash": "4246931311895246035"
@@ -6117,6 +6324,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>2点$[K6]</color>。",
     "description": "为我方出战角色提供2点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -6135,6 +6343,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Momoka_E",
     "buffIconHash": "17443163629184006892"
@@ -6168,6 +6377,7 @@
     "description": "角色「普通攻击」造成的伤害+1，且造成的物理伤害变为草元素伤害。\n角色普通攻击后：生成迸发扫描。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kaveh_E",
     "buffIconHash": "12754001729882385791"
@@ -6184,6 +6394,7 @@
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kaveh_S",
     "buffIconHash": "14648493234405161933"
@@ -6229,6 +6440,7 @@
     "rawDescription": "<color=#FFFFFFFF>敌方受到燃烧反应伤害或我方其他角色使用特技后：</color>附属角色获得1点<color=#FFFFFFFF>「夜魂值」</color>。\\n<color=#FFFFFFFF>当夜魂值等于2点时：</color>附属角色附属<color=#FFFFFFFF>$[C117094]</color>，随后消耗2点<color=#FFFFFFFF>「夜魂值」</color>。（附属<color=#FFFFFFFF>$[C117094]</color>后，<color=#FFFFFFFF>我方角色选择行动前，若附属角色为出战角色：</color>对最近的敌方角色造成3点$[K107]）\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "敌方受到燃烧反应伤害或我方其他角色使用特技后：附属角色获得1点「夜魂值」。\n当夜魂值等于2点时：附属角色附属钩索准备，随后消耗2点「夜魂值」。（附属钩索准备后，我方角色选择行动前，若附属角色为出战角色：对最近的敌方角色造成3点草元素伤害）\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Kinich_E",
     "buffIconHash": "4125516403550515652"
@@ -6246,6 +6458,7 @@
     "description": "所附属角色可累积「夜魂值」。（最多累积到2点）",
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "shownToken": "GCG_TOKEN_NYX_VALUE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Nightsoul_Grass",
     "buffIconHash": "8398308115074674601"
@@ -6261,6 +6474,7 @@
     "description": "结束阶段：造成1点草元素伤害，然后对敌方下一个角色造成1点草元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Kinich"
   },
@@ -6305,6 +6519,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n我方造成燃烧反应伤害后：此牌升级为柔灯之匣·二阶。\n可用次数：3（可叠加，最多叠加到6次）",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Emilie_1"
   },
@@ -6319,6 +6534,7 @@
     "description": "结束阶段：造成2点草元素伤害。\n可用次数：3（可叠加，最多叠加到6次）",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Emilie_2"
   },
@@ -6333,6 +6549,7 @@
     "description": "结束阶段：对敌方全体造成1点草元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Emilie_3"
   },
@@ -6346,6 +6563,7 @@
     "rawDescription": "<color=#FFFFFFFF>双方角色使用技能后：</color>触发1次我方<color=#FFFFFFFF>$[C115]</color>的回合结束效果。",
     "description": "双方角色使用技能后：触发1次我方燃烧烈焰的回合结束效果。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -6378,6 +6596,7 @@
     "description": "结束阶段：造成1点冰元素伤害。\n可用次数：2（可叠加，最多叠加到3次）\n\n愚人众·冰萤术士「普通攻击」后：此牌可用次数+1。\n愚人众·冰萤术士受到元素反应伤害后：此牌可用次数-1。",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_MageIce"
   },
@@ -6393,6 +6612,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。\\n<color=#FFFFFFFF>创建时：</color>如果我方场上存在<color=#FFFFFFFF>$[C121011]</color>，则额外提供其$[K3]的$[K6]。（最多额外提供3点$[K6]）",
     "description": "为我方出战角色提供1点护盾。\n创建时：如果我方场上存在冰萤，则额外提供其可用次数的护盾。（最多额外提供3点护盾）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -6441,6 +6661,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Ice",
     "buffIconHash": "17354387950982528195"
@@ -6499,6 +6720,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Fire",
     "buffIconHash": "6240999780642787685"
@@ -6516,6 +6738,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>造成3点$[K103]，移除$[K6]</color>。\\n准备技能期间：提供3点$[K6]，保护所附属的角色。",
     "description": "本角色将在下次行动时，直接使用技能：造成3点火元素伤害，移除护盾。\n准备技能期间：提供3点护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -6547,6 +6770,7 @@
     "rawDescription": "<color=#FFFFFFFF>角色进行普通攻击时：</color>对所有敌方后台角色造成1点<color=#FFFFFFFF>$[K5]</color>。\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "description": "角色进行普通攻击时：对所有敌方后台角色造成1点穿透伤害。\n可用次数：1",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Self",
     "buffIconHash": "13550440653998112109"
@@ -6562,6 +6786,7 @@
     "description": "结束阶段：对敌方距离我方出战角色最近的角色造成1点冰元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096",
@@ -6660,6 +6885,7 @@
     "description": "结束阶段：对所有附属有生命之契的敌方角色造成1点穿透伤害。\n持续回合：2",
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_EscadronIce_E",
     "buffIconHash": "17599960341260580867"
@@ -6705,6 +6931,7 @@
     "description": "结束阶段：造成2点水元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Ferret"
   },
@@ -6719,6 +6946,7 @@
     "description": "结束阶段：造成1点水元素伤害。\n可用次数：3",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Raptor"
   },
@@ -6733,6 +6961,7 @@
     "description": "我方出战角色受到伤害时：抵消1点伤害。\n可用次数：1，耗尽时不弃置此牌。\n结束阶段，如果可用次数已耗尽：弃置此牌，以造成2点水元素伤害。",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179",
@@ -6779,6 +7008,7 @@
     "description": "所附属角色切换到其他角色时：需要多花费1个元素骰。\n持续回合：2\n（同一方场上最多存在一个此状态）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -6794,6 +7024,7 @@
     "description": "所附属角色受到的水元素伤害+1。\n所附属角色切换到其他角色时：需要多花费1个元素骰。\n持续回合：3\n（同一方场上最多存在一个此状态）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -6883,6 +7114,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态提供2次水元素附着（可被元素反应消耗）：耗尽后移除此效果，并使所附属角色无法使用技能且在结束阶段受到6点穿透伤害。",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Water",
     "buffIconHash": "1716024803569237917"
@@ -6946,6 +7178,7 @@
     "playingDescription": "我方舍弃或调和的卡牌，会被吞噬。\n每吞噬3张牌：吞星之鲸在回合结束时获得1点额外最大生命；如果其中存在原本元素骰费用值相同的牌，则额外获得1点；如果3张均相同，再额外获得1点。（本回合结束时获得${[GCG_TOKEN_SHIELD]}点）",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Ptahur_S",
     "buffIconHash": "6389285405029040262"
@@ -6978,6 +7211,7 @@
     "playingDescription": "结束阶段和我方宣布结束时：造成此牌「攻击力」值的雷元素伤害。\n我方出战角色受到伤害时：抵消1点伤害，然后此牌可用次数-2。",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179",
@@ -7158,6 +7392,7 @@
     "rawDescription": "所附属角色受到的伤害-1，造成的伤害+1。\\n$[K3]：2",
     "description": "所附属角色受到的伤害-1，造成的伤害+1。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7172,6 +7407,7 @@
     "rawDescription": "所附属角色受到的伤害-1，造成的伤害+1。\\n$[K3]：3\\n所附属角色造成的$[K100]变为$[K103]。",
     "description": "所附属角色受到的伤害-1，造成的伤害+1。\n可用次数：3\n所附属角色造成的物理伤害变为火元素伤害。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7205,6 +7441,7 @@
     "description": "结束阶段：造成1点火元素伤害，对所有敌方后台角色造成1点穿透伤害。\n可用次数：2",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_DeaconFire"
   },
@@ -7232,6 +7469,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态提供2次火元素附着（可被元素反应消耗）：耗尽后移除此效果，并使所附属角色无法使用技能且在结束阶段受到6点穿透伤害。",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Fire",
     "buffIconHash": "18344530841628855565"
@@ -7248,6 +7486,7 @@
     "rawDescription": "为所附属角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n<color=#FFFFFFFF>此$[K6]耗尽后：</color>对所有敌方角色造成1点$[K5]。",
     "description": "为所附属角色提供2点护盾。\n此护盾耗尽后：对所有敌方角色造成1点穿透伤害。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -7359,6 +7598,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>",
     "playingDescription": "所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）\n特技：炙烧攻势\n可用次数：1",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_EremiteOracle",
     "buffIconHash": "13787791603732109330"
@@ -7387,6 +7627,7 @@
     "rawDescription": "<color=#FFFFFFFF>$[C123031]在场时：</color>所附属角色受到的伤害-1。（每回合1次）",
     "description": "厄灵·炎之魔蝎在场时：所附属角色受到的伤害-1。（每回合1次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7401,6 +7642,7 @@
     "rawDescription": "<color=#FFFFFFFF>$[C123032]在场时：</color>所附属角色受到的伤害-1。（每回合至多2次）",
     "description": "魔蝎祝福在场时：所附属角色受到的伤害-1。（每回合至多2次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7435,6 +7677,7 @@
     "rawDescription": "每层提供1点$[K6]，保护所附属角色。",
     "description": "每层提供1点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -7525,6 +7768,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：2\n此召唤物在场时：敌方执行「切换角色」行动的元素骰费用+1。（每回合1次）",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096",
@@ -7634,6 +7878,7 @@
     "description": "结束阶段：对附属有雷鸣探知的敌方角色造成3点雷元素伤害。（如果敌方不存在符合条件角色，则改为对出战角色造成伤害）\n可用次数：1",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Raijin"
   },
@@ -7679,6 +7924,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_SeaHorsePrimo"
   },
@@ -7692,6 +7938,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>抵消1点伤害；每回合1次，抵消来自召唤物的伤害时不消耗$[K3]。\\n<color=#FFFFFFFF>$[K3]：2</color>\\n\\n<color=#FFFFFFFF>我方宣布结束时：</color>如果所附属角色为「出战角色」，则抓1张牌。",
     "description": "所附属角色受到伤害时：抵消1点伤害；每回合1次，抵消来自召唤物的伤害时不消耗可用次数。\n可用次数：2\n\n我方宣布结束时：如果所附属角色为「出战角色」，则抓1张牌。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7706,6 +7953,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>抵消1点伤害；抵消来自召唤物的伤害时不消耗$[K3]。\\n<color=#FFFFFFFF>$[K3]：2</color>\\n\\n<color=#FFFFFFFF>此状态存在期间：</color>所附属角色造成的伤害+1。",
     "description": "所附属角色受到伤害时：抵消1点伤害；抵消来自召唤物的伤害时不消耗可用次数。\n可用次数：2\n\n此状态存在期间：所附属角色造成的伤害+1。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -7738,6 +7986,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：3\n\n敌方累计打出3张行动牌后：此牌可用次数+1。（最多叠加到3）\n愚人众·雷萤术士受到元素反应伤害后：此牌可用次数-1。",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_FatuusSummoner"
   },
@@ -7753,6 +8002,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>1点$[K6]</color>。\\n<color=#FFFFFFFF>创建时：</color>如果我方场上存在<color=#FFFFFFFF>$[C124041]</color>，则额外提供其$[K3]的$[K6]。（最多额外提供3点$[K6]）",
     "description": "为我方出战角色提供1点护盾。\n创建时：如果我方场上存在雷萤，则额外提供其可用次数的护盾。（最多额外提供3点护盾）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -7886,6 +8136,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态提供2次雷元素附着（可被元素反应消耗）：耗尽后移除此效果，并使所附属角色无法使用技能且在结束阶段受到6点穿透伤害。",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Elec",
     "buffIconHash": "852857840842551511"
@@ -7947,6 +8198,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Jifengcanying"
   },
@@ -7961,6 +8213,7 @@
     "description": "结束阶段：造成1点冰元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Bingshuangcanying"
   },
@@ -8006,6 +8259,7 @@
     "description": "所附属角色受到的物理伤害或风元素伤害+2。\n可用次数：1",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -8022,6 +8276,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S25025]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：长延涤流。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -8038,6 +8293,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S25026]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：终幕涤流。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -8052,6 +8308,7 @@
     "rawDescription": "$[A2502]下次造成的伤害+1",
     "description": "特瓦林下次造成的伤害+1",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -8141,6 +8398,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>抵消1点伤害。抵消$[K106]时，需额外消耗1次$[K3]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色受到伤害时：抵消1点伤害。抵消岩元素伤害时，需额外消耗1次可用次数。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -8186,6 +8444,7 @@
     "rawDescription": "角色可以汲取{SPRITE_PRESET#2101}<color=#99FFFFFF>冰</color>/{SPRITE_PRESET#2102}<color=#80C0FFFF>水</color>/{SPRITE_PRESET#2103}<color=#FF9999FF>火</color>/{SPRITE_PRESET#2104}<color=#FFACFFFF>雷</color>元素的力量，然后根据所汲取的元素类型，获得技能{SPRITE_PRESET#2101}<color=#99FFFFFF>$[S66013]</color>/{SPRITE_PRESET#2102}<color=#80C0FFFF>$[S66023]</color>/{SPRITE_PRESET#2103}<color=#FF9999FF>$[S66033]</color>/{SPRITE_PRESET#2104}<color=#FFACFFFF>$[S66043]</color>。（角色同时只能汲取一种元素，此状态会记录角色已汲取过的元素类型数量）\\n<color=#FFFFFFFF>角色汲取了一种和当前不同的元素后：</color>生成1个所汲取元素类型的元素骰。",
     "description": "角色可以汲取冰/水/火/雷元素的力量，然后根据所汲取的元素类型，获得技能霜刺破袭/洪流重斥/炽焰重斥/霆雷破袭。（角色同时只能汲取一种元素，此状态会记录角色已汲取过的元素类型数量）\n角色汲取了一种和当前不同的元素后：生成1个所汲取元素类型的元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -8227,6 +8486,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>如果所附属角色位于后台，则此效果每有1次$[K3]，就对所附属角色造成1点$[K5]。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到3次）",
     "description": "结束阶段：如果所附属角色位于后台，则此效果每有1次可用次数，就对所附属角色造成1点穿透伤害。\n可用次数：1（可叠加，最多叠加到3次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Dot",
     "buffIconHash": "2018013804103745197"
@@ -8242,6 +8502,7 @@
     "description": "结束阶段：造成1点岩元素伤害，目标角色附属黄金侵蚀。\n可用次数：2",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222",
@@ -8275,6 +8536,7 @@
     "rawDescription": "<color=#FFFFFFFF>本角色造成或受到元素伤害后：</color>累积1层<color=#FFFFFFFF>「活化激能」</color>。（最多累积3层）\\n<color=#FFFFFFFF>结束阶段：</color>如果<color=#FFFFFFFF>「活化激能」</color>层数已达到上限，就将其清空。同时，角色失去所有充能。",
     "description": "本角色造成或受到元素伤害后：累积1层「活化激能」。（最多累积3层）\n结束阶段：如果「活化激能」层数已达到上限，就将其清空。同时，角色失去所有充能。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_FungusRaptor_S",
     "buffIconHash": "136880396188725502"
@@ -8308,6 +8570,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Apep"
   },
@@ -8322,6 +8585,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Apep"
   },
@@ -8336,6 +8600,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Apep"
   },
@@ -8350,6 +8615,7 @@
     "description": "结束阶段：造成1点草元素伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Apep"
   },
@@ -8364,6 +8630,7 @@
     "description": "我方打出唤醒眷属时：少花费1个元素骰。\n可用次数：1（可叠加到3）",
     "buffType": "GCG_STATE_BUFF_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Apep_S",
     "buffIconHash": "11465097474501765096"
@@ -8394,6 +8661,7 @@
     "rawDescription": "提供1点$[K6]，保护所附属角色。",
     "description": "提供1点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -8408,6 +8676,7 @@
     "rawDescription": "我方召唤4个<color=#FFFFFFFF>$[C127022]</color>后，我方<color=#FFFFFFFF>$[A2702]</color>附属<color=#FFFFFFFF>$[C127027]</color>，并获得1点<color=#FFFFFFFF>$[K6]</color>。",
     "description": "我方召唤4个增殖生命体后，我方阿佩普的绿洲守望者附属重燃的绿洲之心，并获得1点护盾。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Apep_E",
     "buffIconHash": "3640633566381250509"
@@ -8507,6 +8776,7 @@
     "rawPlayingDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：藤蔓锋鳞\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_EremiteGrass",
     "buffIconHash": "13372367094953574110"
@@ -8553,6 +8823,7 @@
     "rawDescription": "本角色将在开始准备后的第二次行动时，直接使用技能：<color=#FFFFFFFF>$[S30034]</color>。",
     "description": "本角色将在开始准备后的第二次行动时，直接使用技能：居合·前。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8569,6 +8840,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30034]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·前。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8584,6 +8856,7 @@
     "description": "所在阵营切换角色后：对切换到的角色造成2点物理伤害。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Physics",
     "buffIconHash": "3162112013737036324"
@@ -8600,6 +8873,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30045]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：高频旋击。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -8616,6 +8890,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S30046]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：超速旋击。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "13225239691945994096"
@@ -8629,6 +8904,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2101}<color=#99FFFFFF>冰元素</color>，所受到的$[K101]减半。（向上取整）",
     "description": "角色已吸收冰元素，所受到的冰元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Ice",
     "buffIconHash": "11312201739379395374"
@@ -8642,6 +8918,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2102}<color=#80C0FFFF>水元素</color>，所受到的$[K102]减半。（向上取整）",
     "description": "角色已吸收水元素，所受到的水元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Water",
     "buffIconHash": "10513003075868236776"
@@ -8655,6 +8932,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2103}<color=#FF9999FF>火元素</color>，所受到的$[K103]减半。（向上取整）",
     "description": "角色已吸收火元素，所受到的火元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Fire",
     "buffIconHash": "4129279574095425817"
@@ -8668,6 +8946,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2104}<color=#FFACFFFF>雷元素</color>，所受到的$[K104]减半。（向上取整）",
     "description": "角色已吸收雷元素，所受到的雷元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Electric",
     "buffIconHash": "16219095649365085668"
@@ -8681,6 +8960,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2105}<color=#80FFD7FF>风元素</color>，所受到的$[K105]减半。（向上取整）",
     "description": "角色已吸收风元素，所受到的风元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Wind",
     "buffIconHash": "14179626534834117938"
@@ -8694,6 +8974,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2106}<color=#FFE699FF>岩元素</color>，所受到的$[K106]减半。（向上取整）",
     "description": "角色已吸收岩元素，所受到的岩元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Rock",
     "buffIconHash": "4636319595243760776"
@@ -8707,6 +8988,7 @@
     "skills": [],
     "rawDescription": "角色已吸收{SPRITE_PRESET#2107}<color=#7EC236FF>草元素</color>，所受到的$[K107]减半。（向上取整）",
     "description": "角色已吸收草元素，所受到的草元素伤害减半。（向上取整）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Element_Grass",
     "buffIconHash": "16237266910536405936"
@@ -8747,6 +9029,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>所受伤害-2</color>。\\n此状态会提供2次<color=#99FFFFFF>冰元素附着</color>（可被元素反应消耗）：耗尽后移除此状态。",
     "description": "所附属角色所受伤害-2。\n此状态会提供2次冰元素附着（可被元素反应消耗）：耗尽后移除此状态。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -8762,6 +9045,7 @@
     "description": "所附属角色免疫所有伤害，并且不会被冻结。\n此状态提供2次冰元素附着（可被元素反应消耗）：耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Ice",
     "buffIconHash": "809916467218228524"
@@ -8776,6 +9060,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>受到的伤害-1，造成的伤害+1</color>。\\n此状态会提供2次<color=#99FFFFFF>冰元素附着</color>（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前<color=#FFFFFFFF>无法使用技能</color>。",
     "description": "所附属角色受到的伤害-1，造成的伤害+1。\n此状态会提供2次冰元素附着（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -8790,6 +9075,7 @@
     "rawDescription": "角色<color=#FFFFFFFF>造成的伤害+1</color>，且造成的$[K100]变为$[K101]。\\n此角色受到的$[K101]+2。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "角色造成的伤害+1，且造成的物理伤害变为冰元素伤害。\n此角色受到的冰元素伤害+2。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Ice",
     "buffIconHash": "12254757871367105629"
@@ -8804,6 +9090,7 @@
     "rawDescription": "本角色将在开始准备后的第二次行动时，直接使用技能：<color=#FFFFFFFF>$[S31065]</color>。",
     "description": "本角色将在开始准备后的第二次行动时，直接使用技能：蓄势猛击·倾力一击。",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8820,6 +9107,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S31065]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：蓄势猛击·倾力一击。",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8853,6 +9141,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Daze",
     "buffIconHash": "13588942201462459600"
@@ -8868,6 +9157,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态会提供2次水元素附着（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Water",
     "buffIconHash": "1716024803569237917"
@@ -8883,6 +9173,7 @@
     "description": "结束阶段：治疗我方出战角色1点，对双方出战角色附着水元素。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Heal",
     "buffIconHash": "10356428210303428719",
@@ -8898,6 +9189,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>所受伤害-1，造成的治疗+1</color>。\\n此状态会提供2次<color=#80C0FFFF>水元素附着</color>（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前<color=#FFFFFFFF>无法使用技能</color>。",
     "description": "所附属角色所受伤害-1，造成的治疗+1。\n此状态会提供2次水元素附着（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -8938,6 +9230,7 @@
     "rawDescription": "角色<color=#FFFFFFFF>造成的伤害+1</color>，且造成的$[K100]变为$[K102]。\\n此角色受到的$[K102]+2。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "角色造成的伤害+1，且造成的物理伤害变为水元素伤害。\n此角色受到的水元素伤害+2。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Water",
     "buffIconHash": "5025369979990014013"
@@ -8954,6 +9247,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S32065]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：环舞连斩·先攻。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8970,6 +9264,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S32066]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：环舞连斩·定势。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -8986,6 +9281,7 @@
     "rawDescription": "<color=#FFFFFFFF>角色无法使用技能。</color>（持续到回合结束）",
     "description": "角色无法使用技能。（持续到回合结束）",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Daze",
     "buffIconHash": "13588942201462459600"
@@ -9001,6 +9297,7 @@
     "description": "敌方打出3张行动牌后：造成1点冰元素伤害。\n受到具有「始基力：芒性」的角色造成的伤害后：移除此效果。",
     "buffType": "GCG_STATE_BUFF_CRYO",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Ice",
     "buffIconHash": "10999086512073142945"
@@ -9031,6 +9328,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态提供2次火元素附着（可被元素反应消耗）：耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "buffType": "GCG_STATE_BUFF_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Fire",
     "buffIconHash": "18344530841628855565"
@@ -9045,6 +9343,7 @@
     "rawDescription": "角色造成的$[K100]变为$[K103]\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "角色造成的物理伤害变为火元素伤害\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Fire",
     "buffIconHash": "14897886812770199489"
@@ -9059,6 +9358,7 @@
     "rawDescription": "角色造成的$[K100]变为$[K103]\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "角色造成的物理伤害变为火元素伤害\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Fire",
     "buffIconHash": "14897886812770199489"
@@ -9086,6 +9386,7 @@
     "rawDescription": "本角色将在开始准备后的第二次行动时，直接使用技能：<color=#FFFFFFFF>$[S33036]</color>。",
     "description": "本角色将在开始准备后的第二次行动时，直接使用技能：居合·焚风。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9102,6 +9403,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33036]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·焚风。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9116,6 +9418,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>受到的伤害-1，造成的伤害+1</color>。\\n此状态会提供2次<color=#FF9999FF>火元素附着</color>（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前<color=#FFFFFFFF>无法使用技能</color>。",
     "description": "所附属角色受到的伤害-1，造成的伤害+1。\n此状态会提供2次火元素附着（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9132,6 +9435,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33075]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：警棍追打。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9148,6 +9452,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33085]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：组合射击·轻弹连射。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9164,6 +9469,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S33086]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：组合射击·重弹侵彻。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9178,6 +9484,7 @@
     "rawDescription": "角色造成的$[K100]变为$[K104]\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "角色造成的物理伤害变为雷元素伤害\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Elec",
     "buffIconHash": "11385781541522232135"
@@ -9205,6 +9512,7 @@
     "rawDescription": "本角色将在开始准备后的第二次行动时，直接使用技能：<color=#FFFFFFFF>$[S34016]</color>。",
     "description": "本角色将在开始准备后的第二次行动时，直接使用技能：居合·霆息。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9221,6 +9529,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S34016]</color>。",
     "description": "本角色将在下次行动时，直接使用技能：居合·霆息。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Special",
     "buffIconHash": "8657799657419530802"
@@ -9235,6 +9544,7 @@
     "rawDescription": "角色造成的$[K100]变为$[K104]\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "角色造成的物理伤害变为雷元素伤害\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Elec",
     "buffIconHash": "11385781541522232135"
@@ -9250,6 +9560,7 @@
     "description": "结束阶段：造成2点雷元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_AbyssEle_Layer00"
   },
@@ -9264,6 +9575,7 @@
     "description": "所附属角色免疫所有伤害。\n此状态提供2次雷元素附着（可被元素反应消耗）：耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "buffType": "GCG_STATE_BUFF_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Elec",
     "buffIconHash": "852857840842551511"
@@ -9291,6 +9603,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>受到的伤害-1，造成的伤害+1</color>。\\n此状态会提供2次<color=#FFACFFFF>雷元素附着</color>（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前<color=#FFFFFFFF>无法使用技能</color>。",
     "description": "所附属角色受到的伤害-1，造成的伤害+1。\n此状态会提供2次雷元素附着（可被元素反应消耗），耗尽后移除此状态，并使所附属角色直到本回合结束前无法使用技能。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9308,6 +9621,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>$[S34085]</color>。\\n<color=#FFFFFFFF>准备$[S34085]期间：</color>提供2点$[K6]，保护所此角色。",
     "description": "本角色将在下次行动时，直接使用技能：盾刃切割。\n准备盾刃切割期间：提供2点护盾，保护所此角色。",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -9322,6 +9636,7 @@
     "rawDescription": "受到$[K104]后，叠加1级<color=#FFFFFFFF>「嗜魔」</color>。（最多叠加到2级）\\n具有2级<color=#FFFFFFFF>「嗜魔」</color>时，角色造成的$[K104]+1，受到的$[K104]+2。",
     "description": "受到雷元素伤害后，叠加1级「嗜魔」。（最多叠加到2级）\n具有2级「嗜魔」时，角色造成的雷元素伤害+1，受到的雷元素伤害+2。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Elec",
     "buffIconHash": "11385781541522232135"
@@ -9337,6 +9652,7 @@
     "description": "所在阵营宣布结束后：对所在阵营的出战角色造成1点雷元素伤害。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_ShamanElectric_S",
     "buffIconHash": "11064614577840991254"
@@ -9352,6 +9668,7 @@
     "description": "敌方打出3张行动牌后：造成1点水元素伤害。\n受到具有「始基力：荒性」的角色造成的伤害后：移除此效果。",
     "buffType": "GCG_STATE_BUFF_HYDRO",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Enchant_Water",
     "buffIconHash": "12663029804863493750"
@@ -9366,6 +9683,7 @@
     "rawDescription": "角色<color=#FFFFFFFF>造成的伤害+1</color>，且造成的$[K100]变为$[K104]。\\n此角色受到的$[K104]+2。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "角色造成的伤害+1，且造成的物理伤害变为雷元素伤害。\n此角色受到的雷元素伤害+2。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Elec",
     "buffIconHash": "12298399737515936658"
@@ -9381,6 +9699,7 @@
     "description": "结束阶段：造成1点风元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ANEMO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Wind"
   },
@@ -9397,6 +9716,7 @@
     "description": "本角色将在下次行动时，直接使用技能：逆风奉还拳。\n准备逆风奉还拳期间：提供2点护盾，保护所附属角色；如果所附属角色受到了水/火/冰/雷元素伤害，就使所准备的逆风奉还拳造成的伤害+1，并且转换为对应的元素类型。",
     "buffType": "GCG_STATE_BUFF_ANEMO",
     "shownToken": "GCG_TOKEN_SHIELD",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Shield_Wind",
     "buffIconHash": "14651139498977000573"
@@ -9411,6 +9731,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>抵消最多2点伤害。抵消$[K106]时，需额外消耗1次$[K3]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色受到伤害时：抵消最多2点伤害。抵消岩元素伤害时，需额外消耗1次可用次数。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9425,6 +9746,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>除生命值不多于3的后台角色外，所有所在阵营的角色受到1点$[K5]。\\n<color=#FFFFFFFF>$[K3]：1</color>（可叠加，最多叠加到3次）",
     "description": "结束阶段：除生命值不多于3的后台角色外，所有所在阵营的角色受到1点穿透伤害。\n可用次数：1（可叠加，最多叠加到3次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Dot",
     "buffIconHash": "2018013804103745197"
@@ -9439,6 +9761,7 @@
     "rawDescription": "受到$[K106]后，叠加1级<color=#FFFFFFFF>「嗜魔」</color>。（最多叠加到2级）\\n具有2级<color=#FFFFFFFF>「嗜魔」</color>时，角色造成的$[K106]+1，受到的$[K106]+2。",
     "description": "受到岩元素伤害后，叠加1级「嗜魔」。（最多叠加到2级）\n具有2级「嗜魔」时，角色造成的岩元素伤害+1，受到的岩元素伤害+2。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Element_Atk_Up_Rock",
     "buffIconHash": "6742127679835144995"
@@ -9453,6 +9776,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战中的「{SPRITE_PRESET#3502}丘丘人」角色受到伤害时：</color>抵消1点伤害。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方出战中的「丘丘人」角色受到伤害时：抵消1点伤害。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9467,6 +9791,7 @@
     "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>抵消1点伤害。抵消$[K106]时，需额外消耗1次$[K3]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "所附属角色受到伤害时：抵消1点伤害。抵消岩元素伤害时，需额外消耗1次可用次数。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9481,6 +9806,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方角色受到伤害时：</color>抵消1点伤害。\\n<color=#FFFFFFFF>$[K3]：3</color>\\n<color=#FFFFFFFF>$[C136041]离场时：</color>移除此状态。",
     "description": "我方角色受到伤害时：抵消1点伤害。\n可用次数：3\n元素武装·岩离场时：移除此状态。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9496,6 +9822,7 @@
     "description": "结束阶段：造成1点岩元素伤害。\n可用次数：3\n\n此召唤物在场，镀金旅团·魔岩役使受到伤害时：抵消2点伤害。抵消岩元素伤害时，需额外消耗1次可用次数。（每回合1次，需消耗可用次数）",
     "hintType": "GCG_HINT_GEO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222",
@@ -9511,6 +9838,7 @@
     "rawDescription": "<color=#FFFFFFFF>$[C136051]在场，$[A3606]受到伤害时：</color>抵消2点伤害。抵消$[K106]时，需额外消耗1次$[K3]。（每回合1次，需消耗可用次数）",
     "description": "厄灵·岩之魔蜥在场，镀金旅团·魔岩役使受到伤害时：抵消2点伤害。抵消岩元素伤害时，需额外消耗1次可用次数。（每回合1次，需消耗可用次数）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_BARRIER_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9577,6 +9905,7 @@
     "rawDescription": "所附属角色<color=#FFFFFFFF>所受伤害-2</color>。\\n此状态会提供2次<color=#7EC236FF>草元素附着</color>（可被元素反应消耗）：耗尽后移除此状态。",
     "description": "所附属角色所受伤害-2。\n此状态会提供2次草元素附着（可被元素反应消耗）：耗尽后移除此状态。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Barrier",
     "buffIconHash": "3200411659709162179"
@@ -9592,6 +9921,7 @@
     "description": "所在阵营切换角色后：对切换到的角色造成1点草元素伤害。\n可用次数：2",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Grass",
     "buffIconHash": "6341078229125145122"
@@ -9607,6 +9937,7 @@
     "description": "结束阶段：造成2点草元素伤害，对所有后台敌方角色造成1点穿透伤害。\n可用次数：1",
     "hintType": "GCG_HINT_DENDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_Pojidan"
   },
@@ -9715,6 +10046,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>此牌每有1点「伤害加成」，角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>结束阶段：</color>此牌累积1点<color=#FFFFFFFF>「伤害加成」</color>。（最多累积到2点）",
     "playingDescription": "此牌每有1点「伤害加成」，角色造成的伤害+1。\n结束阶段：此牌累积1点「伤害加成」。（最多累积到2点）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10060,6 +10392,7 @@
     "rawPlayingDescription": "此牌会记录本局游戏中你打出过的名称不存在于本局最初牌组中的不同名的行动牌数量，称为<color=#FFFFFFFF>「声援」</color>。\\n如果此牌的<color=#FFFFFFFF>「声援」</color>至少为2/4/8，则<color=#FFFFFFFF>角色造成的伤害+1/2/3</color>。",
     "playingDescription": "此牌会记录本局游戏中你打出过的名称不存在于本局最初牌组中的不同名的行动牌数量，称为「声援」。\n如果此牌的「声援」至少为2/4/8，则角色造成的伤害+1/2/3。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10079,6 +10412,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「坚忍标记」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「坚忍标记」</color>，则消耗所有<color=#FFFFFFFF>「坚忍标记」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「坚忍标记」</color>就抓1张牌。",
     "playingDescription": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「坚忍标记」。（每回合1次）\n角色造成伤害时：如果此牌已有「坚忍标记」，则消耗所有「坚忍标记」，使此伤害+1，并且每消耗1点「坚忍标记」就抓1张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10206,6 +10540,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色使用技能后：</color>直到回合结束前，此牌所提供的伤害加成值额外+1。（最多累积到+2）",
     "playingDescription": "角色造成的伤害+1。\n角色使用技能后：直到回合结束前，此牌所提供的伤害加成值额外+1。（最多累积到+2）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10225,6 +10560,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>角色使用「元素爆发」造成的伤害+2</color>。\\n<color=#FFFFFFFF>我方出战角色受到伤害或治疗后：</color>累积1点<color=#FFFFFFFF>「公义之理」</color>。如果此牌已累积3点<color=#FFFFFFFF>「公义之理」</color>，则消耗3点<color=#FFFFFFFF>「公义之理」</color>，使角色获得1点$[K310]。",
     "playingDescription": "角色使用「元素爆发」造成的伤害+2。\n我方出战角色受到伤害或治疗后：累积1点「公义之理」。如果此牌已累积3点「公义之理」，则消耗3点「公义之理」，使角色获得1点充能。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10244,6 +10580,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。",
     "playingDescription": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10352,6 +10689,7 @@
     "description": "角色造成的伤害+1。\n角色使用「普通攻击」后：生成1个随机基础元素骰。（每回合最多触发2次）\n（「单手剑」角色才能装备。角色最多装备1件「武器」）",
     "rawPlayingDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>角色使用「普通攻击」后：</color>生成1个随机基础元素骰。（每回合最多触发2次）",
     "playingDescription": "角色造成的伤害+1。\n角色使用「普通攻击」后：生成1个随机基础元素骰。（每回合最多触发2次）",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10408,6 +10746,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点<color=#FFFFFFFF>「团结」</color>。（每回合1次）\\n<color=#FFFFFFFF>角色造成伤害时：</color>如果此牌已有<color=#FFFFFFFF>「团结」</color>，则消耗所有<color=#FFFFFFFF>「团结」</color>，使此伤害+1，并且每消耗1点<color=#FFFFFFFF>「团结」</color>就抓1张牌。",
     "playingDescription": "所附属角色受到伤害时：如可能，舍弃原本元素骰费用最高的1张手牌，以抵消1点伤害，然后累积1点「团结」。（每回合1次）\n角色造成伤害时：如果此牌已有「团结」，则消耗所有「团结」，使此伤害+1，并且每消耗1点「团结」就抓1张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Weapon",
     "buffIconHash": "7531918440982790537"
@@ -10424,6 +10763,7 @@
     "rawDescription": "根据「{SPRITE_PRESET#3402}璃月」角色的数量提供$[K6]，保护所附属的角色。",
     "description": "根据「璃月」角色的数量提供护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -10438,6 +10778,7 @@
     "rawDescription": "我方角色造成的伤害+1。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "我方角色造成的伤害+1。\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -10467,6 +10808,7 @@
     "rawDescription": "提供<color=#FFFFFFFF>1点$[K6]</color>，保护我方出战角色。（可叠加，最多叠加到2点）",
     "description": "提供1点护盾，保护我方出战角色。（可叠加，最多叠加到2点）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -10965,6 +11307,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>角色受到伤害或治疗后：</color>根据本回合触发此效果的次数，执行不同的效果。\\n<color=#FFFFFFFF>第1次触发：</color>生成1个此角色类型的元素骰。\\n<color=#FFFFFFFF>第2次触发：</color>抓1张牌。",
     "playingDescription": "角色受到伤害或治疗后：根据本回合触发此效果的次数，执行不同的效果。\n第1次触发：生成1个此角色类型的元素骰。\n第2次触发：抓1张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -10983,6 +11326,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>角色受到伤害或治疗后：</color>根据本回合触发此效果的次数，执行不同的效果。\\n<color=#FFFFFFFF>第1次触发：</color>生成1个此角色类型的元素骰。\\n<color=#FFFFFFFF>第2次触发：</color>抓1张牌。\\n<color=#FFFFFFFF>第4次触发：</color>生成1个此角色类型的元素骰。",
     "playingDescription": "角色受到伤害或治疗后：根据本回合触发此效果的次数，执行不同的效果。\n第1次触发：生成1个此角色类型的元素骰。\n第2次触发：抓1张牌。\n第4次触发：生成1个此角色类型的元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -11001,6 +11345,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>结束阶段：</color>如果所附属角色在后台，则此牌累积1点<color=#FFFFFFFF>「报酬」</color>。（最多累积2点）\\n<color=#FFFFFFFF>对角色打出「{SPRITE_PRESET#3006}天赋」或角色使用「元素战技」时：</color>此牌每有1点<color=#FFFFFFFF>「报酬」</color>，就将其消耗，以少花费1个元素骰。",
     "playingDescription": "结束阶段：如果所附属角色在后台，则此牌累积1点「报酬」。（最多累积2点）\n对角色打出「天赋」或角色使用「元素战技」时：此牌每有1点「报酬」，就将其消耗，以少花费1个元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -11019,6 +11364,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>结束阶段：</color>如果所附属角色在后台，则此牌累积2点<color=#FFFFFFFF>「报酬」</color>。（最多累积4点）\\n<color=#FFFFFFFF>对角色打出「{SPRITE_PRESET#3006}天赋」或角色使用「元素战技」时：</color>此牌每有1点<color=#FFFFFFFF>「报酬」</color>，就将其消耗，以少花费1个元素骰。",
     "playingDescription": "结束阶段：如果所附属角色在后台，则此牌累积2点「报酬」。（最多累积4点）\n对角色打出「天赋」或角色使用「元素战技」时：此牌每有1点「报酬」，就将其消耗，以少花费1个元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -11037,6 +11383,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到$[K107]后：</color>累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个随机基础元素骰。\\n（每回合至多生成2个）",
     "playingDescription": "所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。\n（每回合至多生成2个）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -11055,6 +11402,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积2枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个$[K411]。\\n（每回合至多生成2个）",
     "playingDescription": "所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。\n（每回合至多生成2个）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Equip_Relic",
     "buffIconHash": "15282951538599148947"
@@ -11173,6 +11521,7 @@
     "rawDescription": "提供2点$[K6]，保护所附属的角色。",
     "description": "提供2点护盾，保护所附属的角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -11491,6 +11840,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130011]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：原海水刃\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_MantaRay",
     "buffIconHash": "8875513956227362946"
@@ -11543,6 +11893,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130021]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：钩物巧技\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Hookwalker",
     "buffIconHash": "18333484455810420104"
@@ -11601,6 +11952,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130031]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：游隙灵道\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Mosasaurus",
     "buffIconHash": "11093104840137801693"
@@ -11648,6 +12000,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130041]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：掘进突击\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Drillhead",
     "buffIconHash": "13876857398019034662"
@@ -11695,6 +12048,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130051]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：灵性援护\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Shamansaurus",
     "buffIconHash": "4429278701278802385"
@@ -11782,6 +12136,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>入场时：</color>敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>。\\n<color=#FFFFFFFF>附属角色切换为出战角色，且敌方出战角色附属<color=#FFFFFFFF>$[C301302]</color>时：</color>如可能，$[K56]原本元素骰费用最高的1张手牌，将此次切换视为「$[K2]」而非「$[K1]」，少花费1个元素骰，并移除对方所有角色的<color=#FFFFFFFF>$[C301302]</color>。\\n$[K58]：$[S3130063]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "入场时：敌方出战角色附属目标。\n附属角色切换为出战角色，且敌方出战角色附属目标时：如可能，舍弃原本元素骰费用最高的1张手牌，将此次切换视为「快速行动」而非「战斗行动」，少花费1个元素骰，并移除对方所有角色的目标。\n特技：迅疾滑翔\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Flamingo",
     "buffIconHash": "19109324153596424"
@@ -11846,6 +12201,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>入场时：</color>为我方附属角色提供<color=#FFFFFFFF>2点$[K6]</color>。\\n<color=#FFFFFFFF>附属角色切换至后台时：</color>此牌$[K3]+1。\\n$[K58]：$[S3130071]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "入场时：为我方附属角色提供2点护盾。\n附属角色切换至后台时：此牌可用次数+1。\n特技：浪船·迅击炮\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Waverider",
     "buffIconHash": "8286186731443484050"
@@ -11893,6 +12249,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130081]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：昂扬状态\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
@@ -11951,6 +12308,7 @@
     "rawPlayingDescription": "$[K58]：$[S3130092]\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "playingDescription": "特技：呀！呀！\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_SaurusBaby",
     "buffIconHash": "14068779508272467101"
@@ -11967,6 +12325,7 @@
     "rawDescription": "提供2点$[K6]，保护所附属角色。",
     "description": "提供2点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -11982,6 +12341,7 @@
     "description": "敌方附属有绒翼龙的角色切换至前台时：自身减少1层效果。",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -11998,6 +12358,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>普通攻击</color>。",
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
@@ -12014,6 +12375,7 @@
     "rawDescription": "本角色将在下次行动时，直接使用技能：<color=#FFFFFFFF>普通攻击</color>。",
     "description": "本角色将在下次行动时，直接使用技能：普通攻击。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_Bisonsaurus",
     "buffIconHash": "13973771076860340647"
@@ -12030,6 +12392,7 @@
     "rawDescription": "提供2点$[K6]，保护所附属角色。",
     "description": "提供2点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -12044,6 +12407,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出特技牌时：</color>若本局游戏我方累计打出了6张<color=#FFFFFFFF>特技牌</color>，我方出战角色获得3点<color=#FFFFFFFF>$[K6]</color>，然后造成3点<color=#FFFFFFFF>$[K100]</color>。",
     "description": "我方打出特技牌时：若本局游戏我方累计打出了6张特技牌，我方出战角色获得3点护盾，然后造成3点物理伤害。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Vehicle_SaurusBaby",
     "buffIconHash": "14068779508272467101"
@@ -12060,6 +12424,7 @@
     "rawDescription": "提供3点$[K6]，保护所附属角色。",
     "description": "提供3点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -12089,6 +12454,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>抓2张牌。\\n$[K3]：2",
     "description": "结束阶段：抓2张牌。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12145,6 +12511,7 @@
     "description": "结束阶段：治疗受伤最多的我方后台角色2点。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12160,6 +12527,7 @@
     "description": "结束阶段：治疗我方「出战角色」2点。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12187,6 +12555,7 @@
     "rawDescription": "<color=#FFFFFFFF>每回合自动触发1次：</color>生成1个随机的基础元素骰。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "每回合自动触发1次：生成1个随机的基础元素骰。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12202,6 +12571,7 @@
     "description": "结束阶段：治疗所有我方角色1点。\n可用次数：2",
     "hintType": "GCG_HINT_HEAL",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12229,6 +12599,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>收集最多2个未使用的元素骰。\\n<color=#FFFFFFFF>行动阶段开始时：</color>拿回此牌所收集的元素骰。",
     "description": "结束阶段：收集最多2个未使用的元素骰。\n行动阶段开始时：拿回此牌所收集的元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12243,6 +12614,7 @@
     "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "行动阶段开始时：如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12257,6 +12629,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出原本元素骰费用至少为3的「{SPRITE_PRESET#3003}武器」或「{SPRITE_PRESET#3004}圣遗物」手牌时：</color>少花费1个元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方打出原本元素骰费用至少为3的「武器」或「圣遗物」手牌时：少花费1个元素骰。（每回合1次）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12271,6 +12644,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方选择行动前，元素骰数量为0时：</color>生成1个$[K411]。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方选择行动前，元素骰数量为0时：生成1个万能元素。（每回合1次）\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12287,6 +12661,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3006}天赋」牌，或我方角色使用原本元素骰消耗至少为4的技能时：</color>少花费1个元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "playingDescription": "我方打出「天赋」牌，或我方角色使用原本元素骰消耗至少为4的技能时：少花费1个元素骰。（每回合1次）\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12301,6 +12676,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>如果我方手牌数量不多于2，则抓2张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "结束阶段：如果我方手牌数量不多于2，则抓2张牌。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12315,6 +12691,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方选择行动前：</color>如果我方角色所装备卡牌的原本元素骰费用总和不比对方更低，则生成1个出战角色类型的元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方选择行动前：如果我方角色所装备卡牌的原本元素骰费用总和不比对方更低，则生成1个出战角色类型的元素骰。（每回合1次）\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12329,6 +12706,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方出战角色受到伤害或治疗后：</color>此牌累积1点<color=#FFFFFFFF>「禁令」</color>。（最多累积到4点）\\n<color=#FFFFFFFF>行动阶段开始时：</color>如果此牌已有4点<color=#FFFFFFFF>「禁令」</color>，则消耗4点，在对方场上生成<color=#FFFFFFFF>$[C301018]</color>。（本回合中打出的1张事件牌无效）",
     "description": "我方出战角色受到伤害或治疗后：此牌累积1点「禁令」。（最多累积到4点）\n行动阶段开始时：如果此牌已有4点「禁令」，则消耗4点，在对方场上生成严格禁令。（本回合中打出的1张事件牌无效）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12357,6 +12735,7 @@
     "rawDescription": "<color=#FFFFFFFF>任意阵营的角色受到治疗后：</color>使该角色附属$[K1025]。（结束阶段受到2点穿透伤害，可用1次）\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "任意阵营的角色受到治疗后：使该角色附属悠远雷暴。（结束阶段受到2点穿透伤害，可用1次）\n持续回合：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12386,6 +12765,7 @@
     "rawDescription": "<color=#FFFFFFFF>对方累积抓4张牌后：</color>弃置此牌，在对方牌库顶生成2张<color=#FFFFFFFF>$[K2004]</color>。然后直到本回合结束前，对方每抓1张牌，就立刻生成1张<color=#FFFFFFFF>$[K2004]</color>，随机地置入对方牌库中。",
     "description": "对方累积抓4张牌后：弃置此牌，在对方牌库顶生成2张禁忌知识。然后直到本回合结束前，对方每抓1张牌，就立刻生成1张禁忌知识，随机地置入对方牌库中。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12412,6 +12792,7 @@
     "rawDescription": "直到本回合结束前，所在阵营每抓1张牌，就立刻生成1张<color=#FFFFFFFF>$[K2004]</color>，随机地置入牌库中。",
     "description": "直到本回合结束前，所在阵营每抓1张牌，就立刻生成1张禁忌知识，随机地置入牌库中。",
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Debuff",
     "buffIconHash": "10729278471473375226"
@@ -12428,6 +12809,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方$[K56]或$[K57]1张牌后：</color>此牌累积1点<color=#FFFFFFFF>「实验进展」</color>。每当<color=#FFFFFFFF>「实验进展」</color>达到3点、6点、9点时，就获得1个$[K411]。然后，如果<color=#FFFFFFFF>「实验进展」</color>至少为9点，则弃置此牌。",
     "description": "我方舍弃或调和1张牌后：此牌累积1点「实验进展」。每当「实验进展」达到3点、6点、9点时，就获得1个万能元素。然后，如果「实验进展」至少为9点，则弃置此牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12442,6 +12824,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方使用技能或特技后：</color>此牌累积1点<color=#FFFFFFFF>「角逐之焰」</color>。\\n<color=#FFFFFFFF>「角逐之焰」</color>达到2时：生成1个随机基础元素骰。\\n达到4时：治疗我方出战角色2点。\\n达到6时：弃置此牌，使当前的我方出战角色在2回合内造成的伤害+1。",
     "description": "我方使用技能或特技后：此牌累积1点「角逐之焰」。\n「角逐之焰」达到2时：生成1个随机基础元素骰。\n达到4时：治疗我方出战角色2点。\n达到6时：弃置此牌，使当前的我方出战角色在2回合内造成的伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12454,6 +12837,7 @@
     "rawDescription": "<color=#FFFFFFFF>角色造成的伤害+1</color>。\\n<color=#FFFFFFFF>$[K4]：2</color>",
     "description": "角色造成的伤害+1。\n持续回合：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -12470,6 +12854,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出名称不存在于本局最初牌组的牌时：</color>此牌累积1点<color=#FFFFFFFF>「瞩目」</color>。\\n<color=#FFFFFFFF>敌方打出名称不存在于本局最初牌组的牌时：</color>此牌扣除1点<color=#FFFFFFFF>「瞩目」</color>。\\n<color=#FFFFFFFF>行动阶段开始时：</color>如果此牌有至少3点<color=#FFFFFFFF>「瞩目」</color>，则生成1个随机基础元素骰；如果此牌有至少1点<color=#FFFFFFFF>「瞩目」</color>，将1个元素骰转换为$[K411]。",
     "description": "我方打出名称不存在于本局最初牌组的牌时：此牌累积1点「瞩目」。\n敌方打出名称不存在于本局最初牌组的牌时：此牌扣除1点「瞩目」。\n行动阶段开始时：如果此牌有至少3点「瞩目」，则生成1个随机基础元素骰；如果此牌有至少1点「瞩目」，将1个元素骰转换为万能元素。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12484,6 +12869,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出名称不存在于本局最初牌组的牌时：</color>如果打出的牌原本元素骰费用不低于此牌的<color=#FFFFFFFF>「极限运动点」</color>，则生成1个随机基础元素骰，然后此牌累积1个<color=#FFFFFFFF>「极限运动点」</color>。",
     "description": "我方打出名称不存在于本局最初牌组的牌时：如果打出的牌原本元素骰费用不低于此牌的「极限运动点」，则生成1个随机基础元素骰，然后此牌累积1个「极限运动点」。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12498,6 +12884,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方「召唤物」入场时：</color>使其$[K3]+1。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方「召唤物」入场时：使其可用次数+1。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12512,6 +12899,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方$[K56]2张卡牌后：</color>我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
     "description": "我方舍弃2张卡牌后：我方下一个后台角色获得1层“下次切换至前台时，回复1个对应元素的骰子”。（可叠加，每次触发1层）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12524,6 +12912,7 @@
     "rawDescription": "下次切换至前台时，回复1个对应元素的骰子。（可叠加，每次触发1层）",
     "description": "下次切换至前台时，回复1个对应元素的骰子。（可叠加，每次触发1层）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -12540,6 +12929,7 @@
     "rawDescription": "此牌初始具有4点<color=#FFFFFFFF>灵觉</color>。\\n<color=#FFFFFFFF>我方$[K59]后：</color><color=#FFFFFFFF>灵觉</color>-1。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若<color=#FFFFFFFF>灵觉</color>为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中$[K59]一个生成。",
     "description": "此牌初始具有4点灵觉。\n我方挑选后：灵觉-1。\n行动阶段开始时：若灵觉为0，则移除自身，然后从3个随机元素骰费用为2的支援牌中挑选一个生成。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12565,6 +12955,7 @@
     "rawDescription": "自身层数到达3时，治疗所附属角色1点；若自身层数等于5，则所附属角色造成的伤害+1。（可叠加，最多叠加到5层）",
     "description": "自身层数到达3时，治疗所附属角色1点；若自身层数等于5，则所附属角色造成的伤害+1。（可叠加，最多叠加到5层）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -12581,6 +12972,7 @@
     "rawDescription": "提供1点$[K6]，保护所附属角色。",
     "description": "提供1点护盾，保护所附属角色。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -12594,6 +12986,7 @@
     "skills": [],
     "rawDescription": "",
     "description": "",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -12610,6 +13003,7 @@
     "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>生成2点$[K411]。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "行动阶段开始时：生成2点万能元素。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12639,6 +13033,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>结束阶段：</color>此牌补充1个<color=#FFFFFFFF>「合成材料」</color>。\\n<color=#FFFFFFFF>打出「{SPRITE_PRESET#3004}圣遗物」手牌时：</color>如可能，则支付等同于「{SPRITE_PRESET#3004}圣遗物」总费用数量的<color=#FFFFFFFF>「合成材料」</color>，以免费装备此「{SPRITE_PRESET#3004}圣遗物」。（每回合1次）",
     "playingDescription": "结束阶段：此牌补充1个「合成材料」。\n打出「圣遗物」手牌时：如可能，则支付等同于「圣遗物」总费用数量的「合成材料」，以免费装备此「圣遗物」。（每回合1次）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12655,6 +13050,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>结束阶段：</color>此牌补充1个<color=#FFFFFFFF>「锻造原胚」</color>。\\n<color=#FFFFFFFF>打出「{SPRITE_PRESET#3003}武器」手牌时：</color>如可能，则支付等同于「{SPRITE_PRESET#3003}武器」总费用数量的<color=#FFFFFFFF>「锻造原胚」</color>，以免费装备此「{SPRITE_PRESET#3003}武器」。（每回合1次）",
     "playingDescription": "结束阶段：此牌补充1个「锻造原胚」。\n打出「武器」手牌时：如可能，则支付等同于「武器」总费用数量的「锻造原胚」，以免费装备此「武器」。（每回合1次）",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12695,6 +13091,7 @@
     "rawDescription": "<color=#FFFFFFFF>每回合自动触发1次：</color>此牌累积1只<color=#FFFFFFFF>「鸽子」</color>。如果此牌已累积3只<color=#FFFFFFFF>「鸽子」</color>，则弃置此牌，抓1张牌，并生成1点$[K411]。",
     "description": "每回合自动触发1次：此牌累积1只「鸽子」。如果此牌已累积3只「鸽子」，则弃置此牌，抓1张牌，并生成1点万能元素。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12709,6 +13106,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>收集我方未使用的元素骰（每种最多1个）。\\n<color=#FFFFFFFF>行动阶段开始时：</color>如果此牌已收集3个元素骰，则抓2张牌，生成2点$[K411]，然后弃置此牌。",
     "description": "结束阶段：收集我方未使用的元素骰（每种最多1个）。\n行动阶段开始时：如果此牌已收集3个元素骰，则抓2张牌，生成2点万能元素，然后弃置此牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12723,6 +13121,7 @@
     "rawDescription": "<color=#FFFFFFFF>双方角色使用技能后：</color>如果造成了$[K100]、$[K5]或引发了<color=#FFFFFFFF>元素反应</color>，此牌累积1个<color=#FFFFFFFF>「灵感」</color>。如果此牌已累积3个<color=#FFFFFFFF>「灵感」</color>，则弃置此牌并抓2张牌。",
     "description": "双方角色使用技能后：如果造成了物理伤害、穿透伤害或引发了元素反应，此牌累积1个「灵感」。如果此牌已累积3个「灵感」，则弃置此牌并抓2张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12750,6 +13149,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>我方一名充能未满的角色获得1点$[K310]。（出战角色优先）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "结束阶段：我方一名充能未满的角色获得1点充能。（出战角色优先）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -12764,6 +13164,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方切换到一个没有$[K310]的角色后：</color>使我方出战角色获得1点$[K310]。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方切换到一个没有充能的角色后：使我方出战角色获得1点充能。（每回合1次）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12778,6 +13179,7 @@
     "rawDescription": "<color=#FFFFFFFF>召唤物消失时：</color>此牌累积1点<color=#FFFFFFFF>「大祓」进度</color>。（最多累积3点）\\n<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3003}武器」或「{SPRITE_PRESET#3004}圣遗物」装备时：</color>如果<color=#FFFFFFFF>「大祓」进度</color>已达到3，则弃置此牌，使打出的卡牌少花费2个元素骰。",
     "description": "召唤物消失时：此牌累积1点「大祓」进度。（最多累积3点）\n我方打出「武器」或「圣遗物」装备时：如果「大祓」进度已达到3，则弃置此牌，使打出的卡牌少花费2个元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12857,6 +13259,7 @@
     "rawDescription": "<color=#FFFFFFFF>双方执行任意行动后，我方手牌数量为0时：</color>抓1张牌。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "双方执行任意行动后，我方手牌数量为0时：抓1张牌。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12884,6 +13287,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出「玛梅赫」以外的「{SPRITE_PRESET#3101}料理」/「{SPRITE_PRESET#3104}场地」/「{SPRITE_PRESET#3103}伙伴」/「{SPRITE_PRESET#3102}道具」行动牌后：</color>随机生成1张「玛梅赫」以外的「{SPRITE_PRESET#3101}料理」/「{SPRITE_PRESET#3104}场地」/「{SPRITE_PRESET#3103}伙伴」/「{SPRITE_PRESET#3102}道具」行动牌，将其加入手牌。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "我方打出「玛梅赫」以外的「料理」/「场地」/「伙伴」/「道具」行动牌后：随机生成1张「玛梅赫」以外的「料理」/「场地」/「伙伴」/「道具」行动牌，将其加入手牌。（每回合1次）\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12900,6 +13304,7 @@
     "rawPlayingDescription": "此牌会记录本场对局中我方支援区弃置卡牌的数量，称为<color=#FFFFFFFF>「阅历」</color>。（最多6点，<color=#D3BC8EFF>当前为${[GCG_TOKEN_COUNTER]}点</color>）\\n<color=#FFFFFFFF>我方角色使用「元素爆发」后：</color>如果<color=#FFFFFFFF>「阅历」</color>至少为6，则弃置此牌，对我方出战角色附属$[K1028]。",
     "playingDescription": "此牌会记录本场对局中我方支援区弃置卡牌的数量，称为「阅历」。（最多6点，当前为${[GCG_TOKEN_COUNTER]}点）\n我方角色使用「元素爆发」后：如果「阅历」至少为6，则弃置此牌，对我方出战角色附属沙与梦。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12930,6 +13335,7 @@
     "rawPlayingDescription": "此牌会记录本场对局中敌方角色受到过的元素伤害种类数，称为<color=#FFFFFFFF>「侍从的周到」</color>。（最多4点，<color=#D3BC8EFF>当前为${[GCG_TOKEN_COUNTER]}点</color>）\\n<color=#FFFFFFFF>结束阶段：</color>如果<color=#FFFFFFFF>「侍从的周到」</color>至少为3，则弃置此牌，然后抓<color=#FFFFFFFF>「侍从的周到」</color>点数的牌。",
     "playingDescription": "此牌会记录本场对局中敌方角色受到过的元素伤害种类数，称为「侍从的周到」。（最多4点，当前为${[GCG_TOKEN_COUNTER]}点）\n结束阶段：如果「侍从的周到」至少为3，则弃置此牌，然后抓「侍从的周到」点数的牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12944,6 +13350,7 @@
     "rawDescription": "<color=#FFFFFFFF>入场时：</color>生成4张<color=#FFFFFFFF>$[K2001]</color>，均匀地置入我方牌库中。\\n<color=#FFFFFFFF>我方打出2张$[K2001]后：</color>弃置此牌，召唤<color=#FFFFFFFF>$[K1021]</color>。",
     "description": "入场时：生成4张太郎丸的存款，均匀地置入我方牌库中。\n我方打出2张太郎丸的存款后：弃置此牌，召唤愤怒的太郎丸。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -12957,6 +13364,7 @@
     "description": "结束阶段：造成2点物理伤害。\n可用次数：2",
     "hintType": "GCG_HINT_VOID",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_Taroumaru"
   },
@@ -12972,6 +13380,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>生成1张<color=#FFFFFFFF>$[K2002]</color>，随机将其置入我方牌库顶部5张牌之中。如果此牌的$[K3]仅剩余1，则抓1张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "结束阶段：生成1张「清洁工作」，随机将其置入我方牌库顶部5张牌之中。如果此牌的可用次数仅剩余1，则抓1张牌。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13000,6 +13409,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方$[K56]或$[K57]1张牌后：</color>此牌累积1点<color=#FFFFFFFF>「新闻线索」</color>。（最多累积到2点）\\n<color=#FFFFFFFF>结束阶段：</color>如果此牌已累积2点<color=#FFFFFFFF>「新闻线索」</color>，则扣除2点，复制对方牌库顶的1张牌加入我方手牌。",
     "description": "我方舍弃或调和1张牌后：此牌累积1点「新闻线索」。（最多累积到2点）\n结束阶段：如果此牌已累积2点「新闻线索」，则扣除2点，复制对方牌库顶的1张牌加入我方手牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13014,6 +13424,7 @@
     "rawDescription": "<color=#FFFFFFFF>每回合自动触发1次：</color>将1张随机的<color=#FFFFFFFF>「$[C302218]」</color>放入我方手牌。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "每回合自动触发1次：将1张随机的「美露莘的声援」放入我方手牌。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -13052,6 +13463,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方角色使用技能后：</color>受到2点治疗或2点$[K5]。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方角色使用技能后：受到2点治疗或2点穿透伤害。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Event_Sticker",
     "buffIconHash": "15093776786381158242"
@@ -13066,6 +13478,7 @@
     "rawDescription": "<color=#FFFFFFFF>回合结束时：</color>随机将1张超棒事件牌加入手牌。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "回合结束时：随机将1张超棒事件牌加入手牌。\n可用次数：3",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Event_Sticker",
     "buffIconHash": "15093776786381158242"
@@ -13082,6 +13495,7 @@
     "rawDescription": "<color=#FFFFFFFF>双方角色使用技能后：</color>如果造成了元素伤害，此牌累积1个<color=#FFFFFFFF>「质变进度」</color>。如果此牌已累积3个<color=#FFFFFFFF>「质变进度」</color>，则弃置此牌并生成3个不同的基础元素骰。",
     "description": "双方角色使用技能后：如果造成了元素伤害，此牌累积1个「质变进度」。如果此牌已累积3个「质变进度」，则弃置此牌并生成3个不同的基础元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13137,6 +13551,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方角色使用技能后：</color>此牌累积1个<color=#FFFFFFFF>「寻宝线索」</color>。如果此牌已累积3个<color=#FFFFFFFF>「寻宝线索」</color>，则弃置此牌并抓3张牌。",
     "description": "我方角色使用技能后：此牌累积1个「寻宝线索」。如果此牌已累积3个「寻宝线索」，则弃置此牌并抓3张牌。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13151,6 +13566,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出原本元素骰费用至少为2的支援牌时：</color>少花费1个元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方打出原本元素骰费用至少为2的支援牌时：少花费1个元素骰。（每回合1次）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13165,6 +13581,7 @@
     "rawDescription": "<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3003}武器」/「{SPRITE_PRESET#3004}圣遗物」/「{SPRITE_PRESET#3104}场地」/「{SPRITE_PRESET#3103}伙伴」手牌时：</color>如果本场对局中我方曾经打出过所打出牌的同名卡牌，则少花费2个元素骰。（每回合1次）\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "我方打出「武器」/「圣遗物」/「场地」/「伙伴」手牌时：如果本场对局中我方曾经打出过所打出牌的同名卡牌，则少花费2个元素骰。（每回合1次）\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13181,6 +13598,7 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>我方打出行动牌后：</color>如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个$[K411]。（每回合1次，<color=#D3BC8EFF>当前已打出${[GCG_TOKEN_COUNTER]}张</color>）\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "playingDescription": "我方打出行动牌后：如果此牌在场期间本回合中我方已打出3张行动牌，则抓1张牌并生成1个万能元素。（每回合1次，当前已打出${[GCG_TOKEN_COUNTER]}张）\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13195,6 +13613,7 @@
     "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>$[K56]最多2张原本元素骰费用最高的手牌，每$[K56]1张，此牌就累积1点<color=#FFFFFFFF>「记忆和梦」</color>。（最多2点）\\n<color=#FFFFFFFF>我方角色使用技能时：</color>如果我方本回合未打出过行动牌，则消耗1点<color=#FFFFFFFF>「记忆和梦」</color>，以使此技能少花费1个元素骰。",
     "description": "行动阶段开始时：舍弃最多2张原本元素骰费用最高的手牌，每舍弃1张，此牌就累积1点「记忆和梦」。（最多2点）\n我方角色使用技能时：如果我方本回合未打出过行动牌，则消耗1点「记忆和梦」，以使此技能少花费1个元素骰。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13277,6 +13696,7 @@
     "rawDescription": "此牌会记录本回合你对敌方角色造成的伤害，记为<color=#FFFFFFFF>「斗志」</color>。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若此牌是场上<color=#FFFFFFFF>「斗志」</color>最高的$[C300006]，则清空此牌的<color=#FFFFFFFF>「斗志」</color>，使我方出战角色本回合造成的伤害+1。",
     "description": "此牌会记录本回合你对敌方角色造成的伤害，记为「斗志」。\n行动阶段开始时：若此牌是场上「斗志」最高的斗争之火，则清空此牌的「斗志」，使我方出战角色本回合造成的伤害+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_CLOCK",
     "hidden": false
   },
   {
@@ -13302,6 +13722,7 @@
     "skills": [],
     "rawDescription": "当前我方出战角色在本回合中，下一次造成的伤害+2。",
     "description": "当前我方出战角色在本回合中，下一次造成的伤害+2。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -13315,6 +13736,7 @@
     "skills": [],
     "rawDescription": "本回合中，所附属角色下一次引发$[K213]时，造成的伤害+3。",
     "description": "本回合中，所附属角色下一次引发火元素相关反应时，造成的伤害+3。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -13328,6 +13750,7 @@
     "skills": [],
     "rawDescription": "<color=#FFFFFFFF>我方下次执行「切换角色」行动时：</color>少花费1个元素骰。",
     "description": "我方下次执行「切换角色」行动时：少花费1个元素骰。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -13341,6 +13764,7 @@
     "skills": [],
     "rawDescription": "我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。",
     "description": "我方下次触发扩散反应时对目标以外的所有敌方角色造成的伤害+1。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -13354,6 +13778,7 @@
     "skills": [],
     "rawDescription": "",
     "description": "",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": true,
     "buffIcon": "UI_Gcg_Buff_Common_Atk_Up",
     "buffIconHash": "1717076279127341445"
@@ -13367,6 +13792,7 @@
     "skills": [],
     "rawDescription": "<color=#FFFFFFFF>我方下次执行「切换角色」行动时：</color>将此次切换视为「$[K2]」而非「$[K1]」。",
     "description": "我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -13383,6 +13809,7 @@
     "rawDescription": "为我方出战角色提供<color=#FFFFFFFF>3点$[K6]</color>。",
     "description": "为我方出战角色提供3点护盾。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_NORMAL_SHIELD",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Shield",
     "buffIconHash": "3779803221919782355"
@@ -13527,6 +13954,7 @@
     "skills": [],
     "rawDescription": "可能出现的「丘丘人」召唤物共有4种：\\n<color=#FFFFFFFF>冰箭丘丘人</color>：结束阶段造成1点$[K101]，可用2次。\\n<color=#FFFFFFFF>水丘丘萨满</color>：结束阶段造成1点$[K102]，可用2次。\\n<color=#FFFFFFFF>冲锋丘丘人</color>：结束阶段造成1点$[K103]，可用2次。\\n<color=#FFFFFFFF>雷箭丘丘人</color>：结束阶段造成1点$[K104]，可用2次。",
     "description": "可能出现的「丘丘人」召唤物共有4种：\n冰箭丘丘人：结束阶段造成1点冰元素伤害，可用2次。\n水丘丘萨满：结束阶段造成1点水元素伤害，可用2次。\n冲锋丘丘人：结束阶段造成1点火元素伤害，可用2次。\n雷箭丘丘人：结束阶段造成1点雷元素伤害，可用2次。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_HiliClub"
   },
@@ -13541,6 +13969,7 @@
     "description": "结束阶段：造成1点冰元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_HiliIce"
   },
@@ -13555,6 +13984,7 @@
     "description": "结束阶段：造成1点水元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_ShamanWater"
   },
@@ -13569,6 +13999,7 @@
     "description": "结束阶段：造成1点火元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_HiliClub"
   },
@@ -13583,6 +14014,7 @@
     "description": "结束阶段：造成1点雷元素伤害。\n可用次数：2",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "cardFace": "UI_Gcg_CardFace_Summon_HiliElectric"
   },
@@ -13595,6 +14027,7 @@
     "skills": [],
     "rawDescription": "「愚人众伏兵」会在自身所在阵营的角色使用技能后触发效果，对自身所在阵营的出战角色造成伤害（每回合1次）。\\n可能出现的「愚人众伏兵」共有4种：\\n<color=#FFFFFFFF>冰萤术士</color>：触发时造成1点$[K101]，可用2次。\\n<color=#FFFFFFFF>藏镜仕女</color>：触发时造成1点$[K102]，可用2次。\\n<color=#FFFFFFFF>火铳游击兵</color>：触发时造成1点$[K103]，可用2次。\\n<color=#FFFFFFFF>雷锤前锋军</color>：触发时造成1点$[K104]，可用2次。",
     "description": "「愚人众伏兵」会在自身所在阵营的角色使用技能后触发效果，对自身所在阵营的出战角色造成伤害（每回合1次）。\n可能出现的「愚人众伏兵」共有4种：\n冰萤术士：触发时造成1点冰元素伤害，可用2次。\n藏镜仕女：触发时造成1点水元素伤害，可用2次。\n火铳游击兵：触发时造成1点火元素伤害，可用2次。\n雷锤前锋军：触发时造成1点雷元素伤害，可用2次。",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false
   },
   {
@@ -13609,6 +14042,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_CRYO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Ice",
     "buffIconHash": "17354387950982528195"
@@ -13625,6 +14059,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_HYDRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Water",
     "buffIconHash": "15123132551692814955"
@@ -13641,6 +14076,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_PYRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Fire",
     "buffIconHash": "6240999780642787685"
@@ -13657,6 +14093,7 @@
     "buffType": "GCG_STATE_BUFF_NEGATIVE",
     "hintType": "GCG_HINT_ELECTRO",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Debuff_Common_Element_Elec",
     "buffIconHash": "16339330682102443781"
@@ -13884,6 +14321,7 @@
     "rawDescription": "<color=#FFFFFFFF>本回合内，所附属角色被击倒时：</color>如可能，消耗等同于此牌<color=#FFFFFFFF>「重燃」</color>的元素骰，使角色$[K54]，并治疗该角色到1点生命值。然后此牌<color=#FFFFFFFF>「重燃」</color>+1。",
     "description": "本回合内，所附属角色被击倒时：如可能，消耗等同于此牌「重燃」的元素骰，使角色免于被击倒，并治疗该角色到1点生命值。然后此牌「重燃」+1。",
     "shownToken": "GCG_TOKEN_COUNTER",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Resurrection",
     "buffIconHash": "2350086969044856312"
@@ -13990,6 +14428,7 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>治疗该角色1点。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "结束阶段：治疗该角色1点。\n可用次数：2",
     "shownToken": "GCG_TOKEN_ROUND_COUNT",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Heal",
     "buffIconHash": "10356428210303428719"
@@ -14004,6 +14443,7 @@
     "rawDescription": "本回合中，该角色<color=#FFFFFFFF>「普通攻击」</color>少花费1个$[K309]。\\n<color=#FFFFFFFF>$[K3]：3</color>",
     "description": "本回合中，该角色「普通攻击」少花费1个无色元素。\n可用次数：3",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -14191,6 +14631,7 @@
     "rawDescription": "本回合中，该我方角色受到的伤害-1。（最多生效3次）",
     "description": "本回合中，该我方角色受到的伤害-1。（最多生效3次）",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -14205,6 +14646,7 @@
     "rawDescription": "下次切换角色少花费1个$[K309]。",
     "description": "下次切换角色少花费1个无色元素。",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
@@ -14219,6 +14661,7 @@
     "rawDescription": "<color=#FFFFFFFF>该角色准备技能时：</color>治疗自身1点。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "该角色准备技能时：治疗自身1点。\n可用次数：2",
     "shownToken": "GCG_TOKEN_LIFE",
+    "shownIcon": "GCG_TOKEN_ICON_HOURGLASS",
     "hidden": false,
     "buffIcon": "UI_Gcg_Buff_Common_Buff",
     "buffIconHash": "10756566743744805222"
