@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo, Show } from "solid-js";
+import { createEffect, createMemo, createResource, Match, Show, Switch } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
@@ -23,11 +23,51 @@ import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
+import ClockIcon from "../svg/ClockIcon.svg?component-solid";
+import HourglassIcon from "../svg/HourglassIcon.svg?component-solid";
+import BarrierIcon from "../svg/BarrierIcon.svg?component-solid";
+import { useUiContext } from "../hooks/context";
+import type { EntityRawData } from "@gi-tcg/static-data";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
+
+const EntityTopHint = (props: { cardDefinitionId: number }) => {
+  const { assetsManager } = useUiContext();
+  const [data] = createResource(
+    () => props.cardDefinitionId,
+    (id) => assetsManager.getData(id),
+  );
+  createEffect(
+    () => console.log(data()),
+  );
+
+  return (
+    <Switch>
+      <Match when={data.loading || data.error}>
+        <div class="w-6 h-6 absolute rounded-full bg-white b-1 b-black"/>        
+      </Match>
+      <Match when={data()}>
+        {(data) => (
+          <Switch>
+            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_CLOCK"}>
+              <ClockIcon class="w-7 h-7 absolute"/> 
+            </Match>
+            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_HOURGLASS"}>
+              <HourglassIcon class="w-7 h-7 absolute"/>        
+            </Match>
+            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_BARRIER_SHIELD"}>
+              <BarrierIcon class="w-7 h-7 absolute"/>        
+            </Match>
+          </Switch>
+        )}
+      </Match>
+    </Switch>
+  );
+};
+
 
 export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
@@ -68,30 +108,15 @@ export function Entity(props: EntityProps) {
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
-        <WithDelicateUi
-          assetId={
-            data().variableName === "usage"
-              ? "UI_Gcg_DiceL_Round"
-              : "UI_Gcg_DiceL_Count"
-          }
-          fallback={
-            <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
-              {data().variableValue}
-            </div>
-          }
-        >
-          {(image) => (
-            <div class="w-8 h-8 absolute top--3 right--3">
-              {image}
-              <StrokedText
-                class="absolute inset-0 line-height-8 text-center text-white font-bold"
-                strokeWidth={1}
-                strokeColor="black"
-                text={String(data().variableValue)}
-              />
-            </div>
-          )}
-        </WithDelicateUi>
+        <div class="w-7 h-7 absolute top--2.2 right--3">
+          <EntityTopHint cardDefinitionId={data().definitionId} />
+          <StrokedText
+            class="absolute inset-0 line-height-7 text-center text-white font-bold"
+            strokeWidth={1}
+            strokeColor="black"
+            text={String(data().variableValue)}
+          />
+        </div>
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
