@@ -589,6 +589,8 @@ export function wrapSkillInfoWithExt(
   return { ...skillInfo, associatedExtensionId };
 }
 
+const SHOULD_EXECUTE_ELSE: unique symbol = Symbol("shouldExecuteElse");
+
 export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   declare [BUILDER_META_TYPE]: Meta;
 
@@ -596,6 +598,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   protected filters: SkillOperationFilter<Meta>[] = [];
   protected associatedExtensionId: number | null = null;
   private applyIfFilter = false;
+  private applyElseFilter = false;
   private _ifFilter: SkillOperationFilter<Meta> = () => true;
 
   constructor(protected readonly id: number) {
@@ -612,8 +615,24 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
     if (this.applyIfFilter) {
       const ifFilter = this._ifFilter;
       this.operations.push(function (c, e) {
-        if (!ifFilter(c as any, e)) return;
+        if (!ifFilter(c as any, e)) {
+          return SHOULD_EXECUTE_ELSE;
+        }
         return op(c, e);
+      });
+    } else if (this.applyElseFilter) {
+      const lastOp = this.operations.pop();
+      if (!lastOp) {
+        throw new GiTcgDataError(
+          "Cannot apply else filter without a preceding if filter.",
+        );
+      }
+      this.operations.push(function (c, e) {
+        const result = lastOp(c, e);
+        if ((result as unknown) === SHOULD_EXECUTE_ELSE) {
+          return op(c, e);
+        }
+        return result;
       });
     } else {
       this.operations.push(op);
@@ -623,9 +642,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
   }
 
   else(): this {
-    const ifFilter = this._ifFilter;
-    this._ifFilter = (c, e) => !ifFilter(c, e);
-    this.applyIfFilter = true;
+    this.applyElseFilter = true;
     return this;
   }
 
@@ -834,7 +851,7 @@ export class TriggeredSkillBuilder<
     return this;
   }
 
-  beforeDefaultDispose(){
+  beforeDefaultDispose() {
     this._beforeDefaultDispose = true;
     return this;
   }
@@ -910,14 +927,14 @@ export class TriggeredSkillBuilder<
     return this;
   }
   listenToPlayer(): this {
-    if (this._beforeDefaultDispose){
+    if (this._beforeDefaultDispose) {
       throw new GiTcgDataError("Only not self defeated can be listened");
     }
     this._listenTo = ListenTo.SamePlayer;
     return this;
   }
   listenToAll(): this {
-    if (this._beforeDefaultDispose){
+    if (this._beforeDefaultDispose) {
       throw new GiTcgDataError("Only not self defeated can be listened");
     }
     this._listenTo = ListenTo.All;
@@ -997,7 +1014,9 @@ export class TriggeredSkillBuilder<
     // 4. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
-    const parentSkillList = this._beforeDefaultDispose ? this.parent._skillListBeforeDefaultDispose : this.parent._skillList
+    const parentSkillList = this._beforeDefaultDispose
+      ? this.parent._skillListBeforeDefaultDispose
+      : this.parent._skillList;
 
     // 【构造技能定义并向父级实体添加】
     const filter = this.buildFilter();
