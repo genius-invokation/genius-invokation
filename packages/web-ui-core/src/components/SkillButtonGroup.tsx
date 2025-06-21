@@ -56,7 +56,7 @@ function SkillButton(props: SkillButtonProps) {
       </Match>
       <Match when={skillId() === "switchActive"}>
         <div class="w-full group-data-[disabled]:opacity-50 scale-110%">
-          <SwitchActiveIcon />
+          <SwitchActiveIcon class="w-9 h-9"/>
         </div>
       </Match>
     </Switch>

@@ -13,21 +13,65 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo, Show } from "solid-js";
+import { createEffect, createMemo, createResource, Match, Show, Switch, type Component, type ComponentProps } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
-import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
+import ClockIcon from "../svg/ClockIcon.svg?component-solid";
+import HourglassIcon from "../svg/HourglassIcon.svg?component-solid";
+import BarrierIcon from "../svg/BarrierIcon.svg?component-solid";
+import { useUiContext } from "../hooks/context";
+import type { EntityRawData } from "@gi-tcg/static-data";
+import { Dynamic } from "solid-js/web";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
+
+const EntityTopHint = (props: { cardDefinitionId: number , value: number}) => {
+  const { assetsManager } = useUiContext();
+  const [data] = createResource(
+    () => props.cardDefinitionId,
+    (id) => assetsManager.getData(id),
+  );
+  const ICON_MAP : Record<string, Component> = {
+    GCG_TOKEN_ICON_CLOCK: ClockIcon,
+    GCG_TOKEN_ICON_HOURGLASS: HourglassIcon,
+    GCG_TOKEN_ICON_BARRIER_SHIELD: BarrierIcon,
+  };
+  return (
+    <Switch>
+      <Match when={data.loading || data.error}>
+        <div class="w-6 h-6 absolute top--2 right--2.5 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
+          {props.value}
+        </div>
+      </Match>
+      <Match when={data()}>
+        {(data) => (
+          <div class="w-7 h-7 absolute top--2.2 right--3">
+            <Dynamic<Component<ComponentProps<"div">>>
+              component={ICON_MAP[(data() as EntityRawData).shownIcon as string]}
+              class= "w-7 h-7 absolute"
+            />                  
+            <StrokedText
+              class="absolute inset-0 line-height-7 text-center text-white font-bold"
+              strokeWidth={2}
+              strokeColor="#000000aa"
+              text={String(props.value)}
+            />
+          </div>
+        )}
+      </Match>
+    </Switch>      
+  );
+};
+
 
 export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
@@ -68,30 +112,7 @@ export function Entity(props: EntityProps) {
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
-        <WithDelicateUi
-          assetId={
-            data().variableName === "usage"
-              ? "UI_Gcg_DiceL_Round"
-              : "UI_Gcg_DiceL_Count"
-          }
-          fallback={
-            <div class="w-6 h-6 absolute top--2 right--2 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
-              {data().variableValue}
-            </div>
-          }
-        >
-          {(image) => (
-            <div class="w-8 h-8 absolute top--3 right--3">
-              {image}
-              <StrokedText
-                class="absolute inset-0 line-height-8 text-center text-white font-bold"
-                strokeWidth={1}
-                strokeColor="black"
-                text={String(data().variableValue)}
-              />
-            </div>
-          )}
-        </WithDelicateUi>
+        <EntityTopHint cardDefinitionId={data().definitionId} value={data().variableValue as number}/>
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
