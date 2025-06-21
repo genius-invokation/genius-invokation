@@ -13,13 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createEffect, createMemo, createResource, Match, Show, Switch } from "solid-js";
+import { createEffect, createMemo, createResource, Match, Show, Switch, type Component, type ComponentProps } from "solid-js";
 import { cssPropertyOfTransform } from "../ui_state";
 import type { EntityInfo } from "./Chessboard";
 import { Image } from "./Image";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
-import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
@@ -28,43 +27,48 @@ import HourglassIcon from "../svg/HourglassIcon.svg?component-solid";
 import BarrierIcon from "../svg/BarrierIcon.svg?component-solid";
 import { useUiContext } from "../hooks/context";
 import type { EntityRawData } from "@gi-tcg/static-data";
+import { Dynamic } from "solid-js/web";
 
 export interface EntityProps extends EntityInfo {
   selecting: boolean;
   onClick?: (e: MouseEvent, currentTarget: HTMLElement) => void;
 }
 
-const EntityTopHint = (props: { cardDefinitionId: number }) => {
+const EntityTopHint = (props: { cardDefinitionId: number , value: number}) => {
   const { assetsManager } = useUiContext();
   const [data] = createResource(
     () => props.cardDefinitionId,
     (id) => assetsManager.getData(id),
   );
-  createEffect(
-    () => console.log(data()),
-  );
-
+  const ICON_MAP : Record<string, Component> = {
+    GCG_TOKEN_ICON_CLOCK: ClockIcon,
+    GCG_TOKEN_ICON_HOURGLASS: HourglassIcon,
+    GCG_TOKEN_ICON_BARRIER_SHIELD: BarrierIcon,
+  };
   return (
     <Switch>
       <Match when={data.loading || data.error}>
-        <div class="w-6 h-6 absolute rounded-full bg-white b-1 b-black"/>        
+        <div class="w-6 h-6 absolute top--2 right--2.5 rounded-full bg-white b-1 b-black flex items-center justify-center line-height-none">
+          {props.value}
+        </div>
       </Match>
       <Match when={data()}>
         {(data) => (
-          <Switch>
-            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_CLOCK"}>
-              <ClockIcon class="w-7 h-7 absolute"/> 
-            </Match>
-            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_HOURGLASS"}>
-              <HourglassIcon class="w-7 h-7 absolute"/>        
-            </Match>
-            <Match when={(data() as EntityRawData).shownIcon === "GCG_TOKEN_ICON_BARRIER_SHIELD"}>
-              <BarrierIcon class="w-7 h-7 absolute"/>        
-            </Match>
-          </Switch>
+          <div class="w-7 h-7 absolute top--2.2 right--3">
+            <Dynamic<Component<ComponentProps<"div">>>
+              component={ICON_MAP[(data() as EntityRawData).shownIcon as string]}
+              class= "w-7 h-7 absolute"
+            />                  
+            <StrokedText
+              class="absolute inset-0 line-height-7 text-center text-white font-bold"
+              strokeWidth={2}
+              strokeColor="#000000aa"
+              text={String(props.value)}
+            />
+          </div>
         )}
       </Match>
-    </Switch>
+    </Switch>      
   );
 };
 
@@ -108,15 +112,7 @@ export function Entity(props: EntityProps) {
         </div>
       </Show>
       <Show when={typeof data().variableValue === "number"}>
-        <div class="w-7 h-7 absolute top--2.2 right--3">
-          <EntityTopHint cardDefinitionId={data().definitionId} />
-          <StrokedText
-            class="absolute inset-0 line-height-7 text-center text-white font-bold"
-            strokeWidth={2}
-            strokeColor="#000000aa"
-            text={String(data().variableValue)}
-          />
-        </div>
+        <EntityTopHint cardDefinitionId={data().definitionId} value={data().variableValue as number}/>
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
         <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
