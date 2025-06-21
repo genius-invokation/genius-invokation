@@ -112,8 +112,8 @@ export function Entity(props: EntityProps) {
           <EntityTopHint cardDefinitionId={data().definitionId} />
           <StrokedText
             class="absolute inset-0 line-height-7 text-center text-white font-bold"
-            strokeWidth={1}
-            strokeColor="black"
+            strokeWidth={2}
+            strokeColor="#000000aa"
             text={String(data().variableValue)}
           />
         </div>
