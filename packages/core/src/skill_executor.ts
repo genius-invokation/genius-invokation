@@ -175,182 +175,196 @@ export class SkillExecutor {
     if (this.state.phase === "gameEnd") {
       return;
     }
-    const emittedEvents = this.executeSkill(skillInfo, arg);
+    let emittedEvents = [...this.executeSkill(skillInfo, arg)];
     await this.mutator.notifyAndPause();
 
     const nonDamageEvents: EventAndRequest[] = [];
-    const damageEventArgs: DamageOrHealEventArg<DamageInfo>[] = [];
-    const zeroHealthEventArgs: ZeroHealthEventArg[] = [];
+    const safeDamageEvents: DamageOrHealEventArg<DamageInfo>[] = [];
+    const criticalDamageEvents: DamageOrHealEventArg<DamageInfo>[] = [];
 
-    const failedPlayers = new Set<0 | 1>();
+    do {
+      const damageEventArgs: DamageOrHealEventArg<DamageInfo>[] = [];
+      const zeroHealthEventArgs: ZeroHealthEventArg[] = [];
 
-    for (const event of emittedEvents) {
-      const [name, arg] = event;
-      if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
-        if (arg.damageInfo.causeDefeated) {
-          // Wrap original EventArg to ZeroHealthEventArg
-          const zeroHealthEventArg = new ZeroHealthEventArg(
-            arg.onTimeState,
-            arg.damageInfo,
-          );
-          if (checkImmune(this.state, zeroHealthEventArg)) {
-            zeroHealthEventArgs.push(zeroHealthEventArg);
-          } else {
-            const { id } = arg.target;
-            const ch = getEntityById(this.state, id) as CharacterState;
-            const { who } = getEntityArea(this.state, id);
-            if (ch.variables.alive) {
-              this.mutator.log(
-                DetailLogType.Primitive,
-                `${stringifyState(ch)} is defeated (and no immune available)`,
-              );
-              this.mutate({
-                type: "modifyEntityVar",
-                state: ch,
-                varName: "alive",
-                value: 0,
-                direction: "decrease",
-              });
-              const energyVarName =
-                ch.definition.specialEnergy?.variableName ?? "energy";
-              this.mutate({
-                type: "modifyEntityVar",
-                state: ch,
-                varName: energyVarName,
-                value: 0,
-                direction: "decrease",
-              });
-              this.mutate({
-                type: "modifyEntityVar",
-                state: ch,
-                varName: "aura",
-                value: Aura.None,
-                direction: null,
-              });
-              this.mutate({
-                type: "setPlayerFlag",
-                who,
-                flagName: "hasDefeated",
-                value: true,
-              });
-              const player = this.state.players[who];
-              const aliveCharacters = player.characters.filter(
-                (ch) => ch.variables.alive,
-              );
-              if (aliveCharacters.length === 0) {
-                failedPlayers.add(who);
+      const failedPlayers = new Set<0 | 1>();
+
+      // 将 emittedEvents 分成 nonDamage 和 damage 两类，
+      // 同时收集 zeroHealth 以处理击倒和免于被击倒
+      for (const event of emittedEvents) {
+        const [name, arg] = event;
+        if (name === "onDamageOrHeal" && arg.isDamageTypeDamage()) {
+          if (arg.damageInfo.causeDefeated) {
+            // Wrap original EventArg to ZeroHealthEventArg
+            const zeroHealthEventArg = new ZeroHealthEventArg(
+              arg.onTimeState,
+              arg.damageInfo,
+            );
+            if (checkImmune(this.state, zeroHealthEventArg)) {
+              zeroHealthEventArgs.push(zeroHealthEventArg);
+            } else {
+              const { id } = arg.target;
+              const ch = getEntityById(this.state, id) as CharacterState;
+              const { who } = getEntityArea(this.state, id);
+              if (ch.variables.alive) {
+                this.mutator.log(
+                  DetailLogType.Primitive,
+                  `${stringifyState(ch)} is defeated (and no immune available)`,
+                );
+                this.mutate({
+                  type: "modifyEntityVar",
+                  state: ch,
+                  varName: "alive",
+                  value: 0,
+                  direction: "decrease",
+                });
+                const energyVarName =
+                  ch.definition.specialEnergy?.variableName ?? "energy";
+                this.mutate({
+                  type: "modifyEntityVar",
+                  state: ch,
+                  varName: energyVarName,
+                  value: 0,
+                  direction: "decrease",
+                });
+                this.mutate({
+                  type: "modifyEntityVar",
+                  state: ch,
+                  varName: "aura",
+                  value: Aura.None,
+                  direction: null,
+                });
+                this.mutate({
+                  type: "setPlayerFlag",
+                  who,
+                  flagName: "hasDefeated",
+                  value: true,
+                });
+                const player = this.state.players[who];
+                const aliveCharacters = player.characters.filter(
+                  (ch) => ch.variables.alive,
+                );
+                if (aliveCharacters.length === 0) {
+                  failedPlayers.add(who);
+                }
               }
             }
+            damageEventArgs.push(zeroHealthEventArg);
+          } else {
+            damageEventArgs.push(arg);
           }
-          damageEventArgs.push(zeroHealthEventArg);
         } else {
-          damageEventArgs.push(arg);
+          nonDamageEvents.push(event);
         }
-      } else {
-        nonDamageEvents.push(event);
       }
-    }
 
-    if (failedPlayers.size === 2) {
-      this.mutator.log(
-        DetailLogType.Other,
-        `Both player has no alive characters, set winner to null`,
-      );
-      this.mutate({
-        type: "changePhase",
-        newPhase: "gameEnd",
-      });
-      await this.mutator.notifyAndPause();
-      return;
-    } else if (failedPlayers.size === 1) {
-      const who = [...failedPlayers.values()][0];
-      this.mutator.log(
-        DetailLogType.Other,
-        `player ${who} has no alive characters, set winner to ${flip(who)}`,
-      );
-      this.mutate({
-        type: "changePhase",
-        newPhase: "gameEnd",
-      });
-      this.mutate({
-        type: "setWinner",
-        winner: flip(who),
-      });
-      await this.mutator.notifyAndPause();
-      return;
-    }
-    const safeDamageEvents = damageEventArgs.filter(
-      (arg) => !arg.damageInfo.causeDefeated,
-    );
-    const criticalDamageEvents = damageEventArgs.filter(
-      (arg) => arg.damageInfo.causeDefeated,
-    );
-    if (criticalDamageEvents.length > 0) {
-      await this.mutator.notifyAndPause();
-    }
-
-    for (const arg of zeroHealthEventArgs) {
-      nonDamageEvents.push(
-        ...this.handleEventShallow(["modifyZeroHealth", arg]),
-      );
-      if (arg._immuneInfo !== null) {
+      if (failedPlayers.size === 2) {
         this.mutator.log(
-          DetailLogType.Primitive,
-          `${stringifyState(arg.target)} is immune to defeated. Revive him to ${
-            arg._immuneInfo.newHealth
-          }`,
+          DetailLogType.Other,
+          `Both player has no alive characters, set winner to null`,
         );
-        const source = arg._immuneInfo.skill.caller;
-        const healValue = arg._immuneInfo.newHealth;
-        const healInfo: HealInfo = {
-          type: DamageType.Heal,
-          cancelled: false,
-          healKind: "immuneDefeated",
-          source,
-          via: arg._immuneInfo.skill,
-          target: arg.target,
-          expectedValue: healValue,
-          value: healValue,
-          causeDefeated: false,
-          fromReaction: null,
-        };
         this.mutate({
-          type: "modifyEntityVar",
-          state: arg.target,
-          varName: "health",
-          value: healValue,
-          direction: "increase",
+          type: "changePhase",
+          newPhase: "gameEnd",
         });
-        await this.mutator.notifyAndPause({
-          mutations: [
-            {
-              $case: "damage",
-              damageType: healInfo.type,
-              value: healInfo.value,
-              sourceId: healInfo.source.id,
-              sourceDefinitionId: healInfo.source.definition.id,
-              targetId: healInfo.target.id,
-              targetDefinitionId: healInfo.target.definition.id,
-              isSkillMainDamage: false,
-              reactionType: PbReactionType.UNSPECIFIED,
-              causeDefeated: false,
-              oldAura: arg.target.variables.aura,
-              newAura: arg.target.variables.aura,
-              oldHealth: 0,
-              newHealth: healValue,
-              healKind: PbHealKind.IMMUNE_DEFEATED,
-            },
-          ],
+        await this.mutator.notifyAndPause();
+        return;
+      } else if (failedPlayers.size === 1) {
+        const who = [...failedPlayers.values()][0];
+        this.mutator.log(
+          DetailLogType.Other,
+          `player ${who} has no alive characters, set winner to ${flip(who)}`,
+        );
+        this.mutate({
+          type: "changePhase",
+          newPhase: "gameEnd",
         });
-        const healEventArg = new DamageOrHealEventArg(
-          arg.onTimeState,
-          healInfo,
-        );
-        nonDamageEvents.push(
-          ...this.handleEventShallow(["onDamageOrHeal", healEventArg]),
-        );
+        this.mutate({
+          type: "setWinner",
+          winner: flip(who),
+        });
+        await this.mutator.notifyAndPause();
+        return;
       }
-    }
+
+      for (const event of damageEventArgs) {
+        if (event.damageInfo.causeDefeated) {
+          criticalDamageEvents.push(event);
+        } else {
+          safeDamageEvents.push(event);
+        }
+      }
+
+      if (criticalDamageEvents.length > 0) {
+        await this.mutator.notifyAndPause();
+      }
+
+      // 继续收集在执行免于被击倒的 onDamageOrHeal 响应时产生的事件
+      emittedEvents = [];
+      for (const arg of zeroHealthEventArgs) {
+        nonDamageEvents.push(
+          ...this.handleEventShallow(["modifyZeroHealth", arg]),
+        );
+        if (arg._immuneInfo !== null) {
+          this.mutator.log(
+            DetailLogType.Primitive,
+            `${stringifyState(
+              arg.target,
+            )} is immune to defeated. Revive him to ${
+              arg._immuneInfo.newHealth
+            }`,
+          );
+          const source = arg._immuneInfo.skill.caller;
+          const healValue = arg._immuneInfo.newHealth;
+          const healInfo: HealInfo = {
+            type: DamageType.Heal,
+            cancelled: false,
+            healKind: "immuneDefeated",
+            source,
+            via: arg._immuneInfo.skill,
+            target: arg.target,
+            expectedValue: healValue,
+            value: healValue,
+            causeDefeated: false,
+            fromReaction: null,
+          };
+          this.mutate({
+            type: "modifyEntityVar",
+            state: arg.target,
+            varName: "health",
+            value: healValue,
+            direction: "increase",
+          });
+          await this.mutator.notifyAndPause({
+            mutations: [
+              {
+                $case: "damage",
+                damageType: healInfo.type,
+                value: healInfo.value,
+                sourceId: healInfo.source.id,
+                sourceDefinitionId: healInfo.source.definition.id,
+                targetId: healInfo.target.id,
+                targetDefinitionId: healInfo.target.definition.id,
+                isSkillMainDamage: false,
+                reactionType: PbReactionType.UNSPECIFIED,
+                causeDefeated: false,
+                oldAura: arg.target.variables.aura,
+                newAura: arg.target.variables.aura,
+                oldHealth: 0,
+                newHealth: healValue,
+                healKind: PbHealKind.IMMUNE_DEFEATED,
+              },
+            ],
+          });
+          const healEventArg = new DamageOrHealEventArg(
+            arg.onTimeState,
+            healInfo,
+          );
+          emittedEvents.push(
+            ...this.handleEventShallow(["onDamageOrHeal", healEventArg]),
+          );
+        }
+      }
+    } while (emittedEvents.length > 0);
 
     if (
       skillInfo.caller.definition.type === "character" &&
