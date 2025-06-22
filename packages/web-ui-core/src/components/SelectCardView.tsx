@@ -13,11 +13,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createSignal, For, Show } from "solid-js";
+import {
+  createResource,
+  createSignal,
+  For,
+  Match,
+  Show,
+  Switch,
+} from "solid-js";
 import { Button } from "./Button";
 import { DiceCost } from "./DiceCost";
 import { CardFace } from "./Card";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import { useUiContext } from "../hooks/context";
+import { DiceType } from "@gi-tcg/typings";
+import type { AnyData } from "@gi-tcg/assets-manager";
 
 export interface SelectCardViewProps {
   candidateIds: number[];
@@ -46,14 +56,10 @@ export function SelectCardView(props: SelectCardViewProps) {
                 <CardFace definitionId={cardId} />
                 <Show when={selectedId() === cardId}>
                   <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-                    <SelectingIcon class="w-24 h-24"/>
+                    <SelectingIcon class="w-21 h-21" />
                   </div>
                 </Show>
-                <DiceCost
-                  class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
-                  cost={[]}
-                  size={36}
-                />
+                <DiceCostAsync cardDefinitionId={cardId} />
               </div>
               <div class="mt-2 w-36 text-center font-size-4 text-center color-black/60 font-bold">
                 {props.nameGetter(cardId)}
@@ -80,3 +86,50 @@ export function SelectCardView(props: SelectCardViewProps) {
     </div>
   );
 }
+
+const DiceCostAsync = (props: { cardDefinitionId: number }) => {
+  const { assetsManager } = useUiContext();
+  const [data] = createResource(
+    () => props.cardDefinitionId,
+    (id) => assetsManager.getData(id),
+  );
+  const COST_MAP: Record<string, number> = {
+    GCG_COST_DICE_VOID: DiceType.Void,
+    GCG_COST_DICE_CRYO: DiceType.Cryo,
+    GCG_COST_DICE_HYDRO: DiceType.Hydro,
+    GCG_COST_DICE_PYRO: DiceType.Pyro,
+    GCG_COST_DICE_ELECTRO: DiceType.Electro,
+    GCG_COST_DICE_ANEMO: DiceType.Anemo,
+    GCG_COST_DICE_GEO: DiceType.Geo,
+    GCG_COST_DICE_DENDRO: DiceType.Dendro,
+    GCG_COST_DICE_SAME: DiceType.Aligned,
+    GCG_COST_ENERGY: DiceType.Energy,
+    GCG_COST_LEGEND: DiceType.Legend,
+  };
+  const renderCost = (data: AnyData) => {
+    if ("playCost" in data && data.playCost.length > 0) {
+      return data.playCost.map((cost) => ({
+        type: COST_MAP[cost.type],
+        count: cost.count,
+      }));
+    } else {
+      return [{ type: 8, count: 0 }];
+    }
+  };
+  return (
+    <Switch>
+      <Match when={data.loading || data.error}>
+        <></>
+      </Match>
+      <Match when={data()}>
+        {(data) => (
+          <DiceCost
+            class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
+            cost={renderCost(data())}
+            size={36}
+          />
+        )}
+      </Match>
+    </Switch>
+  );
+};
