@@ -115,17 +115,22 @@ export function Entity(props: EntityProps) {
         <EntityTopHint cardDefinitionId={data().definitionId} value={data().variableValue as number}/>
       </Show>
       <Show when={typeof data().hintIcon === "number"}>
-        <div class="absolute h-5 min-w-0 left-0 bottom-0 bg-white bg-opacity-70 flex items-center">
+        <div class="absolute h-7 w-7 min-w-0 left-0 bottom-0.5">
           <Image
             imageId={data().hintIcon!}
             zero="physic"
             type="icon"
-            class="h-4 w-4"
+            class="h-7 w-7 absolute"
           />
-          {data().hintText?.replace(
-            /\$\{([^}]+)\}/g,
-            (_, g1) => data().descriptionDictionary[g1],
-          ) ?? ""}
+          <StrokedText
+              class="absolute inset-0 line-height-7 text-center text-white font-bold text-4.5 whitespace-nowrap"
+              strokeWidth={2}
+              strokeColor="#000000cc"
+              text={data().hintText?.replace(
+                /\$\{([^}]+)\}/g,
+                (_, g1) => data().descriptionDictionary[g1],
+              ) ?? ""}
+            />
         </div>
       </Show>
     </div>
