@@ -128,7 +128,7 @@ export function Entity(props: EntityProps) {
               strokeColor="#000000cc"
               text={data().hintText?.replace(
                 /\$\{([^}]+)\}/g,
-                (_, g1) => data().descriptionDictionary[g1],
+                (_, g1) => data().descriptionDictionary[g1] ?? "",
               ) ?? ""}
             />
         </div>
