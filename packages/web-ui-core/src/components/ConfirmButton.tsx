@@ -17,8 +17,8 @@ export function ConfirmButton(props: ConfirmButtonProps) {
       bool:data-shown={props.step}
     >
       <Show when={props.step?.isEffectless}>
-        <div class="color-red-500 bg-red-100/80 rounded-lg px-2 py-1 text-xs">
-          效果将被无效化
+        <div class="text-#ffdada bg-#ca2527/80 rounded-full px-2 py-0 text-3.5 font-bold shadow-[0_0_16px_#ca2527aa,0_0_12px_#ca2527bb,0_0_8px_#ca2527cc]">
+          此牌效果将被无效
         </div>
       </Show>
       <Button onClick={() => props.step && props.onClick?.(props.step)}>

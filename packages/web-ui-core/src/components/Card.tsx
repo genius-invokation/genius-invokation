@@ -257,7 +257,7 @@ export function Card(props: CardProps) {
         </Match>
       </Switch>
       <Show when={props.playStep?.isEffectless}>
-        <Image imageId={300003} class="absolute left-50% translate-x--50% top-1 w-5 h-5" />
+        <Image imageId={300003} class="absolute left-50% translate-x--50% top-0.5 w-7 h-7" />
       </Show>
       <DiceCost
         class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
