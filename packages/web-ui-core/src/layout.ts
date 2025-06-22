@@ -182,9 +182,9 @@ export function getHandCardBlurredPos(
 export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const quarterHeight = MINIMUM_HEIGHT / 4;
   const y = opp
-    ? (height - MINIMUM_HEIGHT) / 2 + quarterHeight - CARD_WIDTH / 2
-    : (height - MINIMUM_HEIGHT) / 2 + quarterHeight * 3 - CARD_WIDTH / 2;
-  const x = (width - MINIMUM_WIDTH) / 2 + 20 - CARD_HEIGHT;
+    ? (height - MINIMUM_HEIGHT) / 2 + quarterHeight + CARD_WIDTH / 2
+    : (height - MINIMUM_HEIGHT) / 2 + quarterHeight * 3 + CARD_WIDTH / 2;
+  const x = (width - MINIMUM_WIDTH) / 2 + 20;
   return [x, y];
 }
 
@@ -251,8 +251,8 @@ export function getShowingCardPos(
 export function getPileHintPos(size: Size, opp: boolean) {
   const [x, y] = getPilePos(size, opp);
   return {
-    x: x + CARD_HEIGHT + 2,
-    y: y + CARD_WIDTH / 2 - 3,
+    x: x + 2,
+    y: y - CARD_WIDTH / 2 - 3,
   };
 }
 

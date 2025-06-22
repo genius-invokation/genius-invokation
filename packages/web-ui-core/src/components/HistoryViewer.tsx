@@ -55,6 +55,7 @@ import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?component-solid";
 import TriggerIcon from "../svg/TriggerIcon.svg?component-solid";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
+import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
@@ -1507,7 +1508,7 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
       <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
           <Match when={!props.data.imageId}>
-            <CardBack class="w-5 h-8.6" />
+            <CardbackNormal class="w-5 h-8.6" />
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
@@ -1575,14 +1576,6 @@ function More() {
   );
 }
 
-function CardBack(props: { class?: string }) {
-  return (
-    <div
-      class={`bg-gray-600 rounded-0.75 b-gray-700 b-1 shrink-0 ${props.class}`}
-    />
-  );
-}
-
 function HistorySummaryShot(props: { data: SummaryShot }) {
   return (
     <div class="h-24 flex flex-col">
@@ -1608,7 +1601,14 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               {(imageId) => (
                 <div class="relative w-1 h-18 overflow-visible">
                   <div class="absolute w-10.5 h-18 right-0">
-                    <CardFace definitionId={imageId} />
+                    <Show
+                      when={!!imageId}
+                      fallback={
+                        <CardbackNormal class="absolute inset-0 w-10.5 h-18" />
+                      }
+                    >
+                      <CardFace definitionId={imageId} />
+                    </Show>
                   </div>
                 </div>
               )}
@@ -1620,17 +1620,17 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                 <div class="relative w-1 h-12.375 overflow-visible">
                   <div class="absolute w-10.5 h-12.375 right-0">
                     <Show
-                      when={imageId !== 0}
+                      when={!!imageId}
                       fallback={
-                        <CardBack class="absolute inset-0 w-full h-full" />
+                        <div class="absolute inset-0 w-full h-full rounded-lg bg-gray-700" />
                       }
                     >
                       <Image
                         imageId={imageId}
                         class="absolute inset-0 w-full h-full  p-1px rounded-lg"
-                      />
-                      <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
+                      />          
                     </Show>
+                    <CardFrameSummon class="absolute inset-0 w-10.5 h-12.375 pointer-events-none" />
                   </div>
                 </div>
               )}
@@ -1774,7 +1774,7 @@ function HistoryBlockBox(props: {
               <Match when={props.data.imageSize === "normal"}>
                 <Show
                   when={!!props.data.imageId}
-                  fallback={<CardBack class="w-10.5 h-18" />}
+                  fallback={<CardbackNormal class="w-10.5 h-18" />}
                 >
                   <div class="relative w-10.5 h-18">
                     <CardFace definitionId={props.data.imageId as number} />
@@ -1786,15 +1786,15 @@ function HistoryBlockBox(props: {
                   <Show
                     when={!!props.data.imageId}
                     fallback={
-                      <CardBack class="absolute inset-0 w-full h-full" />
+                      <div class="absolute inset-0 w-full h-full rounded-lg bg-gray-700" />
                     }
                   >
                     <Image
                       imageId={props.data.imageId as number}
                       class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                     />
-                    <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
                   </Show>
+                  <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
                 </div>
               </Match>
             </Switch>
@@ -2086,7 +2086,7 @@ function HistoryBlockDetailPanel(props: {
             <div class="w-14.5 h-22 p-2">
               <Show
                 when={renderBlock().content.imageId}
-                fallback={<CardBack class="w-10.5 h-18" />}
+                fallback={<CardbackNormal class="w-10.5 h-18" />}
               >
                 <div class="relative w-10.5 h-18">
                   <CardFace
