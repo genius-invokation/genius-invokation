@@ -10,7 +10,7 @@ FetchContent_Declare(
   v8-cmake
   GIT_REPOSITORY https://github.com/genius-invokation/v8-cmake.git
   # GIT_REPOSITORY https://git.tencent.xqm32.org/genius-invokation/v8-cmake
-  GIT_TAG        9aa1be1db3e8ab132090fb12032026a19233019e
+  GIT_TAG        6279208176ce5d02824055a59aef714d128fae59
 )
 FetchContent_MakeAvailable(v8-cmake)
 
