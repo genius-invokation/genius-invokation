@@ -27,7 +27,7 @@ export default defineConfig({
   esbuild: {
     target: "ES2020",
   },
-  base: WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1"),
+  base: WEB_CLIENT_BASE_PATH,
   plugins: [
     unoCss(),
     solid(),
