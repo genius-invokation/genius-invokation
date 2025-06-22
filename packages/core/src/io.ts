@@ -591,6 +591,7 @@ export function exposeAction(action: ActionInfo): Action {
     autoSelectedDice: action.autoSelectedDice as PbDiceType[],
     validity: action.validity,
     preview: action.preview ?? [],
+    isFast: action.fast,
   };
   switch (action.type) {
     case "useSkill": {
