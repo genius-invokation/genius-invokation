@@ -26,6 +26,7 @@ import type { PbDiceRequirement } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
+import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 
 export interface CardProps extends CardInfo {
   selected: boolean;
@@ -261,7 +262,7 @@ export function Card(props: CardProps) {
         size={36}
         realCost={realCost()}
       />
-      <div class="absolute h-full w-full rounded-xl backface-hidden rotate-y-180 translate-z--0.1px bg-gray-600 b-gray-700 b-4" />
+      <CardbackNormal class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px" />
     </div>
   );
 }

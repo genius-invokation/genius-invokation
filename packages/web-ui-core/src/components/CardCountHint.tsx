@@ -21,13 +21,23 @@ export interface CardCountHintProps extends CardCountHintInfo {
 }
 
 export function CardCountHint(props: CardCountHintProps) {
+  const hintStyle = () => {
+    if (props.area === "myPile") return {opp: false, hint: "rotate-45"};
+    if (props.area === "oppPile") return {opp: true, hint: "rotate-45"};
+    if (props.area === "oppHand") return {opp: true, hint: "rotate-135"};
+    return {opp: false, hint: "-rotate-45"};
+  };
   return (
     <div
-      class="pointer-events-none absolute left-0 top-0 h-6 w-6 rounded-full flex items-center justify-center bg-yellow-100 b-yellow-300 b-1 text-yellow-800 opacity-0 data-[shown]:opacity-100 transition-opacity"
+      class="pointer-events-none absolute left-0 top-0 h-6 w-6 grid grid-cols-1 grid-rows-1 opacity-0 data-[shown]:opacity-100 transition-opacity current-turn-hint"
       style={cssPropertyOfTransform(props.transform)}
       bool:data-shown={props.shown}
+      data-opp={hintStyle().opp}
     >
-      {props.value}
+      <div 
+        class={`grid-area-[1/1] z-0 h-6 w-6 rounded-lt-full rounded-r-full bg-[var(--bg-color)] b-1 b-[var(--fg-color)] ${hintStyle().hint}`}
+      />
+      <div class={`grid-area-[1/1] z-1 w-6 text-[var(--fg-color)] text-4 text-center`}>{props.value}</div>
     </div>
   );
 }
