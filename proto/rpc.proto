@@ -49,6 +49,7 @@ message Action {
   repeated DiceRequirement required_cost = 11;
   repeated DiceType auto_selected_dice = 12;
   ActionValidity validity = 13;
+  bool is_fast = 14;
 }
 
 message ActionRequest {

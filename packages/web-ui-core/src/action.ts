@@ -59,6 +59,7 @@ export interface PlayCardActionStep {
   readonly type: "playCard";
   readonly cardId: number;
   readonly playable: boolean;
+  readonly isEffectless: boolean;
 }
 export interface ElementalTuningActionStep {
   readonly type: "elementalTuning";
@@ -97,6 +98,7 @@ export interface ClickDeclareEndActionStep {
 export interface ClickConfirmButtonActionStep {
   readonly type: "clickConfirmButton";
   readonly confirmText: string;
+  readonly isEffectless?: boolean;
 }
 
 export const CANCEL_ACTION_STEP = {
@@ -307,6 +309,8 @@ export interface ActionState {
   showSkillButtons: boolean;
   /** 提示文本 */
   hintText?: string;
+  /** 是否快速行动 */
+  isFast: boolean;
   /** 进入此状态会出现报错 */
   alertText?: string;
   /** 骰子面板的状态（不显示、默认收起或默认展开） */
@@ -384,6 +388,8 @@ interface MultiStepRootNodeContext<T> {
   isSkill: boolean;
   /** 行动树根节点 */
   node: ActionTreeNode<T>;
+  /** 是否是无效行动 */
+  isEffectless: boolean;
   /** 进行此行动自动选择的骰子 */
   autoSelectedDice: DiceType[];
   /** 用于提供 hintText 的定义 id */
@@ -427,6 +433,7 @@ function createPlayCardActionState(
     type: "playCard",
     cardId: id,
     playable: ok,
+    isEffectless: ctx.action.value.willBeEffectless,
   };
   if (!ok) {
     ctx.cardSingleSteps.set(ENTER_STEP, () => ({
@@ -447,6 +454,7 @@ function createPlayCardActionState(
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
         cardOrSkillDefinitionId: ctx.action.value.cardDefinitionId,
+        isEffectless: ctx.action.value.willBeEffectless,
       });
     }
     appendMultiStepNode(
@@ -459,7 +467,8 @@ function createPlayCardActionState(
   const previewData = parsePreviewData(ctx.action.preview);
   if (
     ctx.action.autoSelectedDice.length === 0 &&
-    previewData.characters.size === 0
+    previewData.characters.size === 0 &&
+    !ctx.action.value.willBeEffectless
   ) {
     // 无费无预览时，直接提交
     ctx.cardSingleSteps.set(ENTER_STEP, () => ({
@@ -472,6 +481,7 @@ function createPlayCardActionState(
   const CONFIRM_BUTTON_STEP: ClickConfirmButtonActionStep = {
     type: "clickConfirmButton",
     confirmText: "确定",
+    isEffectless: ctx.action.value.willBeEffectless,
   };
   const resultState: ActionState = {
     availableSteps: [
@@ -485,6 +495,7 @@ function createPlayCardActionState(
     hintText: `打出手牌「${ctx.assetsManager.getNameSync(
       ctx.action.value.cardDefinitionId,
     )}」`,
+    isFast: ctx.action.isFast,
     dicePanel: ctx.action.autoSelectedDice.length > 0 ? "visible" : "hidden",
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
     maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
@@ -552,7 +563,12 @@ function createMultiStepState<T>(
         isFocused: false,
         skillId: id,
       }
-    : { type: "playCard", cardId: id, playable: true };
+    : {
+        type: "playCard",
+        cardId: id,
+        playable: true,
+        isEffectless: ctx.isEffectless,
+      };
   // 在多步选择内部，按下起点的行为
   const innerEnterStep = isSkill
     ? {
@@ -569,7 +585,8 @@ function createMultiStepState<T>(
     if (node.type === "leaf") {
       const CLICK_CONFIRM_STEP: ClickConfirmButtonActionStep = {
         type: "clickConfirmButton",
-        confirmText: "确定",
+        confirmText: isSkill ? "确定" : "打出手牌",
+        isEffectless: ctx.isEffectless,
       };
       const CLICK_ENTITY_STEP: ClickEntityActionStep = {
         type: "clickEntity",
@@ -587,6 +604,7 @@ function createMultiStepState<T>(
         showHands: false,
         showSkillButtons: isSkill,
         hintText: hintTexts[0],
+        isFast: node.value.action.isFast,
         dicePanel:
           node.value.action.autoSelectedDice.length > 0 ? "visible" : "wrapped",
         autoSelectedDice: null,
@@ -646,6 +664,7 @@ function createMultiStepState<T>(
         showHands: false,
         showSkillButtons: isSkill,
         hintText: hintTexts[0],
+        isFast: false,
         dicePanel: isSkill ? "wrapped" : "hidden",
         autoSelectedDice,
         maxSelectedDiceCount: autoSelectedDice?.length ?? null,
@@ -739,6 +758,7 @@ function createUseSkillActionState(
         node: { type: "branch", children: new Map() },
         autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
         cardOrSkillDefinitionId: ctx.action.value.skillDefinitionId,
+        isEffectless: false,
       });
     }
     appendMultiStepNode(
@@ -779,6 +799,7 @@ function createUseSkillActionState(
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
     maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
     showBackdrop: true,
+    isFast: ctx.action.isFast,
     previewData: parsePreviewData(ctx.action.preview),
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -840,6 +861,7 @@ function createElementalTuningActionState(
     maxSelectedDiceCount: 1,
     disabledDiceTypes,
     showBackdrop: true,
+    isFast: false,
     previewData: NO_PREVIEW,
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -927,6 +949,7 @@ function createSwitchActiveActionState(
     autoSelectedDice: ctx.action.autoSelectedDice as DiceType[],
     maxSelectedDiceCount: ctx.action.autoSelectedDice.length,
     showBackdrop: true,
+    isFast: ctx.action.isFast,
     previewData: parsePreviewData(ctx.action.preview),
     step: (step, dice) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -981,6 +1004,7 @@ function createSwitchActiveActionState(
     autoSelectedDice: null,
     maxSelectedDiceCount: null,
     showBackdrop: false,
+    isFast: false,
     previewData: NO_PREVIEW,
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -1022,6 +1046,7 @@ export function createActionState(
     autoSelectedDice: null,
     maxSelectedDiceCount: null,
     showBackdrop: false,
+    isFast: false,
     showHands: true,
     showSkillButtons: true,
     step: (step) => {
@@ -1200,6 +1225,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
     showHands: true,
     showSkillButtons: true,
     hintText: "选择出战角色",
+    isFast: false,
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
         return { type: "newState", newState: root };
@@ -1248,6 +1274,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
       showHands: true,
       showSkillButtons: true,
       hintText: "选择出战角色",
+      isFast: false,
       step: (step, dice) => {
         if (step === CANCEL_ACTION_STEP) {
           return { type: "newState", newState: innerState };

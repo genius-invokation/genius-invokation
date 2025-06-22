@@ -129,6 +129,7 @@ import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
 import type { HistoryBlock } from "../history/typings";
+import { FastActionMarker } from "./FastActionMarker";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -1246,6 +1247,12 @@ export function Chessboard(props: ChessboardProps) {
     };
   });
 
+  const showConfirmButton = createMemo(() => {
+    return localProps.actionState?.availableSteps.find(
+      (s) => s.type === "clickConfirmButton",
+    );
+  });
+
   const playerInfoPropsOf = (who: 0 | 1): PlayerInfoProps => {
     const player = localProps.data.state.player[who];
     return {
@@ -1597,7 +1604,9 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset touch-none all:touch-none ${localProps.class ?? ""}`}
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none ${
+        localProps.class ?? ""
+      }`}
       {...elProps}
       ref={containerEl}
     >
@@ -1734,11 +1743,16 @@ export function Chessboard(props: ChessboardProps) {
               shown={showSkillButtons()}
             />
           </Show>
+          <FastActionMarker
+            shown={
+              localProps.actionState?.showBackdrop &&
+              localProps.actionState?.isFast &&
+              !showConfirmButton()
+            }
+          />
           <ConfirmButton
             class="absolute top-80% left-50% translate-x--50%"
-            step={localProps.actionState?.availableSteps.find(
-              (s) => s.type === "clickConfirmButton",
-            )}
+            step={showConfirmButton()}
             onClick={(step) => {
               localProps.onStepActionState?.(step, selectedDiceValue());
             }}
