@@ -99,7 +99,7 @@ const DiceCostSync = (props: { cardDefinitionId: number }) => {
     GCG_COST_LEGEND: 10
   }; 
   const renderCost = (data: ActionCardRawData | EntityRawData) => {
-    if ("playCost" in data && !!data.playCost.length) {
+    if ("playCost" in data && data.playCost.length > 0) {
       return data.playCost.map(
         (cost) => (
           {
