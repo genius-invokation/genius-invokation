@@ -46,9 +46,19 @@ export function Footer() {
           AGPL-3.0-or-later
         </a>
       </div>
+      <div>
+        <a class="text-blue-400" href="/disclaimer" target="_blank">
+          网站声明
+        </a>
+      </div>
+      <div>
+        <a class="text-blue-400" href="/privacy" target="_blank">
+          隐私政策
+        </a>
+      </div>
       <Show when={versionInfo()}>
         <div>
-          游戏版本{" "}
+          对应游戏版本{" "}
           {IS_BETA ? (
             <span class="text-red-300">最新测试版</span>
           ) : (
