@@ -52,6 +52,9 @@ export class AuthController {
 <title>Login Success</title>
 <p>Redirecting back...</p>
 <script>
+  window.addEventListener("error", (event) => {
+    document.body.innerHTML += \`\${event.type}: \${event.message}\\n\`;
+  });
   window.opener.postMessage({ type: "login", token: "${accessToken}" }, "*");
   window.close();
 </script>`,
