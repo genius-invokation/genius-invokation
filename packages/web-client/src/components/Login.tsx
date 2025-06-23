@@ -32,6 +32,17 @@ export function Login() {
 
   const [guestNameValid, setGuestNameValid] = createSignal(false);
 
+  const githubLogin = () => {
+    const popup = window.open(
+      `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`,
+      'githubOAuth',
+      'popup,width=600,height=700'
+    );
+    if (!popup) {
+      window.alert("Please allow popup window to login with GitHub.");
+    }
+  };
+
   const guestLogin = async (e: SubmitEvent) => {
     e.preventDefault();
     const form = new FormData(e.target as HTMLFormElement);
@@ -41,13 +52,13 @@ export function Login() {
 
   return (
     <div class="w-80 flex flex-col items-stretch text-xl my-8 gap-10">
-      <a
-        href={`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}`}
+      <button
         class="flex flex-row gap-2 btn btn-solid-black h-2.8em"
+        onClick={githubLogin}
       >
         <i class="block i-mdi-github" />
         <span>推荐使用 GitHub 登录</span>
-      </a>
+      </button>
       <hr />
       <div class="flex flex-col gap-1">
         <p class="text-gray-500 text-sm">

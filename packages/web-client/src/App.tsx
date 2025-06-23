@@ -31,6 +31,7 @@ import { Decks } from "./pages/Decks";
 import { EditDeck } from "./pages/EditDeck";
 import { Room } from "./pages/Room";
 import { NotFound } from "./pages/NotFound";
+import { useAuth } from "./auth";
 
 export interface VersionContextValue {
   versionInfo: Resource<any>;
@@ -57,11 +58,22 @@ function App() {
   const handleMobileChange = (e: MediaQueryListEvent) => {
     setMobile(e.matches);
   };
+
+  const { refresh } = useAuth();
+  const onReceiveToken = async (e: MessageEvent) => {
+    if (e.data && e.data.type === "login" && e.data.token) {
+      localStorage.setItem("accessToken", e.data.token);
+      await refresh();
+    }
+  };
+
   onMount(() => {
     mobileMediaQuery.addEventListener("change", handleMobileChange);
+    window.addEventListener("message", onReceiveToken);
   });
   onCleanup(() => {
     mobileMediaQuery.removeEventListener("change", handleMobileChange);
+    window.removeEventListener("message", onReceiveToken);
   });
 
   return (
