@@ -40,7 +40,9 @@ export function Login() {
     );
     if (!popup) {
       window.alert("Please allow popup window to login with GitHub.");
+      return;
     }
+    window.githubOAuthPopup = popup;
   };
 
   const guestLogin = async (e: SubmitEvent) => {

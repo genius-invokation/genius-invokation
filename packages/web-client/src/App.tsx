@@ -63,6 +63,7 @@ function App() {
   const onReceiveToken = async (e: MessageEvent) => {
     if (e.data && e.data.type === "login" && e.data.token) {
       localStorage.setItem("accessToken", e.data.token);
+      window.githubOAuthPopup?.close();
       await refresh();
     }
   };
