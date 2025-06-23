@@ -35,11 +35,17 @@ function CharacterAvatar(props: { id: number }) {
         type: "icon",
         thumbnail: true,
       }),
-      {
-        initialValue: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f0f0f0"/></svg>`,
-      }
+    {
+      initialValue: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f0f0f0"/></svg>`,
+    },
   );
-  return <img class="h-14 w-14 b-2 b-yellow-100 rounded-full" src={url()} />;
+  return (
+    <img
+      class="h-14 w-14 b-2 b-yellow-100 rounded-full"
+      src={url()}
+      alt={DEFAULT_ASSETS_MANAGER.getNameSync(props.id)}
+    />
+  );
 }
 
 export function DeckBriefInfo(props: DeckInfoProps) {

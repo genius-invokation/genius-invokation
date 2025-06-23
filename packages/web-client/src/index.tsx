@@ -32,11 +32,13 @@ async function prepareServiceWorker() {
   await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, {
     scope: import.meta.env.BASE_URL,
   });
-  navigator.serviceWorker.controller?.postMessage({
-    type: "config",
-    payload: {
-      backendBaseUrl: BACKEND_BASE_URL,
-    }
+  navigator.serviceWorker.ready.then((sw) => {
+    sw.active?.postMessage({
+      type: "config",
+      payload: {
+        backendBaseUrl: BACKEND_BASE_URL,
+      }
+    });
   });
 }
 
