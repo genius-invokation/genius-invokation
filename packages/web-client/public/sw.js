@@ -30,13 +30,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(enableNavigationPreload());
 });
 
-self.addEventListener("message", (event) => {
+self.addEventListener("message", async (event) => {
   if (event.data && event.data.type === "config") {
     try {
       const payload = event.data.payload;
       backendBaseUrl = payload.backendBaseUrl;
-      setupVersion();
-      deleteOldCaches();
+      await setupVersion();
+      await deleteOldCaches();
     } catch (error) {
       console.error("Error handling config message:", error);
     }
