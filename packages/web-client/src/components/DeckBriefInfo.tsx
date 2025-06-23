@@ -13,18 +13,39 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { useLocation, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import axios, { AxiosError } from "axios";
-import { For, Show } from "solid-js";
-import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
+import { createResource, For, Show } from "solid-js";
 import { DeckInfo } from "../pages/Decks";
 import { useGuestDecks } from "../guest";
 import { useAuth } from "../auth";
 import { copyToClipboard } from "../utils";
+import { DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 
 export interface DeckInfoProps extends DeckInfo {
   editable?: boolean;
   onDelete?: () => void;
+}
+
+function CharacterAvatar(props: { id: number }) {
+  const [url] = createResource(
+    () => props.id,
+    (id) =>
+      DEFAULT_ASSETS_MANAGER.getImageUrl(id, {
+        type: "icon",
+        thumbnail: true,
+      }),
+    {
+      initialValue: `data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f0f0f0"/></svg>`,
+    },
+  );
+  return (
+    <img
+      class="h-14 w-14 b-2 b-yellow-100 rounded-full"
+      src={url()}
+      alt={DEFAULT_ASSETS_MANAGER.getNameSync(props.id)}
+    />
+  );
 }
 
 export function DeckBriefInfo(props: DeckInfoProps) {
@@ -88,14 +109,7 @@ export function DeckBriefInfo(props: DeckInfoProps) {
         </div>
       </div>
       <div class="p-2 flex flex-row items-center justify-around">
-        <For each={props.characters}>
-          {(id) => (
-            <img
-              class="h-14 w-14 b-2 b-yellow-100 rounded-full"
-              src={`${DEFAULT_ASSET_API_ENDPOINT}/images/${id}?type=icon`}
-            />
-          )}
-        </For>
+        <For each={props.characters}>{(id) => <CharacterAvatar id={id} />}</For>
       </div>
     </div>
   );

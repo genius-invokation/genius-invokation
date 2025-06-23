@@ -25,10 +25,25 @@ import "@unocss/reset/tailwind-compat.css";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "./config";
 
-async function main() {
-  await navigator.serviceWorker?.register(`${import.meta.env.BASE_URL}sw.js`, {
+async function prepareServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+  await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, {
     scope: import.meta.env.BASE_URL,
   });
+  navigator.serviceWorker.ready.then((sw) => {
+    sw.active?.postMessage({
+      type: "config",
+      payload: {
+        backendBaseUrl: BACKEND_BASE_URL,
+      }
+    });
+  });
+}
+
+async function main() {
+  await prepareServiceWorker();
   if (import.meta.env.PROD) {
     await import("core-js");
   }

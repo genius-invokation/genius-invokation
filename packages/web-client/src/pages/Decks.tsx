@@ -45,6 +45,7 @@ export function useDecks(): UseDecksResult {
   const { status } = useAuth();
   const EMPTY = { count: 0, data: [] };
   const [userDecks, { refetch }] = createResource(
+    status,
     () => axios.get<DecksResponse>("decks").then((res) => res.data),
     {
       initialValue: EMPTY,

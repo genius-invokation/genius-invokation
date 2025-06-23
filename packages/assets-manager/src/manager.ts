@@ -64,6 +64,12 @@ export interface AssetsManagerOption {
   customData: CustomData[];
 }
 
+const FETCH_OPTION: RequestInit = {
+  headers: {
+    "X-Gi-Tcg-Assets-Manager": "1",
+  },
+};
+
 export class AssetsManager {
   private readonly dataCacheSync = new Map<number, AnyData>();
   private readonly dataCache = new Map<number, Promise<AnyData>>();
@@ -280,7 +286,7 @@ export class AssetsManager {
       return this.dataCache.get(id)!;
     }
     const url = `${this.options.apiEndpoint}/data/${id}`;
-    const promise = fetch(url)
+    const promise = fetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(id, data);
@@ -298,7 +304,7 @@ export class AssetsManager {
       return this.dataCache.get(-id)!;
     }
     const url = `${this.options.apiEndpoint}/data/${-id}`;
-    const promise = fetch(url)
+    const promise = fetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(-id, data);
@@ -324,7 +330,7 @@ export class AssetsManager {
     const url =
       this.customDataImageUrls.get(id) ??
       `${this.options.apiEndpoint}/images/${id}?${searchParams}`;
-    const promise = fetch(url)
+    const promise = fetch(url, FETCH_OPTION)
       .then((r) => r.blob())
       .then((blob) => {
         this.imageCacheSync.set(cacheKey, blob);
@@ -360,7 +366,7 @@ export class AssetsManager {
   private prepareSyncData() {
     return (this.preparedSyncData ??= (async () => {
       const dataUrl = `${this.options.apiEndpoint}/data`;
-      const data = await fetch(dataUrl).then((r) => r.json());
+      const data = await fetch(dataUrl, FETCH_OPTION).then((r) => r.json());
       // Data
       for (const d of data) {
         if (!this.dataCacheSync.has(d.id)) {

@@ -42,7 +42,6 @@ export function Home() {
     logout,
   } = useAuth();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams<{ token: string }>();
   const { decks, loading: decksLoading, error: decksError } = useDecks();
 
   const [roomCodeValid, setRoomCodeValid] = createSignal(false);
