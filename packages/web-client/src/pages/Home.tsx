@@ -39,7 +39,6 @@ export function Home() {
     status,
     loading: userLoading,
     error: userError,
-    refresh,
     logout,
   } = useAuth();
   const navigate = useNavigate();
@@ -104,14 +103,6 @@ export function Home() {
     setJoiningRoomInfo(roomInfo);
     joinRoomDialogEl.showModal();
   };
-
-  onMount(async () => {
-    if (searchParams.token) {
-      localStorage.setItem("accessToken", searchParams.token);
-      setSearchParams({ token: null });
-      await refresh();
-    }
-  });
 
   return (
     <Layout>

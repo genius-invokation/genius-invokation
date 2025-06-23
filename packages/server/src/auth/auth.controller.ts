@@ -25,10 +25,10 @@ import {
   Res,
 } from "@nestjs/common";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 import { AuthService } from "./auth.service";
 import { Public } from "./auth.guard";
-import { WEB_CLIENT_BASE_PATH, SERVER_HOST } from "@gi-tcg/config";
+import { SERVER_HOST } from "@gi-tcg/config";
 
 class GitHubCallbackDto {
   @IsNotEmpty()
@@ -44,16 +44,17 @@ export class AuthController {
   @Get("github/callback")
   async login(
     @Query() { code }: GitHubCallbackDto,
-    @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
   ) {
     const { accessToken } = await this.auth.login(code);
-    const hostname = new URL("http://" + req.hostname).hostname;
-    const homepage = `${
-      import.meta.env.NODE_ENV === "production"
-        ? SERVER_HOST
-        : `http://${hostname ?? "localhost"}:5173`
-    }${WEB_CLIENT_BASE_PATH}`;
-    res.status(302).redirect(`${homepage}?token=${accessToken}`);
+    res.type("text/html").send(
+      `<!DOCTYPE html>
+<title>Login Success</title>
+<p>Redirecting back...</p>
+<script>
+  window.opener.postMessage({ type: "login", token: "${accessToken}" }, "*");
+  window.close();
+</script>`,
+    );
   }
 }
