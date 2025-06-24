@@ -424,7 +424,9 @@ export class CardBuilder<
 
   /** 增加 food 标签；设置目标为我方非饱腹角色 */
   food(opt: FoodOption = {}) {
-    this._satiatedTarget = "@targets.0";
+    if (!opt.noSatiated) {
+      this._satiatedTarget = "@targets.0";
+    }
     let targetFilter =
       "(my characters and not has status with definition id 303300)";
     if (opt?.injuredOnly) {
