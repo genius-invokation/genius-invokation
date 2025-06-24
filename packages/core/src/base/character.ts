@@ -59,14 +59,11 @@ export type ArkheTag =
   | "pneuma" // 荒
   | "ousia"; // 芒
 
-export type InternalCharacterTag = "neverSatiate";
-
 export type CharacterTag =
   | ElementTag
   | WeaponTag
   | NationTag
-  | ArkheTag
-  | InternalCharacterTag;
+  | ArkheTag;
 
 export interface CharacterDefinition extends WithVersionInfo {
   readonly __definition: "characters";
