@@ -410,7 +410,7 @@ export function applyAutoSelectedDiceToAction(
     const disallowed = config.allowTuningAnyDice ?
       [] :
       [actionInfo.result, DiceType.Omni];
-    const tuningDice = sortDice(player, player.dice).findLast((d) => !disallowed.includes(d));
+    const tuningDice = player.dice.findLast((d) => !disallowed.includes(d));
     if (!tuningDice) {
       return {
         ...actionInfo,
