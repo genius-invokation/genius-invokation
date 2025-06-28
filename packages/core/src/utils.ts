@@ -407,11 +407,12 @@ export function applyAutoSelectedDiceToAction(
     return actionInfo;
   }
   if (actionInfo.type === "elementalTuning") {
-    const disallowed = [actionInfo.result];
+    let disallowed = [];
     if (!config.allowTuningAnyDice) {
+      disallowed.push(actionInfo.result);
       disallowed.push(DiceType.Omni);
     }
-    const tuningDice = player.dice.find((d) => !disallowed.includes(d));
+    const tuningDice = sortDice(player, player.dice).findLast((d) => !disallowed.includes(d));
     if (!tuningDice) {
       return {
         ...actionInfo,
