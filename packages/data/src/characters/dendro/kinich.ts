@@ -27,9 +27,8 @@ export const GrappleLink = status(117091)
   .since("v5.4.0")
   .duration(2)
   .defineSnippet((c) => {
-    c.gainNightsoul("@master", 1);
     const nightsoul = c.self.master().hasNightsoulsBlessing();
-    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") === 2) {
+    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") === 2 && !c.self.master().hasStatus(GrapplePrepare)) {
       c.self.master().addStatus(GrapplePrepare);
       c.consumeNightsoul("@master", 2);
     }
@@ -39,9 +38,14 @@ export const GrappleLink = status(117091)
     !c.of(e.target).isMine()
   )
   .listenToAll()
+  .gainNightsoul("@master")
   .callSnippet()
   .on("useTechnique", (c, e) => e.techniqueCaller.id !== c.self.master().id)
   .listenToPlayer()
+  .gainNightsoul("@master")
+  .callSnippet()
+  .on("beforeAction")
+  .listenToAll()
   .callSnippet()
   .done();
 
@@ -142,9 +146,9 @@ export const HailToTheAlmightyDragonlord = skill(17093)
 
 /**
  * @id 17094
- * @name 
+ * @name
  * @description
- * 
+ *
  */
 export const Untitled11 = skill(17094)
   .reserve();
