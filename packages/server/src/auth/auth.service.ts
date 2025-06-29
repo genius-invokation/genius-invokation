@@ -52,7 +52,7 @@ export class AuthService {
       this.logger.error(code);
       this.logger.error(response.data);
       throw new UnauthorizedException(
-        `code exchange failure: ${response.data?.message}`,
+        `code exchange failure: ${response.data?.error_description}`,
       );
     }
     const accessToken = response.data.access_token;
