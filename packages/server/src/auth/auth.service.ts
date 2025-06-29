@@ -47,7 +47,7 @@ export class AuthService {
         validateStatus: () => true, // don't throw
       },
     );
-    if (response.status !== 200) {
+    if (response.status >= 400) {
       this.logger.error("Code exchange failure");
       this.logger.error(response.data);
       throw new UnauthorizedException(
@@ -63,7 +63,7 @@ export class AuthService {
       },
       validateStatus: () => true, // don't throw
     });
-    if (userResponse.status !== 200) {
+    if (userResponse.status >= 400) {
       this.logger.error("Get User detail failure");
       this.logger.error(response.data);
       throw new UnauthorizedException(
