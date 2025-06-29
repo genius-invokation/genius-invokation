@@ -49,6 +49,7 @@ export class AuthService {
     );
     if (response.status >= 400 || !response.data?.access_token) {
       this.logger.error("Code exchange failure");
+      this.logger.error(code);
       this.logger.error(response.data);
       throw new UnauthorizedException(
         `code exchange failure: ${response.data?.message}`,
