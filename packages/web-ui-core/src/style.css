@@ -136,11 +136,13 @@
   .playerinfo-box {
     background-image: linear-gradient(to right, #deab65 25%, #845f39 100%);
     border-color: #ffd89f;
+    mask-image: linear-gradient(to right, #000000ee 55%, transparent 95%);
   }
 
   .playerinfo-box[data-opp] {
     background-image: linear-gradient(to right, #4c6890 25%, #293954 100%);
     border-color: #697a8c;
+    mask-image: linear-gradient(to right, #000000ee 55%, transparent 95%);
   }
 
   .notification-box[data-opp="false"] {
@@ -199,25 +201,9 @@
     --text-color: #e5aa5f;
   }
 
-  @supports not selector(::-webkit-scrollbar) {
-    .history-scrollbar-simply {
-      scrollbar-width: thin;
-      scrollbar-color: #5c6983 #2c2e36;
-    }
-  }
-
-  .history-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .history-scrollbar::-webkit-scrollbar-track {
-    background: #2c2e36;
-  }
-
-  .history-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #5c6983;
-    border-radius: 2px;
-    border: 0px solid transparent;
+  .history-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #5c6983 #2c2e36;
   }
 
   .history-card-hint {
