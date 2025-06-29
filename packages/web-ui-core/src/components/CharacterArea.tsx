@@ -46,9 +46,12 @@ import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import HealthIcon from "../svg/HealthIcon.svg?component-solid";
 import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
 import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
-import EnergyIconExtra from "../svg/EnergyIconExtra.svg?component-solid";
 import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
-import EnergyIconExtraGain from "../svg/EnergyIconExtraGain.svg?component-solid";
+import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg?component-solid";
+import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg?component-solid";
+import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg?component-solid";
+import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?component-solid";
+import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
@@ -209,6 +212,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
               total={data().maxEnergy}
+              specialEnergyName={data().specialEnergyName}
             />
             <Show when={technique()} keyed>
               {(et) => (
@@ -341,15 +345,21 @@ interface EnergyBarProps {
   current: number;
   preview: number | null;
   total: number;
+  specialEnergyName?: string | undefined;
 }
 
 function EnergyBar(props: EnergyBarProps) {
   const ENERGY_MAP : Record<string, Component> = {
-    empty: EnergyIconEmpty,
-    active: EnergyIconActive,
-    overflow: EnergyIconExtra,
-    active_gain: EnergyIconActiveGain,
-    overflow_gain: EnergyIconExtraGain,
+    energy_empty: EnergyIconEmpty,
+    energy_active: EnergyIconActive,
+    energy_active_gain: EnergyIconActiveGain,
+    energy_overflow: EnergyIconActive,
+    energy_overflow_gain: EnergyIconActive,
+    fightingSpirit_empty: EnergyIconEmptyMavuika,
+    fightingSpirit_active: EnergyIconActiveMavuika,
+    fightingSpirit_active_gain: EnergyIconActiveGainMavuika,
+    fightingSpirit_overflow: EnergyIconExtraMavuika,
+    fightingSpirit_overflow_gain: EnergyIconExtraGainMavuika,
   };
   const renderEnergy = () => {
     const clamp = (v: number) => Math.min(Math.max(v, 0), props.total * 2);
@@ -361,11 +371,12 @@ function EnergyBar(props: EnergyBarProps) {
       for (let i = 0; i < overflowCount; i++) state[i] = "overflow";
       return state;
     };
+    const energyType = props.specialEnergyName ?? "energy";
     const current = clamp(props.current);
     const preview = props.preview === null ? current : clamp(props.preview);
     const baseState = energyState(current, props.total);
     if (preview <= current) {
-      return baseState;
+      return baseState.map((state) => `${energyType}_${state}`);
     } else {
       const previewState = energyState(preview, props.total);
       for (let i = 0; i < props.total; i++) {
@@ -376,7 +387,7 @@ function EnergyBar(props: EnergyBarProps) {
           previewState[i] = "overflow_gain";
         }
       }
-      return previewState;
+      return previewState.map((state) => `${energyType}_${state}`);
     }
   };
   return (
