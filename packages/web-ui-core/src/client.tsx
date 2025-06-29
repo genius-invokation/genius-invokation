@@ -50,7 +50,7 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
-import { updateHistory, type HistoryData } from "./history/parser";
+import { StateRecorder, updateHistory, type HistoryData } from "./history/parser";
 import { createStore, produce } from "solid-js/store";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
@@ -246,6 +246,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const [history, setHistory] = createStore<HistoryData>({
     blocks: [],
     currentIndent: 0,
+    recorder: new StateRecorder(),
   });
 
   const io: PlayerIOWithCancellation = {
