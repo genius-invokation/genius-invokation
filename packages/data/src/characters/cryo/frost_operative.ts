@@ -79,10 +79,11 @@ export const BloodbondedShadow = skill(21044)
   .type("passive")
   .variable("damageValue", 0)
   .on("skillDamage")
-  .do((c, e) => c.setVariable("damageValue", e.damageInfo.value))
+  .do((c, e) => c.addVariable("damageValue", e.damageInfo.value))
   .on("useSkill")
   .do((c) => {
     const usage = Math.min(c.getVariable("damageValue") - 2, 5);
+    c.setVariable("damageValue", 0);
     if (usage > 0) {
       c.characterStatus(BondOfLife, "opp active", {
         overrideVariables: { usage }
