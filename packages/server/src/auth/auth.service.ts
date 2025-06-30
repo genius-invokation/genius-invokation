@@ -47,11 +47,12 @@ export class AuthService {
         validateStatus: () => true, // don't throw
       },
     );
-    if (response.status !== 200) {
+    if (response.status >= 400 || !response.data?.access_token) {
       this.logger.error("Code exchange failure");
+      this.logger.error(code);
       this.logger.error(response.data);
       throw new UnauthorizedException(
-        `code exchange failure: ${response.data?.message}`,
+        `code exchange failure: ${response.data?.error_description}`,
       );
     }
     const accessToken = response.data.access_token;
@@ -63,9 +64,9 @@ export class AuthService {
       },
       validateStatus: () => true, // don't throw
     });
-    if (userResponse.status !== 200) {
+    if (userResponse.status >= 400) {
       this.logger.error("Get User detail failure");
-      this.logger.error(response.data);
+      this.logger.error(userResponse.data);
       throw new UnauthorizedException(
         `get user detail failure: ${userResponse.data?.message}`,
       );

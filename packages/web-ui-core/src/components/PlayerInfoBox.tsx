@@ -86,10 +86,6 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
       <div class="relative inline-block h-10 w-44">
         <div
           class="absolute inset-0 rounded-l-full rounded-r-0 border-1.5 playerinfo-box h-full w-full"
-          style={{
-            "mask-image":
-              "linear-gradient(to right, #000000ee 55%, transparent 95%)",
-          }}
           data-opp={props.opp}
         />
         <div class="relative flex items-center p-1">

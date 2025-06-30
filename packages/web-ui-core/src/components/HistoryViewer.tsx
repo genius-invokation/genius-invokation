@@ -1991,7 +1991,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
       <div class="absolute right-0 top-0 bottom-0 w-70 touch-pan shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
         <div class="w-full h-12" />
         <div
-          class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar history-scrollbar-simply"
+          class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar"
           ref={scrollRef}
           onScroll={handleScroll}
         >
@@ -2075,7 +2075,7 @@ function HistoryBlockDetailPanel(props: {
     >
       <div
         ref={panelRef}
-        class="overflow-y-auto max-h-114 history-scrollbar history-scrollbar-simply"
+        class="overflow-y-auto max-h-114 history-scrollbar"
       >
         <Show when={renderBlock().type !== "pocket"}>
           <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">

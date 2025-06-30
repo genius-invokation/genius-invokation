@@ -58,6 +58,7 @@ import { flip } from "@gi-tcg/utils";
 export interface HistoryData {
   blocks: HistoryBlock[];
   currentIndent: number;
+  recorder: StateRecorder;
 }
 
 interface VariableRecordEntry {
@@ -95,7 +96,7 @@ type EntityType =
  * 收集所有的 ModifyEntityVarEM，以记录 VariableChangeHistoryChild
  * 等需要使用的旧值
  */
-class StateRecorder {
+export class StateRecorder {
   readonly visibleVarRecords = new Map<number, VariableRecord>();
   readonly energyVarRecords = new Map<number, VariableRecord>();
   readonly maxHealthVarRecords = new Map<number, VariableRecord>();
@@ -112,7 +113,7 @@ class StateRecorder {
   ];
   readonly dice: [DiceType[], DiceType[]] = [[], []];
 
-  constructor(private readonly previousState: PbGameState | undefined) {
+  onInitialize(previousState: PbGameState | undefined) {
     if (!previousState) {
       return;
     }
@@ -255,7 +256,8 @@ class StateRecorder {
             type: "convertDice",
             who: mut.who as 0 | 1,
             diceType: target,
-            count: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING ? 1 : diceCount,
+            count:
+              mut.reason === PbResetDiceReason.ELEMENTAL_TUNING ? 1 : diceCount,
             isTuning: mut.reason === PbResetDiceReason.ELEMENTAL_TUNING,
           },
         ];
@@ -377,7 +379,7 @@ export function updateHistory(
 
     let mainBlock: HistoryDetailBlock | null = null;
     const children: HistoryChildren[] = [];
-    const stateRecorder = new StateRecorder(previousState);
+    history.recorder.onInitialize(previousState);
 
     const getLastChild = () => {
       return (
@@ -414,11 +416,11 @@ export function updateHistory(
           break;
         }
         case "resetDice": {
-          children.push(...stateRecorder.receiveResetDice(m));
+          children.push(...history.recorder.receiveResetDice(m));
           break;
         }
         case "modifyEntityVar": {
-          const child = stateRecorder.receiveModifyVar(m);
+          const child = history.recorder.receiveModifyVar(m);
           if (child) {
             children.push(child);
           }
@@ -427,7 +429,7 @@ export function updateHistory(
         case "applyAura": {
           children.push({
             type: "apply",
-            who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+            who: history.recorder.area.get(m.targetId)?.who ?? 0,
             characterDefinitionId: m.targetDefinitionId,
             elementType: m.elementType,
             reaction:
@@ -443,7 +445,7 @@ export function updateHistory(
           if (m.damageType === PbDamageType.HEAL) {
             children.push({
               type: "heal",
-              who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+              who: history.recorder.area.get(m.targetId)?.who ?? 0,
               characterDefinitionId: m.targetDefinitionId,
               healValue: m.value,
               oldHealth: m.oldHealth,
@@ -458,7 +460,7 @@ export function updateHistory(
           } else {
             children.push({
               type: "damage",
-              who: stateRecorder.area.get(m.targetId)?.who ?? 0,
+              who: history.recorder.area.get(m.targetId)?.who ?? 0,
               characterDefinitionId: m.targetDefinitionId,
               damageType: m.damageType,
               damageValue: m.value,
@@ -476,7 +478,7 @@ export function updateHistory(
           break;
         }
         case "createCard": {
-          stateRecorder.onNewCard(m as CreateCardEM);
+          history.recorder.onNewCard(m as CreateCardEM);
           children.push({
             type: "createCard",
             who: m.who as 0 | 1,
@@ -486,17 +488,17 @@ export function updateHistory(
           break;
         }
         case "createCharacter": {
-          stateRecorder.onNewCharacter(m);
+          history.recorder.onNewCharacter(m);
           break;
         }
         case "createEntity": {
-          stateRecorder.onNewEntity(m);
+          history.recorder.onNewEntity(m);
           const { definitionId, id } = m.entity!;
-          const { type } = stateRecorder.entityInitStates.get(id)!;
+          const { type } = history.recorder.entityInitStates.get(id)!;
           children.push({
             type: "createEntity",
             who: m.who as 0 | 1,
-            masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+            masterDefinitionId: history.recorder.getMasterDefinitionId(id),
             entityDefinitionId: definitionId,
             entityType: type,
           });
@@ -541,12 +543,12 @@ export function updateHistory(
         }
         case "removeEntity": {
           const { definitionId, id } = m.entity!;
-          const area = stateRecorder.area.get(id);
-          const { type } = stateRecorder.entityInitStates.get(id)!;
+          const area = history.recorder.area.get(id);
+          const { type } = history.recorder.entityInitStates.get(id)!;
           children.push({
             type: "removeEntity",
             who: area?.who ?? 0,
-            masterDefinitionId: stateRecorder.getMasterDefinitionId(id),
+            masterDefinitionId: history.recorder.getMasterDefinitionId(id),
             entityDefinitionId: definitionId,
             entityType: type,
           });
@@ -563,7 +565,7 @@ export function updateHistory(
           break;
         }
         case "switchActive": {
-          stateRecorder.onSwitchActive(m);
+          history.recorder.onSwitchActive(m);
           const who = m.who as 0 | 1;
           if (m.fromAction === PbSwitchActiveFromAction.NONE) {
             children.push({
@@ -623,8 +625,8 @@ export function updateHistory(
           break;
         }
         case "transformDefinition": {
-          const area = stateRecorder.area.get(m.entityId);
-          const state = stateRecorder.entityInitStates.get(m.entityId);
+          const area = history.recorder.area.get(m.entityId);
+          const state = history.recorder.entityInitStates.get(m.entityId);
           const oldDefinitionId = state?.definitionId ?? 0;
           if (state) {
             state.definitionId = m.newEntityDefinitionId;
@@ -648,12 +650,12 @@ export function updateHistory(
         case "skillUsed": {
           if (m.skillType === PbSkillType.TRIGGERED) {
             const { type } =
-              stateRecorder.entityInitStates.get(m.callerId) ?? {};
+              history.recorder.entityInitStates.get(m.callerId) ?? {};
             mainBlock = {
               type: "triggered",
               who: m.who as 0 | 1,
               masterOrCallerDefinitionId:
-                stateRecorder.getMasterDefinitionId(m.callerId) ??
+                history.recorder.getMasterDefinitionId(m.callerId) ??
                 m.callerDefinitionId,
               callerOrSkillDefinitionId: m.callerDefinitionId,
               children: [],

@@ -44,17 +44,24 @@ self.addEventListener("message", async (event) => {
 });
 
 self.addEventListener("fetch", (/** @type {FetchEvent} */ event) => {
-  if (event.request.method === "GET" && event.request.headers.get("X-Gi-Tcg-Assets-Manager")) {
+  if (
+    event.request.method === "GET" &&
+    event.request.headers.get("X-Gi-Tcg-Assets-Manager")
+  ) {
     /** @type {Request | URL} */
     const url = new URL(event.request.url);
     const search = new URLSearchParams(url.search);
     if (FEATURE_NO_THUMB && search.get("thumb")) {
       search.delete("thumb");
-      url.search = '?' + search.toString();
+      url.search = "?" + search.toString();
     }
     event.respondWith(cacheFirst(url, event.preloadResponse, event));
   } else {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      event.preloadResponse.then(
+        (preloaded) => preloaded ?? fetch(event.request),
+      ),
+    );
   }
 });
 

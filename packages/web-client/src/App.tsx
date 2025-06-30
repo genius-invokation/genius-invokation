@@ -80,7 +80,7 @@ function App() {
   return (
     <VersionContext.Provider value={versionContextValue}>
       <MobileContext.Provider value={mobile}>
-        <Router base={import.meta.env.BASE_URL}>
+        <Router base={import.meta.env.BASE_URL.replace(/(.+)\/$/, "$1")}>
           <Route path="/" component={Home} />
           <Route path="/user/:id" component={User} />
           <Route path="/decks/:id" component={EditDeck} />
