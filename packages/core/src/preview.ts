@@ -154,16 +154,22 @@ class PreviewContext {
                 // keep first direction
                 direction: map.get(m.state.id)?.direction ?? m.direction,
               });
-            }
-          } else {
-            if (m.varName === m.state.definition.visibleVarName) {
-              newVisibleVar.set(m.state.id, {
+            } else if (
+              m.varName === m.state.definition.specialEnergy?.variableName
+            ) {
+              newEnergies.set(m.state.id, {
                 ...m,
-                // keep first direction
+                varName: "energy",
                 direction:
-                  newVisibleVar.get(m.state.id)?.direction ?? m.direction,
+                  newEnergies.get(m.state.id)?.direction ?? m.direction,
               });
             }
+          } else if (m.varName === m.state.definition.visibleVarName) {
+            newVisibleVar.set(m.state.id, {
+              ...m,
+              direction:
+                newVisibleVar.get(m.state.id)?.direction ?? m.direction,
+            });
           }
           break;
         }

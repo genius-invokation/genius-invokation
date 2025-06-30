@@ -353,7 +353,6 @@ function EnergyBar(props: EnergyBarProps) {
     | "empty"
     | "active"
     | "overflow"
-    | "emptyGain" // just for better typing
     | "activeGain"
     | "overflowGain";
   type EnergyIconKey = `${string}_${EnergyState}`;
@@ -369,31 +368,37 @@ function EnergyBar(props: EnergyBarProps) {
     fightingSpirit_overflow: EnergyIconExtraMavuika,
     fightingSpirit_overflowGain: EnergyIconExtraGainMavuika,
   };
-  const energyStates = (current: number) => {
+  const STAGE_1 = {
+    0: "empty",
+    1: "activeGain",
+    2: "active",
+  } as const;
+  const STAGE_2 = {
+    0: "active",
+    1: "overflowGain",
+    2: "overflow",
+  } as const;
+  const energyStates = (current: number, preview: number): EnergyState[] => {
+    // preview must not less then current
+    preview = Math.max(preview, current);
     const total = props.total;
-    const isFull = current >= total;
-    return Array.from({ length: total }, (_, i) => {
-      return isFull
-        ? (["active", "overflow"] as const)[+(current - total > i)]
-        : (["empty", "active"] as const)[+(current > i)];
-    });
+    const length = Math.max(current, preview, total);
+    const all = Array.from(
+      { length },
+      (_, i) => (+(current > i) + +(preview > i)) as 0 | 1 | 2,
+    );
+    return [
+      ...all.slice(total).map((v) => STAGE_2[v]),
+      ...all.slice(length - total, total).map((v) => STAGE_1[v]),
+    ];
   };
   const energyComponents = createMemo(() => {
     const energyType = props.specialEnergyName ?? "energy";
     const current = props.current;
     const preview = props.preview ?? current;
-    if (preview > current) {
-      return energyStates(preview).map(
-        (state, i) =>
-          ENERGY_MAP[
-            `${energyType}_${state}${current <= i && i < preview ? "Gain" : ""}`
-          ],
-      );
-    } else {
-      return energyStates(current).map(
-        (state) => ENERGY_MAP[`${energyType}_${state}`],
-      );
-    }
+    return energyStates(current, preview).map(
+      (state) => ENERGY_MAP[`${energyType}_${state}`],
+    );
   });
   return (
     <>
