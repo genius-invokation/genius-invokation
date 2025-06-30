@@ -308,7 +308,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
           />
-          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
+          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
@@ -349,55 +349,60 @@ interface EnergyBarProps {
 }
 
 function EnergyBar(props: EnergyBarProps) {
-  const ENERGY_MAP : Record<string, Component> = {
+  type EnergyState =
+    | "empty"
+    | "active"
+    | "overflow"
+    | "emptyGain" // just for better typing
+    | "activeGain"
+    | "overflowGain";
+  type EnergyIconKey = `${string}_${EnergyState}`;
+  const ENERGY_MAP: Partial<Record<EnergyIconKey, Component>> = {
     energy_empty: EnergyIconEmpty,
     energy_active: EnergyIconActive,
-    energy_active_gain: EnergyIconActiveGain,
+    energy_activeGain: EnergyIconActiveGain,
     energy_overflow: EnergyIconActive,
-    energy_overflow_gain: EnergyIconActive,
+    energy_overflowGain: EnergyIconActive,
     fightingSpirit_empty: EnergyIconEmptyMavuika,
     fightingSpirit_active: EnergyIconActiveMavuika,
-    fightingSpirit_active_gain: EnergyIconActiveGainMavuika,
+    fightingSpirit_activeGain: EnergyIconActiveGainMavuika,
     fightingSpirit_overflow: EnergyIconExtraMavuika,
-    fightingSpirit_overflow_gain: EnergyIconExtraGainMavuika,
+    fightingSpirit_overflowGain: EnergyIconExtraGainMavuika,
   };
-  const renderEnergy = () => {
-    const clamp = (v: number) => Math.min(Math.max(v, 0), props.total * 2);
-    const energyState = (c: number, t: number) => {
-      const state: string[] = Array(t).fill("empty");
-      const activeCount = Math.min(c, t);
-      const overflowCount = c - t;
-      for (let i = 0; i < activeCount; i++) state[i] = "active";
-      for (let i = 0; i < overflowCount; i++) state[i] = "overflow";
-      return state;
-    };
+  const energyStates = (current: number) => {
+    const total = props.total;
+    const isFull = current >= total;
+    return Array.from({ length: total }, (_, i) => {
+      return isFull
+        ? (["active", "overflow"] as const)[+(current - total > i)]
+        : (["empty", "active"] as const)[+(current > i)];
+    });
+  };
+  const energyComponents = createMemo(() => {
     const energyType = props.specialEnergyName ?? "energy";
-    const current = clamp(props.current);
-    const preview = props.preview === null ? current : clamp(props.preview);
-    const baseState = energyState(current, props.total);
-    if (preview <= current) {
-      return baseState.map((state) => `${energyType}_${state}`);
+    const current = props.current;
+    const preview = props.preview ?? current;
+    if (preview > current) {
+      return energyStates(preview).map(
+        (state, i) =>
+          ENERGY_MAP[
+            `${energyType}_${state}${current <= i && i < preview ? "Gain" : ""}`
+          ],
+      );
     } else {
-      const previewState = energyState(preview, props.total);
-      for (let i = 0; i < props.total; i++) {
-        if (baseState[i] === previewState[i]) continue;
-        if (previewState[i] === "active") {
-          previewState[i] = "active_gain";
-        } else if (previewState[i] === "overflow") {
-          previewState[i] = "overflow_gain";
-        }
-      }
-      return previewState.map((state) => `${energyType}_${state}`);
+      return energyStates(current).map(
+        (state) => ENERGY_MAP[`${energyType}_${state}`],
+      );
     }
-  };
+  });
   return (
     <>
-      <For each={renderEnergy()}>
-        {(state) => (
+      <For each={energyComponents()}>
+        {(comp) => (
           <Dynamic<Component<ComponentProps<"div">>>
-            component={ENERGY_MAP[state]}
-            class= "w-5.8 h-4"
-          /> 
+            component={comp}
+            class="w-5.8 h-4"
+          />
         )}
       </For>
     </>
