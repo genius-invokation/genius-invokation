@@ -30,7 +30,6 @@ export function Header() {
           <A href="/">七圣召唤模拟对战平台</A>
         </h1>
         <div class="flex flex-row gap-2">
-          <span class="text-10px badge badge-soft-warning">Public Beta</span>
           <Show when={IS_BETA}>
             <span class="text-10px badge badge-soft-error">
               Incl. unreleased data

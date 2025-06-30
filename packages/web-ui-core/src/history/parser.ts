@@ -392,7 +392,6 @@ export function updateHistory(
 
     for (const pbm of mutations) {
       const m = flattenPbOneof(pbm.mutation!);
-      console.log(m);
       switch (m.$case) {
         case "changePhase": {
           const newPhase = (
