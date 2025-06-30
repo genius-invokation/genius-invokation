@@ -30,6 +30,8 @@ import {
   Show,
   Switch,
   untrack,
+  type Component,
+  type ComponentProps,
 } from "solid-js";
 import { Image } from "./Image";
 import type { CharacterInfo, DamageInfo } from "./Chessboard";
@@ -42,12 +44,21 @@ import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import HealthIcon from "../svg/HealthIcon.svg?component-solid";
+import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
+import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
+import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
+import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg?component-solid";
+import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg?component-solid";
+import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg?component-solid";
+import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?component-solid";
+import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
 import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
+import { Dynamic } from "solid-js/web";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -201,6 +212,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
               total={data().maxEnergy}
+              specialEnergyName={data().specialEnergyName}
             />
             <Show when={technique()} keyed>
               {(et) => (
@@ -296,7 +308,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
           />
-          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
+          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
@@ -333,43 +345,69 @@ interface EnergyBarProps {
   current: number;
   preview: number | null;
   total: number;
+  specialEnergyName?: string | undefined;
 }
 
 function EnergyBar(props: EnergyBarProps) {
+  type EnergyState =
+    | "empty"
+    | "active"
+    | "overflow"
+    | "activeGain"
+    | "overflowGain";
+  type EnergyIconKey = `${string}_${EnergyState}`;
+  const ENERGY_MAP: Partial<Record<EnergyIconKey, Component>> = {
+    energy_empty: EnergyIconEmpty,
+    energy_active: EnergyIconActive,
+    energy_activeGain: EnergyIconActiveGain,
+    energy_overflow: EnergyIconActive,
+    energy_overflowGain: EnergyIconActive,
+    fightingSpirit_empty: EnergyIconEmptyMavuika,
+    fightingSpirit_active: EnergyIconActiveMavuika,
+    fightingSpirit_activeGain: EnergyIconActiveGainMavuika,
+    fightingSpirit_overflow: EnergyIconExtraMavuika,
+    fightingSpirit_overflowGain: EnergyIconExtraGainMavuika,
+  };
+  const STAGE_1 = {
+    0: "empty",
+    1: "activeGain",
+    2: "active",
+  } as const;
+  const STAGE_2 = {
+    0: "active",
+    1: "overflowGain",
+    2: "overflow",
+  } as const;
+  const energyStates = (current: number, preview: number): EnergyState[] => {
+    // preview must not less then current
+    preview = Math.max(preview, current);
+    const total = props.total;
+    const length = Math.max(current, preview, total);
+    const all = Array.from(
+      { length },
+      (_, i) => (+(current > i) + +(preview > i)) as 0 | 1 | 2,
+    );
+    return [
+      ...all.slice(total).map((v) => STAGE_2[v]),
+      ...all.slice(length - total, total).map((v) => STAGE_1[v]),
+    ];
+  };
+  const energyComponents = createMemo(() => {
+    const energyType = props.specialEnergyName ?? "energy";
+    const current = props.current;
+    const preview = props.preview ?? current;
+    return energyStates(current, preview).map(
+      (state) => ENERGY_MAP[`${energyType}_${state}`],
+    );
+  });
   return (
     <>
-      <For
-        each={Array.from(
-          { length: Math.max(props.total, props.current) },
-          (_, i) => i,
-        )}
-      >
-        {(i) => (
-          <WithDelicateUi
-            assetId={
-              i < props.current
-                ? "UI_TeyvatCard_LifeBg2"
-                : "UI_TeyvatCard_LifeBg3"
-            }
-            fallback={
-              <svg // 能量点
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-              >
-                <path
-                  d="M538.112 38.4c-15.36-44.544-39.936-44.544-55.296 0l-84.992 250.88c-14.848 44.544-64 93.184-108.032 108.544L40.448 482.816c-44.544 15.36-44.544 39.936 0 55.296l247.808 86.016c44.544 15.36 93.184 64.512 108.544 108.544l86.528 251.392c15.36 44.544 39.936 44.544 55.296 0l84.48-249.856c14.848-44.544 63.488-93.184 108.032-108.544l252.928-86.528c44.544-15.36 44.544-39.936 0-54.784l-248.832-83.968c-44.544-14.848-93.184-63.488-108.544-108.032-1.536-0.512-88.576-253.952-88.576-253.952z"
-                  fill={i < props.current ? "yellow" : "#e5e7eb"}
-                  stroke={i < props.current ? "#854d0e" : "gray"}
-                  stroke-width="32"
-                />
-              </svg>
-            }
-          >
-            {(img) => <div class="h-4 children-h-full">{img}</div>}
-          </WithDelicateUi>
+      <For each={energyComponents()}>
+        {(comp) => (
+          <Dynamic<Component<ComponentProps<"div">>>
+            component={comp}
+            class="w-5.8 h-4"
+          />
         )}
       </For>
     </>
