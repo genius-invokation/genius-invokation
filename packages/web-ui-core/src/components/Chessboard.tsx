@@ -99,6 +99,7 @@ import {
   type DeclareEndMarkerProps,
 } from "./DeclareEndMarker";
 import {
+  ActionStepEntityUi,
   CANCEL_ACTION_STEP,
   NO_PREVIEW,
   type ActionState,
@@ -830,7 +831,7 @@ function rerenderChildren(opt: {
           transform: {
             x,
             y,
-            z: clickStep || preview ? 0.2 : 0,
+            z: ((clickStep && clickStep.ui >= ActionStepEntityUi.Outlined) || preview ? 0.2 : 0) + (isActive ? 0.05 : 0),
             ry: 0,
             rz: 0,
           },

@@ -51,7 +51,7 @@ export function getHintTextOfCardOrSkill(
     result.push(result.at(-1)!);
     return result;
   } catch (e) {
-    return Array.from({ length: targetLength }, () => `请选择使用目标`);
+    return Array.from({ length: targetLength }, () => `对所选角色生效`);
   }
 }
 
@@ -1224,7 +1224,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
     showBackdrop: false,
     showHands: true,
     showSkillButtons: true,
-    hintText: "选择出战角色",
+    hintText: "请选择出战角色",
     isFast: false,
     step: (step) => {
       if (step === CANCEL_ACTION_STEP) {
@@ -1273,7 +1273,7 @@ export function createChooseActiveState(candidateIds: number[]): ActionState {
       showBackdrop: false,
       showHands: true,
       showSkillButtons: true,
-      hintText: "选择出战角色",
+      hintText: "请选择出战角色",
       isFast: false,
       step: (step, dice) => {
         if (step === CANCEL_ACTION_STEP) {

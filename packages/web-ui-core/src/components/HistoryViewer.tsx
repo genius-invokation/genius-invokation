@@ -59,7 +59,7 @@ import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 
-const reactionTextMap: Record<number, ReactionRenderingData> = {
+export const reactionTextMap: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
     element: [DamageType.Cryo, DamageType.Pyro],
     name: "融化",
@@ -1979,7 +1979,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div
-        class="absolute inset-0 z-0 bg-black/30"
+        class="absolute inset-0 z-0 bg-black/50"
         onClick={() => {
           if (selectedBlock()) {
             setSelectedBlock(null);

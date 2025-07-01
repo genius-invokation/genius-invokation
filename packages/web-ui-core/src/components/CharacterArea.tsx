@@ -17,6 +17,7 @@ import {
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_SHIELD,
+  DamageType,
   PbEquipmentType,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
@@ -59,6 +60,7 @@ import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
+import { reactionTextMap } from "./HistoryViewer";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -162,6 +164,10 @@ export function CharacterArea(props: CharacterAreaProps) {
     const aura = props.preview?.newAura ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
+  const reaction = createMemo(() => 
+    props.preview?.reactions.map((r) => reactionTextMap[r].element),
+  );
+  createEffect(() => console.log(props.preview?.reactions));
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
 
@@ -182,10 +188,20 @@ export function CharacterArea(props: CharacterAreaProps) {
   const otherEquipments = createMemo(() =>
     props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
   );
+  const focusTransform = createMemo(() => {
+    if ((props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined) || props.preview) {
+      const FOCUS_SCALE = 1.03;
+      return {
+        transform: cssPropertyOfTransform(props.uiState.transform).transform + `scaleX(${FOCUS_SCALE}) scaleY(${FOCUS_SCALE})`
+      };
+    } else {
+      return cssPropertyOfTransform(props.uiState.transform);
+    }
+  });
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
-      style={cssPropertyOfTransform(props.uiState.transform)}
+      style={focusTransform()}
       ref={el}
       onClick={(e) => {
         e.stopPropagation();
@@ -194,8 +210,19 @@ export function CharacterArea(props: CharacterAreaProps) {
     >
       <div
         class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse z-10"
-        bool:data-preview={props.preview?.newAura}
+        bool:data-preview={props.preview?.newAura || props.preview?.reactions}
       >
+        <For each={reaction()}>
+          {(reaction) => (
+            <For each={reaction}>
+              {(r) => (
+                <Show when={r}>
+                  <Image imageId={r & 0xf} class="h-5 w-5" />
+                </Show>
+              )}
+            </For>
+          )}
+        </For>
         <For each={aura()}>
           {(aura) => (
             <Show when={aura}>
@@ -297,7 +324,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow data-[defeated]:brightness-50"
+          class="h-full w-full rounded-1 data-[clickable]:cursor-pointer data-[clickable]:shadow-[#fdba7499_0_0_4px_4px,#fef9c366_0_0_5px_5px] transition-shadow data-[defeated]:brightness-50"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined

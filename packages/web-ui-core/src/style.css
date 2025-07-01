@@ -133,6 +133,23 @@
     }
   }
 
+  .action-hint {
+    background: linear-gradient(to bottom,
+        #70553c 1px,
+        #9d7f64 1px,
+        #9d7f64 2px,
+        #70553c 2px,
+        #70553c 22px,
+        #9d7f64 22px,
+        #9d7f64 23px,
+        #70553c 23px);
+    mask-image: linear-gradient(to right,
+        transparent 0%,
+        #000000FF 45%,
+        #000000FF 55%,
+        transparent 100%);
+  }
+
   .playerinfo-box {
     background-image: linear-gradient(to right, #deab65 25%, #845f39 100%);
     border-color: #ffd89f;

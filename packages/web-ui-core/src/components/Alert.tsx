@@ -73,7 +73,7 @@ interface AlertProps {
 function Alert(props: AlertProps) {
   return (
     <div
-      class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto transition-opacity"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto transition-opacity"
       bool:data-shown={props.shown}
       onClick={() => props.onBackdropClick?.()}
     >

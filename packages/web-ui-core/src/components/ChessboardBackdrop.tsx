@@ -21,7 +21,7 @@ export interface ChessboardBackdropProps {
 export function ChessboardBackdrop(props: ChessboardBackdropProps) {
   return (
     <div
-      class="absolute inset-0 translate-z-0.1 pointer-events-none data-[shown]:pointer-events-auto data-[shown]:bg-black/30 bg-black/0 transition-colors"
+      class="absolute inset-0 translate-z-0.1 pointer-events-none data-[shown]:pointer-events-auto data-[shown]:bg-black/50 bg-black/0 transition-colors"
       bool:data-shown={props.shown}
       onClick={(e) => {
         e.stopPropagation();
