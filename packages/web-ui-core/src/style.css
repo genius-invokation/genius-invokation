@@ -1,12 +1,12 @@
 .gi-tcg-chessboard-new {
   --c-void: #4a4a4a;
-  --c-electro: #b380ff;
-  --c-pyro: #ff9955;
-  --c-dendro: #a5c83b;
-  --c-cryo: #55ddff;
-  --c-geo: #ffcc00;
-  --c-hydro: #3e99ff;
-  --c-anemo: #80ffe6;
+  --c-electro: #917ce8;
+  --c-pyro: #d6684b;
+  --c-dendro: #88b750;
+  --c-cryo: #63bacd;
+  --c-geo: #d29d5d;
+  --c-hydro: #488ccb;
+  --c-anemo: #5ca8a6;
   --c-omni: #dcd4c2;
   /* --c-energy: #eab308; */
   --c-heal: lightgreen;
