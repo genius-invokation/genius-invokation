@@ -56,6 +56,7 @@ export const Convalescence = combatStatus(112135)
 
 // 所附属角色的生命之契完全移除后，提高此角色1点最大生命值。
 export const DetailedDiagnosisThoroughTreatmentStatus = status(112136)
+  .noDefaultDispose()
   .on("dispose", (c, e) => e.entity.definition.id === BondOfLife)
   .usage(3)
   .increaseMaxHealth(1, "@master")
