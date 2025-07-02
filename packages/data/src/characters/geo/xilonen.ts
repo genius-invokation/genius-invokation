@@ -99,6 +99,7 @@ export const ElectroDMGBonus = combatStatus(216117)
  */
 export const SourceSampleGeo = status(116113)
   .since("v5.6.0")
+  .noDefaultDispose()
   .variable("layer", 1)
   .done();
 
@@ -110,6 +111,7 @@ export const SourceSampleGeo = status(116113)
  */
 export const SourceSampleHydro = status(116114)
   .since("v5.6.0")
+  .noDefaultDispose()
   .variable("layer", 1)
   .done();
 
@@ -121,6 +123,7 @@ export const SourceSampleHydro = status(116114)
  */
 export const SourceSamplePyro = status(116115)
   .since("v5.6.0")
+  .noDefaultDispose()
   .variable("layer", 1)
   .done();
 
@@ -132,6 +135,7 @@ export const SourceSamplePyro = status(116115)
  */
 export const SourceSampleCryo = status(116116)
   .since("v5.6.0")
+  .noDefaultDispose()
   .variable("layer", 1)
   .done();
 
@@ -143,6 +147,7 @@ export const SourceSampleCryo = status(116116)
  */
 export const SourceSampleElectro = status(116117)
   .since("v5.6.0")
+  .noDefaultDispose()
   .variable("layer", 1)
   .done();
 
@@ -260,7 +265,8 @@ type SampleType = keyof typeof sampleMap;
  */
 export const SourceSample = skill(16114)
   .type("passive")
-  .defineSnippet("initSamples", (c) => {
+  .on("battleBegin")
+  .do((c) => {
     const sampleCount = Object.fromEntries(
       Object.keys(sampleMap).map((k) => [k, 0])
     ) as Record<SampleType, number>;
@@ -280,10 +286,6 @@ export const SourceSample = skill(16114)
       }
     }
   })
-  .on("battleBegin")
-  .callSnippet("initSamples")
-  .on("revive")
-  .callSnippet("initSamples")
   .on("actionPhase")
   .do((c) => {
     const nightsoul = c.self.hasStatus(NightsoulsBlessing);
