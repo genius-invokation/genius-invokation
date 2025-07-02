@@ -831,7 +831,7 @@ function rerenderChildren(opt: {
           transform: {
             x,
             y,
-            z: ((clickStep && clickStep.ui >= ActionStepEntityUi.Outlined) || preview ? 0.2 : 0) + (isActive ? 0.05 : 0),
+            z: ((clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview ? 8 : 0) + (isActive ? 0.05 : 0),
             ry: 0,
             rz: 0,
           },

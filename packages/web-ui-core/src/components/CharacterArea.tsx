@@ -188,20 +188,10 @@ export function CharacterArea(props: CharacterAreaProps) {
   const otherEquipments = createMemo(() =>
     props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
   );
-  const focusTransform = createMemo(() => {
-    if ((props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined) || props.preview) {
-      const FOCUS_SCALE = 1.03;
-      return {
-        transform: cssPropertyOfTransform(props.uiState.transform).transform + `scaleX(${FOCUS_SCALE}) scaleY(${FOCUS_SCALE})`
-      };
-    } else {
-      return cssPropertyOfTransform(props.uiState.transform);
-    }
-  });
   return (
     <div
       class="absolute flex flex-col items-center transition-transform"
-      style={focusTransform()}
+      style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
       onClick={(e) => {
         e.stopPropagation();
@@ -324,7 +314,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-1 data-[clickable]:cursor-pointer data-[clickable]:shadow-[#fdba7499_0_0_4px_4px,#fef9c366_0_0_5px_5px] transition-shadow data-[defeated]:brightness-50"
+          class="h-full w-full rounded-1 data-[clickable]:cursor-pointer data-[clickable]:shadow-[#fdba7499_0_0_4px_4px,#fef9c366_0_0_5px_5px,inset_#fdba7499_0_0_1px_1px] transition-shadow data-[defeated]:brightness-50"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
