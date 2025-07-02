@@ -292,7 +292,6 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         break;
       }
       case "switchActive": {
-        console.log("11111", value);
         const info = getPreviewingCharacter(value.characterId);
         info.active = true;
         break;
