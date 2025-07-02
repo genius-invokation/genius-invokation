@@ -16,6 +16,15 @@
 import { status, combatStatus, summon, DamageType } from "@gi-tcg/core/builder";
 
 /**
+ * @id 100
+ * @name 抵抗之躯
+ * 角色免疫冻结、眩晕、石化的效果。
+ */
+export const ResistantForm = status(100)
+  .tags("immuneControl")
+  .done();
+
+/**
  * @id 106
  * @name 冻结
  * @description
