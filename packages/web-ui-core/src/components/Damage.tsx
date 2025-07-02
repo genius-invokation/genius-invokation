@@ -26,6 +26,11 @@ export interface DamageProps {
   shown: boolean;
 }
 
+export const DAMAGE_COLOR: Record<number, string> = {
+  ...DICE_COLOR, 
+  [DamageType.Piercing]: "void"
+};
+
 export function Damage(props: DamageProps) {
   const damageType = createMemo(() => props.info.damageType);
   const damageValue = createMemo(() => props.info.value);
@@ -35,7 +40,7 @@ export function Damage(props: DamageProps) {
         class="relative w-28 h-28 transition-all-100 transition-discrete hidden data-[shown]:flex scale-80 data-[shown]:scale-100 starting:data-[shown]:scale-80"
         bool:data-shown={props.shown}
         style={{
-          color: `var(--c-${damageType() === DamageType.Piercing ? "void" : DICE_COLOR[damageType()]})`,
+          color: `var(--c-${DAMAGE_COLOR[damageType()]})`,
         }}
       >
         <div class="absolute h-full w-full">

@@ -46,7 +46,7 @@ import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import HealthIcon from "../svg/HealthIcon.svg?component-solid";
-import HealthDebtsIcon from "../svg/HealthDebtsIcon.svg?component-solid";
+import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg?component-solid";
 import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
 import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
 import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
@@ -250,7 +250,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           <Health 
             value={data().health}
             isMax={data().health === data().maxHealth}
-            // hpDebts={undefined}
+            // bondOfLife={undefined}
           />
           <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
@@ -467,19 +467,19 @@ function EnergyBar(props: EnergyBarProps) {
 interface HealthProps {
   value: number;
   isMax: boolean;
-  hpDebts?: boolean;
+  bondOfLife?: boolean;
 }
 
 function Health(props: HealthProps) {
   return (
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
       <HealthIcon class="w-full h-full" />
-      <Show when={props.hpDebts}>
+      <Show when={props.bondOfLife}>
         <div 
           class="absolute inset-0 w-full h-full animate-[blink_4s_ease-in-out_infinite]"
           style={{"--blink-opacity": 0.7}}
         >
-          <HealthDebtsIcon class="w-full h-full" />
+          <BondOfLifeIcon class="w-full h-full" />
           <div class="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,#ff000088_0%,transparent_45%)]"/>
         </div>
       </Show>

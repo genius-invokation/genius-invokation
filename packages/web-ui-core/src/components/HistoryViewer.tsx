@@ -41,7 +41,7 @@ import type {
   RemoveEntityHistoryChild,
 } from "../history/typings";
 import { Image } from "./Image";
-import { DICE_COLOR, DiceIcon } from "./Dice";
+import { DiceIcon } from "./Dice";
 import type {
   ActionCardRawData,
   CharacterRawData,
@@ -58,6 +58,7 @@ import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
 import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
+import { DAMAGE_COLOR } from "./Damage";
 
 export const reactionTextMap: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
@@ -438,7 +439,7 @@ const renderHistoryChild = (
             <span
               style={
                 child.damageType >= 1 && child.damageType <= 7
-                  ? { color: `var(--c-${DICE_COLOR[child.damageType]})` }
+                  ? { color: `var(--c-${DAMAGE_COLOR[child.damageType]})` }
                   : void 0
               }
             >
@@ -497,7 +498,7 @@ const renderHistoryChild = (
             <span>附着</span>
             <Image imageId={child.elementType} class="h-3.5 w-3.5" />
             <span
-              style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}
+              style={{ color: `var(--c-${DAMAGE_COLOR[child.elementType]})` }}
             >
               {getApplyTypeText(child.elementType)}
             </span>
