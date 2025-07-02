@@ -195,6 +195,7 @@ class PreviewContext {
       }
     }
     result.push(
+      ...newActives.values(),
       ...[
         ...newHealths.values(),
         ...newEnergies.values(),
