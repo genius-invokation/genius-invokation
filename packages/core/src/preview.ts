@@ -42,6 +42,7 @@ import {
   type ExposedMutation,
   type FlattenOneof,
   type PreviewData,
+  SwitchActiveEM,
   unFlattenOneof,
 } from "@gi-tcg/typings";
 import { exposeMutation } from "./io";
@@ -121,12 +122,14 @@ class PreviewContext {
 
   getPreviewData(): PreviewData[] {
     const result: ExposedMutation[] = [];
+    const newActives = new Map<0 | 1, ExposedMutation>();
     for (const em of this.exposedMutations) {
-      if (em.$case === "damage" || em.$case === "applyAura") {
+      if (em.$case === "damage" || em.$case === "applyAura" ) {
         result.push(em);
+      } else if (em.$case === "switchActive") {
+        newActives.set(em.who as 0 | 1, em);
       }
     }
-    const newActives = new Map<0 | 1, SwitchActiveM>();
     const newHealths = new Map<number, ModifyEntityVarM>();
     const newEnergies = new Map<number, ModifyEntityVarM>();
     const newAura = new Map<number, ModifyEntityVarM>();
@@ -134,10 +137,6 @@ class PreviewContext {
     const newVisibleVar = new Map<number, ModifyEntityVarM>();
     for (const m of this.stateMutations) {
       switch (m.type) {
-        case "switchActive": {
-          newActives.set(m.who, m);
-          break;
-        }
         case "modifyEntityVar": {
           const type = m.state.definition.type;
           if (type === "character") {
@@ -197,7 +196,6 @@ class PreviewContext {
     }
     result.push(
       ...[
-        ...newActives.values(),
         ...newHealths.values(),
         ...newEnergies.values(),
         ...newAura.values(),

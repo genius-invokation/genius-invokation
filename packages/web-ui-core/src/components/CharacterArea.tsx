@@ -165,9 +165,8 @@ export function CharacterArea(props: CharacterAreaProps) {
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
   const reaction = createMemo(() => 
-    props.preview?.reactions.map((r) => reactionTextMap[r].element),
+    props.preview?.reactions.map((r) => reactionTextMap[r.reactionType].element),
   );
-  createEffect(() => console.log(props.preview?.reactions));
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
 

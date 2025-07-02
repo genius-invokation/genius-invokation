@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  Aura,
   DiceType,
   PbDiceRequirement,
   PbDiceType,
@@ -206,6 +207,8 @@ export interface DamageInfo {
 
 export interface ReactionInfo {
   reactionType: Reaction;
+  base: Aura;
+  incoming: DamageType;
   targetId: number;
   delay: number;
 }
@@ -1182,6 +1185,7 @@ export function Chessboard(props: ChessboardProps) {
             }
             setSelectedDice(selectingDice);
           }
+          // console.log(actionState.previewData);
           if (actionState.alertText) {
             showAlert(actionState.alertText);
           }

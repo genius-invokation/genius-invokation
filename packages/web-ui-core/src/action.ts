@@ -15,11 +15,14 @@
 
 import {
   ActionValidity,
+  Aura,
+  DamageType,
   DiceType,
   ElementalTuningAction,
   PbEntityArea,
   PbEntityState,
   PbModifyDirection,
+  PbReactionType,
   PlayCardAction,
   Reaction,
   UseSkillAction,
@@ -34,6 +37,7 @@ import { DICE_COLOR } from "./components/Dice";
 import { checkDice } from "@gi-tcg/utils";
 import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
 import type { AssetsManager } from "@gi-tcg/assets-manager";
+import type { ReactionInfo } from "./components/Chessboard";
 
 export function getHintTextOfCardOrSkill(
   assetsManager: AssetsManager,
@@ -145,7 +149,7 @@ export interface PreviewingCharacterInfo {
   newHealth: number | null;
   newHealthDirection: PbModifyDirection;
   newEnergy: number | null;
-  reactions: Reaction[];
+  reactions: ReactionInfo[];
   newAura: number | null;
   newDefinitionId: number | null;
   defeated: boolean;
@@ -177,22 +181,38 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
     entities: new Map(),
     newEntities: new Map(),
   };
-  const newPreviewingCharacter = (): PreviewingCharacterInfo => ({
-    newHealth: null,
-    newHealthDirection: PbModifyDirection.UNSPECIFIED,
-    newEnergy: null,
-    reactions: [],
-    newAura: null,
-    newDefinitionId: null,
-    defeated: false,
-    active: false,
-  });
-  const newPreviewingEntity = (): PreviewingEntityInfo => ({
-    newVariableValue: null,
-    newVariableDirection: PbModifyDirection.UNSPECIFIED,
-    newDefinitionId: null,
-    disposed: false,
-  });
+  const getPreviewingCharacter = (id: number): PreviewingCharacterInfo => {
+    let info = result.characters.get(id);
+    if (info) {
+      return info;
+    }
+    info = {
+      newHealth: null,
+      newHealthDirection: PbModifyDirection.UNSPECIFIED,
+      newEnergy: null,
+      reactions: [],
+      newAura: null,
+      newDefinitionId: null,
+      defeated: false,
+      active: false,
+    };
+    result.characters.set(id, info);
+    return info;
+  };
+  const getPreviewingEntity = (id: number): PreviewingEntityInfo => {
+    let info = result.entities.get(id);
+    if (info) {
+      return info;
+    }
+    info = {
+      newVariableValue: null,
+      newVariableDirection: PbModifyDirection.UNSPECIFIED,
+      newDefinitionId: null,
+      disposed: false,
+    };
+    result.entities.set(id, info);
+    return info;
+  };
   for (const data of previewData) {
     const { $case, value } = data.mutation!;
     outer: switch ($case) {
@@ -219,43 +239,32 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
       case "modifyEntityVar": {
         switch (value.variableName) {
           case "health": {
-            const info =
-              result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info = getPreviewingCharacter(value.entityId);
             info.newHealth = value.variableValue;
             info.newHealthDirection = value.direction;
-            result.characters.set(value.entityId, info);
             break;
           }
           case "aura": {
-            const info =
-              result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info = getPreviewingCharacter(value.entityId);
             info.newAura = value.variableValue;
-            result.characters.set(value.entityId, info);
             break;
           }
           case "energy": {
-            const info =
-              result.characters.get(value.entityId) ?? newPreviewingCharacter();
+            const info = getPreviewingCharacter(value.entityId);
             info.newEnergy = value.variableValue;
-            result.characters.set(value.entityId, info);
             break;
           }
           case "alive": {
             if (!value.variableValue) {
-              const info =
-                result.characters.get(value.entityId) ??
-                newPreviewingCharacter();
+              const info = getPreviewingCharacter(value.entityId);
               info.defeated = true;
-              result.characters.set(value.entityId, info);
             }
             break;
           }
           default: {
-            const info =
-              result.entities.get(value.entityId) ?? newPreviewingEntity();
+            const info = getPreviewingEntity(value.entityId);
             info.newVariableValue = value.variableValue;
             info.newVariableDirection = value.direction;
-            result.entities.set(value.entityId, info);
             break;
           }
         }
@@ -263,34 +272,36 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
       }
       case "damage":
       case "applyAura": {
-        const info =
-          result.characters.get(value.targetId) ?? newPreviewingCharacter();
-        info.reactions.push(value.reactionType as Reaction);
+        if (value.reactionType !== PbReactionType.UNSPECIFIED) {
+          const info = getPreviewingCharacter(value.targetId);
+          const incoming =
+            "damageType" in value ? value.damageType : value.elementType;
+          info.reactions.push({
+            reactionType: value.reactionType as Reaction,
+            base: value.oldAura as Aura,
+            incoming: incoming as DamageType,
+            targetId: value.targetId,
+            delay: 0,
+          });
+        }
         break;
       }
       case "removeEntity": {
-        const info =
-          result.entities.get(value.entity!.id) ?? newPreviewingEntity();
+        const info = getPreviewingEntity(value.entity!.id);
         info.disposed = true;
-        result.entities.set(value.entity!.id, info);
         break;
       }
       case "switchActive": {
-        const info =
-          result.characters.get(value.characterId) ?? newPreviewingCharacter();
+        console.log("11111", value);
+        const info = getPreviewingCharacter(value.characterId);
         info.active = true;
-        result.characters.set(value.characterId, info);
         break;
       }
       case "transformDefinition": {
-        const info =
-          result.entities.get(value.entityId) ?? newPreviewingEntity();
+        const info = getPreviewingEntity(value.entityId);
         info.newDefinitionId = value.newEntityDefinitionId;
-        result.entities.set(value.entityId, info);
-        const info2 =
-          result.characters.get(value.entityId) ?? newPreviewingCharacter();
+        const info2 = getPreviewingCharacter(value.entityId);
         info2.newDefinitionId = value.newEntityDefinitionId;
-        result.characters.set(value.entityId, info2);
         break;
       }
     }
@@ -1197,7 +1208,7 @@ export function createActionState(
   }
 
   root.availableSteps.push(...steps.keys());
-  console.log(root);
+  // console.log(root);
   return root;
 }
 

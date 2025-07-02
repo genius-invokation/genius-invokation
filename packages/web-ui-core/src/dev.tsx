@@ -36,7 +36,7 @@ const deck0: DeckConfig = {
   noShuffle: import.meta.env.DEV,
 };
 const deck1: DeckConfig = {
-  characters: [2304, 1511, 1208],
+  characters: [2304, 1502, 1208],
   cards: [
     331804, 323008, 332003, 332040, 322008, 332037, 333006, 332004, 312023, 330006,
     332011, 321004, 321004, 321024, 321024, 322018, 322018, 331202, 331202,

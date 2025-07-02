@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  Aura,
   type CreateCardEM,
   DamageType,
   PbCardArea,
@@ -176,6 +177,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           const targetReactions = reactionsByTarget.get(targetId)!;
           targetReactions.push({
             reactionType: mutation.value.reactionType,
+            base: mutation.value.oldAura as Aura,
+            incoming: mutation.value.elementType as DamageType,
             targetId,
             delay: targetReactions.length,
           });
@@ -204,6 +207,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           targetReactions.push({
             reactionType: mutation.value.reactionType,
             targetId,
+            base: mutation.value.oldAura as Aura,
+            incoming: mutation.value.damageType as DamageType,
             delay: targetReactions.length,
           });
         }
