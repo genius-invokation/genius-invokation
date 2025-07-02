@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, card, DamageType, Reaction } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, card, DamageType, Reaction, SummonHandle } from "@gi-tcg/core/builder";
 import { BurningFlame } from "../../commons";
 
 /**
@@ -37,10 +37,16 @@ export const LumidouceCaseLevel2 = summon(117102)
  * 我方造成燃烧反应伤害后：此牌升级为柔灯之匣·二阶。
  * 可用次数：3（可叠加，最多叠加到6次）
  */
-export const LumidouceCaseLevel1 = summon(117101)
+export const LumidouceCaseLevel1: SummonHandle = summon(117101)
   .since("v5.5.0")
-  .endPhaseDamage(DamageType.Dendro, 1)
+  .hint(DamageType.Dendro, "1")
+  .on("endPhase")
   .usageCanAppend(3, 6)
+  // 节末升级二阶时仍然使用此技能定义，故检测自身为二阶时改为2伤
+  .if((c) => c.self.definition.id === LumidouceCaseLevel2)
+  .damage(DamageType.Dendro, 2)
+  .else()
+  .damage(DamageType.Dendro, 1)
   .on("dealDamage", (c, e) => e.getReaction() === Reaction.Burning)
   .listenToPlayer()
   .transformDefinition("@self", LumidouceCaseLevel2)
