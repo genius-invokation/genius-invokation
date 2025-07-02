@@ -124,7 +124,9 @@ export function CharacterArea(props: CharacterAreaProps) {
       onAnimationFinish,
     } = props.uiState;
 
-    let damageDelay = 0;
+    let damageDelay = damages[0]?.isAfterSkillMainDamage
+      ? DAMAGE_TARGET_ANIMATION_DELAY
+      : 0;
     const animations: Promise<void>[] = [];
 
     if (propAnimation.type === "damageTarget") {
@@ -164,8 +166,11 @@ export function CharacterArea(props: CharacterAreaProps) {
     const aura = props.preview?.newAura ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
-  const reaction = createMemo(() => 
-    props.preview?.reactions.map((r) => reactionTextMap[r.reactionType].element),
+  const reaction = createMemo(
+    () =>
+      props.preview?.reactions.map(
+        (r) => reactionTextMap[r.reactionType].element,
+      ),
   );
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);

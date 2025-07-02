@@ -202,6 +202,7 @@ export interface DamageInfo {
   sourceId: number;
   targetId: number;
   isSkillMainDamage: boolean;
+  isAfterSkillMainDamage: boolean;
   delay: number;
 }
 

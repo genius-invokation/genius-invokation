@@ -98,6 +98,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const damagesByTarget = new Map<number, DamageInfo[]>();
   const reactionsByTarget = new Map<number, ReactionInfo[]>();
   let notificationBox: NotificationBoxInfo | null = null;
+  let isAfterSkillMainDamage = false;
   const enteringEntities: number[] = [];
   const triggeringEntities: number[] = [];
   const disposingEntities: number[] = [];
@@ -197,8 +198,12 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           sourceId: mutation.value.sourceId,
           targetId,
           isSkillMainDamage: mutation.value.isSkillMainDamage,
+          isAfterSkillMainDamage,
           delay: targetDamages.length,
         });
+        if (mutation.value.isSkillMainDamage) {
+          isAfterSkillMainDamage = true;
+        }
         if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
           if (!reactionsByTarget.has(targetId)) {
             reactionsByTarget.set(targetId, []);
