@@ -19,6 +19,7 @@ import {
   CHARACTER_TAG_SHIELD,
   DamageType,
   PbEquipmentType,
+  Reaction,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
@@ -35,7 +36,7 @@ import {
   type ComponentProps,
 } from "solid-js";
 import { Image } from "./Image";
-import type { CharacterInfo, DamageInfo } from "./Chessboard";
+import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
@@ -55,6 +56,7 @@ import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?component-
 import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
 import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
@@ -169,7 +171,12 @@ export function CharacterArea(props: CharacterAreaProps) {
   const reaction = createMemo(
     () =>
       props.preview?.reactions.map(
-        (r) => reactionTextMap[r.reactionType].element,
+        (r) => {
+          const reactionElement = reactionTextMap[r.reactionType].element;
+          const applyElement = r.incoming;
+          const baseElement = reactionElement.find((e)=> e !== applyElement);
+          return [baseElement, applyElement];
+        },
       ),
   );
   const energy = createMemo(() => data().energy);
@@ -203,27 +210,38 @@ export function CharacterArea(props: CharacterAreaProps) {
       }}
     >
       <div
-        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse z-10"
+        class="h-6 w-21 flex relative justify-center overflow-visible data-[preview]:animate-[pulse_4s_infinite] z-10"
         bool:data-preview={props.preview?.newAura || props.preview?.reactions}
       >
-        <For each={reaction()}>
-          {(reaction) => (
-            <For each={reaction}>
-              {(r) => (
-                <Show when={r}>
-                  <Image imageId={r & 0xf} class="h-5 w-5" />
-                </Show>
-              )}
-            </For>
-          )}
-        </For>
-        <For each={aura()}>
-          {(aura) => (
-            <Show when={aura}>
-              <Image imageId={aura} class="h-5 w-5" />
-            </Show>
-          )}
-        </For>
+        <div class="flex flex-row items-center gap-0.2 max-w-full">
+          <Switch>
+            {/* <Match when={getReaction()}>
+              <ReactionAnimation reaction={getReaction() as ReactionInfo}/>
+            </Match> */}
+            <Match when={reaction() || aura()}>
+              <For each={reaction()}>
+                {(reaction) => (
+                  <div class="h-5.1 flex flex-row items-center bg-black/60 rounded-full shrink-0">
+                    <For each={reaction}>
+                      {(e) => (
+                        <Show when={e}>
+                          <Image imageId={e!} class="h-5 w-5" />
+                        </Show>
+                      )}
+                    </For>        
+                  </div>
+                )}
+              </For>
+              <For each={aura()}>
+                {(aura) => (
+                  <Show when={aura}>
+                    <Image imageId={aura} class="h-5 w-5" />
+                  </Show>
+                )}
+              </For>            
+            </Match>
+          </Switch>          
+        </div>
       </div>
       <div class="h-36 w-21 relative z-9">
         <Show when={!defeated()}>
@@ -338,6 +356,11 @@ export function CharacterArea(props: CharacterAreaProps) {
         <Show when={defeated()}>
           <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
         </Show>
+        <Show when={props.preview?.active}>
+          <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
+            <SwitchActiveHistoryIcon class="cursor-pointer h-18 w-18" />            
+          </div>
+        </Show>        
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">

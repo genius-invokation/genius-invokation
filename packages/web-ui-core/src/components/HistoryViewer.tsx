@@ -1640,7 +1640,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         <div class="h-10 w-10 absolute top-50% left-5.25 -translate-x-50% -translate-y-50% flex items-center justify-center">
           <Switch>
             <Match when={props.data.inner === "switch"}>
-              <SwitchActiveHistoryIcon class="h-10 w-10" />
+              <SwitchActiveHistoryIcon class="h-9 w-9" />
             </Match>
             <Match when={props.data.inner === "defeated"}>
               <DefeatedPreviewIcon class="h-8 w-8" />
@@ -1801,7 +1801,7 @@ function HistoryBlockBox(props: {
             <div class="h-10 w-10 absolute top-50% left-50% -translate-x-50% -translate-y-50% flex items-center justify-center">
               <Switch>
                 <Match when={props.data.type === "switchOrChooseActive"}>
-                  <SwitchActiveHistoryIcon class="h-8 w-8" />
+                  <SwitchActiveHistoryIcon class="h-9 w-9" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
                   <TriggerIcon class="h-9 w-9" />

@@ -79,10 +79,10 @@ export function getCharacterAreaPos(
     (halfChessboardHeight -
       CHARACTER_AREA_HEIGHT -
       HAND_CARD_BLURRED_SHOW_HEIGHT) /
-    2;
+    2 + 1;
   let characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
-    : halfHeight + gapAroundCharacterArea + 2;
+    : halfHeight + gapAroundCharacterArea;
 
   if (isActive === opp) {
     characterAreaY += GADGET_HEIGHT;
