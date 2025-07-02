@@ -21,6 +21,7 @@ import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { StrokedText } from "./StrokedText";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
 import ClockIcon from "../svg/ClockIcon.svg?component-solid";
 import HourglassIcon from "../svg/HourglassIcon.svg?component-solid";
@@ -106,11 +107,6 @@ export function Entity(props: EntityProps) {
           direction={props.preview!.newVariableDirection}
         />
       </Show>
-      <Show when={props.selecting}>
-        <div class="absolute h-full w-full backface-hidden flex items-center justify-center overflow-visible scale-120%">
-          <SelectingIcon class="w-15 h-15" />
-        </div>
-      </Show>
       <Show when={typeof data().variableValue === "number"}>
         <EntityTopHint cardDefinitionId={data().definitionId} value={data().variableValue as number}/>
       </Show>
@@ -133,6 +129,18 @@ export function Entity(props: EntityProps) {
             />
         </div>
       </Show>
+      <Switch>
+        <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
+          <div class="absolute h-full w-full backface-hidden flex items-center justify-center overflow-visible scale-120%">
+            <SelectingConfirmIcon class="cursor-pointer h-15 w-15" />
+          </div>
+        </Match>
+        <Match when={props.selecting}>
+          <div class="absolute h-full w-full backface-hidden flex items-center justify-center overflow-visible scale-120%">
+            <SelectingIcon class="w-15 h-15" />
+          </div>
+        </Match>
+      </Switch>  
     </div>
   );
 }
