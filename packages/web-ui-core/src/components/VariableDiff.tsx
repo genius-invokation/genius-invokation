@@ -39,7 +39,7 @@ export function VariableDiff(props: VariableDiffProps) {
   );
   return (
     <div
-      class={`scale-75 -translate-x-12.5% -translate-y-12.5% text-white h-8 inline-grid grid-cols-[max-content] grid-rows-[max-content] place-items-center ${
+      class={`scale-75 origin-top-left text-white h-8 inline-grid grid-cols-[max-content] grid-rows-[max-content] place-items-center ${
         props.class ?? ""
       }`}
       style={{

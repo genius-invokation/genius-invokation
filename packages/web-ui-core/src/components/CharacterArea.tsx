@@ -46,6 +46,7 @@ import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import HealthIcon from "../svg/HealthIcon.svg?component-solid";
+import HealthDebtsIcon from "../svg/HealthDebtsIcon.svg?component-solid";
 import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
 import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
 import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
@@ -246,7 +247,11 @@ export function CharacterArea(props: CharacterAreaProps) {
       </div>
       <div class="h-36 w-21 relative z-9">
         <Show when={!defeated()}>
-          <Health value={data().health} />
+          <Health 
+            value={data().health}
+            isMax={data().health === data().maxHealth}
+            // hpDebts={undefined}
+          />
           <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
               current={energy()}
@@ -459,14 +464,35 @@ function EnergyBar(props: EnergyBarProps) {
   );
 }
 
-function Health(props: { value: number }) {
+interface HealthProps {
+  value: number;
+  isMax: boolean;
+  hpDebts?: boolean;
+}
+
+function Health(props: HealthProps) {
   return (
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
       <HealthIcon class="w-full h-full" />
-      <div class="absolute inset-0 h-full w-full pt-1.2 flex items-center justify-center">
+      <Show when={props.hpDebts}>
+        <div 
+          class="absolute inset-0 w-full h-full animate-[blink_4s_ease-in-out_infinite]"
+          style={{"--blink-opacity": 0.7}}
+        >
+          <HealthDebtsIcon class="w-full h-full" />
+          <div class="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,#ff000088_0%,transparent_45%)]"/>
+        </div>
+      </Show>
+      <Show when={props.isMax}>
+        <div 
+          class="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,#fef9c3dd_0%,transparent_60%)] animate-[blink_4s_ease-in-out_infinite]"
+          style={{"--blink-opacity": 0.5}}
+        />
+      </Show>
+      <div class="absolute inset-0 h-full w-full pt-1.4 flex items-center justify-center scale-y-96">
         <StrokedText
           text={String(props.value)}
-          class="line-height-none text-white font-bold"
+          class="line-height-none text-white font-bold text-4.5"
           strokeWidth={2}
           strokeColor="#000000B0"
         />
