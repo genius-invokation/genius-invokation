@@ -217,7 +217,7 @@ function checkRelative(
 
 type Descriptor<E extends EventNames> = readonly [
   E,
-  (e: EventArgOf<E>, listen: RelativeArg) => boolean,
+  (e: EventArgOf<E>, listen: RelativeArg, current: GameState) => boolean,
 ];
 
 function defineDescriptor<E extends EventNames>(
@@ -454,9 +454,12 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, e.switchInfo.to.id, r)
     );
   }),
-  drawCard: defineDescriptor("onHandCardInserted", (e, r) => {
+  drawCard: defineDescriptor("onHandCardInserted", (e, r, curState) => {
+    const area = getEntityArea(curState, e.who);
     return (
-      checkRelative(e.onTimeState, { who: e.who }, r) && e.reason === "drawn"
+      checkRelative(e.onTimeState, { who: e.who }, r) &&
+      e.reason === "drawn" &&
+      area.type === "hands"
     );
   }),
   handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {
@@ -997,11 +1000,15 @@ export class TriggeredSkillBuilder<
     const listenTo = this._listenTo;
     this.filters.push(function (c, e) {
       const { area, state } = c.self;
-      return filterDescriptor(e as any, {
-        callerArea: area,
-        callerId: state.id,
-        listenTo,
-      });
+      return filterDescriptor(
+        e as any,
+        {
+          callerArea: area,
+          callerId: state.id,
+          listenTo,
+        },
+        c.state,
+      );
     });
     // 3. 自定义事件：确保事件名一致
     if (isCustomEvent(this.detailedEventName)) {
@@ -1031,11 +1038,15 @@ export class TriggeredSkillBuilder<
         e: UseSkillEventArg,
       ) {
         const callerArea = getEntityArea(state, skill.caller.id);
-        return useSkillDescriptor(e, {
-          callerArea,
-          callerId: skill.caller.id,
-          listenTo,
-        });
+        return useSkillDescriptor(
+          e,
+          {
+            callerArea,
+            callerId: skill.caller.id,
+            listenTo,
+          },
+          state,
+        );
       };
       const def: TriggeredSkillDefinition<"onUseSkill"> = {
         type: "skill",
