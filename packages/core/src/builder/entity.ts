@@ -135,7 +135,7 @@ export class EntityBuilder<
 > {
   private _skillNo = 0;
   readonly _skillList: SkillDefinition[] = [];
-  _defaultDispose = true;
+  private _defaultDispose = true;
   readonly _skillListBeforeDefaultDispose: SkillDefinition[] = [];
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
