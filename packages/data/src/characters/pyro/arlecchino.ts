@@ -28,7 +28,9 @@ export const BlooddebtDirective = combatStatus(113141)
   .on("damaged")
   .usage(5)
   .do((c, e) => {
-    c.characterStatus(BondOfLife, e.target);
+    if (e.target.variables.alive) {
+      c.characterStatus(BondOfLife, e.target);
+    }
     c.characterStatus(BondOfLife, `opp characters with definition id ${Arlecchino}`);
   })
   .done();

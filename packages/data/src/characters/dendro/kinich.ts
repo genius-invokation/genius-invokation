@@ -47,6 +47,14 @@ export const GrappleLink = status(117091)
   .on("beforeAction")
   .listenToAll()
   .callSnippet()
+  .on("selfDispose")
+  .do((c) => {
+    // 钩锁链接离场时，角色退出夜魂加持
+    const nightsoul = c.$(`my characters with definition id ${Kinich}`)?.hasNightsoulsBlessing();
+    if (nightsoul) {
+      c.dispose(nightsoul);
+    }
+  })
   .done();
 
 /**
