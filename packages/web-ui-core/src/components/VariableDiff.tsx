@@ -39,31 +39,37 @@ export function VariableDiff(props: VariableDiffProps) {
   );
   return (
     <div
-      class={`scale-85% text-white h-8 py-1 px-5 variable-diff flex flex-row items-center justify-center ${
+      class={`scale-75 -translate-x-12.5% -translate-y-12.5% text-white h-8 inline-grid grid-cols-[max-content] grid-rows-[max-content] place-items-center ${
         props.class ?? ""
       }`}
       style={{
         "--bg-color": backgroundColor(),
       }}
     >
-      <Show when={props.defeated}>
-        <div class="relative h-6 w-8 overflow-visible flex-shrink-0">
-          <DefeatedPreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
-        </div>
-      </Show>
-      <Show when={props.revive}>
-        <div class="relative h-6 w-8 overflow-visible flex-shrink-0">
-          <RevivePreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
-        </div>
-      </Show>
-      <StrokedText
-        class="flex-shrink-0 font-bold font-size-4.5 line-height-none"
-        text={`${increase() ? "+" : "-"}${Math.abs(
-          props.newValue - props.oldValue,
-        )}`}
-        strokeWidth={2}
-        strokeColor="black"
-      />
+      <div class="grid-area-[1/1] bg-black rounded-full h-full w-full"/>
+      <div class="grid-area-[1/1] bg-black rounded-1 h-full w-[calc(100%-8px)] mx-1"/>
+      <div class="grid-area-[1/1] bg-[var(--bg-color)] rounded-full h-[calc(100%-4px)] w-[calc(100%-4px)] m-0.5"/>
+      <div class="grid-area-[1/1] bg-[var(--bg-color)] rounded-0.5 h-[calc(100%-4px)] w-[calc(100%-12px)] my-0.5 mx-1.5"/>
+      <div class="grid-area-[1/1] inline-flex items-center px-2.5 w-max h-8">
+        <Show when={props.defeated}>
+          <div class="relative h-8 w-8 overflow-visible shrink-0">
+            <DefeatedPreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
+          </div>
+        </Show>
+        <Show when={props.revive}>
+          <div class="relative h-8 w-8 overflow-visible shrink-0">
+            <RevivePreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
+          </div>
+        </Show>
+        <StrokedText
+          class="shrink-0 font-bold font-size-5 line-height-none mx-0.5"
+          text={`${increase() ? "+" : "-"}${Math.abs(
+            props.newValue - props.oldValue,
+          )}`}
+          strokeWidth={2}
+          strokeColor="black"
+        />        
+      </div>
     </div>
   );
 }

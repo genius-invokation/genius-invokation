@@ -210,8 +210,9 @@ export function CharacterArea(props: CharacterAreaProps) {
       }}
     >
       <div
-        class="h-6 w-21 flex relative justify-center overflow-visible data-[preview]:animate-[pulse_4s_infinite] z-10"
+        class="h-6 w-21 flex relative justify-center overflow-visible data-[preview]:animate-[blink_4s_ease-in-out_infinite] z-10"
         bool:data-preview={props.preview?.newAura || props.preview?.reactions}
+        style={{"--blink-opacity": 0.5}}
       >
         <div class="flex flex-row items-center gap-0.2 max-w-full">
           <Switch>
@@ -276,7 +277,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
           <Show when={props.preview && props.preview.newHealth !== null}>
             <VariableDiff
-              class="absolute z-5 top--0.5 left-50% translate-x--50%"
+              class="absolute z-5 top-0.6 left-6"
               oldValue={data().health}
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}

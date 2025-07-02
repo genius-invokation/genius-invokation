@@ -253,43 +253,7 @@
         #ffffffff var(--progress-value),
         transparent var(--progress-value));
   }
-
-  .variable-diff {
-    --dy: 3px;
-    --dx: 10px;
-    --radius: 14px;
-    clip-path: shape(from var(--dx) 0px,
-        line to var(--dx) var(--dy),
-        arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
-        line to var(--dx) 100%,
-        line to calc(100% - var(--dx)) 100%,
-        line to calc(100% - var(--dx)) calc(100% - var(--dy)),
-        arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
-        line to calc(100% - var(--dx)) 0px,
-        close);
-    border-radius: var(--radius);
-    background-color: black;
-
-    &::before {
-      --radius: 12.75px;
-      z-index: -1;
-      position: absolute;
-      inset: 1px;
-      content: " ";
-      background-color: var(--bg-color);
-      clip-path: shape(from var(--dx) 0px,
-          line to var(--dx) var(--dy),
-          arc to var(--dx) calc(100% - var(--dy)) of calc(var(--radius)),
-          line to var(--dx) 100%,
-          line to calc(100% - var(--dx)) 100%,
-          line to calc(100% - var(--dx)) calc(100% - var(--dy)),
-          arc to calc(100% - var(--dx)) var(--dy) of calc(var(--radius)),
-          line to calc(100% - var(--dx)) 0px,
-          close);
-      border-radius: var(--radius);
-    }
-  }
-
+  
   .equipment-usage[data-usable] {
     background-image: radial-gradient(circle at center,
         #ffffbb00 0%,
