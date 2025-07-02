@@ -135,6 +135,7 @@ export class EntityBuilder<
 > {
   private _skillNo = 0;
   readonly _skillList: SkillDefinition[] = [];
+  private _defaultDispose = true;
   readonly _skillListBeforeDefaultDispose: SkillDefinition[] = [];
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
@@ -156,9 +157,16 @@ export class EntityBuilder<
     private readonly fromCardId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
-    if (this._type === "status" || this._type === "equipment") {
-      this.on("defeated").dispose().endOn();
+  }
+
+  noDefaultDispose() {
+    if (!(this._type === "status" || this._type === "equipment")) {
+      throw new GiTcgDataError(
+        `Only status and equipment can specify .noDefaultDispose()`,
+      );
     }
+    this._defaultDispose = false;
+    return this;
   }
 
   /** @internal */
@@ -570,7 +578,10 @@ export class EntityBuilder<
   ) {
     if (typeof text === "function") {
       const hintReplacement = "[GCG_TOKEN_HINT_TEXT]";
-      this.hintText(`\${${hintReplacement}}`).replaceDescription(hintReplacement, text);
+      this.hintText(`\${${hintReplacement}}`).replaceDescription(
+        hintReplacement,
+        text,
+      );
     } else {
       this.hintText(text ?? "");
     }
@@ -787,6 +798,13 @@ export class EntityBuilder<
           }
         })
         .endOn();
+    }
+
+    if (
+      (this._type === "status" || this._type === "equipment") &&
+      this._defaultDispose
+    ) {
+      this.onMasterDefeated().dispose().endOn();
     }
 
     const skills = [...this._skillListBeforeDefaultDispose, ...this._skillList];
