@@ -17,9 +17,7 @@ import {
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_SHIELD,
-  DamageType,
   PbEquipmentType,
-  Reaction,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
@@ -36,7 +34,7 @@ import {
   type ComponentProps,
 } from "solid-js";
 import { Image } from "./Image";
-import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
+import type { CharacterInfo, DamageInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
@@ -63,7 +61,7 @@ import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
-import { reactionTextMap } from "./HistoryViewer";
+import { REACTION_TEXT_MAP } from "./HistoryViewer";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -171,14 +169,12 @@ export function CharacterArea(props: CharacterAreaProps) {
   });
   const reaction = createMemo(
     () =>
-      props.preview?.reactions.map(
-        (r) => {
-          const reactionElement = reactionTextMap[r.reactionType].element;
-          const applyElement = r.incoming;
-          const baseElement = reactionElement.find((e)=> e !== applyElement);
-          return [baseElement, applyElement];
-        },
-      ),
+      props.preview?.reactions.map((r) => {
+        const reactionElement = REACTION_TEXT_MAP[r.reactionType].element;
+        const applyElement = r.incoming;
+        const baseElement = reactionElement.find((e) => e !== applyElement);
+        return [baseElement, applyElement];
+      }),
   );
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
@@ -211,9 +207,8 @@ export function CharacterArea(props: CharacterAreaProps) {
       }}
     >
       <div
-        class="h-6 w-21 flex relative justify-center overflow-visible data-[preview]:animate-[blink_4s_ease-in-out_infinite] z-10"
+        class="h-6 w-21 flex relative justify-center overflow-visible preview-blink z-10"
         bool:data-preview={props.preview?.newAura || props.preview?.reactions}
-        style={{"--blink-opacity": 0.5}}
       >
         <div class="flex flex-row items-center gap-0.2 max-w-full">
           <Switch>
@@ -227,10 +222,10 @@ export function CharacterArea(props: CharacterAreaProps) {
                     <For each={reaction}>
                       {(e) => (
                         <Show when={e}>
-                          <Image imageId={e!} class="h-5 w-5" />
+                          {(e) => <Image imageId={e()} class="h-5 w-5" />}
                         </Show>
                       )}
-                    </For>        
+                    </For>
                   </div>
                 )}
               </For>
@@ -240,14 +235,14 @@ export function CharacterArea(props: CharacterAreaProps) {
                     <Image imageId={aura} class="h-5 w-5" />
                   </Show>
                 )}
-              </For>            
+              </For>
             </Match>
-          </Switch>          
+          </Switch>
         </div>
       </div>
       <div class="h-36 w-21 relative z-9">
         <Show when={!defeated()}>
-          <Health 
+          <Health
             value={data().health}
             isMax={data().health === data().maxHealth}
             // bondOfLife={undefined}
@@ -342,7 +337,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-1 data-[clickable]:cursor-pointer data-[clickable]:shadow-[#fdba7499_0_0_4px_4px,#fef9c366_0_0_5px_5px,inset_#fdba7499_0_0_1px_1px] transition-shadow data-[defeated]:brightness-50"
+          class="h-full w-full rounded-1 clickable-outline transition-shadow data-[defeated]:brightness-50"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
@@ -362,11 +357,6 @@ export function CharacterArea(props: CharacterAreaProps) {
         <Show when={defeated()}>
           <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
         </Show>
-        <Show when={props.preview?.active}>
-          <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-            <SwitchActiveHistoryIcon class="cursor-pointer h-18 w-18" />            
-          </div>
-        </Show>        
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
@@ -376,6 +366,11 @@ export function CharacterArea(props: CharacterAreaProps) {
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
               <SelectingIcon class="w-21 h-21" />
+            </div>
+          </Match>
+          <Match when={props.preview?.active}>
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
+              <SwitchActiveHistoryIcon class="h-18 w-18" />
             </div>
           </Match>
         </Switch>
@@ -475,19 +470,13 @@ function Health(props: HealthProps) {
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
       <HealthIcon class="w-full h-full" />
       <Show when={props.bondOfLife}>
-        <div 
-          class="absolute inset-0 w-full h-full animate-[blink_4s_ease-in-out_infinite]"
-          style={{"--blink-opacity": 0.7}}
-        >
+        <div class="bond-of-life-health">
           <BondOfLifeIcon class="w-full h-full" />
-          <div class="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,#ff000088_0%,transparent_45%)]"/>
+          <div class="bond-of-life-health-background" />
         </div>
       </Show>
       <Show when={props.isMax}>
-        <div 
-          class="absolute inset-0 w-full h-full bg-[radial-gradient(circle_at_center,#fef9c3dd_0%,transparent_60%)] animate-[blink_4s_ease-in-out_infinite]"
-          style={{"--blink-opacity": 0.5}}
-        />
+        <div class="absolute inset-0 w-full h-full max-health" />
       </Show>
       <div class="absolute inset-0 h-full w-full pt-1.4 flex items-center justify-center scale-y-96">
         <StrokedText

@@ -60,7 +60,7 @@ import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 import { DAMAGE_COLOR } from "./Damage";
 
-export const reactionTextMap: Record<number, ReactionRenderingData> = {
+export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
     element: [DamageType.Cryo, DamageType.Pyro],
     name: "融化",
@@ -220,7 +220,7 @@ const renderHistoryChild = (
   };
 
   const renderReaction = (reaction: Reaction, apply: DamageType) => {
-    const { element, name } = reactionTextMap[reaction];
+    const { element, name } = REACTION_TEXT_MAP[reaction];
     const base = element.find((e) => e !== apply) as DamageType;
     return (
       <>
@@ -836,7 +836,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       }
       if (c.reaction) {
         summary.elemental.push(
-          reactionTextMap[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
         );
       } else if (c.damageType >= 1 && c.damageType <= 7) {
         summary.elemental.push([c.damageType]);
@@ -858,7 +858,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary.children.push(c);
       if (c.reaction) {
         summary.elemental.push(
-          reactionTextMap[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
         );
       } else {
         summary.elemental.push([c.elementType]);

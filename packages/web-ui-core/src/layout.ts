@@ -23,6 +23,7 @@ export function unitInPx() {
 }
 
 export const PERSPECTIVE = 200;
+export const ACTION_OUTLINED_Z = 8;
 export const FOCUSING_HANDS_Z = 10;
 export const DRAGGING_Z = 12;
 

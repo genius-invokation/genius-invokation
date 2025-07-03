@@ -111,17 +111,21 @@
   }
 
   .dice-panel {
-    background: linear-gradient(to right,
-        #9d907bff 2px,
-        #86795eff 2px,
-        #5e4223ff 50px,
-        #5e4223ff 90%,
-        #5e422300 100%);
-    mask-image: linear-gradient(to bottom,
-        rgba(0, 0, 0, 0) 6%,
-        rgba(0, 0, 0, 0.9) 12%,
-        rgba(0, 0, 0, 0.9) 82%,
-        rgba(0, 0, 0, 0) 92%);
+    background: linear-gradient(
+      to right,
+      #9d907bff 2px,
+      #86795eff 2px,
+      #5e4223ff 50px,
+      #5e4223ff 90%,
+      #5e422300 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 6%,
+      rgba(0, 0, 0, 0.9) 12%,
+      rgba(0, 0, 0, 0.9) 82%,
+      rgba(0, 0, 0, 0) 92%
+    );
 
     .delicate-dice {
       --blink-opacity: 1;
@@ -134,20 +138,24 @@
   }
 
   .action-hint {
-    background: linear-gradient(to bottom,
-        #70553c 1px,
-        #9d7f64 1px,
-        #9d7f64 2px,
-        #70553c 2px,
-        #70553c 22px,
-        #9d7f64 22px,
-        #9d7f64 23px,
-        #70553c 23px);
-    mask-image: linear-gradient(to right,
-        transparent 0%,
-        #000000FF 45%,
-        #000000FF 55%,
-        transparent 100%);
+    background: linear-gradient(
+      to bottom,
+      #70553c 1px,
+      #9d7f64 1px,
+      #9d7f64 2px,
+      #70553c 2px,
+      #70553c 22px,
+      #9d7f64 22px,
+      #9d7f64 23px,
+      #70553c 23px
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000000ff 45%,
+      #000000ff 55%,
+      transparent 100%
+    );
   }
 
   .playerinfo-box {
@@ -192,7 +200,7 @@
     --bg-color: #334355dd;
     --bd-color: #6993d8;
     --title-color: #334f76;
-    --text-color: #7eb5ff;    
+    --text-color: #7eb5ff;
     /* --text-color: #334355; */
   }
 
@@ -200,7 +208,7 @@
     --bg-color: #4f4536dd;
     --bd-color: #c58438;
     --title-color: #684f30;
-    --text-color: #e5aa5f;    
+    --text-color: #e5aa5f;
     /* --text-color: #4f4536; */
   }
 
@@ -232,10 +240,12 @@
   }
 
   .chessboard-bg {
-    background-image: linear-gradient(to bottom,
-        #f0fdf4ff 49.5%,
-        #ddeeddff 50%,
-        #f0fdf4ff 50.5%);
+    background-image: linear-gradient(
+      to bottom,
+      #f0fdf4ff 49.5%,
+      #ddeeddff 50%,
+      #f0fdf4ff 50.5%
+    );
     box-shadow:
       inset 0 0 18px #000000,
       0 0 40px #63524a;
@@ -249,20 +259,67 @@
   }
 
   .burst-progress {
-    mask-image: linear-gradient(to top,
-        #ffffffff var(--progress-value),
-        transparent var(--progress-value));
+    mask-image: linear-gradient(
+      to top,
+      #ffffffff var(--progress-value),
+      transparent var(--progress-value)
+    );
   }
-  
+
   .equipment-usage[data-usable] {
-    background-image: radial-gradient(circle at center,
-        #ffffbb00 0%,
-        #ffffbb33 35%,
-        #ffffbbff 55%,
-        #8c6b4400 58%,
-        #8c6b4400 61%,
-        #ffaa00ff 61%,
-        #ffffbb00 69%);
+    background-image: radial-gradient(
+      circle at center,
+      #ffffbb00 0%,
+      #ffffbb33 35%,
+      #ffffbbff 55%,
+      #8c6b4400 58%,
+      #8c6b4400 61%,
+      #ffaa00ff 61%,
+      #ffffbb00 69%
+    );
+  }
+
+  .clickable-outline[data-clickable] {
+    cursor: pointer;
+    box-shadow:
+      #fdba7499 0 0 4px 4px,
+      #fef9c366 0 0 5px 5px,
+      inset #fdba7499 0 0 1px 1px;
+  }
+
+  .preview-blink[data-preview] {
+    animation: blink 4s ease-in-out infinite;
+    --blink-opacity: 0.5;
+  }
+
+  .max-health {
+    background: radial-gradient(
+      circle at center,
+      #fef9c3dd 0%,
+      transparent 60%
+    );
+    animation: blink 4s ease-in-out infinite;
+    --blink-opacity: 0.5;
+  }
+
+  .bond-of-life-health {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: blink 4s ease-in-out infinite;
+
+    .bond-of-life-health-background {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at center,
+        #ff000088 0%,
+        transparent 45%
+      );
+    }
   }
 }
 
@@ -403,7 +460,6 @@
 }
 
 @keyframes blink {
-
   0%,
   100% {
     opacity: var(--blink-opacity, 1);

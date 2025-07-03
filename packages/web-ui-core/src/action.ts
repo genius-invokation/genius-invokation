@@ -55,7 +55,7 @@ export function getHintTextOfCardOrSkill(
     result.push(result.at(-1)!);
     return result;
   } catch (e) {
-    return Array.from({ length: targetLength }, () => `对所选角色生效`);
+    return Array.from({ length: targetLength }, () => `对所选目标生效`);
   }
 }
 
@@ -1207,7 +1207,6 @@ export function createActionState(
   }
 
   root.availableSteps.push(...steps.keys());
-  // console.log(root);
   return root;
 }
 

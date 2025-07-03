@@ -46,6 +46,7 @@ import {
 } from "solid-js";
 import debounce from "debounce";
 import {
+  ACTION_OUTLINED_Z,
   CARD_WIDTH,
   DRAGGING_Z,
   FOCUSING_HANDS_Z,
@@ -824,6 +825,10 @@ function rerenderChildren(opt: {
             (step.entityId === ch.id ||
               (step.entityId === "myActiveCharacter" && isMyActive)),
         ) ?? null;
+      let z = ((clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview ? ACTION_OUTLINED_Z : 0);
+      if (isActive) {
+        z += 0.05;
+      }
       charactersMap.set(ch.id, {
         id: ch.id,
         data: ch,
@@ -835,7 +840,7 @@ function rerenderChildren(opt: {
           transform: {
             x,
             y,
-            z: ((clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview ? 8 : 0) + (isActive ? 0.05 : 0),
+            z,
             ry: 0,
             rz: 0,
           },
@@ -1186,7 +1191,6 @@ export function Chessboard(props: ChessboardProps) {
             }
             setSelectedDice(selectingDice);
           }
-          // console.log(actionState.previewData);
           if (actionState.alertText) {
             showAlert(actionState.alertText);
           }
