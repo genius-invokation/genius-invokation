@@ -15,7 +15,6 @@
 
 import { DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 import {
-  createEffect,
   createSignal,
   createContext,
   useContext,
@@ -38,16 +37,12 @@ import type {
   HistoryChildren,
   HistoryDetailBlock,
   HistoryHintBlock,
-  RemoveEntityHistoryChild,
 } from "../history/typings";
 import { Image } from "./Image";
 import { DiceIcon } from "./Dice";
 import type {
   ActionCardRawData,
-  CharacterRawData,
   EntityRawData,
-  KeywordRawData,
-  SkillRawData,
 } from "@gi-tcg/static-data";
 import TuningIcon from "../svg/TuningIcon.svg?component-solid";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
@@ -59,77 +54,7 @@ import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 import { DAMAGE_COLOR } from "./Damage";
-
-export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
-  [Reaction.Melt]: {
-    elements: [DamageType.Cryo, DamageType.Pyro],
-    name: "融化",
-  },
-  [Reaction.Vaporize]: {
-    elements: [DamageType.Hydro, DamageType.Pyro],
-    name: "蒸发",
-  },
-  [Reaction.Overloaded]: {
-    elements: [DamageType.Electro, DamageType.Pyro],
-    name: "超载",
-  },
-  [Reaction.Superconduct]: {
-    elements: [DamageType.Cryo, DamageType.Electro],
-    name: "超导",
-  },
-  [Reaction.ElectroCharged]: {
-    elements: [DamageType.Electro, DamageType.Hydro],
-    name: "感电",
-  },
-  [Reaction.Frozen]: {
-    elements: [DamageType.Cryo, DamageType.Hydro],
-    name: "冻结",
-  },
-  [Reaction.SwirlCryo]: {
-    elements: [DamageType.Cryo, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlHydro]: {
-    elements: [DamageType.Hydro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlPyro]: {
-    elements: [DamageType.Pyro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlElectro]: {
-    elements: [DamageType.Electro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.CrystallizeCryo]: {
-    elements: [DamageType.Cryo, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizeHydro]: {
-    elements: [DamageType.Hydro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizePyro]: {
-    elements: [DamageType.Pyro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizeElectro]: {
-    elements: [DamageType.Electro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.Burning]: {
-    elements: [DamageType.Dendro, DamageType.Pyro],
-    name: "燃烧",
-  },
-  [Reaction.Bloom]: {
-    elements: [DamageType.Dendro, DamageType.Hydro],
-    name: "绽放",
-  },
-  [Reaction.Quicken]: {
-    elements: [DamageType.Dendro, DamageType.Electro],
-    name: "激化",
-  },
-};
+import { REACTION_TEXT_MAP } from "./Reaction";
 
 const getDiceTypeText = (type: DiceType) => {
   const { assetsManager } = useUiContext();
@@ -155,11 +80,6 @@ const getApplyTypeText = (type: DamageType) => {
   const { assetsManager } = useUiContext();
   return assetsManager.getNameSync(-300 - type);
 };
-
-interface ReactionRenderingData {
-  elements: DamageType[];
-  name: string;
-}
 
 interface ChildHealthChange {
   type: "damage" | "heal";

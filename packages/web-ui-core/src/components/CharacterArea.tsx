@@ -62,8 +62,7 @@ import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
-import { REACTION_TEXT_MAP } from "./HistoryViewer";
-import { Reaction } from "./Reaction";
+import { ReactionAnimation, REACTION_TEXT_MAP } from "./Reaction";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -118,7 +117,6 @@ export function CharacterArea(props: CharacterAreaProps) {
     setPreReactionAura(preReactionAuraValue);
     await sleep(delayMs);
     setPreReactionAura(null);
-    console.log(damages);
     for (const damage of damages) {
       if (damage.type === "damage") {
         setDamage(damage);
@@ -238,7 +236,7 @@ export function CharacterArea(props: CharacterAreaProps) {
       >
         <div class="flex flex-row items-center gap-0.2 max-w-full">
           <Switch>
-            <Match when={getReaction()}>{(r) => <Reaction info={r()} />}</Match>
+            <Match when={getReaction()}>{(r) => <ReactionAnimation info={r()} />}</Match>
             <Match when={true}>
               <For each={previewReaction()}>
                 {(reaction) => (
