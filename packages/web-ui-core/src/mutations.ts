@@ -73,8 +73,7 @@ export interface ParsedMutation {
   roundAndPhase: RoundAndPhaseNotificationInfo;
   animatingCards: AnimatingCardInfo[];
   playingCard: PlayingCardInfo | null;
-  damages: DamageInfo[];
-  reactions: ReactionInfo[];
+  damages: (DamageInfo | ReactionInfo)[];
   notificationBox: NotificationBoxInfo | null;
   enteringEntities: number[];
   triggeringEntities: number[];
@@ -95,8 +94,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     }
   >();
 
-  const damagesByTarget = new Map<number, DamageInfo[]>();
-  const reactionsByTarget = new Map<number, ReactionInfo[]>();
+  const damagesByTarget = new Map<number, (DamageInfo | ReactionInfo)[]>();
   let notificationBox: NotificationBoxInfo | null = null;
   let isAfterSkillMainDamage = false;
   const enteringEntities: number[] = [];
@@ -172,16 +170,17 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
       case "applyAura": {
         const targetId = mutation.value.targetId;
         if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
-          if (!reactionsByTarget.has(targetId)) {
-            reactionsByTarget.set(targetId, []);
+          if (!damagesByTarget.has(targetId)) {
+            damagesByTarget.set(targetId, []);
           }
-          const targetReactions = reactionsByTarget.get(targetId)!;
-          targetReactions.push({
+          const targetDamages = damagesByTarget.get(targetId)!;
+          targetDamages.push({
+            type: "reaction",
             reactionType: mutation.value.reactionType,
             base: mutation.value.oldAura as Aura,
             incoming: mutation.value.elementType as DamageType,
             targetId,
-            delay: targetReactions.length,
+            delay: targetDamages.length,
           });
         }
         break;
@@ -191,8 +190,20 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
         if (!damagesByTarget.has(targetId)) {
           damagesByTarget.set(targetId, []);
         }
+        let reaction: ReactionInfo | null = null;
+        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
+          reaction = {
+            type: "reaction",
+            reactionType: mutation.value.reactionType,
+            targetId,
+            base: mutation.value.oldAura as Aura,
+            incoming: mutation.value.damageType as DamageType,
+            delay: 0,
+          };
+        }
         const targetDamages = damagesByTarget.get(targetId)!;
         targetDamages.push({
+          type: "damage",
           damageType: mutation.value.damageType as DamageType,
           value: mutation.value.value,
           sourceId: mutation.value.sourceId,
@@ -200,22 +211,10 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           isSkillMainDamage: mutation.value.isSkillMainDamage,
           isAfterSkillMainDamage,
           delay: targetDamages.length,
+          reaction,
         });
         if (mutation.value.isSkillMainDamage) {
           isAfterSkillMainDamage = true;
-        }
-        if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
-          if (!reactionsByTarget.has(targetId)) {
-            reactionsByTarget.set(targetId, []);
-          }
-          const targetReactions = reactionsByTarget.get(targetId)!;
-          targetReactions.push({
-            reactionType: mutation.value.reactionType,
-            targetId,
-            base: mutation.value.oldAura as Aura,
-            incoming: mutation.value.damageType as DamageType,
-            delay: targetReactions.length,
-          });
         }
         break;
       }
@@ -299,7 +298,6 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
     playingCard,
     animatingCards,
     damages: damagesByTarget.values().toArray().flat(),
-    reactions: reactionsByTarget.values().toArray().flat(),
     notificationBox,
     enteringEntities,
     triggeringEntities,

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { DamageInfo } from "./components/Chessboard";
+import type { DamageInfo, ReactionInfo } from "./components/Chessboard";
 
 export interface AnimatingUiState {
   readonly isAnimating: true;
@@ -119,7 +119,7 @@ export type CharacterAnimation =
 export interface CharacterUiState extends UiState {
   readonly type: "character";
   readonly transform: Transform;
-  damages: DamageInfo[];
+  damages: (DamageInfo | ReactionInfo)[];
   animation: CharacterAnimation;
 }
 
