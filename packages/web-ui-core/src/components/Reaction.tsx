@@ -13,118 +13,118 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, Reaction } from "@gi-tcg/typings";
+import { DamageType as D, Reaction as R } from "@gi-tcg/typings";
 import type { ReactionInfo } from "./Chessboard";
 import { StrokedText } from "./StrokedText";
 import { Image } from "./Image";
 import { createEffect } from "solid-js";
 
 interface ReactionRenderingData {
-  elements: DamageType[];
+  elements: D[];
   name: string;
   fgColor: string;
   bgColor: string;
 }
 
 export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
-  [Reaction.Melt]: {
-    elements: [DamageType.Cryo, DamageType.Pyro],
+  [R.Melt]: {
+    elements: [D.Cryo, D.Pyro],
     name: "融化",
     fgColor: "#ffcc66",
     bgColor: "#994b22",
   },
-  [Reaction.Vaporize]: {
-    elements: [DamageType.Hydro, DamageType.Pyro],
+  [R.Vaporize]: {
+    elements: [D.Hydro, D.Pyro],
     name: "蒸发",
     fgColor: "#ffcc66",
     bgColor: "#994b22",
   },
-  [Reaction.Overloaded]: {
-    elements: [DamageType.Electro, DamageType.Pyro],
+  [R.Overloaded]: {
+    elements: [D.Electro, D.Pyro],
     name: "超载",
     fgColor: "#ff809b",
     bgColor: "#802d55",
   },
-  [Reaction.Superconduct]: {
-    elements: [DamageType.Cryo, DamageType.Electro],
+  [R.Superconduct]: {
+    elements: [D.Cryo, D.Electro],
     name: "超导",
     fgColor: "#b4b4ff",
     bgColor: "#5511ee",
   },
-  [Reaction.ElectroCharged]: {
-    elements: [DamageType.Electro, DamageType.Hydro],
+  [R.ElectroCharged]: {
+    elements: [D.Electro, D.Hydro],
     name: "感电",
     fgColor: "#e19bff",
     bgColor: "#7f2dee",
   },
-  [Reaction.Frozen]: {
-    elements: [DamageType.Cryo, DamageType.Hydro],
+  [R.Frozen]: {
+    elements: [D.Cryo, D.Hydro],
     name: "冻结",
     fgColor: "#99ffff",
     bgColor: "#1199ee",
   },
-  [Reaction.SwirlCryo]: {
-    elements: [DamageType.Cryo, DamageType.Anemo],
+  [R.SwirlCryo]: {
+    elements: [D.Cryo, D.Anemo],
     name: "扩散",
     fgColor: "#66ffcc",
     bgColor: "#406d6d",
   },
-  [Reaction.SwirlHydro]: {
-    elements: [DamageType.Hydro, DamageType.Anemo],
+  [R.SwirlHydro]: {
+    elements: [D.Hydro, D.Anemo],
     name: "扩散",
     fgColor: "#66ffcc",
     bgColor: "#406d6d",
   },
-  [Reaction.SwirlPyro]: {
-    elements: [DamageType.Pyro, DamageType.Anemo],
+  [R.SwirlPyro]: {
+    elements: [D.Pyro, D.Anemo],
     name: "扩散",
     fgColor: "#66ffcc",
     bgColor: "#406d6d",
   },
-  [Reaction.SwirlElectro]: {
-    elements: [DamageType.Electro, DamageType.Anemo],
+  [R.SwirlElectro]: {
+    elements: [D.Electro, D.Anemo],
     name: "扩散",
     fgColor: "#66ffcc",
     bgColor: "#406d6d",
   },
-  [Reaction.CrystallizeCryo]: {
-    elements: [DamageType.Cryo, DamageType.Geo],
+  [R.CrystallizeCryo]: {
+    elements: [D.Cryo, D.Geo],
     name: "结晶",
     fgColor: "#ffd766",
     bgColor: "#664408",
   },
-  [Reaction.CrystallizeHydro]: {
-    elements: [DamageType.Hydro, DamageType.Geo],
+  [R.CrystallizeHydro]: {
+    elements: [D.Hydro, D.Geo],
     name: "结晶",
     fgColor: "#ffd766",
     bgColor: "#664408",
   },
-  [Reaction.CrystallizePyro]: {
-    elements: [DamageType.Pyro, DamageType.Geo],
+  [R.CrystallizePyro]: {
+    elements: [D.Pyro, D.Geo],
     name: "结晶",
     fgColor: "#ffd766",
     bgColor: "#664408",
   },
-  [Reaction.CrystallizeElectro]: {
-    elements: [DamageType.Electro, DamageType.Geo],
+  [R.CrystallizeElectro]: {
+    elements: [D.Electro, D.Geo],
     name: "结晶",
     fgColor: "#ffd766",
     bgColor: "#664408",
   },
-  [Reaction.Burning]: {
-    elements: [DamageType.Dendro, DamageType.Pyro],
+  [R.Burning]: {
+    elements: [D.Dendro, D.Pyro],
     name: "燃烧",
     fgColor: "#ff9c00",
     bgColor: "#843e11",
   },
-  [Reaction.Bloom]: {
-    elements: [DamageType.Dendro, DamageType.Hydro],
+  [R.Bloom]: {
+    elements: [D.Dendro, D.Hydro],
     name: "绽放",
     fgColor: "#00ea55",
     bgColor: "#3b6208",
   },
-  [Reaction.Quicken]: {
-    elements: [DamageType.Dendro, DamageType.Electro],
+  [R.Quicken]: {
+    elements: [D.Dendro, D.Electro],
     name: "原激化",
     fgColor: "#00ea55",
     bgColor: "#3b6208",
@@ -135,11 +135,10 @@ export interface ReactionProps {
   info: ReactionInfo;
 }
 
-export function ReactionAnimation(props: ReactionProps) {
+export function Reaction(props: ReactionProps) {
   const data = () => REACTION_TEXT_MAP[props.info.reactionType];
   const applyElement = () => props.info.incoming;
   const baseElement = () => data().elements.find((e)=> e !== applyElement())!;
-  createEffect(()=>console.log(props.info));
   return (
     <div class="h-5 w-21 flex flex-row items-center justify-center relative">
       <div class="absolute top-0 left-8 w-5 h-5 reaction-base-animation" >
