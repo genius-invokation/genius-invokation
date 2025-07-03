@@ -277,6 +277,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
           const incoming =
             "damageType" in value ? value.damageType : value.elementType;
           info.reactions.push({
+            type: "reaction",
             reactionType: value.reactionType as Reaction,
             base: value.oldAura as Aura,
             incoming: incoming as DamageType,

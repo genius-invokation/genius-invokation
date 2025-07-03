@@ -62,71 +62,71 @@ import { DAMAGE_COLOR } from "./Damage";
 
 export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
-    element: [DamageType.Cryo, DamageType.Pyro],
+    elements: [DamageType.Cryo, DamageType.Pyro],
     name: "融化",
   },
   [Reaction.Vaporize]: {
-    element: [DamageType.Hydro, DamageType.Pyro],
+    elements: [DamageType.Hydro, DamageType.Pyro],
     name: "蒸发",
   },
   [Reaction.Overloaded]: {
-    element: [DamageType.Electro, DamageType.Pyro],
+    elements: [DamageType.Electro, DamageType.Pyro],
     name: "超载",
   },
   [Reaction.Superconduct]: {
-    element: [DamageType.Cryo, DamageType.Electro],
+    elements: [DamageType.Cryo, DamageType.Electro],
     name: "超导",
   },
   [Reaction.ElectroCharged]: {
-    element: [DamageType.Electro, DamageType.Hydro],
+    elements: [DamageType.Electro, DamageType.Hydro],
     name: "感电",
   },
   [Reaction.Frozen]: {
-    element: [DamageType.Cryo, DamageType.Hydro],
+    elements: [DamageType.Cryo, DamageType.Hydro],
     name: "冻结",
   },
   [Reaction.SwirlCryo]: {
-    element: [DamageType.Cryo, DamageType.Anemo],
+    elements: [DamageType.Cryo, DamageType.Anemo],
     name: "扩散",
   },
   [Reaction.SwirlHydro]: {
-    element: [DamageType.Hydro, DamageType.Anemo],
+    elements: [DamageType.Hydro, DamageType.Anemo],
     name: "扩散",
   },
   [Reaction.SwirlPyro]: {
-    element: [DamageType.Pyro, DamageType.Anemo],
+    elements: [DamageType.Pyro, DamageType.Anemo],
     name: "扩散",
   },
   [Reaction.SwirlElectro]: {
-    element: [DamageType.Electro, DamageType.Anemo],
+    elements: [DamageType.Electro, DamageType.Anemo],
     name: "扩散",
   },
   [Reaction.CrystallizeCryo]: {
-    element: [DamageType.Cryo, DamageType.Geo],
+    elements: [DamageType.Cryo, DamageType.Geo],
     name: "结晶",
   },
   [Reaction.CrystallizeHydro]: {
-    element: [DamageType.Hydro, DamageType.Geo],
+    elements: [DamageType.Hydro, DamageType.Geo],
     name: "结晶",
   },
   [Reaction.CrystallizePyro]: {
-    element: [DamageType.Pyro, DamageType.Geo],
+    elements: [DamageType.Pyro, DamageType.Geo],
     name: "结晶",
   },
   [Reaction.CrystallizeElectro]: {
-    element: [DamageType.Electro, DamageType.Geo],
+    elements: [DamageType.Electro, DamageType.Geo],
     name: "结晶",
   },
   [Reaction.Burning]: {
-    element: [DamageType.Dendro, DamageType.Pyro],
+    elements: [DamageType.Dendro, DamageType.Pyro],
     name: "燃烧",
   },
   [Reaction.Bloom]: {
-    element: [DamageType.Dendro, DamageType.Hydro],
+    elements: [DamageType.Dendro, DamageType.Hydro],
     name: "绽放",
   },
   [Reaction.Quicken]: {
-    element: [DamageType.Dendro, DamageType.Electro],
+    elements: [DamageType.Dendro, DamageType.Electro],
     name: "激化",
   },
 };
@@ -157,7 +157,7 @@ const getApplyTypeText = (type: DamageType) => {
 };
 
 interface ReactionRenderingData {
-  element: DamageType[];
+  elements: DamageType[];
   name: string;
 }
 
@@ -220,7 +220,7 @@ const renderHistoryChild = (
   };
 
   const renderReaction = (reaction: Reaction, apply: DamageType) => {
-    const { element, name } = REACTION_TEXT_MAP[reaction];
+    const { elements: element, name } = REACTION_TEXT_MAP[reaction];
     const base = element.find((e) => e !== apply) as DamageType;
     return (
       <>
@@ -836,7 +836,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       }
       if (c.reaction) {
         summary.elemental.push(
-          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].elements as DamageType[],
         );
       } else if (c.damageType >= 1 && c.damageType <= 7) {
         summary.elemental.push([c.damageType]);
@@ -858,7 +858,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary.children.push(c);
       if (c.reaction) {
         summary.elemental.push(
-          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].elements as DamageType[],
         );
       } else {
         summary.elemental.push([c.elementType]);
@@ -1629,7 +1629,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                       <Image
                         imageId={imageId}
                         class="absolute inset-0 w-full h-full  p-1px rounded-lg"
-                      />          
+                      />
                     </Show>
                     <CardFrameSummon class="absolute inset-0 w-10.5 h-12.375 pointer-events-none" />
                   </div>
@@ -2074,10 +2074,7 @@ function HistoryBlockDetailPanel(props: {
       top-50% -translate-y-50%`}
       onClick={(e) => e.stopPropagation()}
     >
-      <div
-        ref={panelRef}
-        class="overflow-y-auto max-h-114 history-scrollbar"
-      >
+      <div ref={panelRef} class="overflow-y-auto max-h-114 history-scrollbar">
         <Show when={renderBlock().type !== "pocket"}>
           <div class="relative w-full min-h-22 bg-#2d333a rounded-t-1.5 flex flex-row b-2 b-white/4">
             <div

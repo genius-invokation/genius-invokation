@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  Aura,
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_SHIELD,
@@ -34,7 +35,7 @@ import {
   type ComponentProps,
 } from "solid-js";
 import { Image } from "./Image";
-import type { CharacterInfo, DamageInfo } from "./Chessboard";
+import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
 import { Damage } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
@@ -62,6 +63,7 @@ import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
 import { REACTION_TEXT_MAP } from "./HistoryViewer";
+import { Reaction } from "./Reaction";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -98,16 +100,39 @@ export function CharacterArea(props: CharacterAreaProps) {
   const data = createMemo(() => props.data);
 
   const [getDamage, setDamage] = createSignal<DamageInfo | null>(null);
+  // 播放带元素反应的伤害动画时，目标携带旧 aura
+  const [preReactionAura, setPreReactionAura] = createSignal<Aura | null>();
+  const [getReaction, setReaction] = createSignal<ReactionInfo | null>(null);
   const [showDamage, setShowDamage] = createSignal(false);
 
-  const renderDamages = async (delayMs: number, damages: DamageInfo[]) => {
+  const renderDamages = async (
+    delayMs: number,
+    damages: (DamageInfo | ReactionInfo)[],
+  ) => {
+    let preReactionAuraValue: Aura | null = null;
+    if (damages[0]?.type === "damage" && damages[0]?.reaction?.base) {
+      preReactionAuraValue = damages[0].reaction.base;
+    } else if (damages[0]?.type === "reaction" && damages[0].base) {
+      preReactionAuraValue = damages[0].base;
+    }
+    setPreReactionAura(preReactionAuraValue);
     await sleep(delayMs);
+    setPreReactionAura(null);
+    console.log(damages);
     for (const damage of damages) {
-      setDamage(damage);
-      setShowDamage(true);
-      await sleep(500);
-      setShowDamage(false);
-      await sleep(100);
+      if (damage.type === "damage") {
+        setDamage(damage);
+        setReaction(damage.reaction);
+        setShowDamage(true);
+        await sleep(500);
+        setShowDamage(false);
+        setReaction(null);
+        await sleep(100);
+      } else if (damage.type === "reaction") {
+        setReaction(damage);
+        await sleep(500);
+        setReaction(null);
+      }
     }
   };
 
@@ -125,9 +150,10 @@ export function CharacterArea(props: CharacterAreaProps) {
       onAnimationFinish,
     } = props.uiState;
 
-    let damageDelay = damages[0]?.isAfterSkillMainDamage
-      ? DAMAGE_TARGET_ANIMATION_DELAY
-      : 0;
+    let damageDelay =
+      damages[0]?.type === "damage" && damages[0].isAfterSkillMainDamage
+        ? DAMAGE_TARGET_ANIMATION_DELAY
+        : 0;
     const animations: Promise<void>[] = [];
 
     if (propAnimation.type === "damageTarget") {
@@ -164,13 +190,13 @@ export function CharacterArea(props: CharacterAreaProps) {
   });
 
   const aura = createMemo((): [number, number] => {
-    const aura = props.preview?.newAura ?? data().aura;
+    const aura = props.preview?.newAura ?? preReactionAura() ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
-  const reaction = createMemo(
+  const previewReaction = createMemo(
     () =>
       props.preview?.reactions.map((r) => {
-        const reactionElement = REACTION_TEXT_MAP[r.reactionType].element;
+        const reactionElement = REACTION_TEXT_MAP[r.reactionType].elements;
         const applyElement = r.incoming;
         const baseElement = reactionElement.find((e) => e !== applyElement);
         return [baseElement, applyElement];
@@ -212,11 +238,9 @@ export function CharacterArea(props: CharacterAreaProps) {
       >
         <div class="flex flex-row items-center gap-0.2 max-w-full">
           <Switch>
-            {/* <Match when={getReaction()}>
-              <ReactionAnimation reaction={getReaction() as ReactionInfo}/>
-            </Match> */}
-            <Match when={reaction() || aura()}>
-              <For each={reaction()}>
+            <Match when={getReaction()}>{(r) => <Reaction info={r()} />}</Match>
+            <Match when={true}>
+              <For each={previewReaction()}>
                 {(reaction) => (
                   <div class="h-5.1 flex flex-row items-center bg-black/60 rounded-full shrink-0">
                     <For each={reaction}>

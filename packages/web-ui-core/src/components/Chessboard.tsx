@@ -198,6 +198,7 @@ export interface PlayingCardInfo {
 }
 
 export interface DamageInfo {
+  type: "damage";
   damageType: DamageType;
   value: number;
   sourceId: number;
@@ -205,9 +206,11 @@ export interface DamageInfo {
   isSkillMainDamage: boolean;
   isAfterSkillMainDamage: boolean;
   delay: number;
+  reaction: ReactionInfo | null;
 }
 
 export interface ReactionInfo {
+  type: "reaction";
   reactionType: Reaction;
   base: Aura;
   incoming: DamageType;
@@ -796,7 +799,9 @@ function rerenderChildren(opt: {
   }
 
   const charactersMap = new Map<number, CharacterInfo>();
-  const isCharacterAnimating = damages.some((d) => d.isSkillMainDamage);
+  const isCharacterAnimating = damages.some(
+    (d) => d.type === "damage" && d.isSkillMainDamage,
+  );
   for (const who of [0, 1] as const) {
     const player = state.player[who];
     const opp = who !== opt.who;
@@ -825,7 +830,10 @@ function rerenderChildren(opt: {
             (step.entityId === ch.id ||
               (step.entityId === "myActiveCharacter" && isMyActive)),
         ) ?? null;
-      let z = ((clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview ? ACTION_OUTLINED_Z : 0);
+      let z =
+        (clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview
+          ? ACTION_OUTLINED_Z
+          : 0;
       if (isActive) {
         z += 0.05;
       }
@@ -858,20 +866,22 @@ function rerenderChildren(opt: {
     }
   }
   for (const damage of damages) {
-    const source = charactersMap.get(damage.sourceId);
     const target = charactersMap.get(damage.targetId)!;
-    if (source && damage.isSkillMainDamage) {
-      source.triggered = false;
-      source.uiState.animation = {
-        type: "damageSource",
-        targetX: target.uiState.transform.x,
-        targetY: target.uiState.transform.y,
-      };
-      target.uiState.animation = {
-        type: "damageTarget",
-        sourceX: source.uiState.transform.x,
-        sourceY: source.uiState.transform.y,
-      };
+    if (damage.type === "damage") {
+      const source = charactersMap.get(damage.sourceId);
+      if (source && damage.isSkillMainDamage) {
+        source.triggered = false;
+        source.uiState.animation = {
+          type: "damageSource",
+          targetX: target.uiState.transform.x,
+          targetY: target.uiState.transform.y,
+        };
+        target.uiState.animation = {
+          type: "damageTarget",
+          sourceX: source.uiState.transform.x,
+          sourceY: source.uiState.transform.y,
+        };
+      }
     }
     target.uiState.damages.push(damage);
   }
