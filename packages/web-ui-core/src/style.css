@@ -322,6 +322,73 @@
       );
     }
   }
+
+  .reaction-base-animation[data-shown] {
+    visibility: visible;
+    animation: reaction-base ease-in 200ms;
+  }
+
+  .reaction-apply-animation[data-shown] {
+    visibility: visible;
+    animation: reaction-apply ease-in 200ms;
+  }
+
+  .reaction-text-animation[data-shown] {
+    visibility: visible;
+    transform-origin: center;
+    animation: reaction-text ease-in 400ms;
+  }
+}
+
+@keyframes reaction-base {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reaction-apply {
+  0% {
+    opacity: 1;
+    transform: translateX(50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reaction-text {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+
+  25% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
+
+  75% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes entity-entering {

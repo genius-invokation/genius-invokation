@@ -59,77 +59,7 @@ import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 import { DAMAGE_COLOR } from "./Damage";
-
-export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
-  [Reaction.Melt]: {
-    element: [DamageType.Cryo, DamageType.Pyro],
-    name: "融化",
-  },
-  [Reaction.Vaporize]: {
-    element: [DamageType.Hydro, DamageType.Pyro],
-    name: "蒸发",
-  },
-  [Reaction.Overloaded]: {
-    element: [DamageType.Electro, DamageType.Pyro],
-    name: "超载",
-  },
-  [Reaction.Superconduct]: {
-    element: [DamageType.Cryo, DamageType.Electro],
-    name: "超导",
-  },
-  [Reaction.ElectroCharged]: {
-    element: [DamageType.Electro, DamageType.Hydro],
-    name: "感电",
-  },
-  [Reaction.Frozen]: {
-    element: [DamageType.Cryo, DamageType.Hydro],
-    name: "冻结",
-  },
-  [Reaction.SwirlCryo]: {
-    element: [DamageType.Cryo, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlHydro]: {
-    element: [DamageType.Hydro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlPyro]: {
-    element: [DamageType.Pyro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.SwirlElectro]: {
-    element: [DamageType.Electro, DamageType.Anemo],
-    name: "扩散",
-  },
-  [Reaction.CrystallizeCryo]: {
-    element: [DamageType.Cryo, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizeHydro]: {
-    element: [DamageType.Hydro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizePyro]: {
-    element: [DamageType.Pyro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.CrystallizeElectro]: {
-    element: [DamageType.Electro, DamageType.Geo],
-    name: "结晶",
-  },
-  [Reaction.Burning]: {
-    element: [DamageType.Dendro, DamageType.Pyro],
-    name: "燃烧",
-  },
-  [Reaction.Bloom]: {
-    element: [DamageType.Dendro, DamageType.Hydro],
-    name: "绽放",
-  },
-  [Reaction.Quicken]: {
-    element: [DamageType.Dendro, DamageType.Electro],
-    name: "激化",
-  },
-};
+import { REACTION_TEXT_MAP } from "./ReactionAnimation";
 
 const getDiceTypeText = (type: DiceType) => {
   const { assetsManager } = useUiContext();
@@ -155,11 +85,6 @@ const getApplyTypeText = (type: DamageType) => {
   const { assetsManager } = useUiContext();
   return assetsManager.getNameSync(-300 - type);
 };
-
-interface ReactionRenderingData {
-  element: DamageType[];
-  name: string;
-}
 
 interface ChildHealthChange {
   type: "damage" | "heal";

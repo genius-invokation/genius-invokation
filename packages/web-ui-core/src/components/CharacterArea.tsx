@@ -17,7 +17,9 @@ import {
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_SHIELD,
+  DamageType,
   PbEquipmentType,
+  Reaction,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
@@ -36,6 +38,7 @@ import {
 import { Image } from "./Image";
 import type { CharacterInfo, DamageInfo } from "./Chessboard";
 import { Damage } from "./Damage";
+import { ReactionAnimation } from "./ReactionAnimation";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { ActionStepEntityUi } from "../action";
@@ -61,7 +64,7 @@ import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
-import { REACTION_TEXT_MAP } from "./HistoryViewer";
+import { REACTION_TEXT_MAP } from "./ReactionAnimation";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -212,8 +215,8 @@ export function CharacterArea(props: CharacterAreaProps) {
       >
         <div class="flex flex-row items-center gap-0.2 max-w-full">
           <Switch>
-            {/* <Match when={getReaction()}>
-              <ReactionAnimation reaction={getReaction() as ReactionInfo}/>
+            {/* <Match when={showDamage()}>
+              <ReactionAnimation info={{reactionType: Reaction.Frozen, incoming: DamageType.Cryo}} shown={showDamage()}/>
             </Match> */}
             <Match when={reaction() || aura()}>
               <For each={reaction()}>
