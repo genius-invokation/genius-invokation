@@ -23,6 +23,7 @@ export function unitInPx() {
 }
 
 export const PERSPECTIVE = 200;
+export const ACTION_OUTLINED_Z = 8;
 export const FOCUSING_HANDS_Z = 10;
 export const DRAGGING_Z = 12;
 
@@ -79,10 +80,10 @@ export function getCharacterAreaPos(
     (halfChessboardHeight -
       CHARACTER_AREA_HEIGHT -
       HAND_CARD_BLURRED_SHOW_HEIGHT) /
-    2;
+    2 + 1;
   let characterAreaY = opp
     ? halfHeight - gapAroundCharacterArea - CHARACTER_AREA_HEIGHT
-    : halfHeight + gapAroundCharacterArea + 2;
+    : halfHeight + gapAroundCharacterArea;
 
   if (isActive === opp) {
     characterAreaY += GADGET_HEIGHT;

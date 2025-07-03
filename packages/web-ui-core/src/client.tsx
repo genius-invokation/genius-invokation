@@ -256,8 +256,6 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         return;
       }
       uiQueue.push(async () => {
-        who === 0 &&
-          console.log(...mutation.map(({ mutation }) => mutation?.$case));
         const parsed = parseMutations(mutation);
         setHistory(
           produce((history) => updateHistory(savedState, mutation, history)),

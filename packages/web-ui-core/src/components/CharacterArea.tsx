@@ -44,6 +44,7 @@ import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
 import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
 import HealthIcon from "../svg/HealthIcon.svg?component-solid";
+import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg?component-solid";
 import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
 import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
 import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
@@ -54,11 +55,13 @@ import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?component-
 import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?component-solid";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?component-solid";
 import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
 import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
 import TalentIcon from "../svg/TalentIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
 import { Dynamic } from "solid-js/web";
+import { REACTION_TEXT_MAP } from "./HistoryViewer";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -122,7 +125,9 @@ export function CharacterArea(props: CharacterAreaProps) {
       onAnimationFinish,
     } = props.uiState;
 
-    let damageDelay = 0;
+    let damageDelay = damages[0]?.isAfterSkillMainDamage
+      ? DAMAGE_TARGET_ANIMATION_DELAY
+      : 0;
     const animations: Promise<void>[] = [];
 
     if (propAnimation.type === "damageTarget") {
@@ -162,6 +167,15 @@ export function CharacterArea(props: CharacterAreaProps) {
     const aura = props.preview?.newAura ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
+  const reaction = createMemo(
+    () =>
+      props.preview?.reactions.map((r) => {
+        const reactionElement = REACTION_TEXT_MAP[r.reactionType].element;
+        const applyElement = r.incoming;
+        const baseElement = reactionElement.find((e) => e !== applyElement);
+        return [baseElement, applyElement];
+      }),
+  );
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
 
@@ -193,20 +207,46 @@ export function CharacterArea(props: CharacterAreaProps) {
       }}
     >
       <div
-        class="h-5 flex flex-row items-end gap-2 data-[preview]:animate-pulse z-10"
-        bool:data-preview={props.preview?.newAura}
+        class="h-6 w-21 flex relative justify-center overflow-visible preview-blink z-10"
+        bool:data-preview={props.preview?.newAura || props.preview?.reactions}
       >
-        <For each={aura()}>
-          {(aura) => (
-            <Show when={aura}>
-              <Image imageId={aura} class="h-5 w-5" />
-            </Show>
-          )}
-        </For>
+        <div class="flex flex-row items-center gap-0.2 max-w-full">
+          <Switch>
+            {/* <Match when={getReaction()}>
+              <ReactionAnimation reaction={getReaction() as ReactionInfo}/>
+            </Match> */}
+            <Match when={reaction() || aura()}>
+              <For each={reaction()}>
+                {(reaction) => (
+                  <div class="h-5.1 flex flex-row items-center bg-black/60 rounded-full shrink-0">
+                    <For each={reaction}>
+                      {(e) => (
+                        <Show when={e}>
+                          {(e) => <Image imageId={e()} class="h-5 w-5" />}
+                        </Show>
+                      )}
+                    </For>
+                  </div>
+                )}
+              </For>
+              <For each={aura()}>
+                {(aura) => (
+                  <Show when={aura}>
+                    <Image imageId={aura} class="h-5 w-5" />
+                  </Show>
+                )}
+              </For>
+            </Match>
+          </Switch>
+        </div>
       </div>
       <div class="h-36 w-21 relative z-9">
         <Show when={!defeated()}>
-          <Health value={data().health} />
+          <Health
+            value={data().health}
+            isMax={data().health === data().maxHealth}
+            // bondOfLife={undefined}
+          />
           <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
               current={energy()}
@@ -237,7 +277,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
           <Show when={props.preview && props.preview.newHealth !== null}>
             <VariableDiff
-              class="absolute z-5 top--0.5 left-50% translate-x--50%"
+              class="absolute z-5 top-0.6 left-6"
               oldValue={data().health}
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}
@@ -297,7 +337,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-xl data-[clickable]:cursor-pointer data-[clickable]:shadow-[0_0_5px_5px] shadow-yellow-200 transition-shadow data-[defeated]:brightness-50"
+          class="h-full w-full rounded-1 clickable-outline transition-shadow data-[defeated]:brightness-50"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
@@ -326,6 +366,11 @@ export function CharacterArea(props: CharacterAreaProps) {
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
               <SelectingIcon class="w-21 h-21" />
+            </div>
+          </Match>
+          <Match when={props.preview?.active}>
+            <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
+              <SwitchActiveHistoryIcon class="h-18 w-18" />
             </div>
           </Match>
         </Switch>
@@ -414,14 +459,29 @@ function EnergyBar(props: EnergyBarProps) {
   );
 }
 
-function Health(props: { value: number }) {
+interface HealthProps {
+  value: number;
+  isMax: boolean;
+  bondOfLife?: boolean;
+}
+
+function Health(props: HealthProps) {
   return (
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
       <HealthIcon class="w-full h-full" />
-      <div class="absolute inset-0 h-full w-full pt-1.2 flex items-center justify-center">
+      <Show when={props.bondOfLife}>
+        <div class="bond-of-life-health">
+          <BondOfLifeIcon class="w-full h-full" />
+          <div class="bond-of-life-health-background" />
+        </div>
+      </Show>
+      <Show when={props.isMax}>
+        <div class="absolute inset-0 w-full h-full max-health" />
+      </Show>
+      <div class="absolute inset-0 h-full w-full pt-1.4 flex items-center justify-center scale-y-96">
         <StrokedText
           text={String(props.value)}
-          class="line-height-none text-white font-bold"
+          class="line-height-none text-white font-bold text-4.5"
           strokeWidth={2}
           strokeColor="#000000B0"
         />

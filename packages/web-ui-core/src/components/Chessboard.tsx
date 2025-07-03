@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  Aura,
   DiceType,
   PbDiceRequirement,
   PbDiceType,
@@ -45,6 +46,7 @@ import {
 } from "solid-js";
 import debounce from "debounce";
 import {
+  ACTION_OUTLINED_Z,
   CARD_WIDTH,
   DRAGGING_Z,
   FOCUSING_HANDS_Z,
@@ -99,6 +101,7 @@ import {
   type DeclareEndMarkerProps,
 } from "./DeclareEndMarker";
 import {
+  ActionStepEntityUi,
   CANCEL_ACTION_STEP,
   NO_PREVIEW,
   type ActionState,
@@ -200,11 +203,14 @@ export interface DamageInfo {
   sourceId: number;
   targetId: number;
   isSkillMainDamage: boolean;
+  isAfterSkillMainDamage: boolean;
   delay: number;
 }
 
 export interface ReactionInfo {
   reactionType: Reaction;
+  base: Aura;
+  incoming: DamageType;
   targetId: number;
   delay: number;
 }
@@ -819,6 +825,10 @@ function rerenderChildren(opt: {
             (step.entityId === ch.id ||
               (step.entityId === "myActiveCharacter" && isMyActive)),
         ) ?? null;
+      let z = ((clickStep && clickStep.ui >= ActionStepEntityUi.Visible) || preview ? ACTION_OUTLINED_Z : 0);
+      if (isActive) {
+        z += 0.05;
+      }
       charactersMap.set(ch.id, {
         id: ch.id,
         data: ch,
@@ -830,7 +840,7 @@ function rerenderChildren(opt: {
           transform: {
             x,
             y,
-            z: clickStep || preview ? 0.2 : 0,
+            z,
             ry: 0,
             rz: 0,
           },

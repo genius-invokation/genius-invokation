@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
+  Aura,
   type CreateCardEM,
   DamageType,
   PbCardArea,
@@ -97,6 +98,7 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
   const damagesByTarget = new Map<number, DamageInfo[]>();
   const reactionsByTarget = new Map<number, ReactionInfo[]>();
   let notificationBox: NotificationBoxInfo | null = null;
+  let isAfterSkillMainDamage = false;
   const enteringEntities: number[] = [];
   const triggeringEntities: number[] = [];
   const disposingEntities: number[] = [];
@@ -176,6 +178,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           const targetReactions = reactionsByTarget.get(targetId)!;
           targetReactions.push({
             reactionType: mutation.value.reactionType,
+            base: mutation.value.oldAura as Aura,
+            incoming: mutation.value.elementType as DamageType,
             targetId,
             delay: targetReactions.length,
           });
@@ -194,8 +198,12 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           sourceId: mutation.value.sourceId,
           targetId,
           isSkillMainDamage: mutation.value.isSkillMainDamage,
+          isAfterSkillMainDamage,
           delay: targetDamages.length,
         });
+        if (mutation.value.isSkillMainDamage) {
+          isAfterSkillMainDamage = true;
+        }
         if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
           if (!reactionsByTarget.has(targetId)) {
             reactionsByTarget.set(targetId, []);
@@ -204,6 +212,8 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
           targetReactions.push({
             reactionType: mutation.value.reactionType,
             targetId,
+            base: mutation.value.oldAura as Aura,
+            incoming: mutation.value.damageType as DamageType,
             delay: targetReactions.length,
           });
         }

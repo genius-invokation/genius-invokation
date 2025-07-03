@@ -41,7 +41,7 @@ import type {
   RemoveEntityHistoryChild,
 } from "../history/typings";
 import { Image } from "./Image";
-import { DICE_COLOR, DiceIcon } from "./Dice";
+import { DiceIcon } from "./Dice";
 import type {
   ActionCardRawData,
   CharacterRawData,
@@ -58,8 +58,9 @@ import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
 import CardbackNormal from "../svg/CardbackNormal.svg?component-solid";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
+import { DAMAGE_COLOR } from "./Damage";
 
-const reactionTextMap: Record<number, ReactionRenderingData> = {
+export const REACTION_TEXT_MAP: Record<number, ReactionRenderingData> = {
   [Reaction.Melt]: {
     element: [DamageType.Cryo, DamageType.Pyro],
     name: "融化",
@@ -219,7 +220,7 @@ const renderHistoryChild = (
   };
 
   const renderReaction = (reaction: Reaction, apply: DamageType) => {
-    const { element, name } = reactionTextMap[reaction];
+    const { element, name } = REACTION_TEXT_MAP[reaction];
     const base = element.find((e) => e !== apply) as DamageType;
     return (
       <>
@@ -438,7 +439,7 @@ const renderHistoryChild = (
             <span
               style={
                 child.damageType >= 1 && child.damageType <= 7
-                  ? { color: `var(--c-${DICE_COLOR[child.damageType]})` }
+                  ? { color: `var(--c-${DAMAGE_COLOR[child.damageType]})` }
                   : void 0
               }
             >
@@ -497,7 +498,7 @@ const renderHistoryChild = (
             <span>附着</span>
             <Image imageId={child.elementType} class="h-3.5 w-3.5" />
             <span
-              style={{ color: `var(--c-${DICE_COLOR[child.elementType]})` }}
+              style={{ color: `var(--c-${DAMAGE_COLOR[child.elementType]})` }}
             >
               {getApplyTypeText(child.elementType)}
             </span>
@@ -835,7 +836,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       }
       if (c.reaction) {
         summary.elemental.push(
-          reactionTextMap[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
         );
       } else if (c.damageType >= 1 && c.damageType <= 7) {
         summary.elemental.push([c.damageType]);
@@ -857,7 +858,7 @@ function buildSummary(children: HistoryChildren[]): HistoryChildrenSummary {
       summary.children.push(c);
       if (c.reaction) {
         summary.elemental.push(
-          reactionTextMap[c.reaction].element as DamageType[],
+          REACTION_TEXT_MAP[c.reaction].element as DamageType[],
         );
       } else {
         summary.elemental.push([c.elementType]);
@@ -1640,7 +1641,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         <div class="h-10 w-10 absolute top-50% left-5.25 -translate-x-50% -translate-y-50% flex items-center justify-center">
           <Switch>
             <Match when={props.data.inner === "switch"}>
-              <SwitchActiveHistoryIcon class="h-10 w-10" />
+              <SwitchActiveHistoryIcon class="h-9 w-9" />
             </Match>
             <Match when={props.data.inner === "defeated"}>
               <DefeatedPreviewIcon class="h-8 w-8" />
@@ -1801,7 +1802,7 @@ function HistoryBlockBox(props: {
             <div class="h-10 w-10 absolute top-50% left-50% -translate-x-50% -translate-y-50% flex items-center justify-center">
               <Switch>
                 <Match when={props.data.type === "switchOrChooseActive"}>
-                  <SwitchActiveHistoryIcon class="h-8 w-8" />
+                  <SwitchActiveHistoryIcon class="h-9 w-9" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
                   <TriggerIcon class="h-9 w-9" />
@@ -1979,7 +1980,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div
-        class="absolute inset-0 z-0 bg-black/30"
+        class="absolute inset-0 z-0 bg-black/50"
         onClick={() => {
           if (selectedBlock()) {
             setSelectedBlock(null);
