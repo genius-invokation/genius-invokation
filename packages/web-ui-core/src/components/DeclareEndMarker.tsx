@@ -131,7 +131,7 @@ export function DeclareEndMarker(props: DeclareEndMarkerProps) {
   const currentTime = () => Math.min(props.currentTime, props.totalTime);
   return (
     <div
-      class={`flex flex-row items-center pointer-events-none select-none gap-3 ${
+      class={`flex flex-row items-center pointer-events-none select-none ${
         props.class ?? ""
       }`}
     >
