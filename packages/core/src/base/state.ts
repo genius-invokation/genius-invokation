@@ -40,6 +40,7 @@ export interface GameConfig {
   readonly randomSeed: number;
   readonly initialHandsCount: number;
   readonly maxHandsCount: number;
+  readonly maxPileCount: number;
   readonly maxRoundsCount: number;
   readonly maxSupportsCount: number;
   readonly maxSummonsCount: number;

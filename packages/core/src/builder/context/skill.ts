@@ -1176,6 +1176,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
       DetailLogType.Primitive,
       `Set ${stringifyState(target)}'s variable ${prop} to ${value}`,
     );
+    const MAX_VALUE = 2 ** 31 - 1; // 2147483647
+    if (value > MAX_VALUE) {
+      this.mutator.log(
+        DetailLogType.Other,
+        `Variable value ${value} exceeds max limit, omitted`,
+      );
+      return;
+    }
     this.mutate({
       type: "modifyEntityVar",
       state: target as CharacterState | EntityState,
@@ -1555,10 +1563,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
     strategy: InsertPileStrategy,
     where: "my" | "opp",
   ) {
-    const count = payloads.length;
     const who =
       where === "my" ? this.callerArea.who : flip(this.callerArea.who);
     const player = this.state.players[who];
+    const pileCount = player.pile.length;
+    payloads = payloads.slice(
+      0,
+      Math.max(0, this.state.config.maxPileCount - pileCount),
+    );
+    if (payloads.length === 0) {
+      return;
+    }
+    const count = payloads.length;
     switch (strategy) {
       case "top":
         for (const mut of payloads) {
