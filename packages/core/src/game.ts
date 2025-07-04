@@ -1176,6 +1176,7 @@ export function mergeGameConfigWithDefault(
     initialHandsCount: 5,
     maxDiceCount: 16,
     maxHandsCount: 10,
+    maxPileCount: 200,
     maxRoundsCount: 15,
     maxSummonsCount: 4,
     maxSupportsCount: 4,
