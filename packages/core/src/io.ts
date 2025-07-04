@@ -46,7 +46,7 @@ import {
   PbHealKind,
   PbPlayerStatus,
   PbTransferCardReason,
-  CARD_TAG_NO_TUNNING,
+  CARD_TAG_NO_TUNING,
   CHARACTER_TAG_BOND_OF_LIFE,
 } from "@gi-tcg/typings";
 import type {
@@ -508,7 +508,7 @@ function exposeCard(
     definitionId: hide ? 0 : c.definition.id,
     definitionCost,
     // TODO: using a lookup table instead
-    tags: c.definition.tags.includes("noTuning") ? CARD_TAG_NO_TUNNING : 0,
+    tags: c.definition.tags.includes("noTuning") ? CARD_TAG_NO_TUNING : 0,
   };
 }
 
