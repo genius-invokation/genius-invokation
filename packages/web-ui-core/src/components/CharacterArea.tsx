@@ -305,7 +305,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               newValue={props.preview!.newHealth!}
               direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
-              // revive={props.preview?.revive}
+              revived={props.preview?.revived}
             />
           </Show>
           <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">

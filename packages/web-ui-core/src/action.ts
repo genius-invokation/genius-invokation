@@ -21,6 +21,7 @@ import {
   ElementalTuningAction,
   PbEntityArea,
   PbEntityState,
+  PbHealKind,
   PbModifyDirection,
   PbReactionType,
   PlayCardAction,
@@ -153,6 +154,7 @@ export interface PreviewingCharacterInfo {
   newAura: number | null;
   newDefinitionId: number | null;
   defeated: boolean;
+  revived: boolean;
   active: boolean;
 }
 
@@ -194,6 +196,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
       newAura: null,
       newDefinitionId: null,
       defeated: false,
+      revived: false,
       active: false,
     };
     result.characters.set(id, info);
@@ -213,6 +216,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
     result.entities.set(id, info);
     return info;
   };
+
   for (const data of previewData) {
     const { $case, value } = data.mutation!;
     outer: switch ($case) {
@@ -270,7 +274,14 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         }
         break;
       }
-      case "damage":
+      // @ts-expect-error fallthrough
+      case "damage": {
+        if (value.healKind === PbHealKind.IMMUNE_DEFEATED || value.healKind === PbHealKind.REVIVE) {
+          const info = getPreviewingCharacter(value.targetId);
+          info.revived = true;
+        }
+        // fallthrough
+      }
       case "applyAura": {
         if (value.reactionType !== PbReactionType.UNSPECIFIED) {
           const info = getPreviewingCharacter(value.targetId);

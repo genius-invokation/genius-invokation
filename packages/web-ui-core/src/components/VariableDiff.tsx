@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { PbModifyDirection } from "@gi-tcg/typings";
-import { createMemo, Show } from "solid-js";
+import { createMemo, Match, Show, Switch } from "solid-js";
 import { StrokedText } from "./StrokedText";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?component-solid";
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
@@ -22,7 +22,7 @@ import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?component-solid";
 export interface VariableDiffProps {
   class?: string;
   defeated?: boolean;
-  revive?: boolean;
+  revived?: boolean;
   oldValue: number;
   newValue: number;
   direction: PbModifyDirection;
@@ -51,16 +51,18 @@ export function VariableDiff(props: VariableDiffProps) {
       <div class="grid-area-[1/1] bg-[var(--bg-color)] rounded-full h-[calc(100%-4px)] w-[calc(100%-4px)] m-0.5"/>
       <div class="grid-area-[1/1] bg-[var(--bg-color)] rounded-0.5 h-[calc(100%-4px)] w-[calc(100%-12px)] my-0.5 mx-1.5"/>
       <div class="grid-area-[1/1] inline-flex items-center px-2.5 w-max h-8">
-        <Show when={props.defeated}>
-          <div class="relative h-8 w-8 overflow-visible shrink-0">
-            <DefeatedPreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
-          </div>
-        </Show>
-        <Show when={props.revive}>
-          <div class="relative h-8 w-8 overflow-visible shrink-0">
-            <RevivePreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-50%" />
-          </div>
-        </Show>
+        <Switch>
+          <Match when={props.defeated}>
+            <div class="relative h-8 w-8 overflow-visible shrink-0">
+              <DefeatedPreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+            </div>
+          </Match>
+          <Match when={props.revived}>
+            <div class="relative h-8 w-8 overflow-visible shrink-0">
+              <RevivePreviewIcon class=" absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+            </div>
+          </Match>          
+        </Switch>
         <StrokedText
           class="shrink-0 font-bold font-size-5 line-height-none mx-0.5"
           text={`${increase() ? "+" : "-"}${Math.abs(
