@@ -47,6 +47,7 @@ import {
   PbPlayerStatus,
   PbTransferCardReason,
   CARD_TAG_NO_TUNNING,
+  CHARACTER_TAG_BOND_OF_LIFE,
 } from "@gi-tcg/typings";
 import type {
   CardState,
@@ -413,6 +414,7 @@ const EXPOSED_TAGS: Partial<Record<EntityTag, number>> = {
   barrier: CHARACTER_TAG_BARRIER,
   disableSkill: CHARACTER_TAG_DISABLE_SKILL,
   nightsoulsBlessing: CHARACTER_TAG_NIGHTSOULS_BLESSING,
+  bondOfLife: CHARACTER_TAG_BOND_OF_LIFE,
 };
 function exposeTag(tags: EntityTag[]) {
   return tags.reduce(

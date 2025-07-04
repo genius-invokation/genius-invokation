@@ -99,6 +99,7 @@ export const CatalyzingField = combatStatus(117)
  * 可用次数：1（可叠加，没有上限）。
  */
 export const BondOfLife = status(122)
+  .tags("bondOfLife")
   .on("decreaseHealed", (c, e) =>
     e.healInfo.healKind !== "revive" &&
     e.healInfo.healKind !== "immuneDefeated" &&

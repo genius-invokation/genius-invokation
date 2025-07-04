@@ -16,6 +16,7 @@
 import {
   Aura,
   CHARACTER_TAG_BARRIER,
+  CHARACTER_TAG_BOND_OF_LIFE,
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_SHIELD,
   PbEquipmentType,
@@ -267,7 +268,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           <Health
             value={data().health}
             isMax={data().health === data().maxHealth}
-            // bondOfLife={undefined}
+            bondOfLife={!!(data().tags & CHARACTER_TAG_BOND_OF_LIFE)}
           />
           <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
@@ -521,8 +522,8 @@ function CharacterTagMasks(props: CharacterTagMasksProps) {
     [CHARACTER_TAG_SHIELD]: "UI_GCG_Shield_01",
     [CHARACTER_TAG_BARRIER]: "UI_GCG_Shield_02",
     [CHARACTER_TAG_DISABLE_SKILL]: "UI_GCG_Frozen",
-    // [CHARACTER_TAG_ROCK]: "UI_GCG_Rocken",
-    // [CHARACTER_TAG_DIZZY]: "UI_GCG_Dizzy",
+    // "UI_GCG_Rocken",
+    // "UI_GCG_Dizzy",
   };
   return (
     <WithDelicateUi assetId={Object.values(assets)} fallback={<></>}>
