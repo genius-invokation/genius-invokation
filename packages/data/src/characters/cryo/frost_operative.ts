@@ -92,8 +92,8 @@ export const BloodbondedShadow = skill(21044)
     if (c.self.hasEquipment(RimeflowRapier)) {
       const bondSt = c.$(`status with definition id ${BondOfLife} at opp active`);
       if (bondSt) {
-        const bondValue = Math.min(2 ** 31 - 1, bondSt.getVariable("usage") * 2);
-        bondSt.setVariable("usage", bondValue);
+        const oldUsage = bondSt.getVariable("usage");
+        bondSt.setVariable("usage", oldUsage * 2);
       }
     }
   })
