@@ -22,7 +22,7 @@ import {
   type Transform,
 } from "../ui_state";
 import type { CardInfo } from "./Chessboard";
-import type { PbDiceRequirement } from "@gi-tcg/typings";
+import { type PbDiceRequirement, CARD_TAG_NO_TUNING } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
 import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
@@ -152,6 +152,10 @@ export function Card(props: CardProps) {
     }
   });
 
+  const backfaceDebuff = createMemo(() => 
+    props.kind === "oppHand" && !!(props.data.tags & CARD_TAG_NO_TUNING)
+  );
+
   // onMount(() => {
   //   console.log(el);
   // });
@@ -266,6 +270,9 @@ export function Card(props: CardProps) {
         realCost={realCost()}
       />
       <CardbackNormal class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px" />
+      <Show when={backfaceDebuff()}>
+        <div class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.2px rounded-1.2 cardback-debuff"/>
+      </Show>
     </div>
   );
 }

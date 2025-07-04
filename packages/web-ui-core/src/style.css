@@ -302,6 +302,17 @@
     --blink-opacity: 0.5;
   }
 
+  .cardback-debuff {
+    background-color: #6b21a828;
+    filter: brightness(0.8);
+    box-shadow:
+      #581c8780 0 0 2px 2px,
+      inset #581c8780 0 0 18px 18px,
+      inset #581c8780 0 0 6px 6px;
+    animation: blink 8s ease-in-out infinite;
+    --blink-opacity: 0.6;
+  }
+
   .bond-of-life-health {
     position: absolute;
     inset: 0;
