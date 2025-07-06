@@ -27,6 +27,8 @@ import {
   stringifyState,
   type AnyState,
   type CardDefinition,
+  StateSymbol,
+  type StateKind,
 } from "./state";
 import { removeEntity, getEntityById, sortDice, getEntityArea } from "../utils";
 import {
@@ -40,7 +42,10 @@ import { nextRandom } from "../random";
 
 enableMapSet();
 
-type IdWritable<T extends { readonly id: number }> = Omit<T, "id"> & {
+type IdWritable<T extends { readonly id: number }> = Omit<
+  T,
+  "id" | StateSymbol
+> & {
   id: number;
 };
 
@@ -225,6 +230,16 @@ export type Mutation =
   | PushDelayingEventM
   | ClearDelayingEventM;
 
+function createDraft<T extends { readonly id: number }>(
+  sym: StateKind,
+  value: Omit<T, StateSymbol>,
+): Draft<T> {
+  return {
+    ...value,
+    [StateSymbol]: sym,
+  } as unknown as Draft<T>;
+}
+
 function doMutation(state: GameState, m: Mutation): GameState {
   switch (m.type) {
     case "stepRandom": {
@@ -349,7 +364,7 @@ function doMutation(state: GameState, m: Mutation): GameState {
         if (m.value.id === 0) {
           m.value.id = draft.iterators.id--;
         }
-        const value = m.value as Draft<CardState>;
+        const value = createDraft<CardState>("card", m.value);
         const target = draft.players[m.who][m.target];
         if (typeof m.targetIndex === "number") {
           target.splice(m.targetIndex, 0, value);
@@ -363,7 +378,8 @@ function doMutation(state: GameState, m: Mutation): GameState {
         if (m.value.id === 0) {
           m.value.id = draft.iterators.id--;
         }
-        draft.players[m.who].characters.push(m.value as Draft<CharacterState>);
+        const value = createDraft<CharacterState>("character", m.value);
+        draft.players[m.who].characters.push(value);
       });
     }
     case "createEntity": {
@@ -385,7 +401,8 @@ function doMutation(state: GameState, m: Mutation): GameState {
           if (value.id === 0) {
             value.id = draft.iterators.id--;
           }
-          character.entities.push(value as Draft<EntityState>);
+          const draftedValue = createDraft<EntityState>("entity", value);
+          character.entities.push(draftedValue);
         });
       } else {
         const type = where.type;
@@ -394,7 +411,8 @@ function doMutation(state: GameState, m: Mutation): GameState {
           if (value.id === 0) {
             value.id = draft.iterators.id--;
           }
-          area.push(value as Draft<EntityState>);
+          const draftedValue = createDraft<EntityState>("entity", value);
+          area.push(draftedValue);
         });
       }
     }

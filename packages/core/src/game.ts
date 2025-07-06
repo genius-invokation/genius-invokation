@@ -29,14 +29,15 @@ import {
   Reaction,
   PbSwitchActiveFromAction,
 } from "@gi-tcg/typings";
-import type {
-  AnyState,
-  CardState,
-  CharacterState,
-  ExtensionState,
-  GameConfig,
-  GameState,
-  PlayerState,
+import {
+  StateSymbol,
+  type AnyState,
+  type CardState,
+  type CharacterState,
+  type ExtensionState,
+  type GameConfig,
+  type GameState,
+  type PlayerState,
 } from "./base/state";
 import type { Mutation } from "./base/mutation";
 import {
@@ -116,6 +117,7 @@ class IdIter {
 
 /** 根据 deck 初始化玩家状态 */
 function initPlayerState(
+  who: 0 | 1,
   data: GameData,
   deck: DeckConfig,
   idIter: IdIter,
@@ -152,6 +154,7 @@ function initPlayerState(
   const pile: CardState[] = [];
   for (const definition of characterDefs) {
     characters.push({
+      [StateSymbol]: "character",
       id: idIter.id,
       definition,
       variables: Object.fromEntries(
@@ -164,12 +167,15 @@ function initPlayerState(
   }
   for (const definition of initialPile) {
     pile.push({
+      [StateSymbol]: "card",
       id: idIter.id,
       definition,
       variables: {},
     });
   }
   return {
+    [StateSymbol]: "player",
+    who,
     activeCharacterId: 0,
     characters,
     initialPile,
@@ -241,11 +247,12 @@ export class Game {
     const config = mergeGameConfigWithDefault(partialConfig);
     const idIter = new IdIter();
     const state: GameState = {
+      [StateSymbol]: "game",
       data,
       config,
       players: [
-        initPlayerState(data, decks[0], idIter),
-        initPlayerState(data, decks[1], idIter),
+        initPlayerState(0, data, decks[0], idIter),
+        initPlayerState(1, data, decks[1], idIter),
       ],
       iterators: {
         random: config.randomSeed,

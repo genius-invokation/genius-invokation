@@ -15,6 +15,7 @@ import {
 import {
   type EntityState,
   type EntityVariables,
+  StateSymbol,
   stringifyState,
 } from "./base/state";
 import { allEntitiesAtArea, getEntityById, sortDice } from "./utils";
@@ -463,6 +464,7 @@ export class StateMutator {
       `Create hand card [card:${definition.id}]`,
     );
     const cardState: CardState = {
+      [StateSymbol]: "card",
       id: 0,
       definition,
       variables: {},
@@ -590,7 +592,7 @@ export class StateMutator {
       ) {
         return { oldState: null, newState: null };
       }
-      const initState: EntityState = {
+      const initState = {
         id: opt.withId ?? 0,
         definition: def,
         variables: Object.fromEntries(
