@@ -315,7 +315,7 @@ export class StateMutator {
 
   // --- INLINE SKILL HANDLING ---
 
-  /* private */ executeInlineSkill<Arg>(
+  private executeInlineSkill<Arg>(
     skillDescription: SkillDescription<Arg>,
     skill: SkillInfo,
     arg: Arg,

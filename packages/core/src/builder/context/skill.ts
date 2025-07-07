@@ -144,6 +144,25 @@ type ShortcutReturn<
   ? Meta["shortcutReceiver"] & { [ENABLE_SHORTCUT]: true }
   : T;
 
+type MutatorResultCanEmit =
+  | readonly EventAndRequest[]
+  | { readonly events: readonly EventAndRequest[] };
+
+type MutatorMethodCanEmitImpl<K extends keyof StateMutator> =
+  StateMutator[K] extends (...args: any[]) => MutatorResultCanEmit ? K : never;
+
+type MutatorMethodCanEmit = {
+  [K in keyof StateMutator]: MutatorMethodCanEmitImpl<K>;
+}[keyof StateMutator];
+
+type CallAndEmitResult<K extends MutatorMethodCanEmit> = ReturnType<
+  StateMutator[K]
+> extends { readonly events: readonly EventAndRequest[] }
+  ? Omit<ReturnType<StateMutator[K]>, "events">
+  : ReturnType<StateMutator[K]> extends readonly EventAndRequest[]
+    ? void
+    : never;
+
 /**
  * 用于描述技能的上下文对象。
  * 它们出现在 `.do()` 形式内，将其作为参数传入。
@@ -474,6 +493,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     this.eventAndRequests.push([event, arg] as EventAndRequest);
   }
+  // 等效调用 this.mutator.<method>, 并将返回的 events 添加
+  callAndEmit<K extends MutatorMethodCanEmit>(
+    method: K,
+    ...args: Parameters<StateMutator[K]>
+  ): CallAndEmitResult<K> {
+    const fn: any = this.mutator[method].bind(this.mutator);
+    const result = fn(...args);
+    if ("events" in result && Array.isArray(result.events)) {
+      this.eventAndRequests.push(...result.events);
+    } else if (Array.isArray(result)) {
+      this.eventAndRequests.push(...result);
+    }
+    return result as any;
+  }
 
   emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg: T): ShortcutReturn<Meta>;
@@ -501,15 +534,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
     }
     const switchToTarget = targets[0];
-    const events = this.mutator.switchActive(
-      switchToTarget.who,
-      switchToTarget.state,
-      {
-        via: this.skillInfo,
-        fromReaction: this.fromReaction,
-      },
-    );
-    this.eventAndRequests.push(...events);
+    this.callAndEmit("switchActive", switchToTarget.who, switchToTarget.state, {
+      via: this.skillInfo,
+      fromReaction: this.fromReaction,
+    });
     return RET;
   }
 
@@ -544,12 +572,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   ) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      this.eventAndRequests.push(
-        ...this.mutator.heal(value, t.state, {
-          via: this.skillInfo,
-          kind,
-        }),
-      );
+      this.callAndEmit("heal", value, t.state, {
+        via: this.skillInfo,
+        kind,
+      });
     }
     return this.enableShortcut();
   }
@@ -572,12 +598,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       });
       // Note: `t.state` is a getter that gets latest state.
       // Do not write `targetState` here
-      this.eventAndRequests.push(
-        ...this.mutator.heal(value, t.state, {
-          via: this.skillInfo,
-          kind: "increaseMaxHealth",
-        }),
-      );
+      this.callAndEmit("heal", value, t.state, {
+        via: this.skillInfo,
+        kind: "increaseMaxHealth",
+      });
     }
     return this.enableShortcut();
   }
@@ -614,7 +638,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetState.variables.health <= value,
         fromReaction: this.fromReaction,
       };
-      const { damageInfo: damageInfo2, events } = this.mutator.damage(
+      const { damageInfo: damageInfo2 } = this.callAndEmit(
+        "damage",
         targetState,
         damageInfo,
         {
@@ -624,7 +649,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetIsActive: t.isActive(),
         },
       );
-      this.eventAndRequests.push(...events);
       if (isSkillMainDamage) {
         this.mainDamage = damageInfo2;
       }
@@ -644,15 +668,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Apply [damage:${type}] to ${stringifyState(ch.state)}`,
       );
-      this.eventAndRequests.push(
-        ...this.mutator.apply(ch.state, type, {
-          fromDamage: null,
-          via: this.skillInfo,
-          callerWho: this.callerArea.who,
-          targetWho: ch.who,
-          targetIsActive: ch.isActive(),
-        }),
-      );
+      this.callAndEmit("apply", ch.state, type, {
+        fromDamage: null,
+        via: this.skillInfo,
+        callerWho: this.callerArea.who,
+        targetWho: ch.who,
+        targetIsActive: ch.isActive(),
+      });
     }
     return this.enableShortcut();
   }
@@ -698,8 +720,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           );
       }
     }
-    const { newState, events } = this.mutator.createEntity(def, area, opt);
-    this.eventAndRequests.push(...events);
+    const { newState } = this.callAndEmit("createEntity", def, area, opt);
     if (newState) {
       return this.of(newState);
     } else {
@@ -1190,7 +1211,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     if (withTag === null && withDefinition === null) {
       // 如果没有限定，则从牌堆顶部摸牌
-      this.eventAndRequests.push(...this.mutator.drawCardsPlain(who, count));
+      this.callAndEmit("drawCardsPlain", who, count);
     } else {
       const check = (card: CardState) => {
         if (withDefinition !== null) {
@@ -1209,16 +1230,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
           break;
         }
         const chosen = this.random(candidates);
-        this.eventAndRequests.push(
-          ...this.mutator.insertHandCard({
-            type: "transferCard",
-            from: "pile",
-            to: "hands",
-            who,
-            value: chosen,
-            reason: "draw",
-          }),
-        );
+        this.callAndEmit("insertHandCard", {
+          type: "transferCard",
+          from: "pile",
+          to: "hands",
+          who,
+          value: chosen,
+          reason: "draw",
+        });
       }
     }
     return this.enableShortcut();
@@ -1255,9 +1274,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           value: { ...cardTemplate },
         }) as const,
     );
-    this.eventAndRequests.push(
-      ...this.mutator.insertPileCards(payloads, strategy, who),
-    );
+    this.callAndEmit("insertPileCards", payloads, strategy, who);
     return this.enableShortcut();
   }
   undrawCards(cards: CardState[], strategy: InsertPileStrategy) {
@@ -1279,9 +1296,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           reason: "undraw",
         }) as const,
     );
-    this.eventAndRequests.push(
-      ...this.mutator.insertPileCards(payloads, strategy, who),
-    );
+    this.callAndEmit("insertPileCards", payloads, strategy, who);
     return this.enableShortcut();
   }
 

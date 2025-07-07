@@ -496,9 +496,7 @@ export class Game {
         who,
         this.config.initialHandsCount,
       );
-      for (const event of events) {
-        this.handleEvent(...event);
-      }
+      await this.handleEvents(events);
     }
     await this.mutator.notifyAndPause();
     await Promise.all([
@@ -871,9 +869,7 @@ export class Game {
     await this.handleEvent("onEndPhase", new EventArg(this.state));
     for (const who of [this.state.currentTurn, flip(this.state.currentTurn)]) {
       const events = this.mutator.drawCardsPlain(who, 2);
-      for (const e of events) {
-        await this.handleEvent(...e);
-      }
+      await this.handleEvents(events);
     }
     await this.handleEvent("onRoundEnd", new EventArg(this.state));
     for (const who of [0, 1] as const) {
@@ -1139,9 +1135,7 @@ export class Game {
     fast: boolean | null,
   ) {
     const events = this.mutator.switchActive(who, to, { fast });
-    for (const e of events) {
-      await this.handleEvent(...e);
-    }
+    await this.handleEvents(events);
   }
 
   private async executeSkill(skillInfo: SkillInfo, arg: GeneralSkillArg) {
@@ -1149,6 +1143,9 @@ export class Game {
   }
   private async handleEvent(...args: EventAndRequest) {
     await SkillExecutor.handleEvent(this.mutator, ...args);
+  }
+  private async handleEvents(events: EventAndRequest[]) {
+    await SkillExecutor.handleEvents(this.mutator, events);
   }
 }
 
