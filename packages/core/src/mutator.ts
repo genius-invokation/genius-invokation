@@ -1,5 +1,6 @@
 import {
   DiceType,
+  PbReactionType,
   PbSwitchActiveFromAction,
   Reaction,
   type ExposedMutation,
@@ -22,17 +23,21 @@ import {
   allEntitiesAtArea,
   allSkills,
   getActiveCharacterIndex,
+  getEntityArea,
   getEntityById,
   sortDice,
 } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
+  type DamageInfo,
   EnterEventArg,
   type EventAndRequest,
   type EventArgOf,
   HandCardInsertedEventArg,
   type InlineEventNames,
   PlayCardRequestArg,
+  ReactionEventArg,
+  type ReactionInfo,
   type SelectCardInfo,
   type SkillDescription,
   type SkillInfo,
@@ -46,6 +51,11 @@ import {
   stringifyEntityArea,
 } from "./base/entity";
 import type { CardDefinition } from "./base/card";
+import { REACTION_MAP, type NontrivialDamageType } from "./base/reaction";
+import {
+  getReactionDescription,
+  type ReactionDescriptionEventArg,
+} from "./builder/reaction";
 
 export class GiTcgPreviewAbortedError extends GiTcgCoreInternalError {
   constructor(message?: string) {
@@ -116,12 +126,23 @@ export interface CreateEntityResult {
   readonly oldState: EntityState | null;
   /** 若成功创建，给出新建的实体状态 */
   readonly newState: EntityState | null;
+  /** 若成功创建，则引发的 onEnter 事件 */
+  readonly events: EventAndRequest[];
 }
 
 export interface SwitchActiveOption {
   via?: SkillInfo;
   fast?: boolean | null;
   fromReaction?: Reaction | null;
+}
+
+export interface ApplyOption {
+  via: SkillInfo;
+  fromDamage: DamageInfo | null;
+  // 以下属性在描述元素反应时有用，需要传入
+  callerWho: 0 | 1;
+  targetWho: 0 | 1;
+  targetIsActive: boolean;
 }
 
 /**
@@ -304,6 +325,75 @@ export class StateMutator {
 
   // --- BASIC MUTATIVE PRIMITIVES ---
 
+  apply(
+    target: CharacterState,
+    type: NontrivialDamageType,
+    opt: ApplyOption,
+  ): EventAndRequest[] {
+    if (!target.variables.alive) {
+      return [];
+    }
+    const events: EventAndRequest[] = [];
+    const aura = target.variables.aura;
+    const [newAura, reaction] = REACTION_MAP[aura][type];
+    this.mutate({
+      type: "modifyEntityVar",
+      state: target,
+      varName: "aura",
+      value: newAura,
+      direction: null,
+    });
+    if (!opt.fromDamage) {
+      this.notify({
+        mutations: [
+          {
+            $case: "applyAura",
+            elementType: type,
+            targetId: target.id,
+            targetDefinitionId: target.definition.id,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            oldAura: aura,
+            newAura,
+          },
+        ],
+      });
+    }
+    if (reaction !== null) {
+      this.log(
+        DetailLogType.Other,
+        `Apply reaction ${reaction} to ${stringifyState(target)}`,
+      );
+      const reactionInfo: ReactionInfo = {
+        target: target,
+        type: reaction,
+        via: opt.via,
+        fromDamage: opt.fromDamage,
+      };
+      events.push([
+        "onReaction",
+        new ReactionEventArg(this.state, reactionInfo),
+      ]);
+      const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
+        where: opt.targetWho === opt.callerWho ? "my" : "opp",
+        here: opt.targetWho === opt.callerWho ? "opp" : "my",
+        id: target.id,
+        isDamage: !!opt.fromDamage,
+        isActive: opt.targetIsActive,
+      };
+      const reactionDescription = getReactionDescription(reaction);
+      if (reactionDescription) {
+        events.push(
+          ...this.executeInlineSkill(
+            reactionDescription,
+            opt.via,
+            reactionDescriptionEventArg,
+          ),
+        );
+      }
+    }
+    return events;
+  }
+
   drawCard(who: 0 | 1): CardState | null {
     const candidate = this.state.players[who].pile[0];
     if (typeof candidate === "undefined") {
@@ -392,7 +482,7 @@ export class StateMutator {
         DetailLogType.Other,
         "Because of immuneControl, entities with disableSkill cannot be created",
       );
-      return { oldState: null, newState: null };
+      return { oldState: null, newState: null, events: [] };
     }
     const oldState = entitiesAtArea.find(
       (e): e is EntityState =>
@@ -457,13 +547,20 @@ export class StateMutator {
         }
       }
       const newState = getEntityById(this.state, oldState.id) as EntityState;
-      return { oldState, newState };
+      const enterEvent: EventAndRequest = [
+        "onEnter",
+        new EnterEventArg(this.state, {
+          overridden: oldState,
+          newState,
+        }),
+      ];
+      return { oldState, newState, events: [enterEvent] };
     } else {
       if (
         area.type === "summons" &&
         entitiesAtArea.length === this.state.config.maxSummonsCount
       ) {
-        return { oldState: null, newState: null };
+        return { oldState: null, newState: null, events: [] };
       }
       const initState = {
         id: opt.withId ?? 0,
@@ -481,7 +578,14 @@ export class StateMutator {
         value: initState,
       });
       const newState = getEntityById(this.state, initState.id) as EntityState;
-      return { oldState: null, newState };
+      const enterEvent: EventAndRequest = [
+        "onEnter",
+        new EnterEventArg(this.state, {
+          overridden: null,
+          newState,
+        }),
+      ];
+      return { oldState: null, newState, events: [enterEvent] };
     }
   }
 

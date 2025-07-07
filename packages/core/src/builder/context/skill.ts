@@ -827,7 +827,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
         damageInfo.type !== DamageType.Physical &&
         damageInfo.type !== DamageType.Piercing
       ) {
-        this.doApply(t, damageInfo.type, damageInfo);
+        this.eventAndRequests.push(
+          ...this.mutator.apply(t.state, damageInfo.type, {
+            fromDamage: damageInfo,
+            via: this.skillInfo,
+            callerWho: this.callerArea.who,
+            targetWho: t.who,
+            targetIsActive: t.isActive(),
+          }),
+        );
       }
     }
     return this.enableShortcut();
@@ -845,77 +853,21 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Apply [damage:${type}] to ${stringifyState(ch.state)}`,
       );
-      this.doApply(ch, type);
+      this.eventAndRequests.push(
+        ...this.mutator.apply(ch.state, type, {
+          fromDamage: null,
+          via: this.skillInfo,
+          callerWho: this.callerArea.who,
+          targetWho: ch.who,
+          targetIsActive: ch.isActive(),
+        }),
+      );
     }
     return this.enableShortcut();
   }
 
   private get fromReaction(): Reaction | null {
     return (this as any)[CALLED_FROM_REACTION] ?? null;
-  }
-
-  private doApply(
-    target: TypedCharacter<Meta>,
-    type: NontrivialDamageType,
-    fromDamage?: DamageInfo,
-  ) {
-    if (!target.state.variables.alive) {
-      return;
-    }
-    const aura = target.state.variables.aura;
-    const [newAura, reaction] = REACTION_MAP[aura][type];
-    this.mutate({
-      type: "modifyEntityVar",
-      state: target.state,
-      varName: "aura",
-      value: newAura,
-      direction: null,
-    });
-    if (!fromDamage) {
-      this.mutator.notify({
-        mutations: [
-          {
-            $case: "applyAura",
-            elementType: type,
-            targetId: target.state.id,
-            targetDefinitionId: target.state.definition.id,
-            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
-            oldAura: aura,
-            newAura,
-          },
-        ],
-      });
-    }
-    if (reaction !== null) {
-      this.mutator.log(
-        DetailLogType.Other,
-        `Apply reaction ${reaction} to ${stringifyState(target.state)}`,
-      );
-      const reactionInfo: ReactionInfo = {
-        target: target.state,
-        type: reaction,
-        via: this.skillInfo,
-        fromDamage,
-      };
-      this.emitEvent("onReaction", this.state, reactionInfo);
-      const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
-        where: target.who === this.callerArea.who ? "my" : "opp",
-        here: target.who === this.callerArea.who ? "opp" : "my",
-        id: target.state.id,
-        isDamage: !!fromDamage,
-        isActive: target.isActive(),
-      };
-      const reactionDescription = getReactionDescription(reaction);
-      if (reactionDescription) {
-        this.eventAndRequests.push(
-          ...this.mutator.executeInlineSkill(
-            reactionDescription,
-            this.skillInfo,
-            reactionDescriptionEventArg,
-          ),
-        );
-      }
-    }
   }
 
   createEntity<TypeT extends EntityType>(
@@ -955,12 +907,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
           );
       }
     }
-    const { oldState, newState } = this.mutator.createEntity(def, area, opt);
+    const { newState, events } = this.mutator.createEntity(def, area, opt);
+    this.eventAndRequests.push(...events);
     if (newState) {
-      this.emitEvent("onEnter", this.state, {
-        overridden: oldState,
-        newState,
-      });
       return this.of(newState);
     } else {
       return null;
