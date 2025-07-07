@@ -304,21 +304,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this._savedNotify.exposedMutations.push(...opt.exposedMutations);
   }
 
-  private executeInlineSkill<Arg>(
-    skillDescription: SkillDescription<Arg>,
-    skill: SkillInfo,
-    arg: Arg,
-  ) {
-    this.mutator.notify();
-    const [newState, { innerNotify, emittedEvents }] = skillDescription(
-      this.state,
-      skill,
-      arg,
-    );
-    this.mutator.resetState(newState, innerNotify);
-    this.eventAndRequests.push(...emittedEvents);
-  }
-
   mutate(mut: Mutation) {
     return this.mutator.mutate(mut);
   }
@@ -347,39 +332,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
   isMyTurn() {
     return this.state.currentTurn === this.callerArea.who;
-  }
-
-  private handleInlineEvent<E extends InlineEventNames>(
-    event: E,
-    arg: EventArgOf<E>,
-  ) {
-    using l = this.mutator.subLog(
-      DetailLogType.Event,
-      `Handling inline event ${event} (${arg.toString()}):`,
-    );
-    const infos = allSkills(this.state, event).map<SkillInfo>(
-      ({ caller, skill }) => ({
-        caller,
-        definition: skill,
-        requestBy: null,
-        charged: false,
-        plunging: false,
-        prepared: false,
-        isPreview: this.skillInfo.isPreview,
-      }),
-    );
-    for (const info of infos) {
-      arg._currentSkillInfo = info;
-      if (!(0, info.definition.filter)(this.state, info, arg as any)) {
-        continue;
-      }
-      using l = this.mutator.subLog(
-        DetailLogType.Skill,
-        `Using skill [skill:${info.definition.id}]`,
-      );
-      const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
-      this.executeInlineSkill(desc, info, arg);
-    }
   }
 
   $<const Q extends string>(
@@ -667,8 +619,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
       fromReaction: null,
     };
     const modifier = new GenericModifyHealEventArg(this.state, healInfo);
-    this.handleInlineEvent("modifyHeal0", modifier);
-    this.handleInlineEvent("modifyHeal1", modifier);
+    this.eventAndRequests.push(
+      ...this.mutator.handleInlineEvent(
+        this.skillInfo,
+        "modifyHeal0",
+        modifier,
+      ),
+    );
+    this.eventAndRequests.push(
+      ...this.mutator.handleInlineEvent(
+        this.skillInfo,
+        "modifyHeal1",
+        modifier,
+      ),
+    );
     if (modifier.cancelled) {
       return;
     }
@@ -781,11 +745,35 @@ export class SkillContext<Meta extends ContextMetaBase> {
           this.state,
           damageInfo,
         );
-        this.handleInlineEvent("modifyDamage0", modifier);
+        this.eventAndRequests.push(
+          ...this.mutator.handleInlineEvent(
+            this.skillInfo,
+            "modifyDamage0",
+            modifier,
+          ),
+        );
         modifier.increaseDamageByReaction();
-        this.handleInlineEvent("modifyDamage1", modifier);
-        this.handleInlineEvent("modifyDamage2", modifier);
-        this.handleInlineEvent("modifyDamage3", modifier);
+        this.eventAndRequests.push(
+          ...this.mutator.handleInlineEvent(
+            this.skillInfo,
+            "modifyDamage1",
+            modifier,
+          ),
+        );
+        this.eventAndRequests.push(
+          ...this.mutator.handleInlineEvent(
+            this.skillInfo,
+            "modifyDamage2",
+            modifier,
+          ),
+        );
+        this.eventAndRequests.push(
+          ...this.mutator.handleInlineEvent(
+            this.skillInfo,
+            "modifyDamage3",
+            modifier,
+          ),
+        );
         damageInfo = modifier.damageInfo;
       }
       this.mutator.log(
@@ -919,10 +907,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
       };
       const reactionDescription = getReactionDescription(reaction);
       if (reactionDescription) {
-        this.executeInlineSkill(
-          reactionDescription,
-          this.skillInfo,
-          reactionDescriptionEventArg,
+        this.eventAndRequests.push(
+          ...this.mutator.executeInlineSkill(
+            reactionDescription,
+            this.skillInfo,
+            reactionDescriptionEventArg,
+          ),
         );
       }
     }
@@ -1789,7 +1779,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
           t.state,
           info,
         );
-        this.handleInlineEvent("modifyChangeNightsoul", modifyEventArg);
+        this.eventAndRequests.push(
+          ...this.mutator.handleInlineEvent(
+            this.skillInfo,
+            "modifyChangeNightsoul",
+            modifyEventArg,
+          ),
+        );
         if (modifyEventArg.info.cancelled) {
           continue;
         }

@@ -18,14 +18,23 @@ import {
   StateSymbol,
   stringifyState,
 } from "./base/state";
-import { allEntitiesAtArea, getActiveCharacterIndex, getEntityById, sortDice } from "./utils";
+import {
+  allEntitiesAtArea,
+  allSkills,
+  getActiveCharacterIndex,
+  getEntityById,
+  sortDice,
+} from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
   EnterEventArg,
   type EventAndRequest,
+  type EventArgOf,
   HandCardInsertedEventArg,
+  type InlineEventNames,
   PlayCardRequestArg,
   type SelectCardInfo,
+  type SkillDescription,
   type SkillInfo,
   type StateMutationAndExposedMutation,
   SwitchActiveEventArg,
@@ -220,6 +229,81 @@ export class StateMutator {
     await this.config.onPause(internalPauseOpt);
   }
 
+  stepRandom(): number {
+    const mut: StepRandomM = {
+      type: "stepRandom",
+      value: 0,
+    };
+    this.mutate(mut);
+    return mut.value;
+  }
+
+  randomDice(count: number, alwaysOmni?: boolean): readonly DiceType[] {
+    if (alwaysOmni) {
+      return new Array<DiceType>(count).fill(DiceType.Omni);
+    }
+    const result: DiceType[] = [];
+    for (let i = 0; i < count; i++) {
+      result.push((this.stepRandom() % 8) + 1);
+    }
+    return result;
+  }
+
+  // --- INLINE SKILL HANDLING ---
+
+  /* private */ executeInlineSkill<Arg>(
+    skillDescription: SkillDescription<Arg>,
+    skill: SkillInfo,
+    arg: Arg,
+  ): readonly EventAndRequest[] {
+    this.notify();
+    const [newState, { innerNotify, emittedEvents }] = skillDescription(
+      this.state,
+      skill,
+      arg,
+    );
+    this.resetState(newState, innerNotify);
+    return emittedEvents;
+  }
+  /* private */ handleInlineEvent<E extends InlineEventNames>(
+    parentSkill: SkillInfo,
+    event: E,
+    arg: EventArgOf<E>,
+  ): EventAndRequest[] {
+    using l = this.subLog(
+      DetailLogType.Event,
+      `Handling inline event ${event} (${arg.toString()}):`,
+    );
+    const events: EventAndRequest[] = [];
+    const infos = allSkills(this.state, event).map<SkillInfo>(
+      ({ caller, skill }) => ({
+        caller,
+        definition: skill,
+        requestBy: null,
+        charged: false,
+        plunging: false,
+        prepared: false,
+        isPreview: parentSkill.isPreview,
+      }),
+    );
+    for (const info of infos) {
+      arg._currentSkillInfo = info;
+      if (!(0, info.definition.filter)(this.state, info, arg as any)) {
+        continue;
+      }
+      using l = this.subLog(
+        DetailLogType.Skill,
+        `Using skill [skill:${info.definition.id}]`,
+      );
+      const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
+      const emitted = this.executeInlineSkill(desc, info, arg);
+      events.push(...emitted);
+    }
+    return events;
+  }
+
+  // --- BASIC MUTATIVE PRIMITIVES ---
+
   drawCard(who: 0 | 1): CardState | null {
     const candidate = this.state.players[who].pile[0];
     if (typeof candidate === "undefined") {
@@ -245,224 +329,6 @@ export class StateMutator {
       });
     }
     return candidate;
-  }
-
-  stepRandom(): number {
-    const mut: StepRandomM = {
-      type: "stepRandom",
-      value: 0,
-    };
-    this.mutate(mut);
-    return mut.value;
-  }
-
-  async switchHands(who: 0 | 1) {
-    if (!this.config.howToSwitchHands) {
-      throw new GiTcgIoNotProvideError();
-    }
-    const removedHands = await this.config.howToSwitchHands(who);
-    const player = () => this.state.players[who];
-    // swapIn: 从手牌到牌堆
-    // swapOut: 从牌堆到手牌
-    const count = removedHands.length;
-    const swapInCards = removedHands.map((id) => {
-      const card = player().hands.find((c) => c.id === id);
-      if (typeof card === "undefined") {
-        throw new GiTcgIoError(who, `switchHands return unknown card ${id}`);
-      }
-      return card;
-    });
-    const swapInCardIds = swapInCards.map((c) => c.definition.id);
-
-    for (const card of swapInCards) {
-      const randomValue = this.stepRandom();
-      const index = randomValue % (player().pile.length + 1);
-      this.mutate({
-        type: "transferCard",
-        from: "hands",
-        to: "pile",
-        who,
-        value: card,
-        targetIndex: index,
-        reason: "switch",
-      });
-    }
-    // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
-    let topIndex = 0;
-    for (let i = 0; i < count; i++) {
-      let candidate: CardState;
-      while (
-        topIndex < player().pile.length &&
-        swapInCardIds.includes(player().pile[topIndex].definition.id)
-      ) {
-        topIndex++;
-      }
-      if (topIndex >= player().pile.length) {
-        // 已经跳过了所有同名牌，只能从头开始
-        candidate = player().pile[0];
-      } else {
-        candidate = player().pile[topIndex];
-      }
-      this.mutate({
-        type: "transferCard",
-        from: "pile",
-        to: "hands",
-        who,
-        value: candidate,
-        reason: "switch",
-      });
-    }
-    this.notify();
-  }
-
-  randomDice(count: number, alwaysOmni?: boolean): readonly DiceType[] {
-    if (alwaysOmni) {
-      return new Array<DiceType>(count).fill(DiceType.Omni);
-    }
-    const result: DiceType[] = [];
-    for (let i = 0; i < count; i++) {
-      result.push((this.stepRandom() % 8) + 1);
-    }
-    return result;
-  }
-
-  async reroll(who: 0 | 1, times: number) {
-    const howToReroll = this.config.howToReroll;
-    if (!howToReroll) {
-      throw new GiTcgIoNotProvideError();
-    }
-    for (let i = 0; i < times; i++) {
-      const oldDice = [...this.state.players[who].dice];
-      const diceToReroll: readonly number[] = await howToReroll(who);
-      if (diceToReroll.length === 0) {
-        return;
-      }
-      for (const dice of diceToReroll) {
-        const index = oldDice.indexOf(dice);
-        if (index === -1) {
-          throw new GiTcgIoError(
-            who,
-            `Requested to-be-rerolled dice ${dice} does not exists`,
-          );
-        }
-        oldDice.splice(index, 1);
-      }
-      this.mutate({
-        type: "resetDice",
-        who,
-        value: sortDice(this.state.players[who], [
-          ...oldDice,
-          ...this.randomDice(diceToReroll.length),
-        ]),
-        reason: "roll",
-      });
-      this.notify();
-    }
-  }
-
-  async chooseActive(who: 0 | 1): Promise<CharacterState> {
-    if (!this.config.howToChooseActive) {
-      throw new GiTcgIoNotProvideError();
-    }
-    const player = this.state.players[who];
-    const candidates = player.characters.filter(
-      (ch) => ch.variables.alive && ch.id !== player.activeCharacterId,
-    );
-    if (candidates.length === 0) {
-      throw new GiTcgCoreInternalError(
-        `No available candidate active character for player ${who}.`,
-      );
-    }
-    const activeChId = await this.config.howToChooseActive(
-      who,
-      candidates.map((c) => c.id),
-    );
-    return getEntityById(this.state, activeChId) as CharacterState;
-  }
-
-  postChooseActive(
-    p0chosen: CharacterState | null,
-    p1chosen: CharacterState | null,
-  ) {
-    const states = [p0chosen, p1chosen] as const;
-    for (const who of [0, 1] as const) {
-      const state = states[who];
-      if (!state) {
-        continue;
-      }
-      this.notify({
-        mutations: [
-          {
-            $case: "chooseActiveDone",
-            who,
-            characterId: state.id,
-            characterDefinitionId: state.definition.id,
-          },
-        ],
-      });
-    }
-  }
-
-  async selectCard(
-    who: 0 | 1,
-    via: SkillInfo,
-    info: SelectCardInfo,
-  ): Promise<EventAndRequest[]> {
-    if (!this.config.howToSelectCard) {
-      throw new GiTcgIoNotProvideError();
-    }
-    const selected = await this.config.howToSelectCard(
-      who,
-      info.cards.map((def) => def.id),
-    );
-    switch (info.type) {
-      case "createHandCard": {
-        const def = this.state.data.cards.get(selected);
-        if (typeof def === "undefined") {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        return this.createHandCard(who, def);
-      }
-      case "createEntity": {
-        const def = this.state.data.entities.get(selected);
-        if (typeof def === "undefined") {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        if (def.type !== "summon") {
-          throw new GiTcgDataError(`Entity type ${def.type} not supported now`);
-        }
-        const entityArea: EntityArea = {
-          who,
-          type: "summons",
-        };
-        const { oldState, newState } = this.createEntity(def, entityArea);
-        if (newState) {
-          const enterInfo = {
-            overridden: oldState,
-            newState,
-          };
-          return [["onEnter", new EnterEventArg(this.state, enterInfo)]];
-        } else {
-          return [];
-        }
-      }
-      case "requestPlayCard": {
-        const cardDefinition = this.state.data.cards.get(selected);
-        if (!cardDefinition) {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        return [
-          [
-            "requestPlayCard",
-            new PlayCardRequestArg(via, who, cardDefinition, info.targets),
-          ],
-        ];
-      }
-      default: {
-        const _: never = info;
-        throw new GiTcgDataError(`Not recognized selectCard type`);
-      }
-    }
   }
 
   createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
@@ -619,7 +485,11 @@ export class StateMutator {
     }
   }
 
-  switchActive(who: 0 | 1, target: CharacterState, opt: SwitchActiveOption = {}): EventAndRequest[] {
+  switchActive(
+    who: 0 | 1,
+    target: CharacterState,
+    opt: SwitchActiveOption = {},
+  ): EventAndRequest[] {
     const from =
       this.state.players[who].characters[
         getActiveCharacterIndex(this.state.players[who])
@@ -643,9 +513,7 @@ export class StateMutator {
     }
     using l = this.subLog(
       DetailLogType.Primitive,
-      `Switch active from ${stringifyState(from)} to ${stringifyState(
-        target,
-      )}`,
+      `Switch active from ${stringifyState(from)} to ${stringifyState(target)}`,
     );
     this.mutate({
       type: "switchActive",
@@ -663,7 +531,9 @@ export class StateMutator {
       fast: opt.fast ?? null,
     };
     this.postSwitchActive(switchInfo);
-    return [["onSwitchActive", new SwitchActiveEventArg(this.state, switchInfo)]];
+    return [
+      ["onSwitchActive", new SwitchActiveEventArg(this.state, switchInfo)],
+    ];
   }
 
   private postSwitchActive(switchInfo: SwitchActiveInfo) {
@@ -695,5 +565,206 @@ export class StateMutator {
       flagName: "canPlunging",
       value: true,
     });
+  }
+
+  // --- ASYNC OPERATIONS ---
+
+  async reroll(who: 0 | 1, times: number) {
+    const howToReroll = this.config.howToReroll;
+    if (!howToReroll) {
+      throw new GiTcgIoNotProvideError();
+    }
+    for (let i = 0; i < times; i++) {
+      const oldDice = [...this.state.players[who].dice];
+      const diceToReroll: readonly number[] = await howToReroll(who);
+      if (diceToReroll.length === 0) {
+        return;
+      }
+      for (const dice of diceToReroll) {
+        const index = oldDice.indexOf(dice);
+        if (index === -1) {
+          throw new GiTcgIoError(
+            who,
+            `Requested to-be-rerolled dice ${dice} does not exists`,
+          );
+        }
+        oldDice.splice(index, 1);
+      }
+      this.mutate({
+        type: "resetDice",
+        who,
+        value: sortDice(this.state.players[who], [
+          ...oldDice,
+          ...this.randomDice(diceToReroll.length),
+        ]),
+        reason: "roll",
+      });
+      this.notify();
+    }
+  }
+
+  async switchHands(who: 0 | 1) {
+    if (!this.config.howToSwitchHands) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const removedHands = await this.config.howToSwitchHands(who);
+    const player = () => this.state.players[who];
+    // swapIn: 从手牌到牌堆
+    // swapOut: 从牌堆到手牌
+    const count = removedHands.length;
+    const swapInCards = removedHands.map((id) => {
+      const card = player().hands.find((c) => c.id === id);
+      if (typeof card === "undefined") {
+        throw new GiTcgIoError(who, `switchHands return unknown card ${id}`);
+      }
+      return card;
+    });
+    const swapInCardIds = swapInCards.map((c) => c.definition.id);
+
+    for (const card of swapInCards) {
+      const randomValue = this.stepRandom();
+      const index = randomValue % (player().pile.length + 1);
+      this.mutate({
+        type: "transferCard",
+        from: "hands",
+        to: "pile",
+        who,
+        value: card,
+        targetIndex: index,
+        reason: "switch",
+      });
+    }
+    // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
+    let topIndex = 0;
+    for (let i = 0; i < count; i++) {
+      let candidate: CardState;
+      while (
+        topIndex < player().pile.length &&
+        swapInCardIds.includes(player().pile[topIndex].definition.id)
+      ) {
+        topIndex++;
+      }
+      if (topIndex >= player().pile.length) {
+        // 已经跳过了所有同名牌，只能从头开始
+        candidate = player().pile[0];
+      } else {
+        candidate = player().pile[topIndex];
+      }
+      this.mutate({
+        type: "transferCard",
+        from: "pile",
+        to: "hands",
+        who,
+        value: candidate,
+        reason: "switch",
+      });
+    }
+    this.notify();
+  }
+
+  async selectCard(
+    who: 0 | 1,
+    via: SkillInfo,
+    info: SelectCardInfo,
+  ): Promise<EventAndRequest[]> {
+    if (!this.config.howToSelectCard) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const selected = await this.config.howToSelectCard(
+      who,
+      info.cards.map((def) => def.id),
+    );
+    switch (info.type) {
+      case "createHandCard": {
+        const def = this.state.data.cards.get(selected);
+        if (typeof def === "undefined") {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        return this.createHandCard(who, def);
+      }
+      case "createEntity": {
+        const def = this.state.data.entities.get(selected);
+        if (typeof def === "undefined") {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        if (def.type !== "summon") {
+          throw new GiTcgDataError(`Entity type ${def.type} not supported now`);
+        }
+        const entityArea: EntityArea = {
+          who,
+          type: "summons",
+        };
+        const { oldState, newState } = this.createEntity(def, entityArea);
+        if (newState) {
+          const enterInfo = {
+            overridden: oldState,
+            newState,
+          };
+          return [["onEnter", new EnterEventArg(this.state, enterInfo)]];
+        } else {
+          return [];
+        }
+      }
+      case "requestPlayCard": {
+        const cardDefinition = this.state.data.cards.get(selected);
+        if (!cardDefinition) {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        return [
+          [
+            "requestPlayCard",
+            new PlayCardRequestArg(via, who, cardDefinition, info.targets),
+          ],
+        ];
+      }
+      default: {
+        const _: never = info;
+        throw new GiTcgDataError(`Not recognized selectCard type`);
+      }
+    }
+  }
+
+  async chooseActive(who: 0 | 1): Promise<CharacterState> {
+    if (!this.config.howToChooseActive) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const player = this.state.players[who];
+    const candidates = player.characters.filter(
+      (ch) => ch.variables.alive && ch.id !== player.activeCharacterId,
+    );
+    if (candidates.length === 0) {
+      throw new GiTcgCoreInternalError(
+        `No available candidate active character for player ${who}.`,
+      );
+    }
+    const activeChId = await this.config.howToChooseActive(
+      who,
+      candidates.map((c) => c.id),
+    );
+    return getEntityById(this.state, activeChId) as CharacterState;
+  }
+
+  /** notify 'chooseActiveDone' */
+  postChooseActive(
+    p0chosen: CharacterState | null,
+    p1chosen: CharacterState | null,
+  ) {
+    const states = [p0chosen, p1chosen] as const;
+    for (const who of [0, 1] as const) {
+      const state = states[who];
+      if (!state) {
+        continue;
+      }
+      this.notify({
+        mutations: [
+          {
+            $case: "chooseActiveDone",
+            who,
+            characterId: state.id,
+            characterDefinitionId: state.definition.id,
+          },
+        ],
+      });
+    }
   }
 }
