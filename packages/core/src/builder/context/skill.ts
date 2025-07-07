@@ -324,9 +324,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   get self() {
-    if (this._self === null) {
-      throw new GiTcgDataError("Self entity not available");
-    }
     return this._self;
   }
 
@@ -373,15 +370,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     for (const info of infos) {
       arg._currentSkillInfo = info;
-      try {
-        getEntityById(this.state, info.caller.id);
-      } catch {
-        continue;
-      }
-      if (
-        "filter" in info.definition &&
-        !(0, info.definition.filter)(this.state, info, arg as any)
-      ) {
+      if (!(0, info.definition.filter)(this.state, info, arg as any)) {
         continue;
       }
       using l = this.mutator.subLog(
@@ -597,50 +586,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
     }
     const switchToTarget = targets[0];
-    const playerWho = switchToTarget.who;
-    const from =
-      this.state.players[playerWho].characters[
-        getActiveCharacterIndex(this.state.players[playerWho])
-      ];
-    if (from.id === switchToTarget.id) {
-      return RET;
-    }
-    let immuneControlStatus: EntityState | undefined;
-    if (
-      (immuneControlStatus = from.entities.find((st) =>
-        st.definition.tags.includes("immuneControl"),
-      ))
-    ) {
-      this.mutator.log(
-        DetailLogType.Other,
-        `Switch active from ${stringifyState(from)} to ${stringifyState(
-          switchToTarget.state,
-        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
-      );
-      return RET;
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Switch active from ${stringifyState(from)} to ${stringifyState(
-        switchToTarget.state,
-      )}`,
+    const events = this.mutator.switchActive(
+      switchToTarget.who,
+      switchToTarget.state,
+      {
+        via: this.skillInfo,
+        fromReaction: this.fromReaction,
+      },
     );
-    this.mutate({
-      type: "switchActive",
-      who: playerWho,
-      value: switchToTarget.state,
-    });
-    const switchInfo: SwitchActiveInfo = {
-      type: "switchActive",
-      who: playerWho,
-      from: from,
-      via: this.skillInfo,
-      to: switchToTarget.state,
-      fromReaction: this.fromReaction !== null,
-      fast: null,
-    };
-    this.mutator.postSwitchActive(switchInfo);
-    this.emitEvent("onSwitchActive", this.state, switchInfo);
+    this.eventAndRequests.push(...events);
     return RET;
   }
 

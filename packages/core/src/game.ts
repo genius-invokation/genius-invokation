@@ -1143,27 +1143,10 @@ export class Game {
     to: CharacterState,
     fast: boolean | null,
   ) {
-    const player = this.state.players[who];
-    const from = player.characters[getActiveCharacterIndex(player)];
-    const oldState = this.state;
-    this.mutate({
-      type: "switchActive",
-      who,
-      value: to,
-    });
-    const switchInfo: SwitchActiveInfo = {
-      type: "switchActive",
-      who,
-      from,
-      to,
-      fromReaction: false,
-      fast,
-    };
-    this.mutator.postSwitchActive(switchInfo);
-    await this.handleEvent(
-      "onSwitchActive",
-      new SwitchActiveEventArg(oldState, switchInfo),
-    );
+    const events = this.mutator.switchActive(who, to, { fast });
+    for (const e of events) {
+      await this.handleEvent(...e);
+    }
   }
 
   private async executeSkill(skillInfo: SkillInfo, arg: GeneralSkillArg) {

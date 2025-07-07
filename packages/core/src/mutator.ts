@@ -18,7 +18,7 @@ import {
   StateSymbol,
   stringifyState,
 } from "./base/state";
-import { allEntitiesAtArea, getEntityById, sortDice } from "./utils";
+import { allEntitiesAtArea, getActiveCharacterIndex, getEntityById, sortDice } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
   EnterEventArg,
@@ -28,6 +28,7 @@ import {
   type SelectCardInfo,
   type SkillInfo,
   type StateMutationAndExposedMutation,
+  SwitchActiveEventArg,
   type SwitchActiveInfo,
 } from "./base/skill";
 import {
@@ -106,6 +107,12 @@ export interface CreateEntityResult {
   readonly oldState: EntityState | null;
   /** 若成功创建，给出新建的实体状态 */
   readonly newState: EntityState | null;
+}
+
+export interface SwitchActiveOption {
+  via?: SkillInfo;
+  fast?: boolean | null;
+  fromReaction?: Reaction | null;
 }
 
 /**
@@ -373,7 +380,7 @@ export class StateMutator {
     return getEntityById(this.state, activeChId) as CharacterState;
   }
 
-  async postChooseActive(
+  postChooseActive(
     p0chosen: CharacterState | null,
     p1chosen: CharacterState | null,
   ) {
@@ -612,12 +619,57 @@ export class StateMutator {
     }
   }
 
-  /** @deprecated */
-  public postSwitchActive(switchInfo: SwitchActiveInfo) {
+  switchActive(who: 0 | 1, target: CharacterState, opt: SwitchActiveOption = {}): EventAndRequest[] {
+    const from =
+      this.state.players[who].characters[
+        getActiveCharacterIndex(this.state.players[who])
+      ];
+    if (from.id === target.id) {
+      return [];
+    }
+    let immuneControlStatus: EntityState | undefined;
+    if (
+      (immuneControlStatus = from.entities.find((st) =>
+        st.definition.tags.includes("immuneControl"),
+      ))
+    ) {
+      this.log(
+        DetailLogType.Other,
+        `Switch active from ${stringifyState(from)} to ${stringifyState(
+          target,
+        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
+      );
+      return [];
+    }
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Switch active from ${stringifyState(from)} to ${stringifyState(
+        target,
+      )}`,
+    );
+    this.mutate({
+      type: "switchActive",
+      who,
+      value: target,
+    });
+    const fromReaction = opt.fromReaction ?? null;
+    const switchInfo: SwitchActiveInfo = {
+      type: "switchActive",
+      who,
+      from: from,
+      via: opt.via,
+      to: target,
+      fromReaction: fromReaction !== null,
+      fast: opt.fast ?? null,
+    };
+    this.postSwitchActive(switchInfo);
+    return [["onSwitchActive", new SwitchActiveEventArg(this.state, switchInfo)]];
+  }
+
+  private postSwitchActive(switchInfo: SwitchActiveInfo) {
     // 处理切人时额外的操作：
     // - 通知前端
     // - 设置下落攻击 flag
-    // TODO: mutator 引入 switchActive，直接在其中处理？
     this.notify({
       mutations: [
         {
