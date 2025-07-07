@@ -18,17 +18,13 @@ import {
   DamageOrHealEventArg,
   defineSkillInfo,
   DisposeEventArg,
-  EMPTY_SKILL_RESULT,
   type Event,
   type EventAndRequest,
   EventArg,
-  type HealInfo,
   type InitiativeSkillEventArg,
   RequestArg,
   SelectCardEventArg,
   type SkillInfo,
-  type SkillResult,
-  SwitchActiveEventArg,
   type SwitchActiveInfo,
   type TriggeredSkillDefinition,
   UseSkillEventArg,
@@ -41,12 +37,7 @@ import {
 } from "./base/state";
 import {
   Aura,
-  DamageType,
-  PbHealKind,
-  PbReactionType,
   PbSkillType,
-  PbSwitchActiveFromAction,
-  Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
 import {
@@ -65,7 +56,6 @@ import { flip } from "@gi-tcg/utils";
 import { DetailLogType } from "./log";
 import { StateMutator } from "./mutator";
 import type { Mutation } from "./base/mutation";
-import { GiTcgCoreInternalError } from ".";
 
 export type GeneralSkillArg = EventArg | InitiativeSkillEventArg;
 

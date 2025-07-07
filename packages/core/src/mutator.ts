@@ -1,6 +1,7 @@
 import {
   DamageType,
   DiceType,
+  PbHealKind,
   PbReactionType,
   PbSwitchActiveFromAction,
   Reaction,
@@ -36,6 +37,7 @@ import {
   EnterEventArg,
   type EventAndRequest,
   type EventArgOf,
+  GenericModifyDamageEventArg,
   GenericModifyHealEventArg,
   HandCardInsertedEventArg,
   type HealInfo,
@@ -134,21 +136,21 @@ export interface CreateEntityResult {
   /** 若成功创建，给出新建的实体状态 */
   readonly newState: EntityState | null;
   /** 若成功创建，则引发的 onEnter 事件 */
-  readonly events: EventAndRequest[];
+  readonly events: readonly EventAndRequest[];
 }
 
 export interface SwitchActiveOption {
-  via?: SkillInfo;
-  fast?: boolean | null;
-  fromReaction?: Reaction | null;
+  readonly via?: SkillInfo;
+  readonly fast?: boolean | null;
+  readonly fromReaction?: Reaction | null;
 }
 
 export interface DamageOption {
-  via: SkillInfo;
+  readonly via: SkillInfo;
   // 以下属性在描述元素反应时有用，需要传入
-  callerWho: 0 | 1;
-  targetWho: 0 | 1;
-  targetIsActive: boolean;
+  readonly callerWho: 0 | 1;
+  readonly targetWho: 0 | 1;
+  readonly targetIsActive: boolean;
 }
 export interface ApplyOption extends DamageOption {
   fromDamage: DamageInfo | null;
@@ -157,6 +159,11 @@ export interface ApplyOption extends DamageOption {
 export interface InternalHealOption {
   via: SkillInfo;
   kind: HealKind;
+}
+
+export interface DamageResult {
+  readonly damageInfo: DamageInfo;
+  readonly events: readonly EventAndRequest[];
 }
 
 /**
@@ -501,6 +508,89 @@ export class StateMutator {
       new DamageOrHealEventArg(this.state, healInfo),
     ]);
     return events;
+  }
+
+  damage(target: CharacterState, damageInfo: DamageInfo, opt: DamageOption) {
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Deal ${damageInfo.value} [damage:${
+        damageInfo.type
+      }] damage to ${stringifyState(target)}`,
+    );
+    const events: EventAndRequest[] = [];
+    if (damageInfo.type !== DamageType.Piercing) {
+      const modifier = new GenericModifyDamageEventArg(this.state, damageInfo);
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage0", modifier),
+      );
+      modifier.increaseDamageByReaction();
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage1", modifier),
+      );
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage2", modifier),
+      );
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage3", modifier),
+      );
+      damageInfo = modifier.damageInfo;
+    }
+    this.log(
+      DetailLogType.Other,
+      `Damage info: ${damageInfo.log || "(no modification)"}`,
+    );
+    const finalHealth = Math.max(0, target.variables.health - damageInfo.value);
+    this.mutate({
+      type: "modifyEntityVar",
+      state: target,
+      varName: "health",
+      value: finalHealth,
+      direction: "decrease",
+    });
+    if (damageInfo.target.variables.alive) {
+      const [newAura, reaction] =
+        damageInfo.type === DamageType.Piercing ||
+        damageInfo.type === DamageType.Physical
+          ? [damageInfo.target.variables.aura, null]
+          : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
+      this.notify({
+        mutations: [
+          {
+            $case: "damage",
+            damageType: damageInfo.type,
+            sourceId: damageInfo.source.id,
+            sourceDefinitionId: damageInfo.source.definition.id,
+            value: damageInfo.value,
+            targetId: damageInfo.target.id,
+            targetDefinitionId: damageInfo.target.definition.id,
+            isSkillMainDamage: damageInfo.isSkillMainDamage,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            causeDefeated: damageInfo.causeDefeated,
+            oldAura: damageInfo.target.variables.aura,
+            newAura,
+            oldHealth: damageInfo.target.variables.health,
+            newHealth: finalHealth,
+            healKind: PbHealKind.NOT_A_HEAL,
+          },
+        ],
+      });
+    }
+    events.push([
+      "onDamageOrHeal",
+      new DamageOrHealEventArg(this.state, damageInfo),
+    ]);
+    if (
+      damageInfo.type !== DamageType.Physical &&
+      damageInfo.type !== DamageType.Piercing
+    ) {
+      events.push(
+        ...this.apply(target, damageInfo.type, {
+          fromDamage: damageInfo,
+          ...opt,
+        }),
+      );
+    }
+    return { damageInfo, events };
   }
 
   drawCard(who: 0 | 1): CardState | null {

@@ -652,106 +652,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetState.variables.health <= value,
         fromReaction: this.fromReaction,
       };
-      using l = this.mutator.subLog(
-        DetailLogType.Primitive,
-        `Deal ${value} [damage:${type}] damage to ${stringifyState(t.state)}`,
+      const { damageInfo: damageInfo2, events } = this.mutator.damage(
+        targetState,
+        damageInfo,
+        {
+          via: this.skillInfo,
+          callerWho: this.callerArea.who,
+          targetWho: t.who,
+          targetIsActive: t.isActive(),
+        },
       );
-      if (damageInfo.type !== DamageType.Piercing) {
-        const modifier = new GenericModifyDamageEventArg(
-          this.state,
-          damageInfo,
-        );
-        this.eventAndRequests.push(
-          ...this.mutator.handleInlineEvent(
-            this.skillInfo,
-            "modifyDamage0",
-            modifier,
-          ),
-        );
-        modifier.increaseDamageByReaction();
-        this.eventAndRequests.push(
-          ...this.mutator.handleInlineEvent(
-            this.skillInfo,
-            "modifyDamage1",
-            modifier,
-          ),
-        );
-        this.eventAndRequests.push(
-          ...this.mutator.handleInlineEvent(
-            this.skillInfo,
-            "modifyDamage2",
-            modifier,
-          ),
-        );
-        this.eventAndRequests.push(
-          ...this.mutator.handleInlineEvent(
-            this.skillInfo,
-            "modifyDamage3",
-            modifier,
-          ),
-        );
-        damageInfo = modifier.damageInfo;
-      }
-      this.mutator.log(
-        DetailLogType.Other,
-        `Damage info: ${damageInfo.log || "(no modification)"}`,
-      );
-      const finalHealth = Math.max(
-        0,
-        targetState.variables.health - damageInfo.value,
-      );
-      this.mutate({
-        type: "modifyEntityVar",
-        state: targetState,
-        varName: "health",
-        value: finalHealth,
-        direction: "decrease",
-      });
-      if (damageInfo.target.variables.alive) {
-        const [newAura, reaction] =
-          damageInfo.type === DamageType.Piercing ||
-          damageInfo.type === DamageType.Physical
-            ? [damageInfo.target.variables.aura, null]
-            : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
-        this.mutator.notify({
-          mutations: [
-            {
-              $case: "damage",
-              damageType: damageInfo.type,
-              sourceId: damageInfo.source.id,
-              sourceDefinitionId: damageInfo.source.definition.id,
-              value: damageInfo.value,
-              targetId: damageInfo.target.id,
-              targetDefinitionId: damageInfo.target.definition.id,
-              isSkillMainDamage: damageInfo.isSkillMainDamage,
-              reactionType: reaction ?? PbReactionType.UNSPECIFIED,
-              causeDefeated: damageInfo.causeDefeated,
-              oldAura: damageInfo.target.variables.aura,
-              newAura,
-              oldHealth: damageInfo.target.variables.health,
-              newHealth: finalHealth,
-              healKind: PbHealKind.NOT_A_HEAL,
-            },
-          ],
-        });
-      }
-      this.emitEvent("onDamageOrHeal", this.state, damageInfo);
+      this.eventAndRequests.push(...events);
       if (isSkillMainDamage) {
-        this.mainDamage = damageInfo;
-      }
-      if (
-        damageInfo.type !== DamageType.Physical &&
-        damageInfo.type !== DamageType.Piercing
-      ) {
-        this.eventAndRequests.push(
-          ...this.mutator.apply(t.state, damageInfo.type, {
-            fromDamage: damageInfo,
-            via: this.skillInfo,
-            callerWho: this.callerArea.who,
-            targetWho: t.who,
-            targetIsActive: t.isActive(),
-          }),
-        );
+        this.mainDamage = damageInfo2;
       }
     }
     return this.enableShortcut();
