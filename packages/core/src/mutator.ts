@@ -176,6 +176,18 @@ export type InsertHandPayload =
       to: "hands";
     });
 
+export type InsertPilePayload =
+  | Omit<CreateCardM, "targetIndex" | "who">
+  | Omit<TransferCardM, "targetIndex" | "who">;
+
+export type InsertPileStrategy =
+  | "top"
+  | "bottom"
+  | "random"
+  | "spaceAround"
+  | `topRange${number}`
+  | `topIndex${number}`;
+
 /**
  * 管理一个状态和状态的修改；同时也进行日志管理。
  *
@@ -603,25 +615,6 @@ export class StateMutator {
     return { damageInfo, events };
   }
 
-  drawCardsPlain(who: 0 | 1, count: number): EventAndRequest[] {
-    const events: EventAndRequest[] = [];
-    for (let i = 0; i < count; i++) {
-      const card = this.state.players[who].pile[0];
-      if (!card) {
-        continue;
-      }
-      this.insertHandCard({
-        type: "transferCard",
-        who,
-        from: "pile",
-        to: "hands",
-        value: card,
-        reason: "draw",
-      });
-    }
-    return events;
-  }
-
   insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
     const who = payload.who;
     this.mutate(payload);
@@ -650,6 +643,25 @@ export class StateMutator {
     }
   }
 
+  drawCardsPlain(who: 0 | 1, count: number): EventAndRequest[] {
+    const events: EventAndRequest[] = [];
+    for (let i = 0; i < count; i++) {
+      const card = this.state.players[who].pile[0];
+      if (!card) {
+        continue;
+      }
+      this.insertHandCard({
+        type: "transferCard",
+        who,
+        from: "pile",
+        to: "hands",
+        value: card,
+        reason: "draw",
+      });
+    }
+    return events;
+  }
+
   createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
     using l = this.subLog(
       DetailLogType.Primitive,
@@ -667,6 +679,104 @@ export class StateMutator {
       target: "hands",
       value: cardState,
     });
+  }
+
+  insertPileCards(
+    payloads: InsertPilePayload[],
+    strategy: InsertPileStrategy,
+    who: 0 | 1,
+  ): EventAndRequest[] {
+    const player = this.state.players[who];
+    const pileCount = player.pile.length;
+    payloads = payloads.slice(
+      0,
+      Math.max(0, this.state.config.maxPileCount - pileCount),
+    );
+    if (payloads.length === 0) {
+      return [];
+    }
+    const count = payloads.length;
+    switch (strategy) {
+      case "top":
+        for (const mut of payloads) {
+          this.mutate({
+            ...mut,
+            who,
+            targetIndex: 0,
+          });
+        }
+        break;
+      case "bottom":
+        for (const mut of payloads) {
+          const targetIndex = player.pile.length;
+          this.mutate({
+            ...mut,
+            who,
+            targetIndex,
+          });
+        }
+        break;
+      case "random":
+        for (let i = 0; i < count; i++) {
+          const randomValue = this.stepRandom();
+          const index = randomValue % (player.pile.length + 1);
+          this.mutate({
+            ...payloads[i],
+            who,
+            targetIndex: index,
+          });
+        }
+        break;
+      case "spaceAround":
+        const spaces = count + 1;
+        const step = Math.floor(player.pile.length / spaces);
+        const rest = player.pile.length % spaces;
+        for (let i = 0, j = step; i < count; i++, j += step) {
+          if (i < rest) {
+            j++;
+          }
+          this.mutate({
+            ...payloads[i],
+            who,
+            targetIndex: i + j,
+          });
+        }
+        break;
+      default: {
+        if (strategy.startsWith("topRange")) {
+          let range = Number(strategy.slice(8));
+          if (Number.isNaN(range)) {
+            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+          }
+          range = Math.min(range, player.pile.length);
+          for (let i = 0; i < count; i++) {
+            const randomValue = this.stepRandom();
+            const index = randomValue % range;
+            this.mutate({
+              ...payloads[i],
+              who,
+              targetIndex: index,
+            });
+          }
+        } else if (strategy.startsWith("topIndex")) {
+          let index = Number(strategy.slice(8));
+          if (Number.isNaN(index)) {
+            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+          }
+          index = Math.min(index, player.pile.length);
+          for (let i = 0; i < count; i++) {
+            this.mutate({
+              ...payloads[i],
+              who,
+              targetIndex: index,
+            });
+          }
+        } else {
+          throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+        }
+      }
+    }
+    return [];
   }
 
   createEntity(

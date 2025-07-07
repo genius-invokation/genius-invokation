@@ -13,14 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  DamageType,
-  DiceType,
-  type ExposedMutation,
-  PbHealKind,
-  PbReactionType,
-  Reaction,
-} from "@gi-tcg/typings";
+import { DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
 import {
   type EntityArea,
@@ -37,23 +30,13 @@ import {
   type EventAndRequest,
   type EventAndRequestConstructorArgs,
   type EventAndRequestNames,
-  type EventArgOf,
-  GenericModifyDamageEventArg,
-  GenericModifyHealEventArg,
-  type HealInfo,
   type HealKind,
-  type InlineEventNames,
   type StateMutationAndExposedMutation,
-  type ReactionInfo,
-  type SkillDescription,
   type SkillDescriptionReturn,
-  type SkillInfo,
   type SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
-  CustomEventEventArg,
   type UseSkillRequestOption,
   BeforeNightsoulEventArg,
-  type SwitchActiveInfo,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -90,23 +73,14 @@ import type {
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
-import {
-  getReaction,
-  REACTION_MAP,
-  type NontrivialDamageType,
-} from "../../base/reaction";
-import {
-  CALLED_FROM_REACTION,
-  type ReactionDescriptionEventArg,
-  getReactionDescription,
-} from "../reaction";
+import { CALLED_FROM_REACTION } from "../reaction";
 import { flip } from "@gi-tcg/utils";
 import { GiTcgDataError } from "../../error";
 import { DetailLogType } from "../../log";
 import {
   type CreateEntityOptions,
   GiTcgPreviewAbortedError,
-  type InsertHandPayload,
+  type InsertPileStrategy,
   type InternalHealOption,
   type InternalNotifyOption,
   type MutatorConfig,
@@ -118,7 +92,6 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
-import { exposeHealKind } from "../../io";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -152,18 +125,6 @@ export interface GenerateDiceOption {
   randomIncludeOmni?: boolean;
   randomAllowDuplicate?: boolean;
 }
-
-type InsertPilePayload =
-  | Omit<CreateCardM, "targetIndex" | "who">
-  | Omit<TransferCardM, "targetIndex" | "who">;
-
-type InsertPileStrategy =
-  | "top"
-  | "bottom"
-  | "random"
-  | "spaceAround"
-  | `topRange${number}`
-  | `topIndex${number}`;
 
 type Setter<T> = (draft: Draft<T>) => void;
 
@@ -1263,105 +1224,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  private insertPileCards(
-    payloads: InsertPilePayload[],
-    strategy: InsertPileStrategy,
-    where: "my" | "opp",
-  ) {
-    const who =
-      where === "my" ? this.callerArea.who : flip(this.callerArea.who);
-    const player = this.state.players[who];
-    const pileCount = player.pile.length;
-    payloads = payloads.slice(
-      0,
-      Math.max(0, this.state.config.maxPileCount - pileCount),
-    );
-    if (payloads.length === 0) {
-      return;
-    }
-    const count = payloads.length;
-    switch (strategy) {
-      case "top":
-        for (const mut of payloads) {
-          this.mutate({
-            ...mut,
-            who,
-            targetIndex: 0,
-          });
-        }
-        break;
-      case "bottom":
-        for (const mut of payloads) {
-          const targetIndex = player.pile.length;
-          this.mutate({
-            ...mut,
-            who,
-            targetIndex,
-          });
-        }
-        break;
-      case "random":
-        for (let i = 0; i < count; i++) {
-          const randomValue = this.mutator.stepRandom();
-          const index = randomValue % (player.pile.length + 1);
-          this.mutate({
-            ...payloads[i],
-            who,
-            targetIndex: index,
-          });
-        }
-        break;
-      case "spaceAround":
-        const spaces = count + 1;
-        const step = Math.floor(player.pile.length / spaces);
-        const rest = player.pile.length % spaces;
-        for (let i = 0, j = step; i < count; i++, j += step) {
-          if (i < rest) {
-            j++;
-          }
-          this.mutate({
-            ...payloads[i],
-            who,
-            targetIndex: i + j,
-          });
-        }
-        break;
-      default: {
-        if (strategy.startsWith("topRange")) {
-          let range = Number(strategy.slice(8));
-          if (Number.isNaN(range)) {
-            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-          }
-          range = Math.min(range, player.pile.length);
-          for (let i = 0; i < count; i++) {
-            const randomValue = this.mutator.stepRandom();
-            const index = randomValue % range;
-            this.mutate({
-              ...payloads[i],
-              who,
-              targetIndex: index,
-            });
-          }
-        } else if (strategy.startsWith("topIndex")) {
-          let index = Number(strategy.slice(8));
-          if (Number.isNaN(index)) {
-            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-          }
-          index = Math.min(index, player.pile.length);
-          for (let i = 0; i < count; i++) {
-            this.mutate({
-              ...payloads[i],
-              who,
-              targetIndex: index,
-            });
-          }
-        } else {
-          throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-        }
-      }
-    }
-  }
-
   createPileCards(
     cardId: CardHandle,
     count: number,
@@ -1393,7 +1255,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
           value: { ...cardTemplate },
         }) as const,
     );
-    this.insertPileCards(payloads, strategy, where);
+    this.eventAndRequests.push(
+      ...this.mutator.insertPileCards(payloads, strategy, who),
+    );
     return this.enableShortcut();
   }
   undrawCards(cards: CardState[], strategy: InsertPileStrategy) {
@@ -1415,7 +1279,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
           reason: "undraw",
         }) as const,
     );
-    this.insertPileCards(payloads, strategy, "my");
+    this.eventAndRequests.push(
+      ...this.mutator.insertPileCards(payloads, strategy, who),
+    );
+    return this.enableShortcut();
   }
 
   stealHandCard(card: CardState) {
