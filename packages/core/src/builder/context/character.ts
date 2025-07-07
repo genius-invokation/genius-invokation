@@ -50,24 +50,33 @@ export type CharacterPosition = "active" | "next" | "prev" | "standby";
  * 仅当保证 GameState 不发生变化时使用。
  */
 export class CharacterBase {
-  protected _area: EntityArea;
+  private _area: EntityArea;
+  private _state: CharacterState;
   constructor(
-    private gameState: GameState,
+    private _gameState: GameState,
     protected readonly _id: number,
   ) {
-    this._area = getEntityArea(gameState, _id);
+    this._area = getEntityArea(_gameState, _id);
+    this._state = getEntityById(_gameState, _id) as CharacterState;
+  }
+  protected get gameState() {
+    return this._gameState;
   }
   get area() {
     return this._area;
   }
+  get state() {
+    return this._state;
+  }
+
   get who() {
-    return this._area.who;
+    return this.area.who;
   }
   get id() {
     return this._id;
   }
-  positionIndex(currentState: GameState = this.gameState) {
-    const player = currentState.players[this.who];
+  positionIndex() {
+    const player = this.gameState.players[this.who];
     const thisIdx = player.characters.findIndex((ch) => ch.id === this._id);
     if (thisIdx === -1) {
       throw new GiTcgCoreInternalError("Invalid character index");
@@ -76,9 +85,8 @@ export class CharacterBase {
   }
   satisfyPosition(
     pos: CharacterPosition,
-    currentState: GameState = this.gameState,
   ) {
-    const player = currentState.players[this.who];
+    const player = this.gameState.players[this.who];
     const activeIdx = getActiveCharacterIndex(player);
     const length = player.characters.length;
     const isActive = player.activeCharacterId === this.id;
@@ -112,27 +120,9 @@ export class CharacterBase {
     } while (!player.characters[currentIdx].variables.alive);
     return player.characters[currentIdx].id === this._id;
   }
-}
-
-export class Character<Meta extends ContextMetaBase> extends CharacterBase {
-  constructor(
-    private readonly skillContext: SkillContext<Meta>,
-    id: number,
-  ) {
-    super(skillContext.state, id);
-  }
-
-  get state(): CharacterState {
-    const entity = getEntityById(this.skillContext.state, this._id);
-    if (entity.definition.type !== "character") {
-      throw new GiTcgCoreInternalError("Expected character");
-    }
-    return entity as CharacterState;
-  }
   get definition(): CharacterDefinition {
     return this.state.definition;
   }
-
   get health(): number {
     return this.getVariable("health");
   }
@@ -148,17 +138,8 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
   get maxEnergy(): number {
     return this.getVariable("maxEnergy");
   }
-  positionIndex() {
-    return super.positionIndex(this.skillContext.state);
-  }
-  satisfyPosition(pos: CharacterPosition) {
-    return super.satisfyPosition(pos, this.skillContext.state);
-  }
   isActive() {
     return this.satisfyPosition("active");
-  }
-  isMine() {
-    return this.area.who === this.skillContext.callerArea.who;
   }
   fullEnergy() {
     return this.getVariable("energy") === this.getVariable("maxEnergy");
@@ -208,9 +189,36 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
       v.definition.tags.includes("nightsoulsBlessing"),
     );
   }
+  getVariable<Name extends string>(name: Name): CharacterVariables[Name] {
+    return this.state.variables[name];
+  }
+}
+
+export class Character<Meta extends ContextMetaBase> extends CharacterBase {
+  constructor(
+    private readonly skillContext: SkillContext<Meta>,
+    id: number,
+  ) {
+    super(skillContext.state, id);
+  }
+  protected override get gameState() {
+    return this.skillContext.state;
+  }
+
+  get state(): CharacterState {
+    const entity = getEntityById(this.skillContext.state, this._id);
+    if (entity.definition.type !== "character") {
+      throw new GiTcgCoreInternalError("Expected character");
+    }
+    return entity as CharacterState;
+  }
 
   $$<const Q extends string>(arg: Q) {
     return this.skillContext.$$(`(${arg}) at (with id ${this._id})`);
+  }
+
+  isMine() {
+    return this.area.who === this.skillContext.callerArea.who;
   }
 
   // MUTATIONS
@@ -228,7 +236,7 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     this.skillContext.apply(type, this.state);
   }
   addStatus(status: StatusHandle, opt?: CreateEntityOptions) {
-    this.skillContext.createEntity("status", status, this._area, opt);
+    this.skillContext.createEntity("status", status, this.area, opt);
   }
   equip(equipment: EquipmentHandle, opt?: CreateEntityOptions) {
     this.skillContext.equip(equipment, this.state, opt);
@@ -261,10 +269,6 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
     this.skillContext.setVariable("energy", finalValue, this.state);
     return originalValue - finalValue;
   }
-  getVariable<Name extends string>(name: Name): CharacterVariables[Name] {
-    return this.state.variables[name];
-  }
-
   setVariable(prop: string, value: number) {
     this.skillContext.setVariable(prop, value, this.state);
   }
