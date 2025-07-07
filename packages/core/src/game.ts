@@ -491,9 +491,13 @@ export class Game {
 
   private async initHands() {
     using l = this.mutator.subLog(DetailLogType.Phase, `In initHands phase:`);
-    for (let who of [0, 1] as const) {
-      for (let i = 0; i < this.config.initialHandsCount; i++) {
-        this.mutator.drawCard(who);
+    for (const who of [0, 1] as const) {
+      const events = this.mutator.drawCardsPlain(
+        who,
+        this.config.initialHandsCount,
+      );
+      for (const event of events) {
+        this.handleEvent(...event);
       }
     }
     await this.mutator.notifyAndPause();
@@ -866,18 +870,9 @@ export class Game {
     );
     await this.handleEvent("onEndPhase", new EventArg(this.state));
     for (const who of [this.state.currentTurn, flip(this.state.currentTurn)]) {
-      const cards: CardState[] = [];
-      for (let i = 0; i < 2; i++) {
-        const card = this.mutator.drawCard(who);
-        if (card) {
-          cards.push(card);
-        }
-      }
-      for (const card of cards) {
-        await this.handleEvent(
-          "onHandCardInserted",
-          new HandCardInsertedEventArg(this.state, who, card, "drawn"),
-        );
+      const events = this.mutator.drawCardsPlain(who, 2);
+      for (const e of events) {
+        await this.handleEvent(...e);
       }
     }
     await this.handleEvent("onRoundEnd", new EventArg(this.state));

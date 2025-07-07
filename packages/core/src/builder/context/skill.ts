@@ -106,6 +106,7 @@ import { DetailLogType } from "../../log";
 import {
   type CreateEntityOptions,
   GiTcgPreviewAbortedError,
+  type InsertHandPayload,
   type InternalHealOption,
   type InternalNotifyOption,
   type MutatorConfig,
@@ -1226,15 +1227,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
         withTag ? `(with tag ${withTag})` : ""
       }`,
     );
-    const cards: CardState[] = [];
     if (withTag === null && withDefinition === null) {
       // 如果没有限定，则从牌堆顶部摸牌
-      for (let i = 0; i < count; i++) {
-        const card = this.mutator.drawCard(who);
-        if (card) {
-          cards.push(card);
-        }
-      }
+      this.eventAndRequests.push(...this.mutator.drawCardsPlain(who, count));
     } else {
       const check = (card: CardState) => {
         if (withDefinition !== null) {
@@ -1253,28 +1248,17 @@ export class SkillContext<Meta extends ContextMetaBase> {
           break;
         }
         const chosen = this.random(candidates);
-        this.mutate({
-          type: "transferCard",
-          from: "pile",
-          to: "hands",
-          who,
-          value: chosen,
-          reason: "draw",
-        });
-        cards.push(chosen);
-        if (player().hands.length > this.state.config.maxHandsCount) {
-          this.mutate({
-            type: "removeCard",
+        this.eventAndRequests.push(
+          ...this.mutator.insertHandCard({
+            type: "transferCard",
+            from: "pile",
+            to: "hands",
             who,
-            where: "hands",
-            oldState: chosen,
-            reason: "overflow",
-          });
-        }
+            value: chosen,
+            reason: "draw",
+          }),
+        );
       }
-    }
-    for (const card of cards) {
-      this.emitEvent("onHandCardInserted", this.state, who, card, "drawn");
     }
     return this.enableShortcut();
   }

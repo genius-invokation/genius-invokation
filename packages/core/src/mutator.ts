@@ -10,8 +10,10 @@ import {
 import type { CardState, CharacterState, GameState } from "./base/state";
 import { DetailLogType, type IDetailLogger } from "./log";
 import {
+  type CreateCardM,
   type Mutation,
   type StepRandomM,
+  type TransferCardM,
   applyMutation,
   stringifyMutation,
 } from "./base/mutation";
@@ -165,6 +167,14 @@ export interface DamageResult {
   readonly damageInfo: DamageInfo;
   readonly events: readonly EventAndRequest[];
 }
+
+export type InsertHandPayload =
+  | (CreateCardM & {
+      target: "hands";
+    })
+  | (TransferCardM & {
+      to: "hands";
+    });
 
 /**
  * 管理一个状态和状态的修改；同时也进行日志管理。
@@ -593,19 +603,32 @@ export class StateMutator {
     return { damageInfo, events };
   }
 
-  drawCard(who: 0 | 1): CardState | null {
-    const candidate = this.state.players[who].pile[0];
-    if (typeof candidate === "undefined") {
-      return null;
+  drawCardsPlain(who: 0 | 1, count: number): EventAndRequest[] {
+    const events: EventAndRequest[] = [];
+    for (let i = 0; i < count; i++) {
+      const card = this.state.players[who].pile[0];
+      if (!card) {
+        continue;
+      }
+      this.insertHandCard({
+        type: "transferCard",
+        who,
+        from: "pile",
+        to: "hands",
+        value: card,
+        reason: "draw",
+      });
     }
-    this.mutate({
-      type: "transferCard",
-      who,
-      from: "pile",
-      to: "hands",
-      value: candidate,
-      reason: "draw",
-    });
+    return events;
+  }
+
+  insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
+    const who = payload.who;
+    this.mutate(payload);
+    const state: CardState = {
+      ...payload.value,
+      [StateSymbol]: "card",
+    };
     if (
       this.state.players[who].hands.length > this.state.config.maxHandsCount
     ) {
@@ -613,11 +636,18 @@ export class StateMutator {
         type: "removeCard",
         who,
         where: "hands",
-        oldState: candidate,
+        oldState: state,
         reason: "overflow",
       });
+      return [];
+    } else {
+      return [
+        [
+          "onHandCardInserted",
+          new HandCardInsertedEventArg(this.state, who, state, "drawn"),
+        ],
+      ];
     }
-    return candidate;
   }
 
   createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
@@ -631,28 +661,12 @@ export class StateMutator {
       definition,
       variables: {},
     };
-    this.mutate({
+    return this.insertHandCard({
       type: "createCard",
       who,
       target: "hands",
       value: cardState,
     });
-    const player = this.state.players[who];
-    if (player.hands.length > this.state.config.maxHandsCount) {
-      this.mutate({
-        type: "removeCard",
-        who,
-        where: "hands",
-        oldState: cardState,
-        reason: "overflow",
-      });
-    }
-    return [
-      [
-        "onHandCardInserted",
-        new HandCardInsertedEventArg(this.state, who, cardState, "created"),
-      ],
-    ];
   }
 
   createEntity(
