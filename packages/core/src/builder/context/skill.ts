@@ -106,6 +106,7 @@ import { DetailLogType } from "../../log";
 import {
   type CreateEntityOptions,
   GiTcgPreviewAbortedError,
+  type InternalHealOption,
   type InternalNotifyOption,
   type MutatorConfig,
   StateMutator,
@@ -573,110 +574,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  private doHeal(
-    value: number,
-    targetState: CharacterState,
-    option: Required<HealOption>,
-  ) {
-    const damageType = DamageType.Heal;
-    if (!targetState.variables.alive) {
-      if (option.kind === "revive") {
-        this.mutator.log(
-          DetailLogType.Other,
-          `Before healing ${stringifyState(targetState)}, revive him.`,
-        );
-        this.mutate({
-          type: "modifyEntityVar",
-          state: targetState,
-          varName: "alive",
-          value: 1,
-          direction: "increase",
-        });
-        this.emitEvent("onRevive", this.state, targetState);
-      } else {
-        // Cannot apply non-revive heal on a dead character
-        return;
-      }
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Heal ${value} to ${stringifyState(targetState)}`,
-    );
-    const targetInjury =
-      targetState.variables.maxHealth - targetState.variables.health;
-    const finalValue = Math.min(value, targetInjury);
-
-    let healInfo: HealInfo = {
-      type: damageType,
-      cancelled: false,
-      expectedValue: value,
-      value: finalValue,
-      healKind: option.kind,
-      source: this.skillInfo.caller,
-      via: this.skillInfo,
-      target: targetState,
-      causeDefeated: false,
-      fromReaction: null,
-    };
-    const modifier = new GenericModifyHealEventArg(this.state, healInfo);
-    this.eventAndRequests.push(
-      ...this.mutator.handleInlineEvent(
-        this.skillInfo,
-        "modifyHeal0",
-        modifier,
-      ),
-    );
-    this.eventAndRequests.push(
-      ...this.mutator.handleInlineEvent(
-        this.skillInfo,
-        "modifyHeal1",
-        modifier,
-      ),
-    );
-    if (modifier.cancelled) {
-      return;
-    }
-    healInfo = modifier.healInfo;
-    this.mutate({
-      type: "modifyEntityVar",
-      state: targetState,
-      varName: "health",
-      value: targetState.variables.health + healInfo.value,
-      direction: "increase",
-    });
-    this.mutator.notify({
-      mutations: [
-        {
-          $case: "damage",
-          damageType: healInfo.type,
-          sourceId: this.skillInfo.caller.id,
-          sourceDefinitionId: this.skillInfo.caller.definition.id,
-          value: healInfo.value,
-          targetId: targetState.id,
-          targetDefinitionId: targetState.definition.id,
-          isSkillMainDamage: false,
-          reactionType: PbReactionType.UNSPECIFIED,
-          causeDefeated: false,
-          oldAura: targetState.variables.aura,
-          newAura: targetState.variables.aura,
-          oldHealth: targetState.variables.health,
-          newHealth: targetState.variables.health + healInfo.value,
-          healKind: exposeHealKind(healInfo.healKind),
-        },
-      ],
-    });
-    this.emitEvent("onDamageOrHeal", this.state, healInfo);
-  }
-
   /** 治疗角色 */
   heal(
     value: number,
     target: CharacterTargetArg,
-    { kind = "common" }: HealOption = {},
+    { kind = "common" }: Partial<InternalHealOption> = {},
   ) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      this.doHeal(value, t.state, { kind });
+      this.eventAndRequests.push(
+        ...this.mutator.heal(value, t.state, {
+          via: this.skillInfo,
+          kind,
+        }),
+      );
     }
     return this.enableShortcut();
   }
@@ -699,7 +610,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
       });
       // Note: `t.state` is a getter that gets latest state.
       // Do not write `targetState` here
-      this.doHeal(value, t.state, { kind: "increaseMaxHealth" });
+      this.eventAndRequests.push(
+        ...this.mutator.heal(value, t.state, {
+          via: this.skillInfo,
+          kind: "increaseMaxHealth",
+        }),
+      );
     }
     return this.enableShortcut();
   }
@@ -714,10 +630,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      using l = this.mutator.subLog(
-        DetailLogType.Primitive,
-        `Deal ${value} [damage:${type}] damage to ${stringifyState(t.state)}`,
-      );
       const targetState = t.state;
       let isSkillMainDamage = false;
       if (
@@ -740,6 +652,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetState.variables.health <= value,
         fromReaction: this.fromReaction,
       };
+      using l = this.mutator.subLog(
+        DetailLogType.Primitive,
+        `Deal ${value} [damage:${type}] damage to ${stringifyState(t.state)}`,
+      );
       if (damageInfo.type !== DamageType.Piercing) {
         const modifier = new GenericModifyDamageEventArg(
           this.state,

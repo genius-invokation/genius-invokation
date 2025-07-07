@@ -1,4 +1,5 @@
 import {
+  DamageType,
   DiceType,
   PbReactionType,
   PbSwitchActiveFromAction,
@@ -29,11 +30,16 @@ import {
 } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
+  CharacterEventArg,
   type DamageInfo,
+  DamageOrHealEventArg,
   EnterEventArg,
   type EventAndRequest,
   type EventArgOf,
+  GenericModifyHealEventArg,
   HandCardInsertedEventArg,
+  type HealInfo,
+  type HealKind,
   type InlineEventNames,
   PlayCardRequestArg,
   ReactionEventArg,
@@ -56,6 +62,7 @@ import {
   getReactionDescription,
   type ReactionDescriptionEventArg,
 } from "./builder/reaction";
+import { exposeHealKind } from "./io";
 
 export class GiTcgPreviewAbortedError extends GiTcgCoreInternalError {
   constructor(message?: string) {
@@ -136,14 +143,22 @@ export interface SwitchActiveOption {
   fromReaction?: Reaction | null;
 }
 
-export interface ApplyOption {
+export interface DamageOption {
   via: SkillInfo;
-  fromDamage: DamageInfo | null;
   // 以下属性在描述元素反应时有用，需要传入
   callerWho: 0 | 1;
   targetWho: 0 | 1;
   targetIsActive: boolean;
 }
+export interface ApplyOption extends DamageOption {
+  fromDamage: DamageInfo | null;
+}
+
+export interface InternalHealOption {
+  via: SkillInfo;
+  kind: HealKind;
+}
+
 
 /**
  * 管理一个状态和状态的修改；同时也进行日志管理。
@@ -391,6 +406,104 @@ export class StateMutator {
         );
       }
     }
+    return events;
+  }
+
+
+  heal(
+    value: number,
+    targetState: CharacterState,
+    opt: InternalHealOption,
+  ): EventAndRequest[] {
+    const damageType = DamageType.Heal;
+    const events: EventAndRequest[] = [];
+    if (!targetState.variables.alive) {
+      if (opt.kind === "revive") {
+        this.log(
+          DetailLogType.Other,
+          `Before healing ${stringifyState(targetState)}, revive him.`,
+        );
+        this.mutate({
+          type: "modifyEntityVar",
+          state: targetState,
+          varName: "alive",
+          value: 1,
+          direction: "increase",
+        });
+        events.push(["onRevive", new CharacterEventArg(this.state, targetState)]);
+      } else {
+        // Cannot apply non-revive heal on a dead character
+        return [];
+      }
+    }
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Heal ${value} to ${stringifyState(targetState)}`,
+    );
+    const targetInjury =
+      targetState.variables.maxHealth - targetState.variables.health;
+    const finalValue = Math.min(value, targetInjury);
+
+    let healInfo: HealInfo = {
+      type: damageType,
+      cancelled: false,
+      expectedValue: value,
+      value: finalValue,
+      healKind: opt.kind,
+      source: opt.via.caller,
+      via: opt.via,
+      target: targetState,
+      causeDefeated: false,
+      fromReaction: null,
+    };
+    const modifier = new GenericModifyHealEventArg(this.state, healInfo);
+    events.push(
+      ...this.handleInlineEvent(
+        opt.via,
+        "modifyHeal0",
+        modifier,
+      ),
+    );
+    events.push(
+      ...this.handleInlineEvent(
+        opt.via,
+        "modifyHeal1",
+        modifier,
+      ),
+    );
+    if (modifier.cancelled) {
+      return events;
+    }
+    healInfo = modifier.healInfo;
+    this.mutate({
+      type: "modifyEntityVar",
+      state: targetState,
+      varName: "health",
+      value: targetState.variables.health + healInfo.value,
+      direction: "increase",
+    });
+    this.notify({
+      mutations: [
+        {
+          $case: "damage",
+          damageType: healInfo.type,
+          sourceId: opt.via.caller.id,
+          sourceDefinitionId: opt.via.caller.definition.id,
+          value: healInfo.value,
+          targetId: targetState.id,
+          targetDefinitionId: targetState.definition.id,
+          isSkillMainDamage: false,
+          reactionType: PbReactionType.UNSPECIFIED,
+          causeDefeated: false,
+          oldAura: targetState.variables.aura,
+          newAura: targetState.variables.aura,
+          oldHealth: targetState.variables.health,
+          newHealth: targetState.variables.health + healInfo.value,
+          healKind: exposeHealKind(healInfo.healKind),
+        },
+      ],
+    });
+    events.push(["onDamageOrHeal", new DamageOrHealEventArg(this.state, healInfo)]);
     return events;
   }
 
