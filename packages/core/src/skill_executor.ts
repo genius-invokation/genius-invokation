@@ -24,6 +24,7 @@ import {
   EventArg,
   type HealInfo,
   type InitiativeSkillEventArg,
+  RequestArg,
   SelectCardEventArg,
   type SkillInfo,
   type SkillResult,
@@ -64,6 +65,7 @@ import { flip } from "@gi-tcg/utils";
 import { DetailLogType } from "./log";
 import { StateMutator } from "./mutator";
 import type { Mutation } from "./base/mutation";
+import { GiTcgCoreInternalError } from ".";
 
 export type GeneralSkillArg = EventArg | InitiativeSkillEventArg;
 
@@ -302,7 +304,7 @@ export class SkillExecutor {
       // 继续收集在执行免于被击倒的 onDamageOrHeal 响应时产生的事件
       emittedEvents = [];
       for (const arg of zeroHealthEventArgs) {
-        nonDamageEvents.push(
+        emittedEvents.push(
           ...this.handleEventShallow(["modifyZeroHealth", arg]),
         );
         if (arg._immuneInfo !== null) {
@@ -314,55 +316,16 @@ export class SkillExecutor {
               arg._immuneInfo.newHealth
             }`,
           );
-          const source = arg._immuneInfo.skill.caller;
-          const healValue = arg._immuneInfo.newHealth;
-          const healInfo: HealInfo = {
-            type: DamageType.Heal,
-            cancelled: false,
-            healKind: "immuneDefeated",
-            source,
-            via: arg._immuneInfo.skill,
-            target: arg.target,
-            expectedValue: healValue,
-            value: healValue,
-            causeDefeated: false,
-            fromReaction: null,
-          };
-          this.mutate({
-            type: "modifyEntityVar",
-            state: arg.target,
-            varName: "health",
-            value: healValue,
-            direction: "increase",
-          });
-          await this.mutator.notifyAndPause({
-            mutations: [
-              {
-                $case: "damage",
-                damageType: healInfo.type,
-                value: healInfo.value,
-                sourceId: healInfo.source.id,
-                sourceDefinitionId: healInfo.source.definition.id,
-                targetId: healInfo.target.id,
-                targetDefinitionId: healInfo.target.definition.id,
-                isSkillMainDamage: false,
-                reactionType: PbReactionType.UNSPECIFIED,
-                causeDefeated: false,
-                oldAura: arg.target.variables.aura,
-                newAura: arg.target.variables.aura,
-                oldHealth: 0,
-                newHealth: healValue,
-                healKind: PbHealKind.IMMUNE_DEFEATED,
-              },
-            ],
-          });
-          const healEventArg = new DamageOrHealEventArg(
-            arg.onTimeState,
-            healInfo,
+          const events = this.mutator.heal(
+            arg._immuneInfo.newHealth,
+            arg.target,
+            {
+              via: arg._immuneInfo.skill,
+              kind: "immuneDefeated",
+            },
           );
-          emittedEvents.push(
-            ...this.handleEventShallow(["onDamageOrHeal", healEventArg]),
-          );
+          await this.mutator.notifyAndPause();
+          emittedEvents.push(...this.handleEventShallow(...events));
         }
       }
     } while (emittedEvents.length > 0);
@@ -493,22 +456,28 @@ export class SkillExecutor {
    * @param event
    * @returns
    */
-  private handleEventShallow(event: Event): EventAndRequest[] {
-    const [name, arg] = event;
-    using guard = this.createHandleEventNotifies(name);
-    const callerAndSkills = this.broadcastEvent(event);
+  private handleEventShallow(...events: EventAndRequest[]): EventAndRequest[] {
     const result: EventAndRequest[] = [];
-    for (const { caller, skill } of callerAndSkills) {
-      const skillInfo = defineSkillInfo({
-        caller,
-        definition: skill,
-      });
-      if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+    for (const event of events) {
+      const [name, arg] = event;
+      if (arg instanceof RequestArg) {
+        result.push(event);
         continue;
       }
-      arg._currentSkillInfo = skillInfo;
-      const emittedEvents = this.executeSkill(skillInfo, arg);
-      result.push(...emittedEvents);
+      using guard = this.createHandleEventNotifies(name);
+      const callerAndSkills = this.broadcastEvent(event as Event);
+      for (const { caller, skill } of callerAndSkills) {
+        const skillInfo = defineSkillInfo({
+          caller,
+          definition: skill,
+        });
+        if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+          continue;
+        }
+        arg._currentSkillInfo = skillInfo;
+        const emittedEvents = this.executeSkill(skillInfo, arg);
+        result.push(...emittedEvents);
+      }
     }
     return result;
   }

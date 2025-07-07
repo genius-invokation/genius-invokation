@@ -1303,7 +1303,7 @@ export type InlineEventNames =
 
 export type EventArgOf<E extends EventNames> = InstanceType<EventMap[E]>;
 
-class RequestArg {
+export class RequestArg {
   constructor(public readonly via: SkillInfo) {}
 }
 

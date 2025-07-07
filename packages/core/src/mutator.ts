@@ -159,7 +159,6 @@ export interface InternalHealOption {
   kind: HealKind;
 }
 
-
 /**
  * 管理一个状态和状态的修改；同时也进行日志管理。
  *
@@ -409,7 +408,6 @@ export class StateMutator {
     return events;
   }
 
-
   heal(
     value: number,
     targetState: CharacterState,
@@ -430,7 +428,10 @@ export class StateMutator {
           value: 1,
           direction: "increase",
         });
-        events.push(["onRevive", new CharacterEventArg(this.state, targetState)]);
+        events.push([
+          "onRevive",
+          new CharacterEventArg(this.state, targetState),
+        ]);
       } else {
         // Cannot apply non-revive heal on a dead character
         return [];
@@ -457,29 +458,21 @@ export class StateMutator {
       fromReaction: null,
     };
     const modifier = new GenericModifyHealEventArg(this.state, healInfo);
-    events.push(
-      ...this.handleInlineEvent(
-        opt.via,
-        "modifyHeal0",
-        modifier,
-      ),
-    );
-    events.push(
-      ...this.handleInlineEvent(
-        opt.via,
-        "modifyHeal1",
-        modifier,
-      ),
-    );
+    events.push(...this.handleInlineEvent(opt.via, "modifyHeal0", modifier));
+    events.push(...this.handleInlineEvent(opt.via, "modifyHeal1", modifier));
     if (modifier.cancelled) {
       return events;
     }
     healInfo = modifier.healInfo;
+    const newHealth =
+      opt.kind === "immuneDefeated"
+        ? healInfo.value
+        : targetState.variables.health + healInfo.value;
     this.mutate({
       type: "modifyEntityVar",
       state: targetState,
       varName: "health",
-      value: targetState.variables.health + healInfo.value,
+      value: newHealth,
       direction: "increase",
     });
     this.notify({
@@ -503,7 +496,10 @@ export class StateMutator {
         },
       ],
     });
-    events.push(["onDamageOrHeal", new DamageOrHealEventArg(this.state, healInfo)]);
+    events.push([
+      "onDamageOrHeal",
+      new DamageOrHealEventArg(this.state, healInfo),
+    ]);
     return events;
   }
 
