@@ -194,5 +194,5 @@ export function collateActionCards(langCode: string) {
       cardFace: CARD_FACE_CORRELATION[cardFace] ?? cardFace,
     });
   }
-  return result;
+  return result.toSorted((a, b) => a.id - b.id);
 }

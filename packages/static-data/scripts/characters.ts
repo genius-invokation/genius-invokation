@@ -98,7 +98,7 @@ export async function collateCharacters(
   const english = getLanguage("EN");
   const result: CharacterRawData[] = [];
   for (const obj of xchar) {
-    if (obj[SKILL_LIST].includes(80)) {
+    if (!(SKILL_LIST in obj) || obj[SKILL_LIST].includes(80)) {
       continue;
     }
     if (obj[IS_REMOVE_AFTER_DIE]) {
@@ -132,7 +132,7 @@ export async function collateCharacters(
       : void 0;
 
     const hp = obj[HP];
-    const maxEnergy = obj[MAX_ENERGY];
+    const maxEnergy = obj[MAX_ENERGY] ?? -1;
 
     const tags: string[] = obj[TAG_LIST].filter(
       (e: any) => e !== "GCG_TAG_NONE",
@@ -174,5 +174,5 @@ export async function collateCharacters(
       icon,
     });
   }
-  return result;
+  return result.toSorted((a, b) => a.id - b.id);
 }

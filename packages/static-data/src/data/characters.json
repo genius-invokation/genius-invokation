@@ -9506,114 +9506,6 @@
     "icon": "UI_Gcg_Char_MonsterIcon_EscadronIce"
   },
   {
-    "id": 6301,
-    "obtainable": false,
-    "name": "焚尽的炽炎魔女",
-    "englishName": "Crimson Witch of Embers",
-    "tags": [
-      "GCG_TAG_ELEMENT_PYRO",
-      "GCG_TAG_WEAPON_NONE",
-      "GCG_TAG_CAMP_FATUI"
-    ],
-    "skills": [
-      {
-        "id": 63011,
-        "name": "红莲之蛾",
-        "englishName": "Crimson Lotus Moth",
-        "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成1点火元素伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_PYRO",
-            "count": 1
-          },
-          {
-            "type": "GCG_COST_DICE_VOID",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
-          "D__KEY__DAMAGE": 1
-        },
-        "icon": "Skill_A_Catalyst_MD",
-        "iconHash": "15584209743353740735"
-      },
-      {
-        "id": 63012,
-        "name": "烬灭之鞭",
-        "englishName": "Decimating Lash",
-        "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，并使目标角色附属<color=#FFFFFFFF>$[C163011]</color>。",
-        "description": "造成2点火元素伤害，并使目标角色附属炽热。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_PYRO",
-            "count": 3
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
-          "D__KEY__DAMAGE": 2
-        },
-        "icon": "MonsterSkill_S_LaSignoraHarbinger_01",
-        "iconHash": "13181445961655312657"
-      },
-      {
-        "id": 63013,
-        "name": "燃焰旋织",
-        "englishName": "Whirling Blaze",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成6点火元素伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_PYRO",
-            "count": 3
-          },
-          {
-            "type": "GCG_COST_ENERGY",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
-          "D__KEY__DAMAGE": 6
-        },
-        "icon": "MonsterSkill_E_LaSignoraHarbinger_01_HD",
-        "iconHash": "7833724498018733615"
-      },
-      {
-        "id": 63014,
-        "name": "红莲旋火",
-        "englishName": "Crimson Flamespin",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成3点火元素伤害。",
-        "playCost": [],
-        "targetList": [],
-        "hidden": true,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
-          "D__KEY__DAMAGE": 3
-        },
-        "icon": "MonsterSkill_E_LaSignoraHarbinger_01_HD",
-        "iconHash": "7833724498018733615"
-      }
-    ],
-    "hp": 10,
-    "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_LaSignoraHarbinger",
-    "icon": "UI_Gcg_Char_MonsterIcon_LaSignoraHarbinger"
-  },
-  {
     "id": 2201,
     "shareId": 53,
     "sinceVersion": "v3.3.0",
@@ -11978,6 +11870,535 @@
     "icon": "UI_Gcg_Char_MonsterIcon_Dahaka"
   },
   {
+    "id": 2603,
+    "shareId": 434,
+    "sinceVersion": "v5.2.0",
+    "obtainable": true,
+    "name": "黄金王兽",
+    "englishName": "Golden Wolflord",
+    "tags": [
+      "GCG_TAG_ELEMENT_GEO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_MONSTER"
+    ],
+    "storyTitle": "狼群魔主·黄金王兽",
+    "storyText": "来自异界的扭曲魔兽，统领兽境群狼的王者，拥有指挥狼群溶解空间的权威。",
+    "skills": [
+      {
+        "id": 26031,
+        "name": "王狼直击",
+        "englishName": "Wolflord's Strike",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 26032,
+        "name": "兽境轰召",
+        "englishName": "Howling Riftcall",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，目标角色附属2层<color=#FFFFFFFF>$[C126031]</color>，召唤<color=#FFFFFFFF>$[C126032]</color>。",
+        "description": "造成1点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "MonsterSkill_S_Planelurker_01",
+        "iconHash": "5425251551373986186"
+      },
+      {
+        "id": 26033,
+        "name": "黄金侵绞",
+        "englishName": "Golden Cankerbind",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，对所有敌方后台角色造成1点$[K5]，并使所有敌方角色附属<color=#FFFFFFFF>$[C126031]</color>。",
+        "description": "造成3点岩元素伤害，对所有敌方后台角色造成1点穿透伤害，并使所有敌方角色附属黄金侵蚀。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_GEO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "MonsterSkill_E_Planelurker_01_HD",
+        "iconHash": "16514163210881144394"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_Planelurker",
+    "icon": "UI_Gcg_Char_MonsterIcon_Planelurker"
+  },
+  {
+    "id": 2701,
+    "shareId": 60,
+    "sinceVersion": "v3.3.0",
+    "obtainable": true,
+    "name": "翠翎恐蕈",
+    "englishName": "Jadeplume Terrorshroom",
+    "tags": [
+      "GCG_TAG_ELEMENT_DENDRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_MONSTER"
+    ],
+    "storyTitle": "幽蕈之王·翠翎恐蕈",
+    "storyText": "悄声静听，可以听到幽林之中，蕈类王者巡视领土的脚步…",
+    "skills": [
+      {
+        "id": 27011,
+        "name": "菌王舞步",
+        "englishName": "Majestic Dance",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 27012,
+        "name": "不稳定孢子云",
+        "englishName": "Volatile Spore Cloud",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成3点草元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "MonsterSkill_S_FungusRaptor_01",
+        "iconHash": "12202597034558222041"
+      },
+      {
+        "id": 27013,
+        "name": "尾羽豪放",
+        "englishName": "Feather Spreading",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，消耗所有<color=#FFFFFFFF>$[C127011]</color>层数，每层使此伤害+1。",
+        "description": "造成4点草元素伤害，消耗所有活化激能层数，每层使此伤害+1。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 4
+        },
+        "icon": "MonsterSkill_E_FungusRaptor_01_HD",
+        "iconHash": "14811541418164330584"
+      },
+      {
+        "id": 27014,
+        "name": "活化激能",
+        "englishName": "Radical Vitality",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C127011]</color>。",
+        "description": "【被动】战斗开始时，初始附属活化激能。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "MonsterSkill_S_FungusRaptor_02",
+        "iconHash": "17068394253259091513"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_Fungusgrass",
+    "icon": "UI_Gcg_Char_MonsterIcon_Fungusgrass"
+  },
+  {
+    "id": 2702,
+    "shareId": 371,
+    "sinceVersion": "v4.7.0",
+    "obtainable": true,
+    "name": "阿佩普的绿洲守望者",
+    "englishName": "Guardian of Apep's Oasis",
+    "tags": [
+      "GCG_TAG_ELEMENT_DENDRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_MONSTER"
+    ],
+    "storyTitle": "智慧终景·阿佩普的绿洲守望者",
+    "storyText": "阿佩普曾独自沉溺于末日的风景当中。所有的人、神、龙、走兽、飞鸟与游鱼，所有记忆、智慧、话语与仇恨将都磨为无色尘粉，最后一轮明月之光则化作白焰之雨落在荒土之上。\n……\n阿佩普曾视沙海之底为自己的墓场，而非失乡之王的行宫。「智慧」的毒很快就会让它从无数个月亮的仇恨与愤怒中解脱。它已经对终末缺乏颜色的景象感到厌倦了。直到最终年轻的神明与金色的旅人让它再度回想起，即便自己曾经主宰的青绿土地已经化作饰金的荒原，即便自己与子嗣为了在其中生存而变得扭曲丑陋，但它的心中始终珍藏着那一角绿洲的景象。",
+    "skills": [
+      {
+        "id": 27021,
+        "name": "失乡重击",
+        "englishName": "Strike of the Dispossessed",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 27022,
+        "name": "生命流束",
+        "englishName": "Life Stream",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE_2]点$[D__KEY__ELEMENT]，抓1张<color=#FFFFFFFF>$[C127021]</color>，生成1层<color=#FFFFFFFF>$[C127026]</color>。",
+        "description": "造成2点草元素伤害，抓1张唤醒眷属，生成1层绿洲之滋养。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE_2": 2
+        },
+        "icon": "MonsterSkill_S_Apep_01",
+        "iconHash": "10499270908865667150"
+      },
+      {
+        "id": 27023,
+        "name": "终景迸落",
+        "englishName": "The End Falls",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE_2]点$[D__KEY__ELEMENT]，抓1张<color=#FFFFFFFF>$[C127021]</color>，生成2层<color=#FFFFFFFF>$[C127026]</color>。",
+        "description": "造成4点草元素伤害，抓1张唤醒眷属，生成2层绿洲之滋养。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE_2": 4
+        },
+        "icon": "MonsterSkill_E_Apep_01_HD",
+        "iconHash": "13789763550520784118"
+      },
+      {
+        "id": 27024,
+        "name": "增殖感召",
+        "englishName": "Invokation of Propagation",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】战斗开始时，生成5张<color=#FFFFFFFF>$[C127021]</color>，随机放入牌库。我方召唤4个<color=#FFFFFFFF>$[C127022]</color>后，此角色附属<color=#FFFFFFFF>$[C127027]</color>，并获得1点<color=#FFFFFFFF>$[K6]</color>。",
+        "description": "【被动】战斗开始时，生成5张唤醒眷属，随机放入牌库。我方召唤4个增殖生命体后，此角色附属重燃的绿洲之心，并获得1点护盾。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "icon": "MonsterSkill_S_Apep_02",
+        "iconHash": "10522305635224819829"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_Apep",
+    "icon": "UI_Gcg_Char_MonsterIcon_Apep"
+  },
+  {
+    "id": 2703,
+    "shareId": 422,
+    "sinceVersion": "v5.1.0",
+    "obtainable": true,
+    "name": "镀金旅团·叶轮舞者",
+    "englishName": "Eremite Floral Ring-Dancer",
+    "tags": [
+      "GCG_TAG_ELEMENT_DENDRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_EREMITE"
+    ],
+    "storyTitle": "旋舞之忆·叶轮舞者",
+    "storyText": "「沙之民有音乐与舞蹈的传统，起初是对神的礼赞，后来则是讨取王者欢心的演艺与战斗的技术。」",
+    "skills": [
+      {
+        "id": 27031,
+        "name": "叶轮轻扫",
+        "englishName": "Floral-Ring Caress",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 27032,
+        "name": "蔓延旋舞",
+        "englishName": "Spiraling Whirl",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE_3]点$[D__KEY__ELEMENT]，生成1层<color=#FFFFFFFF>$[C127033]</color>。",
+        "description": "造成3点草元素伤害，生成1层灵蛇祝福。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE_3": 3
+        },
+        "icon": "MonsterSkill_S_EremiteGrass_01",
+        "iconHash": "5452078219508061971"
+      },
+      {
+        "id": 27033,
+        "name": "厄灵苏醒·草之灵蛇",
+        "englishName": "Spirit of Omen's Awakening: Dendro Spirit-Serpent",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。整场牌局限制1次，将1张<color=#FFFFFFFF>$[C127032]</color>加入我方手牌。\\n（装备有<color=#FFFFFFFF>$[C127032]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1270321]</color>）",
+        "description": "造成4点草元素伤害。整场牌局限制1次，将1张厄灵·草之灵蛇加入我方手牌。\n（装备有厄灵·草之灵蛇的角色可以使用特技：藤蔓锋鳞）",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 4
+        },
+        "icon": "MonsterSkill_E_EremiteGrass_01_HD",
+        "iconHash": "5991324619177683521"
+      },
+      {
+        "id": 27034,
+        "name": "厄灵之能",
+        "englishName": "Spirit of Omen's Power",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】<color=#FFFFFFFF>此角色受到伤害后：</color>如果此角色生命值不多于7，则获得1点$[K310]。（每回合1次）",
+        "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "MonsterSkill_S_EremiteOracle_02",
+        "iconHash": "3389924153890107174"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_EremiteGrass",
+    "icon": "UI_Gcg_Char_MonsterIcon_EremiteGrass"
+  },
+  {
+    "id": 6301,
+    "obtainable": false,
+    "name": "焚尽的炽炎魔女",
+    "englishName": "Crimson Witch of Embers",
+    "tags": [
+      "GCG_TAG_ELEMENT_PYRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_FATUI"
+    ],
+    "skills": [
+      {
+        "id": 63011,
+        "name": "红莲之蛾",
+        "englishName": "Crimson Lotus Moth",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成1点火元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_Catalyst_MD",
+        "iconHash": "15584209743353740735"
+      },
+      {
+        "id": 63012,
+        "name": "烬灭之鞭",
+        "englishName": "Decimating Lash",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，并使目标角色附属<color=#FFFFFFFF>$[C163011]</color>。",
+        "description": "造成2点火元素伤害，并使目标角色附属炽热。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "MonsterSkill_S_LaSignoraHarbinger_01",
+        "iconHash": "13181445961655312657"
+      },
+      {
+        "id": 63013,
+        "name": "燃焰旋织",
+        "englishName": "Whirling Blaze",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成6点火元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 6
+        },
+        "icon": "MonsterSkill_E_LaSignoraHarbinger_01_HD",
+        "iconHash": "7833724498018733615"
+      },
+      {
+        "id": 63014,
+        "name": "红莲旋火",
+        "englishName": "Crimson Flamespin",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成3点火元素伤害。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "MonsterSkill_E_LaSignoraHarbinger_01_HD",
+        "iconHash": "7833724498018733615"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_LaSignoraHarbinger",
+    "icon": "UI_Gcg_Char_MonsterIcon_LaSignoraHarbinger"
+  },
+  {
     "id": 6601,
     "obtainable": false,
     "name": "若陀龙王",
@@ -12484,426 +12905,5 @@
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_DahakaElec",
     "icon": "UI_Gcg_Char_MonsterIcon_DahakaElec"
-  },
-  {
-    "id": 2603,
-    "shareId": 434,
-    "sinceVersion": "v5.2.0",
-    "obtainable": true,
-    "name": "黄金王兽",
-    "englishName": "Golden Wolflord",
-    "tags": [
-      "GCG_TAG_ELEMENT_GEO",
-      "GCG_TAG_WEAPON_NONE",
-      "GCG_TAG_CAMP_MONSTER"
-    ],
-    "storyTitle": "狼群魔主·黄金王兽",
-    "storyText": "来自异界的扭曲魔兽，统领兽境群狼的王者，拥有指挥狼群溶解空间的权威。",
-    "skills": [
-      {
-        "id": 26031,
-        "name": "王狼直击",
-        "englishName": "Wolflord's Strike",
-        "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成2点物理伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_GEO",
-            "count": 1
-          },
-          {
-            "type": "GCG_COST_DICE_VOID",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
-          "D__KEY__DAMAGE": 2
-        },
-        "icon": "Skill_A_00",
-        "iconHash": "6499903474057818465"
-      },
-      {
-        "id": 26032,
-        "name": "兽境轰召",
-        "englishName": "Howling Riftcall",
-        "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，目标角色附属2层<color=#FFFFFFFF>$[C126031]</color>，召唤<color=#FFFFFFFF>$[C126032]</color>。",
-        "description": "造成1点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_GEO",
-            "count": 3
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
-          "D__KEY__DAMAGE": 1
-        },
-        "icon": "MonsterSkill_S_Planelurker_01",
-        "iconHash": "5425251551373986186"
-      },
-      {
-        "id": 26033,
-        "name": "黄金侵绞",
-        "englishName": "Golden Cankerbind",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，对所有敌方后台角色造成1点$[K5]，并使所有敌方角色附属<color=#FFFFFFFF>$[C126031]</color>。",
-        "description": "造成3点岩元素伤害，对所有敌方后台角色造成1点穿透伤害，并使所有敌方角色附属黄金侵蚀。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_GEO",
-            "count": 3
-          },
-          {
-            "type": "GCG_COST_ENERGY",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
-          "D__KEY__DAMAGE": 3
-        },
-        "icon": "MonsterSkill_E_Planelurker_01_HD",
-        "iconHash": "16514163210881144394"
-      }
-    ],
-    "hp": 10,
-    "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_Planelurker",
-    "icon": "UI_Gcg_Char_MonsterIcon_Planelurker"
-  },
-  {
-    "id": 2701,
-    "shareId": 60,
-    "sinceVersion": "v3.3.0",
-    "obtainable": true,
-    "name": "翠翎恐蕈",
-    "englishName": "Jadeplume Terrorshroom",
-    "tags": [
-      "GCG_TAG_ELEMENT_DENDRO",
-      "GCG_TAG_WEAPON_NONE",
-      "GCG_TAG_CAMP_MONSTER"
-    ],
-    "storyTitle": "幽蕈之王·翠翎恐蕈",
-    "storyText": "悄声静听，可以听到幽林之中，蕈类王者巡视领土的脚步…",
-    "skills": [
-      {
-        "id": 27011,
-        "name": "菌王舞步",
-        "englishName": "Majestic Dance",
-        "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成2点物理伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 1
-          },
-          {
-            "type": "GCG_COST_DICE_VOID",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
-          "D__KEY__DAMAGE": 2
-        },
-        "icon": "Skill_A_00",
-        "iconHash": "6499903474057818465"
-      },
-      {
-        "id": 27012,
-        "name": "不稳定孢子云",
-        "englishName": "Volatile Spore Cloud",
-        "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成3点草元素伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE": 3
-        },
-        "icon": "MonsterSkill_S_FungusRaptor_01",
-        "iconHash": "12202597034558222041"
-      },
-      {
-        "id": 27013,
-        "name": "尾羽豪放",
-        "englishName": "Feather Spreading",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，消耗所有<color=#FFFFFFFF>$[C127011]</color>层数，每层使此伤害+1。",
-        "description": "造成4点草元素伤害，消耗所有活化激能层数，每层使此伤害+1。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          },
-          {
-            "type": "GCG_COST_ENERGY",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE": 4
-        },
-        "icon": "MonsterSkill_E_FungusRaptor_01_HD",
-        "iconHash": "14811541418164330584"
-      },
-      {
-        "id": 27014,
-        "name": "活化激能",
-        "englishName": "Radical Vitality",
-        "type": "GCG_SKILL_TAG_PASSIVE",
-        "rawDescription": "【被动】战斗开始时，初始附属<color=#FFFFFFFF>$[C127011]</color>。",
-        "description": "【被动】战斗开始时，初始附属活化激能。",
-        "playCost": [],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {},
-        "icon": "MonsterSkill_S_FungusRaptor_02",
-        "iconHash": "17068394253259091513"
-      }
-    ],
-    "hp": 10,
-    "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_Fungusgrass",
-    "icon": "UI_Gcg_Char_MonsterIcon_Fungusgrass"
-  },
-  {
-    "id": 2702,
-    "shareId": 371,
-    "sinceVersion": "v4.7.0",
-    "obtainable": true,
-    "name": "阿佩普的绿洲守望者",
-    "englishName": "Guardian of Apep's Oasis",
-    "tags": [
-      "GCG_TAG_ELEMENT_DENDRO",
-      "GCG_TAG_WEAPON_NONE",
-      "GCG_TAG_CAMP_MONSTER"
-    ],
-    "storyTitle": "智慧终景·阿佩普的绿洲守望者",
-    "storyText": "阿佩普曾独自沉溺于末日的风景当中。所有的人、神、龙、走兽、飞鸟与游鱼，所有记忆、智慧、话语与仇恨将都磨为无色尘粉，最后一轮明月之光则化作白焰之雨落在荒土之上。\n……\n阿佩普曾视沙海之底为自己的墓场，而非失乡之王的行宫。「智慧」的毒很快就会让它从无数个月亮的仇恨与愤怒中解脱。它已经对终末缺乏颜色的景象感到厌倦了。直到最终年轻的神明与金色的旅人让它再度回想起，即便自己曾经主宰的青绿土地已经化作饰金的荒原，即便自己与子嗣为了在其中生存而变得扭曲丑陋，但它的心中始终珍藏着那一角绿洲的景象。",
-    "skills": [
-      {
-        "id": 27021,
-        "name": "失乡重击",
-        "englishName": "Strike of the Dispossessed",
-        "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成2点物理伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 1
-          },
-          {
-            "type": "GCG_COST_DICE_VOID",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
-          "D__KEY__DAMAGE": 2
-        },
-        "icon": "Skill_A_00",
-        "iconHash": "6499903474057818465"
-      },
-      {
-        "id": 27022,
-        "name": "生命流束",
-        "englishName": "Life Stream",
-        "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "造成$[D__KEY__DAMAGE_2]点$[D__KEY__ELEMENT]，抓1张<color=#FFFFFFFF>$[C127021]</color>，生成1层<color=#FFFFFFFF>$[C127026]</color>。",
-        "description": "造成2点草元素伤害，抓1张唤醒眷属，生成1层绿洲之滋养。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE_2": 2
-        },
-        "icon": "MonsterSkill_S_Apep_01",
-        "iconHash": "10499270908865667150"
-      },
-      {
-        "id": 27023,
-        "name": "终景迸落",
-        "englishName": "The End Falls",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE_2]点$[D__KEY__ELEMENT]，抓1张<color=#FFFFFFFF>$[C127021]</color>，生成2层<color=#FFFFFFFF>$[C127026]</color>。",
-        "description": "造成4点草元素伤害，抓1张唤醒眷属，生成2层绿洲之滋养。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          },
-          {
-            "type": "GCG_COST_ENERGY",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE_2": 4
-        },
-        "icon": "MonsterSkill_E_Apep_01_HD",
-        "iconHash": "13789763550520784118"
-      },
-      {
-        "id": 27024,
-        "name": "增殖感召",
-        "englishName": "Invokation of Propagation",
-        "type": "GCG_SKILL_TAG_PASSIVE",
-        "rawDescription": "【被动】战斗开始时，生成5张<color=#FFFFFFFF>$[C127021]</color>，随机放入牌库。我方召唤4个<color=#FFFFFFFF>$[C127022]</color>后，此角色附属<color=#FFFFFFFF>$[C127027]</color>，并获得1点<color=#FFFFFFFF>$[K6]</color>。",
-        "description": "【被动】战斗开始时，生成5张唤醒眷属，随机放入牌库。我方召唤4个增殖生命体后，此角色附属重燃的绿洲之心，并获得1点护盾。",
-        "playCost": [],
-        "targetList": [],
-        "hidden": false,
-        "icon": "MonsterSkill_S_Apep_02",
-        "iconHash": "10522305635224819829"
-      }
-    ],
-    "hp": 10,
-    "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_Apep",
-    "icon": "UI_Gcg_Char_MonsterIcon_Apep"
-  },
-  {
-    "id": 2703,
-    "shareId": 422,
-    "sinceVersion": "v5.1.0",
-    "obtainable": true,
-    "name": "镀金旅团·叶轮舞者",
-    "englishName": "Eremite Floral Ring-Dancer",
-    "tags": [
-      "GCG_TAG_ELEMENT_DENDRO",
-      "GCG_TAG_WEAPON_NONE",
-      "GCG_TAG_CAMP_EREMITE"
-    ],
-    "storyTitle": "旋舞之忆·叶轮舞者",
-    "storyText": "「沙之民有音乐与舞蹈的传统，起初是对神的礼赞，后来则是讨取王者欢心的演艺与战斗的技术。」",
-    "skills": [
-      {
-        "id": 27031,
-        "name": "叶轮轻扫",
-        "englishName": "Floral-Ring Caress",
-        "type": "GCG_SKILL_TAG_A",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
-        "description": "造成2点物理伤害。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 1
-          },
-          {
-            "type": "GCG_COST_DICE_VOID",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
-          "D__KEY__DAMAGE": 2
-        },
-        "icon": "Skill_A_00",
-        "iconHash": "6499903474057818465"
-      },
-      {
-        "id": 27032,
-        "name": "蔓延旋舞",
-        "englishName": "Spiraling Whirl",
-        "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "造成$[D__KEY__DAMAGE_3]点$[D__KEY__ELEMENT]，生成1层<color=#FFFFFFFF>$[C127033]</color>。",
-        "description": "造成3点草元素伤害，生成1层灵蛇祝福。",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE_3": 3
-        },
-        "icon": "MonsterSkill_S_EremiteGrass_01",
-        "iconHash": "5452078219508061971"
-      },
-      {
-        "id": 27033,
-        "name": "厄灵苏醒·草之灵蛇",
-        "englishName": "Spirit of Omen's Awakening: Dendro Spirit-Serpent",
-        "type": "GCG_SKILL_TAG_Q",
-        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。整场牌局限制1次，将1张<color=#FFFFFFFF>$[C127032]</color>加入我方手牌。\\n（装备有<color=#FFFFFFFF>$[C127032]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1270321]</color>）",
-        "description": "造成4点草元素伤害。整场牌局限制1次，将1张厄灵·草之灵蛇加入我方手牌。\n（装备有厄灵·草之灵蛇的角色可以使用特技：藤蔓锋鳞）",
-        "playCost": [
-          {
-            "type": "GCG_COST_DICE_DENDRO",
-            "count": 3
-          },
-          {
-            "type": "GCG_COST_ENERGY",
-            "count": 2
-          }
-        ],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {
-          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE": 4
-        },
-        "icon": "MonsterSkill_E_EremiteGrass_01_HD",
-        "iconHash": "5991324619177683521"
-      },
-      {
-        "id": 27034,
-        "name": "厄灵之能",
-        "englishName": "Spirit of Omen's Power",
-        "type": "GCG_SKILL_TAG_PASSIVE",
-        "rawDescription": "【被动】<color=#FFFFFFFF>此角色受到伤害后：</color>如果此角色生命值不多于7，则获得1点$[K310]。（每回合1次）",
-        "description": "【被动】此角色受到伤害后：如果此角色生命值不多于7，则获得1点充能。（每回合1次）",
-        "playCost": [],
-        "targetList": [],
-        "hidden": false,
-        "keyMap": {},
-        "icon": "MonsterSkill_S_EremiteOracle_02",
-        "iconHash": "3389924153890107174"
-      }
-    ],
-    "hp": 10,
-    "maxEnergy": 2,
-    "cardFace": "UI_Gcg_CardFace_Char_Monster_EremiteGrass",
-    "icon": "UI_Gcg_Char_MonsterIcon_EremiteGrass"
   }
 ]

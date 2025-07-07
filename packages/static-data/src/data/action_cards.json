@@ -168,6 +168,583 @@
     "cardFace": "UI_Gcg_CardFace_Summon_Ranshaolieyan"
   },
   {
+    "id": 112113,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "圣俗杂座",
+    "englishName": "Seats Sacred and Secular",
+    "tags": [],
+    "targetList": [
+      {
+        "id": 1010,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "切换<color=#FFD780FF>芙宁娜</color>及其召唤物的形态",
+        "hintText": "切换芙宁娜及其召唤物的形态"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "在「{SPRITE_PRESET#3504}始基力：荒性」和「{SPRITE_PRESET#3505}始基力：芒性」之中，切换$[A1211]的形态。\\n如果我方场上存在<color=#FFFFFFFF>$[K1031]</color>或<color=#FFFFFFFF>$[K1032]</color>，也切换其形态。",
+    "description": "在「始基力：荒性」和「始基力：芒性」之中，切换芙宁娜的形态。\n如果我方场上存在沙龙成员或众水的歌者，也切换其形态。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_FurinaOusiaChange"
+  },
+  {
+    "id": 112131,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "激愈水球·大",
+    "englishName": "Large Bolstering Bubblebalm",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>治疗我方出战角色3点。生成1张<color=#FFFFFFFF>$[C112132]</color>，将其置于对方牌库顶部第2张牌的位置。",
+    "description": "抓到此牌时：治疗我方出战角色3点。生成1张激愈水球·中，将其置于对方牌库顶部第2张牌的位置。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_X"
+  },
+  {
+    "id": 112132,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "激愈水球·中",
+    "englishName": "Medium Bolstering Bubblebalm",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>对所在阵营的出战角色造成2点$[K102]。生成1张<color=#FFFFFFFF>$[C112133]</color>，将其置于对方牌库顶部。",
+    "description": "抓到此牌时：对所在阵营的出战角色造成2点水元素伤害。生成1张激愈水球·小，将其置于对方牌库顶部。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_M"
+  },
+  {
+    "id": 112133,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "激愈水球·小",
+    "englishName": "Small Bolstering Bubblebalm",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>治疗所有我方角色1点，生成<color=#FFFFFFFF>$[C112101]</color>。",
+    "description": "抓到此牌时：治疗所有我方角色1点，生成源水之滴。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_S"
+  },
+  {
+    "id": 112142,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "咬咬鲨鱼",
+    "englishName": "Bitey Shark",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>双方切换角色后，且$[A1214]为出战角色时：</color>消耗1点<color=#FFFFFFFF>「夜魂值」</color>，使敌方出战角色附属<color=#FFFFFFFF>$[K1034]</color>。\\n$[K58]：$[S1121422]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C112141]</color>。",
+    "description": "双方切换角色后，且玛拉妮为出战角色时：消耗1点「夜魂值」，使敌方出战角色附属啃咬目标。\n特技：鲨鲨冲浪板\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mualani_1"
+  },
+  {
+    "id": 113131,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "超量装药弹头",
+    "englishName": "Overcharged Ball",
+    "tags": [
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 159,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "ENEMY",
+        "tags": [],
+        "rawHintText": "对敌方出战角色生效",
+        "hintText": "对敌方出战角色生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 2
+      }
+    ],
+    "rawDescription": "$[K1]：对敌方「出战角色」造成1点$[K103]。\\n<color=#FFFFFFFF>此牌被$[K56]时：</color>对敌方「出战角色」造成1点$[K103]。",
+    "description": "战斗行动：对敌方「出战角色」造成1点火元素伤害。\n此牌被舍弃时：对敌方「出战角色」造成1点火元素伤害。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chevreuse"
+  },
+  {
+    "id": 113154,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·跃升",
+    "englishName": "Flamestrider: Soaring Ascent",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此牌被$[K56]后：</color>对敌方出战角色造成1点$[K103]。\\n$[K58]：$[S1131541]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此牌被舍弃后：对敌方出战角色造成1点火元素伤害。\n特技：跃升\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131541]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sky"
+  },
+  {
+    "id": 113155,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·涉渡",
+    "englishName": "Flamestrider: Blazing Trail",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌被打出时：</color>随机触发我方1个「召唤物」的「结束阶段」效果。\\n$[K58]：$[S1131551]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌被打出时：随机触发我方1个「召唤物」的「结束阶段」效果。\n特技：涉渡\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131551]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sea"
+  },
+  {
+    "id": 113156,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "驰轮车·疾驰",
+    "englishName": "Flamestrider: Full Throttle",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 11315,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
+        "hintText": "装备给我方的玛薇卡"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "此卡牌可使用次数为0时：抓4张牌。\n特技：疾驰\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1131561]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Land"
+  },
+  {
+    "id": 114031,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "雷楔",
+    "englishName": "Lightning Stiletto",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 1001,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "切换到<color=#FFD780FF>刻晴</color>，使用「星斗归位」",
+        "hintText": "切换到刻晴，使用「星斗归位」"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ELECTRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "$[K1]：将$[A1403]切换到场上，立刻使用$[S14032]。本次$[S14032]会为$[A1403]附属<color=#FFFFFFFF>$[K1002]</color>，但是不会再生成雷楔。\\n（$[A1403]使用$[S14032]时，如果此牌在手中：不会再生成雷楔，而是改为$[K56]此牌，并为$[A1403]附属<color=#FFFFFFFF>$[K1002]</color>）",
+    "description": "战斗行动：将刻晴切换到场上，立刻使用星斗归位。本次星斗归位会为刻晴附属雷元素附魔，但是不会再生成雷楔。\n（刻晴使用星斗归位时，如果此牌在手中：不会再生成雷楔，而是改为舍弃此牌，并为刻晴附属雷元素附魔）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Keqing"
+  },
+  {
+    "id": 115102,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "竹星",
+    "englishName": "Starwicker",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：仙力助推\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：仙力助推\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Summon_Liuyun"
+  },
+  {
+    "id": 115112,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "灵枪·仪式杖",
+    "englishName": "Soulsniper: Ritual Staff",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。",
+    "playingDescription": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Gun"
+  },
+  {
+    "id": 115113,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "追影弹",
+    "englishName": "Shadowhunt Shell",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>加入手牌时：</color>若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\\n<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K105]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "加入手牌时：若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\n打出或舍弃此牌时：优先对敌方出战角色造成1点风元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Wind"
+  },
+  {
+    "id": 115114,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·火",
+    "englishName": "Shining Shadowhunt Shell: Pyro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K103]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点火元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Fire"
+  },
+  {
+    "id": 115115,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·水",
+    "englishName": "Shining Shadowhunt Shell: Hydro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_HYDRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K102]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点水元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Water"
+  },
+  {
+    "id": 115116,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·雷",
+    "englishName": "Shining Shadowhunt Shell: Electro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ELECTRO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K104]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点雷元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Elec"
+  },
+  {
+    "id": 115117,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "焕光追影弹·冰",
+    "englishName": "Shining Shadowhunt Shell: Cryo",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_CRYO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K101]</color>，然后将一张$[C115113]随机放进牌库。",
+    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点冰元素伤害，然后将一张追影弹随机放进牌库。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Ice"
+  },
+  {
+    "id": 116081,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "裂晶弹片",
+    "englishName": "Crystal Shrapnel",
+    "tags": [],
+    "targetList": [
+      {
+        "id": 159,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "ENEMY",
+        "tags": [],
+        "rawHintText": "对敌方出战角色生效",
+        "hintText": "对敌方出战角色生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "对敌方「出战角色」造成1点$[K100]，抓1张牌。",
+    "description": "对敌方「出战角色」造成1点物理伤害，抓1张牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Navia_Bullet"
+  },
+  {
+    "id": 116102,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "冲天转转",
+    "englishName": "Turbo Twirly",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。\\n$[K58]：$[S1161021]\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116104]</color>。",
+    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。\n特技：转转冲击\n（角色最多装备1个「特技」）\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Kachina"
+  },
+  {
+    "id": 116112,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "刃轮装束",
+    "englishName": "Combat Blading Gear",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
+    "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Xilonen"
+  },
+  {
+    "id": 122051,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "水泡史莱姆",
+    "englishName": "Mist Bubble Slime",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：水泡战法\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：水泡战法\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Summon_HilistrayWater"
+  },
+  {
+    "id": 123031,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "厄灵·炎之魔蝎",
+    "englishName": "Spirit of Omen: Pyro Scorpion",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）\n特技：炙烧攻势\n可用次数：1\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>",
+    "playingDescription": "所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）\n特技：炙烧攻势\n可用次数：1",
+    "cardFace": "UI_Gcg_CardFace_Summon_Muscleman"
+  },
+  {
+    "id": 124051,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "噬骸能量块",
+    "englishName": "Bonecruncher's Energy Block",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "随机$[K56]1张原本元素骰费用最高的手牌，生成1个我方出战角色类型的元素骰。（每回合最多打出1张）",
+    "description": "随机舍弃1张原本元素骰费用最高的手牌，生成1个我方出战角色类型的元素骰。（每回合最多打出1张）",
+    "cardFace": "UI_Gcg_CardFace_Summon_ScorpionSacred"
+  },
+  {
+    "id": 127021,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "唤醒眷属",
+    "englishName": "Awaken, My Kindred",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_DENDRO",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>打出此牌或$[K56]此牌时：</color>召唤一个独立的$[C127022]。",
+    "description": "打出此牌或舍弃此牌时：召唤一个独立的增殖生命体。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Apep"
+  },
+  {
+    "id": 127032,
+    "obtainable": false,
+    "type": "GCG_CARD_MODIFY",
+    "name": "厄灵·草之灵蛇",
+    "englishName": "Spirit of Omen: Dendro Spirit-Serpent",
+    "tags": [
+      "GCG_TAG_VEHICLE"
+    ],
+    "targetList": [
+      {
+        "id": 128,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
+        "hintText": "请选择要装备特技的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
+    "description": "特技：藤蔓锋鳞\n可用次数：2\n（角色最多装备1个「特技」）",
+    "rawPlayingDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "playingDescription": "特技：藤蔓锋鳞\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Summon_EremiteGrass"
+  },
+  {
     "id": 211011,
     "shareId": 61,
     "sinceVersion": "v3.3.0",
@@ -1106,30 +1683,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Neuvillette"
   },
   {
-    "id": 112113,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "圣俗杂座",
-    "englishName": "Seats Sacred and Secular",
-    "tags": [],
-    "targetList": [
-      {
-        "id": 1010,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "切换<color=#FFD780FF>芙宁娜</color>及其召唤物的形态",
-        "hintText": "切换芙宁娜及其召唤物的形态"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "在「{SPRITE_PRESET#3504}始基力：荒性」和「{SPRITE_PRESET#3505}始基力：芒性」之中，切换$[A1211]的形态。\\n如果我方场上存在<color=#FFFFFFFF>$[K1031]</color>或<color=#FFFFFFFF>$[K1032]</color>，也切换其形态。",
-    "description": "在「始基力：荒性」和「始基力：芒性」之中，切换芙宁娜的形态。\n如果我方场上存在沙龙成员或众水的歌者，也切换其形态。",
-    "cardFace": "UI_Gcg_CardFace_Event_Event_FurinaOusiaChange"
-  },
-  {
     "id": 212111,
     "shareId": 373,
     "sinceVersion": "v4.7.0",
@@ -1168,51 +1721,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Furina"
   },
   {
-    "id": 112131,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "激愈水球·大",
-    "englishName": "Large Bolstering Bubblebalm",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>治疗我方出战角色3点。生成1张<color=#FFFFFFFF>$[C112132]</color>，将其置于对方牌库顶部第2张牌的位置。",
-    "description": "抓到此牌时：治疗我方出战角色3点。生成1张激愈水球·中，将其置于对方牌库顶部第2张牌的位置。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_X"
-  },
-  {
-    "id": 112132,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "激愈水球·中",
-    "englishName": "Medium Bolstering Bubblebalm",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>对所在阵营的出战角色造成2点$[K102]。生成1张<color=#FFFFFFFF>$[C112133]</color>，将其置于对方牌库顶部。",
-    "description": "抓到此牌时：对所在阵营的出战角色造成2点水元素伤害。生成1张激愈水球·小，将其置于对方牌库顶部。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_M"
-  },
-  {
-    "id": 112133,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "激愈水球·小",
-    "englishName": "Small Bolstering Bubblebalm",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>抓到此牌时：</color>治疗所有我方角色1点，生成<color=#FFFFFFFF>$[C112101]</color>。",
-    "description": "抓到此牌时：治疗所有我方角色1点，生成源水之滴。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Sigewinne_S"
-  },
-  {
     "id": 212131,
     "shareId": 436,
     "sinceVersion": "v5.2.0",
@@ -1249,23 +1757,6 @@
     "rawPlayingDescription": "装备有此牌的$[A1213]使用<color=#FFFFFFFF>$[S12132]</color>后，使我方接下来2次「元素战技」或召唤物造成的伤害+1。",
     "playingDescription": "装备有此牌的希格雯使用弹跳水疗法后，使我方接下来2次「元素战技」或召唤物造成的伤害+1。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Sigewinne"
-  },
-  {
-    "id": 112142,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "咬咬鲨鱼",
-    "englishName": "Bitey Shark",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>双方切换角色后，且$[A1214]为出战角色时：</color>消耗1点<color=#FFFFFFFF>「夜魂值」</color>，使敌方出战角色附属<color=#FFFFFFFF>$[K1034]</color>。\\n$[K58]：$[S1121422]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C112141]</color>。",
-    "description": "双方切换角色后，且玛拉妮为出战角色时：消耗1点「夜魂值」，使敌方出战角色附属啃咬目标。\n特技：鲨鲨冲浪板\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Mualani_1"
   },
   {
     "id": 212141,
@@ -1777,37 +2268,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Xinyan"
   },
   {
-    "id": 113131,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "超量装药弹头",
-    "englishName": "Overcharged Ball",
-    "tags": [
-      "GCG_TAG_SLOWLY"
-    ],
-    "targetList": [
-      {
-        "id": 159,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "ENEMY",
-        "tags": [],
-        "rawHintText": "对敌方出战角色生效",
-        "hintText": "对敌方出战角色生效"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_PYRO",
-        "count": 2
-      }
-    ],
-    "rawDescription": "$[K1]：对敌方「出战角色」造成1点$[K103]。\\n<color=#FFFFFFFF>此牌被$[K56]时：</color>对敌方「出战角色」造成1点$[K103]。",
-    "description": "战斗行动：对敌方「出战角色」造成1点火元素伤害。\n此牌被舍弃时：对敌方「出战角色」造成1点火元素伤害。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chevreuse"
-  },
-  {
     "id": 213131,
     "shareId": 398,
     "sinceVersion": "v4.8.0",
@@ -1881,105 +2341,6 @@
     "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。",
     "playingDescription": "装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Arlecchino"
-  },
-  {
-    "id": 113154,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "驰轮车·跃升",
-    "englishName": "Flamestrider: Soaring Ascent",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 11315,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
-        "hintText": "装备给我方的玛薇卡"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_VOID",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>此牌被$[K56]后：</color>对敌方出战角色造成1点$[K103]。\\n$[K58]：$[S1131541]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "此牌被舍弃后：对敌方出战角色造成1点火元素伤害。\n特技：跃升\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1131541]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "playingDescription": "特技：跃升\n可用次数：2\n（角色最多装备1个「特技」）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sky"
-  },
-  {
-    "id": 113155,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "驰轮车·涉渡",
-    "englishName": "Flamestrider: Blazing Trail",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 11315,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
-        "hintText": "装备给我方的玛薇卡"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_VOID",
-        "count": 2
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>此卡牌被打出时：</color>随机触发我方1个「召唤物」的「结束阶段」效果。\\n$[K58]：$[S1131551]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "此卡牌被打出时：随机触发我方1个「召唤物」的「结束阶段」效果。\n特技：涉渡\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1131551]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "playingDescription": "特技：涉渡\n可用次数：2\n（角色最多装备1个「特技」）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Sea"
-  },
-  {
-    "id": 113156,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "驰轮车·疾驰",
-    "englishName": "Flamestrider: Full Throttle",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 11315,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "装备给我方的<color=#FFD780FF>玛薇卡</color>",
-        "hintText": "装备给我方的玛薇卡"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>此卡牌可使用次数为0时：</color>抓4张牌。\\n$[K58]：$[S1131561]\\n（仅<color=#FFFFFFFF>$[A1315]</color>可用）\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "此卡牌可使用次数为0时：抓4张牌。\n特技：疾驰\n（仅玛薇卡可用）\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1131561]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "playingDescription": "特技：疾驰\n可用次数：2\n（角色最多装备1个「特技」）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Mavuika_Land"
   },
   {
     "id": 213151,
@@ -2093,38 +2454,6 @@
     "rawPlayingDescription": "装备有此牌的$[A1402]使用<color=#FFFFFFFF>$[S14022]</color>后：使我方一个雷元素角色获得1点充能。（每回合1次，出战角色优先）",
     "playingDescription": "装备有此牌的雷泽使用利爪与苍雷后：使我方一个雷元素角色获得1点充能。（每回合1次，出战角色优先）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Razor"
-  },
-  {
-    "id": 114031,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "雷楔",
-    "englishName": "Lightning Stiletto",
-    "tags": [
-      "GCG_TAG_TALENT",
-      "GCG_TAG_SLOWLY"
-    ],
-    "targetList": [
-      {
-        "id": 1001,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "切换到<color=#FFD780FF>刻晴</color>，使用「星斗归位」",
-        "hintText": "切换到刻晴，使用「星斗归位」"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_ELECTRO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "$[K1]：将$[A1403]切换到场上，立刻使用$[S14032]。本次$[S14032]会为$[A1403]附属<color=#FFFFFFFF>$[K1002]</color>，但是不会再生成雷楔。\\n（$[A1403]使用$[S14032]时，如果此牌在手中：不会再生成雷楔，而是改为$[K56]此牌，并为$[A1403]附属<color=#FFFFFFFF>$[K1002]</color>）",
-    "description": "战斗行动：将刻晴切换到场上，立刻使用星斗归位。本次星斗归位会为刻晴附属雷元素附魔，但是不会再生成雷楔。\n（刻晴使用星斗归位时，如果此牌在手中：不会再生成雷楔，而是改为舍弃此牌，并为刻晴附属雷元素附魔）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Keqing"
   },
   {
     "id": 214031,
@@ -2917,34 +3246,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Faruzan"
   },
   {
-    "id": 115102,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "竹星",
-    "englishName": "Starwicker",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 128,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
-        "hintText": "请选择要装备特技的角色"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "特技：仙力助推\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1151021]\\n<color=#FFFFFFFF>$[K3]：2</color>",
-    "playingDescription": "特技：仙力助推\n可用次数：2",
-    "cardFace": "UI_Gcg_CardFace_Summon_Liuyun"
-  },
-  {
     "id": 215101,
     "shareId": 411,
     "sinceVersion": "v5.0.0",
@@ -2981,125 +3282,6 @@
     "rawPlayingDescription": "我方切换角色时，此牌累积1层<color=#FFFFFFFF>「风翎」</color>。（每回合最多累积2层）\\n装备有此牌的$[A1510]使用<color=#FFFFFFFF>$[S15101]</color>时，消耗所有<color=#FFFFFFFF>「风翎」</color>，每消耗1层都使伤害+1。",
     "playingDescription": "我方切换角色时，此牌累积1层「风翎」。（每回合最多累积2层）\n装备有此牌的闲云使用清风散花词时，消耗所有「风翎」，每消耗1层都使伤害+1。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Liuyun"
-  },
-  {
-    "id": 115112,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "灵枪·仪式杖",
-    "englishName": "Soulsniper: Ritual Staff",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1151121]。\\n此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C115111]</color>。",
-    "playingDescription": "特技：多重瞄准。\n此牌被弃置时，所附属角色结束夜魂加持。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Gun"
-  },
-  {
-    "id": 115113,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "追影弹",
-    "englishName": "Shadowhunt Shell",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_ANEMO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>加入手牌时：</color>若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\\n<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K105]</color>，然后将一张$[C115113]随机放进牌库。",
-    "description": "加入手牌时：若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。\n打出或舍弃此牌时：优先对敌方出战角色造成1点风元素伤害，然后将一张追影弹随机放进牌库。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Wind"
-  },
-  {
-    "id": 115114,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "焕光追影弹·火",
-    "englishName": "Shining Shadowhunt Shell: Pyro",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_PYRO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K103]</color>，然后将一张$[C115113]随机放进牌库。",
-    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点火元素伤害，然后将一张追影弹随机放进牌库。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Fire"
-  },
-  {
-    "id": 115115,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "焕光追影弹·水",
-    "englishName": "Shining Shadowhunt Shell: Hydro",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_HYDRO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K102]</color>，然后将一张$[C115113]随机放进牌库。",
-    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点水元素伤害，然后将一张追影弹随机放进牌库。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Water"
-  },
-  {
-    "id": 115116,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "焕光追影弹·雷",
-    "englishName": "Shining Shadowhunt Shell: Electro",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_ELECTRO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K104]</color>，然后将一张$[C115113]随机放进牌库。",
-    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点雷元素伤害，然后将一张追影弹随机放进牌库。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Elec"
-  },
-  {
-    "id": 115117,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "焕光追影弹·冰",
-    "englishName": "Shining Shadowhunt Shell: Cryo",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_CRYO",
-        "count": 3
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>打出或$[K56]此牌时：</color>优先对敌方出战角色造成1点<color=#FFFFFFFF>$[K101]</color>，然后将一张$[C115113]随机放进牌库。",
-    "description": "打出或舍弃此牌时：优先对敌方出战角色造成1点冰元素伤害，然后将一张追影弹随机放进牌库。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Ice"
   },
   {
     "id": 215111,
@@ -3413,35 +3595,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Yunjin"
   },
   {
-    "id": 116081,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "裂晶弹片",
-    "englishName": "Crystal Shrapnel",
-    "tags": [],
-    "targetList": [
-      {
-        "id": 159,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "ENEMY",
-        "tags": [],
-        "rawHintText": "对敌方出战角色生效",
-        "hintText": "对敌方出战角色生效"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "对敌方「出战角色」造成1点$[K100]，抓1张牌。",
-    "description": "对敌方「出战角色」造成1点物理伤害，抓1张牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Navia_Bullet"
-  },
-  {
     "id": 216081,
     "shareId": 399,
     "sinceVersion": "v4.8.0",
@@ -3518,23 +3671,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Chiori"
   },
   {
-    "id": 116102,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "冲天转转",
-    "englishName": "Turbo Twirly",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>附属角色切换至后台时：</color>消耗1点夜魂值，召唤<color=#FFFFFFFF>$[C116103]</color>。\\n$[K58]：$[S1161021]\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116104]</color>。",
-    "description": "附属角色切换至后台时：消耗1点夜魂值，召唤冲天转转·脱离。\n特技：转转冲击\n（角色最多装备1个「特技」）\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Kachina"
-  },
-  {
     "id": 216101,
     "shareId": 463,
     "sinceVersion": "v5.5.0",
@@ -3570,23 +3706,6 @@
     "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）",
     "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kachina"
-  },
-  {
-    "id": 116112,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "刃轮装束",
-    "englishName": "Combat Blading Gear",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "所附属角色造成的$[K100]变为$[K106]。\\n$[K58]：$[S1161121]\\n所附属角色<color=#FFFFFFFF>「夜魂值」</color>为0时，弃置此牌；此牌被弃置时，所附属角色结束<color=#FFFFFFFF>$[C116111]</color>。",
-    "description": "所附属角色造成的物理伤害变为岩元素伤害。\n特技：高速腾跃\n所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Xilonen"
   },
   {
     "id": 216111,
@@ -4322,34 +4441,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Ptahur"
   },
   {
-    "id": 122051,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "水泡史莱姆",
-    "englishName": "Mist Bubble Slime",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 128,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
-        "hintText": "请选择要装备特技的角色"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "特技：水泡战法\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1220511]\\n<color=#FFFFFFFF>$[K3]：2</color>",
-    "playingDescription": "特技：水泡战法\n可用次数：2",
-    "cardFace": "UI_Gcg_CardFace_Summon_HilistrayWater"
-  },
-  {
     "id": 222051,
     "shareId": 412,
     "sinceVersion": "v5.0.0",
@@ -4461,34 +4552,6 @@
     "rawPlayingDescription": "装备有此牌的$[A2302]触发<color=#FFFFFFFF>$[C123022]</color>时：弃置此牌，为角色附属$[K1006]。",
     "playingDescription": "装备有此牌的深渊咏者·渊火触发火之新生时：弃置此牌，为角色附属渊火加护。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_DeaconFire"
-  },
-  {
-    "id": 123031,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "厄灵·炎之魔蝎",
-    "englishName": "Spirit of Omen: Pyro Scorpion",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 128,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
-        "hintText": "请选择要装备特技的角色"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）\n特技：炙烧攻势\n可用次数：1\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色受到伤害时：</color>如可能，失去1点充能，以抵消1点伤害，然后生成<color=#FFFFFFFF>$[C123032]</color>。（每回合至多2次）\\n$[K58]：$[S1230311]\\n<color=#FFFFFFFF>$[K3]：1</color>",
-    "playingDescription": "所附属角色受到伤害时：如可能，失去1点充能，以抵消1点伤害，然后生成魔蝎祝福。（每回合至多2次）\n特技：炙烧攻势\n可用次数：1",
-    "cardFace": "UI_Gcg_CardFace_Summon_Muscleman"
   },
   {
     "id": 223031,
@@ -4708,21 +4771,6 @@
     "rawPlayingDescription": "装备有此牌的$[A2404]在场时，我方选择行动前：如果<color=#FFFFFFFF>$[C124041]</color>的$[K3]至少为3，则<color=#FFFFFFFF>$[C124041]</color>立刻造成1点$[K104]。（需消耗$[K3]，每回合1次）",
     "playingDescription": "装备有此牌的愚人众·雷萤术士在场时，我方选择行动前：如果雷萤的可用次数至少为3，则雷萤立刻造成1点雷元素伤害。（需消耗可用次数，每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_FatuusSummoner"
-  },
-  {
-    "id": 124051,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "噬骸能量块",
-    "englishName": "Bonecruncher's Energy Block",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "随机$[K56]1张原本元素骰费用最高的手牌，生成1个我方出战角色类型的元素骰。（每回合最多打出1张）",
-    "description": "随机舍弃1张原本元素骰费用最高的手牌，生成1个我方出战角色类型的元素骰。（每回合最多打出1张）",
-    "cardFace": "UI_Gcg_CardFace_Summon_ScorpionSacred"
   },
   {
     "id": 224051,
@@ -5066,26 +5114,6 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Fungusgrass"
   },
   {
-    "id": 127021,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "唤醒眷属",
-    "englishName": "Awaken, My Kindred",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_DENDRO",
-        "count": 2
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>打出此牌或$[K56]此牌时：</color>召唤一个独立的$[C127022]。",
-    "description": "打出此牌或舍弃此牌时：召唤一个独立的增殖生命体。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Apep"
-  },
-  {
     "id": 227021,
     "shareId": 380,
     "sinceVersion": "v4.7.0",
@@ -5121,34 +5149,6 @@
     "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A2702]</color>在场时:我方<color=#FFFFFFFF>$[C127022]</color>造成的伤害+1。",
     "playingDescription": "装备有此牌的阿佩普的绿洲守望者在场时:我方增殖生命体造成的伤害+1。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Apep"
-  },
-  {
-    "id": 127032,
-    "obtainable": false,
-    "type": "GCG_CARD_MODIFY",
-    "name": "厄灵·草之灵蛇",
-    "englishName": "Spirit of Omen: Dendro Spirit-Serpent",
-    "tags": [
-      "GCG_TAG_VEHICLE"
-    ],
-    "targetList": [
-      {
-        "id": 128,
-        "type": "GCG_CARD_CHARACTER",
-        "camp": "FRIENDLY",
-        "tags": [],
-        "rawHintText": "请选择要装备<color=#FFD780FF>特技</color>的角色",
-        "hintText": "请选择要装备特技的角色"
-      }
-    ],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>\\n（角色最多装备1个「{SPRITE_PRESET#3008}特技」）",
-    "description": "特技：藤蔓锋鳞\n可用次数：2\n（角色最多装备1个「特技」）",
-    "rawPlayingDescription": "$[K58]：$[S1270321]\\n<color=#FFFFFFFF>$[K3]：2</color>",
-    "playingDescription": "特技：藤蔓锋鳞\n可用次数：2",
-    "cardFace": "UI_Gcg_CardFace_Summon_EremiteGrass"
   },
   {
     "id": 227031,
@@ -5187,6 +5187,261 @@
     "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A2703]</color>在场，我方装备了<color=#FFFFFFFF>$[C127032]</color>的角色切换至出战时：造成1点$[K107]。（每回合1次）",
     "playingDescription": "装备有此牌的镀金旅团·叶轮舞者在场，我方装备了厄灵·草之灵蛇的角色切换至出战时：造成1点草元素伤害。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_EremiteGrass"
+  },
+  {
+    "id": 300006,
+    "obtainable": false,
+    "type": "GCG_CARD_ASSIST",
+    "name": "斗争之火",
+    "englishName": "Flames of War",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "此牌会记录本回合你对敌方角色造成的伤害，记为<color=#FFFFFFFF>「斗志」</color>。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若此牌是场上<color=#FFFFFFFF>「斗志」</color>最高的$[C300006]，则清空此牌的<color=#FFFFFFFF>「斗志」</color>，使我方出战角色本回合造成的伤害+1。",
+    "description": "此牌会记录本回合你对敌方角色造成的伤害，记为「斗志」。\n行动阶段开始时：若此牌是场上「斗志」最高的斗争之火，则清空此牌的「斗志」，使我方出战角色本回合造成的伤害+1。",
+    "cardFace": "UI_Gcg_CardFace_Summon_ShenyeXunli"
+  },
+  {
+    "id": 301020,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "禁忌知识",
+    "englishName": "Forbidden Knowledge",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\\n对我方出战角色造成1点$[K5]，抓1张牌。",
+    "description": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\n对我方出战角色造成1点穿透伤害，抓1张牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_ChiWangLin"
+  },
+  {
+    "id": 302202,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "太郎丸的存款",
+    "englishName": "Taroumaru's Savings",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "生成1个$[K411]。",
+    "description": "生成1个万能元素。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Taroumaru"
+  },
+  {
+    "id": 302203,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "「清洁工作」",
+    "englishName": "\"Called In For Cleanup\"",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）",
+    "description": "我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Baishoutao"
+  },
+  {
+    "id": 302206,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "瑟琳的声援",
+    "englishName": "Serene's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "随机将2张美露莘推荐的「{SPRITE_PRESET#3101}料理」加入手牌。",
+    "description": "随机将2张美露莘推荐的「料理」加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302207,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "洛梅的声援",
+    "englishName": "Laume's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "随机将2张美露莘好奇的「{SPRITE_PRESET#3004}圣遗物」加入手牌。",
+    "description": "随机将2张美露莘好奇的「圣遗物」加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302208,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "柯莎的声援",
+    "englishName": "Cosanzeana's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "随机将2张美露莘称赞的「{SPRITE_PRESET#3003}武器」加入手牌。",
+    "description": "随机将2张美露莘称赞的「武器」加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302209,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "夏诺蒂拉的声援",
+    "englishName": "Canotila's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "随机将2张美露莘看好的超棒事件牌加入手牌。",
+    "description": "随机将2张美露莘看好的超棒事件牌加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302210,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "希洛娜的声援",
+    "englishName": "Thirona's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "接下来3个回合结束时，各将1张美露莘看好的超棒事件牌加入手牌。",
+    "description": "接下来3个回合结束时，各将1张美露莘看好的超棒事件牌加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302211,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "希露艾的声援",
+    "englishName": "Sluasi's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "复制对方牌库顶部的3张牌，加入手牌。",
+    "description": "复制对方牌库顶部的3张牌，加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302212,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "薇尔妲的声援",
+    "englishName": "Virda's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "随机将2张「{SPRITE_PRESET#3007}秘传」卡牌加入你的手牌，并恢复双方牌手的「{SPRITE_PRESET#3007}秘传」卡牌使用机会。",
+    "description": "随机将2张「秘传」卡牌加入你的手牌，并恢复双方牌手的「秘传」卡牌使用机会。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302213,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "芙佳的声援",
+    "englishName": "Puca's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "随机生成「{SPRITE_PRESET#3103}伙伴」到场上，直到填满双方支援区。",
+    "description": "随机生成「伙伴」到场上，直到填满双方支援区。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302214,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "托皮娅的声援",
+    "englishName": "Topyas's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "抓2张牌，双方获得以下效果：「本回合打出手牌后，随机$[K56]1张牌或抓1张牌。」",
+    "description": "抓2张牌，双方获得以下效果：「本回合打出手牌后，随机舍弃1张牌或抓1张牌。」",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302215,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "卢蒂妮的声援",
+    "englishName": "Lutine's Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "抓2张牌，双方获得以下效果：「角色使用技能后，随机受到2点治疗或2点$[K5]。$[K3]：2」",
+    "description": "抓2张牌，双方获得以下效果：「角色使用技能后，随机受到2点治疗或2点穿透伤害。可用次数：2」",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 302218,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "美露莘的声援",
+    "englishName": "Melusine Support",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "效果随机的超棒贴纸，凝聚了美露莘们的心意。",
+    "description": "效果随机的超棒贴纸，凝聚了美露莘们的心意。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
+  },
+  {
+    "id": 303230,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "海底宝藏",
+    "englishName": "Undersea Treasure",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "生成1个随机基础元素骰，治疗我方出战角色1点。（每个角色每回合最多受到1次来自本效果的治疗）",
+    "description": "生成1个随机基础元素骰，治疗我方出战角色1点。（每个角色每回合最多受到1次来自本效果的治疗）",
+    "cardFace": "UI_Gcg_CardFace_Summon_Xunbao"
   },
   {
     "id": 311101,
@@ -9537,21 +9792,6 @@
     "cardFace": "UI_Gcg_CardFace_Assist_Location_ChiWangLin"
   },
   {
-    "id": 301020,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "禁忌知识",
-    "englishName": "Forbidden Knowledge",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\\n对我方出战角色造成1点$[K5]，抓1张牌。",
-    "description": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\n对我方出战角色造成1点穿透伤害，抓1张牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_ChiWangLin"
-  },
-  {
     "id": 321021,
     "shareId": 389,
     "sinceVersion": "v4.7.0",
@@ -10342,21 +10582,6 @@
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_Taroumaru"
   },
   {
-    "id": 302202,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "太郎丸的存款",
-    "englishName": "Taroumaru's Savings",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "生成1个$[K411]。",
-    "description": "生成1个万能元素。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Taroumaru"
-  },
-  {
     "id": 322025,
     "shareId": 359,
     "sinceVersion": "v4.6.0",
@@ -10376,21 +10601,6 @@
     "rawDescription": "<color=#FFFFFFFF>结束阶段：</color>生成1张<color=#FFFFFFFF>$[K2002]</color>，随机将其置入我方牌库顶部5张牌之中。如果此牌的$[K3]仅剩余1，则抓1张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>",
     "description": "结束阶段：生成1张「清洁工作」，随机将其置入我方牌库顶部5张牌之中。如果此牌的可用次数仅剩余1，则抓1张牌。\n可用次数：2",
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_Baishoutao"
-  },
-  {
-    "id": 302203,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "「清洁工作」",
-    "englishName": "\"Called In For Cleanup\"",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）",
-    "description": "我方出战角色下次造成的伤害+1。（可叠加，最多叠加到+2）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Baishoutao"
   },
   {
     "id": 322026,
@@ -10464,186 +10674,6 @@
     "rawDescription": "<color=#FFFFFFFF>我方使用「{SPRITE_PRESET#3008}特技」时：</color>少花费1个元素骰。（每回合1次）",
     "description": "我方使用「特技」时：少花费1个元素骰。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_AimiTa"
-  },
-  {
-    "id": 302206,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "瑟琳的声援",
-    "englishName": "Serene's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "随机将2张美露莘推荐的「{SPRITE_PRESET#3101}料理」加入手牌。",
-    "description": "随机将2张美露莘推荐的「料理」加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302207,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "洛梅的声援",
-    "englishName": "Laume's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "随机将2张美露莘好奇的「{SPRITE_PRESET#3004}圣遗物」加入手牌。",
-    "description": "随机将2张美露莘好奇的「圣遗物」加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302208,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "柯莎的声援",
-    "englishName": "Cosanzeana's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "随机将2张美露莘称赞的「{SPRITE_PRESET#3003}武器」加入手牌。",
-    "description": "随机将2张美露莘称赞的「武器」加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302209,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "夏诺蒂拉的声援",
-    "englishName": "Canotila's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "随机将2张美露莘看好的超棒事件牌加入手牌。",
-    "description": "随机将2张美露莘看好的超棒事件牌加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302210,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "希洛娜的声援",
-    "englishName": "Thirona's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "接下来3个回合结束时，各将1张美露莘看好的超棒事件牌加入手牌。",
-    "description": "接下来3个回合结束时，各将1张美露莘看好的超棒事件牌加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302211,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "希露艾的声援",
-    "englishName": "Sluasi's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "复制对方牌库顶部的3张牌，加入手牌。",
-    "description": "复制对方牌库顶部的3张牌，加入手牌。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302212,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "薇尔妲的声援",
-    "englishName": "Virda's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_VOID",
-        "count": 2
-      }
-    ],
-    "rawDescription": "随机将2张「{SPRITE_PRESET#3007}秘传」卡牌加入你的手牌，并恢复双方牌手的「{SPRITE_PRESET#3007}秘传」卡牌使用机会。",
-    "description": "随机将2张「秘传」卡牌加入你的手牌，并恢复双方牌手的「秘传」卡牌使用机会。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302213,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "芙佳的声援",
-    "englishName": "Puca's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "随机生成「{SPRITE_PRESET#3103}伙伴」到场上，直到填满双方支援区。",
-    "description": "随机生成「伙伴」到场上，直到填满双方支援区。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302214,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "托皮娅的声援",
-    "englishName": "Topyas's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "抓2张牌，双方获得以下效果：「本回合打出手牌后，随机$[K56]1张牌或抓1张牌。」",
-    "description": "抓2张牌，双方获得以下效果：「本回合打出手牌后，随机舍弃1张牌或抓1张牌。」",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302215,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "卢蒂妮的声援",
-    "englishName": "Lutine's Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "抓2张牌，双方获得以下效果：「角色使用技能后，随机受到2点治疗或2点$[K5]。$[K3]：2」",
-    "description": "抓2张牌，双方获得以下效果：「角色使用技能后，随机受到2点治疗或2点穿透伤害。可用次数：2」",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
-  },
-  {
-    "id": 302218,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "美露莘的声援",
-    "englishName": "Melusine Support",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "效果随机的超棒贴纸，凝聚了美露莘们的心意。",
-    "description": "效果随机的超棒贴纸，凝聚了美露莘们的心意。",
-    "cardFace": "UI_Gcg_CardFace_Summon_Seling"
   },
   {
     "id": 323001,
@@ -11135,21 +11165,6 @@
     "rawDescription": "在双方场上生成<color=#FFFFFFFF>$[C300006]</color>，然后我方场上的<color=#FFFFFFFF>$[C300006]</color>的<color=#FFFFFFFF>「斗志」</color>+1。（<color=#FFFFFFFF>$[C300006]</color>会将各自阵营对对方造成的伤害记录为<color=#FFFFFFFF>「斗志」</color>，每回合行动阶段开始时<color=#FFFFFFFF>「斗志」</color>较高的一方会清空<color=#FFFFFFFF>「斗志」</color>，使当前出战角色在本回合中造成的伤害+1。）\\n（整局游戏只能打出一张「{SPRITE_PRESET#3007}秘传」卡牌；这张牌一定在你的起始手牌中）",
     "description": "在双方场上生成斗争之火，然后我方场上的斗争之火的「斗志」+1。（斗争之火会将各自阵营对对方造成的伤害记录为「斗志」，每回合行动阶段开始时「斗志」较高的一方会清空「斗志」，使当前出战角色在本回合中造成的伤害+1。）\n（整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）",
     "cardFace": "UI_Gcg_CardFace_Event_Event_ShenyeXunli"
-  },
-  {
-    "id": 300006,
-    "obtainable": false,
-    "type": "GCG_CARD_ASSIST",
-    "name": "斗争之火",
-    "englishName": "Flames of War",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "此牌会记录本回合你对敌方角色造成的伤害，记为<color=#FFFFFFFF>「斗志」</color>。\\n<color=#FFFFFFFF>行动阶段开始时：</color>若此牌是场上<color=#FFFFFFFF>「斗志」</color>最高的$[C300006]，则清空此牌的<color=#FFFFFFFF>「斗志」</color>，使我方出战角色本回合造成的伤害+1。",
-    "description": "此牌会记录本回合你对敌方角色造成的伤害，记为「斗志」。\n行动阶段开始时：若此牌是场上「斗志」最高的斗争之火，则清空此牌的「斗志」，使我方出战角色本回合造成的伤害+1。",
-    "cardFace": "UI_Gcg_CardFace_Summon_ShenyeXunli"
   },
   {
     "id": 330011,
@@ -12540,21 +12555,6 @@
     "rawDescription": "生成6张<color=#FFFFFFFF>$[K2003]</color>，随机地置入我方牌库中。",
     "description": "生成6张海底宝藏，随机地置入我方牌库中。",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Xunbao"
-  },
-  {
-    "id": 303230,
-    "obtainable": false,
-    "type": "GCG_CARD_EVENT",
-    "name": "海底宝藏",
-    "englishName": "Undersea Treasure",
-    "tags": [],
-    "targetList": [],
-    "relatedCharacterId": null,
-    "relatedCharacterTags": [],
-    "playCost": [],
-    "rawDescription": "生成1个随机基础元素骰，治疗我方出战角色1点。（每个角色每回合最多受到1次来自本效果的治疗）",
-    "description": "生成1个随机基础元素骰，治疗我方出战角色1点。（每个角色每回合最多受到1次来自本效果的治疗）",
-    "cardFace": "UI_Gcg_CardFace_Summon_Xunbao"
   },
   {
     "id": 332032,

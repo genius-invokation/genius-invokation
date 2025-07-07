@@ -197,5 +197,5 @@ export async function collateEntities(langCode: string) {
     }
     result.push(data);
   }
-  return result;
+  return result.toSorted((a, b) => a.id - b.id);
 }

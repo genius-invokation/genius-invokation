@@ -87,7 +87,12 @@ export const COST_TYPE = (ganyuTalent[COST_LIST] as object[])
   .find(([k, v]) => typeof v === "string")![0];
 
 // GCGChooseExcelConfigData
-export const SKILL_ID = match(xchoose, CARD_TYPE, "GCG_CARD_CHARACTER", 101); // 料理 hint
+export const SKILL_ID = match(
+  xchoose,
+  CARD_TYPE,
+  "GCG_CARD_CHARACTER",
+  (v) => typeof v === "number" && v < 19999,
+); // 料理 hint
 export const TARGET_HINT_TEXT_MAP_HASH = match(
   xchoose,
   SKILL_ID,

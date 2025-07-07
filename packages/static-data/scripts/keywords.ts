@@ -53,5 +53,5 @@ export function collateKeywords(langCode: string) {
       description,
     });
   }
-  return result;
+  return result.toSorted((a, b) => a.id - b.id);
 }
