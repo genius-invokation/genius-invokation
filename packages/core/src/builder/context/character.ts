@@ -83,9 +83,7 @@ export class CharacterBase {
     }
     return thisIdx;
   }
-  satisfyPosition(
-    pos: CharacterPosition,
-  ) {
+  satisfyPosition(pos: CharacterPosition) {
     const player = this.gameState.players[this.who];
     const activeIdx = getActiveCharacterIndex(player);
     const length = player.characters.length;
@@ -194,9 +192,11 @@ export class CharacterBase {
   }
 }
 
-export class Character<Meta extends ContextMetaBase> extends CharacterBase {
+export class ReadonlyCharacter<
+  Meta extends ContextMetaBase,
+> extends CharacterBase {
   constructor(
-    private readonly skillContext: SkillContext<Meta>,
+    protected readonly skillContext: SkillContext<Meta>,
     id: number,
   ) {
     super(skillContext.state, id);
@@ -222,7 +222,11 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
   }
 
   // MUTATIONS
+}
 
+export class Character<
+  Meta extends ContextMetaBase,
+> extends ReadonlyCharacter<Meta> {
   gainEnergy(value = 1) {
     this.skillContext.gainEnergy(value, this.state);
   }
@@ -283,21 +287,5 @@ export class Character<Meta extends ContextMetaBase> extends CharacterBase {
   }
 }
 
-type CharacterMutativeProps =
-  | "gainEnergy"
-  | "heal"
-  | "damage"
-  | "apply"
-  | "addStatus"
-  | "equip"
-  | "removeArtifact"
-  | "removeWeapon"
-  | "setVariable"
-  | "addVariable"
-  | "addVariableWithMax"
-  | "dispose";
-
 export type TypedCharacter<Meta extends ContextMetaBase> =
-  Meta["readonly"] extends true
-    ? Omit<Character<Meta>, CharacterMutativeProps>
-    : Character<Meta>;
+  Meta["readonly"] extends true ? ReadonlyCharacter<Meta> : Character<Meta>;

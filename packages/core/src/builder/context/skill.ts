@@ -1411,7 +1411,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       if (st) {
         const oldValue = this.getVariable("nightsoul", st.state);
         const newValue = Math.max(0, oldValue - count);
-        const info: NightsoulValueChangeInfo = {
+        let info: NightsoulValueChangeInfo = {
           type: "consume",
           oldValue,
           newValue,
@@ -1423,23 +1423,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
           t.state,
           info,
         );
-        this.eventAndRequests.push(
-          ...this.mutator.handleInlineEvent(
-            this.skillInfo,
-            "modifyChangeNightsoul",
-            modifyEventArg,
-          ),
+        this.callAndEmit(
+          "handleInlineEvent",
+          this.skillInfo,
+          "modifyChangeNightsoul",
+          modifyEventArg,
         );
-        if (modifyEventArg.info.cancelled) {
+        info = modifyEventArg.info;
+        if (info.cancelled) {
           continue;
         }
-        this.setVariable("nightsoul", modifyEventArg.info.newValue, st.state);
-        this.emitEvent(
-          "onChangeNightsoul",
-          this.state,
-          t.state,
-          modifyEventArg.info,
-        );
+        this.setVariable("nightsoul", info.newValue, st.state);
+        this.emitEvent("onChangeNightsoul", this.state, t.state, info);
       }
     }
     return this.enableShortcut();
