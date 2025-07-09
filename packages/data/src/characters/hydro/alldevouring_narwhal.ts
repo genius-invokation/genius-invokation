@@ -30,6 +30,7 @@ export const DarkShadow = summon(122043)
   .usage(0)
   .variable("atk", 0, { visible: false })
   .variable("barrierUsage", 1, { visible: false })
+  .variable("skillCaller", 0, { visible: false })
   .hint(DamageType.Electro, (c, e) => e.variables.atk)
   .on("enter")
   .do((c) => {
@@ -54,10 +55,15 @@ export const DarkShadow = summon(122043)
     c.consumeUsage();
   })
   .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && c.getVariable("barrierUsage"))
-  .setVariable("barrierUsage", 0)
-  .decreaseDamage(1)
-  .on("damaged", (c) => !c.getVariable("barrierUsage"))
+  .do((c, e) => {
+    c.setVariable("barrierUsage", 0);
+    c.setVariable("skillCaller", e.via.caller.id);
+    e.decreaseDamage(1);
+  })
+  .on("damaged", (c, e) => !c.getVariable("barrierUsage") &&
+    e.via.caller.id === c.getVariable("skillCaller"))
   .setVariable("barrierUsage", 1)
+  .setVariable("skillCaller", 0)
   .consumeUsage(2)
   .done();
 
