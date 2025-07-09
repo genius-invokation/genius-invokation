@@ -500,7 +500,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const sortData = new Map(
       player.hands.map(
         (c) =>
-          [c.id, { cost: diceCostOfCard(c.definition), tb: tb(c) }] as const,
+          [c.id, { cost: -diceCostOfCard(c.definition), tb: tb(c) }] as const,
       ),
     );
     return player.hands
@@ -508,7 +508,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
         sortData.get(card.id)!.cost,
         sortData.get(card.id)!.tb,
       ])
-      .toReversed();
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
