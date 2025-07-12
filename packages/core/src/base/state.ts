@@ -103,7 +103,7 @@ export interface PlayerState {
    * 键为技能发起者的角色定义 id，值为该定义下使用过的技能 id 列表
    */
   readonly roundSkillLog: ReadonlyMap<number, number[]>;
-  readonly removedEntities: AnyState[];
+  readonly removedEntities: readonly AnyState[];
 }
 
 export interface CardState {

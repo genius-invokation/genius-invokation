@@ -18,6 +18,7 @@ import type {
   CharacterVariables,
   EntityState,
   GameState,
+  StateKind,
 } from "../../base/state";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../../error";
 import type {
@@ -42,6 +43,7 @@ import type {
   StatusHandle,
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 
@@ -49,13 +51,18 @@ export type CharacterPosition = "active" | "next" | "prev" | "standby";
  * 提供一些针对角色的便利方法，不需要 SkillContext 参与。
  * 仅当保证 GameState 不发生变化时使用。
  */
-export class CharacterBase {
+export class CharacterBase extends ReactiveStateBase {
+  override get [ReactiveStateSymbol](): "character" {
+    return "character";
+  }
+
   private _area: EntityArea;
   private _state: CharacterState;
   constructor(
     private _gameState: GameState,
     protected readonly _id: number,
   ) {
+    super();
     this._area = getEntityArea(_gameState, _id);
     this._state = getEntityById(_gameState, _id) as CharacterState;
   }
@@ -220,8 +227,6 @@ export class ReadonlyCharacter<
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
   }
-
-  // MUTATIONS
 }
 
 export class Character<

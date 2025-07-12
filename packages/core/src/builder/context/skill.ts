@@ -21,7 +21,7 @@ import {
   type EntityType,
   stringifyEntityArea,
 } from "../../base/entity";
-import type { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
+import type { Mutation } from "../../base/mutation";
 import {
   type NightsoulValueChangeInfo,
   type DamageInfo,
@@ -92,6 +92,7 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
+import { applyReactive, type ApplyReactive } from "./reactive";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -298,8 +299,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return !!this.skillInfo.isPreview;
   }
 
-  get state() {
-    return this.mutator.state;
+  get state(): ApplyReactive<Meta, GameState> {
+    return applyReactive(this, this.mutator.state);
   }
 
   get player() {
@@ -329,9 +330,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return executeQuery(this, arg);
   }
 
-  // Get context of given entity state
+  /**
+   * Get context of given entity state
+   * @deprecated
+   */
   of(entityState: EntityState): TypedEntity<Meta>;
+  /**
+   * @deprecated
+   */
   of(entityState: CharacterState): TypedCharacter<Meta>;
+  /**
+   * @deprecated
+   */
   of<T extends ExEntityType = ExEntityType>(
     entityId: AnyState | number,
   ): TypedExEntity<Meta, T>;

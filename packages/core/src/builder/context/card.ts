@@ -18,22 +18,28 @@ import type { CardState } from "../../base/state";
 import { getEntityArea, getEntityById } from "../../utils";
 import type { ContextMetaBase, SkillContext } from "./skill";
 import type { EntityArea } from "../../base/entity";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
 
-export class Card<Meta extends ContextMetaBase> {
-  public readonly area: EntityArea;
+class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
+  override get [ReactiveStateSymbol](): "card" {
+    return "card";
+  }
+
+  protected readonly _area: EntityArea;
   constructor(
-    private readonly skillContext: SkillContext<Meta>,
+    protected readonly skillContext: SkillContext<Meta>,
     public readonly id: number,
   ) {
-    this.area = getEntityArea(this.skillContext.state, this.id);
+    super();
+    this._area = getEntityArea(this.skillContext.state, this.id);
   }
   get who() {
-    return this.area.who;
+    return this._area.who;
   }
   isMine() {
-    return this.area.who === this.skillContext.callerArea.who;
+    return this._area.who === this.skillContext.callerArea.who;
   }
-  
+
   get state(): CardState {
     return getEntityById(this.skillContext.state, this.id) as CardState;
   }
@@ -41,10 +47,12 @@ export class Card<Meta extends ContextMetaBase> {
   getVariable(name: string): never {
     throw new GiTcgDataError("Cannot get variable of a card");
   }
-  dispose(): never {
-    throw new GiTcgDataError("Cannot dispose a card in this method");
+}
+export class Card<Meta extends ContextMetaBase> extends ReadonlyCard<Meta> {
+  dispose() {
     this.skillContext.disposeCard(this.state);
   }
 }
 
-export type TypedCard<Meta extends ContextMetaBase> = Card<Meta>;
+export type TypedCard<Meta extends ContextMetaBase> =
+  Meta["readonly"] extends true ? ReadonlyCard<Meta> : Card<Meta>;
