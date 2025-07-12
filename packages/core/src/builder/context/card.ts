@@ -33,6 +33,9 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     super();
     this._area = getEntityArea(this.skillContext.state, this.id);
   }
+  get area() {
+    return this._area;
+  }
   get who() {
     return this._area.who;
   }
