@@ -28,6 +28,7 @@ import {
   CharacterVariables,
   ExtensionState,
   CardDefinition,
+  StateSymbol,
 } from "@gi-tcg/core";
 import {
   Aura,
@@ -184,8 +185,10 @@ function childrenToArray(
 
 type Draft<T> = import("immer").Draft<T>;
 
-function emptyPlayerState(): Draft<PlayerState> {
+function emptyPlayerState(who: 0 | 1): Draft<PlayerState> {
   return {
+    [StateSymbol]: "player",
+    who,
     initialPile: [],
     pile: [],
     dice: [],
@@ -219,8 +222,8 @@ export function setup(state: JSX.Element): TestController {
   const stateProp = state.prop as State.Prop;
   const data = getData(stateProp.dataVersion);
   const players: Draft<[PlayerState, PlayerState]> = [
-    emptyPlayerState(),
-    emptyPlayerState(),
+    emptyPlayerState(0),
+    emptyPlayerState(1),
   ];
   const playerDefaultCharacters = [
     defaultCharacterDefs(data),
@@ -312,6 +315,7 @@ export function setup(state: JSX.Element): TestController {
             ...namedV,
           };
           const state: EntityState = {
+            [StateSymbol]: "entity",
             id,
             definition,
             variables,
@@ -320,6 +324,7 @@ export function setup(state: JSX.Element): TestController {
         }
 
         const state: CharacterState = {
+          [StateSymbol]: "character",
           id,
           definition,
           variables,
@@ -347,6 +352,7 @@ export function setup(state: JSX.Element): TestController {
           throw new Error(`Card ${def} not found`);
         }
         const state: CardState = {
+          [StateSymbol]: "card",
           id,
           definition,
           variables: {},
@@ -383,6 +389,7 @@ export function setup(state: JSX.Element): TestController {
           ...namedV,
         };
         const state: EntityState = {
+          [StateSymbol]: "entity",
           id,
           definition,
           variables,
@@ -408,6 +415,7 @@ export function setup(state: JSX.Element): TestController {
     for (let i = player.characters.length; i < 3; i++) {
       const definition = playerDefaultCharacters[who].shift()!;
       const state: CharacterState = {
+        [StateSymbol]: "character",
         id: nextId(),
         definition,
         variables: Object.fromEntries(
@@ -436,12 +444,14 @@ export function setup(state: JSX.Element): TestController {
     )
     .toArray();
   const gameState: GameState = {
+    [StateSymbol]: "game",
     data,
     config: {
       initialDiceCount: 8,
       initialHandsCount: 5,
       maxDiceCount: 16,
       maxHandsCount: 10,
+      maxPileCount: 200,
       maxRoundsCount: 15,
       maxSummonsCount: 4,
       maxSupportsCount: 4,

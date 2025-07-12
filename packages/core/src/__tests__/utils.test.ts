@@ -16,7 +16,7 @@
 import { test, expect } from "bun:test";
 import { shuffle, sortDice } from "../utils";
 import { DiceType } from "@gi-tcg/typings";
-import type { PlayerState } from "../base/state";
+import { StateSymbol, type PlayerState } from "../base/state";
 
 test("sort dice", () => {
   const dice = [
@@ -33,9 +33,12 @@ test("sort dice", () => {
   const shuffled = shuffle(dice);
   // 草和雷是出战角色的骰子（有效骰）
   const playerState: PlayerState = {
+    [StateSymbol]: "player",
+    who: 0,
     activeCharacterId: -1,
     characters: [
       {
+        [StateSymbol]: "character",
         id: -1,
         entities: [],
         variables: {} as never,
@@ -58,6 +61,7 @@ test("sort dice", () => {
         },
       },
       {
+        [StateSymbol]: "character",
         id: -2,
         entities: [],
         variables: {} as never,

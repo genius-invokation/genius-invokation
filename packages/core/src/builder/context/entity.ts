@@ -23,13 +23,19 @@ import {
 import { getEntityArea, getEntityById } from "../../utils";
 import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
 
-export class Entity<Meta extends ContextMetaBase> {
-  private readonly _area: EntityArea;
+class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
+  override get [ReactiveStateSymbol](): "entity" {
+    return "entity";
+  }
+
+  protected readonly _area: EntityArea;
   constructor(
-    private readonly skillContext: SkillContext<Meta>,
+    protected readonly skillContext: SkillContext<Meta>,
     public readonly id: number,
   ) {
+    super();
     this._area = getEntityArea(skillContext.state, id);
   }
 
@@ -60,7 +66,8 @@ export class Entity<Meta extends ContextMetaBase> {
     }
     return new Character<Meta>(this.skillContext, this._area.characterId);
   }
-
+}
+export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {
   setVariable(prop: string, value: number) {
     this.skillContext.setVariable(prop, value, this.state);
   }
@@ -89,15 +96,5 @@ export class Entity<Meta extends ContextMetaBase> {
   }
 }
 
-type EntityMutativeProps =
-  | "setVariable"
-  | "addVariable"
-  | "addVariableWithMax"
-  | "consumeUsage"
-  | "resetUsagePerRound"
-  | "dispose";
-
 export type TypedEntity<Meta extends ContextMetaBase> =
-  Meta["readonly"] extends true
-    ? Omit<Entity<Meta>, EntityMutativeProps>
-    : Entity<Meta>;
+  Meta["readonly"] extends true ? ReadonlyEntity<Meta> : Entity<Meta>;

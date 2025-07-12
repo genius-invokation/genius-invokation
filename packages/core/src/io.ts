@@ -57,6 +57,7 @@ import type {
   GameState,
   PhaseType,
   PlayerState,
+  StateSymbol,
 } from "./base/state";
 import type {
   Mutation,
@@ -425,7 +426,7 @@ function exposeTag(tags: EntityTag[]) {
 
 export function exposeEntity(
   state: GameState | null,
-  e: EntityState,
+  e:  Omit<EntityState, StateSymbol>,
 ): PbEntityState {
   let equipment: PbEquipmentType | undefined = void 0;
   if (e.definition.type === "equipment") {
@@ -477,7 +478,7 @@ function exposeDiceRequirement(
 
 function exposeCard(
   state: GameState | null,
-  c: CardState,
+  c: Omit<CardState, StateSymbol>,
   hide: boolean,
 ): PbCardState {
   if (c.id === 0) {
@@ -515,7 +516,7 @@ function exposeCard(
 function exposeCharacter(
   state: GameState | null,
   player: PlayerState | null,
-  ch: CharacterState,
+  ch: Omit<CharacterState, StateSymbol>,
 ): PbCharacterState {
   const tags = exposeTag(
     [

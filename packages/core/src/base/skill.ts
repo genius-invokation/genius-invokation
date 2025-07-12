@@ -233,7 +233,7 @@ export interface ReactionInfo {
   readonly type: Reaction;
   readonly via: SkillInfo;
   readonly target: CharacterState;
-  readonly fromDamage?: DamageInfo;
+  readonly fromDamage: DamageInfo | null;
 }
 
 export interface UseSkillInfo {
@@ -1303,7 +1303,7 @@ export type InlineEventNames =
 
 export type EventArgOf<E extends EventNames> = InstanceType<EventMap[E]>;
 
-class RequestArg {
+export class RequestArg {
   constructor(public readonly via: SkillInfo) {}
 }
 

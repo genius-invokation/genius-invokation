@@ -52,7 +52,7 @@ export type ActionInfoWithModification = ActionInfo & {
 };
 
 class PreviewContext {
-  private mutator: StateMutator;
+  public readonly mutator: StateMutator;
   private stateMutations: Mutation[] = [];
   private exposedMutations: ExposedMutation[] = [];
   public stopped = false;
@@ -72,10 +72,6 @@ class PreviewContext {
 
   mutate(mutation: Mutation) {
     this.mutator.mutate(mutation);
-  }
-  /** @deprecated see TODO in StateMutator#postSwitchActive */
-  postSwitchActive(switchInfo: SwitchActiveInfo) {
-    this.mutator.postSwitchActive(switchInfo);
   }
 
   async previewSkill(
@@ -124,7 +120,7 @@ class PreviewContext {
     const result: ExposedMutation[] = [];
     const newActives = new Map<0 | 1, ExposedMutation>();
     for (const em of this.exposedMutations) {
-      if (em.$case === "damage" || em.$case === "applyAura" ) {
+      if (em.$case === "damage" || em.$case === "applyAura") {
         result.push(em);
       } else if (em.$case === "switchActive") {
         newActives.set(em.who as 0 | 1, em);
@@ -319,24 +315,10 @@ export class ActionPreviewer {
         break;
       }
       case "switchActive": {
-        ctx.mutate({
-          type: "switchActive",
-          who: this.who,
-          value: newActionInfo.to,
-        });
-        const switchInfo: SwitchActiveInfo = {
-          type: "switchActive",
-          who: this.who,
-          from: newActionInfo.from,
-          to: newActionInfo.to,
-          fromReaction: false,
-          fast: newActionInfo.fast,
-        };
-        ctx.postSwitchActive(switchInfo);
-        await ctx.previewEvent(
-          "onSwitchActive",
-          new SwitchActiveEventArg(ctx.state, newActionInfo),
-        );
+        const events = ctx.mutator.switchActive(this.who, newActionInfo.to);
+        for (const e of events) {
+          await ctx.previewEvent(...e);
+        }
         break;
       }
       case "elementalTuning": {

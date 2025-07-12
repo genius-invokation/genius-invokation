@@ -13,14 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  DamageType,
-  DiceType,
-  type ExposedMutation,
-  PbHealKind,
-  PbReactionType,
-  Reaction,
-} from "@gi-tcg/typings";
+import { DamageType, DiceType, Reaction } from "@gi-tcg/typings";
 
 import {
   type EntityArea,
@@ -28,7 +21,7 @@ import {
   type EntityType,
   stringifyEntityArea,
 } from "../../base/entity";
-import type { CreateCardM, Mutation, TransferCardM } from "../../base/mutation";
+import type { Mutation } from "../../base/mutation";
 import {
   type NightsoulValueChangeInfo,
   type DamageInfo,
@@ -37,23 +30,13 @@ import {
   type EventAndRequest,
   type EventAndRequestConstructorArgs,
   type EventAndRequestNames,
-  type EventArgOf,
-  GenericModifyDamageEventArg,
-  GenericModifyHealEventArg,
-  type HealInfo,
   type HealKind,
-  type InlineEventNames,
   type StateMutationAndExposedMutation,
-  type ReactionInfo,
-  type SkillDescription,
   type SkillDescriptionReturn,
-  type SkillInfo,
   type SkillInfoOfContextConstruction,
   constructEventAndRequestArg,
-  CustomEventEventArg,
   type UseSkillRequestOption,
   BeforeNightsoulEventArg,
-  type SwitchActiveInfo,
 } from "../../base/skill";
 import {
   type AnyState,
@@ -90,22 +73,15 @@ import type {
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
-import {
-  getReaction,
-  REACTION_MAP,
-  type NontrivialDamageType,
-} from "../../base/reaction";
-import {
-  CALLED_FROM_REACTION,
-  type ReactionDescriptionEventArg,
-  getReactionDescription,
-} from "../reaction";
+import { CALLED_FROM_REACTION } from "../reaction";
 import { flip } from "@gi-tcg/utils";
 import { GiTcgDataError } from "../../error";
 import { DetailLogType } from "../../log";
 import {
   type CreateEntityOptions,
   GiTcgPreviewAbortedError,
+  type InsertPileStrategy,
+  type InternalHealOption,
   type InternalNotifyOption,
   type MutatorConfig,
   StateMutator,
@@ -116,7 +92,7 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
-import { exposeHealKind } from "../../io";
+import { applyReactive, type ApplyReactive } from "./reactive";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -151,18 +127,6 @@ export interface GenerateDiceOption {
   randomAllowDuplicate?: boolean;
 }
 
-type InsertPilePayload =
-  | Omit<CreateCardM, "targetIndex" | "who">
-  | Omit<TransferCardM, "targetIndex" | "who">;
-
-type InsertPileStrategy =
-  | "top"
-  | "bottom"
-  | "random"
-  | "spaceAround"
-  | `topRange${number}`
-  | `topIndex${number}`;
-
 type Setter<T> = (draft: Draft<T>) => void;
 
 export type ContextMetaBase = {
@@ -180,6 +144,25 @@ type ShortcutReturn<
 > = Meta["shortcutReceiver"] extends {}
   ? Meta["shortcutReceiver"] & { [ENABLE_SHORTCUT]: true }
   : T;
+
+type MutatorResultCanEmit =
+  | readonly EventAndRequest[]
+  | { readonly events: readonly EventAndRequest[] };
+
+type MutatorMethodCanEmitImpl<K extends keyof StateMutator> =
+  StateMutator[K] extends (...args: any[]) => MutatorResultCanEmit ? K : never;
+
+type MutatorMethodCanEmit = {
+  [K in keyof StateMutator]: MutatorMethodCanEmitImpl<K>;
+}[keyof StateMutator];
+
+type CallAndEmitResult<K extends MutatorMethodCanEmit> = ReturnType<
+  StateMutator[K]
+> extends { readonly events: readonly EventAndRequest[] }
+  ? Omit<ReturnType<StateMutator[K]>, "events">
+  : ReturnType<StateMutator[K]> extends readonly EventAndRequest[]
+    ? void
+    : never;
 
 /**
  * 用于描述技能的上下文对象。
@@ -304,29 +287,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this._savedNotify.exposedMutations.push(...opt.exposedMutations);
   }
 
-  private executeInlineSkill<Arg>(
-    skillDescription: SkillDescription<Arg>,
-    skill: SkillInfo,
-    arg: Arg,
-  ) {
-    this.mutator.notify();
-    const [newState, { innerNotify, emittedEvents }] = skillDescription(
-      this.state,
-      skill,
-      arg,
-    );
-    this.mutator.resetState(newState, innerNotify);
-    this.eventAndRequests.push(...emittedEvents);
-  }
-
   mutate(mut: Mutation) {
     return this.mutator.mutate(mut);
   }
 
   get self() {
-    if (this._self === null) {
-      throw new GiTcgDataError("Self entity not available");
-    }
     return this._self;
   }
 
@@ -334,8 +299,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return !!this.skillInfo.isPreview;
   }
 
-  get state() {
-    return this.mutator.state;
+  get state(): ApplyReactive<Meta, GameState> {
+    return applyReactive(this, this.mutator.state);
   }
 
   get player() {
@@ -352,47 +317,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.state.currentTurn === this.callerArea.who;
   }
 
-  private handleInlineEvent<E extends InlineEventNames>(
-    event: E,
-    arg: EventArgOf<E>,
-  ) {
-    using l = this.mutator.subLog(
-      DetailLogType.Event,
-      `Handling inline event ${event} (${arg.toString()}):`,
-    );
-    const infos = allSkills(this.state, event).map<SkillInfo>(
-      ({ caller, skill }) => ({
-        caller,
-        definition: skill,
-        requestBy: null,
-        charged: false,
-        plunging: false,
-        prepared: false,
-        isPreview: this.skillInfo.isPreview,
-      }),
-    );
-    for (const info of infos) {
-      arg._currentSkillInfo = info;
-      try {
-        getEntityById(this.state, info.caller.id);
-      } catch {
-        continue;
-      }
-      if (
-        "filter" in info.definition &&
-        !(0, info.definition.filter)(this.state, info, arg as any)
-      ) {
-        continue;
-      }
-      using l = this.mutator.subLog(
-        DetailLogType.Skill,
-        `Using skill [skill:${info.definition.id}]`,
-      );
-      const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
-      this.executeInlineSkill(desc, info, arg);
-    }
-  }
-
   $<const Q extends string>(
     arg: Q,
   ): TypedExEntity<Meta, GuessedTypeOfQuery<Q>> | undefined {
@@ -406,9 +330,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return executeQuery(this, arg);
   }
 
-  // Get context of given entity state
+  /**
+   * Get context of given entity state
+   * @deprecated
+   */
   of(entityState: EntityState): TypedEntity<Meta>;
+  /**
+   * @deprecated
+   */
   of(entityState: CharacterState): TypedCharacter<Meta>;
+  /**
+   * @deprecated
+   */
   of<T extends ExEntityType = ExEntityType>(
     entityId: AnyState | number,
   ): TypedExEntity<Meta, T>;
@@ -570,6 +503,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
     );
     this.eventAndRequests.push([event, arg] as EventAndRequest);
   }
+  // 等效调用 this.mutator.<method>, 并将返回的 events 添加
+  callAndEmit<K extends MutatorMethodCanEmit>(
+    method: K,
+    ...args: Parameters<StateMutator[K]>
+  ): CallAndEmitResult<K> {
+    const fn: any = this.mutator[method].bind(this.mutator);
+    const result = fn(...args);
+    if ("events" in result && Array.isArray(result.events)) {
+      this.eventAndRequests.push(...result.events);
+    } else if (Array.isArray(result)) {
+      this.eventAndRequests.push(...result);
+    }
+    return result as any;
+  }
 
   emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg: T): ShortcutReturn<Meta>;
@@ -597,50 +544,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
     }
     const switchToTarget = targets[0];
-    const playerWho = switchToTarget.who;
-    const from =
-      this.state.players[playerWho].characters[
-        getActiveCharacterIndex(this.state.players[playerWho])
-      ];
-    if (from.id === switchToTarget.id) {
-      return RET;
-    }
-    let immuneControlStatus: EntityState | undefined;
-    if (
-      (immuneControlStatus = from.entities.find((st) =>
-        st.definition.tags.includes("immuneControl"),
-      ))
-    ) {
-      this.mutator.log(
-        DetailLogType.Other,
-        `Switch active from ${stringifyState(from)} to ${stringifyState(
-          switchToTarget.state,
-        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
-      );
-      return RET;
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Switch active from ${stringifyState(from)} to ${stringifyState(
-        switchToTarget.state,
-      )}`,
-    );
-    this.mutate({
-      type: "switchActive",
-      who: playerWho,
-      value: switchToTarget.state,
-    });
-    const switchInfo: SwitchActiveInfo = {
-      type: "switchActive",
-      who: playerWho,
-      from: from,
+    this.callAndEmit("switchActive", switchToTarget.who, switchToTarget.state, {
       via: this.skillInfo,
-      to: switchToTarget.state,
-      fromReaction: this.fromReaction !== null,
-      fast: null,
-    };
-    this.mutator.postSwitchActive(switchInfo);
-    this.emitEvent("onSwitchActive", this.state, switchInfo);
+      fromReaction: this.fromReaction,
+    });
     return RET;
   }
 
@@ -667,98 +574,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  private doHeal(
-    value: number,
-    targetState: CharacterState,
-    option: Required<HealOption>,
-  ) {
-    const damageType = DamageType.Heal;
-    if (!targetState.variables.alive) {
-      if (option.kind === "revive") {
-        this.mutator.log(
-          DetailLogType.Other,
-          `Before healing ${stringifyState(targetState)}, revive him.`,
-        );
-        this.mutate({
-          type: "modifyEntityVar",
-          state: targetState,
-          varName: "alive",
-          value: 1,
-          direction: "increase",
-        });
-        this.emitEvent("onRevive", this.state, targetState);
-      } else {
-        // Cannot apply non-revive heal on a dead character
-        return;
-      }
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Heal ${value} to ${stringifyState(targetState)}`,
-    );
-    const targetInjury =
-      targetState.variables.maxHealth - targetState.variables.health;
-    const finalValue = Math.min(value, targetInjury);
-
-    let healInfo: HealInfo = {
-      type: damageType,
-      cancelled: false,
-      expectedValue: value,
-      value: finalValue,
-      healKind: option.kind,
-      source: this.skillInfo.caller,
-      via: this.skillInfo,
-      target: targetState,
-      causeDefeated: false,
-      fromReaction: null,
-    };
-    const modifier = new GenericModifyHealEventArg(this.state, healInfo);
-    this.handleInlineEvent("modifyHeal0", modifier);
-    this.handleInlineEvent("modifyHeal1", modifier);
-    if (modifier.cancelled) {
-      return;
-    }
-    healInfo = modifier.healInfo;
-    this.mutate({
-      type: "modifyEntityVar",
-      state: targetState,
-      varName: "health",
-      value: targetState.variables.health + healInfo.value,
-      direction: "increase",
-    });
-    this.mutator.notify({
-      mutations: [
-        {
-          $case: "damage",
-          damageType: healInfo.type,
-          sourceId: this.skillInfo.caller.id,
-          sourceDefinitionId: this.skillInfo.caller.definition.id,
-          value: healInfo.value,
-          targetId: targetState.id,
-          targetDefinitionId: targetState.definition.id,
-          isSkillMainDamage: false,
-          reactionType: PbReactionType.UNSPECIFIED,
-          causeDefeated: false,
-          oldAura: targetState.variables.aura,
-          newAura: targetState.variables.aura,
-          oldHealth: targetState.variables.health,
-          newHealth: targetState.variables.health + healInfo.value,
-          healKind: exposeHealKind(healInfo.healKind),
-        },
-      ],
-    });
-    this.emitEvent("onDamageOrHeal", this.state, healInfo);
-  }
-
   /** 治疗角色 */
   heal(
     value: number,
     target: CharacterTargetArg,
-    { kind = "common" }: HealOption = {},
+    { kind = "common" }: Partial<InternalHealOption> = {},
   ) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      this.doHeal(value, t.state, { kind });
+      this.callAndEmit("heal", value, t.state, {
+        via: this.skillInfo,
+        kind,
+      });
     }
     return this.enableShortcut();
   }
@@ -781,7 +608,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       });
       // Note: `t.state` is a getter that gets latest state.
       // Do not write `targetState` here
-      this.doHeal(value, t.state, { kind: "increaseMaxHealth" });
+      this.callAndEmit("heal", value, t.state, {
+        via: this.skillInfo,
+        kind: "increaseMaxHealth",
+      });
     }
     return this.enableShortcut();
   }
@@ -796,10 +626,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
-      using l = this.mutator.subLog(
-        DetailLogType.Primitive,
-        `Deal ${value} [damage:${type}] damage to ${stringifyState(t.state)}`,
-      );
       const targetState = t.state;
       let isSkillMainDamage = false;
       if (
@@ -822,70 +648,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
           targetState.variables.health <= value,
         fromReaction: this.fromReaction,
       };
-      if (damageInfo.type !== DamageType.Piercing) {
-        const modifier = new GenericModifyDamageEventArg(
-          this.state,
-          damageInfo,
-        );
-        this.handleInlineEvent("modifyDamage0", modifier);
-        modifier.increaseDamageByReaction();
-        this.handleInlineEvent("modifyDamage1", modifier);
-        this.handleInlineEvent("modifyDamage2", modifier);
-        this.handleInlineEvent("modifyDamage3", modifier);
-        damageInfo = modifier.damageInfo;
-      }
-      this.mutator.log(
-        DetailLogType.Other,
-        `Damage info: ${damageInfo.log || "(no modification)"}`,
+      const { damageInfo: damageInfo2 } = this.callAndEmit(
+        "damage",
+        targetState,
+        damageInfo,
+        {
+          via: this.skillInfo,
+          callerWho: this.callerArea.who,
+          targetWho: t.who,
+          targetIsActive: t.isActive(),
+        },
       );
-      const finalHealth = Math.max(
-        0,
-        targetState.variables.health - damageInfo.value,
-      );
-      this.mutate({
-        type: "modifyEntityVar",
-        state: targetState,
-        varName: "health",
-        value: finalHealth,
-        direction: "decrease",
-      });
-      if (damageInfo.target.variables.alive) {
-        const [newAura, reaction] =
-          damageInfo.type === DamageType.Piercing ||
-          damageInfo.type === DamageType.Physical
-            ? [damageInfo.target.variables.aura, null]
-            : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
-        this.mutator.notify({
-          mutations: [
-            {
-              $case: "damage",
-              damageType: damageInfo.type,
-              sourceId: damageInfo.source.id,
-              sourceDefinitionId: damageInfo.source.definition.id,
-              value: damageInfo.value,
-              targetId: damageInfo.target.id,
-              targetDefinitionId: damageInfo.target.definition.id,
-              isSkillMainDamage: damageInfo.isSkillMainDamage,
-              reactionType: reaction ?? PbReactionType.UNSPECIFIED,
-              causeDefeated: damageInfo.causeDefeated,
-              oldAura: damageInfo.target.variables.aura,
-              newAura,
-              oldHealth: damageInfo.target.variables.health,
-              newHealth: finalHealth,
-              healKind: PbHealKind.NOT_A_HEAL,
-            },
-          ],
-        });
-      }
-      this.emitEvent("onDamageOrHeal", this.state, damageInfo);
       if (isSkillMainDamage) {
-        this.mainDamage = damageInfo;
-      }
-      if (
-        damageInfo.type !== DamageType.Physical &&
-        damageInfo.type !== DamageType.Piercing
-      ) {
-        this.doApply(t, damageInfo.type, damageInfo);
+        this.mainDamage = damageInfo2;
       }
     }
     return this.enableShortcut();
@@ -903,75 +678,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Apply [damage:${type}] to ${stringifyState(ch.state)}`,
       );
-      this.doApply(ch, type);
+      this.callAndEmit("apply", ch.state, type, {
+        fromDamage: null,
+        via: this.skillInfo,
+        callerWho: this.callerArea.who,
+        targetWho: ch.who,
+        targetIsActive: ch.isActive(),
+      });
     }
     return this.enableShortcut();
   }
 
   private get fromReaction(): Reaction | null {
     return (this as any)[CALLED_FROM_REACTION] ?? null;
-  }
-
-  private doApply(
-    target: TypedCharacter<Meta>,
-    type: NontrivialDamageType,
-    fromDamage?: DamageInfo,
-  ) {
-    if (!target.state.variables.alive) {
-      return;
-    }
-    const aura = target.state.variables.aura;
-    const [newAura, reaction] = REACTION_MAP[aura][type];
-    this.mutate({
-      type: "modifyEntityVar",
-      state: target.state,
-      varName: "aura",
-      value: newAura,
-      direction: null,
-    });
-    if (!fromDamage) {
-      this.mutator.notify({
-        mutations: [
-          {
-            $case: "applyAura",
-            elementType: type,
-            targetId: target.state.id,
-            targetDefinitionId: target.state.definition.id,
-            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
-            oldAura: aura,
-            newAura,
-          },
-        ],
-      });
-    }
-    if (reaction !== null) {
-      this.mutator.log(
-        DetailLogType.Other,
-        `Apply reaction ${reaction} to ${stringifyState(target.state)}`,
-      );
-      const reactionInfo: ReactionInfo = {
-        target: target.state,
-        type: reaction,
-        via: this.skillInfo,
-        fromDamage,
-      };
-      this.emitEvent("onReaction", this.state, reactionInfo);
-      const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
-        where: target.who === this.callerArea.who ? "my" : "opp",
-        here: target.who === this.callerArea.who ? "opp" : "my",
-        id: target.state.id,
-        isDamage: !!fromDamage,
-        isActive: target.isActive(),
-      };
-      const reactionDescription = getReactionDescription(reaction);
-      if (reactionDescription) {
-        this.executeInlineSkill(
-          reactionDescription,
-          this.skillInfo,
-          reactionDescriptionEventArg,
-        );
-      }
-    }
   }
 
   createEntity<TypeT extends EntityType>(
@@ -1011,12 +730,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
           );
       }
     }
-    const { oldState, newState } = this.mutator.createEntity(def, area, opt);
+    const { newState } = this.callAndEmit("createEntity", def, area, opt);
     if (newState) {
-      this.emitEvent("onEnter", this.state, {
-        overridden: oldState,
-        newState,
-      });
       return this.of(newState);
     } else {
       return null;
@@ -1504,15 +1219,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
         withTag ? `(with tag ${withTag})` : ""
       }`,
     );
-    const cards: CardState[] = [];
     if (withTag === null && withDefinition === null) {
       // 如果没有限定，则从牌堆顶部摸牌
-      for (let i = 0; i < count; i++) {
-        const card = this.mutator.drawCard(who);
-        if (card) {
-          cards.push(card);
-        }
-      }
+      this.callAndEmit("drawCardsPlain", who, count);
     } else {
       const check = (card: CardState) => {
         if (withDefinition !== null) {
@@ -1531,7 +1240,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           break;
         }
         const chosen = this.random(candidates);
-        this.mutate({
+        this.callAndEmit("insertHandCard", {
           type: "transferCard",
           from: "pile",
           to: "hands",
@@ -1539,121 +1248,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
           value: chosen,
           reason: "draw",
         });
-        cards.push(chosen);
-        if (player().hands.length > this.state.config.maxHandsCount) {
-          this.mutate({
-            type: "removeCard",
-            who,
-            where: "hands",
-            oldState: chosen,
-            reason: "overflow",
-          });
-        }
       }
-    }
-    for (const card of cards) {
-      this.emitEvent("onHandCardInserted", this.state, who, card, "drawn");
     }
     return this.enableShortcut();
-  }
-
-  private insertPileCards(
-    payloads: InsertPilePayload[],
-    strategy: InsertPileStrategy,
-    where: "my" | "opp",
-  ) {
-    const who =
-      where === "my" ? this.callerArea.who : flip(this.callerArea.who);
-    const player = this.state.players[who];
-    const pileCount = player.pile.length;
-    payloads = payloads.slice(
-      0,
-      Math.max(0, this.state.config.maxPileCount - pileCount),
-    );
-    if (payloads.length === 0) {
-      return;
-    }
-    const count = payloads.length;
-    switch (strategy) {
-      case "top":
-        for (const mut of payloads) {
-          this.mutate({
-            ...mut,
-            who,
-            targetIndex: 0,
-          });
-        }
-        break;
-      case "bottom":
-        for (const mut of payloads) {
-          const targetIndex = player.pile.length;
-          this.mutate({
-            ...mut,
-            who,
-            targetIndex,
-          });
-        }
-        break;
-      case "random":
-        for (let i = 0; i < count; i++) {
-          const randomValue = this.mutator.stepRandom();
-          const index = randomValue % (player.pile.length + 1);
-          this.mutate({
-            ...payloads[i],
-            who,
-            targetIndex: index,
-          });
-        }
-        break;
-      case "spaceAround":
-        const spaces = count + 1;
-        const step = Math.floor(player.pile.length / spaces);
-        const rest = player.pile.length % spaces;
-        for (let i = 0, j = step; i < count; i++, j += step) {
-          if (i < rest) {
-            j++;
-          }
-          this.mutate({
-            ...payloads[i],
-            who,
-            targetIndex: i + j,
-          });
-        }
-        break;
-      default: {
-        if (strategy.startsWith("topRange")) {
-          let range = Number(strategy.slice(8));
-          if (Number.isNaN(range)) {
-            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-          }
-          range = Math.min(range, player.pile.length);
-          for (let i = 0; i < count; i++) {
-            const randomValue = this.mutator.stepRandom();
-            const index = randomValue % range;
-            this.mutate({
-              ...payloads[i],
-              who,
-              targetIndex: index,
-            });
-          }
-        } else if (strategy.startsWith("topIndex")) {
-          let index = Number(strategy.slice(8));
-          if (Number.isNaN(index)) {
-            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-          }
-          index = Math.min(index, player.pile.length);
-          for (let i = 0; i < count; i++) {
-            this.mutate({
-              ...payloads[i],
-              who,
-              targetIndex: index,
-            });
-          }
-        } else {
-          throw new GiTcgDataError(`Invalid strategy ${strategy}`);
-        }
-      }
-    }
   }
 
   createPileCards(
@@ -1687,7 +1284,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           value: { ...cardTemplate },
         }) as const,
     );
-    this.insertPileCards(payloads, strategy, where);
+    this.callAndEmit("insertPileCards", payloads, strategy, who);
     return this.enableShortcut();
   }
   undrawCards(cards: CardState[], strategy: InsertPileStrategy) {
@@ -1709,7 +1306,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
           reason: "undraw",
         }) as const,
     );
-    this.insertPileCards(payloads, strategy, "my");
+    this.callAndEmit("insertPileCards", payloads, strategy, who);
+    return this.enableShortcut();
   }
 
   stealHandCard(card: CardState) {
@@ -1823,7 +1421,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       if (st) {
         const oldValue = this.getVariable("nightsoul", st.state);
         const newValue = Math.max(0, oldValue - count);
-        const info: NightsoulValueChangeInfo = {
+        let info: NightsoulValueChangeInfo = {
           type: "consume",
           oldValue,
           newValue,
@@ -1835,17 +1433,18 @@ export class SkillContext<Meta extends ContextMetaBase> {
           t.state,
           info,
         );
-        this.handleInlineEvent("modifyChangeNightsoul", modifyEventArg);
-        if (modifyEventArg.info.cancelled) {
+        this.callAndEmit(
+          "handleInlineEvent",
+          this.skillInfo,
+          "modifyChangeNightsoul",
+          modifyEventArg,
+        );
+        info = modifyEventArg.info;
+        if (info.cancelled) {
           continue;
         }
-        this.setVariable("nightsoul", modifyEventArg.info.newValue, st.state);
-        this.emitEvent(
-          "onChangeNightsoul",
-          this.state,
-          t.state,
-          modifyEventArg.info,
-        );
+        this.setVariable("nightsoul", info.newValue, st.state);
+        this.emitEvent("onChangeNightsoul", this.state, t.state, info);
       }
     }
     return this.enableShortcut();
