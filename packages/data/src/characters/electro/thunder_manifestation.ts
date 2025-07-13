@@ -15,7 +15,7 @@
 
 import { character, skill, summon, status, combatStatus, card, DamageType, CombatStatusHandle, StatusHandle, customEvent } from "@gi-tcg/core/builder";
 
-const talentShouldDrawCard = customEvent("thunderManifestation/talentShouldDrawCard");
+const TalentShouldDrawCard = customEvent("thunderManifestation/talentShouldDrawCard");
 
 /**
  * @id 124022
@@ -33,11 +33,11 @@ export const LightningRod: StatusHandle = status(124022)
   .increaseDamage(1)
   .dispose()
   .on("damaged")
-  .emitCustomEvent(talentShouldDrawCard)
+  .emitCustomEvent(TalentShouldDrawCard)
   .on("selfDispose")
   // 雷音权现对已带有雷鸣探知的角色造成伤害会弃置雷鸣探知
   // 但此行为也会触发天赋的抽牌
-  .emitCustomEvent(talentShouldDrawCard)
+  .emitCustomEvent(TalentShouldDrawCard)
   .done();
 
 /**
@@ -169,7 +169,7 @@ export const GrievingEcho = card(224021)
   .talent(ThunderManifestation)
   .on("enter")
   .useSkill(StrifefulLightning)
-  .on(talentShouldDrawCard)
+  .on(TalentShouldDrawCard)
   .listenToAll()
   .usagePerRound(1)
   .drawCards(1)

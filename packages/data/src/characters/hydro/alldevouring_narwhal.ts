@@ -173,7 +173,7 @@ export const ShatteringWaves = skill(22041)
   .damage(DamageType.Physical, 2)
   .done();
 
-const StarfallShowerDisposeCard = customEvent<CardState>("StarfallShowerDisposeCard");
+const StarfallShowerDisposeCard = customEvent<CardState>("alldevouringNarwhal/starfallShowerDisposeCard");
 
 /**
  * @id 22042
