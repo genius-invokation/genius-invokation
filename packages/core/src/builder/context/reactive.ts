@@ -124,6 +124,11 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   if (NoReactiveSymbol in value && value[NoReactiveSymbol]) {
     return value as ApplyReactive<Meta, T>;
   }
+  const reactiveProxies = skillContext._reactiveProxies;
+  if (reactiveProxies.has(value)) {
+    return reactiveProxies.get(value) as ApplyReactive<Meta, T>;
+  }
+  // Proxy 不变式要求 value 的只读属性不可以被 trap，故浅拷贝取消之
   let clone: T & {} = value;
   if (Array.isArray(value)) {
     clone = [...value] as T & {};
@@ -144,7 +149,7 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   ) {
     const Ctor = REACTIVE_CLASS_MAP[value[StateSymbol] as StateKind]!;
     const instance = new Ctor(skillContext, value.id);
-    return new Proxy(clone, {
+    const proxy = new Proxy(clone, {
       getPrototypeOf(target) {
         return Ctor.prototype;
       },
@@ -162,7 +167,8 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
         if (prop in instance) {
           return Reflect.set(instance, prop, value, instance);
         } else {
-          return Reflect.set(target, prop, value, receiver);
+          // 假定 target 一定是只读的
+          return false;
         }
       },
       has(target, prop) {
@@ -171,9 +177,11 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
         }
         return Reflect.has(target, prop) || Reflect.has(Ctor.prototype, prop);
       },
-    }) as ApplyReactive<Meta, T>;
+    });
+    reactiveProxies.set(value, proxy);
+    return proxy as ApplyReactive<Meta, T>;
   }
-  return new Proxy(clone, {
+  const proxy = new Proxy(clone, {
     get(target, prop, receiver) {
       if (prop === RawStateSymbol) {
         return value;
@@ -189,5 +197,7 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
       }
       return Reflect.has(target, prop);
     },
-  }) as ApplyReactive<Meta, T>;
+  });
+  reactiveProxies.set(value, proxy);
+  return proxy as ApplyReactive<Meta, T>;
 }

@@ -177,6 +177,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
     Omit<Meta["eventArgType"], `_${string}`>
   >;
 
+  /** @internal */
+  public readonly _reactiveProxies: WeakMap<object, object> = new WeakMap();
+
   private readonly eventAndRequests: EventAndRequest[] = [];
   private mainDamage: DamageInfo | null = null;
 
