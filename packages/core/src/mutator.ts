@@ -1,5 +1,8 @@
 import {
+  DamageType,
   DiceType,
+  PbHealKind,
+  PbReactionType,
   PbSwitchActiveFromAction,
   Reaction,
   type ExposedMutation,
@@ -7,26 +10,49 @@ import {
 import type { CardState, CharacterState, GameState } from "./base/state";
 import { DetailLogType, type IDetailLogger } from "./log";
 import {
+  type CreateCardM,
   type Mutation,
   type StepRandomM,
+  type TransferCardM,
   applyMutation,
   stringifyMutation,
 } from "./base/mutation";
 import {
   type EntityState,
   type EntityVariables,
+  StateSymbol,
   stringifyState,
 } from "./base/state";
-import { allEntitiesAtArea, getEntityById, sortDice } from "./utils";
+import {
+  allEntitiesAtArea,
+  allSkills,
+  getActiveCharacterIndex,
+  getEntityArea,
+  getEntityById,
+  sortDice,
+} from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
 import {
+  CharacterEventArg,
+  type DamageInfo,
+  DamageOrHealEventArg,
   EnterEventArg,
   type EventAndRequest,
+  type EventArgOf,
+  GenericModifyDamageEventArg,
+  GenericModifyHealEventArg,
   HandCardInsertedEventArg,
+  type HealInfo,
+  type HealKind,
+  type InlineEventNames,
   PlayCardRequestArg,
+  ReactionEventArg,
+  type ReactionInfo,
   type SelectCardInfo,
+  type SkillDescription,
   type SkillInfo,
   type StateMutationAndExposedMutation,
+  SwitchActiveEventArg,
   type SwitchActiveInfo,
 } from "./base/skill";
 import {
@@ -35,6 +61,12 @@ import {
   stringifyEntityArea,
 } from "./base/entity";
 import type { CardDefinition } from "./base/card";
+import { REACTION_MAP, type NontrivialDamageType } from "./base/reaction";
+import {
+  getReactionDescription,
+  type ReactionDescriptionEventArg,
+} from "./builder/reaction";
+import { exposeHealKind } from "./io";
 
 export class GiTcgPreviewAbortedError extends GiTcgCoreInternalError {
   constructor(message?: string) {
@@ -105,7 +137,56 @@ export interface CreateEntityResult {
   readonly oldState: EntityState | null;
   /** 若成功创建，给出新建的实体状态 */
   readonly newState: EntityState | null;
+  /** 若成功创建，则引发的 onEnter 事件 */
+  readonly events: readonly EventAndRequest[];
 }
+
+export interface SwitchActiveOption {
+  readonly via?: SkillInfo;
+  readonly fast?: boolean | null;
+  readonly fromReaction?: Reaction | null;
+}
+
+export interface DamageOption {
+  readonly via: SkillInfo;
+  // 以下属性在描述元素反应时有用，需要传入
+  readonly callerWho: 0 | 1;
+  readonly targetWho: 0 | 1;
+  readonly targetIsActive: boolean;
+}
+export interface ApplyOption extends DamageOption {
+  fromDamage: DamageInfo | null;
+}
+
+export interface InternalHealOption {
+  via: SkillInfo;
+  kind: HealKind;
+}
+
+export interface DamageResult {
+  readonly damageInfo: DamageInfo;
+  readonly events: readonly EventAndRequest[];
+}
+
+export type InsertHandPayload =
+  | (CreateCardM & {
+      target: "hands";
+    })
+  | (TransferCardM & {
+      to: "hands";
+    });
+
+export type InsertPilePayload =
+  | Omit<CreateCardM, "targetIndex" | "who">
+  | Omit<TransferCardM, "targetIndex" | "who">;
+
+export type InsertPileStrategy =
+  | "top"
+  | "bottom"
+  | "random"
+  | "spaceAround"
+  | `topRange${number}`
+  | `topIndex${number}`;
 
 /**
  * 管理一个状态和状态的修改；同时也进行日志管理。
@@ -212,33 +293,6 @@ export class StateMutator {
     await this.config.onPause(internalPauseOpt);
   }
 
-  drawCard(who: 0 | 1): CardState | null {
-    const candidate = this.state.players[who].pile[0];
-    if (typeof candidate === "undefined") {
-      return null;
-    }
-    this.mutate({
-      type: "transferCard",
-      who,
-      from: "pile",
-      to: "hands",
-      value: candidate,
-      reason: "draw",
-    });
-    if (
-      this.state.players[who].hands.length > this.state.config.maxHandsCount
-    ) {
-      this.mutate({
-        type: "removeCard",
-        who,
-        where: "hands",
-        oldState: candidate,
-        reason: "overflow",
-      });
-    }
-    return candidate;
-  }
-
   stepRandom(): number {
     const mut: StepRandomM = {
       type: "stepRandom",
@@ -246,65 +300,6 @@ export class StateMutator {
     };
     this.mutate(mut);
     return mut.value;
-  }
-
-  async switchHands(who: 0 | 1) {
-    if (!this.config.howToSwitchHands) {
-      throw new GiTcgIoNotProvideError();
-    }
-    const removedHands = await this.config.howToSwitchHands(who);
-    const player = () => this.state.players[who];
-    // swapIn: 从手牌到牌堆
-    // swapOut: 从牌堆到手牌
-    const count = removedHands.length;
-    const swapInCards = removedHands.map((id) => {
-      const card = player().hands.find((c) => c.id === id);
-      if (typeof card === "undefined") {
-        throw new GiTcgIoError(who, `switchHands return unknown card ${id}`);
-      }
-      return card;
-    });
-    const swapInCardIds = swapInCards.map((c) => c.definition.id);
-
-    for (const card of swapInCards) {
-      const randomValue = this.stepRandom();
-      const index = randomValue % (player().pile.length + 1);
-      this.mutate({
-        type: "transferCard",
-        from: "hands",
-        to: "pile",
-        who,
-        value: card,
-        targetIndex: index,
-        reason: "switch",
-      });
-    }
-    // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
-    let topIndex = 0;
-    for (let i = 0; i < count; i++) {
-      let candidate: CardState;
-      while (
-        topIndex < player().pile.length &&
-        swapInCardIds.includes(player().pile[topIndex].definition.id)
-      ) {
-        topIndex++;
-      }
-      if (topIndex >= player().pile.length) {
-        // 已经跳过了所有同名牌，只能从头开始
-        candidate = player().pile[0];
-      } else {
-        candidate = player().pile[topIndex];
-      }
-      this.mutate({
-        type: "transferCard",
-        from: "pile",
-        to: "hands",
-        who,
-        value: candidate,
-        reason: "switch",
-      });
-    }
-    this.notify();
   }
 
   randomDice(count: number, alwaysOmni?: boolean): readonly DiceType[] {
@@ -318,143 +313,353 @@ export class StateMutator {
     return result;
   }
 
-  async reroll(who: 0 | 1, times: number) {
-    const howToReroll = this.config.howToReroll;
-    if (!howToReroll) {
-      throw new GiTcgIoNotProvideError();
-    }
-    for (let i = 0; i < times; i++) {
-      const oldDice = [...this.state.players[who].dice];
-      const diceToReroll: readonly number[] = await howToReroll(who);
-      if (diceToReroll.length === 0) {
-        return;
-      }
-      for (const dice of diceToReroll) {
-        const index = oldDice.indexOf(dice);
-        if (index === -1) {
-          throw new GiTcgIoError(
-            who,
-            `Requested to-be-rerolled dice ${dice} does not exists`,
-          );
-        }
-        oldDice.splice(index, 1);
-      }
-      this.mutate({
-        type: "resetDice",
-        who,
-        value: sortDice(this.state.players[who], [
-          ...oldDice,
-          ...this.randomDice(diceToReroll.length),
-        ]),
-        reason: "roll",
-      });
-      this.notify();
-    }
-  }
+  // --- INLINE SKILL HANDLING ---
 
-  async chooseActive(who: 0 | 1): Promise<CharacterState> {
-    if (!this.config.howToChooseActive) {
-      throw new GiTcgIoNotProvideError();
-    }
-    const player = this.state.players[who];
-    const candidates = player.characters.filter(
-      (ch) => ch.variables.alive && ch.id !== player.activeCharacterId,
+  private executeInlineSkill<Arg>(
+    skillDescription: SkillDescription<Arg>,
+    skill: SkillInfo,
+    arg: Arg,
+  ): readonly EventAndRequest[] {
+    this.notify();
+    const [newState, { innerNotify, emittedEvents }] = skillDescription(
+      this.state,
+      skill,
+      arg,
     );
-    if (candidates.length === 0) {
-      throw new GiTcgCoreInternalError(
-        `No available candidate active character for player ${who}.`,
-      );
-    }
-    const activeChId = await this.config.howToChooseActive(
-      who,
-      candidates.map((c) => c.id),
-    );
-    return getEntityById(this.state, activeChId) as CharacterState;
+    this.resetState(newState, innerNotify);
+    return emittedEvents;
   }
-
-  async postChooseActive(
-    p0chosen: CharacterState | null,
-    p1chosen: CharacterState | null,
-  ) {
-    const states = [p0chosen, p1chosen] as const;
-    for (const who of [0, 1] as const) {
-      const state = states[who];
-      if (!state) {
+  /* private */ handleInlineEvent<E extends InlineEventNames>(
+    parentSkill: SkillInfo,
+    event: E,
+    arg: EventArgOf<E>,
+  ): EventAndRequest[] {
+    using l = this.subLog(
+      DetailLogType.Event,
+      `Handling inline event ${event} (${arg.toString()}):`,
+    );
+    const events: EventAndRequest[] = [];
+    const infos = allSkills(this.state, event).map<SkillInfo>(
+      ({ caller, skill }) => ({
+        caller,
+        definition: skill,
+        requestBy: null,
+        charged: false,
+        plunging: false,
+        prepared: false,
+        isPreview: parentSkill.isPreview,
+      }),
+    );
+    for (const info of infos) {
+      arg._currentSkillInfo = info;
+      if (!(0, info.definition.filter)(this.state, info, arg as any)) {
         continue;
       }
+      using l = this.subLog(
+        DetailLogType.Skill,
+        `Using skill [skill:${info.definition.id}]`,
+      );
+      const desc = info.definition.action as SkillDescription<EventArgOf<E>>;
+      const emitted = this.executeInlineSkill(desc, info, arg);
+      events.push(...emitted);
+    }
+    return events;
+  }
+
+  // --- BASIC MUTATIVE PRIMITIVES ---
+
+  apply(
+    target: CharacterState,
+    type: NontrivialDamageType,
+    opt: ApplyOption,
+  ): EventAndRequest[] {
+    if (!target.variables.alive) {
+      return [];
+    }
+    const events: EventAndRequest[] = [];
+    const aura = target.variables.aura;
+    const [newAura, reaction] = REACTION_MAP[aura][type];
+    this.mutate({
+      type: "modifyEntityVar",
+      state: target,
+      varName: "aura",
+      value: newAura,
+      direction: null,
+    });
+    if (!opt.fromDamage) {
       this.notify({
         mutations: [
           {
-            $case: "chooseActiveDone",
-            who,
-            characterId: state.id,
-            characterDefinitionId: state.definition.id,
+            $case: "applyAura",
+            elementType: type,
+            targetId: target.id,
+            targetDefinitionId: target.definition.id,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            oldAura: aura,
+            newAura,
           },
         ],
       });
     }
+    if (reaction !== null) {
+      this.log(
+        DetailLogType.Other,
+        `Apply reaction ${reaction} to ${stringifyState(target)}`,
+      );
+      const reactionInfo: ReactionInfo = {
+        target: target,
+        type: reaction,
+        via: opt.via,
+        fromDamage: opt.fromDamage,
+      };
+      events.push([
+        "onReaction",
+        new ReactionEventArg(this.state, reactionInfo),
+      ]);
+      const reactionDescriptionEventArg: ReactionDescriptionEventArg = {
+        where: opt.targetWho === opt.callerWho ? "my" : "opp",
+        here: opt.targetWho === opt.callerWho ? "opp" : "my",
+        id: target.id,
+        isDamage: !!opt.fromDamage,
+        isActive: opt.targetIsActive,
+      };
+      const reactionDescription = getReactionDescription(reaction);
+      if (reactionDescription) {
+        events.push(
+          ...this.executeInlineSkill(
+            reactionDescription,
+            opt.via,
+            reactionDescriptionEventArg,
+          ),
+        );
+      }
+    }
+    return events;
   }
 
-  async selectCard(
-    who: 0 | 1,
-    via: SkillInfo,
-    info: SelectCardInfo,
-  ): Promise<EventAndRequest[]> {
-    if (!this.config.howToSelectCard) {
-      throw new GiTcgIoNotProvideError();
+  heal(
+    value: number,
+    targetState: CharacterState,
+    opt: InternalHealOption,
+  ): EventAndRequest[] {
+    const damageType = DamageType.Heal;
+    const events: EventAndRequest[] = [];
+    if (!targetState.variables.alive) {
+      if (opt.kind === "revive") {
+        this.log(
+          DetailLogType.Other,
+          `Before healing ${stringifyState(targetState)}, revive him.`,
+        );
+        this.mutate({
+          type: "modifyEntityVar",
+          state: targetState,
+          varName: "alive",
+          value: 1,
+          direction: "increase",
+        });
+        events.push([
+          "onRevive",
+          new CharacterEventArg(this.state, targetState),
+        ]);
+      } else {
+        // Cannot apply non-revive heal on a dead character
+        return [];
+      }
     }
-    const selected = await this.config.howToSelectCard(
-      who,
-      info.cards.map((def) => def.id),
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Heal ${value} to ${stringifyState(targetState)}`,
     );
-    switch (info.type) {
-      case "createHandCard": {
-        const def = this.state.data.cards.get(selected);
-        if (typeof def === "undefined") {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        return this.createHandCard(who, def);
-      }
-      case "createEntity": {
-        const def = this.state.data.entities.get(selected);
-        if (typeof def === "undefined") {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        if (def.type !== "summon") {
-          throw new GiTcgDataError(`Entity type ${def.type} not supported now`);
-        }
-        const entityArea: EntityArea = {
-          who,
-          type: "summons",
-        };
-        const { oldState, newState } = this.createEntity(def, entityArea);
-        if (newState) {
-          const enterInfo = {
-            overridden: oldState,
-            newState,
-          };
-          return [["onEnter", new EnterEventArg(this.state, enterInfo)]];
-        } else {
-          return [];
-        }
-      }
-      case "requestPlayCard": {
-        const cardDefinition = this.state.data.cards.get(selected);
-        if (!cardDefinition) {
-          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
-        }
-        return [
-          [
-            "requestPlayCard",
-            new PlayCardRequestArg(via, who, cardDefinition, info.targets),
-          ],
-        ];
-      }
-      default: {
-        const _: never = info;
-        throw new GiTcgDataError(`Not recognized selectCard type`);
-      }
+    const targetInjury =
+      targetState.variables.maxHealth - targetState.variables.health;
+    const finalValue = Math.min(value, targetInjury);
+
+    let healInfo: HealInfo = {
+      type: damageType,
+      cancelled: false,
+      expectedValue: value,
+      value: finalValue,
+      healKind: opt.kind,
+      source: opt.via.caller,
+      via: opt.via,
+      target: targetState,
+      causeDefeated: false,
+      fromReaction: null,
+    };
+    const modifier = new GenericModifyHealEventArg(this.state, healInfo);
+    events.push(...this.handleInlineEvent(opt.via, "modifyHeal0", modifier));
+    events.push(...this.handleInlineEvent(opt.via, "modifyHeal1", modifier));
+    if (modifier.cancelled) {
+      return events;
     }
+    healInfo = modifier.healInfo;
+    const newHealth =
+      opt.kind === "immuneDefeated"
+        ? healInfo.value
+        : targetState.variables.health + healInfo.value;
+    this.mutate({
+      type: "modifyEntityVar",
+      state: targetState,
+      varName: "health",
+      value: newHealth,
+      direction: "increase",
+    });
+    this.notify({
+      mutations: [
+        {
+          $case: "damage",
+          damageType: healInfo.type,
+          sourceId: opt.via.caller.id,
+          sourceDefinitionId: opt.via.caller.definition.id,
+          value: healInfo.value,
+          targetId: targetState.id,
+          targetDefinitionId: targetState.definition.id,
+          isSkillMainDamage: false,
+          reactionType: PbReactionType.UNSPECIFIED,
+          causeDefeated: false,
+          oldAura: targetState.variables.aura,
+          newAura: targetState.variables.aura,
+          oldHealth: targetState.variables.health,
+          newHealth: targetState.variables.health + healInfo.value,
+          healKind: exposeHealKind(healInfo.healKind),
+        },
+      ],
+    });
+    events.push([
+      "onDamageOrHeal",
+      new DamageOrHealEventArg(this.state, healInfo),
+    ]);
+    return events;
+  }
+
+  damage(target: CharacterState, damageInfo: DamageInfo, opt: DamageOption) {
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Deal ${damageInfo.value} [damage:${
+        damageInfo.type
+      }] damage to ${stringifyState(target)}`,
+    );
+    const events: EventAndRequest[] = [];
+    if (damageInfo.type !== DamageType.Piercing) {
+      const modifier = new GenericModifyDamageEventArg(this.state, damageInfo);
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage0", modifier),
+      );
+      modifier.increaseDamageByReaction();
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage1", modifier),
+      );
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage2", modifier),
+      );
+      events.push(
+        ...this.handleInlineEvent(opt.via, "modifyDamage3", modifier),
+      );
+      damageInfo = modifier.damageInfo;
+    }
+    this.log(
+      DetailLogType.Other,
+      `Damage info: ${damageInfo.log || "(no modification)"}`,
+    );
+    const finalHealth = Math.max(0, target.variables.health - damageInfo.value);
+    this.mutate({
+      type: "modifyEntityVar",
+      state: target,
+      varName: "health",
+      value: finalHealth,
+      direction: "decrease",
+    });
+    if (damageInfo.target.variables.alive) {
+      const [newAura, reaction] =
+        damageInfo.type === DamageType.Piercing ||
+        damageInfo.type === DamageType.Physical
+          ? [damageInfo.target.variables.aura, null]
+          : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
+      this.notify({
+        mutations: [
+          {
+            $case: "damage",
+            damageType: damageInfo.type,
+            sourceId: damageInfo.source.id,
+            sourceDefinitionId: damageInfo.source.definition.id,
+            value: damageInfo.value,
+            targetId: damageInfo.target.id,
+            targetDefinitionId: damageInfo.target.definition.id,
+            isSkillMainDamage: damageInfo.isSkillMainDamage,
+            reactionType: reaction ?? PbReactionType.UNSPECIFIED,
+            causeDefeated: damageInfo.causeDefeated,
+            oldAura: damageInfo.target.variables.aura,
+            newAura,
+            oldHealth: damageInfo.target.variables.health,
+            newHealth: finalHealth,
+            healKind: PbHealKind.NOT_A_HEAL,
+          },
+        ],
+      });
+    }
+    events.push([
+      "onDamageOrHeal",
+      new DamageOrHealEventArg(this.state, damageInfo),
+    ]);
+    if (
+      damageInfo.type !== DamageType.Physical &&
+      damageInfo.type !== DamageType.Piercing
+    ) {
+      events.push(
+        ...this.apply(target, damageInfo.type, {
+          fromDamage: damageInfo,
+          ...opt,
+        }),
+      );
+    }
+    return { damageInfo, events };
+  }
+
+  insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
+    const who = payload.who;
+    this.mutate(payload);
+    const state: CardState = {
+      ...payload.value,
+      [StateSymbol]: "card",
+    };
+    if (
+      this.state.players[who].hands.length > this.state.config.maxHandsCount
+    ) {
+      this.mutate({
+        type: "removeCard",
+        who,
+        where: "hands",
+        oldState: state,
+        reason: "overflow",
+      });
+      return [];
+    } else {
+      return [
+        [
+          "onHandCardInserted",
+          new HandCardInsertedEventArg(this.state, who, state, "drawn"),
+        ],
+      ];
+    }
+  }
+
+  drawCardsPlain(who: 0 | 1, count: number): EventAndRequest[] {
+    const events: EventAndRequest[] = [];
+    for (let i = 0; i < count; i++) {
+      const card = this.state.players[who].pile[0];
+      if (!card) {
+        continue;
+      }
+      this.insertHandCard({
+        type: "transferCard",
+        who,
+        from: "pile",
+        to: "hands",
+        value: card,
+        reason: "draw",
+      });
+    }
+    return events;
   }
 
   createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
@@ -463,32 +668,115 @@ export class StateMutator {
       `Create hand card [card:${definition.id}]`,
     );
     const cardState: CardState = {
+      [StateSymbol]: "card",
       id: 0,
       definition,
       variables: {},
     };
-    this.mutate({
+    return this.insertHandCard({
       type: "createCard",
       who,
       target: "hands",
       value: cardState,
     });
+  }
+
+  insertPileCards(
+    payloads: InsertPilePayload[],
+    strategy: InsertPileStrategy,
+    who: 0 | 1,
+  ): EventAndRequest[] {
     const player = this.state.players[who];
-    if (player.hands.length > this.state.config.maxHandsCount) {
-      this.mutate({
-        type: "removeCard",
-        who,
-        where: "hands",
-        oldState: cardState,
-        reason: "overflow",
-      });
+    const pileCount = player.pile.length;
+    payloads = payloads.slice(
+      0,
+      Math.max(0, this.state.config.maxPileCount - pileCount),
+    );
+    if (payloads.length === 0) {
+      return [];
     }
-    return [
-      [
-        "onHandCardInserted",
-        new HandCardInsertedEventArg(this.state, who, cardState, "created"),
-      ],
-    ];
+    const count = payloads.length;
+    switch (strategy) {
+      case "top":
+        for (const mut of payloads) {
+          this.mutate({
+            ...mut,
+            who,
+            targetIndex: 0,
+          });
+        }
+        break;
+      case "bottom":
+        for (const mut of payloads) {
+          const targetIndex = player.pile.length;
+          this.mutate({
+            ...mut,
+            who,
+            targetIndex,
+          });
+        }
+        break;
+      case "random":
+        for (let i = 0; i < count; i++) {
+          const randomValue = this.stepRandom();
+          const index = randomValue % (player.pile.length + 1);
+          this.mutate({
+            ...payloads[i],
+            who,
+            targetIndex: index,
+          });
+        }
+        break;
+      case "spaceAround":
+        const spaces = count + 1;
+        const step = Math.floor(player.pile.length / spaces);
+        const rest = player.pile.length % spaces;
+        for (let i = 0, j = step; i < count; i++, j += step) {
+          if (i < rest) {
+            j++;
+          }
+          this.mutate({
+            ...payloads[i],
+            who,
+            targetIndex: i + j,
+          });
+        }
+        break;
+      default: {
+        if (strategy.startsWith("topRange")) {
+          let range = Number(strategy.slice(8));
+          if (Number.isNaN(range)) {
+            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+          }
+          range = Math.min(range, player.pile.length);
+          for (let i = 0; i < count; i++) {
+            const randomValue = this.stepRandom();
+            const index = randomValue % range;
+            this.mutate({
+              ...payloads[i],
+              who,
+              targetIndex: index,
+            });
+          }
+        } else if (strategy.startsWith("topIndex")) {
+          let index = Number(strategy.slice(8));
+          if (Number.isNaN(index)) {
+            throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+          }
+          index = Math.min(index, player.pile.length);
+          for (let i = 0; i < count; i++) {
+            this.mutate({
+              ...payloads[i],
+              who,
+              targetIndex: index,
+            });
+          }
+        } else {
+          throw new GiTcgDataError(`Invalid strategy ${strategy}`);
+        }
+      }
+    }
+    return [];
   }
 
   createEntity(
@@ -517,7 +805,7 @@ export class StateMutator {
         DetailLogType.Other,
         "Because of immuneControl, entities with disableSkill cannot be created",
       );
-      return { oldState: null, newState: null };
+      return { oldState: null, newState: null, events: [] };
     }
     const oldState = entitiesAtArea.find(
       (e): e is EntityState =>
@@ -582,15 +870,22 @@ export class StateMutator {
         }
       }
       const newState = getEntityById(this.state, oldState.id) as EntityState;
-      return { oldState, newState };
+      const enterEvent: EventAndRequest = [
+        "onEnter",
+        new EnterEventArg(this.state, {
+          overridden: oldState,
+          newState,
+        }),
+      ];
+      return { oldState, newState, events: [enterEvent] };
     } else {
       if (
         area.type === "summons" &&
         entitiesAtArea.length === this.state.config.maxSummonsCount
       ) {
-        return { oldState: null, newState: null };
+        return { oldState: null, newState: null, events: [] };
       }
-      const initState: EntityState = {
+      const initState = {
         id: opt.withId ?? 0,
         definition: def,
         variables: Object.fromEntries(
@@ -606,16 +901,72 @@ export class StateMutator {
         value: initState,
       });
       const newState = getEntityById(this.state, initState.id) as EntityState;
-      return { oldState: null, newState };
+      const enterEvent: EventAndRequest = [
+        "onEnter",
+        new EnterEventArg(this.state, {
+          overridden: null,
+          newState,
+        }),
+      ];
+      return { oldState: null, newState, events: [enterEvent] };
     }
   }
 
-  /** @deprecated */
-  public postSwitchActive(switchInfo: SwitchActiveInfo) {
+  switchActive(
+    who: 0 | 1,
+    target: CharacterState,
+    opt: SwitchActiveOption = {},
+  ): EventAndRequest[] {
+    const from =
+      this.state.players[who].characters[
+        getActiveCharacterIndex(this.state.players[who])
+      ];
+    if (from.id === target.id) {
+      return [];
+    }
+    let immuneControlStatus: EntityState | undefined;
+    if (
+      (immuneControlStatus = from.entities.find((st) =>
+        st.definition.tags.includes("immuneControl"),
+      ))
+    ) {
+      this.log(
+        DetailLogType.Other,
+        `Switch active from ${stringifyState(from)} to ${stringifyState(
+          target,
+        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
+      );
+      return [];
+    }
+    using l = this.subLog(
+      DetailLogType.Primitive,
+      `Switch active from ${stringifyState(from)} to ${stringifyState(target)}`,
+    );
+    this.mutate({
+      type: "switchActive",
+      who,
+      value: target,
+    });
+    const fromReaction = opt.fromReaction ?? null;
+    const switchInfo: SwitchActiveInfo = {
+      type: "switchActive",
+      who,
+      from: from,
+      via: opt.via,
+      to: target,
+      fromReaction: fromReaction !== null,
+      fast: opt.fast ?? null,
+    };
+    this.postSwitchActive(switchInfo);
+    return [
+      ["onSwitchActive", new SwitchActiveEventArg(this.state, switchInfo)],
+    ];
+  }
+
+  private postSwitchActive(switchInfo: SwitchActiveInfo) {
     // 处理切人时额外的操作：
     // - 通知前端
     // - 设置下落攻击 flag
-    // TODO: mutator 引入 switchActive，直接在其中处理？
     this.notify({
       mutations: [
         {
@@ -641,5 +992,206 @@ export class StateMutator {
       flagName: "canPlunging",
       value: true,
     });
+  }
+
+  // --- ASYNC OPERATIONS ---
+
+  async reroll(who: 0 | 1, times: number) {
+    const howToReroll = this.config.howToReroll;
+    if (!howToReroll) {
+      throw new GiTcgIoNotProvideError();
+    }
+    for (let i = 0; i < times; i++) {
+      const oldDice = [...this.state.players[who].dice];
+      const diceToReroll: readonly number[] = await howToReroll(who);
+      if (diceToReroll.length === 0) {
+        return;
+      }
+      for (const dice of diceToReroll) {
+        const index = oldDice.indexOf(dice);
+        if (index === -1) {
+          throw new GiTcgIoError(
+            who,
+            `Requested to-be-rerolled dice ${dice} does not exists`,
+          );
+        }
+        oldDice.splice(index, 1);
+      }
+      this.mutate({
+        type: "resetDice",
+        who,
+        value: sortDice(this.state.players[who], [
+          ...oldDice,
+          ...this.randomDice(diceToReroll.length),
+        ]),
+        reason: "roll",
+      });
+      this.notify();
+    }
+  }
+
+  async switchHands(who: 0 | 1) {
+    if (!this.config.howToSwitchHands) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const removedHands = await this.config.howToSwitchHands(who);
+    const player = () => this.state.players[who];
+    // swapIn: 从手牌到牌堆
+    // swapOut: 从牌堆到手牌
+    const count = removedHands.length;
+    const swapInCards = removedHands.map((id) => {
+      const card = player().hands.find((c) => c.id === id);
+      if (typeof card === "undefined") {
+        throw new GiTcgIoError(who, `switchHands return unknown card ${id}`);
+      }
+      return card;
+    });
+    const swapInCardIds = swapInCards.map((c) => c.definition.id);
+
+    for (const card of swapInCards) {
+      const randomValue = this.stepRandom();
+      const index = randomValue % (player().pile.length + 1);
+      this.mutate({
+        type: "transferCard",
+        from: "hands",
+        to: "pile",
+        who,
+        value: card,
+        targetIndex: index,
+        reason: "switch",
+      });
+    }
+    // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
+    let topIndex = 0;
+    for (let i = 0; i < count; i++) {
+      let candidate: CardState;
+      while (
+        topIndex < player().pile.length &&
+        swapInCardIds.includes(player().pile[topIndex].definition.id)
+      ) {
+        topIndex++;
+      }
+      if (topIndex >= player().pile.length) {
+        // 已经跳过了所有同名牌，只能从头开始
+        candidate = player().pile[0];
+      } else {
+        candidate = player().pile[topIndex];
+      }
+      this.mutate({
+        type: "transferCard",
+        from: "pile",
+        to: "hands",
+        who,
+        value: candidate,
+        reason: "switch",
+      });
+    }
+    this.notify();
+  }
+
+  async selectCard(
+    who: 0 | 1,
+    via: SkillInfo,
+    info: SelectCardInfo,
+  ): Promise<EventAndRequest[]> {
+    if (!this.config.howToSelectCard) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const selected = await this.config.howToSelectCard(
+      who,
+      info.cards.map((def) => def.id),
+    );
+    switch (info.type) {
+      case "createHandCard": {
+        const def = this.state.data.cards.get(selected);
+        if (typeof def === "undefined") {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        return this.createHandCard(who, def);
+      }
+      case "createEntity": {
+        const def = this.state.data.entities.get(selected);
+        if (typeof def === "undefined") {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        if (def.type !== "summon") {
+          throw new GiTcgDataError(`Entity type ${def.type} not supported now`);
+        }
+        const entityArea: EntityArea = {
+          who,
+          type: "summons",
+        };
+        const { oldState, newState } = this.createEntity(def, entityArea);
+        if (newState) {
+          const enterInfo = {
+            overridden: oldState,
+            newState,
+          };
+          return [["onEnter", new EnterEventArg(this.state, enterInfo)]];
+        } else {
+          return [];
+        }
+      }
+      case "requestPlayCard": {
+        const cardDefinition = this.state.data.cards.get(selected);
+        if (!cardDefinition) {
+          throw new GiTcgDataError(`Unknown card definition id ${selected}`);
+        }
+        return [
+          [
+            "requestPlayCard",
+            new PlayCardRequestArg(via, who, cardDefinition, info.targets),
+          ],
+        ];
+      }
+      default: {
+        const _: never = info;
+        throw new GiTcgDataError(`Not recognized selectCard type`);
+      }
+    }
+  }
+
+  async chooseActive(who: 0 | 1): Promise<CharacterState> {
+    if (!this.config.howToChooseActive) {
+      throw new GiTcgIoNotProvideError();
+    }
+    const player = this.state.players[who];
+    const candidates = player.characters.filter(
+      (ch) => ch.variables.alive && ch.id !== player.activeCharacterId,
+    );
+    if (candidates.length === 0) {
+      throw new GiTcgCoreInternalError(
+        `No available candidate active character for player ${who}.`,
+      );
+    }
+    const activeChId = await this.config.howToChooseActive(
+      who,
+      candidates.map((c) => c.id),
+    );
+    return getEntityById(this.state, activeChId) as CharacterState;
+  }
+
+  /** notify 'chooseActiveDone' */
+  postChooseActive(
+    p0chosen: CharacterState | null,
+    p1chosen: CharacterState | null,
+  ) {
+    const states = [p0chosen, p1chosen] as const;
+    for (const who of [0, 1] as const) {
+      const state = states[who];
+      if (!state) {
+        continue;
+      }
+      this.notify({
+        mutations: [
+          {
+            $case: "chooseActiveDone",
+            who,
+            characterId: state.id,
+            characterDefinitionId: state.definition.id,
+          },
+        ],
+      });
+    }
   }
 }

@@ -88,6 +88,7 @@ import { registerInitiativeSkill, builderWeakRefs } from "./registry";
 import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
+import type { ApplyReactive } from "./context/reactive";
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -102,17 +103,17 @@ export type WritableMetaOf<BM extends SkillBuilderMetaBase> = {
 
 export type SkillOperation<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<WritableMetaOf<Meta>>,
-  e: Omit<Meta["eventArgType"], `_${string}`>,
+  e: ApplyReactive<WritableMetaOf<Meta>, Meta["eventArgType"]>,
 ) => void;
 
 export type SkillOperationFilter<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
-  e: Omit<Meta["eventArgType"], `_${string}`>,
+  e: ApplyReactive<ReadonlyMetaOf<Meta>, Meta["eventArgType"]>,
 ) => unknown;
 
 type SkillProjection<Projected, Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
-  e: Omit<Meta["eventArgType"], `_${string}`>,
+  e: ApplyReactive<ReadonlyMetaOf<Meta>, Meta["eventArgType"]>,
 ) => Projected;
 
 type StateOf<TargetKindTs extends InitiativeSkillTargetKind> =
@@ -618,7 +619,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
     if (this.applyIfFilter) {
       const ifFilter = this._ifFilter;
       this.operations.push(function (c, e) {
-        if (!ifFilter(c as any, e)) {
+        if (!ifFilter(c as any, e as any)) {
           return SHOULD_EXECUTE_ELSE;
         }
         return op(c, e);
@@ -767,7 +768,7 @@ type ShortcutMetaOf<Builder> = {
  * 直接简写为
  * `.PROP(ARGS)`
  */
-export function withShortcut<T extends SkillBuilder<any>>(
+export function withShortcut<T extends object>(
   original: T,
 ): BuilderWithShortcut<T> {
   const proxy = new Proxy(original, {
@@ -775,12 +776,12 @@ export function withShortcut<T extends SkillBuilder<any>>(
       if (prop in target) {
         return Reflect.get(target, prop, receiver);
       } else if (prop in SkillContext.prototype) {
-        return function (this: T, ...args: any[]) {
-          return this.do((c) => (c as any)[prop](...args));
+        return function (this: any, ...args: any[]) {
+          return this.do((c: any) => c[prop](...args));
         };
       } else {
-        return function (this: T, ...args: any[]) {
-          return this.do((c) => c.eventArg[prop](...args));
+        return function (this: any, ...args: any[]) {
+          return this.do((c: any) => c.eventArg[prop](...args));
         };
       }
     },

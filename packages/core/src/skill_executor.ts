@@ -18,16 +18,14 @@ import {
   DamageOrHealEventArg,
   defineSkillInfo,
   DisposeEventArg,
-  EMPTY_SKILL_RESULT,
   type Event,
   type EventAndRequest,
   EventArg,
-  type HealInfo,
   type InitiativeSkillEventArg,
+  RequestArg,
   SelectCardEventArg,
   type SkillInfo,
-  type SkillResult,
-  SwitchActiveEventArg,
+  type SwitchActiveInfo,
   type TriggeredSkillDefinition,
   UseSkillEventArg,
   ZeroHealthEventArg,
@@ -39,12 +37,7 @@ import {
 } from "./base/state";
 import {
   Aura,
-  DamageType,
-  PbHealKind,
-  PbReactionType,
   PbSkillType,
-  PbSwitchActiveFromAction,
-  Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
 import {
@@ -301,7 +294,7 @@ export class SkillExecutor {
       // 继续收集在执行免于被击倒的 onDamageOrHeal 响应时产生的事件
       emittedEvents = [];
       for (const arg of zeroHealthEventArgs) {
-        nonDamageEvents.push(
+        emittedEvents.push(
           ...this.handleEventShallow(["modifyZeroHealth", arg]),
         );
         if (arg._immuneInfo !== null) {
@@ -313,55 +306,16 @@ export class SkillExecutor {
               arg._immuneInfo.newHealth
             }`,
           );
-          const source = arg._immuneInfo.skill.caller;
-          const healValue = arg._immuneInfo.newHealth;
-          const healInfo: HealInfo = {
-            type: DamageType.Heal,
-            cancelled: false,
-            healKind: "immuneDefeated",
-            source,
-            via: arg._immuneInfo.skill,
-            target: arg.target,
-            expectedValue: healValue,
-            value: healValue,
-            causeDefeated: false,
-            fromReaction: null,
-          };
-          this.mutate({
-            type: "modifyEntityVar",
-            state: arg.target,
-            varName: "health",
-            value: healValue,
-            direction: "increase",
-          });
-          await this.mutator.notifyAndPause({
-            mutations: [
-              {
-                $case: "damage",
-                damageType: healInfo.type,
-                value: healInfo.value,
-                sourceId: healInfo.source.id,
-                sourceDefinitionId: healInfo.source.definition.id,
-                targetId: healInfo.target.id,
-                targetDefinitionId: healInfo.target.definition.id,
-                isSkillMainDamage: false,
-                reactionType: PbReactionType.UNSPECIFIED,
-                causeDefeated: false,
-                oldAura: arg.target.variables.aura,
-                newAura: arg.target.variables.aura,
-                oldHealth: 0,
-                newHealth: healValue,
-                healKind: PbHealKind.IMMUNE_DEFEATED,
-              },
-            ],
-          });
-          const healEventArg = new DamageOrHealEventArg(
-            arg.onTimeState,
-            healInfo,
+          const events = this.mutator.heal(
+            arg._immuneInfo.newHealth,
+            arg.target,
+            {
+              via: arg._immuneInfo.skill,
+              kind: "immuneDefeated",
+            },
           );
-          emittedEvents.push(
-            ...this.handleEventShallow(["onDamageOrHeal", healEventArg]),
-          );
+          await this.mutator.notifyAndPause();
+          emittedEvents.push(...this.handleEventShallow(...events));
         }
       }
     } while (emittedEvents.length > 0);
@@ -415,9 +369,9 @@ export class SkillExecutor {
     if (criticalDamageEvents.length === 0) {
       return;
     }
-    const switchEventArgPromises: [
-      null | Promise<SwitchActiveEventArg>,
-      null | Promise<SwitchActiveEventArg>,
+    const switchPromises: [
+      null | Promise<SwitchActiveInfo>,
+      null | Promise<SwitchActiveInfo>,
     ] = [null, null];
     for (const who of [0, 1] as const) {
       const player = this.state.players[who];
@@ -431,44 +385,36 @@ export class SkillExecutor {
         DetailLogType.Other,
         `Active character of player ${who} is defeated. Waiting user choice`,
       );
-      switchEventArgPromises[who] = this.mutator.chooseActive(who).then(
-        (to) =>
-          new SwitchActiveEventArg(this.state, {
-            type: "switchActive",
-            who,
-            from: activeCh,
-            to,
-            fromReaction: false,
-            fast: null,
-          }),
-      );
+      switchPromises[who] = this.mutator.chooseActive(who).then((to) => ({
+        type: "switchActive",
+        who,
+        from: activeCh,
+        to,
+        fromReaction: false,
+        fast: null,
+      }));
     }
-    const switchEventArgs = await Promise.all(switchEventArgPromises);
+    const switchInfos = await Promise.all(switchPromises);
     this.mutator.postChooseActive(
-      ...switchEventArgs.map((arg) => arg?.switchInfo.to ?? null),
+      ...switchInfos.map((info) => info?.to ?? null),
     );
     const currentTurn = this.state.currentTurn;
-    for (const arg of switchEventArgs) {
-      if (arg) {
+    const switchEvents: EventAndRequest[][] = [[], []];
+    for (const info of switchInfos) {
+      if (info) {
         using l = this.mutator.subLog(
           DetailLogType.Primitive,
-          `Player ${arg.switchInfo.who} switch active from ${stringifyState(
-            arg.switchInfo.from,
-          )} to ${stringifyState(arg.switchInfo.to)}`,
+          `Player ${info.who} switch active from ${stringifyState(
+            info.from,
+          )} to ${stringifyState(info.to)}`,
         );
-        this.mutate({
-          type: "switchActive",
-          who: arg.switchInfo.who,
-          value: arg.switchInfo.to,
-        });
-        this.mutator.postSwitchActive(arg.switchInfo);
+        switchEvents[info.who].push(
+          ...this.mutator.switchActive(info.who, info.to),
+        );
       }
     }
     for (const who of [currentTurn, flip(currentTurn)]) {
-      const arg = switchEventArgs[who];
-      if (arg) {
-        await this.handleEvent(["onSwitchActive", arg]);
-      }
+      await this.handleEvent(...switchEvents[who]);
     }
   }
 
@@ -500,22 +446,28 @@ export class SkillExecutor {
    * @param event
    * @returns
    */
-  private handleEventShallow(event: Event): EventAndRequest[] {
-    const [name, arg] = event;
-    using guard = this.createHandleEventNotifies(name);
-    const callerAndSkills = this.broadcastEvent(event);
+  private handleEventShallow(...events: EventAndRequest[]): EventAndRequest[] {
     const result: EventAndRequest[] = [];
-    for (const { caller, skill } of callerAndSkills) {
-      const skillInfo = defineSkillInfo({
-        caller,
-        definition: skill,
-      });
-      if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+    for (const event of events) {
+      const [name, arg] = event;
+      if (arg instanceof RequestArg) {
+        result.push(event);
         continue;
       }
-      arg._currentSkillInfo = skillInfo;
-      const emittedEvents = this.executeSkill(skillInfo, arg);
-      result.push(...emittedEvents);
+      using guard = this.createHandleEventNotifies(name);
+      const callerAndSkills = this.broadcastEvent(event as Event);
+      for (const { caller, skill } of callerAndSkills) {
+        const skillInfo = defineSkillInfo({
+          caller,
+          definition: skill,
+        });
+        arg._currentSkillInfo = skillInfo;
+        if (!(0, skill.filter)(this.state, skillInfo, arg)) {
+          continue;
+        }
+        const emittedEvents = this.executeSkill(skillInfo, arg);
+        result.push(...emittedEvents);
+      }
     }
     return result;
   }
@@ -606,10 +558,6 @@ export class SkillExecutor {
           ({ skill }) => skill.id === arg.requestingSkillId,
         );
         if (!skillAndCaller) {
-          console.log(
-            availableSkills.map(({ skill }) => skill.id),
-            arg.requestingSkillId,
-          );
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
@@ -696,10 +644,10 @@ export class SkillExecutor {
             caller,
             definition: skill,
           });
+          arg._currentSkillInfo = skillInfo;
           if (!(0, skill.filter)(this.state, skillInfo, arg)) {
             continue;
           }
-          arg._currentSkillInfo = skillInfo;
           await this.finalizeSkill(skillInfo, arg);
         }
       }

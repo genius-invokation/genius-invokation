@@ -33,44 +33,41 @@ export function executeQuery<
   const Q extends string,
 >(ctx: SkillContext<Meta>, q: Q): TypedExEntity<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
+  const allEntities = allEntitiesInclPile(ctx.state);
   const arg: QueryArgs = {
-    get state() {
-      return ctx.state;
-    },
-    get callerWho() {
-      return ctx.callerArea.who;
-    },
-    candidates: allEntities(ctx.state),
+    state: ctx.state,
+    allEntities,
+    callerWho: ctx.callerArea.who,
+    candidates: allEntities,
     externals: {
-      self: () => ctx.skillInfo.caller.id,
+      self: () => ctx.self,
       master: () => {
-        const callerId = ctx.skillInfo.caller.id;
-        const area = getEntityArea(ctx.state, callerId);
+        const area = ctx.self.area;
         if (area.type !== "characters") {
           throw new GiTcgDataError(`This caller do not have @master`);
         }
-        return area.characterId;
+        return ctx.get(area.characterId);
       },
       event: {
-        skillCaller: () => (ctx.eventArg as UseSkillEventArg).skill.caller.id,
-        switchTo: () => (ctx.eventArg as SwitchActiveEventArg).switchInfo.to.id,
+        skillCaller: () => (ctx.eventArg as UseSkillEventArg).skill.caller,
+        switchTo: () => (ctx.eventArg as SwitchActiveEventArg).switchInfo.to,
       },
       damage: {
-        target: () =>
-          (ctx.eventArg as DamageOrHealEventArg<DamageInfo>).target.id,
+        target: () => (ctx.eventArg as DamageOrHealEventArg<DamageInfo>).target,
       },
       targets: Object.fromEntries(
         new Array(targetLength)
           .fill(0)
           .map((_, i) => [
             `${i}`,
-            () => (ctx.eventArg as InitiativeSkillEventArg).targets[i].id,
+            () => (ctx.eventArg as InitiativeSkillEventArg).targets[i],
           ]),
       ),
     },
   };
-  const result = doSemanticQueryAction(q, arg);
-  return result.map((st) => ctx.of(st));
+  // TODO typing
+  const result = doSemanticQueryAction(q, arg) as any[];
+  return result;
 }
 
 export function executeQueryOnState(
@@ -78,9 +75,11 @@ export function executeQueryOnState(
   who: 0 | 1,
   q: string,
 ): AnyState[] {
+  const allEntities = allEntitiesInclPile(state);
   return doSemanticQueryAction(q, {
     state,
-    candidates: allEntitiesInclPile(state),
+    allEntities,
+    candidates: allEntities,
     callerWho: who,
     externals: {},
   });

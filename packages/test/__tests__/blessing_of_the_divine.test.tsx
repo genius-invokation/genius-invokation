@@ -21,7 +21,7 @@ import {
 import { BlessingOfTheDivineRelicsInstallation, TheBoarPrincess } from "@gi-tcg/data/internal/cards/event/other";
 import { expect, test } from "bun:test";
 
-test("baizhu shield: onDispose", async () => {
+test("blessing of divine: trigger onDispose of overridden", async () => {
   const from = ref();
   const to = ref();
   const c = setup(

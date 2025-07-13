@@ -20,17 +20,22 @@ import {
   type EntityDefinition,
   USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "../../base/entity";
-import { getEntityArea, getEntityById } from "../../utils";
+import { getEntityArea, getEntityById } from "./utils";
 import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
 
-export class Entity<Meta extends ContextMetaBase> {
-  private readonly _area: EntityArea;
+class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
+  override get [ReactiveStateSymbol](): "entity" {
+    return "entity";
+  }
+
+  protected _area: EntityArea | undefined;
   constructor(
-    private readonly skillContext: SkillContext<Meta>,
+    protected readonly skillContext: SkillContext<Meta>,
     public readonly id: number,
   ) {
-    this._area = getEntityArea(skillContext.state, id);
+    super();
   }
 
   get state(): EntityState {
@@ -40,10 +45,10 @@ export class Entity<Meta extends ContextMetaBase> {
     return this.state.definition;
   }
   get area(): EntityArea {
-    return this._area;
+    return (this._area ??= getEntityArea(this.skillContext.state, this.id));
   }
   get who() {
-    return this._area.who;
+    return this.area.who;
   }
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
@@ -55,12 +60,13 @@ export class Entity<Meta extends ContextMetaBase> {
   }
 
   master() {
-    if (this._area.type !== "characters") {
+    if (this.area.type !== "characters") {
       throw new GiTcgDataError("master() expect a character area");
     }
-    return new Character<Meta>(this.skillContext, this._area.characterId);
+    return this.skillContext.get<"character">(this.area.characterId);
   }
-
+}
+export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {
   setVariable(prop: string, value: number) {
     this.skillContext.setVariable(prop, value, this.state);
   }
@@ -89,15 +95,5 @@ export class Entity<Meta extends ContextMetaBase> {
   }
 }
 
-type EntityMutativeProps =
-  | "setVariable"
-  | "addVariable"
-  | "addVariableWithMax"
-  | "consumeUsage"
-  | "resetUsagePerRound"
-  | "dispose";
-
 export type TypedEntity<Meta extends ContextMetaBase> =
-  Meta["readonly"] extends true
-    ? Omit<Entity<Meta>, EntityMutativeProps>
-    : Entity<Meta>;
+  Meta["readonly"] extends true ? ReadonlyEntity<Meta> : Entity<Meta>;

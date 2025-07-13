@@ -15,7 +15,7 @@
 
 import { character, skill, summon, status, combatStatus, card, DamageType, customEvent } from "@gi-tcg/core/builder";
 
-export const TurboTwirlyTriggered = customEvent("turboTwirlyTriggered");
+export const TurboTwirlyTriggered = customEvent("kachina/turboTwirlyTriggered");
 
 /**
  * @id 116103
