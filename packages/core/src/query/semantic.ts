@@ -17,12 +17,17 @@ import { flip } from "@gi-tcg/utils";
 import type { MatchResult, Node, NonterminalNode } from "ohm-js";
 
 import grammar, { type QueryLangActionDict } from "./query.ohm-bundle";
-import type { AnyState, CharacterState, GameState } from "../base/state";
+import type { AnyState as AnyStateOriginal, CharacterState, GameState } from "../base/state";
 import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
 import { CharacterBase } from "../builder/context/character";
 import { getEntityArea } from "../utils";
-import type { EntityType } from "../base/entity";
+import type { EntityArea, EntityType } from "../base/entity";
 import { GiTcgQueryError } from "../error";
+
+// If we pass an reactive state into it, then area will be presented
+type AnyState = AnyStateOriginal & {
+  area?: EntityArea;
+}
 
 type AnySkillContext = SkillContext<ContextMetaBase>;
 
@@ -66,7 +71,7 @@ function queryCanonical(
   const expectWho =
     whoRes === "my" ? this.args.ctx.callerWho : flip(this.args.ctx.callerWho);
   for (const state of this.args.ctx.candidates) {
-    const area = getEntityArea(this.args.ctx.state, state.id);
+    const area = state.area ?? getEntityArea(this.args.ctx.state, state.id);
     if (whoRes !== "all" && expectWho !== area.who) {
       continue;
     }
@@ -107,7 +112,7 @@ function queryHas(
   objectResult: AnyState[],
 ): AnyState[] {
   const objectAreas = objectResult.flatMap((st) => {
-    const area = getEntityArea(this.args.ctx.state, st.id);
+    const area = st.area ?? getEntityArea(this.args.ctx.state, st.id);
     if (area.type === "characters") {
       return [area.characterId];
     } else {
@@ -122,7 +127,7 @@ function queryAt(
   objectResult: AnyState[],
 ): AnyState[] {
   return subjectResult.filter((st) => {
-    const area = getEntityArea(this.args.ctx.state, st.id);
+    const area = st.area ?? getEntityArea(this.args.ctx.state, st.id);
     if (area.type === "characters") {
       return objectResult.map((st) => st.id).includes(area.characterId);
     } else {
@@ -133,19 +138,23 @@ function queryAt(
 
 const doQueryDict: QueryLangActionDict<AnyState[]> = {
   Query(orQuery, orderBy, limit) {
-    const raw = orQuery.doQuery(this.args.ctx);
+    let raw = orQuery.doQuery(this.args.ctx);
     const orderByExprs = orderBy.children.flatMap(
       (node) => node.children[1].asIteration().children,
     );
-    const rawWithVal = raw
-      .map((st) => [st, orderByExprs.map((expr) => expr.evalExpr(st))] as const)
-      .toSortedBy(([, values]) => values)
-      .map(([st]) => st);
+    if (orderByExprs.length > 0) {
+      raw = raw
+        .map(
+          (st) => [st, orderByExprs.map((expr) => expr.evalExpr(st))] as const,
+        )
+        .toSortedBy(([, values]) => values)
+        .map(([st]) => st);
+    }
     const limitCount =
       limit.numChildren > 0
         ? limit.children[0].children[1].evalExpr(this.args.state)
         : Infinity;
-    return rawWithVal.slice(0, limitCount);
+    return raw.slice(0, limitCount);
   },
   OrQuery_or(orQuery, _, andQuery) {
     const lhsResult = orQuery.doQuery(this.args.ctx);

@@ -366,7 +366,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   ): TypedExEntity<Meta, T>;
   of(entityState: AnyState | number): unknown {
     if (typeof entityState === "number") {
-      entityState = getEntityById(this.state, entityState);
+      return this.get(entityState);
     }
     return applyReactive(this, entityState);
   }
@@ -748,7 +748,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     const { newState } = this.callAndEmit("createEntity", def, area, opt);
     if (newState) {
-      return this.of(newState);
+      return this.get<TypeT>(newState.id);
     } else {
       return null;
     }

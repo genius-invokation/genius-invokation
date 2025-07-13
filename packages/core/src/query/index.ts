@@ -65,9 +65,9 @@ export function executeQuery<
       ),
     },
   };
-  const result = doSemanticQueryAction(q, arg);
-  // TODO: typing
-  return result.map((st) => (st) as any);
+  // TODO typing
+  const result = doSemanticQueryAction(q, arg) as any[];
+  return result;
 }
 
 export function executeQueryOnState(

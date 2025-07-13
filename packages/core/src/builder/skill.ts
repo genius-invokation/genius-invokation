@@ -514,7 +514,6 @@ const detailedEventDictionary = {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
   dispose: defineDescriptor("onDispose", (e, r) => {
-    console.log('DD', e.onTimeState.players.flatMap((p) => p.removedEntities));
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
   selfDispose: defineDescriptor("onDispose", (e, r) => {
