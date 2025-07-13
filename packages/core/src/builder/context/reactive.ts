@@ -40,11 +40,6 @@ type ReactiveClassCtor = new (
   skillContext: SkillContext<any>,
   id: number,
 ) => ReactiveStateBase;
-const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
-  character: Character,
-  entity: Entity,
-  card: Card,
-};
 
 export const NoReactiveSymbol = Symbol("GiTcgCoreStateNoReactive");
 export type NoReactiveSymbol = typeof NoReactiveSymbol;
@@ -154,6 +149,11 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   } else if (Object.getPrototypeOf(value) === Object.prototype) {
     clone = { ...value } as T & {};
   }
+  const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
+    character: Character,
+    entity: Entity,
+    card: Card,
+  };
   if (
     StateSymbol in value &&
     typeof value[StateSymbol] === "string" &&
@@ -171,14 +171,14 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
         if (prop === RawStateSymbol) {
           return value;
         }
-        if (prop in Ctor.prototype) {
+        if (prop in instance) {
           return Reflect.get(instance, prop, instance);
         } else {
           return Reflect.get(target, prop, receiver);
         }
       },
       set(target, prop, value, receiver) {
-        if (prop in Ctor.prototype) {
+        if (prop in instance) {
           return Reflect.set(instance, prop, value, instance);
         } else {
           return Reflect.set(target, prop, value, receiver);
@@ -188,7 +188,7 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
         if (prop === RawStateSymbol) {
           return true;
         }
-        return Reflect.has(target, prop);
+        return Reflect.has(target, prop) || Reflect.has(Ctor.prototype, prop);
       },
     }) as ApplyReactive<Meta, T>;
   }

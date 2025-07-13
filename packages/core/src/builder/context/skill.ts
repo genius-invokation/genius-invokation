@@ -172,7 +172,10 @@ type CallAndEmitResult<K extends MutatorMethodCanEmit> = ReturnType<
 export class SkillContext<Meta extends ContextMetaBase> {
   private readonly mutator: StateMutator;
   public readonly callerArea: EntityArea;
-  public readonly eventArg: ApplyReactive<Meta, Meta["eventArgType"]>;
+  public readonly eventArg: ApplyReactive<
+    Meta,
+    Omit<Meta["eventArgType"], `_${string}`>
+  >;
 
   private readonly eventAndRequests: EventAndRequest[] = [];
   private mainDamage: DamageInfo | null = null;
@@ -197,9 +200,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   constructor(
     state: GameState,
     public readonly skillInfo: SkillInfoOfContextConstruction,
-    eventArg: Meta["eventArgType"] extends object
-      ? Omit<Meta["eventArgType"], `_${string}`>
-      : Meta["eventArgType"],
+    eventArg: Meta["eventArgType"],
   ) {
     const mutatorConfig: MutatorConfig = {
       logger: skillInfo.logger,
@@ -337,11 +338,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * Get context of given entity state
    * @deprecated
    */
-  of(entityState: EntityState): TypedEntity<Meta>;
+  of(entityState: EntityState): ApplyReactive<Meta, EntityState>;
   /**
    * @deprecated
    */
-  of(entityState: CharacterState): TypedCharacter<Meta>;
+  of(entityState: CharacterState): ApplyReactive<Meta, CharacterState>;
   /**
    * @deprecated
    */
@@ -352,13 +353,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (typeof entityState === "number") {
       entityState = getEntityById(this.state, entityState);
     }
-    if (entityState.definition.type === "character") {
-      return new Character(this, entityState.id);
-    } else if (entityState.definition.type === "card") {
-      return new Card(this, entityState.id);
-    } else {
-      return new Entity(this, entityState.id);
-    }
+    return applyReactive(this, entityState);
   }
 
   private queryOrOf<TypeT extends ExEntityType>(
@@ -439,11 +434,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
           [c.id, { cost: -diceCostOfCard(c.definition), tb: tb(c) }] as const,
       ),
     );
-    return player.hands
-      .toSortedBy((card) => [
-        sortData.get(card.id)!.cost,
-        sortData.get(card.id)!.tb,
-      ])
+    return player.hands.toSortedBy((card) => [
+      sortData.get(card.id)!.cost,
+      sortData.get(card.id)!.tb,
+    ]);
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
