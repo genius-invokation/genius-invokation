@@ -240,6 +240,7 @@ export class Game {
     const extensions = data.extensions
       .values()
       .map<ExtensionState>((v) => ({
+        [StateSymbol]: "extension",
         definition: v,
         state: v.initialState,
       }))

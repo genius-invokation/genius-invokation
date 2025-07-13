@@ -15,32 +15,31 @@
 
 import { GiTcgDataError } from "../../error";
 import type { CardState } from "../../base/state";
-import { getEntityArea, getEntityById } from "../../utils";
+import { getEntityArea, getEntityById } from "./utils";
 import type { ContextMetaBase, SkillContext } from "./skill";
 import type { EntityArea } from "../../base/entity";
-import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
 
 class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "card" {
     return "card";
   }
 
-  protected readonly _area: EntityArea;
+  protected _area: EntityArea | undefined;
   constructor(
     protected readonly skillContext: SkillContext<Meta>,
     public readonly id: number,
   ) {
     super();
-    this._area = getEntityArea(this.skillContext.state, this.id);
   }
-  get area() {
-    return this._area;
+  get area(): EntityArea {
+    return this._area ??= getEntityArea(this.skillContext.state, this.id);
   }
   get who() {
-    return this._area.who;
+    return this.area.who;
   }
   isMine() {
-    return this._area.who === this.skillContext.callerArea.who;
+    return this.area.who === this.skillContext.callerArea.who;
   }
 
   get state(): CardState {

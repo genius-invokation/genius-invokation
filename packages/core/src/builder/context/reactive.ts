@@ -25,6 +25,11 @@ import { Card, type TypedCard } from "./card";
 import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import type { ContextMetaBase, SkillContext } from "./skill";
+import {
+  RawStateSymbol,
+  ReactiveStateBase,
+  ReactiveStateSymbol,
+} from "./reactive_base";
 
 type ReactiveClassMap<Meta extends ContextMetaBase> = {
   character: TypedCharacter<Meta>;
@@ -41,20 +46,6 @@ const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
   card: Card,
 };
 
-export const ReactiveStateSymbol: unique symbol = Symbol("ReactiveState");
-export type ReactiveStateSymbol = typeof ReactiveStateSymbol;
-
-export abstract class ReactiveStateBase {
-  abstract get [ReactiveStateSymbol](): StateKind;
-  cast<K extends StateKind>(): this & {
-    readonly [ReactiveStateSymbol]: K;
-  } {
-    return this as any;
-  }
-}
-
-// interface ReactiveState<Meta extends ContextMetaBase, State extends {}> extends State {};
-
 type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   readonly [StateSymbol]: infer S extends keyof ReactiveClassMap<Meta>;
 }
@@ -66,7 +57,10 @@ type AtomicObject = Primitive | Date | RegExp | Function | Promise<any>;
 
 type ReadonlyPair<T, U> = readonly [T, U];
 
-export type ApplyReactive<Meta extends ContextMetaBase, A> = A extends AtomicObject
+export type ApplyReactive<
+  Meta extends ContextMetaBase,
+  A,
+> = A extends AtomicObject
   ? A
   : A extends {
         readonly [StateSymbol]: keyof ReactiveClassMap<Meta>;
@@ -109,6 +103,16 @@ type Y = ApplyReactive<TestMeta, GameState>["players"][0]["characters"][0];
 
 declare let x: X;
 
+export function getRaw<T>(state: T): T {
+  if (state === null || typeof state !== "object") {
+    return state;
+  }
+  if (RawStateSymbol in state) {
+    return state[RawStateSymbol] as T;
+  }
+  return state;
+}
+
 export function applyReactive<Meta extends ContextMetaBase, T>(
   skillContext: SkillContext<Meta>,
   value: T,
@@ -117,6 +121,9 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
     return null as ApplyReactive<Meta, T>;
   }
   if (typeof value !== "object") {
+    return value as ApplyReactive<Meta, T>;
+  }
+  if (ReactiveStateSymbol in value) {
     return value as ApplyReactive<Meta, T>;
   }
   if (
@@ -129,6 +136,12 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   if (value instanceof Map || value instanceof Set) {
     return value as ApplyReactive<Meta, T>;
   }
+  let clone: T & {} = value;
+  if (Array.isArray(value)) {
+    clone = [...value] as T & {};
+  } else if (Object.getPrototypeOf(value) === Object.prototype) {
+    clone = { ...value } as T & {};
+  }
   if (
     StateSymbol in value &&
     typeof value[StateSymbol] === "string" &&
@@ -138,8 +151,14 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   ) {
     const Ctor = REACTIVE_CLASS_MAP[value[StateSymbol] as StateKind]!;
     const instance = new Ctor(skillContext, value.id);
-    return new Proxy(value, {
+    return new Proxy(clone, {
+      getPrototypeOf(target) {
+        return Ctor.prototype;
+      },
       get(target, prop, receiver) {
+        if (prop === RawStateSymbol) {
+          return value;
+        }
         if (prop in Ctor.prototype) {
           return Reflect.get(instance, prop, instance);
         } else {
@@ -153,11 +172,27 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
           return Reflect.set(target, prop, value, receiver);
         }
       },
+      has(target, prop) {
+        if (prop === RawStateSymbol) {
+          return true;
+        }
+        return Reflect.has(target, prop);
+      },
     }) as ApplyReactive<Meta, T>;
   }
-  return new Proxy(value, {
+  return new Proxy(clone, {
     get(target, prop, receiver) {
+      if (prop === RawStateSymbol) {
+        return value;
+      }
+      // console.log(target, prop);
       return applyReactive(skillContext, Reflect.get(target, prop, receiver));
+    },
+    has(target, prop) {
+      if (prop === RawStateSymbol) {
+        return true;
+      }
+      return Reflect.has(target, prop);
     },
   }) as ApplyReactive<Meta, T>;
 }

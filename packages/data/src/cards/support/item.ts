@@ -128,6 +128,7 @@ const CardPlayedExtension = extension(323006, { played: pair(new Set<number>()) 
     if (e.isPlayCard()) {
       st.played[e.who].add(e.action.skill.caller.definition.id);
     }
+    // console.log(st);
   })
   .done();
 

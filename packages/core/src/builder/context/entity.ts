@@ -20,23 +20,22 @@ import {
   type EntityDefinition,
   USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "../../base/entity";
-import { getEntityArea, getEntityById } from "../../utils";
+import { getEntityArea, getEntityById } from "./utils";
 import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
-import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
+import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
 
 class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "entity" {
     return "entity";
   }
 
-  protected readonly _area: EntityArea;
+  protected _area: EntityArea | undefined;
   constructor(
     protected readonly skillContext: SkillContext<Meta>,
     public readonly id: number,
   ) {
     super();
-    this._area = getEntityArea(skillContext.state, id);
   }
 
   get state(): EntityState {
@@ -46,10 +45,10 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.state.definition;
   }
   get area(): EntityArea {
-    return this._area;
+    return (this._area ??= getEntityArea(this.skillContext.state, this.id));
   }
   get who() {
-    return this._area.who;
+    return this.area.who;
   }
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
@@ -61,10 +60,10 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   }
 
   master() {
-    if (this._area.type !== "characters") {
+    if (this.area.type !== "characters") {
       throw new GiTcgDataError("master() expect a character area");
     }
-    return new Character<Meta>(this.skillContext, this._area.characterId);
+    return new Character<Meta>(this.skillContext, this.area.characterId);
   }
 }
 export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {

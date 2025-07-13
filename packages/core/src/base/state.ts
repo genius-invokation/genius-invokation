@@ -37,7 +37,7 @@ import type {
 } from "./skill";
 
 // 为不同层级的 state object 添加 marker symbol
-export type StateKind = "game" | "player" | "card" | "character" | "entity";
+export type StateKind = "game" | "player" | "card" | "character" | "entity" | "extension";
 export const StateSymbol: unique symbol = Symbol("GiTcgCoreState");
 export type StateSymbol = typeof StateSymbol;
 
@@ -135,6 +135,7 @@ export type EntityVariables = VariableOfConfig<EntityVariableConfigs>;
 export type AnyState = CharacterState | EntityState | CardState;
 
 export interface ExtensionState {
+  readonly [StateSymbol]: "extension";
   readonly definition: ExtensionDefinition;
   readonly state: unknown;
 }

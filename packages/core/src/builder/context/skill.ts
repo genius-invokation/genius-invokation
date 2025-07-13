@@ -44,17 +44,17 @@ import {
   type CharacterState,
   type EntityState,
   type GameState,
+  type PlayerState,
   stringifyState,
 } from "../../base/state";
 import {
-  allSkills,
-  diceCostOfCard,
-  getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  allSkills,
+  diceCostOfCard,
   isCharacterInitiativeSkill,
   sortDice,
-} from "../../utils";
+} from "./utils";
 import { executeQuery } from "../../query";
 import type {
   AppliableDamageType,
@@ -92,7 +92,8 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
-import { applyReactive, type ApplyReactive } from "./reactive";
+import { applyReactive, getRaw, type ApplyReactive } from "./reactive";
+import { RawStateSymbol } from "./reactive_base";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -267,7 +268,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     Object.freeze(this);
     const emittedEvents = this.preprocessEventList();
     return [
-      this.state,
+      getRaw(this.state),
       {
         emittedEvents,
         innerNotify: this._savedNotify,
@@ -303,10 +304,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return applyReactive(this, this.mutator.state);
   }
 
-  get player() {
+  get player(): ApplyReactive<Meta, PlayerState> {
     return this.state.players[this.callerArea.who];
   }
-  get oppPlayer() {
+  get oppPlayer(): ApplyReactive<Meta, PlayerState> {
     return this.state.players[flip(this.callerArea.who)];
   }
   /** Latest caller state */
@@ -396,7 +397,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (!ext) {
       throw new GiTcgDataError("Associated extension not found");
     }
-    return ext.state;
+    return getRaw(ext).state;
   }
   /** 本回合已使用多少次本技能（仅限角色主动技能）。 */
   countOfSkill(): number;

@@ -28,13 +28,13 @@ import type {
 } from "../../base/character";
 import type { EntityArea, EntityTag } from "../../base/entity";
 import {
-  elementOfCharacter,
-  getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  elementOfCharacter,
+  getActiveCharacterIndex,
   nationOfCharacter,
   weaponOfCharacter,
-} from "../../utils";
+} from "./utils";
 import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
 import { Aura, DamageType, DiceType } from "@gi-tcg/typings";
 import type {
@@ -43,7 +43,7 @@ import type {
   StatusHandle,
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
-import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive";
+import { RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 
@@ -55,25 +55,27 @@ export class CharacterBase extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "character" {
     return "character";
   }
+  declare [RawStateSymbol]: CharacterState;
 
-  private _area: EntityArea;
-  private _state: CharacterState;
+  private _area: EntityArea | undefined;
+  private _state: CharacterState | undefined;
   constructor(
     private _gameState: GameState,
     protected readonly _id: number,
   ) {
     super();
-    this._area = getEntityArea(_gameState, _id);
-    this._state = getEntityById(_gameState, _id) as CharacterState;
   }
   protected get gameState() {
     return this._gameState;
   }
   get area() {
-    return this._area;
+    return (this._area ??= getEntityArea(this._gameState, this._id));
   }
   get state() {
-    return this._state;
+    return (this._state ??= getEntityById(
+      this._gameState,
+      this._id,
+    ) as CharacterState);
   }
 
   get who() {
@@ -208,7 +210,7 @@ export class ReadonlyCharacter<
   ) {
     super(skillContext.state, id);
   }
-  protected override get gameState() {
+  protected override get gameState(): GameState {
     return this.skillContext.state;
   }
 

@@ -438,6 +438,7 @@ export function setup(state: JSX.Element): TestController {
     .values()
     .map(
       (def): ExtensionState => ({
+        [StateSymbol]: "extension",
         definition: def,
         state: def.initialState,
       }),
