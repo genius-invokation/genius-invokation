@@ -172,6 +172,7 @@ type CallAndEmitResult<K extends MutatorMethodCanEmit> = ReturnType<
 export class SkillContext<Meta extends ContextMetaBase> {
   private readonly mutator: StateMutator;
   public readonly callerArea: EntityArea;
+  public readonly eventArg: ApplyReactive<Meta, Meta["eventArgType"]>;
 
   private readonly eventAndRequests: EventAndRequest[] = [];
   private mainDamage: DamageInfo | null = null;
@@ -196,7 +197,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   constructor(
     state: GameState,
     public readonly skillInfo: SkillInfoOfContextConstruction,
-    public readonly eventArg: Meta["eventArgType"] extends object
+    eventArg: Meta["eventArgType"] extends object
       ? Omit<Meta["eventArgType"], `_${string}`>
       : Meta["eventArgType"],
   ) {
@@ -209,6 +210,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         ),
     };
     this.callerArea = getEntityArea(state, skillInfo.caller.id);
+    this.eventArg = applyReactive(this, eventArg);
     this.mutator = new StateMutator(state, mutatorConfig);
     this._self = this.of<Meta["callerType"]>(this.skillInfo.caller);
   }

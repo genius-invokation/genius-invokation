@@ -46,6 +46,9 @@ const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
   card: Card,
 };
 
+export const NoReactiveSymbol = Symbol("GiTcgCoreStateNoReactive");
+export type NoReactiveSymbol = typeof NoReactiveSymbol;
+
 type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   readonly [StateSymbol]: infer S extends keyof ReactiveClassMap<Meta>;
 }
@@ -53,7 +56,13 @@ type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   : never;
 
 type Primitive = string | number | boolean | bigint | symbol | null | undefined;
-type AtomicObject = Primitive | Date | RegExp | Function | Promise<any>;
+type AtomicObject =
+  | Primitive
+  | Date
+  | RegExp
+  | Function
+  | Promise<any>
+  | { readonly [NoReactiveSymbol]: true };
 
 type ReadonlyPair<T, U> = readonly [T, U];
 
@@ -136,6 +145,9 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   if (value instanceof Map || value instanceof Set) {
     return value as ApplyReactive<Meta, T>;
   }
+  if (NoReactiveSymbol in value && value[NoReactiveSymbol]) {
+    return value as ApplyReactive<Meta, T>;
+  }
   let clone: T & {} = value;
   if (Array.isArray(value)) {
     clone = [...value] as T & {};
@@ -185,7 +197,9 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
       if (prop === RawStateSymbol) {
         return value;
       }
-      // console.log(target, prop);
+      if (typeof prop === "string" && prop.startsWith("_")) {
+        return Reflect.get(target, prop, receiver);
+      }
       return applyReactive(skillContext, Reflect.get(target, prop, receiver));
     },
     has(target, prop) {

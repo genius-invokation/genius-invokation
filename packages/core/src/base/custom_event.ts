@@ -13,7 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { NoReactiveSymbol } from "../builder/context/reactive";
+
 class CustomEvent<T = unknown> {
+  [NoReactiveSymbol] = true;
   _typeGuard!: T;
   name: string;
   constructor(name?: string) {
