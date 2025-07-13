@@ -1,15 +1,15 @@
 .gi-tcg-chessboard-new {
-  --c-void: #4a4a4a;
-  --c-electro: #917ce8;
-  --c-pyro: #d6684b;
-  --c-dendro: #88b750;
-  --c-cryo: #63bacd;
-  --c-geo: #d29d5d;
-  --c-hydro: #488ccb;
-  --c-anemo: #5ca8a6;
+  --c-void: #766368;
+  --c-electro: #b178eb;
+  --c-pyro: #f07648;
+  --c-dendro: #9bca13;
+  --c-cryo: #63d4e2;
+  --c-geo: #e2a60b;
+  --c-hydro: #5791e0;
+  --c-anemo: #52daab;
   --c-omni: #dcd4c2;
   /* --c-energy: #eab308; */
-  --c-heal: lightgreen;
+  --c-heal: #3ed490;
   --font-emoji: Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji,
     Android Emoji, EmojiSymbols, EmojiOne Mozilla, Twemoji Mozilla,
     Segoe UI Symbol, Noto Color Emoji Compat, emoji;
