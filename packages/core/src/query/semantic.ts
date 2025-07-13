@@ -17,26 +17,23 @@ import { flip } from "@gi-tcg/utils";
 import type { MatchResult, Node, NonterminalNode } from "ohm-js";
 
 import grammar, { type QueryLangActionDict } from "./query.ohm-bundle";
-import type {
-  AnyState,
-  CharacterState,
-  GameState,
-} from "../base/state";
+import type { AnyState, CharacterState, GameState } from "../base/state";
 import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
 import { CharacterBase } from "../builder/context/character";
-import { allEntities, getEntityArea, getEntityById } from "../utils";
+import { getEntityArea } from "../utils";
 import type { EntityType } from "../base/entity";
 import { GiTcgQueryError } from "../error";
 
 type AnySkillContext = SkillContext<ContextMetaBase>;
 
-type ExternalQueryFn = (c: AnySkillContext) => number;
+type ExternalQueryFn = (c: AnySkillContext) => AnyState;
 type ExternalQueryEntry = ExternalQueryFn | ExternalQueryDictionary;
 type ExternalQueryDictionary = { [prop: string]: ExternalQueryEntry };
 
 export interface QueryArgs {
   readonly candidates: readonly AnyState[];
   readonly state: GameState;
+  readonly allEntities: readonly AnyState[];
   readonly callerWho: 0 | 1;
   readonly externals: ExternalQueryDictionary;
 }
@@ -137,9 +134,11 @@ function queryAt(
 const doQueryDict: QueryLangActionDict<AnyState[]> = {
   Query(orQuery, orderBy, limit) {
     const raw = orQuery.doQuery(this.args.ctx);
+    // console.log('BBB', require("node:util").types.isProxy(raw[0]));
     const orderByExprs = orderBy.children.flatMap(
       (node) => node.children[1].asIteration().children,
     );
+    // TODO FIXME: breaks reactive state
     const rawWithVal = raw
       .map((st) => ({
         ...st,
@@ -170,40 +169,49 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
   },
   RelationalQuery_has(relationalQuery, _, unaryQuery) {
     const subjectResult = relationalQuery.doQuery(this.args.ctx);
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
     return queryHas.call(this, subjectResult, objectResult);
   },
   UnaryQuery_has(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
-    return queryHas.call(this, resetCandidates, objectResult);
+    return queryHas.call(this, [...this.args.ctx.allEntities], objectResult);
   },
   RelationalQuery_at(relationalQuery, _, unaryQuery) {
     const subjectResult = relationalQuery.doQuery(this.args.ctx);
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
     return queryAt.call(this, subjectResult, objectResult);
   },
   UnaryQuery_at(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
-    return queryAt.call(this, resetCandidates, objectResult);
+    return queryAt.call(this, [...this.args.ctx.allEntities], objectResult);
   },
   UnaryQuery_not(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const innerCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const innerCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const result = unaryQuery.doQuery(innerCtx).map((st) => st.id);
     return this.args.ctx.candidates.filter((st) => !result.includes(st.id));
   },
   UnaryQuery_recentFrom(_, unaryQuery) {
     const state = this.args.ctx.state;
-    const resetCandidates = allEntities(state);
-    const baseCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const baseCtx = { ...this.args.ctx, candidates: this.args.ctx.allEntities };
     const baseCandidates = unaryQuery.doQuery(baseCtx);
     const result: CharacterState[] = [];
     for (const baseState of baseCandidates) {
@@ -213,6 +221,7 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
       const baseChCtx = new CharacterBase(this.args.ctx.state, baseState.id);
       const baseIdx = baseChCtx.positionIndex();
       const targetWho = flip(baseChCtx.who);
+      // TODO FIXME: breaks reactive state
       const targetChs = state.players[targetWho].characters.map((ch, i) => ({
         ...ch,
         index: i,
@@ -266,8 +275,8 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
         `External query ${this.sourceString} is invalid (subsequent props needed)`,
       );
     }
-    const id = dict();
-    return [getEntityById(this.args.ctx.state, id)];
+    const state: AnyState = dict();
+    return [state];
   },
   PrimaryQuery_paren(_l, query, _r) {
     return query.doQuery(this.args.ctx);
@@ -373,8 +382,10 @@ const tagSpecifierDict: QueryLangActionDict<string[]> = {
     return list.asIteration().children.map((c) => c.sourceString);
   },
   TagSpecifier_indirect(qualifier, _kw, _l, query, _r) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const queryCtx = { ...this.args.ctx, resetCandidates };
+    const queryCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const result = query.doQuery(queryCtx);
     if (result.length !== 1) {
       console?.warn(
@@ -504,6 +515,7 @@ export function doSemanticQueryAction(
   }
   try {
     const result: AnyState[] = semantics(match).doQuery(queryArg);
+    // console.log('CCC', require("node:util").types.isProxy(result[0]));
     return result;
   } catch (e) {
     if (e instanceof Error) {

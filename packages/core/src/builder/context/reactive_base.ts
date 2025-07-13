@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { StateKind } from "../../base/state";
+import type { ExEntityType } from "../type";
 
 export const ReactiveStateSymbol: unique symbol = Symbol("ReactiveState");
 export type ReactiveStateSymbol = typeof ReactiveStateSymbol;
@@ -21,10 +22,21 @@ export type ReactiveStateSymbol = typeof ReactiveStateSymbol;
 export const RawStateSymbol: unique symbol = Symbol("RawState");
 export type RawStateSymbol = typeof RawStateSymbol;
 
+export type EntityTypeToStateKind = {
+  character: "character";
+  status: "entity";
+  equipment: "entity";
+  combatStatus: "entity";
+  summon: "entity";
+  support: "entity";
+  card: "card";
+  extension: "extension";
+};
+
 export abstract class ReactiveStateBase {
   abstract get [ReactiveStateSymbol](): StateKind;
-  cast<K extends StateKind>(): this & {
-    readonly [ReactiveStateSymbol]: K;
+  cast<Ty extends ExEntityType>(): this & {
+    readonly [ReactiveStateSymbol]: EntityTypeToStateKind[Ty];
   } {
     return this as any;
   }

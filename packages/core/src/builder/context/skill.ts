@@ -92,8 +92,12 @@ import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
-import { applyReactive, getRaw, type ApplyReactive } from "./reactive";
-import { RawStateSymbol } from "./reactive_base";
+import {
+  applyReactive,
+  getRaw,
+  type ApplyReactive,
+  type ReactiveState,
+} from "./reactive";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -193,7 +197,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * 获取正在执行逻辑的实体的 `Character` 或 `Entity`。
    * @returns
    */
-  private readonly _self: TypedExEntity<Meta, Meta["callerType"]>;
+  private readonly _self: ReactiveState<
+    Meta,
+    ExEntityState<Meta["callerType"]>
+  >;
 
   /**
    *
@@ -216,7 +223,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.callerArea = getEntityArea(state, skillInfo.caller.id);
     this.eventArg = applyReactive(this, eventArg);
     this.mutator = new StateMutator(state, mutatorConfig);
-    this._self = this.of<Meta["callerType"]>(this.skillInfo.caller);
+    this._self = applyReactive(this, this.skillInfo.caller) as ReactiveState<
+      Meta,
+      ExEntityState<Meta["callerType"]>
+    >;
   }
 
   /**
@@ -357,6 +367,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       entityState = getEntityById(this.state, entityState);
     }
     return applyReactive(this, entityState);
+  }
+
+  get<T extends ExEntityType>(id: number): ReactiveState<Meta, ExEntityState<T>> {
+    return applyReactive(this, getEntityById(this.state, id)) as any;
   }
 
   private queryOrOf<TypeT extends ExEntityType>(
@@ -624,6 +638,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (type === DamageType.Heal) {
       return this.heal(value, target);
     }
+    // console.log("AAAA", target);
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
       const targetState = t.state;
@@ -841,6 +856,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
     const targets = this.queryOrOf(target);
     for (const t of targets) {
+      // console.log('DDD', target, t instanceof Entity);
       this.assertNotCard(t.state);
       const entityState = t.state;
       if (entityState.definition.type === "character") {

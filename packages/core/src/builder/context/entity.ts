@@ -63,7 +63,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     if (this.area.type !== "characters") {
       throw new GiTcgDataError("master() expect a character area");
     }
-    return new Character<Meta>(this.skillContext, this.area.characterId);
+    return this.skillContext.get<"character">(this.area.characterId);
   }
 }
 export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {

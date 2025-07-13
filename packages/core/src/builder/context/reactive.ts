@@ -44,7 +44,7 @@ type ReactiveClassCtor = new (
 export const NoReactiveSymbol = Symbol("GiTcgCoreStateNoReactive");
 export type NoReactiveSymbol = typeof NoReactiveSymbol;
 
-type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
+export type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   readonly [StateSymbol]: infer S extends keyof ReactiveClassMap<Meta>;
 }
   ? State & ReactiveClassMap<Meta>[S]
