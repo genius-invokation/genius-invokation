@@ -88,25 +88,6 @@ export type ApplyReactive<
                   }
               : A;
 
-type TestMeta = {
-  readonly: false;
-  eventArgType: unknown;
-  callerVars: never;
-  callerType: "status";
-  associatedExtension: never;
-  shortcutReceiver: unknown;
-};
-
-type X = (ApplyReactive<TestMeta, ActionEventArg<ActionInfo>>["action"] & {
-  type: "useSkill";
-})["skill"]["caller"];
-
-type XX = ApplyReactive<TestMeta, CharacterState | EntityState>;
-
-type Y = ApplyReactive<TestMeta, GameState>["players"][0]["characters"][0];
-
-declare let x: X;
-
 export function getRaw<T>(state: T): T {
   if (state === null || typeof state !== "object") {
     return state;
