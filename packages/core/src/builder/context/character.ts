@@ -44,6 +44,7 @@ import type {
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
 import { RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
+import { applyReactive, type ApplyReactive } from "./reactive";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 
@@ -220,6 +221,10 @@ export class ReadonlyCharacter<
       throw new GiTcgCoreInternalError("Expected character");
     }
     return entity as CharacterState;
+  }
+
+  get entities(): ApplyReactive<Meta, EntityState[]> {
+    return applyReactive(this.skillContext, this.state.entities);
   }
 
   $$<const Q extends string>(arg: Q) {

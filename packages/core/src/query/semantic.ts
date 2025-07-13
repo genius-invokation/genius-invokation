@@ -134,17 +134,13 @@ function queryAt(
 const doQueryDict: QueryLangActionDict<AnyState[]> = {
   Query(orQuery, orderBy, limit) {
     const raw = orQuery.doQuery(this.args.ctx);
-    // console.log('BBB', require("node:util").types.isProxy(raw[0]));
     const orderByExprs = orderBy.children.flatMap(
       (node) => node.children[1].asIteration().children,
     );
-    // TODO FIXME: breaks reactive state
     const rawWithVal = raw
-      .map((st) => ({
-        ...st,
-        values: orderByExprs.map((expr) => expr.evalExpr(st)),
-      }))
-      .toSortedBy((a) => a.values);
+      .map((st) => [st, orderByExprs.map((expr) => expr.evalExpr(st))] as const)
+      .toSortedBy(([, values]) => values)
+      .map(([st]) => st);
     const limitCount =
       limit.numChildren > 0
         ? limit.children[0].children[1].evalExpr(this.args.state)
@@ -221,21 +217,21 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
       const baseChCtx = new CharacterBase(this.args.ctx.state, baseState.id);
       const baseIdx = baseChCtx.positionIndex();
       const targetWho = flip(baseChCtx.who);
-      // TODO FIXME: breaks reactive state
-      const targetChs = state.players[targetWho].characters.map((ch, i) => ({
-        ...ch,
-        index: i,
-      }));
+      const targetChs = state.players[targetWho].characters.map(
+        (ch, i) => [ch, i] as const,
+      );
+      if (targetChs.length === 0) {
+        continue;
+      }
       // 由于“循环”判定距离，第一个也可以以“尾后”位置的方式参与距离计算
-      targetChs.unshift({ ...targetChs[0], index: targetChs.length });
-      const orderFn = (ch: CharacterState & { index: number }) => {
+      targetChs.unshift([targetChs[0][0], targetChs.length]);
+      const orderFn = ([ch, i]: readonly [CharacterState, number]) => {
         if (!ch.variables.alive) {
           return Infinity;
         }
-        return Math.abs(ch.index - baseIdx);
+        return Math.abs(i - baseIdx);
       };
-      targetChs.sort((a, b) => orderFn(a) - orderFn(b));
-      result.push(targetChs[0]);
+      result.push(targetChs.toSortedBy((e) => orderFn(e))[0][0]);
     }
     return result;
   },
@@ -515,7 +511,6 @@ export function doSemanticQueryAction(
   }
   try {
     const result: AnyState[] = semantics(match).doQuery(queryArg);
-    // console.log('CCC', require("node:util").types.isProxy(result[0]));
     return result;
   } catch (e) {
     if (e instanceof Error) {

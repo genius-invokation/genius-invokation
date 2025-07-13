@@ -461,10 +461,10 @@ export class SkillExecutor {
           caller,
           definition: skill,
         });
+        arg._currentSkillInfo = skillInfo;
         if (!(0, skill.filter)(this.state, skillInfo, arg)) {
           continue;
         }
-        arg._currentSkillInfo = skillInfo;
         const emittedEvents = this.executeSkill(skillInfo, arg);
         result.push(...emittedEvents);
       }
@@ -558,10 +558,6 @@ export class SkillExecutor {
           ({ skill }) => skill.id === arg.requestingSkillId,
         );
         if (!skillAndCaller) {
-          console.log(
-            availableSkills.map(({ skill }) => skill.id),
-            arg.requestingSkillId,
-          );
           this.mutator.log(
             DetailLogType.Other,
             `Skill [skill:${
@@ -648,10 +644,10 @@ export class SkillExecutor {
             caller,
             definition: skill,
           });
+          arg._currentSkillInfo = skillInfo;
           if (!(0, skill.filter)(this.state, skillInfo, arg)) {
             continue;
           }
-          arg._currentSkillInfo = skillInfo;
           await this.finalizeSkill(skillInfo, arg);
         }
       }

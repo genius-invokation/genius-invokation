@@ -34,7 +34,6 @@ export function executeQuery<
 >(ctx: SkillContext<Meta>, q: Q): TypedExEntity<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
   const allEntities = allEntitiesInclPile(ctx.state);
-  // console.log('XX', require("node:util").types.isProxy(allEntities[0]));
   const arg: QueryArgs = {
     state: ctx.state,
     allEntities,
@@ -67,8 +66,8 @@ export function executeQuery<
     },
   };
   const result = doSemanticQueryAction(q, arg);
-  // console.log('RRR', require("node:util").types.isProxy([result[0]]));
-  return result.map((st) => ctx.of(st));
+  // TODO: typing
+  return result.map((st) => (st) as any);
 }
 
 export function executeQueryOnState(

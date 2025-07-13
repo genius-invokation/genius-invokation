@@ -175,7 +175,6 @@ type CallAndEmitResult<K extends MutatorMethodCanEmit> = ReturnType<
  */
 export class SkillContext<Meta extends ContextMetaBase> {
   private readonly mutator: StateMutator;
-  public readonly callerArea: EntityArea;
   public readonly eventArg: ApplyReactive<
     Meta,
     Omit<Meta["eventArgType"], `_${string}`>
@@ -202,6 +201,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     ExEntityState<Meta["callerType"]>
   >;
 
+  public get callerArea(): EntityArea {
+    return this._self.area;
+  }
+
   /**
    *
    * @param state 触发此技能之前的游戏状态
@@ -220,7 +223,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
           new GiTcgDataError(`Async operation is not permitted in skill`),
         ),
     };
-    this.callerArea = getEntityArea(state, skillInfo.caller.id);
     this.eventArg = applyReactive(this, eventArg);
     this.mutator = new StateMutator(state, mutatorConfig);
     this._self = applyReactive(this, this.skillInfo.caller) as ReactiveState<
@@ -328,7 +330,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
   /** Latest caller state */
   private get callerState(): AnyState {
-    return getEntityById(this.state, this.skillInfo.caller.id);
+    return applyReactive(this, getEntityById(this.state, this.skillInfo.caller.id));
   }
   isMyTurn() {
     return this.state.currentTurn === this.callerArea.who;
@@ -638,7 +640,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (type === DamageType.Heal) {
       return this.heal(value, target);
     }
-    // console.log("AAAA", target);
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
       const targetState = t.state;
@@ -856,7 +857,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
   dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
     const targets = this.queryOrOf(target);
     for (const t of targets) {
-      // console.log('DDD', target, t instanceof Entity);
       this.assertNotCard(t.state);
       const entityState = t.state;
       if (entityState.definition.type === "character") {

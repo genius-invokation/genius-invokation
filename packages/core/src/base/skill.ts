@@ -61,6 +61,7 @@ import {
 import type { Mutation } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
+import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -298,7 +299,10 @@ export interface EnterEventInfo {
 
 export class EventArg {
   _currentSkillInfo: SkillInfo | null = null;
-  constructor(public readonly onTimeState: GameState) {}
+  public readonly onTimeState: GameState & { [NoReactiveSymbol]: true };
+  constructor(state: GameState) {
+    this.onTimeState = { ...getRaw(state), [NoReactiveSymbol]: true };
+  }
 
   protected get caller(): AnyState {
     if (this._currentSkillInfo === null) {
