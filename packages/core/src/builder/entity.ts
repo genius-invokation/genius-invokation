@@ -496,7 +496,7 @@ export class EntityBuilder<
       .on("decreaseDamaged", (c, e) => {
         if (c.self.state.definition.type === "combatStatus") {
           // 出战状态护盾只对出战角色生效
-          return c.of(e.target).isActive();
+          return e.target.isActive();
         } else {
           return true;
         }

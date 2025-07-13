@@ -29,14 +29,15 @@ import {
   Reaction,
   PbSwitchActiveFromAction,
 } from "@gi-tcg/typings";
-import type {
-  AnyState,
-  CardState,
-  CharacterState,
-  ExtensionState,
-  GameConfig,
-  GameState,
-  PlayerState,
+import {
+  StateSymbol,
+  type AnyState,
+  type CardState,
+  type CharacterState,
+  type ExtensionState,
+  type GameConfig,
+  type GameState,
+  type PlayerState,
 } from "./base/state";
 import type { Mutation } from "./base/mutation";
 import {
@@ -116,6 +117,7 @@ class IdIter {
 
 /** 根据 deck 初始化玩家状态 */
 function initPlayerState(
+  who: 0 | 1,
   data: GameData,
   deck: DeckConfig,
   idIter: IdIter,
@@ -152,6 +154,7 @@ function initPlayerState(
   const pile: CardState[] = [];
   for (const definition of characterDefs) {
     characters.push({
+      [StateSymbol]: "character",
       id: idIter.id,
       definition,
       variables: Object.fromEntries(
@@ -164,12 +167,15 @@ function initPlayerState(
   }
   for (const definition of initialPile) {
     pile.push({
+      [StateSymbol]: "card",
       id: idIter.id,
       definition,
       variables: {},
     });
   }
   return {
+    [StateSymbol]: "player",
+    who,
     activeCharacterId: 0,
     characters,
     initialPile,
@@ -234,6 +240,7 @@ export class Game {
     const extensions = data.extensions
       .values()
       .map<ExtensionState>((v) => ({
+        [StateSymbol]: "extension",
         definition: v,
         state: v.initialState,
       }))
@@ -241,11 +248,12 @@ export class Game {
     const config = mergeGameConfigWithDefault(partialConfig);
     const idIter = new IdIter();
     const state: GameState = {
+      [StateSymbol]: "game",
       data,
       config,
       players: [
-        initPlayerState(data, decks[0], idIter),
-        initPlayerState(data, decks[1], idIter),
+        initPlayerState(0, data, decks[0], idIter),
+        initPlayerState(1, data, decks[1], idIter),
       ],
       iterators: {
         random: config.randomSeed,
@@ -484,10 +492,12 @@ export class Game {
 
   private async initHands() {
     using l = this.mutator.subLog(DetailLogType.Phase, `In initHands phase:`);
-    for (let who of [0, 1] as const) {
-      for (let i = 0; i < this.config.initialHandsCount; i++) {
-        this.mutator.drawCard(who);
-      }
+    for (const who of [0, 1] as const) {
+      const events = this.mutator.drawCardsPlain(
+        who,
+        this.config.initialHandsCount,
+      );
+      await this.handleEvents(events);
     }
     await this.mutator.notifyAndPause();
     await Promise.all([
@@ -859,19 +869,8 @@ export class Game {
     );
     await this.handleEvent("onEndPhase", new EventArg(this.state));
     for (const who of [this.state.currentTurn, flip(this.state.currentTurn)]) {
-      const cards: CardState[] = [];
-      for (let i = 0; i < 2; i++) {
-        const card = this.mutator.drawCard(who);
-        if (card) {
-          cards.push(card);
-        }
-      }
-      for (const card of cards) {
-        await this.handleEvent(
-          "onHandCardInserted",
-          new HandCardInsertedEventArg(this.state, who, card, "drawn"),
-        );
-      }
+      const events = this.mutator.drawCardsPlain(who, 2);
+      await this.handleEvents(events);
     }
     await this.handleEvent("onRoundEnd", new EventArg(this.state));
     for (const who of [0, 1] as const) {
@@ -1136,27 +1135,8 @@ export class Game {
     to: CharacterState,
     fast: boolean | null,
   ) {
-    const player = this.state.players[who];
-    const from = player.characters[getActiveCharacterIndex(player)];
-    const oldState = this.state;
-    this.mutate({
-      type: "switchActive",
-      who,
-      value: to,
-    });
-    const switchInfo: SwitchActiveInfo = {
-      type: "switchActive",
-      who,
-      from,
-      to,
-      fromReaction: false,
-      fast,
-    };
-    this.mutator.postSwitchActive(switchInfo);
-    await this.handleEvent(
-      "onSwitchActive",
-      new SwitchActiveEventArg(oldState, switchInfo),
-    );
+    const events = this.mutator.switchActive(who, to, { fast });
+    await this.handleEvents(events);
   }
 
   private async executeSkill(skillInfo: SkillInfo, arg: GeneralSkillArg) {
@@ -1164,6 +1144,9 @@ export class Game {
   }
   private async handleEvent(...args: EventAndRequest) {
     await SkillExecutor.handleEvent(this.mutator, ...args);
+  }
+  private async handleEvents(events: EventAndRequest[]) {
+    await SkillExecutor.handleEvents(this.mutator, events);
   }
 }
 

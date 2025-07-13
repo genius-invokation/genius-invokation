@@ -17,26 +17,28 @@ import { flip } from "@gi-tcg/utils";
 import type { MatchResult, Node, NonterminalNode } from "ohm-js";
 
 import grammar, { type QueryLangActionDict } from "./query.ohm-bundle";
-import type {
-  AnyState,
-  CharacterState,
-  GameState,
-} from "../base/state";
+import type { AnyState as AnyStateOriginal, CharacterState, GameState } from "../base/state";
 import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
 import { CharacterBase } from "../builder/context/character";
-import { allEntities, getEntityArea, getEntityById } from "../utils";
-import type { EntityType } from "../base/entity";
+import { getEntityArea } from "../utils";
+import type { EntityArea, EntityType } from "../base/entity";
 import { GiTcgQueryError } from "../error";
+
+// If we pass an reactive state into it, then area will be presented
+type AnyState = AnyStateOriginal & {
+  area?: EntityArea;
+}
 
 type AnySkillContext = SkillContext<ContextMetaBase>;
 
-type ExternalQueryFn = (c: AnySkillContext) => number;
+type ExternalQueryFn = (c: AnySkillContext) => AnyState;
 type ExternalQueryEntry = ExternalQueryFn | ExternalQueryDictionary;
 type ExternalQueryDictionary = { [prop: string]: ExternalQueryEntry };
 
 export interface QueryArgs {
   readonly candidates: readonly AnyState[];
   readonly state: GameState;
+  readonly allEntities: readonly AnyState[];
   readonly callerWho: 0 | 1;
   readonly externals: ExternalQueryDictionary;
 }
@@ -69,7 +71,7 @@ function queryCanonical(
   const expectWho =
     whoRes === "my" ? this.args.ctx.callerWho : flip(this.args.ctx.callerWho);
   for (const state of this.args.ctx.candidates) {
-    const area = getEntityArea(this.args.ctx.state, state.id);
+    const area = state.area ?? getEntityArea(this.args.ctx.state, state.id);
     if (whoRes !== "all" && expectWho !== area.who) {
       continue;
     }
@@ -110,7 +112,7 @@ function queryHas(
   objectResult: AnyState[],
 ): AnyState[] {
   const objectAreas = objectResult.flatMap((st) => {
-    const area = getEntityArea(this.args.ctx.state, st.id);
+    const area = st.area ?? getEntityArea(this.args.ctx.state, st.id);
     if (area.type === "characters") {
       return [area.characterId];
     } else {
@@ -125,7 +127,7 @@ function queryAt(
   objectResult: AnyState[],
 ): AnyState[] {
   return subjectResult.filter((st) => {
-    const area = getEntityArea(this.args.ctx.state, st.id);
+    const area = st.area ?? getEntityArea(this.args.ctx.state, st.id);
     if (area.type === "characters") {
       return objectResult.map((st) => st.id).includes(area.characterId);
     } else {
@@ -136,21 +138,23 @@ function queryAt(
 
 const doQueryDict: QueryLangActionDict<AnyState[]> = {
   Query(orQuery, orderBy, limit) {
-    const raw = orQuery.doQuery(this.args.ctx);
+    let raw = orQuery.doQuery(this.args.ctx);
     const orderByExprs = orderBy.children.flatMap(
       (node) => node.children[1].asIteration().children,
     );
-    const rawWithVal = raw
-      .map((st) => ({
-        ...st,
-        values: orderByExprs.map((expr) => expr.evalExpr(st)),
-      }))
-      .toSortedBy((a) => a.values);
+    if (orderByExprs.length > 0) {
+      raw = raw
+        .map(
+          (st) => [st, orderByExprs.map((expr) => expr.evalExpr(st))] as const,
+        )
+        .toSortedBy(([, values]) => values)
+        .map(([st]) => st);
+    }
     const limitCount =
       limit.numChildren > 0
         ? limit.children[0].children[1].evalExpr(this.args.state)
         : Infinity;
-    return rawWithVal.slice(0, limitCount);
+    return raw.slice(0, limitCount);
   },
   OrQuery_or(orQuery, _, andQuery) {
     const lhsResult = orQuery.doQuery(this.args.ctx);
@@ -170,40 +174,49 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
   },
   RelationalQuery_has(relationalQuery, _, unaryQuery) {
     const subjectResult = relationalQuery.doQuery(this.args.ctx);
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
     return queryHas.call(this, subjectResult, objectResult);
   },
   UnaryQuery_has(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
-    return queryHas.call(this, resetCandidates, objectResult);
+    return queryHas.call(this, [...this.args.ctx.allEntities], objectResult);
   },
   RelationalQuery_at(relationalQuery, _, unaryQuery) {
     const subjectResult = relationalQuery.doQuery(this.args.ctx);
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
     return queryAt.call(this, subjectResult, objectResult);
   },
   UnaryQuery_at(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const objectCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const objectCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const objectResult = unaryQuery.doQuery(objectCtx);
-    return queryAt.call(this, resetCandidates, objectResult);
+    return queryAt.call(this, [...this.args.ctx.allEntities], objectResult);
   },
   UnaryQuery_not(_, unaryQuery) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const innerCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const innerCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const result = unaryQuery.doQuery(innerCtx).map((st) => st.id);
     return this.args.ctx.candidates.filter((st) => !result.includes(st.id));
   },
   UnaryQuery_recentFrom(_, unaryQuery) {
     const state = this.args.ctx.state;
-    const resetCandidates = allEntities(state);
-    const baseCtx = { ...this.args.ctx, candidates: resetCandidates };
+    const baseCtx = { ...this.args.ctx, candidates: this.args.ctx.allEntities };
     const baseCandidates = unaryQuery.doQuery(baseCtx);
     const result: CharacterState[] = [];
     for (const baseState of baseCandidates) {
@@ -213,20 +226,21 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
       const baseChCtx = new CharacterBase(this.args.ctx.state, baseState.id);
       const baseIdx = baseChCtx.positionIndex();
       const targetWho = flip(baseChCtx.who);
-      const targetChs = state.players[targetWho].characters.map((ch, i) => ({
-        ...ch,
-        index: i,
-      }));
+      const targetChs = state.players[targetWho].characters.map(
+        (ch, i) => [ch, i] as const,
+      );
+      if (targetChs.length === 0) {
+        continue;
+      }
       // 由于“循环”判定距离，第一个也可以以“尾后”位置的方式参与距离计算
-      targetChs.unshift({ ...targetChs[0], index: targetChs.length });
-      const orderFn = (ch: CharacterState & { index: number }) => {
+      targetChs.unshift([targetChs[0][0], targetChs.length]);
+      const orderFn = ([ch, i]: readonly [CharacterState, number]) => {
         if (!ch.variables.alive) {
           return Infinity;
         }
-        return Math.abs(ch.index - baseIdx);
+        return Math.abs(i - baseIdx);
       };
-      targetChs.sort((a, b) => orderFn(a) - orderFn(b));
-      result.push(targetChs[0]);
+      result.push(targetChs.toSortedBy((e) => orderFn(e))[0][0]);
     }
     return result;
   },
@@ -266,8 +280,8 @@ const doQueryDict: QueryLangActionDict<AnyState[]> = {
         `External query ${this.sourceString} is invalid (subsequent props needed)`,
       );
     }
-    const id = dict();
-    return [getEntityById(this.args.ctx.state, id)];
+    const state: AnyState = dict();
+    return [state];
   },
   PrimaryQuery_paren(_l, query, _r) {
     return query.doQuery(this.args.ctx);
@@ -373,8 +387,10 @@ const tagSpecifierDict: QueryLangActionDict<string[]> = {
     return list.asIteration().children.map((c) => c.sourceString);
   },
   TagSpecifier_indirect(qualifier, _kw, _l, query, _r) {
-    const resetCandidates = allEntities(this.args.ctx.state);
-    const queryCtx = { ...this.args.ctx, resetCandidates };
+    const queryCtx = {
+      ...this.args.ctx,
+      candidates: this.args.ctx.allEntities,
+    };
     const result = query.doQuery(queryCtx);
     if (result.length !== 1) {
       console?.warn(

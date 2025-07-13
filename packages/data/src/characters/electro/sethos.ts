@@ -92,7 +92,7 @@ export const SecretRiteTwilightShadowpiercer = skill(14133)
   .characterStatus(TwilightMeditation, "@self")
   .done();
 
-const energyLost = customEvent();
+const EnergyLost = customEvent("sethos/energyLost");
 
 /**
  * @id 14134
@@ -109,7 +109,7 @@ export const BlackKitesEnigma = skill(14134)
     if (energy) {
       c.self.loseEnergy(energy);
       c.damage(DamageType.Piercing, energy + 1, "opp character order by health limit 1");
-      c.emitCustomEvent(energyLost);
+      c.emitCustomEvent(EnergyLost);
     }
   })
   .done();
@@ -142,7 +142,7 @@ export const PylonOfTheSojourningSunTemple = card(214131)
   .talent(Sethos, "none")
   .on("enter")
   .gainEnergy(1, "@master")
-  .on(energyLost)
+  .on(EnergyLost)
   .usagePerRound(1)
   .gainEnergy(1, "@master")
   .done();

@@ -36,6 +36,11 @@ import type {
   TriggeredSkillDefinition,
 } from "./skill";
 
+// 为不同层级的 state object 添加 marker symbol
+export type StateKind = "game" | "player" | "card" | "character" | "entity" | "extension";
+export const StateSymbol: unique symbol = Symbol("GiTcgCoreState");
+export type StateSymbol = typeof StateSymbol;
+
 export interface GameConfig {
   readonly randomSeed: number;
   readonly initialHandsCount: number;
@@ -62,6 +67,7 @@ export type PhaseType =
   | "gameEnd";
 
 export interface GameState {
+  readonly [StateSymbol]: "game";
   readonly data: GameData;
   readonly config: GameConfig;
   readonly iterators: IteratorState;
@@ -75,6 +81,8 @@ export interface GameState {
 }
 
 export interface PlayerState {
+  readonly [StateSymbol]: "player";
+  readonly who: 0 | 1;
   readonly initialPile: readonly CardDefinition[];
   readonly pile: readonly CardState[];
   readonly activeCharacterId: number;
@@ -95,16 +103,18 @@ export interface PlayerState {
    * 键为技能发起者的角色定义 id，值为该定义下使用过的技能 id 列表
    */
   readonly roundSkillLog: ReadonlyMap<number, number[]>;
-  readonly removedEntities: AnyState[];
+  readonly removedEntities: readonly AnyState[];
 }
 
 export interface CardState {
+  readonly [StateSymbol]: "card";
   readonly id: number;
   readonly definition: CardDefinition;
   readonly variables: Record<string, undefined>;
 }
 
 export interface CharacterState {
+  readonly [StateSymbol]: "character";
   readonly id: number;
   readonly definition: CharacterDefinition;
   readonly entities: readonly EntityState[];
@@ -114,6 +124,7 @@ export interface CharacterState {
 export type CharacterVariables = VariableOfConfig<CharacterVariableConfigs>;
 
 export interface EntityState {
+  readonly [StateSymbol]: "entity";
   readonly id: number;
   readonly definition: EntityDefinition;
   readonly variables: EntityVariables;
@@ -124,11 +135,12 @@ export type EntityVariables = VariableOfConfig<EntityVariableConfigs>;
 export type AnyState = CharacterState | EntityState | CardState;
 
 export interface ExtensionState {
+  readonly [StateSymbol]: "extension";
   readonly definition: ExtensionDefinition;
   readonly state: unknown;
 }
 
-export function stringifyState(st: AnyState): string {
+export function stringifyState(st: Omit<AnyState, StateSymbol>): string {
   let type: string;
   if (st.definition.__definition === "cards") {
     type = "card";
