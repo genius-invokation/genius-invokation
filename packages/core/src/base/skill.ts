@@ -22,6 +22,7 @@ import {
   type DiceRequirement,
   type ExposedMutation,
   ActionValidity,
+  Aura,
 } from "@gi-tcg/typings";
 import {
   type AnyState,
@@ -203,6 +204,7 @@ export interface DamageInfo {
   readonly source: AnyState;
   readonly via: SkillInfo;
   readonly target: CharacterState;
+  readonly targetAura: Aura;
   readonly isSkillMainDamage: boolean;
   readonly causeDefeated: boolean;
   readonly fromReaction: Reaction | null;
@@ -915,14 +917,7 @@ export class ModifyDamage0EventArg extends ModifyDamageEventArgBase {
 export class ModifyDamageByReactionEventArg extends ModifyDamageEventArgBase {
   increaseDamageByReaction() {
     const damageInfo = super.damageInfo;
-    const targetAura = damageInfo.target.variables.aura;
-    if (
-      damageInfo.type === DamageType.Physical ||
-      damageInfo.type === DamageType.Piercing
-    ) {
-      return;
-    }
-    const [, reaction] = REACTION_MAP[targetAura][damageInfo.type];
+    const reaction = getReaction(damageInfo);
     switch (reaction) {
       case Reaction.Melt:
       case Reaction.Vaporize:

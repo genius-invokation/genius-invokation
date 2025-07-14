@@ -43,8 +43,18 @@ import type {
   StatusHandle,
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
-import { RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
-import { applyReactive, type ApplyReactive } from "./reactive";
+import {
+  LatestStateSymbol,
+  RawStateSymbol,
+  ReactiveStateBase,
+  ReactiveStateSymbol,
+} from "./reactive_base";
+import {
+  applyReactive,
+  type ApplyReactive,
+  type RxEntityState,
+} from "./reactive";
+import type { GuessedTypeOfQuery } from "../../query/types";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 
@@ -55,6 +65,12 @@ export type CharacterPosition = "active" | "next" | "prev" | "standby";
 export class CharacterBase extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "character" {
     return "character";
+  }
+  override get [LatestStateSymbol](): CharacterState {
+    return (this._state ??= getEntityById(
+      this._gameState,
+      this._id,
+    ) as CharacterState);
   }
   declare [RawStateSymbol]: CharacterState;
 
@@ -73,10 +89,7 @@ export class CharacterBase extends ReactiveStateBase {
     return (this._area ??= getEntityArea(this._gameState, this._id));
   }
   get state() {
-    return (this._state ??= getEntityById(
-      this._gameState,
-      this._id,
-    ) as CharacterState);
+    return this[LatestStateSymbol];
   }
 
   get who() {
@@ -161,42 +174,6 @@ export class CharacterBase extends ReactiveStateBase {
   nationTags(): NationTag[] {
     return nationOfCharacter(this.state.definition);
   }
-  private hasEquipmentWithTag(tag: EntityTag): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) =>
-          v.definition.type === "equipment" && v.definition.tags.includes(tag),
-      ) ?? null
-    );
-  }
-  hasArtifact() {
-    return this.hasEquipmentWithTag("artifact");
-  }
-  hasWeapon() {
-    return this.hasEquipmentWithTag("weapon");
-  }
-  hasTechnique() {
-    return this.hasEquipmentWithTag("technique");
-  }
-  hasEquipment(id: EquipmentHandle): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) => v.definition.type === "equipment" && v.definition.id === id,
-      ) ?? null
-    );
-  }
-  hasStatus(id: StatusHandle): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) => v.definition.type === "status" && v.definition.id === id,
-      ) ?? null
-    );
-  }
-  hasNightsoulsBlessing() {
-    return this.state.entities.find((v) =>
-      v.definition.tags.includes("nightsoulsBlessing"),
-    );
-  }
   getVariable<Name extends string>(name: Name): CharacterVariables[Name] {
     return this.state.variables[name];
   }
@@ -215,24 +192,67 @@ export class ReadonlyCharacter<
     return this.skillContext.state;
   }
 
-  get state(): CharacterState {
-    const entity = getEntityById(this.skillContext.state, this._id);
-    if (entity.definition.type !== "character") {
-      throw new GiTcgCoreInternalError("Expected character");
-    }
-    return entity as CharacterState;
+  override get [LatestStateSymbol](): CharacterState {
+    const state = getEntityById(
+      this.skillContext.state,
+      this._id,
+    ) as CharacterState;
+    return state;
   }
 
   get entities(): ApplyReactive<Meta, EntityState[]> {
     return applyReactive(this.skillContext, this.state.entities);
   }
 
-  $$<const Q extends string>(arg: Q) {
+  /** @deprecated */
+  get state(): CharacterState {
+    return this[LatestStateSymbol];
+  }
+
+  $$<const Q extends string>(
+    arg: Q,
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
     return this.skillContext.$$(`(${arg}) at (with id ${this._id})`);
   }
 
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
+  }
+  private hasEquipmentWithTag(tag: EntityTag) {
+    return (
+      this.entities.find(
+        (v) =>
+          v.definition.type === "equipment" && v.definition.tags.includes(tag),
+      ) ?? null
+    );
+  }
+  hasArtifact() {
+    return this.hasEquipmentWithTag("artifact");
+  }
+  hasWeapon() {
+    return this.hasEquipmentWithTag("weapon");
+  }
+  hasTechnique() {
+    return this.hasEquipmentWithTag("technique");
+  }
+  hasEquipment(id: EquipmentHandle) {
+    return (
+      this.entities.find(
+        (v) => v.definition.type === "equipment" && v.definition.id === id,
+      ) ?? null
+    );
+  }
+  hasStatus(id: StatusHandle) {
+    return (
+      this.entities.find(
+        (v) => v.definition.type === "status" && v.definition.id === id,
+      ) ?? null
+    );
+  }
+  hasNightsoulsBlessing() {
+    return this.entities.find((v) =>
+      v.definition.tags.includes("nightsoulsBlessing"),
+    ) ?? null;
   }
 }
 

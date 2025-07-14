@@ -68,7 +68,6 @@ import type {
   SkillHandle,
   StatusHandle,
   SummonHandle,
-  TypedExEntity,
   EquipmentHandle,
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
@@ -88,16 +87,14 @@ import {
 } from "../../mutator";
 import { type Draft, produce } from "immer";
 import { nextRandom } from "../../random";
-import { Character, type TypedCharacter } from "./character";
-import { Entity, type TypedEntity } from "./entity";
-import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
 import {
   applyReactive,
   getRaw,
   type ApplyReactive,
-  type ReactiveState,
+  type RxEntityState,
 } from "./reactive";
+import { ReactiveStateSymbol } from "./reactive_base";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -181,7 +178,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   >;
 
   /** @internal */
-  public readonly _reactiveProxies: WeakMap<object, object> = new WeakMap();
+  public readonly _reactiveProxies = new Map<
+    object,
+    ReturnType<typeof Proxy.revocable>
+  >();
 
   private readonly eventAndRequests: EventAndRequest[] = [];
   private mainDamage: DamageInfo | null = null;
@@ -196,10 +196,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * 获取正在执行逻辑的实体的 `Character` 或 `Entity`。
    * @returns
    */
-  private readonly _self: ReactiveState<
-    Meta,
-    ExEntityState<Meta["callerType"]>
-  >;
+  private readonly _self: RxEntityState<Meta, Meta["callerType"]>;
 
   public get callerArea(): EntityArea {
     return this._self.area;
@@ -225,9 +222,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
     };
     this.eventArg = applyReactive(this, eventArg);
     this.mutator = new StateMutator(state, mutatorConfig);
-    this._self = applyReactive(this, this.skillInfo.caller) as ReactiveState<
+    this._self = applyReactive(this, this.skillInfo.caller) as RxEntityState<
       Meta,
-      ExEntityState<Meta["callerType"]>
+      Meta["callerType"]
     >;
   }
 
@@ -285,8 +282,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutator.notify();
     Object.freeze(this);
     const emittedEvents = this.preprocessEventList();
+    const resultState = getRaw(this.state);
+    for (const [, { revoke }] of this._reactiveProxies) {
+      revoke();
+    }
     return [
-      getRaw(this.state),
+      resultState,
       {
         emittedEvents,
         innerNotify: this._savedNotify,
@@ -328,9 +329,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
   get oppPlayer(): ApplyReactive<Meta, PlayerState> {
     return this.state.players[flip(this.callerArea.who)];
   }
-  /** Latest caller state */
+  /** @deprecated */
   private get callerState(): AnyState {
-    return applyReactive(this, getEntityById(this.state, this.skillInfo.caller.id));
+    return this.self;
   }
   isMyTurn() {
     return this.state.currentTurn === this.callerArea.who;
@@ -338,14 +339,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   $<const Q extends string>(
     arg: Q,
-  ): TypedExEntity<Meta, GuessedTypeOfQuery<Q>> | undefined {
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>> | undefined {
     const result = this.$$(arg);
     return result[0];
   }
 
   $$<const Q extends string>(
     arg: Q,
-  ): TypedExEntity<Meta, GuessedTypeOfQuery<Q>>[] {
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
     return executeQuery(this, arg);
   }
 
@@ -363,44 +364,53 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   of<T extends ExEntityType = ExEntityType>(
     entityId: AnyState | number,
-  ): TypedExEntity<Meta, T>;
+  ): RxEntityState<Meta, T>;
   of(entityState: AnyState | number): unknown {
-    if (typeof entityState === "number") {
-      return this.get(entityState);
+    return this.get(entityState as number);
+  }
+
+  get<T extends ExEntityType>(
+    rxState: RxEntityState<Meta, T>,
+  ): RxEntityState<Meta, T>;
+  get(state: CardState): ApplyReactive<Meta, CardState>;
+  get(state: EntityState): ApplyReactive<Meta, EntityState>;
+  get(state: CharacterState): ApplyReactive<Meta, CharacterState>;
+  get<T extends ExEntityType>(state: ExEntityState<T>): RxEntityState<Meta, T>;
+  get<T extends ExEntityType>(id: number): RxEntityState<Meta, T>;
+  get(x: number | AnyState): unknown {
+    if (typeof x === "number") {
+      return applyReactive(this, getEntityById(this.state, x));
     }
-    return applyReactive(this, entityState);
+    if (ReactiveStateSymbol in x) {
+      return x;
+    }
+    return applyReactive(this, x);
   }
 
-  get<T extends ExEntityType>(id: number): ReactiveState<Meta, ExEntityState<T>> {
-    return applyReactive(this, getEntityById(this.state, id)) as any;
-  }
-
-  private queryOrOf<TypeT extends ExEntityType>(
-    q: AnyState | AnyState[] | string,
-  ): TypedExEntity<Meta, TypeT>[] {
+  private queryOrGet<TypeT extends ExEntityType>(
+    q: ExEntityState<TypeT> | ExEntityState<TypeT>[] | string,
+  ): RxEntityState<Meta, TypeT>[] {
     if (Array.isArray(q)) {
-      return q.map((s) => this.of(s));
+      return q.map((s) => this.get(s));
     } else if (typeof q === "string") {
-      return this.$$(q) as TypedExEntity<Meta, TypeT>[];
+      return this.$$(q) as RxEntityState<Meta, TypeT>[];
     } else {
-      return [this.of(q)];
+      return [this.get(q)];
     }
   }
 
   private queryCoerceToCharacters(
     arg: CharacterTargetArg,
-  ): TypedCharacter<Meta>[] {
-    const result = this.queryOrOf(arg);
+  ): RxEntityState<Meta, "character">[] {
+    const result = this.queryOrGet(arg);
     for (const r of result) {
-      if (r instanceof Character) {
-        continue;
-      } else {
+      if (r.definition.type !== "character") {
         throw new GiTcgDataError(
           `Expected character target, but query ${arg} found noncharacter entities`,
         );
       }
     }
-    return result as TypedCharacter<Meta>[];
+    return result as RxEntityState<Meta, "character">[];
   }
 
   getExtensionState(): Meta["associatedExtension"]["type"] {
@@ -424,7 +434,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   countOfSkill(characterId: CharacterHandle, skillId: SkillHandle): number;
   countOfSkill(characterId?: number, skillId?: number): number {
-    characterId ??= this.callerState.definition.id;
+    characterId ??= this.self.definition.id;
     skillId ??= this.skillInfo.definition.id;
     return (
       this.player.roundSkillLog.get(characterId)?.filter((e) => e === skillId)
@@ -537,7 +547,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg: T): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg?: T) {
-    this.emitEvent("onCustomEvent", this.state, this.callerState, event, arg);
+    this.emitEvent("onCustomEvent", this.state, this.self.latest(), event, arg);
     return this.enableShortcut();
   }
 
@@ -560,30 +570,33 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
     }
     const switchToTarget = targets[0];
-    this.callAndEmit("switchActive", switchToTarget.who, switchToTarget.state, {
-      via: this.skillInfo,
-      fromReaction: this.fromReaction,
-    });
+    this.callAndEmit(
+      "switchActive",
+      switchToTarget.who,
+      switchToTarget.latest(),
+      {
+        via: this.skillInfo,
+        fromReaction: this.fromReaction,
+      },
+    );
     return RET;
   }
 
   gainEnergy(value: number, target: CharacterTargetArg) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
+      const target = t.latest();
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Gain ${value} energy to ${stringifyState(t.state)}`,
+        `Gain ${value} energy to ${stringifyState(target)}`,
       );
-      const targetState = t.state;
-      const finalValue = Math.min(
-        value,
-        targetState.variables.maxEnergy - targetState.variables.energy,
-      );
+      const { energy, maxEnergy } = target.variables;
+      const finalValue = Math.min(value, maxEnergy - energy);
       this.mutate({
         type: "modifyEntityVar",
-        state: targetState,
+        state: target,
         varName: "energy",
-        value: targetState.variables.energy + finalValue,
+        value: energy + finalValue,
         direction: "increase",
       });
     }
@@ -597,8 +610,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     { kind = "common" }: Partial<InternalHealOption> = {},
   ) {
     const targets = this.queryCoerceToCharacters(target);
-    for (const t of targets) {
-      this.callAndEmit("heal", value, t.state, {
+    for (const target of targets) {
+      this.callAndEmit("heal", value, target.latest(), {
         via: this.skillInfo,
         kind,
       });
@@ -610,21 +623,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
   increaseMaxHealth(value: number, target: CharacterTargetArg) {
     const targets = this.queryCoerceToCharacters(target);
     for (const t of targets) {
+      const target = t.latest();
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Increase ${value} max health to ${stringifyState(t.state)}`,
+        `Increase ${value} max health to ${stringifyState(target)}`,
       );
-      const targetState = t.state;
       this.mutate({
         type: "modifyEntityVar",
-        state: targetState,
+        state: target,
         varName: "maxHealth",
-        value: targetState.variables.maxHealth + value,
+        value: target.variables.maxHealth + value,
         direction: "increase",
       });
-      // Note: `t.state` is a getter that gets latest state.
-      // Do not write `targetState` here
-      this.callAndEmit("heal", value, t.state, {
+      this.callAndEmit("heal", value, target, {
         via: this.skillInfo,
         kind: "increaseMaxHealth",
       });
@@ -641,8 +652,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       return this.heal(value, target);
     }
     const targets = this.queryCoerceToCharacters(target);
-    for (const t of targets) {
-      const targetState = t.state;
+    for (const target of targets) {
       let isSkillMainDamage = false;
       if (
         isCharacterInitiativeSkill(this.skillInfo, true) &&
@@ -652,27 +662,26 @@ export class SkillContext<Meta extends ContextMetaBase> {
       ) {
         isSkillMainDamage = true;
       }
+      const { aura, alive, health } = target.variables;
       let damageInfo: DamageInfo = {
         source: this.skillInfo.caller,
-        target: targetState,
+        target: target.latest(),
+        targetAura: aura,
         type,
         value,
         via: this.skillInfo,
         isSkillMainDamage,
-        causeDefeated:
-          !!targetState.variables.alive &&
-          targetState.variables.health <= value,
+        causeDefeated: !!alive && health <= value,
         fromReaction: this.fromReaction,
       };
       const { damageInfo: damageInfo2 } = this.callAndEmit(
         "damage",
-        targetState,
         damageInfo,
         {
           via: this.skillInfo,
           callerWho: this.callerArea.who,
-          targetWho: t.who,
-          targetIsActive: t.isActive(),
+          targetWho: target.who,
+          targetIsActive: target.isActive(),
         },
       );
       if (isSkillMainDamage) {
@@ -692,9 +701,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
     for (const ch of characters) {
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Apply [damage:${type}] to ${stringifyState(ch.state)}`,
+        `Apply [damage:${type}] to ${stringifyState(ch)}`,
       );
-      this.callAndEmit("apply", ch.state, type, {
+      this.callAndEmit("apply", ch, type, {
         fromDamage: null,
         via: this.skillInfo,
         callerWho: this.callerArea.who,
@@ -714,7 +723,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     id: HandleT<TypeT>,
     area?: EntityArea,
     opt: CreateEntityOptions = {},
-  ): TypedEntity<Meta> | null {
+  ): RxEntityState<Meta, TypeT> | null {
     const id2 = id as number;
     const def = this.state.data.entities.get(id2);
     if (typeof def === "undefined") {
@@ -828,23 +837,21 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   transferEntity(target: EntityTargetArg, area: EntityArea) {
-    const targets = this.queryOrOf(target);
+    const targets = this.queryOrGet(target);
     for (const target of targets) {
-      if (target.state.definition.type === "character") {
+      const state = target.latest();
+      if (state.definition.type === "character") {
         throw new GiTcgDataError(`Cannot transfer a character`);
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Transfer ${stringifyState(target.state)} to ${stringifyEntityArea(
-          area,
-        )}`,
+        `Transfer ${stringifyState(target)} to ${stringifyEntityArea(area)}`,
       );
-      const state = target.state as EntityState;
       this.mutate({
         type: "removeEntity",
-        oldState: state,
+        oldState: state as EntityState,
       });
-      const newState = { ...state };
+      const newState = { ...state } as EntityState;
       this.mutate({
         type: "createEntity",
         value: newState,
@@ -855,26 +862,26 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
-    const targets = this.queryOrOf(target);
+    const targets = this.queryOrGet(target);
     for (const t of targets) {
-      this.assertNotCard(t.state);
-      const entityState = t.state;
-      if (entityState.definition.type === "character") {
+      const target = t.latest();
+      this.assertNotCard(target);
+      if (target.definition.type === "character") {
         throw new GiTcgDataError(
           `Character caller cannot be disposed. You may forget an argument when calling \`dispose\``,
         );
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Dispose ${stringifyState(entityState)}`,
+        `Dispose ${stringifyState(target)}`,
       );
       if (!option.noTriggerEvent) {
         // 对于“转移回手牌”的操作，不会触发 onDispose
-        this.emitEvent("onDispose", this.state, entityState as EntityState);
+        this.emitEvent("onDispose", this.state, target as EntityState);
       }
       this.mutate({
         type: "removeEntity",
-        oldState: entityState,
+        oldState: target,
       });
     }
     return this.enableShortcut();
@@ -887,7 +894,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   getVariable(prop: Meta["callerVars"]): number;
   getVariable(prop: string, target?: AnyState) {
     if (target) {
-      return this.of(target).getVariable(prop);
+      return this.get(target).getVariable(prop);
     } else {
       return this.self.getVariable(prop);
     }
@@ -1017,34 +1024,31 @@ export class SkillContext<Meta extends ContextMetaBase> {
     newDefId: HandleT<DefT>,
   ): ShortcutReturn<Meta>;
   transformDefinition(target: string, newDefId: number): ShortcutReturn<Meta>;
-  transformDefinition(target: string | AnyState, newDefId: number) {
-    if (typeof target === "string") {
-      const entity = this.$(target);
-      if (entity) {
-        target = entity.state;
-      } else {
-        throw new GiTcgDataError(
-          `Query ${target} doesn't find 1 character or entity`,
-        );
+  transformDefinition<DefT extends ExEntityType>(
+    x: string | ExEntityState<DefT>,
+    newDefId: number,
+  ) {
+    const targets = this.queryOrGet<DefT>(x);
+    for (const t of targets) {
+      const target = t.latest();
+      const oldDef = target.definition;
+      const def = this.state.data[oldDef.__definition].get(newDefId);
+      if (typeof def === "undefined") {
+        throw new GiTcgDataError(`Unknown definition id ${newDefId}`);
       }
+      using l = this.mutator.subLog(
+        DetailLogType.Primitive,
+        `Transform ${stringifyState(target)}'s definition to [${def.type}:${
+          def.id
+        }]`,
+      );
+      this.mutate({
+        type: "transformDefinition",
+        state: target,
+        newDefinition: def,
+      });
+      this.emitEvent("onTransformDefinition", this.state, target, def);
     }
-    const oldDef = target.definition;
-    const def = this.state.data[oldDef.__definition].get(newDefId);
-    if (typeof def === "undefined") {
-      throw new GiTcgDataError(`Unknown definition id ${newDefId}`);
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Transform ${stringifyState(target)}'s definition to [${def.type}:${
-        def.id
-      }]`,
-    );
-    this.mutate({
-      type: "transformDefinition",
-      state: target,
-      newDefinition: def,
-    });
-    this.emitEvent("onTransformDefinition", this.state, target, def);
     return this.enableShortcut();
   }
 
@@ -1062,7 +1066,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutate({
       type: "swapCharacterPosition",
       who: character0[0].who,
-      characters: [character0[0].state, character1[0].state],
+      characters: [character0[0].latest(), character1[0].latest()],
     });
     return this.enableShortcut();
   }
@@ -1388,7 +1392,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
   disposeCard(...cards: CardState[]) {
     const player = this.player;
     const who = this.callerArea.who;
-    for (const card of cards) {
+    for (const c of cards) {
+      const card = this.get(c).latest();
       let where: "hands" | "pile";
       if (player.hands.find((c) => c.id === card.id)) {
         where = "hands";
@@ -1432,10 +1437,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   consumeNightsoul(target: CharacterTargetArg, count = 1) {
     const targets = this.queryCoerceToCharacters(target);
-    for (const t of targets) {
-      const st = t.$$(`status with tag (nightsoulsBlessing)`)[0];
+    for (const target of targets) {
+      const st = target.$$(`status with tag (nightsoulsBlessing)`)[0];
       if (st) {
-        const oldValue = this.getVariable("nightsoul", st.state);
+        const oldValue = this.getVariable("nightsoul", st);
         const newValue = Math.max(0, oldValue - count);
         let info: NightsoulValueChangeInfo = {
           type: "consume",
@@ -1446,7 +1451,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         };
         const modifyEventArg = new BeforeNightsoulEventArg(
           this.state,
-          t.state,
+          target.latest(),
           info,
         );
         this.callAndEmit(
@@ -1459,8 +1464,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
         if (info.cancelled) {
           continue;
         }
-        this.setVariable("nightsoul", info.newValue, st.state);
-        this.emitEvent("onChangeNightsoul", this.state, t.state, info);
+        this.setVariable("nightsoul", info.newValue, st);
+        this.emitEvent("onChangeNightsoul", this.state, target.latest(), info);
       }
     }
     return this.enableShortcut();
@@ -1473,14 +1478,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   gainNightsoul(target: CharacterTargetArg, count = 1) {
     const targets = this.queryCoerceToCharacters(target);
-    for (const t of targets) {
-      if (!t.definition.associatedNightsoulsBlessing) {
+    for (const target of targets) {
+      if (!target.definition.associatedNightsoulsBlessing) {
         continue;
       }
-      const oldValue = t.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
+      const oldValue = target.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
       this.characterStatus(
-        t.definition.associatedNightsoulsBlessing.id as StatusHandle,
-        t.state,
+        target.definition.associatedNightsoulsBlessing.id as StatusHandle,
+        target,
         {
           modifyOverriddenVariablesOnly: true,
           overrideVariables: {
@@ -1488,7 +1493,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           },
         },
       );
-      const newValue = t.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
+      const newValue = target.hasNightsoulsBlessing()?.variables.nightsoul ?? 0;
       const info: NightsoulValueChangeInfo = {
         type: "gain",
         oldValue,
@@ -1496,7 +1501,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         consumedValue: count,
         cancelled: false,
       };
-      this.emitEvent("onChangeNightsoul", this.state, t.state, info);
+      this.emitEvent("onChangeNightsoul", this.state, target.latest(), info);
     }
     return this.enableShortcut();
   }

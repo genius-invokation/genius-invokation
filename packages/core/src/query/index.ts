@@ -14,10 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
-import type { TypedExEntity } from "../builder/type";
 import type { GuessedTypeOfQuery } from "./types";
 import { type QueryArgs, doSemanticQueryAction } from "./semantic";
-import { allEntities, allEntitiesInclPile, getEntityArea } from "../utils";
+import { allEntitiesInclPile } from "../utils";
 import type { AnyState, GameState } from "../base/state";
 import type {
   InitiativeSkillEventArg,
@@ -27,15 +26,17 @@ import type {
   UseSkillEventArg,
 } from "../base/skill";
 import { GiTcgDataError } from "../error";
+import { getRaw, type RxEntityState } from "../builder/context/reactive";
 
 export function executeQuery<
   Meta extends ContextMetaBase,
   const Q extends string,
->(ctx: SkillContext<Meta>, q: Q): TypedExEntity<Meta, GuessedTypeOfQuery<Q>>[] {
+>(ctx: SkillContext<Meta>, q: Q): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
-  const allEntities = allEntitiesInclPile(ctx.state);
+  const state = getRaw(ctx.state);
+  const allEntities = allEntitiesInclPile(state);
   const arg: QueryArgs = {
-    state: ctx.state,
+    state,
     allEntities,
     callerWho: ctx.callerArea.who,
     candidates: allEntities,
@@ -65,9 +66,8 @@ export function executeQuery<
       ),
     },
   };
-  // TODO typing
-  const result = doSemanticQueryAction(q, arg) as any[];
-  return result;
+  const result = doSemanticQueryAction(q, arg)
+  return result.map((st) => ctx.get<any>(st)) as RxEntityState<Meta, GuessedTypeOfQuery<Q>>[];
 }
 
 export function executeQueryOnState(

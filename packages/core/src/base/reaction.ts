@@ -117,7 +117,7 @@ export function getReaction(damageInfo: DamageInfo): R | null {
     return null;
   }
   const [, reactionType] =
-    REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
+    REACTION_MAP[damageInfo.targetAura][damageInfo.type];
   return reactionType;
 }
 
