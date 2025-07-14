@@ -456,7 +456,7 @@ const detailedEventDictionary = {
     );
   }),
   drawCard: defineDescriptor("onHandCardInserted", (e, r, curState) => {
-    const area = getEntityArea(curState, e.who);
+    const area = getEntityArea(curState, e.card.id);
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.reason === "drawn" &&

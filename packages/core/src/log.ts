@@ -13,9 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { Draft } from "immer";
 import type { GameState } from "./base/state";
 import type { GameData } from "./builder";
-import { CORE_VERSION } from "./index";
+import { CORE_VERSION, StateSymbol } from "./index";
 
 export interface GameStateLogEntry {
   readonly state: GameState;
@@ -210,11 +211,29 @@ export function deserializeGameStateLog(
   const restoredStore: Record<number, any> = {};
   const result: GameStateLogEntry[] = [];
   for (const entry of log) {
-    const restoredState = deserializeImpl(data, store, restoredStore, entry.s);
+    const restoredState: Draft<GameState> = deserializeImpl(data, store, restoredStore, entry.s);
+    for (const player of restoredState.players) {
+      player[StateSymbol] = "player";
+      for (const ch of player.characters) {
+        ch[StateSymbol] = "character";
+        for (const e of ch.entities) {
+          e[StateSymbol] = "entity";
+        }
+      }
+      for (const e of [...player.combatStatuses, ...player.supports, ...player.summons]) {
+        e[StateSymbol] = "entity";
+      }
+      for (const c of [...player.hands, ...player.pile]) {
+        c[StateSymbol] = "card";
+      }
+    }
+    for (const ext of restoredState.extensions) {
+      ext[StateSymbol] = "extension"; 
+    }
     result.push({
       state: {
-        data,
         ...restoredState,
+        data,
       },
       canResume: entry.r,
     });
