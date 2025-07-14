@@ -917,14 +917,7 @@ export class ModifyDamage0EventArg extends ModifyDamageEventArgBase {
 export class ModifyDamageByReactionEventArg extends ModifyDamageEventArgBase {
   increaseDamageByReaction() {
     const damageInfo = super.damageInfo;
-    const targetAura = damageInfo.targetAura;
-    if (
-      damageInfo.type === DamageType.Physical ||
-      damageInfo.type === DamageType.Piercing
-    ) {
-      return;
-    }
-    const [, reaction] = REACTION_MAP[targetAura][damageInfo.type];
+    const reaction = getReaction(damageInfo);
     switch (reaction) {
       case Reaction.Melt:
       case Reaction.Vaporize:

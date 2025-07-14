@@ -45,4 +45,7 @@ export abstract class ReactiveStateBase {
   } {
     return this as any;
   }
+  latest(): this[LatestStateSymbol] {
+    return this[LatestStateSymbol];
+  }
 }

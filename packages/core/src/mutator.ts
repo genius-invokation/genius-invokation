@@ -532,7 +532,8 @@ export class StateMutator {
     return events;
   }
 
-  damage(target: CharacterState, damageInfo: DamageInfo, opt: DamageOption) {
+  damage(damageInfo: DamageInfo, opt: DamageOption) {
+    const target = damageInfo.target;
     using l = this.subLog(
       DetailLogType.Primitive,
       `Deal ${damageInfo.value} [damage:${

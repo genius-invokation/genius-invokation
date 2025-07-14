@@ -87,8 +87,6 @@ import {
 } from "../../mutator";
 import { type Draft, produce } from "immer";
 import { nextRandom } from "../../random";
-import { Character, type TypedCharacter } from "./character";
-import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
 import {
   applyReactive,
@@ -589,7 +587,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       const finalValue = Math.min(value, maxEnergy - energy);
       this.mutate({
         type: "modifyEntityVar",
-        state: getRaw(target),
+        state: target.latest(),
         varName: "energy",
         value: energy + finalValue,
         direction: "increase",
@@ -624,7 +622,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       this.mutate({
         type: "modifyEntityVar",
-        state: getRaw(target),
+        state: target.latest(),
         varName: "maxHealth",
         value: target.variables.maxHealth + value,
         direction: "increase",
@@ -658,8 +656,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
       const { aura, alive, health } = target.variables;
       let damageInfo: DamageInfo = {
-        source: getRaw(this.skillInfo.caller),
-        target: getRaw(target, true),
+        source: this.skillInfo.caller,
+        target: target.latest(),
         targetAura: aura,
         type,
         value,
@@ -670,7 +668,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
       };
       const { damageInfo: damageInfo2 } = this.callAndEmit(
         "damage",
-        target,
         damageInfo,
         {
           via: this.skillInfo,
@@ -839,11 +836,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Transfer ${stringifyState(target)} to ${stringifyEntityArea(
-          area,
-        )}`,
+        `Transfer ${stringifyState(target)} to ${stringifyEntityArea(area)}`,
       );
-      const state = getRaw(target) as EntityState;
+      const state = target.latest() as EntityState;
       this.mutate({
         type: "removeEntity",
         oldState: state,
@@ -877,7 +872,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
       this.mutate({
         type: "removeEntity",
-        oldState: getRaw(target),
+        oldState: target.latest(),
       });
     }
     return this.enableShortcut();
@@ -1020,34 +1015,30 @@ export class SkillContext<Meta extends ContextMetaBase> {
     newDefId: HandleT<DefT>,
   ): ShortcutReturn<Meta>;
   transformDefinition(target: string, newDefId: number): ShortcutReturn<Meta>;
-  transformDefinition(target: string | AnyState, newDefId: number) {
-    if (typeof target === "string") {
-      const entity = this.$(target);
-      if (entity) {
-        target = entity;
-      } else {
-        throw new GiTcgDataError(
-          `Query ${target} doesn't find 1 character or entity`,
-        );
+  transformDefinition<DefT extends ExEntityType>(
+    x: string | ExEntityState<DefT>,
+    newDefId: number,
+  ) {
+    const targets = this.queryOrGet<DefT>(x);
+    for (const target of targets) {
+      const oldDef = target.definition;
+      const def = this.state.data[oldDef.__definition].get(newDefId);
+      if (typeof def === "undefined") {
+        throw new GiTcgDataError(`Unknown definition id ${newDefId}`);
       }
+      using l = this.mutator.subLog(
+        DetailLogType.Primitive,
+        `Transform ${stringifyState(target)}'s definition to [${def.type}:${
+          def.id
+        }]`,
+      );
+      this.mutate({
+        type: "transformDefinition",
+        state: target.latest(),
+        newDefinition: def,
+      });
+      this.emitEvent("onTransformDefinition", this.state, target, def);
     }
-    const oldDef = target.definition;
-    const def = this.state.data[oldDef.__definition].get(newDefId);
-    if (typeof def === "undefined") {
-      throw new GiTcgDataError(`Unknown definition id ${newDefId}`);
-    }
-    using l = this.mutator.subLog(
-      DetailLogType.Primitive,
-      `Transform ${stringifyState(target)}'s definition to [${def.type}:${
-        def.id
-      }]`,
-    );
-    this.mutate({
-      type: "transformDefinition",
-      state: getRaw(target),
-      newDefinition: def,
-    });
-    this.emitEvent("onTransformDefinition", this.state, target, def);
     return this.enableShortcut();
   }
 
@@ -1065,7 +1056,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutate({
       type: "swapCharacterPosition",
       who: character0[0].who,
-      characters: [getRaw(character0[0]), getRaw(character1[0])],
+      characters: [character0[0].latest(), character1[0].latest()],
     });
     return this.enableShortcut();
   }
