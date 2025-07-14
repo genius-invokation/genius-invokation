@@ -39,12 +39,13 @@ import {
   BeforeNightsoulEventArg,
 } from "../../base/skill";
 import {
-  type AnyState,
-  type CardState,
-  type CharacterState,
-  type EntityState,
+  type AnyState as AnyStateO,
+  type CardState as CardStateO,
+  type CharacterState as CharacterStateO,
+  type EntityState as EntityStateO,
   type GameState,
   type PlayerState,
+  StateSymbol,
   stringifyState,
 } from "../../base/state";
 import {
@@ -61,7 +62,6 @@ import type {
   CardHandle,
   CharacterHandle,
   CombatStatusHandle,
-  ExEntityState,
   ExtensionHandle,
   HandleT,
   ExEntityType,
@@ -95,6 +95,17 @@ import {
   type RxEntityState,
 } from "./reactive";
 import { ReactiveStateSymbol } from "./reactive_base";
+
+type CharacterState = Omit<CharacterStateO, StateSymbol>;
+type EntityState = Omit<EntityStateO, StateSymbol>;
+type CardState = Omit<CardStateO, StateSymbol>;
+type AnyState = CharacterState | EntityState | CardState;
+type ExEntityState<TypeT extends ExEntityType> =
+  TypeT extends "character"
+    ? CharacterState
+    : TypeT extends "card"
+      ? CardState
+      : EntityState;
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -319,14 +330,16 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return !!this.skillInfo.isPreview;
   }
 
-  get state(): ApplyReactive<Meta, GameState> {
+  get rState(): ApplyReactive<Meta, GameState> {
     return applyReactive(this, this.mutator.state);
   }
-
-  get player(): ApplyReactive<Meta, PlayerState> {
+  get state(): GameState {
+    return this.mutator.state;
+  }
+  get player(): PlayerState {
     return this.state.players[this.callerArea.who];
   }
-  get oppPlayer(): ApplyReactive<Meta, PlayerState> {
+  get oppPlayer(): PlayerState {
     return this.state.players[flip(this.callerArea.who)];
   }
   /** @deprecated */
@@ -354,11 +367,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * Get context of given entity state
    * @deprecated
    */
-  of(entityState: EntityState): ApplyReactive<Meta, EntityState>;
+  of(entityState: EntityState): ApplyReactive<Meta, EntityStateO>;
   /**
    * @deprecated
    */
-  of(entityState: CharacterState): ApplyReactive<Meta, CharacterState>;
+  of(entityState: CharacterState): ApplyReactive<Meta, CharacterStateO>;
   /**
    * @deprecated
    */
@@ -372,9 +385,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
   get<T extends ExEntityType>(
     rxState: RxEntityState<Meta, T>,
   ): RxEntityState<Meta, T>;
-  get(state: CardState): ApplyReactive<Meta, CardState>;
-  get(state: EntityState): ApplyReactive<Meta, EntityState>;
-  get(state: CharacterState): ApplyReactive<Meta, CharacterState>;
+  get(state: CardState): ApplyReactive<Meta, CardStateO>;
+  get(state: EntityState): ApplyReactive<Meta, EntityStateO>;
+  get(state: CharacterState): ApplyReactive<Meta, CharacterStateO>;
   get<T extends ExEntityType>(state: ExEntityState<T>): RxEntityState<Meta, T>;
   get<T extends ExEntityType>(id: number): RxEntityState<Meta, T>;
   get(x: number | AnyState): unknown {
@@ -703,7 +716,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Apply [damage:${type}] to ${stringifyState(ch)}`,
       );
-      this.callAndEmit("apply", ch, type, {
+      this.callAndEmit("apply", ch.latest(), type, {
         fromDamage: null,
         via: this.skillInfo,
         callerWho: this.callerArea.who,
@@ -849,9 +862,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       this.mutate({
         type: "removeEntity",
-        oldState: state as EntityState,
+        oldState: state as EntityStateO,
       });
-      const newState = { ...state } as EntityState;
+      const newState = { ...state } as EntityStateO;
       this.mutate({
         type: "createEntity",
         value: newState,
@@ -877,7 +890,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       if (!option.noTriggerEvent) {
         // 对于“转移回手牌”的操作，不会触发 onDispose
-        this.emitEvent("onDispose", this.state, target as EntityState);
+        this.emitEvent("onDispose", this.state, target as EntityStateO);
       }
       this.mutate({
         type: "removeEntity",
@@ -907,7 +920,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   ): ShortcutReturn<Meta>;
   setVariable(prop: Meta["callerVars"], value: number): ShortcutReturn<Meta>;
   setVariable(prop: any, value: number, target?: AnyState) {
-    target ??= this.callerState;
+    target ??= this.self;
     this.assertNotCard(target);
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
@@ -921,9 +934,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       return;
     }
+    const state = this.get(target).latest() as EntityStateO | CharacterStateO;
     this.mutate({
       type: "modifyEntityVar",
-      state: target as CharacterState | EntityState,
+      state,
       varName: prop,
       value: value,
       direction: null,
@@ -1322,7 +1336,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           from: "hands",
           to: "pile",
           who,
-          value: card,
+          value: this.get(card).latest(),
           reason: "undraw",
         }) as const,
     );
@@ -1331,19 +1345,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   stealHandCard(card: CardState) {
+    const cardState = this.get(card).latest();
     this.mutate({
       type: "transferCard",
       from: "hands",
       to: "oppHands",
       who: flip(this.callerArea.who),
-      value: card,
+      value: cardState,
       reason: "steal",
     });
     this.emitEvent(
       "onHandCardInserted",
       this.state,
       this.callerArea.who,
-      card,
+      cardState,
       "stolen",
     );
   }
@@ -1528,11 +1543,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
   triggerEndPhaseSkill(target: EntityState) {
+    const state = this.get(target).latest();
     this.emitEvent(
       "requestTriggerEndPhaseSkill",
       this.skillInfo,
       this.callerArea.who,
-      target,
+      state,
     );
     return this.enableShortcut();
   }
@@ -1607,7 +1623,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "requestPlayCard",
       cards: this.getCardsDefinition(cards),
-      targets,
+      targets: targets.map((target) => this.get(target).latest()),
     });
     return this.enableShortcut();
   }

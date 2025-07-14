@@ -1503,10 +1503,11 @@ const LutinesGoodwill = combatStatus(302217)
   .usage(2)
   .abortPreview()
   .do((c, e) => {
+    const caller = e.skill.caller.cast<"character">();
     if (c.random([true, false])) {
-      c.heal(2, e.skill.caller as CharacterState);
+      c.heal(2, caller);
     } else {
-      c.damage(DamageType.Piercing, 2, e.skill.caller as CharacterState);
+      c.damage(DamageType.Piercing, 2, caller);
     }
   })
   .done();

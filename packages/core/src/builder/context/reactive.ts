@@ -42,7 +42,7 @@ export type NoReactiveSymbol = typeof NoReactiveSymbol;
 type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   readonly [StateSymbol]: infer S extends keyof ReactiveClassMap<Meta>;
 }
-  ? State & ReactiveClassMap<Meta>[S]
+  ? Omit<State, StateSymbol> & ReactiveClassMap<Meta>[S]
   : never;
 
 export type RxEntityState<

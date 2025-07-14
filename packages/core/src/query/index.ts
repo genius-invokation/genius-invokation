@@ -41,13 +41,13 @@ export function executeQuery<
     callerWho: ctx.callerArea.who,
     candidates: allEntities,
     externals: {
-      self: () => ctx.self,
+      self: () => ctx.self.latest(),
       master: () => {
         const area = ctx.self.area;
         if (area.type !== "characters") {
           throw new GiTcgDataError(`This caller do not have @master`);
         }
-        return ctx.get(area.characterId);
+        return ctx.get(area.characterId).latest();
       },
       event: {
         skillCaller: () => (ctx.eventArg as UseSkillEventArg).skill.caller,
