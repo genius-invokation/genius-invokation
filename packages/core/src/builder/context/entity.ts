@@ -38,8 +38,10 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     super();
   }
 
+  /** @deprecated */
   get state(): EntityState {
-    return getEntityById(this.skillContext.state, this.id) as EntityState;
+    const state = getEntityById(this.skillContext.state, this.id) as EntityState;
+    return state;
   }
   get definition(): EntityDefinition {
     return this.state.definition;
@@ -66,6 +68,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.skillContext.get<"character">(this.area.characterId);
   }
 }
+
 export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {
   setVariable(prop: string, value: number) {
     this.skillContext.setVariable(prop, value, this.state);

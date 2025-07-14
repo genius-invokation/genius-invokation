@@ -43,8 +43,17 @@ import type {
   StatusHandle,
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
-import { RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
-import { applyReactive, type ApplyReactive } from "./reactive";
+import {
+  RawStateSymbol,
+  ReactiveStateBase,
+  ReactiveStateSymbol,
+} from "./reactive_base";
+import {
+  applyReactive,
+  type ApplyReactive,
+  type RxEntityState,
+} from "./reactive";
+import type { GuessedTypeOfQuery } from "../../query/types";
 
 export type CharacterPosition = "active" | "next" | "prev" | "standby";
 
@@ -216,18 +225,20 @@ export class ReadonlyCharacter<
   }
 
   get state(): CharacterState {
-    const entity = getEntityById(this.skillContext.state, this._id);
-    if (entity.definition.type !== "character") {
-      throw new GiTcgCoreInternalError("Expected character");
-    }
-    return entity as CharacterState;
+    const entity = getEntityById(
+      this.skillContext.state,
+      this._id,
+    ) as CharacterState;
+    return entity;
   }
 
   get entities(): ApplyReactive<Meta, EntityState[]> {
     return applyReactive(this.skillContext, this.state.entities);
   }
 
-  $$<const Q extends string>(arg: Q) {
+  $$<const Q extends string>(
+    arg: Q,
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
     return this.skillContext.$$(`(${arg}) at (with id ${this._id})`);
   }
 

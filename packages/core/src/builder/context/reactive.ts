@@ -15,12 +15,8 @@
 
 import {
   StateSymbol,
-  type CharacterState,
-  type EntityState,
-  type GameState,
   type StateKind,
 } from "../../base/state";
-import type { ActionEventArg, ActionInfo } from "../../base/skill";
 import { Card, type TypedCard } from "./card";
 import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
@@ -30,6 +26,7 @@ import {
   ReactiveStateBase,
   ReactiveStateSymbol,
 } from "./reactive_base";
+import type { ExEntityState, ExEntityType } from "../type";
 
 type ReactiveClassMap<Meta extends ContextMetaBase> = {
   character: TypedCharacter<Meta>;
@@ -44,11 +41,16 @@ type ReactiveClassCtor = new (
 export const NoReactiveSymbol = Symbol("GiTcgCoreStateNoReactive");
 export type NoReactiveSymbol = typeof NoReactiveSymbol;
 
-export type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
+type ReactiveState<Meta extends ContextMetaBase, State> = State extends {
   readonly [StateSymbol]: infer S extends keyof ReactiveClassMap<Meta>;
 }
   ? State & ReactiveClassMap<Meta>[S]
   : never;
+
+export type RxEntityState<
+  Meta extends ContextMetaBase,
+  T extends ExEntityType,
+> = ReactiveState<Meta, ExEntityState<T>>;
 
 type Primitive = string | number | boolean | bigint | symbol | null | undefined;
 type AtomicObject =
@@ -149,7 +151,7 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   ) {
     const Ctor = REACTIVE_CLASS_MAP[value[StateSymbol] as StateKind]!;
     const instance = new Ctor(skillContext, value.id);
-    const proxy = new Proxy(clone, {
+    const proxy: object = new Proxy(clone, {
       getPrototypeOf(target) {
         return Ctor.prototype;
       },
@@ -158,14 +160,14 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
           return value;
         }
         if (prop in instance) {
-          return Reflect.get(instance, prop, instance);
+          return Reflect.get(instance, prop, proxy);
         } else {
           return Reflect.get(target, prop, receiver);
         }
       },
       set(target, prop, value, receiver) {
         if (prop in instance) {
-          return Reflect.set(instance, prop, value, instance);
+          return Reflect.set(instance, prop, value, proxy);
         } else {
           // 假定 target 一定是只读的
           return false;

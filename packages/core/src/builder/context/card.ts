@@ -43,7 +43,8 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
   }
 
   get state(): CardState {
-    return getEntityById(this.skillContext.state, this.id) as CardState;
+    const state = getEntityById(this.skillContext.state, this.id) as CardState;
+    return state;
   }
 
   getVariable(name: string): never {

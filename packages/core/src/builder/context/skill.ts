@@ -68,7 +68,6 @@ import type {
   SkillHandle,
   StatusHandle,
   SummonHandle,
-  TypedExEntity,
   EquipmentHandle,
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
@@ -89,15 +88,15 @@ import {
 import { type Draft, produce } from "immer";
 import { nextRandom } from "../../random";
 import { Character, type TypedCharacter } from "./character";
-import { Entity, type TypedEntity } from "./entity";
 import { Card } from "./card";
 import type { CustomEvent } from "../../base/custom_event";
 import {
   applyReactive,
   getRaw,
   type ApplyReactive,
-  type ReactiveState,
+  type RxEntityState,
 } from "./reactive";
+import { ReactiveStateSymbol } from "./reactive_base";
 
 type CharacterTargetArg = CharacterState | CharacterState[] | string;
 type EntityTargetArg = EntityState | EntityState[] | string;
@@ -196,10 +195,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * 获取正在执行逻辑的实体的 `Character` 或 `Entity`。
    * @returns
    */
-  private readonly _self: ReactiveState<
-    Meta,
-    ExEntityState<Meta["callerType"]>
-  >;
+  private readonly _self: RxEntityState<Meta, Meta["callerType"]>;
 
   public get callerArea(): EntityArea {
     return this._self.area;
@@ -225,9 +221,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
     };
     this.eventArg = applyReactive(this, eventArg);
     this.mutator = new StateMutator(state, mutatorConfig);
-    this._self = applyReactive(this, this.skillInfo.caller) as ReactiveState<
+    this._self = applyReactive(this, this.skillInfo.caller) as RxEntityState<
       Meta,
-      ExEntityState<Meta["callerType"]>
+      Meta["callerType"]
     >;
   }
 
@@ -330,7 +326,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
   /** Latest caller state */
   private get callerState(): AnyState {
-    return applyReactive(this, getEntityById(this.state, this.skillInfo.caller.id));
+    return applyReactive(
+      this,
+      getEntityById(this.state, this.skillInfo.caller.id),
+    );
   }
   isMyTurn() {
     return this.state.currentTurn === this.callerArea.who;
@@ -338,14 +337,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   $<const Q extends string>(
     arg: Q,
-  ): TypedExEntity<Meta, GuessedTypeOfQuery<Q>> | undefined {
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>> | undefined {
     const result = this.$$(arg);
     return result[0];
   }
 
   $$<const Q extends string>(
     arg: Q,
-  ): TypedExEntity<Meta, GuessedTypeOfQuery<Q>>[] {
+  ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
     return executeQuery(this, arg);
   }
 
@@ -363,44 +362,50 @@ export class SkillContext<Meta extends ContextMetaBase> {
    */
   of<T extends ExEntityType = ExEntityType>(
     entityId: AnyState | number,
-  ): TypedExEntity<Meta, T>;
+  ): RxEntityState<Meta, T>;
   of(entityState: AnyState | number): unknown {
-    if (typeof entityState === "number") {
-      return this.get(entityState);
+    return this.get(entityState as number);
+  }
+
+  get<T extends ExEntityType>(
+    rxState: RxEntityState<Meta, T>,
+  ): RxEntityState<Meta, T>;
+  get<T extends ExEntityType>(state: ExEntityState<T>): RxEntityState<Meta, T>;
+  get<T extends ExEntityType>(id: number): RxEntityState<Meta, T>;
+  get(x: number | AnyState): unknown {
+    if (typeof x === "number") {
+      return applyReactive(this, getEntityById(this.state, x));
     }
-    return applyReactive(this, entityState);
+    if (ReactiveStateSymbol in x) {
+      return x;
+    }
+    return applyReactive(this, x);
   }
 
-  get<T extends ExEntityType>(id: number): ReactiveState<Meta, ExEntityState<T>> {
-    return applyReactive(this, getEntityById(this.state, id)) as any;
-  }
-
-  private queryOrOf<TypeT extends ExEntityType>(
-    q: AnyState | AnyState[] | string,
-  ): TypedExEntity<Meta, TypeT>[] {
+  private queryOrGet<TypeT extends ExEntityType>(
+    q: ExEntityState<TypeT> | ExEntityState<TypeT>[] | string,
+  ): RxEntityState<Meta, TypeT>[] {
     if (Array.isArray(q)) {
       return q.map((s) => this.of(s));
     } else if (typeof q === "string") {
-      return this.$$(q) as TypedExEntity<Meta, TypeT>[];
+      return this.$$(q) as RxEntityState<Meta, TypeT>[];
     } else {
-      return [this.of(q)];
+      return [this.get<TypeT>(q)];
     }
   }
 
   private queryCoerceToCharacters(
     arg: CharacterTargetArg,
-  ): TypedCharacter<Meta>[] {
-    const result = this.queryOrOf(arg);
+  ): RxEntityState<Meta, "character">[] {
+    const result = this.queryOrGet(arg);
     for (const r of result) {
-      if (r instanceof Character) {
-        continue;
-      } else {
+      if (r.definition.type !== "character") {
         throw new GiTcgDataError(
           `Expected character target, but query ${arg} found noncharacter entities`,
         );
       }
     }
-    return result as TypedCharacter<Meta>[];
+    return result as RxEntityState<Meta, "character">[];
   }
 
   getExtensionState(): Meta["associatedExtension"]["type"] {
@@ -714,7 +719,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     id: HandleT<TypeT>,
     area?: EntityArea,
     opt: CreateEntityOptions = {},
-  ): TypedEntity<Meta> | null {
+  ): RxEntityState<Meta, TypeT> | null {
     const id2 = id as number;
     const def = this.state.data.entities.get(id2);
     if (typeof def === "undefined") {
@@ -828,7 +833,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   transferEntity(target: EntityTargetArg, area: EntityArea) {
-    const targets = this.queryOrOf(target);
+    const targets = this.queryOrGet(target);
     for (const target of targets) {
       if (target.state.definition.type === "character") {
         throw new GiTcgDataError(`Cannot transfer a character`);
@@ -855,7 +860,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
-    const targets = this.queryOrOf(target);
+    const targets = this.queryOrGet(target);
     for (const t of targets) {
       this.assertNotCard(t.state);
       const entityState = t.state;
