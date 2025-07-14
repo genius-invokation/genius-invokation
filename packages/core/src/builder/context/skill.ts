@@ -584,7 +584,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   gainEnergy(value: number, target: CharacterTargetArg) {
     const targets = this.queryCoerceToCharacters(target);
-    for (const target of targets) {
+    for (const t of targets) {
+      const target = t.latest();
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
         `Gain ${value} energy to ${stringifyState(target)}`,
@@ -593,7 +594,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       const finalValue = Math.min(value, maxEnergy - energy);
       this.mutate({
         type: "modifyEntityVar",
-        state: target.latest(),
+        state: target,
         varName: "energy",
         value: energy + finalValue,
         direction: "increase",
@@ -621,19 +622,20 @@ export class SkillContext<Meta extends ContextMetaBase> {
   /** 增加最大生命值 */
   increaseMaxHealth(value: number, target: CharacterTargetArg) {
     const targets = this.queryCoerceToCharacters(target);
-    for (const target of targets) {
+    for (const t of targets) {
+      const target = t.latest();
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
         `Increase ${value} max health to ${stringifyState(target)}`,
       );
       this.mutate({
         type: "modifyEntityVar",
-        state: target.latest(),
+        state: target,
         varName: "maxHealth",
         value: target.variables.maxHealth + value,
         direction: "increase",
       });
-      this.callAndEmit("heal", value, target.latest(), {
+      this.callAndEmit("heal", value, target, {
         via: this.skillInfo,
         kind: "increaseMaxHealth",
       });
@@ -837,19 +839,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
   transferEntity(target: EntityTargetArg, area: EntityArea) {
     const targets = this.queryOrGet(target);
     for (const target of targets) {
-      if (target.definition.type === "character") {
+      const state = target.latest();
+      if (state.definition.type === "character") {
         throw new GiTcgDataError(`Cannot transfer a character`);
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
         `Transfer ${stringifyState(target)} to ${stringifyEntityArea(area)}`,
       );
-      const state = target.latest() as EntityState;
       this.mutate({
         type: "removeEntity",
-        oldState: state,
+        oldState: state as EntityState,
       });
-      const newState = { ...state };
+      const newState = { ...state } as EntityState;
       this.mutate({
         type: "createEntity",
         value: newState,
@@ -861,7 +863,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
     const targets = this.queryOrGet(target);
-    for (const target of targets) {
+    for (const t of targets) {
+      const target = t.latest();
       this.assertNotCard(target);
       if (target.definition.type === "character") {
         throw new GiTcgDataError(
@@ -874,11 +877,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       if (!option.noTriggerEvent) {
         // 对于“转移回手牌”的操作，不会触发 onDispose
-        this.emitEvent("onDispose", this.state, target.latest() as EntityState);
+        this.emitEvent("onDispose", this.state, target as EntityState);
       }
       this.mutate({
         type: "removeEntity",
-        oldState: target.latest(),
+        oldState: target,
       });
     }
     return this.enableShortcut();
@@ -1026,7 +1029,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
     newDefId: number,
   ) {
     const targets = this.queryOrGet<DefT>(x);
-    for (const target of targets) {
+    for (const t of targets) {
+      const target = t.latest();
       const oldDef = target.definition;
       const def = this.state.data[oldDef.__definition].get(newDefId);
       if (typeof def === "undefined") {
@@ -1040,10 +1044,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       this.mutate({
         type: "transformDefinition",
-        state: target.latest(),
+        state: target,
         newDefinition: def,
       });
-      this.emitEvent("onTransformDefinition", this.state, target.latest(), def);
+      this.emitEvent("onTransformDefinition", this.state, target, def);
     }
     return this.enableShortcut();
   }

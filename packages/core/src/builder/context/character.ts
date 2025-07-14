@@ -174,42 +174,6 @@ export class CharacterBase extends ReactiveStateBase {
   nationTags(): NationTag[] {
     return nationOfCharacter(this.state.definition);
   }
-  private hasEquipmentWithTag(tag: EntityTag): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) =>
-          v.definition.type === "equipment" && v.definition.tags.includes(tag),
-      ) ?? null
-    );
-  }
-  hasArtifact() {
-    return this.hasEquipmentWithTag("artifact");
-  }
-  hasWeapon() {
-    return this.hasEquipmentWithTag("weapon");
-  }
-  hasTechnique() {
-    return this.hasEquipmentWithTag("technique");
-  }
-  hasEquipment(id: EquipmentHandle): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) => v.definition.type === "equipment" && v.definition.id === id,
-      ) ?? null
-    );
-  }
-  hasStatus(id: StatusHandle): EntityState | null {
-    return (
-      this.state.entities.find(
-        (v) => v.definition.type === "status" && v.definition.id === id,
-      ) ?? null
-    );
-  }
-  hasNightsoulsBlessing() {
-    return this.state.entities.find((v) =>
-      v.definition.tags.includes("nightsoulsBlessing"),
-    );
-  }
   getVariable<Name extends string>(name: Name): CharacterVariables[Name] {
     return this.state.variables[name];
   }
@@ -240,6 +204,11 @@ export class ReadonlyCharacter<
     return applyReactive(this.skillContext, this.state.entities);
   }
 
+  /** @deprecated */
+  get state(): CharacterState {
+    return this[LatestStateSymbol];
+  }
+
   $$<const Q extends string>(
     arg: Q,
   ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
@@ -248,6 +217,42 @@ export class ReadonlyCharacter<
 
   isMine() {
     return this.area.who === this.skillContext.callerArea.who;
+  }
+  private hasEquipmentWithTag(tag: EntityTag) {
+    return (
+      this.entities.find(
+        (v) =>
+          v.definition.type === "equipment" && v.definition.tags.includes(tag),
+      ) ?? null
+    );
+  }
+  hasArtifact() {
+    return this.hasEquipmentWithTag("artifact");
+  }
+  hasWeapon() {
+    return this.hasEquipmentWithTag("weapon");
+  }
+  hasTechnique() {
+    return this.hasEquipmentWithTag("technique");
+  }
+  hasEquipment(id: EquipmentHandle) {
+    return (
+      this.entities.find(
+        (v) => v.definition.type === "equipment" && v.definition.id === id,
+      ) ?? null
+    );
+  }
+  hasStatus(id: StatusHandle) {
+    return (
+      this.entities.find(
+        (v) => v.definition.type === "status" && v.definition.id === id,
+      ) ?? null
+    );
+  }
+  hasNightsoulsBlessing() {
+    return this.entities.find((v) =>
+      v.definition.tags.includes("nightsoulsBlessing"),
+    ) ?? null;
   }
 }
 
