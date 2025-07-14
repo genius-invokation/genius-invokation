@@ -648,7 +648,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
         value: target.variables.maxHealth + value,
         direction: "increase",
       });
-      this.callAndEmit("heal", value, target, {
+      // t.latest() here for grabbing the new maxHealth
+      this.callAndEmit("heal", value, t.latest(), {
         via: this.skillInfo,
         kind: "increaseMaxHealth",
       });
