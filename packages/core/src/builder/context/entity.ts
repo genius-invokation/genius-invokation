@@ -23,11 +23,16 @@ import {
 import { getEntityArea, getEntityById } from "./utils";
 import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
-import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
+import { LatestStateSymbol, RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
 
 class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "entity" {
     return "entity";
+  }
+  declare [RawStateSymbol]: EntityState;
+  override get [LatestStateSymbol](): EntityState {
+    const state = getEntityById(this.skillContext.state, this.id) as EntityState;
+    return state;
   }
 
   protected _area: EntityArea | undefined;
@@ -40,8 +45,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
 
   /** @deprecated */
   get state(): EntityState {
-    const state = getEntityById(this.skillContext.state, this.id) as EntityState;
-    return state;
+    return this[LatestStateSymbol];
   }
   get definition(): EntityDefinition {
     return this.state.definition;

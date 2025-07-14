@@ -569,12 +569,12 @@ export class StateMutator {
       value: finalHealth,
       direction: "decrease",
     });
-    if (damageInfo.target.variables.alive) {
+    if (target.variables.alive) {
       const [newAura, reaction] =
         damageInfo.type === DamageType.Piercing ||
         damageInfo.type === DamageType.Physical
-          ? [damageInfo.target.variables.aura, null]
-          : REACTION_MAP[damageInfo.target.variables.aura][damageInfo.type];
+          ? [damageInfo.targetAura, null]
+          : REACTION_MAP[damageInfo.targetAura][damageInfo.type];
       this.notify({
         mutations: [
           {
@@ -583,14 +583,14 @@ export class StateMutator {
             sourceId: damageInfo.source.id,
             sourceDefinitionId: damageInfo.source.definition.id,
             value: damageInfo.value,
-            targetId: damageInfo.target.id,
-            targetDefinitionId: damageInfo.target.definition.id,
+            targetId: target.id,
+            targetDefinitionId: target.definition.id,
             isSkillMainDamage: damageInfo.isSkillMainDamage,
             reactionType: reaction ?? PbReactionType.UNSPECIFIED,
             causeDefeated: damageInfo.causeDefeated,
-            oldAura: damageInfo.target.variables.aura,
+            oldAura: damageInfo.targetAura,
             newAura,
-            oldHealth: damageInfo.target.variables.health,
+            oldHealth: target.variables.health,
             newHealth: finalHealth,
             healKind: PbHealKind.NOT_A_HEAL,
           },

@@ -26,16 +26,17 @@ import type {
   UseSkillEventArg,
 } from "../base/skill";
 import { GiTcgDataError } from "../error";
-import type { RxEntityState } from "../builder/context/reactive";
+import { getRaw, type RxEntityState } from "../builder/context/reactive";
 
 export function executeQuery<
   Meta extends ContextMetaBase,
   const Q extends string,
 >(ctx: SkillContext<Meta>, q: Q): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
-  const allEntities = allEntitiesInclPile(ctx.state);
+  const state = getRaw(ctx.state);
+  const allEntities = allEntitiesInclPile(state);
   const arg: QueryArgs = {
-    state: ctx.state,
+    state,
     allEntities,
     callerWho: ctx.callerArea.who,
     candidates: allEntities,
@@ -65,11 +66,8 @@ export function executeQuery<
       ),
     },
   };
-  const result = doSemanticQueryAction(q, arg) as RxEntityState<
-    Meta,
-    GuessedTypeOfQuery<Q>
-  >[];
-  return result;
+  const result = doSemanticQueryAction(q, arg)
+  return result.map((st) => ctx.get<any>(st)) as RxEntityState<Meta, GuessedTypeOfQuery<Q>>[];
 }
 
 export function executeQueryOnState(

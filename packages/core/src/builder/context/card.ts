@@ -18,11 +18,21 @@ import type { CardState } from "../../base/state";
 import { getEntityArea, getEntityById } from "./utils";
 import type { ContextMetaBase, SkillContext } from "./skill";
 import type { EntityArea } from "../../base/entity";
-import { ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
+import {
+  LatestStateSymbol,
+  RawStateSymbol,
+  ReactiveStateBase,
+  ReactiveStateSymbol,
+} from "./reactive_base";
 
 class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "card" {
     return "card";
+  }
+  declare [RawStateSymbol]: CardState;
+  override get [LatestStateSymbol](): CardState {
+    const state = getEntityById(this.skillContext.state, this.id) as CardState;
+    return state;
   }
 
   protected _area: EntityArea | undefined;
@@ -33,7 +43,7 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     super();
   }
   get area(): EntityArea {
-    return this._area ??= getEntityArea(this.skillContext.state, this.id);
+    return (this._area ??= getEntityArea(this.skillContext.state, this.id));
   }
   get who() {
     return this.area.who;
@@ -42,9 +52,9 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.area.who === this.skillContext.callerArea.who;
   }
 
+  /** @deprecated */
   get state(): CardState {
-    const state = getEntityById(this.skillContext.state, this.id) as CardState;
-    return state;
+    return this[LatestStateSymbol];
   }
 
   getVariable(name: string): never {

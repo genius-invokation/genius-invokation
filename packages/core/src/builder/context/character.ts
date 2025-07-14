@@ -44,6 +44,7 @@ import type {
 } from "../type";
 import type { CreateEntityOptions } from "../../mutator";
 import {
+  LatestStateSymbol,
   RawStateSymbol,
   ReactiveStateBase,
   ReactiveStateSymbol,
@@ -65,6 +66,12 @@ export class CharacterBase extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "character" {
     return "character";
   }
+  override get [LatestStateSymbol](): CharacterState {
+    return (this._state ??= getEntityById(
+      this._gameState,
+      this._id,
+    ) as CharacterState);
+  }
   declare [RawStateSymbol]: CharacterState;
 
   private _area: EntityArea | undefined;
@@ -82,10 +89,7 @@ export class CharacterBase extends ReactiveStateBase {
     return (this._area ??= getEntityArea(this._gameState, this._id));
   }
   get state() {
-    return (this._state ??= getEntityById(
-      this._gameState,
-      this._id,
-    ) as CharacterState);
+    return this[LatestStateSymbol];
   }
 
   get who() {
@@ -224,12 +228,12 @@ export class ReadonlyCharacter<
     return this.skillContext.state;
   }
 
-  get state(): CharacterState {
-    const entity = getEntityById(
+  override get [LatestStateSymbol](): CharacterState {
+    const state = getEntityById(
       this.skillContext.state,
       this._id,
     ) as CharacterState;
-    return entity;
+    return state;
   }
 
   get entities(): ApplyReactive<Meta, EntityState[]> {

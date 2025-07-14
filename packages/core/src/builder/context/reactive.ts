@@ -13,15 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  StateSymbol,
-  type StateKind,
-} from "../../base/state";
+import { StateSymbol, type StateKind } from "../../base/state";
 import { Card, type TypedCard } from "./card";
 import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import type { ContextMetaBase, SkillContext } from "./skill";
 import {
+  LatestStateSymbol,
   RawStateSymbol,
   ReactiveStateBase,
   ReactiveStateSymbol,
@@ -90,11 +88,14 @@ export type ApplyReactive<
                   }
               : A;
 
-export function getRaw<T>(state: T): T {
+export function getRaw<T>(state: T, getLatest = false): T {
   if (state === null || typeof state !== "object") {
     return state;
   }
   if (RawStateSymbol in state) {
+    if (getLatest && LatestStateSymbol in state) {
+      return state[LatestStateSymbol] as T;
+    }
     return state[RawStateSymbol] as T;
   }
   return state;
@@ -128,14 +129,7 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   }
   const reactiveProxies = skillContext._reactiveProxies;
   if (reactiveProxies.has(value)) {
-    return reactiveProxies.get(value) as ApplyReactive<Meta, T>;
-  }
-  // Proxy 不变式要求 value 的只读属性不可以被 trap，故浅拷贝取消之
-  let clone: T & {} = value;
-  if (Array.isArray(value)) {
-    clone = [...value] as T & {};
-  } else if (Object.getPrototypeOf(value) === Object.prototype) {
-    clone = { ...value } as T & {};
+    return reactiveProxies.get(value)!.proxy as ApplyReactive<Meta, T>;
   }
   const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
     character: Character,
@@ -151,26 +145,15 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   ) {
     const Ctor = REACTIVE_CLASS_MAP[value[StateSymbol] as StateKind]!;
     const instance = new Ctor(skillContext, value.id);
-    const proxy: object = new Proxy(clone, {
-      getPrototypeOf(target) {
-        return Ctor.prototype;
-      },
+    const proxyAndRevoke = Proxy.revocable(instance, {
       get(target, prop, receiver) {
         if (prop === RawStateSymbol) {
           return value;
         }
-        if (prop in instance) {
-          return Reflect.get(instance, prop, proxy);
+        if (prop in target) {
+          return Reflect.get(target, prop, target);
         } else {
-          return Reflect.get(target, prop, receiver);
-        }
-      },
-      set(target, prop, value, receiver) {
-        if (prop in instance) {
-          return Reflect.set(instance, prop, value, proxy);
-        } else {
-          // 假定 target 一定是只读的
-          return false;
+          return Reflect.get(target[LatestStateSymbol], prop, receiver);
         }
       },
       has(target, prop) {
@@ -180,10 +163,17 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
         return Reflect.has(target, prop) || Reflect.has(Ctor.prototype, prop);
       },
     });
-    reactiveProxies.set(value, proxy);
-    return proxy as ApplyReactive<Meta, T>;
+    reactiveProxies.set(value, proxyAndRevoke);
+    return proxyAndRevoke.proxy as ApplyReactive<Meta, T>;
   }
-  const proxy = new Proxy(clone, {
+  // Proxy 不变式要求 value 的只读属性不可以被 trap，故浅拷贝取消之
+  let clone: T & {} = value;
+  if (Array.isArray(value)) {
+    clone = [...value] as T & {};
+  } else if (Object.getPrototypeOf(value) === Object.prototype) {
+    clone = { ...value } as T & {};
+  }
+  const proxyAndRevoke = Proxy.revocable(clone, {
     get(target, prop, receiver) {
       if (prop === RawStateSymbol) {
         return value;
@@ -200,6 +190,6 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
       return Reflect.has(target, prop);
     },
   });
-  reactiveProxies.set(value, proxy);
-  return proxy as ApplyReactive<Meta, T>;
+  reactiveProxies.set(value, proxyAndRevoke);
+  return proxyAndRevoke.proxy as ApplyReactive<Meta, T>;
 }
