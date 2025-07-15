@@ -154,19 +154,17 @@ export const Citlali = character(1114)
  * @id 211142
  * @name 五重天的寒雨（生效中）
  * @description
- * 我方造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点夜魂值。
+ * 我方造成的水元素伤害和火元素伤害+1。（每回合1次）
  * 可用次数：2
  */
 export const MamaloacosFrigidRainInEffect = combatStatus(211142)
   .since("v5.7.0")
+  .on("enter", (c, e) =>
+    c.$$(`status with definition id ${NightsoulsBlessing} at my character with definition id ${Citlali}`))
+  .gainNightsoul(`my character with definition id ${Citlali}`)
   .on("increaseDamage", (c, e) => e.type === DamageType.Hydro || e.type === DamageType.Pyro)
   .usage(2)
-  .do((c, e) => {
-    e.increaseDamage(1);
-    if (c.$$(`status with definition id ${NightsoulsBlessing} at my character with definition id ${Citlali}`)){
-      c.gainNightsoul(`my character with definition id ${Citlali}`);
-    }
-  })
+  .increaseDamage(1)
   .done();
 
 /**
@@ -182,7 +180,7 @@ export const MamaloacosFrigidRain = card(211141)
   .talent(Citlali, "none")
   .on("damaged", (c, e) =>
     (e.getReaction() === Reaction.Frozen || e.getReaction() === Reaction.Melt) &&
-    !c.of(e.target).isMine())
+    !e.target.isMine())
   .listenToAll()
   .usagePerRound(1)
   .combatStatus(MamaloacosFrigidRainInEffect)
