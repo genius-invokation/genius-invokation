@@ -154,7 +154,7 @@ export const Citlali = character(1114)
  * @id 211142
  * @name 五重天的寒雨（生效中）
  * @description
- * 我方造成的水元素伤害和火元素伤害+1。（每回合1次）
+ * 我方造成的水元素伤害和火元素伤害+1。
  * 可用次数：2
  */
 export const MamaloacosFrigidRainInEffect = combatStatus(211142)
