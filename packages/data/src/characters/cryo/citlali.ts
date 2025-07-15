@@ -160,7 +160,7 @@ export const Citlali = character(1114)
 export const MamaloacosFrigidRainInEffect = combatStatus(211142)
   .since("v5.7.0")
   .on("enter", (c, e) =>
-    c.$$(`status with definition id ${NightsoulsBlessing} at my character with definition id ${Citlali}`))
+    c.$(`my character with definition id ${Citlali}`)?.hasNightsoulsBlessing())
   .do((c, e) => {
     c.gainNightsoul(`my character with definition id ${Citlali}`);
   })
