@@ -18,7 +18,7 @@
     "@solid-primitives/storage": "^4.2.1",
     "@solidjs/router": "^0.13.5",
     "@una-ui/preset": "^0.34.0-beta.1",
-    "@unocss/reset": "^0.58.3",
+    "@unocss/reset": "^66.3.3",
     "axios": "^1.7.2",
     "core-js": "3.38.1",
     "dayjs": "^1.11.13",
@@ -39,7 +39,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-solid": "^0.13.1",
-    "unocss": "^65.4.2",
+    "unocss": "^66.3.3",
     "vite": "^6.0.11",
     "vite-plugin-solid": "^2.11.1"
   }
