@@ -35,11 +35,7 @@ import {
   type CharacterState,
   stringifyState,
 } from "./base/state";
-import {
-  Aura,
-  PbSkillType,
-  type ExposedMutation,
-} from "@gi-tcg/typings";
+import { Aura, PbSkillType, type ExposedMutation } from "@gi-tcg/typings";
 import {
   allSkills,
   type CallerAndTriggeredSkill,
@@ -298,22 +294,18 @@ export class SkillExecutor {
           ...this.handleEventShallow(["modifyZeroHealth", arg]),
         );
         if (arg._immuneInfo !== null) {
+          const { skill: via, newHealth } = arg._immuneInfo;
           this.mutator.log(
             DetailLogType.Primitive,
             `${stringifyState(
               arg.target,
-            )} is immune to defeated. Revive him to ${
-              arg._immuneInfo.newHealth
-            }`,
+            )} is immune to defeated. Revive him to ${newHealth}`,
           );
-          const events = this.mutator.heal(
-            arg._immuneInfo.newHealth,
-            arg.target,
-            {
-              via: arg._immuneInfo.skill,
-              kind: "immuneDefeated",
-            },
-          );
+          const ch = getEntityById(this.state, arg.target.id) as CharacterState;
+          const events = this.mutator.heal(newHealth, ch, {
+            via,
+            kind: "immuneDefeated",
+          });
           await this.mutator.notifyAndPause();
           emittedEvents.push(...this.handleEventShallow(...events));
         }
