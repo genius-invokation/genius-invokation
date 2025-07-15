@@ -27,7 +27,7 @@ export const OnslaughtStance = status(121042)
   .since("v4.8.0")
   .duration(2)
   .on("endPhase")
-  .damage(DamageType.Piercing, 2, `opp characters has status with definition id ${BondOfLife}`)
+  .damage(DamageType.Piercing, 1, `opp characters has status with definition id ${BondOfLife}`)
   .done();
 
 /**
