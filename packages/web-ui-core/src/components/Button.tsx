@@ -28,14 +28,23 @@ export function Button(props: ButtonProps) {
   const ch = children(() => props.children);
   return (
     <button
-      class={`grid h-10.8 w-45 confirm-button bg-transparent ${
+      class={`grid h-10.8 w-45 group-confirm-button bg-transparent ${
         props.class ?? ""
       }`}
       onClick={(e) => props.onClick(e)}
     >
-      <img src={ButtonNormal} class="grid-area-[1/1] w-45 h-10.8 default-icon" />
-      <img src={ButtonHover} class="grid-area-[1/1] w-45 h-10.8 hover-icon" />
-      <img src={ButtonActive} class="grid-area-[1/1] w-45 h-10.8 active-icon" />
+      <img 
+        src={ButtonNormal} 
+        class="grid-area-[1/1] w-45 h-10.8 block group-[-confirm-button]-hover:hidden group-[-confirm-button]-active:hidden" 
+      />
+      <img 
+        src={ButtonHover} 
+        class="grid-area-[1/1] w-45 h-10.8 hidden group-[-confirm-button]-hover:block group-[-confirm-button]-active:hidden" 
+      />
+      <img 
+        src={ButtonActive} 
+        class="grid-area-[1/1] w-45 h-10.8 hidden group-[-confirm-button]-active:block" 
+      />
       <div class="grid-area-[1/1] h-full w-full flex items-center justify-center text-lg font-bold text-black/70 transition-colors line-height-none">
       {ch()}        
       </div>

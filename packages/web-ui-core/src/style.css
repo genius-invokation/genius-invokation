@@ -363,20 +363,6 @@
     );
   }
 
-  .confirm-button .hover-icon,
-  .confirm-button .active-icon,
-  .confirm-button:hover .default-icon,
-  .confirm-button:active .default-icon,
-  .confirm-button:active .hover-icon {
-    display: none;
-  }
-
-  .confirm-button .default-icon,
-  .confirm-button:hover .hover-icon,
-  .confirm-button:active .active-icon {
-    display: block;
-  }
-
 }
 
 @keyframes reaction-base {
