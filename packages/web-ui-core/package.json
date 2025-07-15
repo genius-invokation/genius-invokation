@@ -46,7 +46,6 @@
     "unocss": "^65.4.2",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-solid": "^2.11.1",
-    "vite-plugin-solid-svg": "^0.8.1"
+    "vite-plugin-solid": "^2.11.1"
   }
 }

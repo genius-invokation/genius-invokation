@@ -44,24 +44,24 @@ import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import DefeatedIcon from "../svg/DefeatedIcon.svg?component-solid";
-import HealthIcon from "../svg/HealthIcon.svg?component-solid";
-import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg?component-solid";
-import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?component-solid";
-import EnergyIconActive from "../svg/EnergyIconActive.svg?component-solid";
-import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?component-solid";
-import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg?component-solid";
-import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg?component-solid";
-import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg?component-solid";
-import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?component-solid";
-import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?component-solid";
-import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
-import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
-import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?component-solid";
-import ArtifactIcon from "../svg/ArtifactIcon.svg?component-solid";
-import WeaponIcon from "../svg/WeaponIcon.svg?component-solid";
-import TalentIcon from "../svg/TalentIcon.svg?component-solid";
-import CardFrameNormal from "../svg/CardFrameNormal.svg?component-solid";
+import DefeatedIcon from "../svg/DefeatedIcon.svg";
+import HealthIcon from "../svg/HealthIcon.svg";
+import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg";
+import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg";
+import EnergyIconActive from "../svg/EnergyIconActive.svg";
+import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg";
+import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg";
+import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg";
+import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg";
+import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg";
+import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg";
+import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg";
+import SelectingIcon from "../svg/SelectingIcon.svg";
+import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg";
+import ArtifactIcon from "../svg/ArtifactIcon.svg";
+import WeaponIcon from "../svg/WeaponIcon.svg";
+import TalentIcon from "../svg/TalentIcon.svg";
+import CardFrameNormal from "../svg/CardFrameNormal.svg";
 import { Dynamic } from "solid-js/web";
 import { Reaction, REACTION_TEXT_MAP } from "./Reaction";
 
@@ -317,7 +317,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <WeaponIcon class="w-7 h-7" />
+                  <img src={WeaponIcon} class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
@@ -333,7 +333,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <ArtifactIcon class="w-7 h-7" />
+                  <img src={ArtifactIcon} class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
@@ -349,7 +349,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et().animation === "disposing"}
                   bool:data-triggered={et().triggered}
                 >
-                  <TalentIcon class="w-7 h-7" />
+                  <img src={TalentIcon} class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et().data.hasUsagePerRound}
@@ -371,29 +371,38 @@ export function CharacterArea(props: CharacterAreaProps) {
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
           />
-          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
+          <img
+            src={CardFrameNormal}
+            class="absolute inset-0 h-full w-full pointer-events-none"
+          />
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
           statuses={statuses()}
         />
         <Show when={defeated()}>
-          <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
+          <img
+            src={DefeatedIcon}
+            class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]"
+          />
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingConfirmIcon class="cursor-pointer h-20 w-20" />
+              <img
+                src={SelectingConfirmIcon}
+                class="cursor-pointer h-20 w-20"
+              />
             </div>
           </Match>
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SelectingIcon class="w-21 h-21" />
+              <img src={SelectingIcon} class="w-21 h-21" />
             </div>
           </Match>
           <Match when={props.preview?.active}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <SwitchActiveHistoryIcon class="h-18 w-18" />
+              <img src={SwitchActiveHistoryIcon} class="h-18 w-18" />
             </div>
           </Match>
         </Switch>
@@ -424,7 +433,7 @@ function EnergyBar(props: EnergyBarProps) {
     | "activeGain"
     | "overflowGain";
   type EnergyIconKey = `${string}_${EnergyState}`;
-  const ENERGY_MAP: Partial<Record<EnergyIconKey, Component>> = {
+  const ENERGY_MAP: Partial<Record<EnergyIconKey, string>> = {
     energy_empty: EnergyIconEmpty,
     energy_active: EnergyIconActive,
     energy_activeGain: EnergyIconActiveGain,
@@ -460,23 +469,18 @@ function EnergyBar(props: EnergyBarProps) {
       ...all.slice(length - total, total).map((v) => STAGE_1[v]),
     ];
   };
-  const energyComponents = createMemo(() => {
+  const energyImages = createMemo(() => {
     const energyType = props.specialEnergyName ?? "energy";
     const current = props.current;
     const preview = props.preview ?? current;
-    return energyStates(current, preview).map(
-      (state) => ENERGY_MAP[`${energyType}_${state}`],
-    );
+    return energyStates(current, preview)
+      .map((state) => ENERGY_MAP[`${energyType}_${state}`])
+      .filter(Boolean);
   });
   return (
     <>
-      <For each={energyComponents()}>
-        {(comp) => (
-          <Dynamic<Component<ComponentProps<"div">>>
-            component={comp}
-            class="w-5.8 h-4"
-          />
-        )}
+      <For each={energyImages()}>
+        {(comp) => <img src={comp} class="w-5.8 h-4" />}
       </For>
     </>
   );
@@ -491,10 +495,10 @@ interface HealthProps {
 function Health(props: HealthProps) {
   return (
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
-      <HealthIcon class="w-full h-full" />
+      <img src={HealthIcon} class="w-full h-full" />
       <Show when={props.bondOfLife}>
         <div class="bond-of-life-health">
-          <BondOfLifeIcon class="w-full h-full" />
+          <img src={BondOfLifeIcon} class="w-full h-full" />
           <div class="bond-of-life-health-background" />
         </div>
       </Show>
