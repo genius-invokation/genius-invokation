@@ -20,12 +20,12 @@ import { Image } from "./Image";
 import { VariableDiff } from "./VariableDiff";
 import { ActionStepEntityUi } from "../action";
 import { StrokedText } from "./StrokedText";
-import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
-import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?component-solid";
-import CardFrameSummon from "../svg/CardFrameSummon.svg?component-solid";
-import ClockIcon from "../svg/ClockIcon.svg?component-solid";
-import HourglassIcon from "../svg/HourglassIcon.svg?component-solid";
-import BarrierIcon from "../svg/BarrierIcon.svg?component-solid";
+import SelectingIcon from "../svg/SelectingIcon.svg";
+import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg";
+import CardFrameSummon from "../svg/CardFrameSummon.svg";
+import ClockIcon from "../svg/ClockIcon.svg";
+import HourglassIcon from "../svg/HourglassIcon.svg";
+import BarrierIcon from "../svg/BarrierIcon.svg";
 import { useUiContext } from "../hooks/context";
 import type { EntityRawData } from "@gi-tcg/static-data";
 import { Dynamic } from "solid-js/web";
@@ -41,7 +41,7 @@ const EntityTopHint = (props: { cardDefinitionId: number , value: number}) => {
     () => props.cardDefinitionId,
     (id) => assetsManager.getData(id),
   );
-  const ICON_MAP : Record<string, Component> = {
+  const ICON_MAP : Record<string, string> = {
     GCG_TOKEN_ICON_CLOCK: ClockIcon,
     GCG_TOKEN_ICON_HOURGLASS: HourglassIcon,
     GCG_TOKEN_ICON_BARRIER_SHIELD: BarrierIcon,
@@ -56,10 +56,10 @@ const EntityTopHint = (props: { cardDefinitionId: number , value: number}) => {
       <Match when={data()}>
         {(data) => (
           <div class="w-7 h-7 absolute top--2.2 right--3">
-            <Dynamic<Component<ComponentProps<"div">>>
-              component={ICON_MAP[(data() as EntityRawData).shownIcon as string]}
-              class= "w-7 h-7 absolute"
-            />                  
+            <img
+              src={ICON_MAP[(data() as EntityRawData).shownIcon as string]}
+              class="w-7 h-7 absolute"
+            />
             <StrokedText
               class="absolute inset-0 line-height-7 text-center text-white font-bold"
               strokeWidth={2}
@@ -95,7 +95,7 @@ export function Entity(props: EntityProps) {
         class="absolute inset-0 h-full w-full p-2px rounded-lg"
         imageId={data().definitionId}
       />
-      <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
+      <img src={CardFrameSummon} class="absolute inset-0 h-full w-full pointer-events-none" />
       <Show when={data().hasUsagePerRound}>
         <div class="absolute inset-2px animate-[entity-highlight_2s] animate-ease-in-out animate-alternate animate-count-infinite" />
       </Show>
@@ -132,12 +132,12 @@ export function Entity(props: EntityProps) {
       <Switch>
         <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center overflow-visible scale-120%">
-            <SelectingConfirmIcon class="cursor-pointer h-15 w-15" />
+            <img src={SelectingConfirmIcon} class="cursor-pointer h-15 w-15" />
           </div>
         </Match>
         <Match when={props.selecting}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center overflow-visible scale-120%">
-            <SelectingIcon class="w-15 h-15" />
+            <img src={SelectingIcon} class="w-15 h-15" />
           </div>
         </Match>
       </Switch>  

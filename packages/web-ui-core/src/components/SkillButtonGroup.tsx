@@ -26,8 +26,8 @@ import type { SkillInfo } from "./Chessboard";
 import { Key } from "@solid-primitives/keyed";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { DICE_COLOR } from "./Dice";
-import SkillAbandonIcon from "../svg/SkillAbandonIcon.svg?component-solid";
-import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg?component-solid";
+import SkillAbandonIcon from "../svg/SkillAbandonIcon.svg";
+import SwitchActiveIcon from "../svg/SwitchActiveIcon.svg";
 
 export interface SkillButtonProps extends SkillInfo {
   hideDiceCost?: boolean;
@@ -56,7 +56,7 @@ function SkillButton(props: SkillButtonProps) {
       </Match>
       <Match when={skillId() === "switchActive"}>
         <div class="w-full group-data-[disabled]:opacity-50 scale-110%">
-          <SwitchActiveIcon class="w-full h-9"/>
+          <img src={SwitchActiveIcon} class="w-full h-9"/>
         </div>
       </Match>
     </Switch>
@@ -164,7 +164,7 @@ function SkillButton(props: SkillButtonProps) {
       {/* 禁用标志 */}
       <Show when={!props.step}>
         <div class="absolute top-7 left-7 w-5 h-5 flex p-0.7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_center,#38200d_0%,#624522_60%,#624522_66%,#38200d_70%)]">
-          <SkillAbandonIcon class="w-5 h-5" />
+          <img src={SkillAbandonIcon} class="w-5 h-5" />
         </div>
       </Show>
       <div

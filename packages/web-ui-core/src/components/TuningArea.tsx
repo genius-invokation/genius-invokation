@@ -13,10 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo } from "solid-js";
 import type { TuningAreaInfo } from "./Chessboard";
 import { cssPropertyOfTransform } from "../ui_state";
-import TuningIcon from "../svg/TuningIcon.svg?component-solid";
+import TuningIcon from "../svg/TuningIcon.svg";
 
 export interface TuningAreaProps extends TuningAreaInfo {}
 
@@ -41,7 +40,7 @@ export function TuningArea(props: TuningAreaProps) {
       style={cssPropertyOfTransform(props.transform)}
     >
       <div class="w-8 h-8">
-        <TuningIcon />
+        <img src={TuningIcon} />
       </div>
     </div>
   );

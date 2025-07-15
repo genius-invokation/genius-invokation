@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { children, type JSX } from "solid-js";
-import ButtonNormal from "../svg/ButtonNormal.svg?component-solid";
-import ButtonHover from "../svg/ButtonHover.svg?component-solid";
-import ButtonActive from "../svg/ButtonActive.svg?component-solid";
+import ButtonNormal from "../svg/ButtonNormal.svg";
+import ButtonHover from "../svg/ButtonHover.svg";
+import ButtonActive from "../svg/ButtonActive.svg";
 
 export interface ButtonProps {
   class?: string;
@@ -33,9 +33,9 @@ export function Button(props: ButtonProps) {
       }`}
       onClick={(e) => props.onClick(e)}
     >
-      <ButtonNormal class="grid-area-[1/1] w-45 h-10.8 block group-hover:hidden group-active:hidden" />
-      <ButtonHover class="grid-area-[1/1] w-45 h-10.8 hidden group-hover:block group-active:hidden" />
-      <ButtonActive class="grid-area-[1/1] w-45 h-10.8 hidden group-active:block" />
+      <img src={ButtonNormal} class="grid-area-[1/1] w-45 h-10.8 block group-hover:hidden group-active:hidden" />
+      <img src={ButtonHover} class="grid-area-[1/1] w-45 h-10.8 hidden group-hover:block group-active:hidden" />
+      <img src={ButtonActive} class="grid-area-[1/1] w-45 h-10.8 hidden group-active:block" />
       <div class="grid-area-[1/1] h-full w-full flex items-center justify-center text-lg font-bold text-black/70 transition-colors line-height-none">
       {ch()}        
       </div>

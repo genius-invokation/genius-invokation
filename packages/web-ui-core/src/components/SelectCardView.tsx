@@ -24,7 +24,7 @@ import {
 import { Button } from "./Button";
 import { DiceCost } from "./DiceCost";
 import { CardFace } from "./Card";
-import SelectingIcon from "../svg/SelectingIcon.svg?component-solid";
+import SelectingIcon from "../svg/SelectingIcon.svg";
 import { useUiContext } from "../hooks/context";
 import { DiceType } from "@gi-tcg/typings";
 import type { AnyData } from "@gi-tcg/assets-manager";
@@ -56,7 +56,7 @@ export function SelectCardView(props: SelectCardViewProps) {
                 <CardFace definitionId={cardId} />
                 <Show when={selectedId() === cardId}>
                   <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-                    <SelectingIcon class="w-21 h-21" />
+                    <img src={SelectingIcon} class="w-21 h-21" />
                   </div>
                 </Show>
                 <DiceCostAsync cardDefinitionId={cardId} />
