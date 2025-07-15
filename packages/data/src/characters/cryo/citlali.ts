@@ -1,15 +1,15 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -154,18 +154,19 @@ export const Citlali = character(1114)
  * @id 211142
  * @name 五重天的寒雨（生效中）
  * @description
- * 我方造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点夜魂值。（每回合1次）
+ * 我方造成的水元素伤害和火元素伤害+1，并使茜特菈莉获得1点夜魂值。
  * 可用次数：2
  */
 export const MamaloacosFrigidRainInEffect = combatStatus(211142)
   .since("v5.7.0")
-  .on("enter")
-  .do((c) => {
-   c.gainNightsoul(`my character with definition id ${Citlali}`)
-  })
   .on("increaseDamage", (c, e) => e.type === DamageType.Hydro || e.type === DamageType.Pyro)
   .usage(2)
-  .increaseDamage(1)
+  .do((c, e) => {
+    e.increaseDamage(1);
+    if (c.$$(`status with definition id ${NightsoulsBlessing} at my character with definition id ${Citlali}`)){
+      c.gainNightsoul(`my character with definition id ${Citlali}`);
+    }
+  })
   .done();
 
 /**
