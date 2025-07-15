@@ -161,7 +161,9 @@ export const MamaloacosFrigidRainInEffect = combatStatus(211142)
   .since("v5.7.0")
   .on("enter", (c, e) =>
     c.$$(`status with definition id ${NightsoulsBlessing} at my character with definition id ${Citlali}`))
-  .gainNightsoul(`my character with definition id ${Citlali}`)
+  .do((c, e) => {
+    c.gainNightsoul(`my character with definition id ${Citlali}`);
+  })
   .on("increaseDamage", (c, e) => e.type === DamageType.Hydro || e.type === DamageType.Pyro)
   .usage(2)
   .increaseDamage(1)
