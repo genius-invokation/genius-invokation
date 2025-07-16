@@ -203,14 +203,17 @@ export function allSkills(
   triggerOn: EventNames,
 ): CallerAndTriggeredSkill[] {
   const result: CallerAndTriggeredSkill[] = [];
-  const caller = getEntityById(
-    state,
-    state.players[state.currentTurn].activeCharacterId,
-  ) as CharacterState;
-  for (const ext of state.extensions) {
-    for (const skill of ext.definition.skills) {
-      if (skill.triggerOn === triggerOn) {
-        result.push({ caller, skill });
+  const activeChId = state.players[state.currentTurn].activeCharacterId;
+  if (activeChId) {
+    const caller = getEntityById(
+      state,
+      state.players[state.currentTurn].activeCharacterId,
+    ) as CharacterState;
+    for (const ext of state.extensions) {
+      for (const skill of ext.definition.skills) {
+        if (skill.triggerOn === triggerOn) {
+          result.push({ caller, skill });
+        }
       }
     }
   }

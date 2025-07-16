@@ -369,25 +369,6 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return executeQuery(this, arg);
   }
 
-  /**
-   * Get context of given entity state
-   * @deprecated
-   */
-  of(entityState: PlainEntityState): ApplyReactive<Meta, EntityStateO>;
-  /**
-   * @deprecated
-   */
-  of(entityState: PlainCharacterState): ApplyReactive<Meta, CharacterStateO>;
-  /**
-   * @deprecated
-   */
-  of<T extends ExEntityType = ExEntityType>(
-    entityId: PlainAnyState | number,
-  ): RxEntityState<Meta, T>;
-  of(entityState: PlainAnyState | number): unknown {
-    return this.get(entityState as number);
-  }
-
   get<T extends ExEntityType>(
     rxState: RxEntityState<Meta, T>,
   ): RxEntityState<Meta, T>;
