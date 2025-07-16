@@ -473,7 +473,6 @@ export class StateMutator {
     const targetInjury =
       targetState.variables.maxHealth - targetState.variables.health;
     const finalValue = Math.min(value, targetInjury);
-    !opt.via.isPreview && console.log(`Heal ${value} to ${stringifyState(targetState)}, targetInjury: ${targetInjury}, finalValue: ${finalValue}`);
 
     let healInfo: HealInfo = {
       type: damageType,
