@@ -128,8 +128,8 @@ export interface CreateEntityOptions {
   readonly modifyOverriddenVariablesOnly?: boolean;
   /** 创建实体时，覆盖默认变量 */
   readonly overrideVariables?: Partial<EntityVariables>;
-  /** 设定创建实体的 id。仅在打出支援牌和装备牌时直接继承原手牌 id */
-  readonly withId?: number;
+  /** 打出支援牌和装备牌时的原手牌 id */
+  readonly fromCardId?: number;
 }
 
 export interface CreateEntityResult {
@@ -473,6 +473,7 @@ export class StateMutator {
     const targetInjury =
       targetState.variables.maxHealth - targetState.variables.health;
     const finalValue = Math.min(value, targetInjury);
+    !opt.via.isPreview && console.log(`Heal ${value} to ${stringifyState(targetState)}, targetInjury: ${targetInjury}, finalValue: ${finalValue}`);
 
     let healInfo: HealInfo = {
       type: damageType,
@@ -651,14 +652,16 @@ export class StateMutator {
       if (!card) {
         continue;
       }
-      this.insertHandCard({
-        type: "transferCard",
-        who,
-        from: "pile",
-        to: "hands",
-        value: card,
-        reason: "draw",
-      });
+      events.push(
+        ...this.insertHandCard({
+          type: "transferCard",
+          who,
+          from: "pile",
+          to: "hands",
+          value: card,
+          reason: "draw",
+        }),
+      );
     }
     return events;
   }
@@ -887,7 +890,8 @@ export class StateMutator {
         return { oldState: null, newState: null, events: [] };
       }
       const initState = {
-        id: opt.withId ?? 0,
+        id: 0,
+        fromCardId: opt.fromCardId ?? null,
         definition: def,
         variables: Object.fromEntries(
           Object.entries(varConfigs).map(([name, { initialValue }]) => [

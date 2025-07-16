@@ -225,7 +225,7 @@ export class CardBuilder<
         const ch = c.$("character and @targets.0");
         const caller = c.skillInfo.caller;
         ch?.equip(cardId, {
-          withId: caller.definition.type === "card" ? caller.id : void 0,
+          fromCardId: caller.definition.type === "card" ? caller.id : void 0,
         });
       })
       .done();
@@ -274,7 +274,11 @@ export class CardBuilder<
           if (e.area.type !== "characters") {
             return;
           }
-          c.$(`status with tags (nightsoulsBlessing) at with id ${e.area.characterId}`)?.dispose();
+          c
+            .$(
+              `status with tags (nightsoulsBlessing) at with id ${e.area.characterId}`,
+            )
+            ?.dispose();
         })
         .endOn();
     }
@@ -295,9 +299,9 @@ export class CardBuilder<
       }
       const caller = c.skillInfo.caller;
       c.createEntity("support", cardId, void 0, {
-        // 当从手牌打出支援牌时，使用原本的手牌 id
+        // 当从手牌打出支援牌时传入手牌 id
         // （并非从手牌打出的情况：selectAndPlay 直接在挑选后调用）
-        withId:
+        fromCardId:
           caller.definition.type === "card" ? c.skillInfo.caller.id : void 0,
       });
     }).done();

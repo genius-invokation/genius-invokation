@@ -100,7 +100,7 @@ export const MediumBolsteringBubblebalm = card(112132)
 export const LargeBolsteringBubblebalm = card(112131)
   .since("v5.2.0")
   .unobtainable()
-  .descriptionOnDraw()
+  .descriptionOnHCI()
   .heal(3, "my active")
   .createPileCards(MediumBolsteringBubblebalm, 1, "topIndex1", "opp")
   .done();

@@ -126,6 +126,8 @@ export type CharacterVariables = VariableOfConfig<CharacterVariableConfigs>;
 export interface EntityState {
   readonly [StateSymbol]: "entity";
   readonly id: number;
+  /** 支援牌、装备牌从手牌打出时的手牌 id */
+  readonly fromCardId: number | null;
   readonly definition: EntityDefinition;
   readonly variables: EntityVariables;
 }
