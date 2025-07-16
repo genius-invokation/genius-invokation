@@ -53,7 +53,7 @@ const Stormzone = combatStatus(115031)
 /** 莫娜：虚影 */
 const Reflection = summon(112031)
   // [...]
-  .on("beforeDamaged", (c, e) => c.of(e.target).isActive())
+  .on("beforeDamaged", (c, e) => e.target.isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
   .done();

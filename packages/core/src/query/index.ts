@@ -16,7 +16,7 @@
 import type { ContextMetaBase, SkillContext } from "../builder/context/skill";
 import type { GuessedTypeOfQuery } from "./types";
 import { type QueryArgs, doSemanticQueryAction } from "./semantic";
-import { allEntitiesInclPile } from "../utils";
+import { getAllEntities } from "../utils";
 import type { AnyState, GameState } from "../base/state";
 import type {
   InitiativeSkillEventArg,
@@ -34,7 +34,7 @@ export function executeQuery<
 >(ctx: SkillContext<Meta>, q: Q): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
   const state = getRaw(ctx.rawState);
-  const allEntities = allEntitiesInclPile(state);
+  const allEntities = getAllEntities(state);
   const arg: QueryArgs = {
     state,
     allEntities,
@@ -75,7 +75,7 @@ export function executeQueryOnState(
   who: 0 | 1,
   q: string,
 ): AnyState[] {
-  const allEntities = allEntitiesInclPile(state);
+  const allEntities = getAllEntities(state);
   return doSemanticQueryAction(q, {
     state,
     allEntities,

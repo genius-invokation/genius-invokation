@@ -78,6 +78,7 @@ export function getEntityById(state: GameState, id: number): AnyState {
       "summons",
       "supports",
       "hands",
+      "pile",
       "removedEntities",
     ] as const) {
       const area = player[key];
@@ -92,11 +93,11 @@ export function getEntityById(state: GameState, id: number): AnyState {
 }
 
 /**
- * 查找所有实体，按照通常响应顺序排序。不含已移除的实体。
+ * 查找所有可响应技能的实体，按照通常响应顺序排序。不含牌堆和已移除的实体。
  * @param state 游戏状态
  * @returns 实体状态列表
  */
-export function allEntities(state: GameState): AnyState[] {
+function allEntitiesCanTrigger(state: GameState): AnyState[] {
   const result: AnyState[] = [];
   for (const who of [state.currentTurn, flip(state.currentTurn)]) {
     const player = state.players[who];
@@ -131,11 +132,21 @@ export function allEntities(state: GameState): AnyState[] {
   return result;
 }
 
-export function allEntitiesInclPile(state: GameState): AnyState[] {
+/**
+ * 查找所有实体(含牌堆)，按照通常响应顺序排序和
+ * @param state 游戏状态
+ * @param inclRemoved 是否包含已移除的实体
+ * @returns 实体状态列表
+ */
+export function getAllEntities(
+  state: GameState,
+  inclRemoved = false,
+): AnyState[] {
   return [
-    ...allEntities(state),
+    ...allEntitiesCanTrigger(state),
     ...state.players[state.currentTurn].pile,
     ...state.players[flip(state.currentTurn)].pile,
+    ...(inclRemoved ? state.players.flatMap((p) => p.removedEntities) : []),
   ];
 }
 
@@ -217,7 +228,7 @@ export function allSkills(
       }
     }
   }
-  for (const entity of allEntities(state)) {
+  for (const entity of allEntitiesCanTrigger(state)) {
     for (const skill of entity.definition.skills) {
       if (skill.triggerOn === triggerOn) {
         result.push({ caller: entity, skill });
@@ -410,9 +421,9 @@ export function applyAutoSelectedDiceToAction(
     return actionInfo;
   }
   if (actionInfo.type === "elementalTuning") {
-    const disallowed = config.allowTuningAnyDice ?
-      [] :
-      [actionInfo.result, DiceType.Omni];
+    const disallowed = config.allowTuningAnyDice
+      ? []
+      : [actionInfo.result, DiceType.Omni];
     const tuningDice = player.dice.findLast((d) => !disallowed.includes(d));
     if (!tuningDice) {
       return {
@@ -594,7 +605,10 @@ declare global {
     last: typeof arrayLast;
     toSortedBy: typeof toSortedBy;
 
-    map<This extends [unknown, unknown], U>(this: This, fn: (v: T) => U): { [K in keyof This]: U }
+    map<This extends [unknown, unknown], U>(
+      this: This,
+      fn: (v: T) => U,
+    ): { [K in keyof This]: U };
   }
 }
 
