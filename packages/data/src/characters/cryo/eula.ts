@@ -31,7 +31,7 @@ export const LightfallSword = summon(111062)
     e.skill.definition.id === IcetideVortex)
   .do((c, e) => {
     if (e.skill.definition.id === IcetideVortex &&
-      c.of<"character">(e.skill.caller).hasEquipment(WellspringOfWarlust)) {
+      e.skillCaller.cast<"character">().hasEquipment(WellspringOfWarlust)) {
       c.self.addVariable("usage", 3);
     } else {
       c.self.addVariable("usage", 2);

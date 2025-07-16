@@ -560,7 +560,7 @@ export const Jeht = card(322022)
     "useSkill",
     (c, e) =>
       e.isSkillType("burst") &&
-      !c.of<"character">(e.skillCaller).hasStatus(SandsAndDream) && // 多个婕德不重复触发
+      !e.skillCaller.cast<"character">().hasStatus(SandsAndDream) && // 多个婕德不重复触发
       c.getVariable("experience") >= 6,
   )
   .characterStatus(SandsAndDream, "my active")

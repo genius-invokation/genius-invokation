@@ -696,7 +696,7 @@ export const CollectiveOfPlenty = card(321028)
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill"))
   .do((c, e) => {
-    const ch = c.of<"status">(e.entity).master;
+    const ch = e.entity.cast<"status">().master;
     c.characterStatus(Exercise, ch, {
       overrideVariables: {
         layer: 3
