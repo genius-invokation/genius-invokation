@@ -16,7 +16,7 @@ const GamblersEarrings = card(312004)
   .until("v3.7.0")
   .costSame(1)
   .artifact()
-  .on("defeated", (c, e) => c.self.master().isActive() && !e.target.isMine())
+  .on("defeated", (c, e) => c.self.master.isActive() && !e.target.isMine())
   .listenToAll()
   .generateDice(DiceType.Omni, 2)
   .done();

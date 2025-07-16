@@ -70,7 +70,7 @@ export const MistBubbleSlime = card(122051)
   .endProvide()
   // 切人导致准备中状态消失时，自己如果可用次数耗尽也消失
   .on("switchActive", (c, e) => {
-    const ch = c.self.master();
+    const ch = c.self.master;
     return ch.id === e.switchInfo.from.id &&
       ch.hasStatus(MistBubbleLockdownPreparing) &&
       c.getVariable("usage") === 0;

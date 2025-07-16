@@ -64,12 +64,12 @@ export const FieryRebirthStatus = status(123022)
   .on("beforeDefeated")
   .immune(4)
   .do((c) => {
-    const talent = c.self.master().hasEquipment(EmbersRekindled);
+    const talent = c.self.master.hasEquipment(EmbersRekindled);
     if (talent) {
       c.dispose(talent);
       c.characterStatus(AegisOfAbyssalFlame, "@master");
     }
-    c.self.master().setVariable("fieryRebirthTriggered", 1);
+    c.self.master.setVariable("fieryRebirthTriggered", 1);
   })
   .characterStatus(FieryRebirthHoned, "@master")
   .dispose()
@@ -183,7 +183,7 @@ export const EmbersRekindled = card(223021)
   .since("v3.7.0")
   .costPyro(2)
   .talent(AbyssLectorFathomlessFlames, "none")
-  .on("enter", (c) => c.self.master().getVariable("fieryRebirthTriggered"))
+  .on("enter", (c) => c.self.master.getVariable("fieryRebirthTriggered"))
   .characterStatus(AegisOfAbyssalFlame, "@master")
   .dispose()
   .done();

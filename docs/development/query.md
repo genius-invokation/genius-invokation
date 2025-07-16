@@ -126,7 +126,7 @@ my characters with energy != maxEnergy limit 1
 | 查询                 | 语义                                                    |
 | -------------------- | ------------------------------------------------------- |
 | `@self`              | [`c.self`](./data/operations.md#self)                   |
-| `@master`            | [`c.self.master()`](./data/operations.md#entitycontext) |
+| `@master`            | [`c.self.master`](./data/operations.md#entitycontext) |
 | `@event.skillCaller` | `c.eventArg.caller` `skill` 事件的技能发起者            |
 | `@event.switchTo`    | `c.eventArg.to` `switchActive` 事件的目标               |
 | `@damage.target`     | `c.eventArg.damage.target` `beforeDamage` 事件的目标    |

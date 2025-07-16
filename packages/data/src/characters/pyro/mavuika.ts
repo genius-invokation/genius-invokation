@@ -110,7 +110,7 @@ export const FlamestriderSoaringAscent = card(113154)
   .provideSkill(1131541)
   .usage(2)
   .costVoid(1)
-  .filter((c) => c.self.master().hasNightsoulsBlessing()?.variables.nightsoul)
+  .filter((c) => c.self.master.hasNightsoulsBlessing()?.variables.nightsoul)
   .consumeNightsoul("@master")
   .damage(DamageType.Pyro, 4)
   .done();
@@ -165,7 +165,7 @@ export const FlamestriderFullThrottle = card(113156)
   .provideSkill(1131561)
   .usage(2)
   .costVoid(2)
-  .filter((c) => c.self.master().hasNightsoulsBlessing()?.variables.nightsoul)
+  .filter((c) => c.self.master.hasNightsoulsBlessing()?.variables.nightsoul)
   .consumeNightsoul("@master")
   .characterStatus(FlamestriderFullThrottleInEffectPrepareStatus, "@master")
   .do((c) => {
@@ -305,7 +305,7 @@ export const HumanitysNameUnfettered = card(213151)
     FlamestriderFullThrottle,
     FlamestriderSoaringAscent
   ])
-  .on("playCard", (c, e) => e.hasCardTag("technique") && c.self.master().hasStatus(NightsoulsBlessing))
+  .on("playCard", (c, e) => e.hasCardTag("technique") && c.self.master.hasStatus(NightsoulsBlessing))
   .usagePerRound(1)
   .gainNightsoul("@master", 1)
   .done();

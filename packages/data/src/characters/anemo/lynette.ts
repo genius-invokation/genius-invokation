@@ -41,7 +41,7 @@ export const BogglecatBox = summon(115082)
  */
 export const OverawingAssault = status(115081)
   .duration(1)
-  .on("endPhase", (c) => c.self.master().health >= 6)
+  .on("endPhase", (c) => c.self.master.health >= 6)
   .damage(DamageType.Piercing, 2, "@master")
   .done();
 

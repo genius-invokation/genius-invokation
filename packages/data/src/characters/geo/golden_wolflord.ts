@@ -25,7 +25,7 @@ import { character, skill, summon, status, card, DamageType, SkillHandle, Status
 export const GoldenCorrosion: StatusHandle = status(126031)
   .since("v5.2.0")
   .on("endPhase", (c, e) =>
-    c.$(`opp equipment with definition id ${BeastlyCorrosion}`) || !c.self.master().isActive())
+    c.$(`opp equipment with definition id ${BeastlyCorrosion}`) || !c.self.master.isActive())
   .usageCanAppend(1, 5)
   .do((c) => {
     c.damage(DamageType.Piercing, c.getVariable("usage"), "@master");

@@ -126,9 +126,9 @@ export const EngulfingLightning = card(311405)
   .weapon("pole")
   .on("increaseSkillDamage")
   .increaseDamage(1)
-  .on("enter", (c) => c.self.master().energy === 0)
+  .on("enter", (c) => c.self.master.energy === 0)
   .gainEnergy(1, "@master")
-  .on("actionPhase", (c) => c.self.master().energy === 0)
+  .on("actionPhase", (c) => c.self.master.energy === 0)
   .gainEnergy(1, "@master")
   .done();
 
@@ -140,7 +140,7 @@ export const EngulfingLightning = card(311405)
  */
 export const MoonpiercerStatus = status(301104)
   .oneDuration()
-  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master(), "elemental"))
+  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .deductOmniCost(2)
   .done();
 

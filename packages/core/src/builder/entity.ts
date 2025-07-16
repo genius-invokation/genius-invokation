@@ -555,7 +555,7 @@ export class EntityBuilder<
         }
       })
       .dispose()
-      .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+      .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
       .dispose()
       .endOn();
   }

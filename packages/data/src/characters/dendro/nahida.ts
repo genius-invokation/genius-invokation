@@ -48,7 +48,7 @@ export const SeedOfSkandha: StatusHandle = status(117031)
     // 当受到“蕴种印造成的一类伤害”时。“一类伤害”的判断方法：伤害来自蕴种印，且非本技能造成的
     e.source.definition.id === SeedOfSkandha && 
     e.via.definition.id !== c.skillInfo.definition.id &&
-    e.target.id !== c.self.master().id)
+    e.target.id !== c.self.master.id)
   .listenToPlayer()
   .damage(DamageType.Piercing, 1, "@master")
   .consumeUsage()

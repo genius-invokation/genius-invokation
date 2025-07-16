@@ -24,6 +24,7 @@ import { getEntityArea, getEntityById } from "./utils";
 import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
 import { LatestStateSymbol, RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
+import type { RxEntityState } from "./reactive";
 
 class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "entity" {
@@ -64,9 +65,10 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.state.variables[name];
   }
 
-  master() {
+
+  get master() {
     if (this.area.type !== "characters") {
-      throw new GiTcgDataError("master() expect a character area");
+      throw new GiTcgDataError("master expect a character area");
     }
     return this.skillContext.get<"character">(this.area.characterId);
   }

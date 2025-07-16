@@ -14,7 +14,7 @@ const GildedDreams = card(312018)
   .artifact()
   .on("enter")
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
     const elementKinds = new Set(c.$$("my characters include defeated").map((ch) => ch.element()));
     if (elementKinds.size >= 3) {
       c.generateDice(DiceType.Omni, 1);

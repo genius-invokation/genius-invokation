@@ -23,9 +23,9 @@ import { character, skill, status, card, DamageType, DiceType } from "@gi-tcg/co
  * 可用次数：1
  */
 export const Descent = status(115062)
-  .on("deductOmniDiceSwitch", (c) => c.self.master().isActive())
+  .on("deductOmniDiceSwitch", (c) => c.self.master.isActive())
   .deductOmniCost(1)
-  .on("switchActive", (c, e) => c.self.master().id === e.switchInfo.from.id)
+  .on("switchActive", (c, e) => c.self.master.id === e.switchInfo.from.id)
   .usage(1)
   .damage(DamageType.Anemo, 1)
   .done();
@@ -122,6 +122,6 @@ export const GalesOfReverie = card(215061)
   .talent(Wanderer)
   .on("enter")
   .useSkill(HanegaSongOfTheWind)
-  .on("dealDamage", (c, e) => c.self.master().hasStatus(Windfavored) && e.via.charged)
+  .on("dealDamage", (c, e) => c.self.master.hasStatus(Windfavored) && e.via.charged)
   .characterStatus(Descent, "@master")
   .done();

@@ -133,7 +133,7 @@ export const FeatherfallJudgment = card(214041)
   .on("enter")
   .useSkill(SecretRiteChasmicSoulfarer)
   .on("increaseSkillDamage", (c, e) => {
-    const status = c.self.master().hasStatus(PactswornPathclearer)!;
+    const status = c.self.master.hasStatus(PactswornPathclearer)!;
     return c.getVariable("reliance", status) >=2 && e.via.definition.id === SecretRiteChasmicSoulfarer;
   })
   .usagePerRound(2)

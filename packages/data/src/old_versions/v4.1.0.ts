@@ -316,7 +316,7 @@ const FeatherfallJudgment = card(214041)
   .on("enter")
   .useSkill(SecretRiteChasmicSoulfarer)
   .on("increaseSkillDamage", (c, e) => {
-    const status = c.self.master().hasStatus(PactswornPathclearer)!;
+    const status = c.self.master.hasStatus(PactswornPathclearer)!;
     const reliance = c.getVariable("reliance", status);
     return (reliance === 3 || reliance === 5) && e.via.definition.id === SecretRiteChasmicSoulfarer;
   })

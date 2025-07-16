@@ -615,10 +615,10 @@ export const PeopleOfTheSprings = card(321025)
  * 下次切换至前台时，回复1个对应元素的骰子。（可叠加，每次触发一层）
  */
 export const FlowerfeatherClanInEffect = status(301024)
-  .on("switchActive", (c, e) => c.self.master().id === e.switchInfo.to.id)
+  .on("switchActive", (c, e) => c.self.master.id === e.switchInfo.to.id)
   .usageCanAppend(1, Infinity)
   .do((c) => {
-    const element = c.self.master().element();
+    const element = c.self.master.element();
     c.generateDice(element, 1);
   })
   .done();
@@ -696,7 +696,7 @@ export const CollectiveOfPlenty = card(321028)
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill"))
   .do((c, e) => {
-    const ch = c.of<"status">(e.entity).master();
+    const ch = c.of<"status">(e.entity).master;
     c.characterStatus(Exercise, ch, {
       overrideVariables: {
         layer: 3

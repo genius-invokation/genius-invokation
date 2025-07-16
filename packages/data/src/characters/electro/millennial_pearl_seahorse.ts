@@ -57,7 +57,7 @@ export const FontemerPearl = status(124032)
   .decreaseDamage(1)
   .do((c, e) => {
     if (e.source.definition.type === "summon") {
-      const maxTime = c.self.master().hasEquipment(PearlSolidification) ? 2 : 1;
+      const maxTime = c.self.master.hasEquipment(PearlSolidification) ? 2 : 1;
       if (c.getVariable("decreaseDamageFromSummon") < maxTime) {
         c.addVariable("decreaseDamageFromSummon", 1);
         return; // 不扣除使用次数
@@ -65,7 +65,7 @@ export const FontemerPearl = status(124032)
     }
     c.consumeUsage();
   })
-  .on("declareEnd", (c) => c.self.master().isActive())
+  .on("declareEnd", (c) => c.self.master.isActive())
   .drawCards(1)
   .done();
 
@@ -165,7 +165,7 @@ export const PearlSolidification = card(224031)
   .talent(MillennialPearlSeahorse, "active")
   .on("enter")
   .do((c) => {
-    const exists = c.self.master().hasStatus(FontemerPearl);
+    const exists = c.self.master.hasStatus(FontemerPearl);
     if (exists) {
       exists.addVariable("usage", 1);
     } else {

@@ -95,7 +95,7 @@ export const CenterOfAttention = status(112116)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .usage(1)
   .do((c, e) => {
-    if (c.self.master().definition.id === FurinaPneuma) {
+    if (c.self.master.definition.id === FurinaPneuma) {
       c.heal(1, "my standby characters");
     } else {
       e.increaseDamage(2);
@@ -268,7 +268,7 @@ export const HearMeLetUsRaiseTheChaliceOfLove = card(212111)
   .talent([FurinaPneuma, FurinaOusia])
   .on("enter")
   .do((c) => {
-    if (c.self.master().definition.id === FurinaPneuma) {
+    if (c.self.master.definition.id === FurinaPneuma) {
       c.useSkill(SalonSolitairePneuma);
     } else {
       c.useSkill(SalonSolitaireOusia);

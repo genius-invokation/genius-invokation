@@ -507,7 +507,7 @@ export const Mamere: SupportHandle = card(322021)
  * 可用次数：1
  */
 export const SandsAndDream = status(302205)
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master()))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master))
   .usage(1)
   .deductOmniCost(3)
   .done();

@@ -70,7 +70,7 @@ export const AnomalousAnatomy = status(122042)
   // .do((c) => {
   //   c.mutate({
   //     type: "modifyEntityVar",
-  //     state: c.self.master().latest(),
+  //     state: c.self.master.latest(),
   //     varName: "maxHealth",
   //     value: 5,
   //     direction: "decrease",

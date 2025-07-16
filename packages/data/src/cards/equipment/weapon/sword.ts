@@ -47,7 +47,7 @@ export const SacrificialSword = card(311502)
   .on("useSkill", (c, e) => e.isSkillType("elemental"))
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -65,7 +65,7 @@ export const AquilaFavonia = card(311503)
   .weapon("sword")
   .on("increaseSkillDamage")
   .increaseDamage(1)
-  .on("useSkill", (c, e) => !e.skill.caller.isMine() && c.self.master().isActive())
+  .on("useSkill", (c, e) => !e.skill.caller.isMine() && c.self.master.isActive())
   .listenToAll()
   .usagePerRound(2)
   .heal(1, "@master")
@@ -138,7 +138,7 @@ export const SapwoodBladeStatus = status(301107)
   .oneDuration()
   .once("useSkill", (c, e) => e.isSkillType("normal"))
   .do((c) => {
-    c.generateDice(c.self.master().element(), 2);
+    c.generateDice(c.self.master.element(), 2);
   })
   .done();
 

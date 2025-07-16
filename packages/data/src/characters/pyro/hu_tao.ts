@@ -121,6 +121,6 @@ export const SanguineRouge = card(213071)
   .talent(HuTao)
   .on("enter")
   .useSkill(GuideToAfterlife)
-  .on("increaseSkillDamage", (c, e) => c.self.master().health <= 6 && e.type === DamageType.Pyro)
+  .on("increaseSkillDamage", (c, e) => c.self.master.health <= 6 && e.type === DamageType.Pyro)
   .increaseDamage(1)
   .done();

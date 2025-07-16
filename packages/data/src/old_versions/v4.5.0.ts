@@ -15,7 +15,7 @@ const FieryRebirthStatus = status(123022)
   .on("beforeDefeated")
   .immune(3)
   .do((c) => {
-    const talent = c.self.master().hasEquipment(EmbersRekindled);
+    const talent = c.self.master.hasEquipment(EmbersRekindled);
     if (talent) {
       c.dispose(talent);
       c.characterStatus(AegisOfAbyssalFlame, "@master");

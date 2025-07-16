@@ -47,7 +47,7 @@ export const SacrificialBow = card(311202)
   .on("useSkill", (c, e) => e.isSkillType("elemental"))
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -128,7 +128,7 @@ export const ElegyForTheEnd = card(311205)
  */
 export const KingsSquireStatus = status(301103)
   .oneDuration()
-  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master(), "elemental"))
+  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .deductOmniCost(2)
   .done();
 

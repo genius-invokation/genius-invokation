@@ -47,7 +47,7 @@ const IcesealedCrimsonWitchOfEmbers01 = status(121024)
  * 此效果被移除时：所附属角色转换为「焚尽的炽炎魔女」形态。
  */
 export const IcesealedCrimsonWitchOfEmbers = status(121021)
-  .on("actionPhase", (c) => c.self.master().health <= 4)
+  .on("actionPhase", (c) => c.self.master.health <= 4)
   .dispose()
   .on("beforeDefeated")
   .immune(1)
@@ -186,13 +186,13 @@ export const PainForPain = card(221021)
   .talent([LaSignora, CrimsonWitchOfEmbers], "active")
   .on("enter")
   .do((c) => {
-    c.generateDice(c.self.master().element(), 3);
+    c.generateDice(c.self.master.element(), 3);
   })
   .on("decreaseDamaged", (c, e) => e.value >= 3)
   .usagePerRound(1)
   .decreaseDamage(1)
   .do((c) => {
-    if (c.self.master().definition.id === LaSignora) {
+    if (c.self.master.definition.id === LaSignora) {
       c.characterStatus(SheerCold, "opp active");
     } else {
       c.characterStatus(BlazingHeat, "opp active");

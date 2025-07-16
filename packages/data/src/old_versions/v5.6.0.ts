@@ -27,7 +27,7 @@ const TurboTwirly = card(116102)
   .until("v5.6.0")
   .unobtainable()
   .nightsoulTechnique()
-  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
   .consumeNightsoul("@master")
   .summon(TurboTwirlyLetItRip)
   .endOn()
@@ -64,7 +64,7 @@ const DominanceOfEarth = card(216031)
   .on("enter")
   .useSkill(DominusLapidisStrikingStone)
   .on("increaseDamage", (c, e) => {
-    return c.self.master().health >= 7 &&
+    return c.self.master.health >= 7 &&
     (e.source.definition.id === Zhongli ||
       e.type === DamageType.Geo &&
       e.source.definition.type === "summon")

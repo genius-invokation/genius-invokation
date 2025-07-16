@@ -126,7 +126,7 @@ export const ProphecyOfSubmersion = card(212031)
   .costEnergy(3)
   .talent(Mona)
   .on("increaseDamage", (c, e) =>
-    c.self.master().isActive() &&
+    c.self.master.isActive() &&
     e.isReactionRelatedTo(DamageType.Hydro))
   .listenToPlayer()
   .increaseDamage(2)

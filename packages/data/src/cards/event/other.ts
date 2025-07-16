@@ -1795,8 +1795,8 @@ export const FruitsOfTrainingInEffect01 = status(303241)
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill") &&
-    c.of<"status">(e.entity).master().id !== c.self.master().id &&
-    !c.self.master().hasStatus(FruitsOfTrainingInEffect02))
+    c.of<"status">(e.entity).master.id !== c.self.master.id &&
+    !c.self.master.hasStatus(FruitsOfTrainingInEffect02))
   .listenToPlayer()
   .usage(2)
   .characterStatus(FruitsOfTrainingInEffect02, "@master")
