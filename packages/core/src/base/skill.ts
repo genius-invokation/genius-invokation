@@ -63,7 +63,7 @@ import type { Mutation } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
 import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
-import type { CharacterStateBase } from "../builder/context/utils";
+import type { PlainCharacterState } from "../builder/context/utils";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -429,7 +429,7 @@ export class ActionEventArg<
     return this.isSkillType("technique");
   }
   isSkillOrTalentOf(
-    character: CharacterStateBase,
+    character: PlainCharacterState,
     skillType?: CommonSkillType,
   ): boolean {
     if (this.isUseCharacterSkill()) {

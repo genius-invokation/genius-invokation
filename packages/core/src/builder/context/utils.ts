@@ -43,12 +43,12 @@ export {
 } from "../../utils";
 
 
-export type CharacterStateBase = Omit<CharacterState, StateSymbol>;
-export type EntityStateBase = Omit<EntityState, StateSymbol>;
-export type CardStateBase = Omit<CardState, StateSymbol>;
-export type AnyStateBase = CharacterStateBase | EntityStateBase | CardStateBase;
-export type ExEntityStateBase<TypeT extends ExEntityType> = TypeT extends "character"
-  ? CharacterStateBase
+export type PlainCharacterState = Omit<CharacterState, StateSymbol>;
+export type PlainEntityState = Omit<EntityState, StateSymbol>;
+export type PlainCardState = Omit<CardState, StateSymbol>;
+export type PlainAnyState = PlainCharacterState | PlainEntityState | PlainCardState;
+export type ExPlainEntityState<TypeT extends ExEntityType> = TypeT extends "character"
+  ? PlainCharacterState
   : TypeT extends "card"
-    ? CardStateBase
-    : EntityStateBase;
+    ? PlainCardState
+    : PlainEntityState;

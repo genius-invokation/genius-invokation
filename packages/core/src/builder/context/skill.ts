@@ -54,11 +54,11 @@ import {
   diceCostOfCard,
   isCharacterInitiativeSkill,
   sortDice,
-  type CharacterStateBase,
-  type EntityStateBase,
-  type AnyStateBase,
-  type CardStateBase,
-  type ExEntityStateBase,
+  type PlainCharacterState,
+  type PlainEntityState,
+  type PlainAnyState,
+  type PlainCardState,
+  type ExPlainEntityState,
 } from "./utils";
 import { executeQuery } from "../../query";
 import type {
@@ -100,8 +100,8 @@ import {
 } from "./reactive";
 import { ReactiveStateSymbol } from "./reactive_base";
 
-type CharacterTargetArg = CharacterStateBase | CharacterStateBase[] | string;
-type EntityTargetArg = EntityStateBase | EntityStateBase[] | string;
+type CharacterTargetArg = PlainCharacterState | PlainCharacterState[] | string;
+type EntityTargetArg = PlainEntityState | PlainEntityState[] | string;
 
 type CardDefinitionFilterFn = (card: CardDefinition) => boolean;
 
@@ -373,32 +373,32 @@ export class SkillContext<Meta extends ContextMetaBase> {
    * Get context of given entity state
    * @deprecated
    */
-  of(entityState: EntityStateBase): ApplyReactive<Meta, EntityStateO>;
+  of(entityState: PlainEntityState): ApplyReactive<Meta, EntityStateO>;
   /**
    * @deprecated
    */
-  of(entityState: CharacterStateBase): ApplyReactive<Meta, CharacterStateO>;
+  of(entityState: PlainCharacterState): ApplyReactive<Meta, CharacterStateO>;
   /**
    * @deprecated
    */
   of<T extends ExEntityType = ExEntityType>(
-    entityId: AnyStateBase | number,
+    entityId: PlainAnyState | number,
   ): RxEntityState<Meta, T>;
-  of(entityState: AnyStateBase | number): unknown {
+  of(entityState: PlainAnyState | number): unknown {
     return this.get(entityState as number);
   }
 
   get<T extends ExEntityType>(
     rxState: RxEntityState<Meta, T>,
   ): RxEntityState<Meta, T>;
-  get(state: CardStateBase): ApplyReactive<Meta, CardStateO>;
-  get(state: EntityStateBase): ApplyReactive<Meta, EntityStateO>;
-  get(state: CharacterStateBase): ApplyReactive<Meta, CharacterStateO>;
+  get(state: PlainCardState): ApplyReactive<Meta, CardStateO>;
+  get(state: PlainEntityState): ApplyReactive<Meta, EntityStateO>;
+  get(state: PlainCharacterState): ApplyReactive<Meta, CharacterStateO>;
   get<T extends ExEntityType>(
-    state: ExEntityStateBase<T>,
+    state: ExPlainEntityState<T>,
   ): RxEntityState<Meta, T>;
   get<T extends ExEntityType>(id: number): RxEntityState<Meta, T>;
-  get(x: number | AnyStateBase): unknown {
+  get(x: number | PlainAnyState): unknown {
     if (typeof x === "number") {
       return applyReactive(this, getEntityById(this.rawState, x));
     }
@@ -409,7 +409,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   private queryOrGet<TypeT extends ExEntityType>(
-    q: ExEntityStateBase<TypeT> | ExEntityStateBase<TypeT>[] | string,
+    q: ExPlainEntityState<TypeT> | ExPlainEntityState<TypeT>[] | string,
   ): RxEntityState<Meta, TypeT>[] {
     if (Array.isArray(q)) {
       return q.map((s) => this.get(s));
@@ -471,13 +471,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
   private costSortedHands(
     who: "my" | "opp",
     useTieBreak: boolean,
-  ): CardStateBase[] {
+  ): PlainCardState[] {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
-      ? (card: CardStateBase) => {
+      ? (card: PlainCardState) => {
           return nextRandom(card.id) ^ this.rawState.iterators.random;
         }
-      : (_: CardStateBase) => 0;
+      : (_: PlainCardState) => 0;
     const sortData = new Map(
       player.hands.map(
         (c) =>
@@ -491,13 +491,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
-  maxCostHands(count: number, opt: MaxCostHandsOpt = {}): CardStateBase[] {
+  maxCostHands(count: number, opt: MaxCostHandsOpt = {}): PlainCardState[] {
     const who = opt.who ?? "my";
     const useTieBreak = opt.useTieBreak ?? false;
     return this.costSortedHands(who, useTieBreak).slice(0, count);
   }
 
-  isInInitialPile(card: CardStateBase): boolean {
+  isInInitialPile(card: PlainCardState): boolean {
     const defId = card.definition.id;
     return this.player.initialPile.some((c) => c.id === defId);
   }
@@ -918,9 +918,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
   // NOTICE: getVariable/setVariable/addVariable 应当将 caller 的严格版声明放在最后一个
   // 因为 (...args: infer R) 只能获取到重载列表中的最后一个，而严格版是 BuilderWithShortcut 需要的
 
-  getVariable(prop: string, target: AnyStateBase): number;
+  getVariable(prop: string, target: PlainAnyState): number;
   getVariable(prop: Meta["callerVars"]): number;
-  getVariable(prop: string, target?: AnyStateBase) {
+  getVariable(prop: string, target?: PlainAnyState) {
     if (target) {
       return this.get(target).getVariable(prop);
     } else {
@@ -931,10 +931,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   setVariable(
     prop: string,
     value: number,
-    target: AnyStateBase,
+    target: PlainAnyState,
   ): ShortcutReturn<Meta>;
   setVariable(prop: Meta["callerVars"], value: number): ShortcutReturn<Meta>;
-  setVariable(prop: any, value: number, target?: AnyStateBase) {
+  setVariable(prop: any, value: number, target?: PlainAnyState) {
     target ??= this.self;
     this.assertNotCard(target);
     using l = this.mutator.subLog(
@@ -961,8 +961,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   private assertNotCard(
-    target: AnyStateBase,
-  ): asserts target is CharacterStateBase | EntityStateBase {
+    target: PlainAnyState,
+  ): asserts target is PlainCharacterState | PlainEntityState {
     if (target.definition.type === "card") {
       throw new GiTcgDataError(`Cannot add variable to card`);
     }
@@ -971,10 +971,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   addVariable(
     prop: string,
     value: number,
-    target: AnyStateBase,
+    target: PlainAnyState,
   ): ShortcutReturn<Meta>;
   addVariable(prop: Meta["callerVars"], value: number): ShortcutReturn<Meta>;
-  addVariable(prop: any, value: number, target?: AnyStateBase) {
+  addVariable(prop: any, value: number, target?: PlainAnyState) {
     target ??= this.self;
     this.assertNotCard(target);
     const finalValue = value + target.variables[prop];
@@ -986,7 +986,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     prop: string,
     value: number,
     maxLimit: number,
-    target: AnyStateBase,
+    target: PlainAnyState,
   ): ShortcutReturn<Meta>;
   addVariableWithMax(
     prop: Meta["callerVars"],
@@ -997,7 +997,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     prop: any,
     value: number,
     maxLimit: number,
-    target?: AnyStateBase,
+    target?: PlainAnyState,
   ) {
     const RET = this.enableShortcut();
     target ??= this.self;
@@ -1010,13 +1010,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.setVariable(prop, finalValue, target);
     return RET;
   }
-  consumeUsage(count = 1, target?: EntityStateBase) {
+  consumeUsage(count = 1, target?: PlainEntityState) {
     const RET = this.enableShortcut();
     if (typeof target === "undefined") {
       if (this.self.definition.type === "character") {
         throw new GiTcgDataError(`Cannot consume usage of character`);
       }
-      target = this.self as EntityStateBase;
+      target = this.self as PlainEntityState;
     }
     if (!Reflect.has(target.definition.varConfigs, "usage")) {
       return RET;
@@ -1049,12 +1049,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   transformDefinition<DefT extends ExEntityType>(
-    target: ExEntityStateBase<DefT>,
+    target: ExPlainEntityState<DefT>,
     newDefId: HandleT<DefT>,
   ): ShortcutReturn<Meta>;
   transformDefinition(target: string, newDefId: number): ShortcutReturn<Meta>;
   transformDefinition<DefT extends ExEntityType>(
-    x: string | ExEntityStateBase<DefT>,
+    x: string | ExPlainEntityState<DefT>,
     newDefId: number,
   ) {
     const targets = this.queryOrGet<DefT>(x);
@@ -1270,7 +1270,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       // 如果没有限定，则从牌堆顶部摸牌
       this.callAndEmit("drawCardsPlain", who, count);
     } else {
-      const check = (card: CardStateBase) => {
+      const check = (card: PlainCardState) => {
         if (withDefinition !== null) {
           return card.definition.id === withDefinition;
         }
@@ -1334,7 +1334,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.callAndEmit("insertPileCards", payloads, strategy, who);
     return this.enableShortcut();
   }
-  undrawCards(cards: CardStateBase[], strategy: InsertPileStrategy) {
+  undrawCards(cards: PlainCardState[], strategy: InsertPileStrategy) {
     const who = this.callerArea.who;
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
@@ -1357,7 +1357,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  stealHandCard(card: CardStateBase) {
+  stealHandCard(card: PlainCardState) {
     const cardState = this.get(card).latest();
     this.mutate({
       type: "transferCard",
@@ -1417,7 +1417,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   /** 弃置一张行动牌，并触发其“弃置时”效果。 */
-  disposeCard(...cards: CardStateBase[]) {
+  disposeCard(...cards: PlainCardState[]) {
     const player = this.player;
     const who = this.callerArea.who;
     for (const c of cards) {
@@ -1560,7 +1560,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.emitEvent("requestReroll", this.skillInfo, this.callerArea.who, times);
     return this.enableShortcut();
   }
-  triggerEndPhaseSkill(target: EntityStateBase) {
+  triggerEndPhaseSkill(target: PlainEntityState) {
     const state = this.get(target).latest();
     this.emitEvent(
       "requestTriggerEndPhaseSkill",
@@ -1636,7 +1636,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
   selectAndPlay(
     cards: (CardHandle | CardDefinition)[],
-    ...targets: (CharacterStateBase | EntityStateBase)[]
+    ...targets: (PlainCharacterState | PlainEntityState)[]
   ) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "requestPlayCard",
