@@ -37,7 +37,7 @@ export const PiercingIceridge = summon(121033)
 export const CryoCrystalCore: StatusHandle = status(121034)
   .on("beforeDefeated")
   .immune(1)
-  .if((c) => c.self.master().hasEquipment(SternfrostPrism))
+  .if((c) => c.self.master.hasEquipment(SternfrostPrism))
   .characterStatus(SheerCold, "opp active")
   .dispose()
   .done();

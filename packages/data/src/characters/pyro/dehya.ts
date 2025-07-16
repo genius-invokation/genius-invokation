@@ -24,7 +24,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, Skill
 export const FierySanctumsProtection = combatStatus(113094)
   .tags("barrier")
   .on("decreaseDamaged", (c, e) =>
-    c.of(e.target).isActive() &&
+    e.target.isActive() &&
     c.$(`my standby characters with definition id ${Dehya}`))
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
@@ -172,6 +172,6 @@ export const StalwartAndTrue = card(213091)
   .talent(Dehya)
   .on("enter")
   .useSkill(MoltenInferno)
-  .on("endPhase", (c) => c.self.master().health <= 6)
+  .on("endPhase", (c) => c.self.master.health <= 6)
   .heal(2, "@master")
   .done();

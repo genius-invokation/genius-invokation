@@ -26,7 +26,7 @@ import { character, skill, summon, combatStatus, card, DamageType, SkillHandle }
 export const TalismanSpirit = summon(111073)
   .endPhaseDamage(DamageType.Cryo, 1)
   .usage(2)
-  .on("increaseDamaged", (c, e) => !c.of(e.target).isMine() && ([DamageType.Cryo, DamageType.Physical] as DamageType[]).includes(e.type))
+  .on("increaseDamaged", (c, e) => !e.target.isMine() && ([DamageType.Cryo, DamageType.Physical] as DamageType[]).includes(e.type))
   .listenToAll()
   .increaseDamage(1)
   .done();

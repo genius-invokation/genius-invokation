@@ -332,7 +332,7 @@ interface EntityContext {
   who: 0 | 1;                 // 阵营
   id: number;                 // 实体 id
   state: EntityState          // 当前的实体状态对象
-  master(): CharacterContext; // 若实体位于角色区域，返回角色的便利对象
+  master: CharacterContext; // 若实体位于角色区域，返回角色的便利对象
 
   // 获取实体状态变量
   getVariable(prop: string): number;

@@ -127,7 +127,7 @@ export const CountlessSightsToSee = card(217071)
   .talent(Kirara)
   .on("enter")
   .useSkill(MeowteorKick)
-  .on("deductOmniDiceSwitch", (c) => c.self.master().isActive())
+  .on("deductOmniDiceSwitch", (c) => c.self.master.isActive())
   .usagePerRound(1)
   .deductOmniCost(1)
   .done();

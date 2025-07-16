@@ -308,7 +308,7 @@ export const LiuSu = card(322012)
   .since("v3.3.0")
   .costSame(1)
   .support("ally")
-  .on("switchActive", (c, e) => c.of(e.switchInfo.to).energy === 0)
+  .on("switchActive", (c, e) => e.switchInfo.to.energy === 0)
   .usage(2)
   .usagePerRound(1)
   .gainEnergy(1, "my active")
@@ -350,7 +350,7 @@ export const KidKujirai = card(322014)
   .do((c) => {
     c.generateDice(DiceType.Omni, 1);
     if (c.remainingSupportCount("opp") > 0) {
-      c.transferEntity(c.self.state, {
+      c.transferEntity(c.self, {
         type: "supports",
         who: flip(c.self.who),
       });
@@ -507,7 +507,7 @@ export const Mamere: SupportHandle = card(322021)
  * 可用次数：1
  */
 export const SandsAndDream = status(302205)
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master))
   .usage(1)
   .deductOmniCost(3)
   .done();
@@ -606,7 +606,7 @@ export const SilverAndMelus = card(322023)
     const count = c.getExtensionState().damages[flip(c.self.who)].size;
     c.setVariable("count", Math.min(count, 4));
   })
-  .on("damaged", (c, e) => !c.of(e.target).isMine())
+  .on("damaged", (c, e) => !e.target.isMine())
   .listenToAll()
   .do((c) => {
     const count = c.getExtensionState().damages[flip(c.self.who)].size;

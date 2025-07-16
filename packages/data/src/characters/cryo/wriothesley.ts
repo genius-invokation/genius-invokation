@@ -24,7 +24,7 @@ import { character, skill, status, combatStatus, card, DamageType, DiceType } fr
  * 可用次数：2
  */
 export const ChillingPenalty = status(111111)
-  .on("deductElementDiceSkill", (c, e) => c.self.master().health >= 6 &&
+  .on("deductElementDiceSkill", (c, e) => c.self.master.health >= 6 &&
     e.isSkillType("normal") && 
     e.canDeductCostOfType(DiceType.Cryo))
   .deductCost(DiceType.Cryo, 1)
@@ -32,9 +32,9 @@ export const ChillingPenalty = status(111111)
   .increaseDamage(1)
   .on("useSkill", (c, e) => e.isSkillType("normal"))
   .usage(2)
-  .if((c) => c.self.master().health >= 6)
+  .if((c) => c.self.master.health >= 6)
   .damage(DamageType.Piercing, 1, "@master")
-  .if((c) => c.self.master().health <= 5)
+  .if((c) => c.self.master.health <= 5)
   .heal(2, "@master")
   .done();
 

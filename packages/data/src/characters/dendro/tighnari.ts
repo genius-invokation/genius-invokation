@@ -112,7 +112,7 @@ export const KeenSight = card(217021)
   .on("enter")
   .useSkill(VijnanaphalaMine)
   .on("deductVoidDiceSkill", (c, e) => 
-    c.self.master().hasStatus(VijnanaSuffusion) && 
+    c.self.master.hasStatus(VijnanaSuffusion) && 
     e.isChargedAttack())
   .deductVoidCost(1)
   .done();

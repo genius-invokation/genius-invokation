@@ -58,7 +58,7 @@ export const ElectricRebirth = status(124061)
   .on("beforeDefeated")
   .immune(4)
   .do((c) => {
-    const talent = c.self.master().hasEquipment(ChainLightningCascade);
+    const talent = c.self.master.hasEquipment(ChainLightningCascade);
     if (talent) {
       c.dispose(talent);
       c.$("opp active")?.loseEnergy(1);
@@ -169,7 +169,7 @@ export const ChainLightningCascade = card(224061)
   .talent(AbyssLectorVioletLightning, "none")
   .on("enter")
   .do((c) => {
-    if (!c.self.master().hasStatus(ElectricRebirth)) {
+    if (!c.self.master.hasStatus(ElectricRebirth)) {
       c.$("opp active")?.loseEnergy(1);
     }
   })

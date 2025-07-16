@@ -100,7 +100,7 @@ const Ushi = summon(116051)
   .on("decreaseDamaged")
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
-  .on("damaged", (c, e) => c.of(e.target).isActive())
+  .on("damaged", (c, e) => e.target.isActive())
   .usage(1, { autoDispose: false, name: "addStatusUsage" })
   .characterStatus(SuperlativeSuperstrength, `my characters with definition id 1605`)
   .done();
@@ -116,7 +116,7 @@ const SendOff = card(332013)
   .costSame(2)
   .addTarget("opp summon")
   .do((c, e) => {
-    c.of(e.targets[0]).dispose();
+    e.targets[0].dispose();
   })
   .done();
 

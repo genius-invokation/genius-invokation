@@ -49,7 +49,7 @@ export const YakshasMask = status(115041)
   .increaseDamage(1)
   .on("increaseSkillDamage", (c, e) => e.viaPlungingAttack())
   .increaseDamage(2)
-  .on("deductOmniDiceSwitch", (c) => c.self.master().isActive())
+  .on("deductOmniDiceSwitch", (c) => c.self.master.isActive())
   .usagePerRound(1)
   .deductOmniCost(1)
   .done();

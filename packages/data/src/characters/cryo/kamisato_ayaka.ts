@@ -139,7 +139,7 @@ export const KantenSenmyouBlessing = card(211051)
   .since("v3.3.0")
   .costCryo(2)
   .talent(KamisatoAyaka, "none")
-  .on("deductOmniDiceSwitch", (c, e) => e.action.to.id === c.self.master().id)
+  .on("deductOmniDiceSwitch", (c, e) => e.action.to.id === c.self.master.id)
   .usagePerRound(1)
   .deductOmniCost(1)
   .done();

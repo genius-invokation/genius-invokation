@@ -31,7 +31,7 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
   }
   declare [RawStateSymbol]: CardState;
   override get [LatestStateSymbol](): CardState {
-    const state = getEntityById(this.skillContext.state, this.id) as CardState;
+    const state = getEntityById(this.skillContext.rawState, this.id) as CardState;
     return state;
   }
 
@@ -43,7 +43,7 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     super();
   }
   get area(): EntityArea {
-    return (this._area ??= getEntityArea(this.skillContext.state, this.id));
+    return (this._area ??= getEntityArea(this.skillContext.rawState, this.id));
   }
   get who() {
     return this.area.who;
@@ -52,8 +52,7 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.area.who === this.skillContext.callerArea.who;
   }
 
-  /** @deprecated */
-  get state(): CardState {
+  protected get state(): CardState {
     return this[LatestStateSymbol];
   }
 

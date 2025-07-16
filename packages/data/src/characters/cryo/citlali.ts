@@ -63,8 +63,8 @@ export const Itzpapa: CombatStatusHandle = combatStatus(111143)
     if (e.character.definition.id !== Citlali) {
       return false;
     }
-    const st = c.of(e.character).hasNightsoulsBlessing();
-    return st && c.of(st).getVariable("nightsoul") === 2;
+    const st = e.character.hasNightsoulsBlessing();
+    return st && st.getVariable("nightsoul") === 2;
   })
   .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")
   .done();

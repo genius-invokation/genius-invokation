@@ -47,7 +47,7 @@ export const SacrificialGreatsword = card(311302)
   .on("useSkill", (c, e) => e.isSkillType("elemental"))
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -65,7 +65,7 @@ export const WolfsGravestone = card(311303)
   .weapon("claymore")
   .on("increaseSkillDamage")
   .do((c, e) => {
-    if (c.of(e.target).health <= 6) {
+    if (e.target.health <= 6) {
       e.increaseDamage(3);
     } else {
       e.increaseDamage(1);
@@ -175,7 +175,7 @@ export const ForestRegaliaInEffect = status(301109)
   .oneDuration()
   .once("useSkill", (c, e) => e.isSkillType("normal"))
   .do((c) => {
-    c.generateDice(c.self.master().element(), 2);
+    c.generateDice(c.self.master.element(), 2);
   })
   .done();
 

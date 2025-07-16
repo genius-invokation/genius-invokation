@@ -16,7 +16,7 @@ const GamblersEarrings = card(312004)
   .until("v3.7.0")
   .costSame(1)
   .artifact()
-  .on("defeated", (c, e) => c.self.master().isActive() && !c.of(e.target).isMine())
+  .on("defeated", (c, e) => c.self.master.isActive() && !e.target.isMine())
   .listenToAll()
   .generateDice(DiceType.Omni, 2)
   .done();
@@ -140,7 +140,7 @@ const LightfallSword = summon(111062)
     e.skill.definition.id === IcetideVortex)
   .do((c, e) => {
     if (e.skill.definition.id === IcetideVortex &&
-      c.of<"character">(e.skill.caller).hasEquipment(WellspringOfWarlust)) {
+      e.skill.caller.cast<"character">().hasEquipment(WellspringOfWarlust)) {
       c.self.addVariable("usage", 3);
     } else {
       c.self.addVariable("usage", 2);

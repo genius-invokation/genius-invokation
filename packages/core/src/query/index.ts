@@ -33,7 +33,7 @@ export function executeQuery<
   const Q extends string,
 >(ctx: SkillContext<Meta>, q: Q): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {
   const targetLength = (ctx.eventArg as any)?.targets?.length ?? 0;
-  const state = getRaw(ctx.state);
+  const state = getRaw(ctx.rawState);
   const allEntities = allEntitiesInclPile(state);
   const arg: QueryArgs = {
     state,

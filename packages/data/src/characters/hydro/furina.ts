@@ -34,13 +34,13 @@ export const SeatsSacredAndSecular = card(112113)
       c.transformDefinition(furina, FurinaOusia);
       const summon = c.$(`my summon with definition id ${SalonMembers}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon.state, SingerOfManyWaters)
+        c.transformDefinition<"summon">(summon, SingerOfManyWaters)
       }
     } else {
       c.transformDefinition(furina, FurinaPneuma);
       const summon = c.$(`my summon with definition id ${SingerOfManyWaters}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon.state, SalonMembers)
+        c.transformDefinition<"summon">(summon, SalonMembers)
       }
     }
   })
@@ -95,7 +95,7 @@ export const CenterOfAttention = status(112116)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .usage(1)
   .do((c, e) => {
-    if (c.self.master().definition.id === FurinaPneuma) {
+    if (c.self.master.definition.id === FurinaPneuma) {
       c.heal(1, "my standby characters");
     } else {
       e.increaseDamage(2);
@@ -126,7 +126,7 @@ export const Revelry = combatStatus(112115)
  */
 export const UniversalRevelry = combatStatus(112114)
   .duration(2)
-  .on("damagedOrHealed", (c, e) => c.of(e.target).isActive())
+  .on("damagedOrHealed", (c, e) => e.target.isActive())
   .combatStatus(Revelry)
   .done();
 
@@ -268,7 +268,7 @@ export const HearMeLetUsRaiseTheChaliceOfLove = card(212111)
   .talent([FurinaPneuma, FurinaOusia])
   .on("enter")
   .do((c) => {
-    if (c.self.master().definition.id === FurinaPneuma) {
+    if (c.self.master.definition.id === FurinaPneuma) {
       c.useSkill(SalonSolitairePneuma);
     } else {
       c.useSkill(SalonSolitaireOusia);

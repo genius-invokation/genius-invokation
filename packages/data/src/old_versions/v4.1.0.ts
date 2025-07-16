@@ -66,7 +66,7 @@ const RainSword01 = combatStatus(112023)
   .until("v4.1.0")
   .tags("barrier")
   .conflictWith(112021)
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && e.value >= 3)
+  .on("decreaseDamaged", (c, e) => e.target.isActive() && e.value >= 3)
   .usage(3)
   .decreaseDamage(1)
   .done();
@@ -316,7 +316,7 @@ const FeatherfallJudgment = card(214041)
   .on("enter")
   .useSkill(SecretRiteChasmicSoulfarer)
   .on("increaseSkillDamage", (c, e) => {
-    const status = c.self.master().hasStatus(PactswornPathclearer)!;
+    const status = c.self.master.hasStatus(PactswornPathclearer)!;
     const reliance = c.getVariable("reliance", status);
     return (reliance === 3 || reliance === 5) && e.via.definition.id === SecretRiteChasmicSoulfarer;
   })
@@ -474,7 +474,7 @@ const RightOfFinalInterpretation = card(213081)
   .variable("triggerSeal", 0)
   .on("enter")
   .useSkill(SealOfApproval)
-  .on("increaseSkillDamage", (c, e) => e.viaChargedAttack() && c.of(e.target).health <= 6)
+  .on("increaseSkillDamage", (c, e) => e.viaChargedAttack() && e.target.health <= 6)
   .increaseDamage(1)
   .done();
 

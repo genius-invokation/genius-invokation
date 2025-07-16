@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardHandle, CharacterState, DamageType, DiceType, Reaction, SkillHandle, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
 
@@ -220,11 +220,11 @@ export const ElementalResonanceImpetuousWindsInEffect02 = combatStatus(303134)
       Reaction.SwirlHydro, 
       Reaction.SwirlPyro
     ] as (Reaction | null)[]).includes(e.damageInfo.fromReaction)) &&
-    !c.of(e.target).isMine())
+    !e.target.isMine())
   .increaseDamage(1)
   .on("reaction", (c, e) =>
     e.reactionInfo.fromDamage && 
-    c.of(e.reactionInfo.fromDamage.source).who === c.self.who &&
+    e.reactionInfo.fromDamage.source.who === c.self.who &&
     e.relatedTo(DamageType.Anemo))
   .listenToAll()
   .dispose()
@@ -470,9 +470,9 @@ export const WaterAndJustice = card(331805)
       const currentHealth = chs[i].health;
       const expectHealth = avgHealth + (i < remainder ? 1 : 0);
       if (currentHealth > expectHealth) {
-        c.damage(DamageType.Piercing, currentHealth - expectHealth, chs[i].state);
+        c.damage(DamageType.Piercing, currentHealth - expectHealth, chs[i]);
       } else if (currentHealth < expectHealth) {
-        c.heal(expectHealth - currentHealth, chs[i].state, { kind: "distribution" });
+        c.heal(expectHealth - currentHealth, chs[i], { kind: "distribution" });
       }
     }
     c.heal(1, "all my characters");
@@ -656,9 +656,9 @@ export const MasterOfWeaponry = card(332010)
   .addTarget("my character has equipment with tag (weapon)")
   .addTarget("my character with tag weapon of (@targets.0) and not @targets.0")
   .do((c, e) => {
-    const weapon = c.of(c.of(e.targets[0]).hasWeapon()!);
+    const weapon = e.targets[0].hasWeapon()!;
     weapon.resetUsagePerRound();
-    const target = c.of(e.targets[1]);
+    const target = e.targets[1];
     const area = {
       type: "characters" as const,
       who: target.who,
@@ -668,7 +668,7 @@ export const MasterOfWeaponry = card(332010)
     if (targetOldWeapon) {
       c.dispose(targetOldWeapon);
     }
-    c.transferEntity(weapon.state, area);
+    c.transferEntity(weapon, area);
   })
   .done();
 
@@ -683,9 +683,9 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
   .addTarget("my character has equipment with tag (artifact)")
   .addTarget("my character and not @targets.0")
   .do((c, e) => {
-    const artifact = c.of(c.of(e.targets[0]).hasArtifact()!);
+    const artifact = e.targets[0].hasArtifact()!;
     artifact.resetUsagePerRound();
-    const target = c.of(e.targets[1]);
+    const target = e.targets[1];
     const area = {
       type: "characters" as const,
       who: target.who,
@@ -695,7 +695,7 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
     if (targetOldArtifact) {
       c.dispose(targetOldArtifact);
     }
-    c.transferEntity(artifact.state, area);
+    c.transferEntity(artifact, area);
   })
   .done();
 
@@ -710,7 +710,7 @@ export const QuickKnit = card(332012)
   .costSame(1)
   .addTarget("my summons")
   .do((c, e) => {
-    c.of(e.targets[0]).addVariable("usage", 1);
+    e.targets[0].addVariable("usage", 1);
   })
   .done();
 
@@ -725,7 +725,7 @@ export const SendOff = card(332013)
   .costSame(2)
   .addTarget("opp summon")
   .do((c, e) => {
-    c.of(e.targets[0]).consumeUsage(2);
+    e.targets[0].consumeUsage(2);
   })
   .done();
 
@@ -874,7 +874,7 @@ export const [WhereIsTheUnseenRazor] = card(332022)
   .since("v4.0.0")
   .addTarget("my character has equipment with tag (weapon)")
   .do((c, e) => {
-    const { definition } = c.of(e.targets[0]).removeWeapon()!;
+    const { definition } = e.targets[0].removeWeapon()!;
     c.createHandCard(definition.id as CardHandle);
   })
   .toCombatStatus(303222)
@@ -949,7 +949,7 @@ export const Lyresong = card(332024)
   .associateExtension(LyresongIsFirstExtension)
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {
-    const { definition } = c.of(e.targets[0]).removeArtifact()!;
+    const { definition } = e.targets[0].removeArtifact()!;
     c.createHandCard(definition.id as CardHandle);
     if (c.getExtensionState().first[c.self.who]) {
       c.combatStatus(LyresongInEffect2);
@@ -1581,7 +1581,7 @@ export const SaurianDiningBuddies = card(332039)
   .since("v5.0.0")
   .addTarget("my character has equipment with tag (technique)")
   .do((c, e) => {
-    const technique = c.of(e.targets[0]).hasTechnique();
+    const technique = e.targets[0].hasTechnique();
     if (technique) {
       c.addVariable("usage", 1, technique);
     }
@@ -1662,12 +1662,12 @@ export const UltimateSurfingBuddy = card(332041)
     const mySummons = c.$$(`my summons`);
     if (mySummons.length > 0) {
       const mySummon = c.random(mySummons);
-      c.triggerEndPhaseSkill(mySummon.state);
+      c.triggerEndPhaseSkill(mySummon);
     }
     const oppSummons = c.$$(`opp summons`);
     if (oppSummons.length > 0) {
       const oppSummon = c.random(oppSummons);
-      c.triggerEndPhaseSkill(oppSummon.state);
+      c.triggerEndPhaseSkill(oppSummon);
     }
   })
   .done();
@@ -1795,8 +1795,8 @@ export const FruitsOfTrainingInEffect01 = status(303241)
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill") &&
-    c.of<"status">(e.entity).master().id !== c.self.master().id &&
-    !c.self.master().hasStatus(FruitsOfTrainingInEffect02))
+    c.of<"status">(e.entity).master.id !== c.self.master.id &&
+    !c.self.master.hasStatus(FruitsOfTrainingInEffect02))
   .listenToPlayer()
   .usage(2)
   .characterStatus(FruitsOfTrainingInEffect02, "@master")

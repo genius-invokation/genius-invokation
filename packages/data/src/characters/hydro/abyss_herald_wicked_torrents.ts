@@ -81,11 +81,11 @@ export const WateryRebirthStatus = status(122031)
   .on("beforeDefeated")
   .immune(4)
   .do((c) => {
-    const talent = c.self.master().hasEquipment(SurgingUndercurrent);
+    const talent = c.self.master.hasEquipment(SurgingUndercurrent);
     if (talent) {
       c.combatStatus(CurseOfTheUndercurrent, "opp");
     }
-    c.self.master().setVariable("wateryRebirthTriggered", 1);
+    c.self.master.setVariable("wateryRebirthTriggered", 1);
   })
   .characterStatus(WateryRebirthHoned, "@master")
   .dispose()
@@ -204,7 +204,7 @@ export const SurgingUndercurrent = card(222031)
   .since("v4.6.0")
   .costHydro(1)
   .talent(AbyssHeraldWickedTorrents, "none")
-  .on("enter", (c) => c.self.master().getVariable("wateryRebirthTriggered"))
+  .on("enter", (c) => c.self.master.getVariable("wateryRebirthTriggered"))
   .combatStatus(CurseOfTheUndercurrent, "opp")
   .endOn()
   .onMasterDefeated()

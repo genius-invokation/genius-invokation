@@ -52,7 +52,7 @@ export const DarkShadow = summon(122043)
     c.damage(DamageType.Electro, c.getVariable("atk"));
     c.consumeUsage();
   })
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .decreaseDamage(1)
   .consumeUsage(2)
   .done();
@@ -70,7 +70,7 @@ export const AnomalousAnatomy = status(122042)
   // .do((c) => {
   //   c.mutate({
   //     type: "modifyEntityVar",
-  //     state: c.self.master().state,
+  //     state: c.self.master.latest(),
   //     varName: "maxHealth",
   //     value: 5,
   //     direction: "decrease",
@@ -153,7 +153,7 @@ export const DeepDevourersDomain = combatStatus(122041)
         narwhal.addStatus(AnomalousAnatomy, {
           overrideVariables: { extraMaxHealth }
         });
-        c.increaseMaxHealth(extraMaxHealth, narwhal.state);
+        c.increaseMaxHealth(extraMaxHealth, narwhal);
       }
       c.setVariable("extraMaxHealth", 0);
     }
@@ -186,7 +186,7 @@ export const StarfallShower = skill(22042)
   .costHydro(3)
   .do((c) => {
     const st = c.self.hasStatus(AnomalousAnatomy);
-    const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 3) : 0;
+    const extraDmg = st ? Math.min(Math.floor(st.getVariable("extraMaxHealth") / 3), 3) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
     const [card] = c.disposeMaxCostHands(1);
     if (card){

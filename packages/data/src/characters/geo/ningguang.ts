@@ -24,7 +24,7 @@ import { character, skill, combatStatus, card, DamageType, CombatStatusHandle } 
  */
 export const JadeScreenStatus: CombatStatusHandle = combatStatus(116011)
   .tags("barrier")
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive() && e.value >= 2)
+  .on("decreaseDamaged", (c, e) => e.target.isActive() && e.value >= 2)
   .usage(2)
   .decreaseDamage(1)
   .on("increaseDamage", (c, e) => e.type === DamageType.Geo && 

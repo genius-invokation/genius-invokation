@@ -48,7 +48,7 @@ export const SacrificialFragments = card(311102)
   .on("useSkill", (c, e) => e.isSkillType("elemental"))
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -253,7 +253,7 @@ export const FlowingPurity = card(311110)
   .characterStatus(BondOfLife, "@master")
   .on("endPhase") // 实为结束阶段时
   .characterStatus(BondOfLife, "@master")
-  .on("beforeAction", (c) => !c.self.master().hasStatus(BondOfLife))
+  .on("beforeAction", (c) => !c.self.master.hasStatus(BondOfLife))
   .listenToAll()
   .usagePerRound(1)
   .generateDice("randomElement", 1)

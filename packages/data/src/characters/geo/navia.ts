@@ -120,7 +120,7 @@ export const MutualAssistanceNetwork = skill(16084)
       Reaction.CrystallizeHydro, 
       Reaction.CrystallizePyro
     ] as Reaction[]).includes(e.getReaction()!) && 
-    !c.of(e.target).isMine())
+    !e.target.isMine())
   .listenToAll()
   .createPileCards(CrystalShrapnel, 3, "random")
   .done();

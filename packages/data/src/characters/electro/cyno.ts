@@ -67,7 +67,7 @@ export const SecretRiteChasmicSoulfarer = skill(14042)
   .damage(DamageType.Electro, 3)
   .do((c) => {
     const status = c.self.hasStatus(PactswornPathclearer)!;
-    c.of(status).addVariable("reliance", 1);
+    status.addVariable("reliance", 1);
   })
   .done();
 
@@ -85,7 +85,7 @@ export const SacredRiteWolfsSwiftness = skill(14043)
   .damage(DamageType.Electro, 4)
   .do((c) => {
     const status = c.self.hasStatus(PactswornPathclearer)!;
-    c.of(status).addVariable("reliance", 2);
+    status.addVariable("reliance", 2);
   })
   .done();
 
@@ -133,7 +133,7 @@ export const FeatherfallJudgment = card(214041)
   .on("enter")
   .useSkill(SecretRiteChasmicSoulfarer)
   .on("increaseSkillDamage", (c, e) => {
-    const status = c.self.master().hasStatus(PactswornPathclearer)!;
+    const status = c.self.master.hasStatus(PactswornPathclearer)!;
     return c.getVariable("reliance", status) >=2 && e.via.definition.id === SecretRiteChasmicSoulfarer;
   })
   .usagePerRound(2)

@@ -27,7 +27,7 @@ export const Reflection = summon(112031)
   .tags("barrier")
   .endPhaseDamage(DamageType.Hydro, 1)
   .dispose()
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
   .done();
@@ -126,7 +126,7 @@ export const ProphecyOfSubmersion = card(212031)
   .costEnergy(3)
   .talent(Mona)
   .on("increaseDamage", (c, e) =>
-    c.self.master().isActive() &&
+    c.self.master.isActive() &&
     e.isReactionRelatedTo(DamageType.Hydro))
   .listenToPlayer()
   .increaseDamage(2)

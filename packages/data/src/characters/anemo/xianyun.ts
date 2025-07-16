@@ -41,7 +41,7 @@ export const SoaringOnTheWind = status(115103)
  */
 export const DriftcloudWave = status(115104)
   .since("v5.0.0")
-  .on("switchActive", (c, e) => c.self.master().id === e.switchInfo.to.id)
+  .on("switchActive", (c, e) => c.self.master.id === e.switchInfo.to.id)
   .usageCanAppend(1, 2)
   .damage(DamageType.Anemo, 1)
   .done();

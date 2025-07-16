@@ -88,7 +88,7 @@ export class CharacterBase extends ReactiveStateBase {
   get area() {
     return (this._area ??= getEntityArea(this._gameState, this._id));
   }
-  get state() {
+  protected get state() {
     return this[LatestStateSymbol];
   }
 
@@ -166,13 +166,13 @@ export class CharacterBase extends ReactiveStateBase {
     return this.getVariable("energy") === this.getVariable("maxEnergy");
   }
   element(): DiceType {
-    return elementOfCharacter(this.state.definition);
+    return elementOfCharacter(this.definition);
   }
   weaponTag(): WeaponTag {
-    return weaponOfCharacter(this.state.definition);
+    return weaponOfCharacter(this.definition);
   }
   nationTags(): NationTag[] {
-    return nationOfCharacter(this.state.definition);
+    return nationOfCharacter(this.definition);
   }
   getVariable<Name extends string>(name: Name): CharacterVariables[Name] {
     return this.state.variables[name];
@@ -186,15 +186,15 @@ export class ReadonlyCharacter<
     protected readonly skillContext: SkillContext<Meta>,
     id: number,
   ) {
-    super(skillContext.state, id);
+    super(skillContext.rawState, id);
   }
   protected override get gameState(): GameState {
-    return this.skillContext.state;
+    return this.skillContext.rawState;
   }
 
   override get [LatestStateSymbol](): CharacterState {
     const state = getEntityById(
-      this.skillContext.state,
+      this.skillContext.rawState,
       this._id,
     ) as CharacterState;
     return state;
@@ -202,11 +202,6 @@ export class ReadonlyCharacter<
 
   get entities(): ApplyReactive<Meta, EntityState[]> {
     return applyReactive(this.skillContext, this.state.entities);
-  }
-
-  /** @deprecated */
-  get state(): CharacterState {
-    return this[LatestStateSymbol];
   }
 
   $$<const Q extends string>(

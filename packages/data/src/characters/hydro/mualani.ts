@@ -58,7 +58,7 @@ export const BiteyShark = card(112142)
   .since("v5.3.0")
   .unobtainable()
   .nightsoulTechnique()
-  .on("switchActive", (c) => c.self.master().isActive())
+  .on("switchActive", (c) => c.self.master.isActive())
   .listenToAll()
   .consumeNightsoul("@master")
   .characterStatus(BiteTarget, "opp active")
@@ -153,14 +153,14 @@ export const NightRealmsGiftCrestsAndTroughs = card(212141)
   .costHydro(1)
   .talent(Mualani, "none")
   .on("switchActive", (c, e) =>
-    e.switchInfo.to.id === c.self.master().id &&
+    e.switchInfo.to.id === c.self.master.id &&
     c.$$(`my summon`).length > 0)
   .usagePerRound(1)
   .do((c) => {
     const summons = c.$$(`my summon`);
     if (summons.length > 0) {
       const targetSummon = c.random(summons);
-      c.triggerEndPhaseSkill(targetSummon.state);
+      c.triggerEndPhaseSkill(targetSummon);
     }
   })
   .done();

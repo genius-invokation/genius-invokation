@@ -26,7 +26,7 @@ export const BrokenRimesEcho = card(312101)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Cryo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Cryo))
   .usagePerRound(1)
   .deductCost(DiceType.Cryo, 1)
   .done();
@@ -42,7 +42,7 @@ export const WinestainedTricorne = card(312201)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Hydro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Hydro))
   .usagePerRound(1)
   .deductCost(DiceType.Hydro, 1)
   .done();
@@ -58,7 +58,7 @@ export const WitchsScorchingHat = card(312301)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Pyro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Pyro))
   .usagePerRound(1)
   .deductCost(DiceType.Pyro, 1)
   .done();
@@ -74,7 +74,7 @@ export const ThunderSummonersCrown = card(312401)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Electro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Electro))
   .usagePerRound(1)
   .deductCost(DiceType.Electro, 1)
   .done();
@@ -90,7 +90,7 @@ export const ViridescentVenerersDiadem = card(312501)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Anemo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Anemo))
   .usagePerRound(1)
   .deductCost(DiceType.Anemo, 1)
   .done();
@@ -106,7 +106,7 @@ export const MaskOfSolitudeBasalt = card(312601)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Geo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Geo))
   .usagePerRound(1)
   .deductCost(DiceType.Geo, 1)
   .done();
@@ -122,7 +122,7 @@ export const LaurelCoronet = card(312701)
   .since("v3.3.0")
   .costVoid(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Dendro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Dendro))
   .usagePerRound(1)
   .deductCost(DiceType.Dendro, 1)
   .done();
@@ -139,7 +139,7 @@ export const BlizzardStrayer = card(312102)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Cryo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Cryo))
   .usagePerRound(1)
   .deductCost(DiceType.Cryo, 1)
   .on("roll")
@@ -158,7 +158,7 @@ export const HeartOfDepth = card(312202)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Hydro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Hydro))
   .usagePerRound(1)
   .deductCost(DiceType.Hydro, 1)
   .on("roll")
@@ -177,7 +177,7 @@ export const CrimsonWitchOfFlames = card(312302)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Pyro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Pyro))
   .usagePerRound(1)
   .deductCost(DiceType.Pyro, 1)
   .on("roll")
@@ -196,7 +196,7 @@ export const ThunderingFury = card(312402)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Electro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Electro))
   .usagePerRound(1)
   .deductCost(DiceType.Electro, 1)
   .on("roll")
@@ -215,7 +215,7 @@ export const ViridescentVenerer = card(312502)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Anemo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Anemo))
   .usagePerRound(1)
   .deductCost(DiceType.Anemo, 1)
   .on("roll")
@@ -234,7 +234,7 @@ export const ArchaicPetra = card(312602)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Geo))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Geo))
   .usagePerRound(1)
   .deductCost(DiceType.Geo, 1)
   .on("roll")
@@ -253,7 +253,7 @@ export const DeepwoodMemories = card(312702)
   .since("v3.3.0")
   .costSame(2)
   .artifact()
-  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state) && e.canDeductCostOfType(DiceType.Dendro))
+  .on("deductElementDice", (c, e) => e.isSkillOrTalentOf(c.self.master) && e.canDeductCostOfType(DiceType.Dendro))
   .usagePerRound(1)
   .deductCost(DiceType.Dendro, 1)
   .on("roll")
@@ -319,7 +319,7 @@ export const GamblersEarrings = card(312004)
   .since("v3.3.0")
   .costSame(1)
   .artifact()
-  .on("defeated", (c, e) => c.self.master().isActive() && !c.of(e.target).isMine())
+  .on("defeated", (c, e) => c.self.master.isActive() && !e.target.isMine())
   .listenToAll()
   .usage(3, { autoDispose: false })
   .generateDice(DiceType.Omni, 2)
@@ -339,7 +339,7 @@ export const InstructorsCap = card(312005)
   .onDelayedSkillReaction()
   .usagePerRound(3)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -370,7 +370,7 @@ export const OrnateKabuto = card(312007)
   .since("v3.5.0")
   .costSame(1)
   .artifact()
-  .on("useSkill", (c, e) => e.skill.caller.id !== c.self.master().id && e.isSkillType("burst"))
+  .on("useSkill", (c, e) => e.skill.caller.id !== c.self.master.id && e.isSkillType("burst"))
   .listenToPlayer()
   .gainEnergy(1, "@master")
   .done();
@@ -387,7 +387,7 @@ export const EmblemOfSeveredFate = card(312008)
   .since("v3.7.0")
   .costSame(2)
   .artifact()
-  .on("useSkill", (c, e) => e.skill.caller.id !== c.self.master().id && e.isSkillType("burst"))
+  .on("useSkill", (c, e) => e.skill.caller.id !== c.self.master.id && e.isSkillType("burst"))
   .listenToPlayer()
   .gainEnergy(1, "@master")
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("burst"))
@@ -434,10 +434,10 @@ export const TenacityOfTheMillelith = card(312010)
   .artifact()
   .on("actionPhase")
   .characterStatus(UnmovableMountain, "@master")
-  .on("damaged", (c) => c.self.master().isActive())
+  .on("damaged", (c) => c.self.master.isActive())
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -452,7 +452,7 @@ export const ThunderingPoise = card(312011)
   .since("v3.7.0")
   .costVoid(2)
   .artifact()
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "normal"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "normal"))
   .usagePerRound(1)
   .deductOmniCost(1)
   .done();
@@ -481,10 +481,10 @@ export const VermillionHereafter = card(312012)
   .since("v3.7.0")
   .costVoid(3)
   .artifact()
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "normal"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "normal"))
   .usagePerRound(1)
   .deductOmniCost(1)
-  .on("switchActive", (c, e) => c.self.master().id === e.switchInfo.to.id)
+  .on("switchActive", (c, e) => c.self.master.id === e.switchInfo.to.id)
   .characterStatus(VermillionHereafterEffect, "@master")
   .done();
 
@@ -499,7 +499,7 @@ export const CapriciousVisage = card(312013)
   .since("v3.7.0")
   .costVoid(2)
   .artifact()
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "elemental"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .usagePerRound(1)
   .deductOmniCost(1)
   .done();
@@ -516,11 +516,11 @@ export const ShimenawasReminiscence = card(312014)
   .since("v3.7.0")
   .costVoid(3)
   .artifact()
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "elemental"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .usagePerRound(1)
   .deductOmniCost(1)
   .on("increaseSkillDamage", (c, e) =>
-    c.self.master().energy >= 2 &&
+    c.self.master.energy >= 2 &&
     (e.viaSkillType("normal") || e.viaSkillType("elemental")))
   .increaseDamage(1)
   .done();
@@ -608,7 +608,7 @@ export const ShadowOfTheSandKing = card(312017)
   .artifact()
   .on("enter")
   .drawCards(1)
-  .on("damaged", (c, e) => !c.of(e.target).isMine() && c.self.master().isActive() && e.getReaction())
+  .on("damaged", (c, e) => !e.target.isMine() && c.self.master.isActive() && e.getReaction())
   .listenToAll()
   .usagePerRound(1)
   .drawCards(1)
@@ -628,7 +628,7 @@ export const GildedDreams = card(312018)
   .artifact()
   .on("enter")
   .do((c) => {
-    const diceType = c.self.master().element();
+    const diceType = c.self.master.element();
     const elementKinds = new Set(c.$$("my characters include defeated").map((ch) => ch.element()));
     if (elementKinds.size >= 3) {
       c.generateDice(diceType, 2);
@@ -636,7 +636,7 @@ export const GildedDreams = card(312018)
       c.generateDice(diceType, 1);
     }
   })
-  .on("damaged", (c, e) => !c.of(e.target).isMine() && c.self.master().isActive() && e.getReaction())
+  .on("damaged", (c, e) => !e.target.isMine() && c.self.master.isActive() && e.getReaction())
   .listenToAll()
   .usagePerRound(2)
   .drawCards(1)
@@ -675,7 +675,7 @@ export const EchoesOfAnOffering = card(312020)
   .on("useSkill", (c) => c.player.dice.length <= c.player.hands.length)
   .usagePerRound(1)
   .do((c) => {
-    c.generateDice(c.self.master().element(), 1);
+    c.generateDice(c.self.master.element(), 1);
   })
   .done();
 
@@ -689,7 +689,7 @@ export const EchoesOfAnOffering = card(312020)
 export const HeartOfKhvarenasBrilliance = card(312021)
   .since("v4.3.0")
   .artifact()
-  .on("damaged", (c) => c.self.master().isActive())
+  .on("damaged", (c) => c.self.master.isActive())
   .usagePerRound(1)
   .drawCards(1)
   .done();
@@ -706,7 +706,7 @@ export const VourukashasGlow = card(312022)
   .costSame(1)
   .artifact()
   .variable("shouldHeal", 0)
-  .on("damaged", (c) => c.self.master().isActive())
+  .on("damaged", (c) => c.self.master.isActive())
   .usagePerRound(1)
   .addVariable("shouldHeal", 1)
   .drawCards(1)
@@ -736,7 +736,7 @@ export const VeteransVisage = card(312023)
     c.addVariable("count", 1);
     const v = c.getVariable("count");
     if (v === 1) {
-      c.generateDice(c.self.master().element(), 1);
+      c.generateDice(c.self.master.element(), 1);
     } else if (v === 2) {
       c.drawCards(1);
     }
@@ -755,9 +755,9 @@ export const GoldenTroupesReward = card(312025)
   .since("v4.5.0")
   .artifact()
   .variable("reward", 0)
-  .on("endPhase", (c) => !c.self.master().isActive())
+  .on("endPhase", (c) => !c.self.master.isActive())
   .addVariableWithMax("reward", 1, 2)
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "elemental"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .do((c, e) => {
     const reward = c.getVariable("reward");
     const currentCost = e.costSize();
@@ -784,9 +784,9 @@ export const AmethystCrown = card(312027)
   .on("roundEnd")
   .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
-    !c.of(e.target).isMine() &&
+    !e.target.isMine() &&
     e.type === DamageType.Dendro &&
-    c.self.master().isActive())
+    c.self.master.isActive())
   .listenToAll()
   .do((c) => {
     c.addVariable("crystal", 1);
@@ -821,7 +821,7 @@ export const MarechausseeHunter = card(312024)
     c.addVariable("count", 1);
     const v = c.getVariable("count");
     if (v === 1 || v === 4) {
-      c.generateDice(c.self.master().element(), 1);
+      c.generateDice(c.self.master.element(), 1);
     } else if (v === 2) {
       c.drawCards(1)
     }
@@ -841,9 +841,9 @@ export const GoldenTroupe = card(312026)
   .costSame(2)
   .artifact()
   .variable("reward", 0)
-  .on("endPhase", (c) => !c.self.master().isActive())
+  .on("endPhase", (c) => !c.self.master.isActive())
   .addVariableWithMax("reward", 2, 4)
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "elemental"))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master, "elemental"))
   .do((c, e) => {
     const reward = c.getVariable("reward");
     const currentCost = e.costSize();
@@ -870,8 +870,8 @@ export const FlowerOfParadiseLost = card(312028)
   .on("roundEnd")
   .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
-    c.self.master().isActive() &&
-    !c.of(e.target).isMine() &&
+    c.self.master.isActive() &&
+    !e.target.isMine() &&
     (e.type === DamageType.Dendro || e.isReactionRelatedTo(DamageType.Dendro)))
   .listenToAll()
   .do((c) => {
@@ -930,7 +930,7 @@ export const FakeGildedDreams = card(133095) // 骗骗花
  * 可用次数：1
  */
 export const ConductorsTopHatInEffect = status(301204)
-  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state))
+  .on("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master))
   .usage(1)
   .deductOmniCost(1)
   .done();
@@ -946,7 +946,7 @@ export const ConductorsTopHat = card(312030)
   .since("v5.1.0")
   .costSame(1)
   .artifact()
-  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master().id && c.player.hands.length > 0)
+  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master.id && c.player.hands.length > 0)
   .usagePerRound(1)
   .disposeMaxCostHands(1)
   .convertDice(DiceType.Omni, 2)

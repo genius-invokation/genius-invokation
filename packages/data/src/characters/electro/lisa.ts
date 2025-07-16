@@ -116,7 +116,7 @@ export const PulsatingWitch = card(214091)
   .since("v4.0.0")
   .costElectro(1)
   .talent(Lisa, "none")
-  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master().id)
+  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master.id)
   .usagePerRound(1)
   .characterStatus(Conductive, "opp active")
   .done();

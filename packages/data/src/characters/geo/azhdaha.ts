@@ -31,7 +31,7 @@ export const StoneFacetsElementalAbsorption = status(126021)
   .on("transformDefinition", (c, e) => e.oldDefinition.id !== e.newDefinition.id)
   .do((c) => {
     let diceType: DiceType = DiceType.Geo;
-    switch (c.self.master().definition.id) {
+    switch (c.self.master.definition.id) {
       case AzhdahaCryo: diceType = DiceType.Cryo; break;
       case AzhdahaHydro: diceType = DiceType.Hydro; break;
       case AzhdahaPyro: diceType = DiceType.Pyro; break;
@@ -59,7 +59,7 @@ export const StoneFacetsElementalCrystallization = status(126022)
       case DamageType.Electro: targetDef = AzhdahaElectro; break;
       default: return;
     }
-    if (c.self.master().definition.id !== targetDef) {
+    if (c.self.master.definition.id !== targetDef) {
       c.transformDefinition("@master", targetDef);
       c.dispose();
     }
@@ -79,7 +79,7 @@ export const StoneFacetsElementalCrystallization = status(126022)
 export const StoneFacetsElementalSummoning = status(126023)
   .on("endPhase")
   .do((c) => {
-    switch (c.self.master().definition.id) {
+    switch (c.self.master.definition.id) {
       default: c.transformDefinition("@master", AzhdahaHydro); break;
       case AzhdahaHydro: c.transformDefinition("@master", AzhdahaCryo); break;
       case AzhdahaCryo: c.transformDefinition("@master", AzhdahaPyro); break;

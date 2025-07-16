@@ -34,7 +34,7 @@ export const TurboTwirlyLetItRip = summon(116103)
     if (field) {
       c.damage(DamageType.Geo, 2);
       c.damage(DamageType.Piercing, 2, "opp next");
-      c.consumeUsage(1, field.state);
+      c.consumeUsage(1, field);
     } else {
       c.damage(DamageType.Geo, 1);
       c.damage(DamageType.Piercing, 1, "opp next");
@@ -71,7 +71,7 @@ export const TurboTwirly = card(116102)
   .since("v5.5.0")
   .unobtainable()
   .nightsoulTechnique()
-  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
   .consumeNightsoul("@master")
   .summon(TurboTwirlyLetItRip)
   .endOn()
@@ -83,7 +83,7 @@ export const TurboTwirly = card(116102)
     if (field) {
       c.damage(DamageType.Geo, 3);
       c.damage(DamageType.Piercing, 2, "opp next");
-      c.consumeUsage(1, field.state);
+      c.consumeUsage(1, field);
     } else {
       c.damage(DamageType.Geo, 2);
       c.damage(DamageType.Piercing, 1, "opp next");

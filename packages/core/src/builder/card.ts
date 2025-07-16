@@ -401,7 +401,7 @@ export class CardBuilder<
     if (requires !== "none") {
       // 出战角色须为天赋角色
       this.filter((c) =>
-        chs.includes(c.$("my active")!.state.definition.id as CharacterHandle),
+        chs.includes(c.$("my active")!.definition.id as CharacterHandle),
       );
     }
 
@@ -565,7 +565,7 @@ export class CardBuilder<
             type: "removeCard",
             who: c.self.who,
             where: "hands",
-            oldState: c.self.state,
+            oldState: c.self.latest(),
             reason: "onDrawTriggered",
           });
         });

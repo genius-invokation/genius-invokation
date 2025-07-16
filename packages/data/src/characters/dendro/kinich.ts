@@ -27,20 +27,20 @@ export const GrappleLink = status(117091)
   .since("v5.4.0")
   .duration(2)
   .defineSnippet((c) => {
-    const nightsoul = c.self.master().hasNightsoulsBlessing();
-    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") === 2 && !c.self.master().hasStatus(GrapplePrepare)) {
-      c.self.master().addStatus(GrapplePrepare);
+    const nightsoul = c.self.master.hasNightsoulsBlessing();
+    if (nightsoul && nightsoul.getVariable("nightsoul") === 2 && !c.self.master.hasStatus(GrapplePrepare)) {
+      c.self.master.addStatus(GrapplePrepare);
       c.consumeNightsoul("@master", 2);
     }
   })
   .on("damaged", (c, e) =>
     e.getReaction() === Reaction.Burning &&
-    !c.of(e.target).isMine()
+    !e.target.isMine()
   )
   .listenToAll()
   .gainNightsoul("@master")
   .callSnippet()
-  .on("useTechnique", (c, e) => e.techniqueCaller.id !== c.self.master().id)
+  .on("useTechnique", (c, e) => e.techniqueCaller.id !== c.self.master.id)
   .listenToPlayer()
   .gainNightsoul("@master")
   .callSnippet()
@@ -90,7 +90,7 @@ export const AlmightyDragonlordAjaw = summon(117093)
  */
 export const GrapplePrepare = status(117094)
   .since("v5.4.0")
-  .once("beforeAction", (c) => c.self.master().isActive()) // 如果一直都打也太离谱了，先假设它只打一次
+  .once("beforeAction", (c) => c.self.master.isActive()) // 如果一直都打也太离谱了，先假设它只打一次
   .damage(DamageType.Dendro, 3, "recent opp from @master")
   .done();
 
@@ -188,7 +188,7 @@ export const NightRealmsGiftRepaidInFull = card(217091)
   .costDendro(1)
   .talent(Kinich, "none")
   .on("switchActive", (c, e) =>
-    c.self.master().id === e.switchInfo.to.id &&
+    c.self.master.id === e.switchInfo.to.id &&
     c.player.hands.length <= c.oppPlayer.hands.length &&
     c.oppPlayer.hands.length > 0,
   )

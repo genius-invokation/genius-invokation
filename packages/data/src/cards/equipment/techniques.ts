@@ -160,7 +160,7 @@ export const Target: StatusHandle = status(301302)
   .variableCanAppend("effect", 1, Infinity)
   // 目标本身实际并无效果
   // .on("switchActive", (c, e) => {
-  //   const switchTo = c.of(e.switchInfo.to);
+  //   const switchTo = e.switchInfo.to;
   //   return !switchTo.isMine() && switchTo.hasEquipment(Qucusaurus);
   // })
   // .listenToAll()
@@ -193,7 +193,7 @@ export const Qucusaurus = card(313006)
   .characterStatus(Target, "opp active")
   .on("deductOmniDiceSwitch", (c, e) =>                           // 绒翼龙只在可以减费时生效
     c.$(`opp active has status with definition id ${Target}`) &&  // 敌方出战角色附属目标
-    e.action.to.id === c.self.master().id &&                      // 附属角色切换为出战角色
+    e.action.to.id === c.self.master.id &&                      // 附属角色切换为出战角色
     c.player.hands.length > 0)                                    // 有手牌（“如可能，舍弃”）
   .deductOmniCost(1)
   .setFastAction()
@@ -245,7 +245,7 @@ export const Waverider = card(313007)
   .endProvide()
   .on("enter")
   .characterStatus(WaveriderShield, "@master")
-  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master().id)
+  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
   .addVariable("usage", 1)
   .done();
 

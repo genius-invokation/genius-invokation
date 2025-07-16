@@ -121,7 +121,7 @@ const OceanicMimicFrog = summon(122013)
 const OceanicMimicFrogPreview = summon(122014) // 这是纯水幻形·蛙的预览版本
   .until("v4.2.0")
   .hint(DamageType.Hydro, "2")
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .usage(2, { autoDispose: false })
   .decreaseDamage(1)
   .on("endPhase", (c) => c.getVariable("usage") <= 0)

@@ -44,7 +44,7 @@ export const SeamlessShield: CombatStatusHandle = combatStatus(117053)
       // 出战角色被击倒，治疗和生成骰子不生效
       return;
     }
-    c.heal(1, active.state)
+    c.heal(1, active);
     if (c.$(`my equipment with definition id ${AllThingsAreOfTheEarth}`)) {
       c.generateDice(active.element(), 1);
     }

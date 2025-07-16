@@ -15,7 +15,7 @@ const InEveryHouseAStove = card(330005)
   .until("v4.6.1")
   .legend()
   .do((c) => {
-    const count = Math.min(c.state.roundNumber - 1, 4);
+    const count = Math.min(c.roundNumber - 1, 4);
     c.drawCards(count);
   })
   .done();
@@ -90,7 +90,7 @@ const TakimeguriKanka: StatusHandle = status(112061)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .usage(3)
   .increaseDamage(1)
-  .if((c, e) => c.self.master().hasEquipment(KyoukaFuushi) && c.of(e.target).health <= 6)
+  .if((c, e) => c.self.master.hasEquipment(KyoukaFuushi) && e.target.health <= 6)
   .increaseDamage(1)
   .done();
 

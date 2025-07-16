@@ -43,7 +43,7 @@ export const TakimeguriKanka: StatusHandle = status(112061)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .usage(3)
   .increaseDamage(1)
-  .if((c, e) => c.self.master().hasEquipment(KyoukaFuushi) && c.of(e.target).health <= 6)
+  .if((c, e) => c.self.master.hasEquipment(KyoukaFuushi) && e.target.health <= 6)
   .increaseDamage(2)
   .done();
 
