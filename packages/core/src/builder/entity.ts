@@ -494,7 +494,7 @@ export class EntityBuilder<
     this.tags("shield");
     return this.variableCanAppend("shield", count, max ?? count)
       .on("decreaseDamaged", (c, e) => {
-        if (c.self.state.definition.type === "combatStatus") {
+        if (c.self.definition.type === "combatStatus") {
           // 出战状态护盾只对出战角色生效
           return e.target.isActive();
         } else {
@@ -639,7 +639,7 @@ export class EntityBuilder<
         })
         .on("endPhase")
         .do((c) => {
-          c.damage(c.self.state.variables.hintIcon, value, target);
+          c.damage(c.self.variables.hintIcon, value, target);
         });
     } else {
       return this.hintIcon(type)
@@ -784,7 +784,7 @@ export class EntityBuilder<
           const self = c.self;
           // 恢复每回合使用次数
           for (const prop of usagePerRoundNames) {
-            const config = self.state.definition.varConfigs[prop];
+            const config = self.definition.varConfigs[prop];
             if (config) {
               self.setVariable(prop, config.initialValue);
             }

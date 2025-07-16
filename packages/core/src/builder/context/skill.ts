@@ -831,7 +831,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       // Remove existing artifact/weapon/technique first
       for (const tag of ["artifact", "weapon", "technique"] as const) {
         if (this.state.data.entities.get(id)?.tags.includes(tag)) {
-          const exist = t.state.entities.find((v) =>
+          const exist = t.entities.find((v) =>
             v.definition.tags.includes(tag),
           );
           if (exist) {

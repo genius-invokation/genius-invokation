@@ -43,8 +43,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     super();
   }
 
-  /** @deprecated */
-  get state(): EntityState {
+  protected get state(): EntityState {
     return this[LatestStateSymbol];
   }
   get definition(): EntityDefinition {

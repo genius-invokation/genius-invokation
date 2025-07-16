@@ -88,8 +88,7 @@ export class CharacterBase extends ReactiveStateBase {
   get area() {
     return (this._area ??= getEntityArea(this._gameState, this._id));
   }
-  /** @deprecated */
-  get state() {
+  protected get state() {
     return this[LatestStateSymbol];
   }
 
@@ -204,7 +203,7 @@ export class ReadonlyCharacter<
   get entities(): ApplyReactive<Meta, EntityState[]> {
     return applyReactive(this.skillContext, this.state.entities);
   }
-  
+
   $$<const Q extends string>(
     arg: Q,
   ): RxEntityState<Meta, GuessedTypeOfQuery<Q>>[] {

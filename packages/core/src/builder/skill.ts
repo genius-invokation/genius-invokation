@@ -983,7 +983,7 @@ export class TriggeredSkillBuilder<
       this.parent._type === "character" &&
       this.detailedEventName !== "defeated"
     ) {
-      this.filters.push((c) => c.self.state.variables.alive);
+      this.filters.push((c) => c.self.variables.alive);
     }
     // 1. 对于并非响应自身弃置的技能，当实体已经被弃置时，不再响应
     if (this.detailedEventName !== "selfDispose") {
@@ -1245,7 +1245,7 @@ function generateTargetList(
       targets: known,
     },
   );
-  const states = ctx.$$(first).map((c) => c.state);
+  const states = ctx.$$(first).map((c) => c.latest());
   return states.flatMap((st) =>
     generateTargetList(
       state,

@@ -52,8 +52,7 @@ class ReadonlyCard<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.area.who === this.skillContext.callerArea.who;
   }
 
-  /** @deprecated */
-  get state(): CardState {
+  protected get state(): CardState {
     return this[LatestStateSymbol];
   }
 
