@@ -475,7 +475,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
       ? (card: CardStateBase) => {
-          return nextRandom(card.id) ^ this.state.iterators.random;
+          return nextRandom(card.id) ^ this.rawState.iterators.random;
         }
       : (_: CardStateBase) => 0;
     const sortData = new Map(
