@@ -22,7 +22,7 @@ import { expect, test } from "bun:test";
 test("mavuika: play 'E' card trigger ScionsOfTheCanopy", async () => {
   const mavuika = ref();
   const c = setup(
-    <State>
+    <State dataVersion="v5.7.0">
       <Character my active def={Mavuika} ref={mavuika} />
       <Card my def={ScionsOfTheCanopy} />
     </State>,
