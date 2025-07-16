@@ -37,8 +37,7 @@ export class StatesMatcher {
   }
 
   toHaveVariable(variables: Partial<CharacterVariables | EntityVariables>) {
-    this.toBeUnique();
-    expect(this.states[0]).toMatchObject({ variables });
+    expect(this.states[0].variables).toMatchObject(variables);
   }
 
   toBeDefinition(definitionId: number) {

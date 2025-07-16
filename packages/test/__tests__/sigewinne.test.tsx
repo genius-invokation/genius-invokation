@@ -13,8 +13,21 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Character, CombatStatus, ref, setup, State, Status } from "#test";
-import { RainbowMacaronsInEffect } from "@gi-tcg/data/internal/cards/event/food";
+import {
+  Card,
+  Character,
+  CombatStatus,
+  ref,
+  setup,
+  State,
+  Status,
+} from "#test";
+import {
+  RainbowMacaronsInEffect,
+  SingYourHeartOut,
+} from "@gi-tcg/data/internal/cards/event/food";
+import { TheBestestTravelCompanion } from "@gi-tcg/data/internal/cards/event/other";
+import { Paimon } from "@gi-tcg/data/internal/cards/support/ally";
 import {
   Keqing,
   StellarRestoration,
@@ -22,6 +35,7 @@ import {
 } from "@gi-tcg/data/internal/characters/electro/keqing";
 import {
   DetailedDiagnosisThoroughTreatmentStatus,
+  ReboundHydrotherapy,
   Sigewinne,
 } from "@gi-tcg/data/internal/characters/hydro/sigewinne";
 import { BondOfLife, Satiated } from "@gi-tcg/data/internal/commons";
@@ -53,4 +67,25 @@ test("sigwinne: passive triggered after defeated", async () => {
   ).toNotExist();
   await c.opp.chooseActive(oppNext);
   c.expect("opp active").toBe(oppNext);
+});
+
+test("sigwinne: bubble", async () => {
+  const target = ref();
+  const c = setup(
+    <State>
+      <Character my def={Sigewinne} />
+      <Character my ref={target} health={1} />
+      <Card pile my def={Paimon} />
+      <Card pile my def={Paimon} />
+      <Card pile my def={TheBestestTravelCompanion} />
+      <Card my def={SingYourHeartOut} />
+    </State>,
+  );
+  await c.me.skill(ReboundHydrotherapy);
+  await c.opp.end();
+  await c.me.switch(target);
+  await c.me.card(SingYourHeartOut);
+  // 抓三张，水泡自动弃置
+  c.expect("my hand cards").toBeCount(2);
+  c.expect(target).toHaveVariable({ health: 4 });
 });
