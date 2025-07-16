@@ -289,7 +289,7 @@ export const SourceSample = skill(16114)
   .on("actionPhase")
   .do((c) => {
     const nightsoul = c.self.hasStatus(NightsoulsBlessing);
-    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") >= 2) {
+    if (nightsoul && nightsoul.getVariable("nightsoul") >= 2) {
       for (const [type, def] of Object.entries(sampleMap)) {
         if (c.$(`my status with definition id ${def}`)) {
           c.combatStatus(dmgBonusMap[Number(type) as SampleType], "opp");
@@ -334,7 +334,7 @@ export const TourOfTepeilhuitl = card(216111)
   .talent(Xilonen)
   .on("enter")
   .useSkill(YohualsScratch)
-  .on("switchActive", (c, e) => c.of(e.switchInfo.to).hasNightsoulsBlessing())
+  .on("switchActive", (c, e) => e.switchInfo.to.hasNightsoulsBlessing())
   .usagePerRound(2)
   .gainNightsoul("@event.switchTo", 1)
   .done();

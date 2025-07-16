@@ -126,7 +126,7 @@ const ToWardWeakness = card(214111)
   .on("beforeDefeated")
   .usagePerRound(1)
   .immune(1)
-  .on("increaseSkillDamage", (c, e) => c.of<"character">(e.source).health <= 5)
+  .on("increaseSkillDamage", (c, e) => e.source.cast<"character">().health <= 5)
   .increaseDamage(1)
   .done();
 

@@ -70,7 +70,7 @@ export const LingeringLifeline = skill(12092)
   .costHydro(3)
   .do((c) => {
     c.damage(DamageType.Hydro, 3);
-    const breakSt = c.of(c.self.hasStatus(BreakthroughStatus)!);
+    const breakSt = c.self.hasStatus(BreakthroughStatus)!;
     breakSt.addVariableWithMax("break", 2, 3);
   })
   .done();

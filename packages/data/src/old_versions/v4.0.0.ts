@@ -92,7 +92,7 @@ const TakimeguriKanka: StatusHandle = status(112061)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
   .usage(2)
   .increaseDamage(1)
-  .if((c, e) => c.self.master().hasEquipment(KyoukaFuushi) && c.of(e.target).health <= 6)
+  .if((c, e) => c.self.master().hasEquipment(KyoukaFuushi) && e.target.health <= 6)
   .increaseDamage(2)
   .done();
 
@@ -255,14 +255,14 @@ const MasterOfWeaponry = card(332010)
   .addTarget("my character has equipment with tag (weapon)")
   .addTarget("my character with tag weapon of (@targets.0) and not @targets.0")
   .do((c, e) => {
-    const weapon = c.of(c.of(e.targets[0]).hasWeapon()!);
-    const target = c.of(e.targets[1]);
+    const weapon = e.targets[0].hasWeapon()!;
+    const target = e.targets[1];
     const area = {
       type: "characters" as const,
       who: target.who,
       characterId: target.id,
     };
-    c.transferEntity(weapon.state, area);
+    c.transferEntity(weapon, area);
   })
   .done();
 
@@ -277,14 +277,14 @@ const BlessingOfTheDivineRelicsInstallation = card(332011)
   .addTarget("my character has equipment with tag (artifact)")
   .addTarget("my character and not @targets.0")
   .do((c, e) => {
-    const artifact = c.of(c.of(e.targets[0]).hasArtifact()!);
-    const target = c.of(e.targets[1]);
+    const artifact = e.targets[0].hasArtifact()!;
+    const target = e.targets[1];
     const area = {
       type: "characters" as const,
       who: target.who,
       characterId: target.id,
     };
-    c.transferEntity(artifact.state, area);
+    c.transferEntity(artifact, area);
   })
   .done();
 
@@ -319,7 +319,7 @@ const [WindAndFreedom] = card(331801)
   .until("v4.0.0")
   .toCombatStatus(303181)
   .oneDuration()
-  .on("defeated", (c, e) => c.state.phase === "action" && c.isMyTurn() && !c.of(e.target).isMine())
+  .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
   .listenToAll()
   .usage(1)
   .do((c) => {

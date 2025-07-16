@@ -27,7 +27,7 @@ export const Reflection = summon(112031)
   .tags("barrier")
   .endPhaseDamage(DamageType.Hydro, 1)
   .dispose()
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
   .done();

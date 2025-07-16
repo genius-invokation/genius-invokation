@@ -65,7 +65,7 @@ export const WolfsGravestone = card(311303)
   .weapon("claymore")
   .on("increaseSkillDamage")
   .do((c, e) => {
-    if (c.of(e.target).health <= 6) {
+    if (e.target.health <= 6) {
       e.increaseDamage(3);
     } else {
       e.increaseDamage(1);

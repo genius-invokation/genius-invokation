@@ -188,7 +188,7 @@ export const DetailedDiagnosisThoroughTreatment03 = skill(12137)
   .do((c) => {
     const droplet = c.$(`my combat status with definition id ${SourcewaterDroplet}`);
     if (droplet) {
-      c.consumeUsage(1, droplet.state);
+      c.consumeUsage(1, droplet);
       c.gainEnergy(1, "@self");
     }
   })

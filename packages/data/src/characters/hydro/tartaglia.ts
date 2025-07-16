@@ -59,7 +59,7 @@ export const Riptide: StatusHandle = status(112043)
   .onMasterDefeated()
   .do((c) => {
     const active = c.$("my active includes defeated")!;
-    if (active.state.variables.alive) {
+    if (active.variables.alive) {
       active.addStatus(Riptide);
     } else {
       c.combatStatus(Riptide2);

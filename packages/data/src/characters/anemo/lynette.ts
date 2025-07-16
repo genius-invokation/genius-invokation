@@ -27,7 +27,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, Skill
 export const BogglecatBox = summon(115082)
   .endPhaseDamage("swirledAnemo", 1)
   .usage(2)
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .usagePerRound(1)
   .decreaseDamage(1)
   .done();

@@ -25,7 +25,7 @@ const BonecrunchersEnergyBlock = card(124051)
     const activeCh = c.$("my active")!;
     c.generateDice(activeCh.element(), 1);
     if (activeCh.definition.tags.includes("sacread")) {
-      c.gainEnergy(1, activeCh.state);
+      c.gainEnergy(1, activeCh);
     }
     c.combatStatus(BonecrunchersEnergyBlockCombatStatus)
   })
@@ -120,7 +120,7 @@ const StarfallShower = skill(22042)
   .costHydro(3)
   .do((c) => {
     const st = c.self.hasStatus(AnomalousAnatomy);
-    const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 5) : 0;
+    const extraDmg = st ? Math.min(Math.floor(st.getVariable("extraMaxHealth") / 3), 5) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
     const [card] = c.disposeMaxCostHands(1);
     if (card) {
@@ -490,7 +490,7 @@ const [Lyresong] = card(332024)
   .until("v4.7.0")
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {
-    const { definition } = c.of(e.targets[0]).removeArtifact()!;
+    const { definition } = e.targets[0].removeArtifact()!;
     c.createHandCard(definition.id as CardHandle);
   })
   .toCombatStatus(303224)

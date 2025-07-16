@@ -31,7 +31,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   }
   declare [RawStateSymbol]: EntityState;
   override get [LatestStateSymbol](): EntityState {
-    const state = getEntityById(this.skillContext.state, this.id) as EntityState;
+    const state = getEntityById(this.skillContext.rawState, this.id) as EntityState;
     return state;
   }
 
@@ -51,7 +51,7 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.state.definition;
   }
   get area(): EntityArea {
-    return (this._area ??= getEntityArea(this.skillContext.state, this.id));
+    return (this._area ??= getEntityArea(this.skillContext.rawState, this.id));
   }
   get who() {
     return this.area.who;

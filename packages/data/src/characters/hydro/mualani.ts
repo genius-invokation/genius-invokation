@@ -160,7 +160,7 @@ export const NightRealmsGiftCrestsAndTroughs = card(212141)
     const summons = c.$$(`my summon`);
     if (summons.length > 0) {
       const targetSummon = c.random(summons);
-      c.triggerEndPhaseSkill(targetSummon.state);
+      c.triggerEndPhaseSkill(targetSummon);
     }
   })
   .done();

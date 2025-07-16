@@ -160,7 +160,7 @@ export const Target: StatusHandle = status(301302)
   .variableCanAppend("effect", 1, Infinity)
   // 目标本身实际并无效果
   // .on("switchActive", (c, e) => {
-  //   const switchTo = c.of(e.switchInfo.to);
+  //   const switchTo = e.switchInfo.to;
   //   return !switchTo.isMine() && switchTo.hasEquipment(Qucusaurus);
   // })
   // .listenToAll()

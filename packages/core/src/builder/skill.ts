@@ -1000,15 +1000,15 @@ export class TriggeredSkillBuilder<
       ];
     const listenTo = this._listenTo;
     this.filters.push(function (c, e) {
-      const { area, state } = c.self;
+      const { area, id } = c.self;
       return filterDescriptor(
         e as any,
         {
           callerArea: area,
-          callerId: state.id,
+          callerId: id,
           listenTo,
         },
-        c.state,
+        c.rawState,
       );
     });
     // 3. 自定义事件：确保事件名一致

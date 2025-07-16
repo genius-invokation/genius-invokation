@@ -135,7 +135,7 @@ export const FlamestriderBlazingTrail = card(113155)
     const summons = c.$$(`my summons`);
     if (summons.length > 0) {
       const summon = c.random(summons);
-      c.triggerEndPhaseSkill(summon.state);
+      c.triggerEndPhaseSkill(summon);
     }
   })
   .technique(`my character with definition id 1315`)

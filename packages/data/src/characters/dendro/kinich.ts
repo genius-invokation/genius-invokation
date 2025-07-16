@@ -28,14 +28,14 @@ export const GrappleLink = status(117091)
   .duration(2)
   .defineSnippet((c) => {
     const nightsoul = c.self.master().hasNightsoulsBlessing();
-    if (nightsoul && c.of(nightsoul).getVariable("nightsoul") === 2 && !c.self.master().hasStatus(GrapplePrepare)) {
+    if (nightsoul && nightsoul.getVariable("nightsoul") === 2 && !c.self.master().hasStatus(GrapplePrepare)) {
       c.self.master().addStatus(GrapplePrepare);
       c.consumeNightsoul("@master", 2);
     }
   })
   .on("damaged", (c, e) =>
     e.getReaction() === Reaction.Burning &&
-    !c.of(e.target).isMine()
+    !e.target.isMine()
   )
   .listenToAll()
   .gainNightsoul("@master")

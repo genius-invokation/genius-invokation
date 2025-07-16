@@ -79,7 +79,7 @@ export const [FreshWindOfFreedom] = card(330004)
   .legend()
   .toCombatStatus(300002)
   .oneDuration()
-  .on("defeated", (c, e) => c.state.phase === "action" && c.isMyTurn() && !c.of(e.target).isMine())
+  .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
   .listenToAll()
   .usage(1)
   .do((c) => {
@@ -106,7 +106,7 @@ export const InEveryHouseAStove = card(330005)
   .legend()
   .replaceDescription("[T]", (st) => st.roundNumber)
   .do((c) => {
-    if (c.state.roundNumber === 1) {
+    if (c.roundNumber === 1) {
       const initTalentDefIds = c.player.initialPile
         .filter((card) => card.tags.includes("talent"))
         .map((card) => card.id)
@@ -114,7 +114,7 @@ export const InEveryHouseAStove = card(330005)
         c.drawCards(1, { withTag: "talent" });
       }
     } else {
-      const count = Math.min(c.state.roundNumber - 1, 4);
+      const count = Math.min(c.roundNumber - 1, 4);
       c.drawCards(count);
     }
   })

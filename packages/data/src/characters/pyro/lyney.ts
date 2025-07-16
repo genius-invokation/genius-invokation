@@ -151,7 +151,7 @@ export const ConclusiveOvation = card(213101)
   .useSkill(PropArrow)
   .on("increaseSkillDamage", (c, e) =>
     [Lyney as number, GrinmalkinHat as number].includes(e.source.definition.id) && 
-    c.of(e.target).aura === Aura.Pyro)
+    e.target.aura === Aura.Pyro)
   .usagePerRound(1)
   .increaseDamage(2)
   .done();

@@ -62,7 +62,7 @@ const DeepDevourersDomain = combatStatus(122041)
         if (narwhal) {
           for (let i = 0; i < extraMaxHealth; i++) {
             narwhal.addStatus(AnomalousAnatomy);
-            c.increaseMaxHealth(1, narwhal.state);
+            c.increaseMaxHealth(1, narwhal);
           }
         }
         c.setVariable("cardCount", 0);
@@ -91,7 +91,7 @@ const StarfallShower = skill(22042)
   .costHydro(3)
   .do((c) => {
     const st = c.self.hasStatus(AnomalousAnatomy);
-    const extraDmg = st ? Math.min(Math.floor(c.of(st).getVariable("extraMaxHealth") / 3), 4) : 0;
+    const extraDmg = st ? Math.min(Math.floor(st.getVariable("extraMaxHealth") / 3), 4) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
     const [card] = c.disposeMaxCostHands(1);
     if (card) {

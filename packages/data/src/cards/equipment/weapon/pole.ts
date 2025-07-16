@@ -140,7 +140,7 @@ export const EngulfingLightning = card(311405)
  */
 export const MoonpiercerStatus = status(301104)
   .oneDuration()
-  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master().state, "elemental"))
+  .once("deductOmniDice", (c, e) => e.isSkillOrTalentOf(c.self.master(), "elemental"))
   .deductOmniCost(2)
   .done();
 
@@ -200,7 +200,7 @@ export const RightfulReward = card(311408)
   .variable("justice", 0)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("burst"))
   .increaseDamage(2)
-  .on("damagedOrHealed", (c, e) => c.of(e.target).isActive())
+  .on("damagedOrHealed", (c, e) => e.target.isActive())
   .listenToPlayer()
   .do((c) => {
     c.addVariable("justice", 1);

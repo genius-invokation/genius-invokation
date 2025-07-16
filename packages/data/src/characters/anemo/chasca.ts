@@ -64,13 +64,13 @@ export const ShadowhuntShell = card(115113)
   .onHCI((c) => {
     const element = c.$(`my active`)?.element();
     if (element === DiceType.Pyro) {
-      c.transformDefinition(c.self.state, ShiningShadowhuntShellPyro);
+      c.transformDefinition(c.self, ShiningShadowhuntShellPyro);
     } else if (element === DiceType.Hydro) {
-      c.transformDefinition(c.self.state, ShiningShadowhuntShellHydro);
+      c.transformDefinition(c.self, ShiningShadowhuntShellHydro);
     } else if (element === DiceType.Electro) {
-      c.transformDefinition(c.self.state, ShiningShadowhuntShellElectro);
+      c.transformDefinition(c.self, ShiningShadowhuntShellElectro);
     } else if (element === DiceType.Cryo) {
-      c.transformDefinition(c.self.state, ShiningShadowhuntShellCryo);
+      c.transformDefinition(c.self, ShiningShadowhuntShellCryo);
     }
   })
   .doSameWhenDisposed()

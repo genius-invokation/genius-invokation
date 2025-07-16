@@ -134,7 +134,7 @@ export const SwirlingSchoolOfFishPassive = skill(24037)
   .usagePerRound(1, { name: "usagePerRound1" })
   .do((c) => {
     const pearl = c.self.hasStatus(FontemerPearl)!;
-    c.of(pearl).addVariable("usage", 1);
+    pearl.addVariable("usage", 1);
   })
   .done();
 
@@ -167,7 +167,7 @@ export const PearlSolidification = card(224031)
   .do((c) => {
     const exists = c.self.master().hasStatus(FontemerPearl);
     if (exists) {
-      c.of(exists).addVariable("usage", 1);
+      exists.addVariable("usage", 1);
     } else {
       c.characterStatus(FontemerPearl, "@master", {
         overrideVariables: {

@@ -34,13 +34,13 @@ export const SeatsSacredAndSecular = card(112113)
       c.transformDefinition(furina, FurinaOusia);
       const summon = c.$(`my summon with definition id ${SalonMembers}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon.state, SingerOfManyWaters)
+        c.transformDefinition<"summon">(summon, SingerOfManyWaters)
       }
     } else {
       c.transformDefinition(furina, FurinaPneuma);
       const summon = c.$(`my summon with definition id ${SingerOfManyWaters}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon.state, SalonMembers)
+        c.transformDefinition<"summon">(summon, SalonMembers)
       }
     }
   })
@@ -126,7 +126,7 @@ export const Revelry = combatStatus(112115)
  */
 export const UniversalRevelry = combatStatus(112114)
   .duration(2)
-  .on("damagedOrHealed", (c, e) => c.of(e.target).isActive())
+  .on("damagedOrHealed", (c, e) => e.target.isActive())
   .combatStatus(Revelry)
   .done();
 

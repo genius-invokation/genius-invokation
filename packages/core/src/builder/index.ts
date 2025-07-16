@@ -39,7 +39,11 @@ export type {
   ExtensionHandle,
 } from "./type";
 export { DiceType, DamageType, Aura, Reaction } from "@gi-tcg/typings";
-export type { CharacterState, CardState, EntityState } from "../base/state";
+export type {
+  CharacterStateBase as CharacterState,
+  CardStateBase as CardState,
+  EntityStateBase as EntityState,
+} from "./context/utils";
 export {
   type CustomEvent,
   createCustomEvent as customEvent,

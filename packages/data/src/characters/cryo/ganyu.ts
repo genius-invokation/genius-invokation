@@ -37,7 +37,7 @@ export const SacredCryoPearl = summon(111011)
  */
 export const IceLotus = combatStatus(111012)
   .tags("barrier")
-  .on("decreaseDamaged", (c, e) => c.of(e.target).isActive())
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
   .usage(2)
   .decreaseDamage(1)
   .done();

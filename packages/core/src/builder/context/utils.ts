@@ -15,12 +15,13 @@
 
 /** This file provides a wrapper of getEntityById/getEntityArea with getRaw */
 
-import type { GameState } from "../../base/state";
+import type { CardState, CharacterState, EntityState, GameState, StateSymbol } from "../../base/state";
 import { getRaw } from "./reactive";
 import {
   getEntityArea as getEntityAreaOriginal,
   getEntityById as getEntityByIdOriginal,
 } from "../../utils";
+import type { ExEntityType } from "../type";
 
 export function getEntityArea(state: GameState, id: number) {
   return getEntityAreaOriginal(getRaw(state), id);
@@ -40,3 +41,14 @@ export {
   isCharacterInitiativeSkill,
   sortDice,
 } from "../../utils";
+
+
+export type CharacterStateBase = Omit<CharacterState, StateSymbol>;
+export type EntityStateBase = Omit<EntityState, StateSymbol>;
+export type CardStateBase = Omit<CardState, StateSymbol>;
+export type AnyStateBase = CharacterStateBase | EntityStateBase | CardStateBase;
+export type ExEntityStateBase<TypeT extends ExEntityType> = TypeT extends "character"
+  ? CharacterStateBase
+  : TypeT extends "card"
+    ? CardStateBase
+    : EntityStateBase;

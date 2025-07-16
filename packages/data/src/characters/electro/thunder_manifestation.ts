@@ -54,7 +54,7 @@ export const ThunderingShacklesSummon = summon(124023)
   .do((c) => {
     const target = c.$(`opp character has status with definition id ${LightningRod}`);
     if (target) {
-      c.damage(DamageType.Electro, 3, target.state);
+      c.damage(DamageType.Electro, 3, target);
     } else {
       c.damage(DamageType.Electro, 3, "opp active");
     }
@@ -107,7 +107,7 @@ export const StrifefulLightning = skill(24022)
   .do((c) => {
     const target = c.$(`opp character has status with definition id ${LightningRod}`);
     if (target) {
-      c.damage(DamageType.Electro, 3, target.state);
+      c.damage(DamageType.Electro, 3, target);
     } else {
       c.damage(DamageType.Electro, 3, "opp active");
     }

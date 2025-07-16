@@ -330,11 +330,11 @@ export const OperaEpiclese = card(321017)
   .support("place")
   .on("beforeAction", (c) => {
     function costOfEquipment(equipment: EntityState) {
-      const cardDef = c.state.data.cards.get(equipment.definition.id)!;
+      const cardDef = c.data.cards.get(equipment.definition.id)!;
       return diceCostOfCard(cardDef);
     }
-    const myCost = c.$$(`my equipments`).map((entity) => costOfEquipment(entity.state)).reduce((a, b) => a + b, 0);
-    const oppCost = c.$$(`opp equipments`).map((entity) => costOfEquipment(entity.state)).reduce((a, b) => a + b, 0);
+    const myCost = c.$$(`my equipments`).map((entity) => costOfEquipment(entity)).reduce((a, b) => a + b, 0);
+    const oppCost = c.$$(`opp equipments`).map((entity) => costOfEquipment(entity)).reduce((a, b) => a + b, 0);
     return myCost >= oppCost;
   })
   .usage(3)
@@ -370,7 +370,7 @@ export const FortressOfMeropide = card(321018)
   .costSame(1)
   .support("place")
   .variable("forbidden", 0)
-  .on("damagedOrHealed", (c, e) => c.of(e.target).isActive())
+  .on("damagedOrHealed", (c, e) => e.target.isActive())
   .addVariableWithMax("forbidden", 1, 4)
   .on("actionPhase", (c) => c.getVariable("forbidden") >= 4)
   .combatStatus(StrictProhibited, "opp")
@@ -697,7 +697,7 @@ export const CollectiveOfPlenty = card(321028)
     e.entity.definition.tags.includes("preparingSkill"))
   .do((c, e) => {
     const ch = c.of<"status">(e.entity).master();
-    c.characterStatus(Exercise, ch.state, {
+    c.characterStatus(Exercise, ch, {
       overrideVariables: {
         layer: 3
       }

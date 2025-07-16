@@ -78,7 +78,7 @@ export const LingeringFragranceInEffect = status(117104)
   .do((c) => {
     const burning = c.$(`my summons with definition id ${BurningFlame}`);
     if (burning) {
-      c.triggerEndPhaseSkill(burning.state);
+      c.triggerEndPhaseSkill(burning);
     }
   })
   .done();
@@ -183,7 +183,7 @@ export const MarcotteSillage = card(217101)
     for (const id of lumidouceIds) {
       const lumidouce = c.$(`my summons with definition id ${id}`);
       if (lumidouce) {
-        c.triggerEndPhaseSkill(lumidouce.state);
+        c.triggerEndPhaseSkill(lumidouce);
         break;
       }
     }

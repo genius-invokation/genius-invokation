@@ -88,7 +88,7 @@ export const MistySummons = skill(21012)
     const talent = c.self.hasEquipment(CicinsColdGlare);
     const cicins = c.$(`my summons with definition id ${CryoCicins}`);
     if (talent && cicins && cicins.getVariable("usage") >= 2) {
-      c.of(talent).setVariable("dealDamage", 1);
+      talent.setVariable("dealDamage", 1);
     }
   })
   .summon(CryoCicins)

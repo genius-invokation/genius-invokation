@@ -12,7 +12,7 @@ const InEveryHouseAStove = card(330005)
   .until("v4.3.0")
   .legend()
   .do((c) => {
-    const count = Math.min(c.state.roundNumber, 4);
+    const count = Math.min(c.roundNumber, 4);
     c.drawCards(count);
   })
   .done();
@@ -64,10 +64,7 @@ const LightningRod = status(124022)
 const GrievingEcho = card(224021)
   .until("v4.3.0")
   .talent(ThunderManifestation, "none")
-  .on("damaged", (c, e) => {
-    const target = c.of(e.target);
-    return !target.isMine() && target.hasStatus(LightningRod);
-  })
+  .on("damaged", (c, e) => !e.target.isMine() && e.target.hasStatus(LightningRod))
   .listenToAll()
   .usagePerRound(1)
   .drawCards(1)
