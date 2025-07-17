@@ -87,13 +87,13 @@ export const BloodbondedShadow = skill(21044)
     if (usage > 0) {
       c.characterStatus(BondOfLife, "opp active", {
         overrideVariables: { usage }
-      })
-    }
-    if (c.self.hasEquipment(RimeflowRapier)) {
-      const bondSt = c.$(`status with definition id ${BondOfLife} at opp active`);
-      if (bondSt) {
-        const oldUsage = bondSt.getVariable("usage");
-        bondSt.setVariable("usage", oldUsage * 2);
+      });
+      if (c.self.hasEquipment(RimeflowRapier)) {
+        const bondSt = c.$(`status with definition id ${BondOfLife} at opp active`);
+        if (bondSt) {
+          const oldUsage = bondSt.getVariable("usage");
+          bondSt.setVariable("usage", oldUsage * 2);
+        }
       }
     }
   })
