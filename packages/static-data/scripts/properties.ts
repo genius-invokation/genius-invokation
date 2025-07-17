@@ -79,7 +79,9 @@ export const HINT_TYPE = match(xcard, ID, 111031, "GCG_HINT_CRYO");
 export const TOKEN_TO_SHOW = match(xcard, ID, 111031, "GCG_TOKEN_LIFE");
 export const ICON_TO_SHOW = match(xcard, ID, 111031, "GCG_TOKEN_ICON_CLOCK");
 export const BUFF_ICON_HASH = match(xcard, ID, 111031, 3032486446292491317n);
+export const PERSIST_EFFECT_TYPE = match(xcard, ID, 111031, "GCG_PERSIST_EFFECT_NONE");
 export const IS_HIDDEN = match(xcard, ID, 112044, true); // 断流
+export const REMAIN_AFTER_DIE = match(xcard, ID, 116113, true); // 源音采样
 
 const ganyuTalent = xcard.find((e) => e[ID] === 211011)!;
 export const COST_TYPE = (ganyuTalent[COST_LIST] as object[])
