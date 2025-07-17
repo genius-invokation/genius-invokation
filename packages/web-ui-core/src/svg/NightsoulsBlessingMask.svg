@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 800">
-  <foreignObject x="0" y="0" width="100%" height="100">
+  <foreignObject x="0" y="0" width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>
         #container {
@@ -16,17 +16,28 @@
         }
 
         #inner {
-          height: 105px;
+          height: 100%;
           width: 100%;
           background-image:
             var(--glitter), var(--glitter),
             linear-gradient(
-              0deg,
-              var(--color) 10px,
-              color-mix(in srgb, var(--color), transparent 80%) 50%,
-              transparent 100%
+              90deg,
+              black 2%,
+              transparent 5%,
+              transparent 95%,
+              black 98%
             ),
-            radial-gradient(ellipse at center bottom, transparent 25%, black 95%);
+            linear-gradient(
+              0deg,
+              black 1%,
+              transparent 2%,
+              var(--color) 4%,
+              var(--color) 84%,
+              color-mix(in srgb, var(--color), transparent 80%) 90%,
+              transparent 96%,
+              black 98%
+            ),
+            radial-gradient(ellipse at center bottom, transparent 25%, black 100%);
           background-size:
             700px var(--height-1),
             800px var(--height-2),
@@ -34,7 +45,7 @@
             100% 100%;
           background-blend-mode: hard-light, color-dodge, multiply;
           background-repeat: repeat, repeat, repeat, no-repeat;
-          filter: brightness(3.7) blur(5px) contrast(6);
+          filter: brightness(3.7) blur(13px) contrast(15);
           animation: float 15s linear infinite;
         }
 
@@ -52,5 +63,5 @@
       </div>
     </div>
   </foreignObject>
-  <rect height="705" y="95" width="100%" fill="#fff" />
+  <rect height="680" width="95%" y="102" x="2.5%" fill="#fff" rx="30" filter="blur(2px)" />
 </svg>

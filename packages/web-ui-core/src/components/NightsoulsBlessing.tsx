@@ -23,13 +23,13 @@ export interface NighsoulsBlessingProps {
 }
 
 const NIGHTSOUL_COLORS: Record<number, [string, string]> = {
-  [DiceType.Cryo]: ["#63d4e2", "#99ffff"],
-  [DiceType.Hydro]: ["#5791e0", "#80C0FF"],
-  [DiceType.Pyro]: ["#f07648", "#FF9999"],
-  [DiceType.Electro]: ["#b178eb", "#FFACFF"],
-  [DiceType.Anemo]: ["#52daab", "#80FFD7"],
-  [DiceType.Geo]: ["#e2a60b", "#FFE699"],
-  [DiceType.Dendro]: ["#9bca13", "#7EC236"],
+  [DiceType.Cryo]: ["#36e4ff", "#dfb8ff"],
+  [DiceType.Hydro]: ["#0077ff", "#80eeff"],
+  [DiceType.Pyro]: ["#ff3300", "#ff7700"],
+  [DiceType.Electro]: ["#b348ff", "#986fff"],
+  [DiceType.Anemo]: ["#23d798", "#47fec4"],
+  [DiceType.Geo]: ["#ffb700", "#ffe837"],
+  [DiceType.Dendro]: ["#1a9813", "#6cd000"],
 };
 
 export interface BackgroundProps {
