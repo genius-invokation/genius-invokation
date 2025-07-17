@@ -18,7 +18,9 @@ import {
   CHARACTER_TAG_BARRIER,
   CHARACTER_TAG_BOND_OF_LIFE,
   CHARACTER_TAG_DISABLE_SKILL,
+  CHARACTER_TAG_NIGHTSOULS_BLESSING,
   CHARACTER_TAG_SHIELD,
+  DiceType,
   PbEquipmentType,
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
@@ -64,6 +66,7 @@ import TalentIcon from "../svg/TalentIcon.svg";
 import CardFrameNormal from "../svg/CardFrameNormal.svg";
 import { Dynamic } from "solid-js/web";
 import { Reaction, REACTION_TEXT_MAP } from "./Reaction";
+import { NighsoulsBlessing } from "./NightsoulsBlessing";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -367,6 +370,12 @@ export function CharacterArea(props: CharacterAreaProps) {
           }
           bool:data-defeated={defeated()}
         >
+          <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
+            <NighsoulsBlessing
+              class="absolute z--1 inset--1 top--6"
+              element={Number(data().definitionId.toString()[1]) as DiceType}
+            />
+          </Show>
           <Image
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
