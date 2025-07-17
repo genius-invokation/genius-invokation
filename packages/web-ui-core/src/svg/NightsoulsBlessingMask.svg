@@ -46,7 +46,7 @@
           background-blend-mode: hard-light, color-dodge, multiply;
           background-repeat: repeat, repeat, repeat, no-repeat;
           filter: brightness(3.7) blur(13px) contrast(15);
-          animation: float 15s linear infinite;
+          animation: float 9s linear infinite;
         }
 
         @keyframes float {
