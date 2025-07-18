@@ -33,6 +33,7 @@ export interface Transform {
   x: number;
   y: number;
   z: number;
+  rx?: number;
   ry: number;
   rz: number;
 }
@@ -45,7 +46,8 @@ export const cssPropertyOfTransform = (
     x.y / 4
   }rem, ${x.z / 4}rem) 
     rotateZ(${x.rz}deg)
-    rotateY(${x.ry}deg))`,
+    rotateY(${x.ry}deg)
+    rotateX(${x.rx ? x.rx : 0}deg))`,
 });
 
 export interface CardStaticUiState extends StaticUiState {

@@ -20,6 +20,7 @@ import {
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_NIGHTSOULS_BLESSING,
   CHARACTER_TAG_SHIELD,
+  DamageType,
   DiceType,
   PbEquipmentType,
 } from "@gi-tcg/typings";
@@ -39,7 +40,7 @@ import {
 } from "solid-js";
 import { Image } from "./Image";
 import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
-import { Damage } from "./Damage";
+import { Damage, DAMAGE_COLOR } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { ActionStepEntityUi } from "../action";
@@ -115,6 +116,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
   console.log({ ...info, rz });
   const diffX = info.targetX - info.sourceX;
   const diffY = info.targetY - info.sourceY;
+  const rx = Math.sign(diffY);
   return [
     {
       offset: 0,
@@ -130,20 +132,64 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       offset: 0.1,
       easing: "ease-in",
       ...cssPropertyOfTransform({
-        x: info.sourceX + diffX * 0.2,
-        y: info.sourceY + diffY * 0.2,
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.08,
+        z: 20,
+        rx: -rx * 20,
+        ry: 5,
+        rz: rz * 0.1,
+      }),
+    },
+    {
+      offset: 0.2,
+      easing: "ease-out",
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.16,
         z: 40,
         ry: 0,
-        rz: rz * 0.2,
+        rz,
+      }),
+    },
+    {
+      offset: 0.3,
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.16,
+        z: 40,
+        ry: 0,
+        rz,
       }),
     },
     {
       offset: 0.4,
+      easing: "ease-in",
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.2,
+        y: info.sourceY + diffY * 0.2,
+        z: 30,
+        ry: 90,
+        rz,
+      }),
+    },
+    {
+      offset: 0.5,
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.6,
         y: info.sourceY + diffY * 0.6,
+        z: 30,
+        ry: 120,
+        rz,
+      }),
+    },
+    {
+      offset: 0.55,
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.7,
+        y: info.sourceY + diffY * 0.7,
         z: 20,
-        ry: 0,
+        rx: rx * 20,
+        ry: 180,
         rz,
       }),
     },
@@ -153,19 +199,43 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
         x: info.targetX,
         y: info.targetY,
         z: 10,
-        ry: 90,
+        rx: rx * 70,
+        ry: 180,
         rz,
       }),
     },
     {
+      offset: 0.65,
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.7,
+        y: info.sourceY + diffY * 0.7,
+        z: 20,
+        rx: rx * 20,
+        ry: 180,
+        rz: rz * 0.85,
+      }),
+    },
+    {
       offset: 0.8,
+      easing: "ease-in",
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.4,
+        y: info.sourceY + diffY * 0.4,
+        z: 30,
+        ry: 90,
+        rz: rz * 0.5,
+      }),
+    },
+    {
+      offset: 0.9,
       easing: "ease-out",
       ...cssPropertyOfTransform({
-        x: info.sourceX + diffX * 0.8,
-        y: info.sourceY + diffY * 0.8,
-        z: 10,
-        ry: 180,
-        rz,
+        x: info.sourceX + diffX * 0.2,
+        y: info.sourceY + diffY * 0.2,
+        z: 15,
+        rx: rx * 10,
+        ry: 0,
+        rz: rz * 0.1,
       }),
     },
     {
@@ -174,7 +244,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
         x: info.sourceX,
         y: info.sourceY,
         z: 0,
-        ry: 360,
+        ry: 0,
         rz: 0,
       }),
     },
@@ -189,10 +259,11 @@ const damageTargetKeyFrames = (info: AnimationInfo): Keyframe[] => {
   const OFFSET = 5;
   const xOffset = OFFSET * Math.cos(rad);
   const yOffset = OFFSET * Math.sin(rad);
+  const xRotate = Math.sign(info.targetY - info.sourceY) * 20;
+  const yRotate = -Math.sign(info.targetX - info.sourceX) * 15;
   return [
     {
       offset: 0,
-      easing: "ease-out",
       ...cssPropertyOfTransform({
         x: info.targetX,
         y: info.targetY,
@@ -203,12 +274,13 @@ const damageTargetKeyFrames = (info: AnimationInfo): Keyframe[] => {
     },
     {
       offset: 0.5,
-      easing: "ease-out",
+      easing: "ease-in-out",
       ...cssPropertyOfTransform({
         x: info.targetX + xOffset,
         y: info.targetY + yOffset,
-        z: 0,
-        ry: 0,
+        z: 5,
+        rx: xRotate,
+        ry: yRotate,
         rz: 0,
       }),
     },
@@ -325,6 +397,19 @@ export function CharacterArea(props: CharacterAreaProps) {
     });
   });
 
+  const demageColor = createMemo(() => {
+    const damages = props.uiState.damages;
+    if (damages[0]?.type === "damage") {
+      if (
+        damages[0].damageType > DamageType.Physical &&
+        damages[0].damageType < DamageType.Piercing
+      ) {
+        console.log(DAMAGE_COLOR[damages[0].damageType]);
+        return `var(--c-${DAMAGE_COLOR[damages[0].damageType]})`;
+      }
+    }
+  });
+
   const aura = createMemo((): [number, number] => {
     const aura = props.preview?.newAura ?? preReactionAura() ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
@@ -360,7 +445,7 @@ export function CharacterArea(props: CharacterAreaProps) {
   );
   return (
     <div
-      class="absolute flex flex-col items-center transition-transform preserve-3d [&>*]:backface-hidden"
+      class="absolute flex flex-col items-center transition-transform preserve-3d [&_*]:backface-hidden"
       style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
       onClick={(e) => {
@@ -504,6 +589,12 @@ export function CharacterArea(props: CharacterAreaProps) {
           }
           bool:data-defeated={defeated()}
         >
+          <Show when={demageColor()}>
+            <div
+              class="h-full w-full rounded-1 attack-effect"
+              style={{ "--glow-color": demageColor() }}
+            />
+          </Show>
           <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
             <NighsoulsBlessing
               class="absolute z--1 inset--1 top--6"
