@@ -181,6 +181,7 @@ export const ViciousAncientBattle = card(330008)
  */
 export const [EdictOfAbsolution] = card(330009)
   .since("v5.0.0")
+  .costSame(1)
   .legend()
   .addTarget("my characters")
   .toStatus(300005, "@targets.0")
