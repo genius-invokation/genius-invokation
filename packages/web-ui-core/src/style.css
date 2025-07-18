@@ -293,7 +293,7 @@
   }
 
   .attack-effect {
-    animation: attack-effect-ountline 600ms ease-out forwards;
+    animation: attack-effect-outline 600ms ease-out forwards;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 
@@ -391,7 +391,7 @@
   }
 }
 
-@keyframes attack-effect-ountline {
+@keyframes attack-effect-outline {
   0% {
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
