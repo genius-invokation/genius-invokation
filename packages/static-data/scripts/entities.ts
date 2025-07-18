@@ -24,6 +24,8 @@ import {
   HINT_TYPE,
   ID,
   IS_HIDDEN,
+  REMAIN_AFTER_DIE,
+  PERSIST_EFFECT_TYPE,  
   NAME_TEXT_MAP_HASH,
   SKILL_LIST,
   STATE_BUFF_TYPE,
@@ -56,6 +58,8 @@ export interface EntityRawData {
   playingDescription?: string;
 
   hidden: boolean;
+  remainAfterDie: boolean;
+  persistEffectType?: string;
   buffType?: string;
   hintType?: string;
   shownToken?: string;
@@ -167,6 +171,9 @@ export async function collateEntities(langCode: string) {
     const buffIconHash = obj[BUFF_ICON_HASH]
       ? String(obj[BUFF_ICON_HASH])
       : void 0;
+    const remainAfterDie = !!obj[REMAIN_AFTER_DIE];
+    const persistEffectType = 
+      obj[PERSIST_EFFECT_TYPE] === "GCG_PERSIST_EFFECT_NONE" ? void 0 : obj[PERSIST_EFFECT_TYPE];
 
     const data: EntityRawData = {
       id,
@@ -183,7 +190,9 @@ export async function collateEntities(langCode: string) {
       hintType,
       shownToken,
       shownIcon,
+      persistEffectType,
       hidden,
+      remainAfterDie,
       buffIcon,
       buffIconHash,
     };
