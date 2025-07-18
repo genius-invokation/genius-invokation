@@ -26,35 +26,46 @@
               transparent 5%,
               transparent 95%,
               black 98%
-            ),
+            ),         
             linear-gradient(
               0deg,
-              black 1%,
-              transparent 2%,
+              black 1.5%,
+              transparent 3%,
               var(--color) 4%,
-              var(--color) 84%,
-              color-mix(in srgb, var(--color), transparent 80%) 90%,
+              var(--color) 83%,
+              color-mix(in srgb, var(--color), transparent 80%) 89%,
               transparent 96%,
               black 98%
             ),
+            conic-gradient(
+              from 90deg at 50% 0%,
+              black 25deg,
+              transparent 35deg,
+              color-mix(in srgb, var(--color), transparent 30%) 50deg,
+              color-mix(in srgb, var(--color), transparent 30%) 130deg,
+              transparent 145deg,
+              black 175deg
+            );               
             radial-gradient(ellipse at center bottom, transparent 25%, black 100%);
           background-size:
             700px var(--height-1),
             800px var(--height-2),
             100% 100%,
+            100% 100%,
+            100% 100%,
             100% 100%;
-          background-blend-mode: hard-light, color-dodge, multiply;
-          background-repeat: repeat, repeat, repeat, no-repeat;
-          filter: brightness(3.7) blur(13px) contrast(15);
-          animation: float 9s linear infinite;
+          background-blend-mode: hard-light, color-dodge, normal, normal, normal;
+          background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+          filter: brightness(3.7) blur(13px) contrast(12);
+          animation: float 8s linear infinite;
         }
 
         @keyframes float {
           0% {
-            background-position: center var(--height-1), center var(--height-2), 50% 100%, center center;
+            background-position: center var(--height-1), center var(--height-2), center center, center center, center center, center center;
           }
           100% {
-            background-position: center 0px, center 0px, 50% 100%, center center;
+            background-position: center 0px, center 0px, center center, center center, center center, center center;
           }
         }
       </style>
