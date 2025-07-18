@@ -339,7 +339,7 @@ function calcCardsInfo(
             y,
             z: (pileSize - 1 - i) / 4,
             ry: 180,
-            rz: -90,
+            rz: 90,
           },
         },
         enableShadow: i === pileSize - 1,
@@ -875,11 +875,13 @@ function rerenderChildren(opt: {
           type: "damageSource",
           targetX: target.uiState.transform.x,
           targetY: target.uiState.transform.y,
+          damageType: damage.damageType,
         };
         target.uiState.animation = {
           type: "damageTarget",
           sourceX: source.uiState.transform.x,
           sourceY: source.uiState.transform.y,
+          damageType: damage.damageType,
         };
       }
     }

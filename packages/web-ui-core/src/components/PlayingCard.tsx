@@ -31,7 +31,7 @@ export function PlayingCard(props: PlayingCardProps) {
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.data.definitionId}
       />
-      <img src={CardFrameNormal} class="absolute inset-0 h-full w-full pointer-events-none" />
+      <img src={CardFrameNormal} draggable={false} class="absolute inset-0 h-full w-full pointer-events-none" />
     </div>
   );
 }
