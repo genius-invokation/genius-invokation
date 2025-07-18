@@ -62,13 +62,13 @@ export function Background(props: BackgroundProps) {
           <animate
             attributeName="y1"
             values="0%;100%"
-            dur="8s"
+            dur="4s"
             repeatCount="indefinite"
           />
           <animate
             attributeName="y2"
             values="25%;125%"
-            dur="8s"
+            dur="4s"
             repeatCount="indefinite"
           />
           <stop stop-color={props.color1} stop-opacity="1" offset="0%" />
