@@ -44,8 +44,8 @@ export const cssPropertyOfTransform = (
   transform: `var(--override-transform, translate3d(${x.x / 4}rem, ${
     x.y / 4
   }rem, ${x.z / 4}rem) 
-    rotateY(${x.ry}deg) 
-    rotateZ(${x.rz}deg))`,
+    rotateZ(${x.rz}deg)
+    rotateY(${x.ry}deg))`,
 });
 
 export interface CardStaticUiState extends StaticUiState {

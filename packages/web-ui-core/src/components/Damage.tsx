@@ -35,7 +35,7 @@ export function Damage(props: DamageProps) {
   const damageType = createMemo(() => props.info.damageType);
   const damageValue = createMemo(() => props.info.value);
   return (
-    <div class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+    <div class="absolute z-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] preserve-3d">
       <div
         class="relative w-28 h-28 transition-all-100 transition-discrete hidden data-[shown]:flex scale-80 data-[shown]:scale-100 starting:data-[shown]:scale-80"
         bool:data-shown={props.shown}

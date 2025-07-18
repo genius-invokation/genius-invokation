@@ -129,7 +129,7 @@ export function CardFace(props: CardFaceProps) {
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}
       />
-      <img src={CardFrameNormal} class="absolute inset-0 h-full w-full pointer-events-none"/>
+      <img src={CardFrameNormal} draggable={false} class="absolute inset-0 h-full w-full pointer-events-none"/>
     </div>
   );
 }
@@ -269,7 +269,7 @@ export function Card(props: CardProps) {
         size={36}
         realCost={realCost()}
       />
-      <img src={CardbackNormal} class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px" />
+      <img src={CardbackNormal} draggable={false} class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px pointer-events-none" />
       <Show when={backfaceDebuff()}>
         <div class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.2px rounded-1.2 cardback-debuff"/>
       </Show>

@@ -339,7 +339,7 @@ function calcCardsInfo(
             y,
             z: (pileSize - 1 - i) / 4,
             ry: 180,
-            rz: -90,
+            rz: 90,
           },
         },
         enableShadow: i === pileSize - 1,
