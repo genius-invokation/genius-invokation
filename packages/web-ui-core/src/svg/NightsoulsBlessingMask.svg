@@ -21,40 +21,42 @@
           background-image:
             var(--glitter), var(--glitter),
             linear-gradient(
-              90deg,
+              to right,
               black 2%,
               transparent 5%,
               transparent 95%,
               black 98%
             ),
             linear-gradient(
-              0deg,
+              to top,
               black 1%,
-              transparent 2%,
-              var(--color) 4%,
-              var(--color) 84%,
-              color-mix(in srgb, var(--color), transparent 80%) 90%,
-              transparent 96%,
-              black 98%
+              white 4%,
+              white 90%,
+              color-mix(
+                in srgb,
+                white,
+                transparent 40%
+              ) 98%,
+              black 100%
             ),
-            radial-gradient(ellipse at center bottom, transparent 25%, black 100%);
+            radial-gradient(ellipse 75% 94% at center bottom, transparent 80%, black 100%);
           background-size:
             700px var(--height-1),
             800px var(--height-2),
             100% 100%,
             100% 100%;
-          background-blend-mode: hard-light, color-dodge, multiply;
-          background-repeat: repeat, repeat, repeat, no-repeat;
-          filter: brightness(3.7) blur(13px) contrast(15);
+          background-blend-mode: hard-light, color-dodge, multiply, multiply;
+          background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
+          filter: brightness(3.7) blur(12px) contrast(15);
           animation: float 9s linear infinite;
         }
 
         @keyframes float {
           0% {
-            background-position: center var(--height-1), center var(--height-2), 50% 100%, center center;
+            background-position: center var(--height-1), center var(--height-2), 50% 100%, center center, center center;
           }
           100% {
-            background-position: center 0px, center 0px, 50% 100%, center center;
+            background-position: center 0px, center 0px, 50% 100%, center center, center center;
           }
         }
       </style>
