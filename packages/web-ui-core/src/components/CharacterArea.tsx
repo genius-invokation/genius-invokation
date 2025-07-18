@@ -20,6 +20,7 @@ import {
   CHARACTER_TAG_DISABLE_SKILL,
   CHARACTER_TAG_NIGHTSOULS_BLESSING,
   CHARACTER_TAG_SHIELD,
+  DamageType,
   DiceType,
   PbEquipmentType,
 } from "@gi-tcg/typings";
@@ -39,7 +40,7 @@ import {
 } from "solid-js";
 import { Image } from "./Image";
 import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
-import { Damage } from "./Damage";
+import { Damage, DAMAGE_COLOR } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
 import { ActionStepEntityUi } from "../action";
@@ -64,7 +65,7 @@ import ArtifactIcon from "../svg/ArtifactIcon.svg";
 import WeaponIcon from "../svg/WeaponIcon.svg";
 import TalentIcon from "../svg/TalentIcon.svg";
 import CardFrameNormal from "../svg/CardFrameNormal.svg";
-import { Dynamic } from "solid-js/web";
+import CardbackNormal from "../svg/CardbackNormal.svg";
 import { Reaction, REACTION_TEXT_MAP } from "./Reaction";
 import { NighsoulsBlessing } from "./NightsoulsBlessing";
 
@@ -75,8 +76,10 @@ export interface DamageSourceAnimation {
 }
 
 export const DAMAGE_SOURCE_ANIMATION_DURATION = 800;
-export const DAMAGE_TARGET_ANIMATION_DELAY = 500;
-export const DAMAGE_TARGET_ANIMATION_DURATION = 200;
+export const DAMAGE_TARGET_ANIMATION_DELAY =
+  DAMAGE_SOURCE_ANIMATION_DURATION * 0.6;
+export const DAMAGE_TARGET_ANIMATION_DURATION =
+  DAMAGE_SOURCE_ANIMATION_DURATION * 0.3;
 
 export interface DamageTargetAnimation {
   type: "damageTarget";
@@ -97,6 +100,202 @@ export interface CharacterAreaProps extends CharacterInfo {
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+interface AnimationInfo {
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+}
+
+const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
+  const rz =
+    (-Math.atan((info.targetX - info.sourceX) / (info.targetY - info.sourceY)) *
+      180) /
+    Math.PI;
+  console.log({ ...info, rz });
+  const diffX = info.targetX - info.sourceX;
+  const diffY = info.targetY - info.sourceY;
+  const rx = Math.sign(diffY);
+  return [
+    {
+      offset: 0,
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY,
+        z: 0,
+        ry: 0,
+        rz: 0,
+      }),
+    },
+    {
+      offset: 0.1,
+      easing: "ease-in",
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.08,
+        z: 25,
+        rx: -rx * 20,
+        ry: 5,
+        rz: rz * 0.1,
+      }),
+    },
+    {
+      offset: 0.2,
+      easing: "ease-out",
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.16,
+        z: 50,
+        ry: 0,
+        rz,
+      }),
+    },
+    {
+      offset: 0.3,
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY - diffY * 0.16,
+        z: 50,
+        ry: 0,
+        rz,
+      }),
+    },
+    {
+      offset: 0.4,
+      easing: "ease-in",
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.2,
+        y: info.sourceY + diffY * 0.2,
+        z: 40,
+        ry: 90,
+        rz,
+      }),
+    },
+    {
+      offset: 0.5,
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.6,
+        y: info.sourceY + diffY * 0.5,
+        z: 40,
+        ry: 120,
+        rz,
+      }),
+    },
+    {
+      offset: 0.55,
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.7,
+        y: info.sourceY + diffY * 0.6,
+        z: 30,
+        rx: rx * 20,
+        ry: 180,
+        rz,
+      }),
+    },
+    {
+      offset: 0.6,
+      ...cssPropertyOfTransform({
+        x: info.targetX,
+        y: info.targetY - diffY * 0.1,
+        z: 20,
+        rx: rx * 70,
+        ry: 180,
+        rz,
+      }),
+    },
+    {
+      offset: 0.65,
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.7,
+        y: info.sourceY + diffY * 0.6,
+        z: 30,
+        rx: rx * 20,
+        ry: 180,
+        rz: rz * 0.85,
+      }),
+    },
+    {
+      offset: 0.8,
+      easing: "ease-in",
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.4,
+        y: info.sourceY + diffY * 0.4,
+        z: 40,
+        ry: 90,
+        rz: rz * 0.5,
+      }),
+    },
+    {
+      offset: 0.9,
+      easing: "ease-out",
+      ...cssPropertyOfTransform({
+        x: info.sourceX + diffX * 0.2,
+        y: info.sourceY + diffY * 0.2,
+        z: 20,
+        rx: rx * 10,
+        ry: 0,
+        rz: rz * 0.1,
+      }),
+    },
+    {
+      offset: 1,
+      ...cssPropertyOfTransform({
+        x: info.sourceX,
+        y: info.sourceY,
+        z: 0,
+        ry: 0,
+        rz: 0,
+      }),
+    },
+  ];
+};
+
+const damageTargetKeyFrames = (info: AnimationInfo): Keyframe[] => {
+  const rad = Math.atan2(
+    info.targetY - info.sourceY,
+    info.targetX - info.sourceX,
+  );
+  const OFFSET = 5;
+  const xOffset = OFFSET * Math.cos(rad);
+  const yOffset = OFFSET * Math.sin(rad);
+  const xRotate = Math.sign(info.targetY - info.sourceY) * 20;
+  const yRotate = -Math.sign(info.targetX - info.sourceX) * 15;
+  return [
+    {
+      offset: 0,
+      ...cssPropertyOfTransform({
+        x: info.targetX,
+        y: info.targetY,
+        z: 0,
+        ry: 0,
+        rz: 0,
+      }),
+    },
+    {
+      offset: 0.5,
+      easing: "ease-in-out",
+      ...cssPropertyOfTransform({
+        x: info.targetX + xOffset,
+        y: info.targetY + yOffset,
+        z: 5,
+        rx: xRotate,
+        ry: yRotate,
+        rz: 0,
+      }),
+    },
+    {
+      offset: 1,
+      ...cssPropertyOfTransform({
+        x: info.targetX,
+        y: info.targetY,
+        z: 0,
+        ry: 0,
+        rz: 0,
+      }),
+    },
+  ];
+};
 
 export function CharacterArea(props: CharacterAreaProps) {
   let el!: HTMLDivElement;
@@ -160,22 +359,29 @@ export function CharacterArea(props: CharacterAreaProps) {
 
     if (propAnimation.type === "damageTarget") {
       damageDelay = DAMAGE_TARGET_ANIMATION_DELAY;
-      const animation = el.animate([], {
-        delay: 0,
-        duration: DAMAGE_SOURCE_ANIMATION_DURATION,
-      });
+      const { sourceX, sourceY } = propAnimation;
+      const animation = el.animate(
+        damageTargetKeyFrames({
+          sourceX,
+          sourceY,
+          targetX: transform.x,
+          targetY: transform.y,
+        }),
+        {
+          delay: DAMAGE_TARGET_ANIMATION_DELAY,
+          duration: DAMAGE_TARGET_ANIMATION_DURATION,
+        },
+      );
       animations.push(animation.finished.then(() => animation.cancel()));
     } else if (propAnimation.type === "damageSource") {
       const { targetX, targetY } = propAnimation;
       const animation = el.animate(
-        [
-          {
-            offset: 0.5,
-            transform: `translate3d(${targetX / 4}rem, ${targetY / 4}rem, ${
-              1 / 4
-            }rem)`,
-          },
-        ],
+        damageSourceKeyFrames({
+          sourceX: transform.x,
+          sourceY: transform.y,
+          targetX,
+          targetY,
+        }),
         {
           delay: 0,
           duration: DAMAGE_SOURCE_ANIMATION_DURATION,
@@ -189,6 +395,17 @@ export function CharacterArea(props: CharacterAreaProps) {
     Promise.all(animations).then(() => {
       onAnimationFinish?.();
     });
+  });
+
+  const damageSourceColor = createMemo<string | undefined>(() => {
+    if (props.uiState.animation.type !== "damageSource") {
+      return;
+    }
+    const damageType = props.uiState.animation.damageType;
+    if (damageType > DamageType.Physical && damageType < DamageType.Piercing) {
+      console.log(DAMAGE_COLOR[damageType]);
+      return `var(--c-${DAMAGE_COLOR[damageType]})`;
+    }
   });
 
   const aura = createMemo((): [number, number] => {
@@ -226,7 +443,7 @@ export function CharacterArea(props: CharacterAreaProps) {
   );
   return (
     <div
-      class="absolute flex flex-col items-center transition-transform"
+      class="absolute flex flex-col items-center transition-transform preserve-3d [&_*]:backface-hidden"
       style={cssPropertyOfTransform(props.uiState.transform)}
       ref={el}
       onClick={(e) => {
@@ -266,7 +483,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </Switch>
         </div>
       </div>
-      <div class="h-36 w-21 relative z-9">
+      <div class="h-36 w-21 relative z-9 preserve-3d">
         <Show when={!defeated()}>
           <Health
             value={data().health}
@@ -363,13 +580,23 @@ export function CharacterArea(props: CharacterAreaProps) {
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-1 clickable-outline transition-shadow data-[defeated]:brightness-50"
+          class="h-full w-full rounded-1 clickable-outline transition-shadow data-[defeated]:brightness-50 preserve-3d"
           bool:data-triggered={props.triggered}
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
           }
           bool:data-defeated={defeated()}
         >
+          <Show when={damageSourceColor()}>
+            <div
+              class="absolute inset-0 h-full w-full rounded-1 attack-effect"
+              style={{ "--glow-color": damageSourceColor() }}
+            />
+            <div
+              class="absolute inset-0 h-full w-full rounded-1 attack-effect rotate-y-180"
+              style={{ "--glow-color": damageSourceColor() }}
+            />
+          </Show>
           <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
             <NighsoulsBlessing
               class="absolute z--1 inset--1 top--6"
@@ -383,6 +610,10 @@ export function CharacterArea(props: CharacterAreaProps) {
           <img
             src={CardFrameNormal}
             class="absolute inset-0 h-full w-full pointer-events-none"
+          />
+          <img
+            src={CardbackNormal}
+            class="absolute inset-0 h-full w-full backface-hidden rotate-y-180 translate-z--0.1px"
           />
         </div>
         <StatusGroup
