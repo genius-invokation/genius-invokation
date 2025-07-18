@@ -40,6 +40,7 @@ export interface BackgroundProps {
 export function Background(props: BackgroundProps) {
   const gradientId = createUniqueId();
   const filterId = createUniqueId();
+  const maskId = createUniqueId();
   return (
     <svg
       class="h-full w-full"
@@ -122,7 +123,7 @@ export function Background(props: BackgroundProps) {
       </defs>
       <g>
         <mask
-          id="nyx-mask"
+          id={maskId}
           maskUnits="userSpaceOnUse"
           maskContentUnits="userSpaceOnUse"
           mask-type="luminance"
@@ -135,7 +136,7 @@ export function Background(props: BackgroundProps) {
             height="100%"
           />
         </mask>
-        <g mask="url(#nyx-mask)">
+        <g mask={`url(#${maskId})`}>
           <rect
             width="100%"
             height="100%"
