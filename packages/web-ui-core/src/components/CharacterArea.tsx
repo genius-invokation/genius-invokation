@@ -134,7 +134,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX,
         y: info.sourceY - diffY * 0.08,
-        z: 20,
+        z: 25,
         rx: -rx * 20,
         ry: 5,
         rz: rz * 0.1,
@@ -146,7 +146,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX,
         y: info.sourceY - diffY * 0.16,
-        z: 40,
+        z: 50,
         ry: 0,
         rz,
       }),
@@ -156,7 +156,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX,
         y: info.sourceY - diffY * 0.16,
-        z: 40,
+        z: 50,
         ry: 0,
         rz,
       }),
@@ -167,7 +167,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.2,
         y: info.sourceY + diffY * 0.2,
-        z: 30,
+        z: 40,
         ry: 90,
         rz,
       }),
@@ -176,8 +176,8 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       offset: 0.5,
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.6,
-        y: info.sourceY + diffY * 0.6,
-        z: 30,
+        y: info.sourceY + diffY * 0.5,
+        z: 40,
         ry: 120,
         rz,
       }),
@@ -186,8 +186,8 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       offset: 0.55,
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.7,
-        y: info.sourceY + diffY * 0.7,
-        z: 20,
+        y: info.sourceY + diffY * 0.6,
+        z: 30,
         rx: rx * 20,
         ry: 180,
         rz,
@@ -197,8 +197,8 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       offset: 0.6,
       ...cssPropertyOfTransform({
         x: info.targetX,
-        y: info.targetY,
-        z: 10,
+        y: info.targetY - diffY * 0.1,
+        z: 20,
         rx: rx * 70,
         ry: 180,
         rz,
@@ -208,8 +208,8 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       offset: 0.65,
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.7,
-        y: info.sourceY + diffY * 0.7,
-        z: 20,
+        y: info.sourceY + diffY * 0.6,
+        z: 30,
         rx: rx * 20,
         ry: 180,
         rz: rz * 0.85,
@@ -221,7 +221,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.4,
         y: info.sourceY + diffY * 0.4,
-        z: 30,
+        z: 40,
         ry: 90,
         rz: rz * 0.5,
       }),
@@ -232,7 +232,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
       ...cssPropertyOfTransform({
         x: info.sourceX + diffX * 0.2,
         y: info.sourceY + diffY * 0.2,
-        z: 15,
+        z: 20,
         rx: rx * 10,
         ry: 0,
         rz: rz * 0.1,
@@ -589,7 +589,11 @@ export function CharacterArea(props: CharacterAreaProps) {
         >
           <Show when={damageSourceColor()}>
             <div
-              class="h-full w-full rounded-1 attack-effect"
+              class="absolute inset-0 h-full w-full rounded-1 attack-effect"
+              style={{ "--glow-color": damageSourceColor() }}
+            />
+            <div
+              class="absolute inset-0 h-full w-full rounded-1 attack-effect rotate-y-180"
               style={{ "--glow-color": damageSourceColor() }}
             />
           </Show>
@@ -609,7 +613,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           />
           <img
             src={CardbackNormal}
-            class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px"
+            class="absolute inset-0 h-full w-full backface-hidden rotate-y-180 translate-z--0.1px"
           />
         </div>
         <StatusGroup

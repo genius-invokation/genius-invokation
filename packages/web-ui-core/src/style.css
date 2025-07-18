@@ -293,7 +293,7 @@
   }
 
   .attack-effect {
-    animation: attack-effect-ountline 300ms ease-out forwards;
+    animation: attack-effect-ountline 600ms ease-out forwards;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 
@@ -306,9 +306,9 @@
     height: 20px;
     background: var(--glow-color);
     opacity: 0;
-    filter: blur(10px);
+    filter: blur(10px) brightness(1.2);
     pointer-events: none;
-    animation: attack-effect-top-flash 100ms ease-in-out 250ms forwards;
+    animation: attack-effect-top-flash 240ms ease-in-out 360ms forwards;
   }
 
   .max-health {
@@ -395,10 +395,20 @@
   0% {
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
-  1% {
+  10% {
     box-shadow:
-      0 0 20px var(--glow-color),
-      0 0 40px var(--glow-color);
+      0 0 5px var(--glow-color),
+      0 0 10px var(--glow-color),
+      0 0 15px var(--glow-color);
+  }
+  95% {
+    box-shadow:
+      0 0 5px var(--glow-color),
+      0 0 10px var(--glow-color),
+      0 0 15px var(--glow-color);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
 }
 
@@ -407,8 +417,16 @@
     opacity: 0;
     transform: scaleY(0.5);
   }
+  10% {
+    opacity: 0.8;
+    transform: scaleY(1);
+  }
   50% {
     opacity: 1;
+    transform: scaleY(2);
+  }
+  90% {
+    opacity: 0.8;
     transform: scaleY(1.2);
   }
   100% {
