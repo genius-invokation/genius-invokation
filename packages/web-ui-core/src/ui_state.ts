@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import type { DamageType } from "@gi-tcg/typings";
 import type { DamageInfo, ReactionInfo } from "./components/Chessboard";
 
 export interface AnimatingUiState {
@@ -47,7 +48,7 @@ export const cssPropertyOfTransform = (
   }rem, ${x.z / 4}rem) 
     rotateZ(${x.rz}deg)
     rotateY(${x.ry}deg)
-    rotateX(${x.rx ? x.rx : 0}deg))`,
+    rotateX(${x.rx ?? 0}deg))`,
 });
 
 export interface CardStaticUiState extends StaticUiState {
@@ -103,12 +104,14 @@ export interface DamageSourceAnimation {
   readonly type: "damageSource";
   readonly targetX: number;
   readonly targetY: number;
+  readonly damageType: DamageType;
 }
 
 export interface DamageTargetAnimation {
   readonly type: "damageTarget";
   readonly sourceX: number;
   readonly sourceY: number;
+  readonly damageType: DamageType;
 }
 
 export const CHARACTER_ANIMATION_NONE = { type: "none" } as const;

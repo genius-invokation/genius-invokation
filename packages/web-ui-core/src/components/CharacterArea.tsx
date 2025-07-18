@@ -397,16 +397,14 @@ export function CharacterArea(props: CharacterAreaProps) {
     });
   });
 
-  const demageColor = createMemo(() => {
-    const damages = props.uiState.damages;
-    if (damages[0]?.type === "damage") {
-      if (
-        damages[0].damageType > DamageType.Physical &&
-        damages[0].damageType < DamageType.Piercing
-      ) {
-        console.log(DAMAGE_COLOR[damages[0].damageType]);
-        return `var(--c-${DAMAGE_COLOR[damages[0].damageType]})`;
-      }
+  const damageSourceColor = createMemo<string | undefined>(() => {
+    if (props.uiState.animation.type !== "damageSource") {
+      return;
+    }
+    const damageType = props.uiState.animation.damageType;
+    if (damageType > DamageType.Physical && damageType < DamageType.Piercing) {
+      console.log(DAMAGE_COLOR[damageType]);
+      return `var(--c-${DAMAGE_COLOR[damageType]})`;
     }
   });
 
@@ -589,10 +587,10 @@ export function CharacterArea(props: CharacterAreaProps) {
           }
           bool:data-defeated={defeated()}
         >
-          <Show when={demageColor()}>
+          <Show when={damageSourceColor()}>
             <div
               class="h-full w-full rounded-1 attack-effect"
-              style={{ "--glow-color": demageColor() }}
+              style={{ "--glow-color": damageSourceColor() }}
             />
           </Show>
           <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
