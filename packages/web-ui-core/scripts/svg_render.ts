@@ -50,6 +50,9 @@ const page = await browser.newPage();
 
 const ANIMATED: Record<string, number> = {
   "NightsoulsBlessingMask.svg": 6000,
+};
+// Animated & transparent, no known method to render it properly
+const SKIPS: Record<string, number> = {
   "EnergyIconActiveGain.svg": 4000,
   "EnergyIconActiveGainMavuika.svg": 4000,
   "EnergyIconExtraGainMavuika.svg": 4000,
@@ -57,6 +60,9 @@ const ANIMATED: Record<string, number> = {
 };
 
 for await (const file of new Glob("*.svg").scan(svgFolder)) {
+  if (SKIPS[file]) {
+    continue;
+  }
   await page.setViewport({
     width: 400,
     height: 400,
@@ -78,11 +84,14 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
     console.log(`Render animated SVG for ${file}...`);
     await Bun.sleep(500); // Wait for magic happens...
     const recorder = new PuppeteerScreenRecorder(page, {
+      format: "png",
+      fps: 25,
     } as PuppeteerScreenRecorderOptions);
-    await recorder.start(`${outFolder}/${file}.webm`);
+    await recorder.start(`${outFolder}/${file}`);
     console.log(`Waiting for ${ANIMATED[file]}ms...`);
     await Bun.sleep(ANIMATED[file]);
     await recorder.stop();
+    await $`ffmpeg -y -i ${`${outFolder}/${file}/frame-%d.png`} -loop 0 -an -vf fps=fps=25 ${`${outFolder}/${file}.webp`}`;
   } else {
     console.log(`Render static SVG for ${file}...`);
     const outfile = `${outFolder}/${file}.webp` as const;
@@ -99,3 +108,4 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
 
 await browser.close();
 await server.stop();
+

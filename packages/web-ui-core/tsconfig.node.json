@@ -3,6 +3,7 @@
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
+    "target": "es2024",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
   },
