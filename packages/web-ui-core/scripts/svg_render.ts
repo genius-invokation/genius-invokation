@@ -23,7 +23,7 @@ const server = Bun.serve({
         `<!DOCTYPE html>
 <link rel="icon" href="data:,">
 <style>
-  body { margin: 0; height: 100vh; width: 100vw; overflow: clip; background: #0f0; }
+  body { margin: 0; height: 100vh; width: 100vw; overflow: clip; background: transparent; }
   svg { max-height: 100vh; max-width: 100vw; }
 </style>
 <body>${content}</body>
@@ -76,6 +76,7 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
   await page.setViewport(info);
   if (ANIMATED[file]) {
     console.log(`Render animated SVG for ${file}...`);
+    await Bun.sleep(500); // Wait for magic happens...
     const recorder = new PuppeteerScreenRecorder(page, {
     } as PuppeteerScreenRecorderOptions);
     await recorder.start(`${outFolder}/${file}.webm`);
@@ -89,9 +90,10 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
       type: "webp",
       quality: 100,
       fullPage: true,
+      omitBackground: true,
       path: outfile,
     });
-    await $`magick ${outfile} -fuzz 5% -transparent "#0f0" ${outfile}`;
+    // await $`magick ${outfile} -fuzz 5% -transparent "#0f0" ${outfile}`;
   }
 }
 
