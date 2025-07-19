@@ -1,4 +1,4 @@
-import { Glob } from "bun";
+import { $, Glob } from "bun";
 import puppeteer from "puppeteer";
 import {
   PuppeteerScreenRecorder,
@@ -84,12 +84,14 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
     await recorder.stop();
   } else {
     console.log(`Render static SVG for ${file}...`);
+    const outfile = `${outFolder}/${file}.webp` as const;
     await page.screenshot({
       type: "webp",
       quality: 100,
       fullPage: true,
-      path: `${outFolder}/${file}.webp`,
+      path: outfile,
     });
+    await $`magick ${outfile} -fuzz 5% -transparent "#0f0" ${outfile}`;
   }
 }
 
