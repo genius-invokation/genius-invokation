@@ -452,13 +452,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
   private costSortedHands(
     who: "my" | "opp",
     useTieBreak: boolean,
-  ): PlainCardState[] {
+  ): RxEntityState<Meta, "card">[] {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
-      ? (card: PlainCardState) => {
+      ? (card: RxEntityState<Meta, "card">) => {
           return nextRandom(card.id) ^ this.rawState.iterators.random;
         }
-      : (_: PlainCardState) => 0;
+      : (_: RxEntityState<Meta, "card">) => 0;
     const sortData = new Map(
       player.hands.map(
         (c) =>
@@ -472,7 +472,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
-  maxCostHands(count: number, opt: MaxCostHandsOpt = {}): PlainCardState[] {
+  maxCostHands(
+    count: number,
+    opt: MaxCostHandsOpt = {},
+  ): RxEntityState<Meta, "card">[] {
     const who = opt.who ?? "my";
     const useTieBreak = opt.useTieBreak ?? false;
     return this.costSortedHands(who, useTieBreak).slice(0, count);
@@ -547,7 +550,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
-  emitCustomEvent<T>(event: CustomEvent<T>, arg: T): ShortcutReturn<Meta>;
+  emitCustomEvent<T, U extends T & { [ReactiveStateSymbol]?: never }>(
+    event: CustomEvent<T>,
+    arg?: U, // forbidden reactive
+  ): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg?: T) {
     this.emitEvent(
       "onCustomEvent",
@@ -812,9 +818,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       // Remove existing artifact/weapon/technique first
       for (const tag of ["artifact", "weapon", "technique"] as const) {
         if (this.state.data.entities.get(id)?.tags.includes(tag)) {
-          const exist = t.entities.find((v) =>
-            v.definition.tags.includes(tag),
-          );
+          const exist = t.entities.find((v) => v.definition.tags.includes(tag));
           if (exist) {
             this.dispose(exist);
           }
@@ -1436,7 +1440,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   disposeMaxCostHands(count: number) {
     const disposed = this.maxCostHands(count, { useTieBreak: true });
     this.disposeCard(...disposed);
-    return this.enableShortcut(disposed);
+    return this.enableShortcut<RxEntityState<Meta, "card">[]>(disposed);
   }
 
   /**
