@@ -599,7 +599,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           </Show>
           <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
             <NighsoulsBlessing
-              class="absolute z--1 inset--1 top--6"
+              class="absolute z--1 inset--1.25 top--6"
               element={Number(data().definitionId.toString()[1]) as DiceType}
             />
           </Show>

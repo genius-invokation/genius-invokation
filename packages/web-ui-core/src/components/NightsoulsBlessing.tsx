@@ -40,6 +40,7 @@ export interface BackgroundProps {
 export function Background(props: BackgroundProps) {
   const gradientId = createUniqueId();
   const filterId = createUniqueId();
+  const maskId = createUniqueId();
   return (
     <svg
       class="h-full w-full"
@@ -120,24 +121,37 @@ export function Background(props: BackgroundProps) {
           />
         </filter>
       </defs>
-      <rect
-        width="100%"
-        height="100%"
-        fill={`url(#${gradientId})`}
-        filter={`url(#${filterId})`}
-      />
+      <g>
+        <mask
+          id={maskId}
+          maskUnits="userSpaceOnUse"
+          maskContentUnits="userSpaceOnUse"
+          mask-type="luminance"
+          x="0%"
+          y="0%"
+        >
+          <image
+            href={NightsoulsBlessingMask}
+            width="100%"
+            height="100%"
+          />
+        </mask>
+        <g mask={`url(#${maskId})`}>
+          <rect
+            width="100%"
+            height="100%"
+            fill={`url(#${gradientId})`}
+            filter={`url(#${filterId})`}
+          />
+        </g>
+      </g>
     </svg>
   );
 }
 
 export function NighsoulsBlessing(props: NighsoulsBlessingProps) {
   return (
-    <div
-      class={`rounded-lg nightsouls-blessing-mask ${props.class ?? ""}`}
-      style={{
-        "--mask-url": `url(${NightsoulsBlessingMask})`,
-      }}
-    >
+    <div class={`rounded-lg ${props.class ?? ""}`} >
       <Background
         color1={NIGHTSOUL_COLORS[props.element]?.[0] ?? "white"}
         color2={NIGHTSOUL_COLORS[props.element]?.[1] ?? "white"}
