@@ -190,7 +190,7 @@ export const StarfallShower = skill(22042)
     c.damage(DamageType.Hydro, 1 + extraDmg);
     const [card] = c.disposeMaxCostHands(1);
     if (card){
-      c.emitCustomEvent(StarfallShowerDisposeCard, card);
+      c.emitCustomEvent(StarfallShowerDisposeCard, card.latest());
     }
   })
   .done();
