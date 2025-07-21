@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* @refresh reload */
-import "core-js";
+
 import "./index";
 import { createSignal, onMount } from "solid-js";
 import { render } from "solid-js/web";
@@ -82,7 +82,7 @@ function App() {
     <>
       <Chessboard0
         rotation={0}
-        style={{ width: "100vw", height: "400px" }}
+        style={{ width: "100vw", height: "100vh" }}
         autoHeight={false}
         myPlayerInfo={{
           avatarUrl: "https://http.cat/404",
