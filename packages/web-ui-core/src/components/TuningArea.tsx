@@ -15,7 +15,7 @@
 
 import type { TuningAreaInfo } from "./Chessboard";
 import { cssPropertyOfTransform } from "../ui_state";
-import TuningIcon from "../svg/TuningIcon.svg";
+import TuningIcon from "../svg/TuningIcon.svg?fb";
 
 export interface TuningAreaProps extends TuningAreaInfo {}
 
@@ -40,7 +40,7 @@ export function TuningArea(props: TuningAreaProps) {
       style={cssPropertyOfTransform(props.transform)}
     >
       <div class="w-8 h-8">
-        <img src={TuningIcon} />
+        <TuningIcon />
       </div>
     </div>
   );

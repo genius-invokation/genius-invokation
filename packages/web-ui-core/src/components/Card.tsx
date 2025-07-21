@@ -24,9 +24,9 @@ import {
 import type { CardInfo } from "./Chessboard";
 import { type PbDiceRequirement, CARD_TAG_NO_TUNING } from "@gi-tcg/typings";
 import { WithDelicateUi } from "../primitives/delicate_ui";
-import SelectingIcon from "../svg/SelectingIcon.svg";
-import CardFrameNormal from "../svg/CardFrameNormal.svg";
-import CardbackNormal from "../svg/CardbackNormal.svg";
+import SelectingIcon from "../svg/SelectingIcon.svg?fb";
+import CardFrameNormal from "../svg/CardFrameNormal.svg?fb";
+import CardbackNormal from "../svg/CardbackNormal.svg?fb";
 
 export interface CardProps extends CardInfo {
   selected: boolean;
@@ -129,7 +129,7 @@ export function CardFace(props: CardFaceProps) {
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}
       />
-      <img src={CardFrameNormal} draggable={false} class="absolute inset-0 h-full w-full pointer-events-none"/>
+      <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
     </div>
   );
 }
@@ -256,7 +256,7 @@ export function Card(props: CardProps) {
         </Match>
         <Match when={props.selected}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-            <img src={SelectingIcon} class="w-21 h-21"/>
+            <SelectingIcon class="w-21 h-21"/>
           </div>
         </Match>
       </Switch>
@@ -269,7 +269,7 @@ export function Card(props: CardProps) {
         size={36}
         realCost={realCost()}
       />
-      <img src={CardbackNormal} draggable={false} class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px pointer-events-none" />
+      <CardbackNormal class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px pointer-events-none" />
       <Show when={backfaceDebuff()}>
         <div class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.2px rounded-1.2 cardback-debuff"/>
       </Show>

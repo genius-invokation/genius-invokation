@@ -16,8 +16,8 @@
 import { PbModifyDirection } from "@gi-tcg/typings";
 import { createMemo, Match, Show, Switch } from "solid-js";
 import { StrokedText } from "./StrokedText";
-import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg";
-import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg";
+import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?fb";
+import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?fb";
 
 export interface VariableDiffProps {
   class?: string;
@@ -54,12 +54,12 @@ export function VariableDiff(props: VariableDiffProps) {
         <Switch>
           <Match when={props.defeated}>
             <div class="relative h-8 w-8 overflow-visible shrink-0">
-              <img src={DefeatedPreviewIcon} class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+              <DefeatedPreviewIcon class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
             </div>
           </Match>
           <Match when={props.revived}>
             <div class="relative h-8 w-8 overflow-visible shrink-0">
-              <img src={RevivePreviewIcon} class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+              <RevivePreviewIcon class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
             </div>
           </Match>          
         </Switch>

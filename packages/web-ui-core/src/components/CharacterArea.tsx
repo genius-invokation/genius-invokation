@@ -47,27 +47,28 @@ import { ActionStepEntityUi } from "../action";
 import { VariableDiff } from "./VariableDiff";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import DefeatedIcon from "../svg/DefeatedIcon.svg";
-import HealthIcon from "../svg/HealthIcon.svg";
-import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg";
-import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg";
-import EnergyIconActive from "../svg/EnergyIconActive.svg";
-import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg";
-import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg";
-import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg";
-import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg";
-import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg";
-import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg";
-import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg";
-import SelectingIcon from "../svg/SelectingIcon.svg";
-import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg";
-import ArtifactIcon from "../svg/ArtifactIcon.svg";
-import WeaponIcon from "../svg/WeaponIcon.svg";
-import TalentIcon from "../svg/TalentIcon.svg";
-import CardFrameNormal from "../svg/CardFrameNormal.svg";
-import CardbackNormal from "../svg/CardbackNormal.svg";
+import DefeatedIcon from "../svg/DefeatedIcon.svg?fb";
+import HealthIcon from "../svg/HealthIcon.svg?fb";
+import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg?fb";
+import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?fb";
+import EnergyIconActive from "../svg/EnergyIconActive.svg?fb";
+import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?fb";
+import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg?fb";
+import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg?fb";
+import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg?fb";
+import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?fb";
+import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?fb";
+import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?fb";
+import SelectingIcon from "../svg/SelectingIcon.svg?fb";
+import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?fb";
+import ArtifactIcon from "../svg/ArtifactIcon.svg?fb";
+import WeaponIcon from "../svg/WeaponIcon.svg?fb";
+import TalentIcon from "../svg/TalentIcon.svg?fb";
+import CardFrameNormal from "../svg/CardFrameNormal.svg?fb";
+import CardbackNormal from "../svg/CardbackNormal.svg?fb";
 import { Reaction, REACTION_TEXT_MAP } from "./Reaction";
-import { NighsoulsBlessing } from "./NightsoulsBlessing";
+import { NightsoulsBlessing } from "./NightsoulsBlessing";
+import { Dynamic } from "solid-js/web";
 
 export interface DamageSourceAnimation {
   type: "damageSource";
@@ -537,7 +538,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <img src={WeaponIcon} class="w-7 h-7" />
+                  <WeaponIcon class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
@@ -553,7 +554,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et.animation === "disposing"}
                   bool:data-triggered={et.triggered}
                 >
-                  <img src={ArtifactIcon} class="w-7 h-7" />
+                  <ArtifactIcon class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et.data.hasUsagePerRound}
@@ -569,7 +570,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                   bool:data-disposing={et().animation === "disposing"}
                   bool:data-triggered={et().triggered}
                 >
-                  <img src={TalentIcon} class="w-7 h-7" />
+                  <TalentIcon class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
                     bool:data-usable={et().data.hasUsagePerRound}
@@ -598,7 +599,7 @@ export function CharacterArea(props: CharacterAreaProps) {
             />
           </Show>
           <Show when={data().tags & CHARACTER_TAG_NIGHTSOULS_BLESSING}>
-            <NighsoulsBlessing
+            <NightsoulsBlessing
               class="absolute z--1 inset--1.25 top--6"
               element={Number(data().definitionId.toString()[1]) as DiceType}
             />
@@ -607,42 +608,30 @@ export function CharacterArea(props: CharacterAreaProps) {
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
           />
-          <img
-            src={CardFrameNormal}
-            class="absolute inset-0 h-full w-full pointer-events-none"
-          />
-          <img
-            src={CardbackNormal}
-            class="absolute inset-0 h-full w-full backface-hidden rotate-y-180 translate-z--0.1px"
-          />
+          <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
+          <CardbackNormal class="absolute inset-0 h-full w-full backface-hidden rotate-y-180 translate-z--0.1px" />
         </div>
         <StatusGroup
           class="absolute z-3 left-0.5 bottom-0 h-5.5 w-20"
           statuses={statuses()}
         />
         <Show when={defeated()}>
-          <img
-            src={DefeatedIcon}
-            class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]"
-          />
+          <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <img
-                src={SelectingConfirmIcon}
-                class="cursor-pointer h-20 w-20"
-              />
+              <SelectingConfirmIcon class="cursor-pointer h-20 w-20" />
             </div>
           </Match>
           <Match when={props.selecting}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <img src={SelectingIcon} class="w-21 h-21" />
+              <SelectingIcon class="w-21 h-21" />
             </div>
           </Match>
           <Match when={props.preview?.active}>
             <div class="z-6 absolute inset-0 backface-hidden flex items-center justify-center">
-              <img src={SwitchActiveHistoryIcon} class="h-18 w-18" />
+              <SwitchActiveHistoryIcon class="h-18 w-18" />
             </div>
           </Match>
         </Switch>
@@ -673,7 +662,7 @@ function EnergyBar(props: EnergyBarProps) {
     | "activeGain"
     | "overflowGain";
   type EnergyIconKey = `${string}_${EnergyState}`;
-  const ENERGY_MAP: Partial<Record<EnergyIconKey, string>> = {
+  const ENERGY_MAP: Partial<Record<EnergyIconKey, Component>> = {
     energy_empty: EnergyIconEmpty,
     energy_active: EnergyIconActive,
     energy_activeGain: EnergyIconActiveGain,
@@ -720,7 +709,12 @@ function EnergyBar(props: EnergyBarProps) {
   return (
     <>
       <For each={energyImages()}>
-        {(comp) => <img src={comp} class="w-5.8 h-4" />}
+        {(comp) => (
+          <Dynamic<Component<ComponentProps<"div">>>
+            component={comp}
+            class="w-5.8 h-4"
+          />
+        )}
       </For>
     </>
   );
@@ -735,10 +729,10 @@ interface HealthProps {
 function Health(props: HealthProps) {
   return (
     <div class="absolute z-1 left-1.8 top-3 h-9.8 w-9.8 -translate-x-50% -translate-y-50% children-h-full">
-      <img src={HealthIcon} class="w-full h-full" />
+      <HealthIcon class="w-full h-full" />
       <Show when={props.bondOfLife}>
         <div class="bond-of-life-health">
-          <img src={BondOfLifeIcon} class="w-full h-full" />
+          <BondOfLifeIcon class="w-full h-full" />
           <div class="bond-of-life-health-background" />
         </div>
       </Show>

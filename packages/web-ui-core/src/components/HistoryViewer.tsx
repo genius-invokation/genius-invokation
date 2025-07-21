@@ -41,13 +41,13 @@ import type {
 import { Image } from "./Image";
 import { DiceIcon } from "./Dice";
 import type { ActionCardRawData, EntityRawData } from "@gi-tcg/static-data";
-import TuningIcon from "../svg/TuningIcon.svg";
-import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg";
-import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg";
-import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg";
-import TriggerIcon from "../svg/TriggerIcon.svg";
-import CardFrameSummon from "../svg/CardFrameSummon.svg";
-import CardbackNormal from "../svg/CardbackNormal.svg";
+import TuningIcon from "../svg/TuningIcon.svg?fb";
+import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?fb";
+import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?fb";
+import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?fb";
+import TriggerIcon from "../svg/TriggerIcon.svg?fb";
+import CardFrameSummon from "../svg/CardFrameSummon.svg?fb";
+import CardbackNormal from "../svg/CardbackNormal.svg?fb";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 import { DAMAGE_COLOR } from "./Damage";
@@ -1426,11 +1426,11 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
       <div class="w-5 h-full shrink-0 items-center justify-center flex">
         <Switch>
           <Match when={!props.data.imageId}>
-            <img src={CardbackNormal} class="w-5 h-8.6" />
+            <CardbackNormal class="w-5 h-8.6" />
           </Match>
           <Match when={props.data.imageId === "tuning"}>
             <div class="w-5 h-5">
-              <img src={TuningIcon} />
+              <TuningIcon />
             </div>
           </Match>
           <Match when={true}>
@@ -1457,14 +1457,12 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
                     <Switch>
                       <Match when={healthChange().type === "heal"}>
-                        <img
-                          src={RevivePreviewIcon}
+                        <RevivePreviewIcon
                           class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
                         />
                       </Match>
                       <Match when={healthChange().type === "damage"}>
-                        <img
-                          src={DefeatedPreviewIcon}
+                        <DefeatedPreviewIcon
                           class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
                         />
                       </Match>
@@ -1528,8 +1526,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                     <Show
                       when={!!imageId}
                       fallback={
-                        <img
-                          src={CardbackNormal}
+                        <CardbackNormal
                           class="absolute inset-0 w-10.5 h-18"
                         />
                       }
@@ -1557,8 +1554,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                         class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                       />
                     </Show>
-                    <img
-                      src={CardFrameSummon}
+                    <CardFrameSummon
                       class="absolute inset-0 w-10.5 h-12.375 pointer-events-none"
                     />
                   </div>
@@ -1570,10 +1566,10 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
         <div class="h-10 w-10 absolute top-50% left-5.25 -translate-x-50% -translate-y-50% flex items-center justify-center">
           <Switch>
             <Match when={props.data.inner === "switch"}>
-              <img src={SwitchActiveHistoryIcon} class="h-9 w-9" />
+              <SwitchActiveHistoryIcon class="h-9 w-9" />
             </Match>
             <Match when={props.data.inner === "defeated"}>
-              <img src={DefeatedPreviewIcon} class="h-8 w-8" />
+              <DefeatedPreviewIcon class="h-8 w-8" />
             </Match>
           </Switch>
         </div>
@@ -1583,8 +1579,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
                 <Show when={props.data.innerValueSpecial}>
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
-                    <img
-                      src={DefeatedPreviewIcon}
+                    <DefeatedPreviewIcon
                       class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
                     />
                   </div>
@@ -1604,8 +1599,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
                 <Show when={props.data.innerValueSpecial}>
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
-                    <img
-                      src={RevivePreviewIcon}
+                    <RevivePreviewIcon
                       class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
                     />
                   </div>
@@ -1710,7 +1704,7 @@ function HistoryBlockBox(props: {
               <Match when={props.data.imageSize === "normal"}>
                 <Show
                   when={!!props.data.imageId}
-                  fallback={<img src={CardbackNormal} class="w-10.5 h-18" />}
+                  fallback={<CardbackNormal class="w-10.5 h-18" />}
                 >
                   <div class="relative w-10.5 h-18">
                     <CardFace definitionId={props.data.imageId as number} />
@@ -1730,8 +1724,7 @@ function HistoryBlockBox(props: {
                       class="absolute inset-0 w-full h-full  p-1px rounded-lg"
                     />
                   </Show>
-                  <img
-                    src={CardFrameSummon}
+                  <CardFrameSummon
                     class="absolute inset-0 h-full w-full pointer-events-none"
                   />
                 </div>
@@ -1740,13 +1733,13 @@ function HistoryBlockBox(props: {
             <div class="h-10 w-10 absolute top-50% left-50% -translate-x-50% -translate-y-50% flex items-center justify-center">
               <Switch>
                 <Match when={props.data.type === "switchOrChooseActive"}>
-                  <img src={SwitchActiveHistoryIcon} class="h-9 w-9" />
+                  <SwitchActiveHistoryIcon class="h-9 w-9" />
                 </Match>
                 <Match when={props.data.type === "triggered"}>
-                  <img src={TriggerIcon} class="h-9 w-9" />
+                  <TriggerIcon class="h-9 w-9" />
                 </Match>
                 <Match when={props.data.type === "elementalTuning"}>
-                  <img src={TuningIcon} class="h-8 w-8" />
+                  <TuningIcon class="h-8 w-8" />
                 </Match>
               </Switch>
             </div>
@@ -2022,7 +2015,7 @@ function HistoryBlockDetailPanel(props: {
             <div class="w-14.5 h-22 p-2">
               <Show
                 when={renderBlock().content.imageId}
-                fallback={<img src={CardbackNormal} class="w-10.5 h-18" />}
+                fallback={<CardbackNormal class="w-10.5 h-18" />}
               >
                 <div class="relative w-10.5 h-18">
                   <CardFace

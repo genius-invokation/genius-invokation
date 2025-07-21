@@ -21,6 +21,10 @@
     touch-action: pan-x pan-y;
   }
 
+  [data-gi-tcg-contain-strict] {
+    contain: style size;
+  }
+
   [data-entering] {
     animation: entity-entering 0.5s both;
   }

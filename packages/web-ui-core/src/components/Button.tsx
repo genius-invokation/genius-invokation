@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { children, type JSX } from "solid-js";
-import ButtonNormal from "../svg/ButtonNormal.svg";
-import ButtonHover from "../svg/ButtonHover.svg";
-import ButtonActive from "../svg/ButtonActive.svg";
+import ButtonNormal from "../svg/ButtonNormal.svg?fb";
+import ButtonHover from "../svg/ButtonHover.svg?fb";
+import ButtonActive from "../svg/ButtonActive.svg?fb";
 
 export interface ButtonProps {
   class?: string;
@@ -33,16 +33,13 @@ export function Button(props: ButtonProps) {
       }`}
       onClick={(e) => props.onClick(e)}
     >
-      <img 
-        src={ButtonActive} 
+      <ButtonActive
         class="grid-area-[1/1] w-45 h-10.8 hidden group-active/confirm_btn:block" 
       />
-      <img 
-        src={ButtonHover} 
+      <ButtonHover
         class="grid-area-[1/1] w-45 h-10.8 hidden group-[:hover:not(:active)]/confirm_btn:block" 
       />
-      <img 
-        src={ButtonNormal} 
+      <ButtonNormal
         class="grid-area-[1/1] w-45 h-10.8 block group-[:is(:hover,:active)]/confirm_btn:hidden" 
       />
       <div class="grid-area-[1/1] h-full w-full flex items-center justify-center text-lg font-bold text-black/70 transition-colors line-height-none">
