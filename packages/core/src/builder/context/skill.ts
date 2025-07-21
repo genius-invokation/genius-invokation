@@ -1357,7 +1357,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.rawState,
       this.callerArea.who,
       cardState,
-      "stolen",
+      "steal",
     );
   }
 
@@ -1378,7 +1378,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.rawState,
         this.callerArea.who,
         card,
-        "stolen",
+        "steal",
       );
     }
     for (const card of myHands) {
@@ -1395,7 +1395,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.rawState,
         flip(this.callerArea.who),
         card,
-        "stolen",
+        "steal",
       );
     }
     return this.enableShortcut();

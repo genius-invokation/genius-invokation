@@ -459,7 +459,7 @@ const detailedEventDictionary = {
     const area = getEntityArea(curState, e.card.id);
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
-      e.reason === "drawn" &&
+      e.reason === "draw" &&
       area.type === "hands"
     );
   }),
