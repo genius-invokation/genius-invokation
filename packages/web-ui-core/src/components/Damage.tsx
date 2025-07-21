@@ -18,8 +18,8 @@ import { DICE_COLOR } from "./Dice";
 import type { DamageInfo } from "./Chessboard";
 import { createEffect, createMemo } from "solid-js";
 import { StrokedText } from "./StrokedText";
-import DamageIcon from "../svg/DamageIcon.svg";
-import HealIcon from "../svg/HealIcon.svg";
+import DamageIcon from "../svg/DamageIcon.svg?fb";
+import HealIcon from "../svg/HealIcon.svg?fb";
 
 export interface DamageProps {
   info: DamageInfo;
@@ -44,7 +44,7 @@ export function Damage(props: DamageProps) {
         }}
       >
         <div class="absolute h-full w-full">
-          {damageType() === DamageType.Heal ? <img src={HealIcon} /> : <img src={DamageIcon} />}
+          {damageType() === DamageType.Heal ? <HealIcon /> : <DamageIcon />}
         </div>
         <div
           class="relative h-full w-full data-[heal=false]:animate-[damage-text-enter_200ms_both] text-5xl font-bold text-center"

@@ -14,3 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /// <reference types="vite/client" />
+
+declare module "*.svg?fb" {
+  import { Component, type ComponentProps } from "solid-js";
+  const content: Component<ComponentProps<"div">>;
+  export default content;
+}

@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* @refresh reload */
-
+import "core-js";
 import "./index";
 import { createSignal, onMount } from "solid-js";
 import { render } from "solid-js/web";

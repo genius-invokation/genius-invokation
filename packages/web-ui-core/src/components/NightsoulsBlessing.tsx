@@ -14,10 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DiceType } from "@gi-tcg/typings";
-import NightsoulsBlessingMask from "../svg/NightsoulsBlessingMask.svg";
+import NightsoulsBlessingMask from "../svg/NightsoulsBlessingMask.svg?url";
 import { createUniqueId } from "solid-js";
 
-export interface NighsoulsBlessingProps {
+export interface NightsoulsBlessingProps {
   class?: string;
   element: DiceType;
 }
@@ -41,6 +41,10 @@ export function Background(props: BackgroundProps) {
   const gradientId = createUniqueId();
   const filterId = createUniqueId();
   const maskId = createUniqueId();
+  const isMobileSafari = () => "GestureEvent" in window;
+  const maskUrl = isMobileSafari()
+    ? "https://ui.assets.gi-tcg.guyutongxue.site/rendered-svg/NightsoulsBlessingMask.svg.webp"
+    : NightsoulsBlessingMask;
   return (
     <svg
       class="h-full w-full"
@@ -130,11 +134,7 @@ export function Background(props: BackgroundProps) {
           x="0%"
           y="0%"
         >
-          <image
-            href={NightsoulsBlessingMask}
-            width="100%"
-            height="100%"
-          />
+          <image href={maskUrl} width="100%" height="100%" />
         </mask>
         <g mask={`url(#${maskId})`}>
           <rect
@@ -149,9 +149,9 @@ export function Background(props: BackgroundProps) {
   );
 }
 
-export function NighsoulsBlessing(props: NighsoulsBlessingProps) {
+export function NightsoulsBlessing(props: NightsoulsBlessingProps) {
   return (
-    <div class={`rounded-lg ${props.class ?? ""}`} >
+    <div class={`rounded-lg ${props.class ?? ""}`}>
       <Background
         color1={NIGHTSOUL_COLORS[props.element]?.[0] ?? "white"}
         color2={NIGHTSOUL_COLORS[props.element]?.[1] ?? "white"}

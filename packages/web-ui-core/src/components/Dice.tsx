@@ -19,8 +19,8 @@ import { Image } from "./Image";
 import { Match, Show, Switch, createMemo, mergeProps } from "solid-js";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 import { StrokedText } from "./StrokedText";
-import SimpleEnergyDice from "../svg/SimpleEnergyDice.svg";
-import SimpleLegendDice from "../svg/SimpleLegendDice.svg";
+import SimpleEnergyDice from "../svg/SimpleEnergyDice.svg?fb";
+import SimpleLegendDice from "../svg/SimpleLegendDice.svg?fb";
 
 export interface DiceProps {
   type: number;
@@ -51,10 +51,8 @@ function EnergyIcon(props: { size: number }) {
     <WithDelicateUi
       assetId="UI_Gcg_DiceL_Energy"
       fallback={
-        <img
-          src={SimpleEnergyDice}
-          height={props.size}
-          width={props.size}
+        <SimpleEnergyDice
+          style={{ height: `${props.size}px`, width: `${props.size}px` }}
         />
       }
     >
@@ -75,10 +73,8 @@ function LegendIcon(props: { size: number }) {
     <WithDelicateUi
       assetId="UI_Gcg_DiceL_Legend"
       fallback={
-        <img
-          src={SimpleLegendDice}
-          height={props.size}
-          width={props.size}
+        <SimpleLegendDice
+          style={{ height: `${props.size}px`, width: `${props.size}px` }}
         />
       }
     >

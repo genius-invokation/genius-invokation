@@ -19,6 +19,7 @@ import unoCss from "unocss/vite";
 import solid from "vite-plugin-solid";
 import nodeExternals from "rollup-plugin-node-externals";
 import dts from "vite-plugin-dts";
+import svgWithFallback from "./scripts/plugins/svg-with-fallback";
 
 export default defineConfig({
   esbuild: {
@@ -33,6 +34,7 @@ export default defineConfig({
     },
     unoCss(),
     solid(),
+    svgWithFallback(),
     !process.env.NO_TYPING && dts({ rollupTypes: true }),
   ],
   build: {
