@@ -64,7 +64,6 @@ import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
 import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 import type { PlainCharacterState } from "../builder/context/utils";
-import type { InsertHandPayload } from "../mutator";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
