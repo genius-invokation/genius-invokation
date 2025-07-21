@@ -26,7 +26,7 @@ export function SpecialViewToggleButton(props: SpecialViewToggleButtonProps) {
         props.onClick?.();
       }}
     >
-      <VisibilityIcon />
+      <VisibilityIcon class="h-5 w-5" />
     </button>
   );
 }

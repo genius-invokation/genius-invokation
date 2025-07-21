@@ -1,19 +1,43 @@
 import { optimize } from "svgo";
 import { Plugin, ResolvedConfig } from "vite";
 import { readFile } from "node:fs/promises";
+import path from "node:path";
 
-async function compileSvg(source: string) {
+async function compileSvg(filepath: string, source: string) {
+  const filename = path.basename(filepath);
+  const remoteRenderedUrl = `https://ui.assets.gi-tcg.guyutongxue.site/rendered-svg/${filename}.webp`;
   const svgSource = source
     .replace(/([{}])/g, "{'$1'}")
     .replace(/<!--\s*([\s\S]*?)\s*-->/g, "{/* $1 */}");
   // .replace(/(<svg[^>]*)>/i, "$1{...props}>")
   return `import { Portal } from "solid-js/web";
+import { Show, onMount, createSignal } from "solid-js";
 export default (props = {}) => {
+  const remoteRenderedUrl = ${JSON.stringify(remoteRenderedUrl)};
+  const [remoteError, setRemoteError] = createSignal(false);
   let div;
+  onMount(() => {
+    window.GI_TCG_REMOTE_RENDERED_ERRORS ??= [];
+  });
+  const errored = () => window.GI_TCG_REMOTE_RENDERED_ERRORS?.includes(remoteRenderedUrl) || remoteError();
   return (
-    <div ref={div} {...props}>
-      <Portal mount={div} useShadow={true}>${svgSource}</Portal>
-    </div>
+    <Show when={window.GestureEvent && !remoteError()}
+      fallback={
+        <div data-gi-tcg-contain-strict ref={div} {...props}>
+          <Portal mount={div} useShadow={true}>${svgSource}</Portal>
+        </div>
+      }  
+    >
+      <img
+        {...props}
+        src={remoteRenderedUrl}
+        draggable={false}
+        onError={() => {
+          setRemoteError(true);
+          window.GI_TCG_REMOTE_RENDERED_ERRORS.push(remoteRenderedUrl);
+        }}
+      />
+    </Show>
   );
 }
 `;
@@ -55,7 +79,7 @@ export default function svgWithFallback(): Plugin {
       if (shouldProcess(qs)) {
         let code = await readFile(path, { encoding: "utf8" });
         code = await optimizeSvg(code, path);
-        const result = await compileSvg(code);
+        const result = await compileSvg(path, code);
         return result;
       }
     },
