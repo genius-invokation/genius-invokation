@@ -381,14 +381,6 @@
       transparent 100%
     );
   }
-
-  .nightsouls-blessing-mask {
-    mask-image: var(--mask-url);
-    mask-mode: luminance;
-    mask-size: cover;
-    mask-repeat: no-repeat;
-    mask-position: center;
-  }
 }
 
 @keyframes attack-effect-outline {
