@@ -59,11 +59,12 @@ import {
   mixins,
   normalizeCost,
 } from "../utils";
-import type { Mutation } from "./mutation";
+import type { CreateCardM, Mutation, TransferCardM } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
 import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 import type { PlainCharacterState } from "../builder/context/utils";
+import type { InsertHandPayload } from "../mutator";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -1141,14 +1142,12 @@ export class TransformDefinitionEventArg extends EventArg {
   }
 }
 
-export type HandCardInsertedReason = "drawn" | "stolen" | "created";
-
 export class HandCardInsertedEventArg extends PlayerEventArg {
   constructor(
     state: GameState,
     who: 0 | 1,
     public readonly card: CardState,
-    public readonly reason: HandCardInsertedReason,
+    public readonly reason: TransferCardM["reason"] | "create",
   ) {
     super(state, who);
   }
