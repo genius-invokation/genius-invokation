@@ -930,6 +930,7 @@ export class StateMutator {
     }
     let immuneControlStatus: EntityState | undefined;
     if (
+      opt.via &&
       (immuneControlStatus = from.entities.find((st) =>
         st.definition.tags.includes("immuneControl"),
       ))
