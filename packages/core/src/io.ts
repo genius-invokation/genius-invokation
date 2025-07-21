@@ -417,16 +417,31 @@ const EXPOSED_TAGS: Partial<Record<EntityTag, number>> = {
   nightsoulsBlessing: CHARACTER_TAG_NIGHTSOULS_BLESSING,
   bondOfLife: CHARACTER_TAG_BOND_OF_LIFE,
 };
-function exposeTag(tags: EntityTag[]) {
-  return tags.reduce(
-    (acc, tag) => (EXPOSED_TAGS[tag] ? acc | EXPOSED_TAGS[tag]! : acc),
-    0,
-  );
+function exposeTag(entities: EntityState[]) {
+  let result = 0;
+  for (const et of entities) {
+    for (const [name, bit] of Object.entries(EXPOSED_TAGS) as [
+      EntityTag,
+      number,
+    ][]) {
+      if (et.definition.tags.includes(name)) {
+        if (
+          name === "barrier" &&
+          !(et.variables.barrierUsage || et.variables.usage)
+        ) {
+          // for barrier: only expose if it has usage
+          continue;
+        }
+        result |= bit;
+      }
+    }
+  }
+  return result;
 }
 
 export function exposeEntity(
   state: GameState | null,
-  e:  Omit<EntityState, StateSymbol>,
+  e: Omit<EntityState, StateSymbol>,
 ): PbEntityState {
   let equipment: PbEquipmentType | undefined = void 0;
   if (e.definition.type === "equipment") {
@@ -518,14 +533,12 @@ function exposeCharacter(
   player: PlayerState | null,
   ch: Omit<CharacterState, StateSymbol>,
 ): PbCharacterState {
-  const tags = exposeTag(
-    [
-      ...(player?.activeCharacterId === ch.id
-        ? [...player.combatStatuses, ...player.summons]
-        : []),
-      ...ch.entities,
-    ].flatMap((e) => e.definition.tags),
-  );
+  const tags = exposeTag([
+    ...(player?.activeCharacterId === ch.id
+      ? [...player.combatStatuses, ...player.summons]
+      : []),
+    ...ch.entities,
+  ]);
   let energy = ch.variables.energy;
   let maxEnergy = ch.variables.maxEnergy;
   let specialEnergyName: string | undefined = void 0;

@@ -1424,19 +1424,20 @@ export const VirdasSupport = card(302212)
 export const PucasSupport = card(302213)
   .since("v4.8.0")
   .do((c) => {
-    const allies = c.allCardDefinitions("ally");
+    const allies = c.allCardDefinitions("ally")
+      // .filter((c) => !c.skills.some((s) => s.triggerOn === "onEnter"));
     const myCount = c.remainingSupportCount("my");
-    for (let i = 0; i < myCount; i++) {
-      const ally = c.random(allies);
-      c.createEntity("support", ally.id as SupportHandle, {
+    const myAllies = c.randomSubset(allies, myCount);
+    for (const def of myAllies) {
+      c.createEntity("support", def.id as SupportHandle, {
         type: "supports",
         who: c.self.who
       });
     }
     const oppCount = c.remainingSupportCount("opp");
-    for (let i = 0; i < oppCount; i++) {
-      const ally = c.random(allies);
-      c.createEntity("support", ally.id as SupportHandle, {
+    const oppAllies = c.randomSubset(allies, oppCount);
+    for (const def of oppAllies) {
+      c.createEntity("support", def.id as SupportHandle, {
         type: "supports",
         who: flip(c.self.who)
       });
