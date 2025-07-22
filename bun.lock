@@ -2196,7 +2196,7 @@
 
     "regjsparser": ["regjsparser@0.9.1", "", { "dependencies": { "jsesc": "~0.5.0" }, "bin": { "regjsparser": "bin/parser" } }, "sha512-dQUtn90WanSNl+7mQKcXAgZxvUe7Z0SqXlgzv0za4LwiUhyzBC58yQO3liFoUgu8GiJVInAhJjkj1N0EtQ5nkQ=="],
 
-    "remeda": ["remeda@2.26.1", "https://bnpm.byted.org/remeda/-/remeda-2.26.1.tgz", { "dependencies": { "type-fest": "^4.41.0" } }, "sha512-hpiLfhUwkJhiMS3Z7dRrygcRdkMRZASw5qUdNdi33x1/Y9y/J5q5TyLyf8btDoVLIcsg/4fzPdaGXDTbnl+ixw=="],
+    "remeda": ["remeda@2.26.1", "", { "dependencies": { "type-fest": "^4.41.0" } }, "sha512-hpiLfhUwkJhiMS3Z7dRrygcRdkMRZASw5qUdNdi33x1/Y9y/J5q5TyLyf8btDoVLIcsg/4fzPdaGXDTbnl+ixw=="],
 
     "repeat-string": ["repeat-string@1.6.1", "", {}, "sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w=="],
 
@@ -3118,7 +3118,7 @@
 
     "regjsparser/jsesc": ["jsesc@0.5.0", "", { "bin": { "jsesc": "bin/jsesc" } }, "sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA=="],
 
-    "remeda/type-fest": ["type-fest@4.41.0", "https://bnpm.byted.org/type-fest/-/type-fest-4.41.0.tgz", {}, "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="],
+    "remeda/type-fest": ["type-fest@4.41.0", "", {}, "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="],
 
     "rimraf/glob": ["glob@9.3.5", "", { "dependencies": { "fs.realpath": "^1.0.0", "minimatch": "^8.0.2", "minipass": "^4.2.4", "path-scurry": "^1.6.1" } }, "sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q=="],
 
