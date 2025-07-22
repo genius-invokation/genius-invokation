@@ -530,34 +530,34 @@ export function CharacterArea(props: CharacterAreaProps) {
             />
           </Show>
           <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">
-            <Show when={weapon()} keyed>
+            <Show when={weapon()}>
               {(et) => (
                 <div
                   class="relative w-6.5 h-6.5 rounded-full"
-                  bool:data-entering={et.animation === "entering"}
-                  bool:data-disposing={et.animation === "disposing"}
-                  bool:data-triggered={et.triggered}
+                  bool:data-entering={et().animation === "entering"}
+                  bool:data-disposing={et().animation === "disposing"}
+                  bool:data-triggered={et().triggered}
                 >
                   <WeaponIcon class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
-                    bool:data-usable={et.data.hasUsagePerRound}
+                    bool:data-usable={et().data.hasUsagePerRound}
                   />
                 </div>
               )}
             </Show>
-            <Show when={artifact()} keyed>
+            <Show when={artifact()}>
               {(et) => (
                 <div
                   class="relative w-6.5 h-6.5 rounded-full"
-                  bool:data-entering={et.animation === "entering"}
-                  bool:data-disposing={et.animation === "disposing"}
-                  bool:data-triggered={et.triggered}
+                  bool:data-entering={et().animation === "entering"}
+                  bool:data-disposing={et().animation === "disposing"}
+                  bool:data-triggered={et().triggered}
                 >
                   <ArtifactIcon class="w-7 h-7" />
                   <div
                     class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
-                    bool:data-usable={et.data.hasUsagePerRound}
+                    bool:data-usable={et().data.hasUsagePerRound}
                   />
                 </div>
               )}
@@ -616,7 +616,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           statuses={statuses()}
         />
         <Show when={defeated()}>
-          <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-full text-center text-5xl font-bold translate-y-[-50%] font-[var(--font-emoji)]" />
+          <DefeatedIcon class="absolute z-5 top-[50%] left-0 w-21 text-center text-5xl font-bold translate-y--10.5 font-[var(--font-emoji)]" />
         </Show>
         <Switch>
           <Match when={props.clickStep?.ui === ActionStepEntityUi.Selected}>

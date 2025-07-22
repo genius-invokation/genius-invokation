@@ -44,7 +44,7 @@ import {
   type ComponentProps,
   type JSX,
 } from "solid-js";
-import debounce from "debounce";
+import { funnel } from "remeda";
 import {
   ACTION_OUTLINED_Z,
   CARD_WIDTH,
@@ -1080,9 +1080,15 @@ export function Chessboard(props: ChessboardProps) {
     transformScale = scale;
   };
 
-  const resizeObserver = new ResizeObserver(debounce(onResize, 200));
+  const onResizeDebouncer = funnel(onResize, {
+    minQuietPeriodMs: 200,
+  });
+  const resizeObserver = new ResizeObserver(onResizeDebouncer.call);
+  const onContainerResizeDebouncer = funnel(onContainerResize, {
+    minQuietPeriodMs: 200,
+  });
   const containerResizeObserver = new ResizeObserver(
-    debounce(onContainerResize, 200),
+    onContainerResizeDebouncer.call,
   );
 
   const [children, setChildren] = createSignal<ChessboardChildren>({

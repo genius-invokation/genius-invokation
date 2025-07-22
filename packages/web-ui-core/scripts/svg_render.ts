@@ -1,5 +1,5 @@
 import { $, Glob } from "bun";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import {
   PuppeteerScreenRecorder,
   PuppeteerScreenRecorderOptions,
@@ -43,9 +43,9 @@ const url = `http://${server.hostname}:${server.port}/`;
 
 console.log(`SVG server running at ${url}`);
 
-const browser = await puppeteer.launch({
+const browser = (await puppeteer.launch({
   headless: false,
-});
+})) as unknown as import("puppeteer").Browser;
 const page = await browser.newPage();
 
 const ANIMATED: Record<string, number> = {
@@ -108,4 +108,3 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
 
 await browser.close();
 await server.stop();
-
