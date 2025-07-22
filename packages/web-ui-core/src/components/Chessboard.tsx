@@ -1081,7 +1081,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const onResizeDebouncer = funnel(onResize, {
-    minQuietPeriodMs: 200
+    minQuietPeriodMs: 200,
   });
   const resizeObserver = new ResizeObserver(() => {
     onResizeDebouncer.call();
