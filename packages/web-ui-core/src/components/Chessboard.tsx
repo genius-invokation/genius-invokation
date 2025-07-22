@@ -1083,15 +1083,13 @@ export function Chessboard(props: ChessboardProps) {
   const onResizeDebouncer = funnel(onResize, {
     minQuietPeriodMs: 200,
   });
-  const resizeObserver = new ResizeObserver(() => {
-    onResizeDebouncer.call();
-  });
+  const resizeObserver = new ResizeObserver(onResizeDebouncer.call);
   const onContainerResizeDebouncer = funnel(onContainerResize, {
     minQuietPeriodMs: 200,
   });
-  const containerResizeObserver = new ResizeObserver(() => {
-    onContainerResizeDebouncer.call();
-  });
+  const containerResizeObserver = new ResizeObserver(
+    onContainerResizeDebouncer.call,
+  );
 
   const [children, setChildren] = createSignal<ChessboardChildren>({
     characters: [],
