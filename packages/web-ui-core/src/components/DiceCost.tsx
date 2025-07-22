@@ -14,9 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DiceType, type PbDiceRequirement } from "@gi-tcg/typings";
-import { type ComponentProps, For, splitProps } from "solid-js";
+import { type ComponentProps, createMemo, For, splitProps } from "solid-js";
 
 import { Dice, type DiceColor } from "./Dice";
+import { isDeepEqual } from "remeda";
 
 interface DiceCostProps extends ComponentProps<"div"> {
   cost: readonly PbDiceRequirement[];
@@ -26,7 +27,7 @@ interface DiceCostProps extends ComponentProps<"div"> {
 
 export function DiceCost(props: DiceCostProps) {
   const [local, restProps] = splitProps(props, ["cost", "size", "realCost"]);
-  const diceMap = () => {
+  const diceMap = createMemo(() => {
     const costMap = new Map(
       local.cost.map(({ type, count }) => [type as DiceType, count]),
     );
@@ -53,7 +54,7 @@ export function DiceCost(props: DiceCostProps) {
         .toArray();
     }
     return result;
-  };
+  }, isDeepEqual);
   return (
     <div {...restProps}>
       <For each={diceMap()}>
