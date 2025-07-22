@@ -23,7 +23,9 @@
 
   [data-gi-tcg-contain-strict] {
     contain: style size;
-    pointer-events: none;
+    > * {
+      pointer-events: none;
+    }
   }
 
   [data-entering] {
