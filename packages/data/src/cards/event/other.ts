@@ -1158,6 +1158,7 @@ export const BonecrunchersEnergyBlockCombatStatus = combatStatus(124053)
 export const BonecrunchersEnergyBlock = card(124051)
   .since("v4.7.0")
   .filter((c) => !c.$(`my combat status with definition id ${BonecrunchersEnergyBlockCombatStatus}`))
+  .abortPreview()
   .do((c) => {
     c.disposeMaxCostHands(1);
     const activeCh = c.$("my active")!;
@@ -1659,6 +1660,7 @@ export const EremiteTeatime = card(332040)
 export const UltimateSurfingBuddy = card(332041)
   .since("v5.2.0")
   .filter((c) => c.$$(`all summons`).length >= 2)
+  .abortPreview()
   .do((c) => {
     const mySummons = c.$$(`my summons`);
     if (mySummons.length > 0) {
