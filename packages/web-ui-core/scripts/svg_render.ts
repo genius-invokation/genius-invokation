@@ -44,12 +44,15 @@ const url = `http://${server.hostname}:${server.port}/`;
 console.log(`SVG server running at ${url}`);
 
 const browser = (await puppeteer.launch({
+  executablePath: '/Users/bytedance/.cache/puppeteer/chrome/mac_arm-138.0.7204.157/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
   headless: false,
 })) as unknown as import("puppeteer").Browser;
 const page = await browser.newPage();
 
 const ANIMATED: Record<string, number> = {
   "NightsoulsBlessingMask.svg": 6000,
+  "CardFaceLoading.svg": 3600,
+  "SummonLoading.svg": 3600,
 };
 // Animated & transparent, no known method to render it properly
 const SKIPS: Record<string, number> = {

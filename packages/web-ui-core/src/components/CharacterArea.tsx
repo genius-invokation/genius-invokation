@@ -466,7 +466,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                     <For each={reaction}>
                       {(e) => (
                         <Show when={e}>
-                          {(e) => <Image imageId={e()} class="h-5 w-5" />}
+                          {(e) => <Image imageId={e()} class="h-5 w-5" fallback="aura" />}
                         </Show>
                       )}
                     </For>
@@ -476,7 +476,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               <For each={aura()}>
                 {(aura) => (
                   <Show when={aura}>
-                    <Image imageId={aura} class="h-5 w-5" />
+                    <Image imageId={aura} class="h-5 w-5" fallback="aura" />
                   </Show>
                 )}
               </For>
@@ -510,6 +510,7 @@ export function CharacterArea(props: CharacterAreaProps) {
                     class="w-6 h-6"
                     imageId={et.data.definitionId}
                     type={"icon"}
+                    fallback="technique"
                   />
                   <div
                     class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full data-[usable]:bg-white/30"
@@ -607,6 +608,7 @@ export function CharacterArea(props: CharacterAreaProps) {
           <Image
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
+            fallback="card"
           />
           <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
           <CardbackNormal class="absolute inset-0 h-full w-full backface-hidden rotate-y-180 translate-z--0.1px" />
