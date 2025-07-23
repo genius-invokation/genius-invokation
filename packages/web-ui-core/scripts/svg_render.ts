@@ -52,6 +52,7 @@ const page = await browser.newPage();
 const ANIMATED: Record<string, number> = {
   "NightsoulsBlessingMask.svg": 6000,
   "CardFaceLoading.svg": 3600,
+  "SummonLoading.svg": 3600,
 };
 // Animated & transparent, no known method to render it properly
 const SKIPS: Record<string, number> = {
