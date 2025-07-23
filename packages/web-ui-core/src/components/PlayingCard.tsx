@@ -30,6 +30,7 @@ export function PlayingCard(props: PlayingCardProps) {
       <Image
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.data.definitionId}
+        fallback="card"
       />
       <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
     </div>

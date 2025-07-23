@@ -15,18 +15,28 @@
 
 import {
   type ComponentProps,
+  type JSX,
+  Match,
   Show,
+  Switch,
   createMemo,
   createResource,
   mergeProps,
   splitProps,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
+import CardFaceLoading from "../svg/CardFaceLoading.svg?fb";
+import CardFaceNormal from "../svg/CardFaceNormal.svg?fb";
+import SummonLoading from "../svg/SummonLoading.svg?fb";
+import SummonNormal from "../svg/SummonNormal.svg?fb";
+import TechniqueNormal from "../svg/TechniqueNormal.svg?fb";
+import UnknownIcon from "../svg/Unknown.svg?fb";
+import { DAMAGE_COLOR } from "./Damage";
 
 export interface ImageProps extends ComponentProps<"img"> {
   imageId: number;
   zero?: "unknown" | "physic";
-  noAltText?: boolean;
+  fallback?: ImageFallbackType;
   type?: "cardFace" | "icon" | "unspecified";
 }
 
@@ -37,7 +47,7 @@ export function Image(props: ImageProps) {
     "width",
     "height",
     "zero",
-    "noAltText",
+    "fallback",
     "type",
   ]);
   const { assetsManager } = useUiContext();
@@ -71,7 +81,6 @@ export function Image(props: ImageProps) {
         : assetsManager.getNameSync(local.imageId) ?? `${local.imageId}`,
       draggable: "false",
       style: {
-        background: showImage() ? void 0 : "#e5e7eb",
         height: local.height ? `${local.height}px` : void 0,
         width: local.width ? `${local.width}px` : void 0,
       },
@@ -83,11 +92,109 @@ export function Image(props: ImageProps) {
       when={showImage()}
       fallback={
         <div {...(innerProps() as ComponentProps<"div">)}>
-          {local.noAltText ? "" : innerProps().alt}
+          <ImageFallback
+            type={local.fallback}
+            alt={innerProps().alt}
+            imageId={local.imageId}
+            loading={url.loading}
+          />
         </div>
       }
     >
       <img {...innerProps()} />
     </Show>
+  );
+}
+
+export type ImageFallbackType =
+  | "card"
+  | "summon"
+  | "state"
+  | "technique"
+  | "aura"
+  | "general"
+  | JSX.Element
+  | undefined;
+
+export interface ImageFallbackProps {
+  type: ImageFallbackType;
+  alt?: string;
+  imageId?: number;
+  loading: boolean;
+}
+
+export function ImageFallback(props: ImageFallbackProps) {
+  return (
+    <Switch>
+      <Match when={props.type === "card" && props.loading}>
+        <CardFaceLoading class="absolute h-full w-full" />
+        <div class="absolute top-72% text-3 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
+          {props.alt}
+        </div>
+      </Match>
+      <Match when={props.type === "card"}>
+        <CardFaceNormal class="absolute h-full w-full" />
+        <div class="absolute top-72% text-3 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
+          {props.alt}
+        </div>
+      </Match>
+      <Match when={props.type === "summon" && props.loading}>
+        <SummonLoading class="absolute h-full w-full" />
+        <div class="absolute top-60% text-2.5 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
+          {props.alt}
+        </div>
+      </Match>
+      <Match when={props.type === "summon"}>
+        <SummonNormal class="absolute h-full w-full" />
+        <div class="absolute top-60% text-2.5 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
+          {props.alt}
+        </div>
+      </Match>
+      <Match when={props.type === "state"}>
+        <UnknownStatus />
+      </Match>
+      <Match when={props.type === "technique"}>
+        <TechniqueNormal class="absolute h-full w-full" />
+      </Match>
+      <Match when={props.type === "aura"}>
+        <SimplyElemental id={props.imageId ?? 0} />
+      </Match>
+      <Match when={props.type === "general"}>
+        <UnknownIcon class="absolute h-75% w-75%" />
+      </Match>
+      <Match when={props.type}>
+        {props.type}
+      </Match>
+    </Switch>
+  );
+}
+
+export function UnknownStatus() {
+  return (
+    <div
+      class="h-full w-full custom-status-bg flex p-0.5"
+      style={{
+        "--bg-inner-color": "#c2aa80",
+        "--bg-outer-color": "#938161",
+      }}
+    >
+      <div
+        class="h-full w-full custom-status-fg"
+        style={{
+          "--fg-inner-color": "#fcfbdf",
+          "--fg-outer-color": "#f3e9c8",
+          "mask-image": "url(./src/svg/Unknown.svg)",
+        }}
+      />
+    </div>
+  );
+}
+
+export function SimplyElemental(props: { id: number }) {
+  return (
+    <div
+      class="h-full w-full simply-elemental"
+      style={{ "--bg-color": props.id <=10 ? `var(--c-${DAMAGE_COLOR[props.id]})` : "#a44a08aa"}}
+    />      
   );
 }

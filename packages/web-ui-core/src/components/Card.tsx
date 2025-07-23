@@ -128,8 +128,9 @@ export function CardFace(props: CardFaceProps) {
       <Image
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}
+        fallback="card"
       />
-      <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none"/>
+      <CardFrameNormal class="absolute inset-0 h-full w-full pointer-events-none" />
     </div>
   );
 }
@@ -152,8 +153,8 @@ export function Card(props: CardProps) {
     }
   });
 
-  const backfaceDebuff = createMemo(() => 
-    props.kind === "oppHand" && !!(props.data.tags & CARD_TAG_NO_TUNING)
+  const backfaceDebuff = createMemo(
+    () => props.kind === "oppHand" && !!(props.data.tags & CARD_TAG_NO_TUNING),
   );
 
   // onMount(() => {
@@ -256,12 +257,23 @@ export function Card(props: CardProps) {
         </Match>
         <Match when={props.selected}>
           <div class="absolute h-full w-full backface-hidden flex items-center justify-center">
-            <SelectingIcon class="w-21 h-21"/>
+            <SelectingIcon class="w-21 h-21" />
           </div>
         </Match>
       </Switch>
       <Show when={props.playStep?.isEffectless}>
-        <Image imageId={300003} class="absolute left-50% translate-x--50% top-0.5 w-7 h-7" />
+        <Image
+          imageId={300003}
+          class="absolute left-50% translate-x--50% top-0.5 w-7 h-7"
+          fallback={
+            <div
+              class="h-full w-full simply-elemental text-center text-#fa8080 font-bold text-4.8"
+              style={{ "--bg-color": "#c54444aa" }}
+            >
+              !
+            </div>
+          }
+        />
       </Show>
       <DiceCost
         class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
@@ -271,7 +283,7 @@ export function Card(props: CardProps) {
       />
       <CardbackNormal class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.1px pointer-events-none" />
       <Show when={backfaceDebuff()}>
-        <div class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.2px rounded-1.2 cardback-debuff"/>
+        <div class="absolute h-full w-full backface-hidden rotate-y-180 translate-z--0.2px rounded-1.2 cardback-debuff" />
       </Show>
     </div>
   );

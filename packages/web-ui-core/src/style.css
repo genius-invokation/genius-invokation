@@ -388,6 +388,38 @@
       transparent 100%
     );
   }
+
+  .custom-status-bg {
+    background: radial-gradient(
+      circle at center,
+      var(--bg-inner-color) 0%,
+      var(--bg-outer-color) 70%
+    );
+    mask-image: radial-gradient(
+      circle at center,
+      #FFFFFFFF 0%,
+      #FFFFFF80 60%,
+      transparent 70%
+    );
+  }
+  .custom-status-fg {
+    background: radial-gradient(
+      circle at center,
+      var(--fg-inner-color) 0%,
+      var(--fg-outer-color) 70%
+    );
+    mask-size: cover;
+  }
+
+  .simply-elemental {
+    background-color: var(--bg-color);
+    mask-image: radial-gradient(
+      circle at center,
+      #FFFFFFFF 20%,
+      #FFFFFFCC 60%,
+      transparent 70%
+    );
+  }
 }
 
 @keyframes attack-effect-outline {
