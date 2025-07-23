@@ -104,6 +104,7 @@ export function Entity(props: EntityProps) {
       <Image
         class="absolute inset-0 h-full w-full p-2px rounded-lg"
         imageId={data().definitionId}
+        fallback="summon"
       />
       <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
       <Show when={data().hasUsagePerRound}>
@@ -130,6 +131,7 @@ export function Entity(props: EntityProps) {
             zero="physic"
             type="icon"
             class="h-7 w-7 absolute"
+            fallback="aura"
           />
           <StrokedText
             class="absolute inset-0 line-height-7 text-center text-white font-bold text-4.5 whitespace-nowrap"

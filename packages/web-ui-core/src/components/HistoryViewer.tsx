@@ -142,8 +142,8 @@ const renderHistoryChild = (
     return (
       <>
         <span>（</span>
-        <Image imageId={base} class="h-3.5 w-3.5" />
-        <Image imageId={apply} class="h-3.5 w-3.5" />
+        <Image imageId={base} class="h-3.5 w-3.5" fallback="aura" />
+        <Image imageId={apply} class="h-3.5 w-3.5" fallback="aura" />
         <span>{name}</span>
         <span>）</span>
       </>
@@ -222,6 +222,7 @@ const renderHistoryChild = (
                 imageId={child.entityDefinitionId}
                 type="icon"
                 class="h-3.5 w-3.5"
+                fallback="state"
               />
               <span>{renderName(child.entityDefinitionId)}</span>
             </>
@@ -351,6 +352,7 @@ const renderHistoryChild = (
                 imageId={child.damageType}
                 zero="physic"
                 class="h-3.5 w-3.5"
+                fallback="aura"
               />
             </Show>
             <span
@@ -413,7 +415,7 @@ const renderHistoryChild = (
         content: (
           <>
             <span>附着</span>
-            <Image imageId={child.elementType} class="h-3.5 w-3.5" />
+            <Image imageId={child.elementType} class="h-3.5 w-3.5" fallback="aura"/>
             <span
               style={{ color: `var(--c-${DAMAGE_COLOR[child.elementType]})` }}
             >
@@ -509,6 +511,7 @@ const renderHistoryChild = (
                 imageId={child.entityDefinitionId}
                 type="icon"
                 class="h-3.5 w-3.5"
+                fallback="state"
               />
               <span>{assetsManager.getNameSync(child.entityDefinitionId)}</span>
             </>
@@ -1210,7 +1213,8 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
                     <Image
                       imageId={block.skillDefinitionId}
                       type="icon"
-                      class="h-6.5 w-6.5"
+                      class="h-6.5 w-6.5 relative"
+                      fallback="general"
                     />
                   </div>
                   <span class="text-#fff3e0/98 text-3">
@@ -1281,7 +1285,8 @@ const renderHistoryBlock = (block: HistoryDetailBlock) => {
                     <Image
                       imageId={block.callerOrSkillDefinitionId}
                       type="icon"
-                      class="h-6.5 w-6.5"
+                      class="h-6.5 w-6.5 relative"
+                      fallback="general"
                     />
                   </div>
                   <span class="text-#fff3e0/98 text-3">
@@ -1438,6 +1443,7 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
               imageId={props.data.imageId as number}
               type={props.data.imageType}
               class="w-5 h-auto rounded-0.75"
+              fallback="board"
             />
           </Match>
         </Switch>
@@ -1508,7 +1514,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           </Match>
           <Match when={!!props.data.aura}>
             <For each={props.data.aura as DamageType[]}>
-              {(damageType) => <Image imageId={damageType} class="h-3 w-3" />}
+              {(damageType) => <Image imageId={damageType} class="h-3 w-3" fallback="aura" />}
             </For>
           </Match>
         </Switch>
@@ -1552,6 +1558,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                       <Image
                         imageId={imageId}
                         class="absolute inset-0 w-full h-full  p-1px rounded-lg"
+                        fallback="summon"
                       />
                     </Show>
                     <CardFrameSummon
@@ -1625,7 +1632,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             <Match when={!!props.data.status}>
               <For each={props.data.status as number[]}>
                 {(status) => (
-                  <Image imageId={status} type="icon" class="h-3 w-3" />
+                  <Image imageId={status} type="icon" class="h-3 w-3" fallback="state" />
                 )}
               </For>
             </Match>
@@ -1640,7 +1647,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           <Match when={!!props.data.combat}>
             <For each={props.data.combat as number[]}>
               {(combat) => (
-                <Image imageId={combat} type="icon" class="h-3 w-3" />
+                <Image imageId={combat} type="icon" class="h-3 w-3" fallback="state" />
               )}
             </For>
           </Match>
@@ -1722,6 +1729,7 @@ function HistoryBlockBox(props: {
                     <Image
                       imageId={props.data.imageId as number}
                       class="absolute inset-0 w-full h-full  p-1px rounded-lg"
+                      fallback="summon"
                     />
                   </Show>
                   <CardFrameSummon
@@ -1749,6 +1757,7 @@ function HistoryBlockBox(props: {
                   imageId={props.data.status as number}
                   type="icon"
                   class="h-3 w-3"
+                  fallback="state"
                 />
               </Show>
             </div>
@@ -1759,6 +1768,7 @@ function HistoryBlockBox(props: {
                 imageId={props.data.combatStatus as number}
                 type="icon"
                 class="h-3 w-3"
+                fallback="state"
               />
             </Show>
           </div>

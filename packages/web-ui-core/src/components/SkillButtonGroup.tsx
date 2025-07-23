@@ -52,6 +52,7 @@ function SkillButton(props: SkillButtonProps) {
         <Image
           imageId={skillId() as number}
           class="w-full group-data-[disabled]:opacity-50"
+          fallback="general"
         />
       </Match>
       <Match when={skillId() === "switchActive"}>
@@ -152,7 +153,7 @@ function SkillButton(props: SkillButtonProps) {
               <img class="absolute top--1 left-0 w-full" src={focusedMarker} />
             </Show>
             <button
-              class="skill-button-img-button w-full rounded-full p-1.5 flex items-center justify-center data-[abled]:bg-[radial-gradient(circle_at_center,#d67f3f_0%,transparent_45%)] group"
+              class="skill-button-img-button w-full h-full rounded-full p-1.5 flex items-center justify-center data-[abled]:bg-[radial-gradient(circle_at_center,#d67f3f_0%,transparent_45%)] group"
               bool:data-abled={props.step && !props.step.isDisabled}
               bool:data-disabled={!props.step || props.step.isDisabled}
             >
