@@ -389,7 +389,7 @@
     );
   }
 
-  .custom-status-bg {
+  .custom-status {
     background: radial-gradient(
       circle at center,
       var(--bg-inner-color) 0%,
@@ -401,14 +401,6 @@
       #FFFFFF80 60%,
       transparent 70%
     );
-  }
-  .custom-status-fg {
-    background: radial-gradient(
-      circle at center,
-      var(--fg-inner-color) 0%,
-      var(--fg-outer-color) 70%
-    );
-    mask-size: cover;
   }
 
   .simply-elemental {

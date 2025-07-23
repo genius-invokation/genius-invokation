@@ -181,20 +181,13 @@ export function ImageFallback(props: ImageFallbackProps) {
 export function UnknownStatus() {
   return (
     <div
-      class="h-full w-full custom-status-bg flex p-0.5"
+      class="relative h-full w-full custom-status"
       style={{
         "--bg-inner-color": "#c2aa80",
         "--bg-outer-color": "#938161",
       }}
     >
-      <div
-        class="h-full w-full custom-status-fg"
-        style={{
-          "--fg-inner-color": "#fcfbdf",
-          "--fg-outer-color": "#f3e9c8",
-          "mask-image": "url(./src/svg/Unknown.svg)",
-        }}
-      />
+      <UnknownIcon class="absolute h-90% w-90% inset-5%" />
     </div>
   );
 }
