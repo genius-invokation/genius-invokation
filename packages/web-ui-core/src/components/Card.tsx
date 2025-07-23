@@ -265,14 +265,7 @@ export function Card(props: CardProps) {
         <Image
           imageId={300003}
           class="absolute left-50% translate-x--50% top-0.5 w-7 h-7"
-          fallback={
-            <div
-              class="h-full w-full simply-elemental text-center text-#fa8080 font-bold text-4.8"
-              style={{ "--bg-color": "#c54444aa" }}
-            >
-              !
-            </div>
-          }
+          fallback="alert"
         />
       </Show>
       <DiceCost

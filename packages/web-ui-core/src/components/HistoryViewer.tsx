@@ -1443,7 +1443,7 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
               imageId={props.data.imageId as number}
               type={props.data.imageType}
               class="w-5 h-auto rounded-0.75"
-              fallback={<div class="w-5 h-8.6 bg-#bdaa8a rounded-0.75" />}
+              fallback="board"
             />
           </Match>
         </Switch>

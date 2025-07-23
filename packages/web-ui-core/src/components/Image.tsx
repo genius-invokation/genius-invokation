@@ -113,7 +113,8 @@ export type ImageFallbackType =
   | "technique"
   | "aura"
   | "general"
-  | JSX.Element
+  | "alert"
+  | "board"
   | undefined;
 
 export interface ImageFallbackProps {
@@ -162,8 +163,16 @@ export function ImageFallback(props: ImageFallbackProps) {
       <Match when={props.type === "general"}>
         <UnknownIcon class="absolute h-75% w-75%" />
       </Match>
-      <Match when={props.type}>
-        {props.type}
+      <Match when={props.type === "alert"}>
+        <div
+          class="h-full w-full simply-elemental text-center text-#fa8080 font-bold text-4.8"
+          style={{ "--bg-color": "#c54444aa" }}
+        >
+          !
+        </div>
+      </Match>
+      <Match when={props.type === "board"}>
+        <div class="w-5 h-8.6 bg-#bdaa8a rounded-0.75" />
       </Match>
     </Switch>
   );
@@ -194,7 +203,10 @@ export function SimplyElemental(props: { id: number }) {
   return (
     <div
       class="h-full w-full simply-elemental"
-      style={{ "--bg-color": props.id <=10 ? `var(--c-${DAMAGE_COLOR[props.id]})` : "#a44a08aa"}}
-    />      
+      style={{
+        "--bg-color":
+          props.id <= 10 ? `var(--c-${DAMAGE_COLOR[props.id]})` : "#a44a08aa",
+      }}
+    />
   );
 }
