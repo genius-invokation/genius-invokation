@@ -1632,7 +1632,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
             <Match when={!!props.data.status}>
               <For each={props.data.status as number[]}>
                 {(status) => (
-                  <Image imageId={status} type="icon" class="h-3 w-3" fallback="state" />
+                  <Image imageId={status} type="icon" class="h-3 w-3" />
                 )}
               </For>
             </Match>
@@ -1647,7 +1647,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           <Match when={!!props.data.combat}>
             <For each={props.data.combat as number[]}>
               {(combat) => (
-                <Image imageId={combat} type="icon" class="h-3 w-3" fallback="state" />
+                <Image imageId={combat} type="icon" class="h-3 w-3" />
               )}
             </For>
           </Match>
@@ -1757,7 +1757,6 @@ function HistoryBlockBox(props: {
                   imageId={props.data.status as number}
                   type="icon"
                   class="h-3 w-3"
-                  fallback="state"
                 />
               </Show>
             </div>
@@ -1768,7 +1767,6 @@ function HistoryBlockBox(props: {
                 imageId={props.data.combatStatus as number}
                 type="icon"
                 class="h-3 w-3"
-                fallback="state"
               />
             </Show>
           </div>

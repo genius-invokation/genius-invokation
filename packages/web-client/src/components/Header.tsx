@@ -18,6 +18,7 @@ import { Show } from "solid-js";
 import { IS_BETA } from "@gi-tcg/config";
 import { getAvatarUrl } from "../utils";
 import Logo from "./Logo.svg";
+import Title from "./Title.svg";
 import { useAuth } from "../auth";
 
 const USE_LOGO = true;
@@ -26,12 +27,13 @@ export function Header() {
   const navigate = useNavigate();
   const { status, logout } = useAuth();
   return (
-    <header class="fixed top-0 left-0 w-100dvw flex flex-row h-[calc(4rem+var(--root-padding-top))] pt-[var(--root-padding-top)] bg-white z-200 px-4 shadow-md items-center gap-4">
+    <header class="fixed top-0 left-0 w-100dvw flex flex-row h-[calc(4rem+var(--root-padding-top))] pt-[var(--root-padding-top)] bg-white z-200 px-4 shadow-md items-center gap-2">
+      <img src={Logo} class="h-12" />
       <div class="flex-grow flex flex-col md:flex-row items-start md:items-end gap-2">
         <h1 class="text-xl line-height-none font-bold ">
           <A href="/">
             <Show when={USE_LOGO} fallback="七圣召唤模拟对战平台">
-              <img src={Logo} class="h-12" alt="雨酱牌！" />
+              <img src={Title} class="h-6" alt="雨酱牌！" />
             </Show>
           </A>
         </h1>
