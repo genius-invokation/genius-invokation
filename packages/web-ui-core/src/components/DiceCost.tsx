@@ -18,6 +18,7 @@ import { type ComponentProps, createMemo, For, splitProps } from "solid-js";
 
 import { Dice, type DiceColor } from "./Dice";
 import { isDeepEqual } from "remeda";
+import { Key } from "@solid-primitives/keyed";
 
 interface DiceCostProps extends ComponentProps<"div"> {
   cost: readonly PbDiceRequirement[];
@@ -27,46 +28,57 @@ interface DiceCostProps extends ComponentProps<"div"> {
 
 export function DiceCost(props: DiceCostProps) {
   const [local, restProps] = splitProps(props, ["cost", "size", "realCost"]);
-  const diceMap = createMemo(() => {
-    const costMap = new Map(
-      local.cost.map(({ type, count }) => [type as DiceType, count]),
-    );
-    const realCostMap = new Map(
-      local.realCost?.map(({ type, count }) => [type as DiceType, count]),
-    );
-    type DiceTuple = readonly [type: DiceType, count: number, color: DiceColor];
-    let result: DiceTuple[] = [];
-    if (local.realCost) {
-      for (const [type, originalCount] of costMap) {
-        const realCount = realCostMap.get(type) ?? 0;
-        const color =
-          realCount > originalCount
-            ? "increased"
-            : realCount < originalCount
-              ? "decreased"
-              : "normal";
-        result.push([type, realCount, color]);
+  const diceMap = createMemo(
+    () => {
+      const costMap = new Map(
+        local.cost.map(({ type, count }) => [type as DiceType, count]),
+      );
+      const realCostMap = new Map(
+        local.realCost?.map(({ type, count }) => [type as DiceType, count]),
+      );
+      type DiceTuple = readonly [
+        type: DiceType,
+        count: number,
+        color: DiceColor,
+      ];
+      let result: DiceTuple[] = [];
+      if (local.realCost) {
+        for (const [type, originalCount] of costMap) {
+          const realCount = realCostMap.get(type) ?? 0;
+          const color =
+            realCount > originalCount
+              ? "increased"
+              : realCount < originalCount
+                ? "decreased"
+                : "normal";
+          result.push([type, realCount, color]);
+        }
+      } else {
+        result = costMap
+          .entries()
+          .map(([type, count]) => [type, count, "normal"] as const)
+          .toArray();
       }
-    } else {
-      result = costMap
-        .entries()
-        .map(([type, count]) => [type, count, "normal"] as const)
-        .toArray();
-    }
-    return result;
-  }, isDeepEqual);
+      return result;
+    },
+    [],
+    { equals: isDeepEqual },
+  );
   return (
     <div {...restProps}>
-      <For each={diceMap()}>
-        {([type, count, color]) => (
-          <Dice
-            type={type}
-            text={type === DiceType.Legend ? "" : `${count}`}
-            size={local.size}
-            color={color}
-          />
-        )}
-      </For>
+      <Key each={diceMap()} by={0} /* by-type */>
+        {(item) => {
+          const [type, count, color] = item();
+          return (
+            <Dice
+              type={type}
+              text={type === DiceType.Legend ? "" : `${count}`}
+              size={local.size}
+              color={color}
+            />
+          );
+        }}
+      </Key>
     </div>
   );
 }
