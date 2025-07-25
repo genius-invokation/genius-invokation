@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import * as ts from "typescript";
+import asserts from "node:assert";
 
 export interface ChainCallEntry {
   idStart: number;
@@ -22,18 +23,50 @@ export interface ChainCallEntry {
   text: string;
 }
 
+type Id = number | string;
+
+export interface Binding {
+  name: string;
+  id: Id;
+}
 export interface ChainCall {
   expression: ts.Expression;
-  entries: ChainCallEntry[];
+  chainCallEntries: ChainCallEntry[];
+  bindings: Binding[];
+  isExport: boolean;
 }
 
-function parseChainCalls(node: ts.Expression): ChainCall | undefined {
+interface ParseChainCallResult {
+  chainCallEntries: ChainCallEntry[];
+  ids: Id[];
+}
+
+function parseId(node: ts.Expression): Id {
+  if (ts.isNumericLiteral(node)) {
+    return Number(node.text);
+  } else if (ts.isStringLiteral(node)) {
+    return node.text;
+  } else {
+    throw new Error(`Expect number or string literal, got ${ts.SyntaxKind[node.kind]}`);
+  }
+}
+
+function parseChainCalls(
+  node: ts.Expression,
+  sourceFile: ts.SourceFile,
+): ParseChainCallResult | undefined {
   const chainCalls: ChainCallEntry[] = [];
+  let currentArgs: readonly ts.Expression[] = [];
+  const ids: Id[] = [];
   while (true) {
     if (node.kind !== ts.SyntaxKind.CallExpression) {
       return;
     }
-    const { end, expression: callee } = node as ts.CallExpression;
+    const {
+      end,
+      expression: callee,
+      arguments: args,
+    } = node as ts.CallExpression;
     if (ts.isPropertyAccessExpression(callee)) {
       const { expression, name } = callee;
       const text = name.text;
@@ -43,7 +76,12 @@ function parseChainCalls(node: ts.Expression): ChainCall | undefined {
         callEnd: end,
         text,
       });
+      if (text === "toStatus" || text === "toCombatStatus") {
+        asserts(args.length >= 1);
+        ids.unshift(parseId(args[0]));
+      }
       node = expression;
+      currentArgs = args;
       continue;
     } else if (ts.isIdentifier(callee)) {
       const name = callee as ts.Identifier;
@@ -54,26 +92,23 @@ function parseChainCalls(node: ts.Expression): ChainCall | undefined {
         callEnd: end,
         text,
       });
+      asserts(args.length >= 1);
+      ids.unshift(parseId(args[0]));
       break;
     } else {
       return;
     }
   }
   return {
-    expression: node,
-    entries: chainCalls.reverse(),
+    ids,
+    chainCallEntries: chainCalls.toReversed(),
   };
 }
 
-interface ImportedName {
+export interface ImportedName {
   name: string;
   sourceName: string;
   fromSpecifier: string;
-}
-interface ExportedName {
-  name: string;
-  expression: ts.Expression;
-  isDestructured: boolean;
 }
 
 const getBindingNames = (name: ts.BindingName): string[] => {
@@ -93,16 +128,39 @@ export interface ParseResult {
   filename: string;
   file: ts.SourceFile;
   chainCalls: ChainCall[];
+  otherDecls: ts.Declaration[];
   importedNames: ImportedName[];
-  exportedNames: ExportedName[];
+}
+
+function parseNames(declaration: ts.VariableDeclaration): ts.Identifier[] {
+  const { name } = declaration;
+  const result: ts.Identifier[] = [];
+  const run = (node: ts.BindingName) => {
+    if (ts.isIdentifier(node)) {
+      result.push(node);
+    } else if (ts.isArrayBindingPattern(node)) {
+      for (const element of node.elements) {
+        if (ts.isOmittedExpression(element)) {
+          continue;
+        }
+        run(element.name);
+      }
+    } else if (ts.isObjectBindingPattern(node)) {
+      for (const element of node.elements) {
+        run(element.name);
+      }
+    }
+  };
+  run(name);
+  return result;
 }
 
 export function parse(filename: string, content: string): ParseResult {
   const file = ts.createSourceFile(filename, content, ts.ScriptTarget.Latest);
 
-  const maybeChainCalls: ts.Expression[] = [];
   const importedNames: ImportedName[] = [];
-  const exportedNames: ExportedName[] = [];
+  const chainCalls: ChainCall[] = [];
+  const otherDecls: ts.Declaration[] = [];
 
   for (const node of file.statements) {
     if (ts.isVariableStatement(node)) {
@@ -114,23 +172,24 @@ export function parse(filename: string, content: string): ParseResult {
         modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) ?? false;
       for (const declaration of declarations) {
         if (declaration.initializer) {
-          maybeChainCalls.push(declaration.initializer);
-          if (isExport) {
-            const { name } = declaration;
-            const names = getBindingNames(name);
-            for (const n of names) {
-              exportedNames.push({
-                name: n,
-                expression: declaration.initializer,
-                isDestructured: names.length > 1,
-              });
-            }
+          const parsed = parseChainCalls(declaration.initializer, file);
+          if (!parsed) {
+            otherDecls.push(declaration);
+            continue;
           }
+          const identifiers = parseNames(declaration);
+          asserts(identifiers.length <= parsed.ids.length, `${identifiers} <=> ${parsed.ids}`);
+          chainCalls.push({
+            expression: declaration.initializer,
+            chainCallEntries: parsed.chainCallEntries,
+            bindings: identifiers.map((name, i) => ({
+              name: name.text,
+              id: parsed.ids[i],
+            })),
+            isExport,
+          });
         }
       }
-    } else if (ts.isExpressionStatement(node)) {
-      const { expression } = node as ts.ExpressionStatement;
-      maybeChainCalls.push(expression);
     } else if (ts.isImportDeclaration(node)) {
       const { importClause, moduleSpecifier } = node;
       if (importClause) {
@@ -152,15 +211,11 @@ export function parse(filename: string, content: string): ParseResult {
       continue;
     }
   }
-
-  const chainCalls = maybeChainCalls
-    .map(parseChainCalls)
-    .filter((call): call is ChainCall => !!call && call.entries.length > 1);
   return {
     filename,
     file,
     chainCalls,
     importedNames,
-    exportedNames,
+    otherDecls,
   };
 }

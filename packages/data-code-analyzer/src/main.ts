@@ -17,6 +17,7 @@ import { Glob } from "bun";
 import path from "node:path";
 import { parse, ParseResult } from "./parser";
 import { fileURLToPath } from "node:url";
+import { analyzeExport } from "./analyzer";
 
 const base = fileURLToPath(new URL("../../data/src", import.meta.url).href);
 
@@ -34,3 +35,7 @@ for await (const file of new Glob("**/*.ts").scan(base)) {
   })());
 }
 await Promise.all(parsingPromises);
+
+
+import * as ts from "typescript";
+const exports = analyzeExport(parsedFiles);
