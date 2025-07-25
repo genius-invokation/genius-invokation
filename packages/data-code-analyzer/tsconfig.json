@@ -3,7 +3,7 @@
     "module": "Preserve",
     "target": "ES2022",
     "lib": [
-      "ES2022"
+      "ESNext"
     ],
     "sourceMap": true,
     "strict": true, /* enable all strict type-checking options */

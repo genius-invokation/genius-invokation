@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { EntityType } from "@gi-tcg/core";
 import * as ts from "typescript";
-import { ParseResult } from "./parser";
+import { ChainCall, ParseResult } from "./parser";
 
 export interface SourceLoc {
   file: string;
@@ -23,40 +22,82 @@ export interface SourceLoc {
   end: number;
 }
 
+export const FACTORY_TYPE = [
+  "character",
+  "summon",
+  "status",
+  "combatStatus",
+  "skill",
+  "extension",
+  "card",
+] as const;
+export type FactoryType = (typeof FACTORY_TYPE)[number];
+
 export interface DataEntry {
   id: number;
-  factoryType: EntityType | "character" | "extension" | "skill";
-  variableName: string;
+  name: string;
+  factoryType: FactoryType;
   source: string;
   location: SourceLoc;
   references: number[];
 }
 
-export function analyze(parsedFiles: ParseResult[]): DataEntry[] {
-  const dataEntries: DataEntry[] = [];
+export interface FileEntry {
+  parsedFile: ParseResult;
+  data: DataEntry[];
+  exports: Map<string, DataEntry>;
+}
+
+type AllExports = Map<string, FileEntry>;
+
+export function analyzeExport(parsedFiles: ParseResult[]): AllExports {
+  const exports = new Map<string, FileEntry>();
   for (const parsedFile of parsedFiles) {
-    for (const chainCall of parsedFile.chainCalls) {
-      const { expression, entries } = chainCall;
-      if (ts.isIdentifier(expression)) {
-        const variableName = expression.text;
-        const source = parsedFile.file;
-        const location = {
-          file: source,
-          start: expression.getStart(),
+    const { file, chainCalls } = parsedFile;
+    const fileExports = new Map<string, DataEntry>();
+    const fileData: DataEntry[] = [];
+    for (const chainCall of chainCalls) {
+      const { isExport, bindings, chainCallEntries, expression } = chainCall;
+      const factoryType = chainCallEntries[0]?.text;
+      if (!(FACTORY_TYPE as readonly string[]).includes(factoryType)) {
+        continue;
+      }
+      const rest = {
+        factoryType: factoryType as FactoryType,
+        source: expression.getText(file),
+        location: {
+          file: file.fileName,
+          start: expression.getStart(file),
           end: expression.getEnd(),
+        },
+      };
+      for (const { name, id } of bindings) {
+        const data: DataEntry = {
+          id: id as number,
+          name,
+          references: [],
+          ...rest,
         };
-        for (const entry of entries) {
-          dataEntries.push({
-            id: entry.idStart,
-            factoryType: "character",
-            variableName,
-            source,
-            location,
-            references: [],
-          });
+        if (isExport) {
+          fileExports.set(name, data);
         }
       }
     }
+    exports.set(file.fileName, {
+      parsedFile,
+      data: fileData,
+      exports: fileExports,
+    });
   }
-  return dataEntries;
+  return exports;
+}
+
+export function feedReferences(
+  parsedFile: ParseResult,
+  entry: DataEntry,
+  exports: AllExports,
+) {
+  const traverse = (node: ts.Node) => {
+    ts.forEachChild(node, traverse);
+  }
 }
