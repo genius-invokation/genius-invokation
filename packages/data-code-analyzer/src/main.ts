@@ -15,27 +15,40 @@
 
 import { Glob } from "bun";
 import path from "node:path";
-import { parse, ParseResult } from "./parser";
 import { fileURLToPath } from "node:url";
-import { analyzeExport } from "./analyzer";
+import { Project } from "ts-morph";
+import { TcgDataSourceFile } from "./source-file";
+import { TcgDataProject } from "./project";
 
-const base = fileURLToPath(new URL("../../data/src", import.meta.url).href);
+const base = fileURLToPath(new URL("../../data", import.meta.url).href);
 
-const parsedFiles: ParseResult[] = [];
+const project = new Project({
+  tsConfigFilePath: path.join(base, "tsconfig.json"),
+});
 
-const parsingPromises: Promise<void>[] = [];
-for await (const file of new Glob("**/*.ts").scan(base)) {
+const tcgProject = new TcgDataProject(project);
+for await (const file of new Glob("src/**/*.ts").scan(base)) {
+  if (file.includes("old_versions")) {
+    continue;
+  }
   const filepath = path.join(base, file);
-  parsingPromises.push((async () => {
-    const content = await Bun.file(filepath).text();
-    const result = parse(filepath, content);
-    if (result.chainCalls.length > 0) {
-      parsedFiles.push(result);
-    }
-  })());
+  const source = project.getSourceFileOrThrow(filepath);
+  tcgProject.addFile(source);
 }
-await Promise.all(parsingPromises);
-
-
-import * as ts from "typescript";
-const exports = analyzeExport(parsedFiles);
+for (const [, file] of tcgProject.files) {
+  console.log(file.getPath());
+  for (const [name, decl] of file.varDecls) {
+    if (!decl.isEntity()) {
+      continue;
+    }
+    const result = file.getReferencesOfDecl(decl);
+    console.log(
+      name,
+      decl.id,
+      result
+        .values()
+        .map((r) => r.id)
+        .toArray(),
+    );
+  }
+}

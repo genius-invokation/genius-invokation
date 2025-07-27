@@ -22,6 +22,8 @@ type ExtensionBuilderMeta<
   associatedExtension: ExtensionHandle<ExtStateType>;
 };
 
+export const EXTENSION_ID_OFFSET = 50_000_000;
+
 export class ExtensionBuilder<ExtStateType extends object> {
   private _skillNo = 0;
   private _skillList: TriggeredSkillDefinition[] = [];
@@ -32,7 +34,7 @@ export class ExtensionBuilder<ExtStateType extends object> {
     idHint: number,
     private readonly initialState: ExtStateType,
   ) {
-    this.id = idHint + 50_000_000;
+    this.id = idHint + EXTENSION_ID_OFFSET;
     builderWeakRefs.add(new WeakRef(this));
   }
 
