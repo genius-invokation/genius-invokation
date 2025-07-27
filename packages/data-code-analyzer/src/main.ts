@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { Project } from "ts-morph";
 import { TcgDataSourceFile } from "./source-file";
 import { TcgDataProject } from "./project";
+import { CURRENT_VERSION, Version } from "@gi-tcg/core";
 
 const base = fileURLToPath(new URL("../../data", import.meta.url).href);
 
@@ -35,15 +36,18 @@ for await (const file of new Glob("src/**/*.ts").scan(base)) {
   const source = project.getSourceFileOrThrow(filepath);
   tcgProject.addFile(source);
 }
+
+const entityDependency = new Map<number, number[]>();
 for (const [, file] of tcgProject.files) {
-  console.log(file.getPath());
   for (const [name, decl] of file.varDecls) {
     if (!decl.isEntity()) {
       continue;
     }
+    if (entityDependency.has(decl.id)) {
+      console.warn(`Duplicate entity declaration found: ${name} (${decl.id})`);
+    }
     const result = file.getReferencesOfDecl(decl);
-    console.log(
-      name,
+    entityDependency.set(
       decl.id,
       result
         .values()
@@ -52,3 +56,8 @@ for (const [, file] of tcgProject.files) {
     );
   }
 }
+// await Bun.write("../out/deps.json", JSON.stringify(Object.fromEntries(entityDependency), null, 2));
+
+const baseVersion = CURRENT_VERSION
+const versions: Record<number, Version> = {};
+

@@ -166,6 +166,10 @@ export class TcgDataDeclaration {
         return null;
       }
     }
+    if (chainCalls[0].fnName === "reserve") {
+      this.#analyzedInitializer.set(initializer, null);
+      return null;
+    }
     const result: InitializerAnalyzeResult = {
       ids,
       chain: chainCalls.toReversed(),
