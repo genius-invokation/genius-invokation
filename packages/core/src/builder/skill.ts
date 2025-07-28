@@ -387,10 +387,10 @@ const detailedEventDictionary = {
     );
   }),
   cancelHealed: defineDescriptor("modifyHeal0", (e, r) => {
-    return checkRelative(e.onTimeState, e.target.id, r) && !e.cancelled;
+    return checkRelative(e.onTimeState, e.target.id, r) && e.modifiable() && !e.cancelled;
   }),
   decreaseHealed: defineDescriptor("modifyHeal1", (e, r) => {
-    return checkRelative(e.onTimeState, e.target.id, r) && !e.cancelled;
+    return checkRelative(e.onTimeState, e.target.id, r) && e.modifiable() && !e.cancelled;
   }),
   beforeDefeated: defineDescriptor("modifyZeroHealth", (e, r) => {
     return (

@@ -20,9 +20,7 @@ import { status, combatStatus, summon, DamageType } from "@gi-tcg/core/builder";
  * @name 抵抗之躯
  * 角色免疫冻结、眩晕、石化的效果。
  */
-export const ResistantForm = status(100)
-  .tags("immuneControl")
-  .done();
+export const ResistantForm = status(100).tags("immuneControl").done();
 
 /**
  * @id 106
@@ -34,7 +32,9 @@ export const ResistantForm = status(100)
 export const Frozen = status(106)
   .oneDuration()
   .tags("disableSkill")
-  .on("increaseDamaged", (c, e) => ([DamageType.Pyro, DamageType.Physical] as DamageType[]).includes(e.type))
+  .on("increaseDamaged", (c, e) =>
+    ([DamageType.Pyro, DamageType.Physical] as DamageType[]).includes(e.type),
+  )
   .increaseDamage(2)
   .dispose()
   .done();
@@ -45,9 +45,7 @@ export const Frozen = status(106)
  * @description
  * 为我方出战角色提供1点护盾。（可叠加，最多叠加到2点）
  */
-export const Crystallize = combatStatus(111)
-  .shield(1, 2)
-  .done();
+export const Crystallize = combatStatus(111).shield(1, 2).done();
 
 /**
  * @id 115
@@ -69,9 +67,13 @@ export const BurningFlame = summon(115)
  * 可用次数：1
  */
 export const DendroCore = combatStatus(116)
-  .on("increaseDamage", (c, e) =>
-    ([DamageType.Pyro, DamageType.Electro] as DamageType[]).includes(e.type) &&
-    e.target.id === c.$("opp active")?.id)
+  .on(
+    "increaseDamage",
+    (c, e) =>
+      ([DamageType.Pyro, DamageType.Electro] as DamageType[]).includes(
+        e.type,
+      ) && e.target.id === c.$("opp active")?.id,
+  )
   .usage(1)
   .increaseDamage(2)
   .done();
@@ -84,9 +86,13 @@ export const DendroCore = combatStatus(116)
  * 可用次数：2
  */
 export const CatalyzingField = combatStatus(117)
-  .on("increaseDamage", (c, e) =>
-    ([DamageType.Electro, DamageType.Dendro] as DamageType[]).includes(e.type) &&
-    e.target.id === c.$("opp active")?.id)
+  .on(
+    "increaseDamage",
+    (c, e) =>
+      ([DamageType.Electro, DamageType.Dendro] as DamageType[]).includes(
+        e.type,
+      ) && e.target.id === c.$("opp active")?.id,
+  )
   .usage(2)
   .increaseDamage(1)
   .done();
@@ -100,10 +106,7 @@ export const CatalyzingField = combatStatus(117)
  */
 export const BondOfLife = status(122)
   .tags("bondOfLife")
-  .on("decreaseHealed", (c, e) =>
-    e.healInfo.healKind !== "revive" &&
-    e.healInfo.healKind !== "immuneDefeated" &&
-    e.healInfo.healKind !== "distribution")
+  .on("decreaseHealed", (c, e) => e.healInfo.healKind !== "distribution")
   .usage(1, {
     append: { limit: Infinity },
     autoDecrease: false,
@@ -125,7 +128,7 @@ export const EfficientSwitch = combatStatus(169)
   .on("deductOmniDiceSwitch")
   .usageCanAppend(1, Infinity)
   .deductOmniCost(1)
-  .done()
+  .done();
 
 /**
  * @id 303300
@@ -133,6 +136,4 @@ export const EfficientSwitch = combatStatus(169)
  * @description
  * 本回合无法食用更多「料理」
  */
-export const Satiated = status(303300)
-  .oneDuration()
-  .done();
+export const Satiated = status(303300).oneDuration().done();
