@@ -21,6 +21,14 @@
     touch-action: pan-x pan-y;
   }
 
+  --dice-panel-y-offset: 0;
+  :has([data-gi-tcg-opp-chessboard]) {
+    --dice-panel-y-offset: 50%;
+  }
+  :has([data-gi-tcg-opp-chessboard]) [data-gi-tcg-opp-chessboard] {
+    --dice-panel-y-offset: 0;
+  }
+
   [data-gi-tcg-contain-strict] {
     contain: style size;
     > * {
@@ -397,8 +405,8 @@
     );
     mask-image: radial-gradient(
       circle at center,
-      #FFFFFFFF 0%,
-      #FFFFFF80 60%,
+      #ffffffff 0%,
+      #ffffff80 60%,
       transparent 70%
     );
   }
@@ -407,8 +415,8 @@
     background-color: var(--bg-color);
     mask-image: radial-gradient(
       circle at center,
-      #FFFFFFFF 20%,
-      #FFFFFFCC 60%,
+      #ffffffff 20%,
+      #ffffffcc 60%,
       transparent 70%
     );
   }
