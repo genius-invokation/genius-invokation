@@ -67,17 +67,14 @@ export function DiceCost(props: DiceCostProps) {
   return (
     <div {...restProps}>
       <Key each={diceMap()} by={0} /* by-type */>
-        {(item) => {
-          const [type, count, color] = item();
-          return (
-            <Dice
-              type={type}
-              text={type === DiceType.Legend ? "" : `${count}`}
-              size={local.size}
-              color={color}
-            />
-          );
-        }}
+        {(item) => (
+          <Dice
+            type={item()[0]}
+            text={item()[0] === DiceType.Legend ? "" : `${item()[1]}`}
+            size={local.size}
+            color={item()[2]}
+          />
+        )}
       </Key>
     </div>
   );
