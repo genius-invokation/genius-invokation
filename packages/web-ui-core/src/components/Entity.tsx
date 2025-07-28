@@ -116,6 +116,7 @@ export function Entity(props: EntityProps) {
           oldValue={data().variableValue!}
           newValue={props.preview!.newVariableValue!}
           direction={props.preview!.newVariableDirection}
+          defeated={props.preview!.disposed}
         />
       </Show>
       <Show when={typeof data().variableValue === "number"}>
