@@ -111,6 +111,10 @@ export async function generateCards() {
     if (card.tags.includes("GCG_TAG_TALENT")) {
       continue;
     }
+    if (card.name.includes("test")) {
+      // 神人
+      continue;
+    }
     const { type, tags } = getCardTypeAndTags(card);
     let target: SourceInfo[];
     if (isLegend(card.playCost)) {

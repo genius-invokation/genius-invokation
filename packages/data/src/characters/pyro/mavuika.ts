@@ -215,11 +215,11 @@ export const FlamesWeaveLife = skill(13151)
  * @id 13152
  * @name 称名之刻
  * @description
- * 本角色进入夜魂加持，获得2点「夜魂值」，并从3张驰轮车中挑选1张加入手牌。
+ * 自身进入夜魂加持，获得2点「夜魂值」，并从3张驰轮车中挑选1张加入手牌。
  */
 export const TheNamedMoment = skill(13152)
   .type("elemental")
-  .costPyro(2)
+  .costPyro(3)
   .selectAndCreateHandCard([
     FlamestriderBlazingTrail,
     FlamestriderFullThrottle,

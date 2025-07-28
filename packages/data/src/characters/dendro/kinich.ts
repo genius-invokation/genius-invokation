@@ -111,7 +111,7 @@ export const NightsunStyle = skill(17091)
  * @id 17092
  * @name 悬猎·游骋高狩
  * @description
- * 选一个我方角色，自身附属钩索链接并进入夜魂加持。造成2点草元素伤害，然后与所选角色交换位置。
+ * 选一个我方角色，自身附属钩索链接并进入夜魂加持。造成1点草元素伤害，然后与所选角色交换位置。
  */
 export const CanopyHunterRidingHigh = skill(17092)
   .type("elemental")
@@ -119,7 +119,7 @@ export const CanopyHunterRidingHigh = skill(17092)
   .addTarget("my characters")
   .characterStatus(GrappleLink)
   .characterStatus(NightsoulsBlessing)
-  .damage(DamageType.Dendro, 2)
+  .damage(DamageType.Dendro, 1)
   .swapCharacterPosition("@self", "@targets.0")
   .do((c) => {
     const talent = c.self.hasEquipment(NightRealmsGiftRepaidInFull);

@@ -116,6 +116,18 @@ export const BondOfLife = status(122)
   .done();
 
 /**
+ * @id 169
+ * @name 高效切换
+ * @description
+ * 我方下次执行「切换角色」行动时：少花费1个元素骰。
+ */
+export const EfficientSwitch = combatStatus(169)
+  .on("deductOmniDiceSwitch")
+  .usageCanAppend(1, Infinity)
+  .deductOmniCost(1)
+  .done()
+
+/**
  * @id 303300
  * @name 饱腹
  * @description

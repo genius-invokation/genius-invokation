@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, EntityState, card, combatStatus, diceCostOfCard, status } from "@gi-tcg/core/builder";
-import { ForbiddenKnowledge } from "../event/other";
+import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, SIMULANKA_QUERY, SIMULANKA_SUMMONS, ToyGuard } from "../event/other";
 
 /**
  * @id 321001
@@ -705,4 +705,83 @@ export const CollectiveOfPlenty = card(321028)
   })
   .on("switchActive")
   .characterStatus(Exercise, "@event.switchTo")
+  .done();
+
+/**
+ * @id 321029
+ * @name 墨色酒馆
+ * @description
+ * 入场时：从折纸飞鼠、跳跳纸蛙、折纸胖胖鼠中随机生成1张手牌。
+ * 我方宣布结束时：随机触发我方1个「希穆兰卡」召唤物的「结束阶段」效果。
+ * 可用次数：3
+ */
+export const CalligraphyTavern = card(321029)
+  .since("v5.8.0")
+  .costVoid(2)
+  .support("place")
+  .on("enter")
+  .do((c, e) =>{
+    const newCard = c.random([OrigamiFlyingSquirrel, PopupPaperFrog, OrigamiHamster]);
+    c.createHandCard(newCard);
+  })
+  .on("declareEnd", (c, e) => c.$(SIMULANKA_QUERY))
+  .usage(3)
+  .do((c, e) =>{
+    const mySimulankaSummons = c.$$(SIMULANKA_QUERY);
+    const chosen = c.random(mySimulankaSummons);
+    if (chosen) {
+      c.triggerEndPhaseSkill(chosen);
+    }
+  })
+  .done();
+
+/**
+ * @id 321032
+ * @name 星轨王城（生效中）
+ * @description
+ * 下次打出积木小人少花费1个元素骰。
+ */
+export const ConstellationMetropoleInEffect01 = combatStatus(301032)
+  .once("deductOmniDiceCard", (c, e) => e.action.skill.caller.definition.id === ToyGuard)
+  .deductOmniCost(1)
+  .done();
+
+/**
+ * @id 321037
+ * @name 星轨王城（生效中）
+ * @description
+ * 下次打出的积木小人效果量+1。
+ */
+export const ConstellationMetropoleInEffect02 = combatStatus(321037)
+  .once("enterRelative", (c, e) =>
+    e.entity.definition.type === "summon" &&
+    (SIMULANKA_SUMMONS as number[]).includes(e.entity.definition.id))
+  .do((c, e) => {
+    e.entity.cast<"summon">().addVariable("effect", 1);
+  })
+  .done();
+
+/**
+ * @id 321030
+ * @name 星轨王城
+ * @description
+ * 入场时：生成手牌积木小人。
+ * 我方角色使用「元素战技」后：下次打出积木小人少花费1个元素骰。（不可叠加）
+ * 我方角色使用「元素爆发」后：下次打出的积木小人效果量+1。（不可叠加）
+ */
+export const ConstellationMetropole = card(321030)
+  .since("v5.8.0")
+  .costSame(2)
+  .support("place")
+  .on("enter")
+  .createHandCard(ToyGuard)
+  .on("useSkill")
+  .listenToPlayer()
+  .do((c, e) => {
+    if (e.isSkillType("elemental")){
+      c.combatStatus(ConstellationMetropoleInEffect01);
+    } else if (e.isSkillType("burst")){
+      c.combatStatus(ConstellationMetropoleInEffect02);
+    }
+  })
   .done();

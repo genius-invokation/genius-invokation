@@ -178,7 +178,7 @@ export const MamaloacosFrigidRainInEffect = combatStatus(211142)
  */
 export const MamaloacosFrigidRain = card(211141)
   .since("v5.7.0")
-  .costCryo(1)
+  .costCryo(2)
   .talent(Citlali, "none")
   .on("damaged", (c, e) =>
     (e.getReaction() === Reaction.Frozen || e.getReaction() === Reaction.Melt) &&

@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
-import { BurningFlame, CatalyzingField, DendroCore } from "../../commons";
+import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
 
 /**
@@ -1815,4 +1815,194 @@ export const FruitsOfTraining = card(332048)
   .since("v5.7.0")
   .addTarget("my characters")
   .characterStatus(FruitsOfTrainingInEffect01, "@targets.0")
+  .done();
+
+/**
+ * @id 301028
+ * @name 积木小人
+ * @description
+ * 结束阶段：造成1点物理伤害。
+ * 可用次数：2
+ */
+export const ToyGuardSummon = summon(301028)
+  .variable("effect", 1, { forceOverwrite: true })
+  .hint(DamageType.Physical, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(2)
+  .do((c, e) => {
+    c.damage(DamageType.Physical, c.getVariable("effect"));
+  })
+  .done();
+
+/**
+ * @id 301029
+ * @name 折纸飞鼠
+ * @description
+ * 结束阶段：获得1层高效切换。
+ * 可用次数：2
+ */
+export const OrigamiFlyingSquirrelSummon = summon(301029)
+  .variable("effect", 1, { forceOverwrite: true })
+  .hint(ResistantForm, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(2)
+  .do((c) => {
+    c.combatStatus(EfficientSwitch, "my", {
+      overrideVariables: {
+        usage: c.getVariable("effect")
+      }
+    })
+  })
+  .done();
+
+/**
+ * @id 301030
+ * @name 跳跳纸蛙
+ * @description
+ * 结束阶段：抓1张牌。
+ * 可用次数：2
+ */
+export const PopupPaperFrogSummon = summon(301030)
+  .variable("effect", 1, { forceOverwrite: true })
+  .hint(ResistantForm, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(2)
+  .do((c, e) => {
+    c.drawCards(c.getVariable("effect"));
+  })
+  .done();
+
+/**
+ * @id 301031
+ * @name 折纸胖胖鼠
+ * @description
+ * 折纸胖胖鼠：结束阶段：治疗受伤最多的我方角色2点。
+ * 可用次数：1
+ */
+export const OrigamiHamsterSummon = summon(301031)
+  .variable("effect", 2, { forceOverwrite: true })
+  .hint(DamageType.Heal, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(1)
+  .do((c, e) => {
+    c.heal(c.getVariable("effect"), "my characters order by health - maxHealth limit 1");
+  })
+  .done();
+
+export const SIMULANKA_SUMMONS = [
+  ToyGuardSummon,
+  OrigamiFlyingSquirrelSummon,
+  PopupPaperFrogSummon,
+  OrigamiHamsterSummon
+];
+
+export const SIMULANKA_QUERY = SIMULANKA_SUMMONS
+  .map((id) => `(my summons with definition id ${id})`)
+  .join(` or `) as `${string} summons ${string}`;
+
+/**
+ * @id 301033
+ * @name 积木小人
+ * @description
+ * 召唤积木小人。
+ * （积木小人：结束阶段：造成1点物理伤害。
+ * 可用次数：2）
+ */
+export const ToyGuard = card(301033)
+  .since("v5.8.0")
+  .unobtainable()
+  .costSame(1)
+  .summon(ToyGuardSummon)
+  .done();
+
+/**
+ * @id 301034
+ * @name 折纸飞鼠
+ * @description
+ * 召唤折纸飞鼠。
+ * （折纸飞鼠：结束阶段：获得1层高效切换。
+ * 可用次数：2）
+ */
+export const OrigamiFlyingSquirrel = card(301034)
+  .since("v5.8.0")
+  .unobtainable()
+  .costSame(1)
+  .summon(OrigamiFlyingSquirrelSummon)
+  .done();
+
+/**
+ * @id 301035
+ * @name 跳跳纸蛙
+ * @description
+ * 召唤跳跳纸蛙。
+ * （跳跳纸蛙：结束阶段：抓1张牌。
+ * 可用次数：2）
+ */
+export const PopupPaperFrog = card(301035)
+  .since("v5.8.0")
+  .unobtainable()
+  .costSame(1)
+  .summon(PopupPaperFrogSummon)
+  .done();
+
+/**
+ * @id 301036
+ * @name 折纸胖胖鼠
+ * @description
+ * 召唤折纸胖胖鼠。
+ * （折纸胖胖鼠：结束阶段：治疗受伤最多的我方角色2点。
+ * 可用次数：1）
+ */
+export const OrigamiHamster = card(301036)
+  .since("v5.8.0")
+  .unobtainable()
+  .costSame(1)
+  .summon(OrigamiHamsterSummon)
+  .done();
+
+/**
+ * @id 303244
+ * @name 收获时间（生效中）
+ * 结束阶段：生成一张收获时间，随机置入我方牌组。（可叠加，最多叠加到2）
+ */
+export const HarvestTimeInEffect = combatStatus(303244)
+  .variableCanAppend("cardCount", 1, 2)
+  .once("endPhase")
+  .do((c) => {
+    c.createPileCards(HarvestTime, c.getVariable("cardCount"), "random");
+  })
+  .done();
+
+/**
+ * @id 332049
+ * @name 收获时间
+ * @description
+ * 从3张随机「料理」牌中挑选1张。
+ * 结束阶段：生成一张收获时间，随机置入我方牌组。
+ */
+export const HarvestTime = card(332049)
+  .since("v5.8.0")
+  .costSame(1)
+  .costSame(1)
+  .do((c, e) => {
+    const allFoods = c.allCardDefinitions("food");
+    const candidates = c.randomSubset(allFoods, 3);
+    c.selectAndCreateHandCard(candidates);
+  })
+  .combatStatus(HarvestTimeInEffect)
+  .done();
+
+/**
+ * @id 332050
+ * @name 很棒，哥们。
+ * @description
+ * 抓1张「特技」牌，下次打出「特技」牌后，生成1个万能元素。
+ */
+export const AwesomeBro = card(332050)
+  .since("v5.8.0")
+  .costSame(1)
+  .drawCards(1, {withTag: "technique"})
+  .toCombatStatus(303243)
+  .once("playCard", (c, e) => e.hasCardTag("technique"))
+  .generateDice(DiceType.Omni, 1)
   .done();
