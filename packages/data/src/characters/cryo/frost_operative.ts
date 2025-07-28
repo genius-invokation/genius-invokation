@@ -59,13 +59,13 @@ export const FrostyInterjection = skill(21042)
  * @id 21043
  * @name 掠袭之刺
  * @description
- * 造成4点冰元素伤害，本角色附属掠袭锐势。
+ * 造成5点冰元素伤害，本角色附属掠袭锐势。
  */
 export const ThornyOnslaught = skill(21043)
   .type("burst")
   .costCryo(3)
   .costEnergy(2)
-  .damage(DamageType.Cryo, 4)
+  .damage(DamageType.Cryo, 5)
   .characterStatus(OnslaughtStance, "@self")
   .done();
 
@@ -108,7 +108,7 @@ export const BloodbondedShadow = skill(21044)
 export const FrostOperative = character(2104)
   .since("v4.8.0")
   .tags("cryo", "fatui")
-  .health(10)
+  .health(11)
   .energy(2)
   .skills(SwiftPoint, FrostyInterjection, ThornyOnslaught, BloodbondedShadow)
   .done();

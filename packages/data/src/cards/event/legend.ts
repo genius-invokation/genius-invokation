@@ -173,22 +173,36 @@ export const ViciousAncientBattle = card(330008)
   .done();
 
 /**
+ * @id 300005
+ * @name 赦免宣告（生效中）
+ * 所附属角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
+ * 持续回合：2
+ */
+export const EdictOfAbsolutionInEffect = status(300005)
+  .since("v5.0.0")
+  .tags("immuneControl")
+  .duration(2)
+  .done();
+
+
+/**
  * @id 330009
  * @name 赦免宣告
  * @description
- * 本回合中，目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
+ * 治疗目标角色2点。
+ * 目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换，持续2个回合。
  * （整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）
  */
-export const [EdictOfAbsolution] = card(330009)
+export const EdictOfAbsolution = card(330009)
   .since("v5.0.0")
+  .costSame(1)
   .legend()
   .addTarget("my characters")
-  .toStatus(300005, "@targets.0")
-  .tags("immuneControl")
-  .oneDuration()
+  .heal(2, "@targets.0")
+  .characterStatus(EdictOfAbsolutionInEffect, "@targets.0")
   .done();
 
-  export const FlamesOfWarExtension = extension(300006, {
+export const FlamesOfWarExtension = extension(300006, {
     spirit: pair(0),
     win: pair(false),
   })

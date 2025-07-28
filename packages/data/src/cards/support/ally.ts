@@ -34,12 +34,17 @@ import {
   LaumesSupport,
   LutinesSupport,
   MelusineSupport,
+  OrigamiFlyingSquirrel,
+  OrigamiHamster,
+  PopupPaperFrog,
   PucasSupport,
   SerenesSupport,
+  SIMULANKA_SUMMONS,
   SluasisSupport,
   TaroumarusSavings,
   ThironasSupport,
   TopyassSupport,
+  ToyGuard,
   VirdasSupport,
 } from "../event/other";
 
@@ -746,4 +751,50 @@ export const Atea = card(322028)
   .on("deductOmniDiceTechnique")
   .usagePerRound(1)
   .deductOmniCost(1)
+  .done();
+
+/**
+ * @id 322029
+ * @name 森林的祝福
+ * @description
+ * 入场时及我方触发元素反应后：从折纸飞鼠、跳跳纸蛙、折纸胖胖鼠中随机生成1张加入手牌。
+ */
+export const ForestBlessing = card(322029)
+  .since("v5.8.0")
+  .costVoid(2)
+  .support("ally")
+  .defineSnippet((c, e) => {
+    const newCard = c.random([OrigamiFlyingSquirrel, PopupPaperFrog, OrigamiHamster]);
+    c.createHandCard(newCard);
+  })
+  .on("enter")
+  .callSnippet()
+  .on("reaction", (c, e) => e.caller.isMine())
+  .listenToAll()
+  .callSnippet()
+  .done();
+
+/**
+ * @id 322030
+ * @name 预言女神的礼物
+ * @description
+ * 入场时：生成2张手牌积木小人，并生成2张积木小人，随机置入我方牌组中。
+ * 我方打出「希穆兰卡」召唤物后，使其效果量+1。
+ * 可用次数：2
+ */
+export const GiftOfTheGoddessOfProphecy = card(322030)
+  .since("v5.8.0")
+  .costVoid(2)
+  .support("ally")
+  .on("enter")
+  .createHandCard(ToyGuard)
+  .createHandCard(ToyGuard)
+  .createPileCards(ToyGuard, 2, "random")
+  .on("enterRelative", (c, e) =>
+    e.entity.definition.type === "summon" &&
+    (SIMULANKA_SUMMONS as number[]).includes(e.entity.definition.id))
+  .usage(2)
+  .do((c, e) => {
+    e.entity.cast<"summon">().addVariable("effect", 1);
+  })
   .done();

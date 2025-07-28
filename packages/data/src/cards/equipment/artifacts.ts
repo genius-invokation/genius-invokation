@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, DiceType, card, status } from "@gi-tcg/core/builder";
+import { DamageType, DiceType, Reaction, card, status } from "@gi-tcg/core/builder";
+import { BondOfLife } from "../../commons";
 
 /**
  * @id 312101
@@ -1031,4 +1032,50 @@ export const ScrollOfTheHeroOfCinderCity = card(312034)
   .usagePerRound(1)
   .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
   .gainEnergy(1, "my characters with energy < maxEnergy limit 1")
+  .done();
+
+/**
+ * @id 301206
+ * @name 失冕的宝冠（生效中）
+ * @description
+ * 每层使所附属角色下次受到的伤害+1。（可叠加，没有上限）
+ */
+export const CrownlessCrownInEffect = status(301206)
+  .variableCanAppend("layer", 1, Infinity)
+  .once("increaseDamaged")
+  .do((c, e) =>{
+    e.increaseDamage(c.getVariable("layer"));
+  })
+  .done();
+
+/**
+ * @id 312035
+ * @name 失冕的宝冠
+ * @description
+ * 我方触发燃烧反应后：敌方当前出战角色下次受到的伤害+1。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const CrownlessCrown = card(312035)
+  .since("v5.8.0")
+  .artifact()
+  .on("reaction", (c, e) => e.caller.isMine() &&
+    e.type === Reaction.Burning)
+  .listenToAll()
+  .usagePerRound(1)
+  .characterStatus(CrownlessCrownInEffect, "opp characters with health > 0 limit 1")
+  .done();
+
+/**
+ * @id 312036
+ * @name 异想零落的圆舞
+ * @description
+ * 附属角色使用技能后：双方出战角色附属1层生命之契。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const WhimsicalDanceOfTheWithered = card(312036)
+  .since("v5.8.0")
+  .artifact()
+  .on("useSkill")
+  .usagePerRound(1)
+  .characterStatus(BondOfLife, "my active or opp active")
   .done();

@@ -122,6 +122,7 @@ export const Cragbiter = skill(16101)
  * @name 出击，冲天转转！
  * @description
  * 自身附属冲天转转，然后进入夜魂加持，并获得2点「夜魂值」。（角色进入夜魂加持后不可使用此技能）
+ * （附属冲天转转的角色可以使用特技：转转冲击）
  */
 export const GoGoTurboTwirly = skill(16102)
   .type("elemental")
@@ -164,7 +165,7 @@ export const Kachina = character(1610)
  * @id 216101
  * @name 夜域赐礼·团结炉心
  * @description
- * 我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）
+ * 我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合1次）
  * （牌组中包含卡齐娜，才能加入牌组）
  */
 export const NightRealmsGiftHeartOfUnity = card(216101)
@@ -173,6 +174,6 @@ export const NightRealmsGiftHeartOfUnity = card(216101)
   .talent(Kachina, "none")
   .on(TurboTwirlyTriggered)
   .listenToPlayer()
-  .usagePerRound(2)
+  .usagePerRound(1)
   .drawCards(1)
   .done();

@@ -172,7 +172,7 @@ export const Emilie = character(1710)
  */
 export const MarcotteSillage = card(217101)
   .since("v5.5.0")
-  .costDendro(1)
+  .costDendro(2)
   .talent(Emilie, "none")
   .on("modifySkillDamageType", (c, e) => e.type === DamageType.Physical)
   .changeDamageType(DamageType.Dendro)
