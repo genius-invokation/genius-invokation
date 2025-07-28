@@ -822,6 +822,13 @@ class ModifyHealEventArgBase extends DamageOrHealEventArg<HealInfo> {
     return this._cancelled;
   }
 
+  /** immuneDefeated & revive cannot be modified nor cancelled */
+  modifiable() {
+    return !(["immuneDefeated", "revive"] as HealKind[]).includes(
+      this.healInfo.healKind,
+    );
+  }
+
   override get damageInfo(): HealInfo {
     const healInfo = super.damageInfo;
     const expectedValue = Math.max(

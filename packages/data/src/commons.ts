@@ -100,10 +100,7 @@ export const CatalyzingField = combatStatus(117)
  */
 export const BondOfLife = status(122)
   .tags("bondOfLife")
-  .on("decreaseHealed", (c, e) =>
-    e.healInfo.healKind !== "revive" &&
-    e.healInfo.healKind !== "immuneDefeated" &&
-    e.healInfo.healKind !== "distribution")
+  .on("decreaseHealed", (c, e) => e.healInfo.healKind !== "distribution")
   .usage(1, {
     append: { limit: Infinity },
     autoDecrease: false,
