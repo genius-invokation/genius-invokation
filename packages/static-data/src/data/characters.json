@@ -4458,12 +4458,12 @@
         "name": "称名之刻",
         "englishName": "The Named Moment",
         "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "本角色进入<color=#FFFFFFFF>$[C113151]</color>，获得2点<color=#FFFFFFFF>「夜魂值」</color>，并从3张<color=#FFFFFFFF>驰轮车</color>中$[K59]1张加入手牌。",
-        "description": "本角色进入夜魂加持，获得2点「夜魂值」，并从3张驰轮车中挑选1张加入手牌。",
+        "rawDescription": "自身进入<color=#FFFFFFFF>$[C113151]</color>，获得2点<color=#FFFFFFFF>「夜魂值」</color>，并从3张<color=#FFFFFFFF>驰轮车</color>中$[K59]1张加入手牌。",
+        "description": "自身进入夜魂加持，获得2点「夜魂值」，并从3张驰轮车中挑选1张加入手牌。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_PYRO",
-            "count": 2
+            "count": 3
           }
         ],
         "targetList": [
@@ -6921,6 +6921,224 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Chasca"
   },
   {
+    "id": 1512,
+    "shareId": 492,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "name": "蓝砚",
+    "englishName": "Lan Yan",
+    "tags": [
+      "GCG_TAG_ELEMENT_ANEMO",
+      "GCG_TAG_WEAPON_CATALYST",
+      "GCG_TAG_NATION_LIYUE"
+    ],
+    "storyTitle": "翦玉编春·蓝砚",
+    "storyText": "巧燕衔枝，欣悦盈门。",
+    "skills": [
+      {
+        "id": 15121,
+        "name": "玄鸾画水",
+        "englishName": "Black Pheasant Strides on Water",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成1点风元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_Catalyst_MD",
+        "iconHash": "15584209743353740735"
+      },
+      {
+        "id": 15122,
+        "name": "凤缕随翦舞",
+        "englishName": "Swallow-Wisp Pinion Dance",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "生成2层<color=#FFFFFFFF>$[C115121]</color>，获得1层<color=#FFFFFFFF>$[C169]</color>，并造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，如果此技能引发了扩散，则额外生成1层<color=#FFFFFFFF>$[C115121]</color>。",
+        "description": "生成2层凤缕护盾，获得1层高效切换，并造成1点风元素伤害，如果此技能引发了扩散，则额外生成1层凤缕护盾。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_S_Lanyan_01",
+        "iconHash": "13606308042492336465"
+      },
+      {
+        "id": 15123,
+        "name": "鹍弦踏月出",
+        "englishName": "Lustrous Moonrise",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，生成2层<color=#FFFFFFFF>$[C115121]</color>。",
+        "description": "造成3点风元素伤害，生成2层凤缕护盾。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "Skill_E_Lanyan_01_HD",
+        "iconHash": "14235953199321231958"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Lanyan",
+    "icon": "UI_Gcg_Char_AvatarIcon_Lanyan"
+  },
+  {
+    "id": 1513,
+    "shareId": 493,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "name": "鹿野院平藏",
+    "englishName": "Shikanoin Heizou",
+    "tags": [
+      "GCG_TAG_ELEMENT_ANEMO",
+      "GCG_TAG_WEAPON_CATALYST",
+      "GCG_TAG_NATION_INAZUMA"
+    ],
+    "storyTitle": "心朝乂安·鹿野院平藏",
+    "storyText": "天衣但无缝，也惧凉风吹。",
+    "skills": [
+      {
+        "id": 15131,
+        "name": "不动流格斗术",
+        "englishName": "Fudou Style Martial Arts",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成1点风元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_Catalyst_MD",
+        "iconHash": "15584209743353740735"
+      },
+      {
+        "id": 15132,
+        "name": "勠心拳",
+        "englishName": "Heartstopper Strike",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "$[K53]：<color=#FFFFFFFF>$[S15135]</color>",
+        "description": "准备技能：勠心拳·蓄力",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "Skill_S_Heizo_01",
+        "iconHash": "18229447247188360409"
+      },
+      {
+        "id": 15133,
+        "name": "聚风蹴",
+        "englishName": "Windmuster Kick",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，如果此技能引发了$[K215]，则敌方出战角色附属对应元素的$[K1036]。",
+        "description": "造成4点风元素伤害，如果此技能引发了风元素相关反应，则敌方出战角色附属对应元素的聚风真眼。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 4
+        },
+        "icon": "Skill_E_Heizo_01_HD",
+        "iconHash": "4978366893438771291"
+      },
+      {
+        "id": 15134,
+        "name": "反论稽古",
+        "englishName": "Paradoxical Practice",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】<color=#FFFFFFFF>我方引发了$[K215]后：</color>自身附属1层<color=#FFFFFFFF>$[C115132]</color>。",
+        "description": "【被动】我方引发了风元素相关反应后：自身附属1层变格。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "icon": "Skill_S_Heizo_02",
+        "iconHash": "11282233737840629164"
+      },
+      {
+        "id": 15135,
+        "name": "勠心拳·蓄力",
+        "englishName": "Heartstopper Strike: Charge",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE_4]点$[D__KEY__ELEMENT]。",
+        "description": "造成4点风元素伤害。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE_4": 4,
+          "D__KEY__DAMAGE_5": 5
+        },
+        "icon": "Skill_S_Heizo_01",
+        "iconHash": "18229447247188360409"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Heizo",
+    "icon": "UI_Gcg_Char_AvatarIcon_Heizo"
+  },
+  {
     "id": 1601,
     "shareId": 42,
     "sinceVersion": "v3.3.0",
@@ -7884,8 +8102,8 @@
         "name": "出击，冲天转转！",
         "englishName": "Go, Go Turbo Twirly!",
         "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "自身附属<color=#FFFFFFFF>$[C116102]</color>，然后进入<color=#FFFFFFFF>$[C116104]</color>，并获得2点<color=#FFFFFFFF>「夜魂值」</color>。（角色进入<color=#FFFFFFFF>$[C116104]</color>后不可使用此技能）",
-        "description": "自身附属冲天转转，然后进入夜魂加持，并获得2点「夜魂值」。（角色进入夜魂加持后不可使用此技能）",
+        "rawDescription": "自身附属<color=#FFFFFFFF>$[C116102]</color>，然后进入<color=#FFFFFFFF>$[C116104]</color>，并获得2点<color=#FFFFFFFF>「夜魂值」</color>。（角色进入<color=#FFFFFFFF>$[C116104]</color>后不可使用此技能）\\n（附属<color=#FFFFFFFF>$[C116102]</color>的角色可以使用特技：<color=#FFFFFFFF>$[S1161021]</color>）",
+        "description": "自身附属冲天转转，然后进入夜魂加持，并获得2点「夜魂值」。（角色进入夜魂加持后不可使用此技能）\n（附属冲天转转的角色可以使用特技：转转冲击）",
         "playCost": [
           {
             "type": "GCG_COST_DICE_GEO",
@@ -8873,7 +9091,7 @@
         "englishName": "Canopy Hunter: Riding High",
         "type": "GCG_SKILL_TAG_E",
         "rawDescription": "选一个我方角色，自身附属<color=#FFFFFFFF>$[C117091]</color>并进入<color=#FFFFFFFF>$[C117092]</color>。造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，然后与所选角色交换位置。",
-        "description": "选一个我方角色，自身附属钩索链接并进入夜魂加持。造成2点草元素伤害，然后与所选角色交换位置。",
+        "description": "选一个我方角色，自身附属钩索链接并进入夜魂加持。造成1点草元素伤害，然后与所选角色交换位置。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_DENDRO",
@@ -8893,7 +9111,7 @@
         "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
-          "D__KEY__DAMAGE": 2
+          "D__KEY__DAMAGE": 1
         },
         "icon": "Skill_S_Kinich_01",
         "iconHash": "7941513928894395153"
@@ -9465,7 +9683,7 @@
         "englishName": "Thorny Onslaught",
         "type": "GCG_SKILL_TAG_Q",
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，本角色附属<color=#FFFFFFFF>$[C121042]</color>。",
-        "description": "造成4点冰元素伤害，本角色附属掠袭锐势。",
+        "description": "造成5点冰元素伤害，本角色附属掠袭锐势。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_CRYO",
@@ -9480,7 +9698,7 @@
         "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_CRYO",
-          "D__KEY__DAMAGE": 4
+          "D__KEY__DAMAGE": 5
         },
         "icon": "MonsterSkill_E_EscadronIce_01_HD",
         "iconHash": "13724123840271963914"
@@ -9500,7 +9718,7 @@
         "iconHash": "7195544720368213972"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_EscadronIce",
     "icon": "UI_Gcg_Char_MonsterIcon_EscadronIce"
@@ -12289,6 +12507,129 @@
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_EremiteGrass",
     "icon": "UI_Gcg_Char_MonsterIcon_EremiteGrass"
+  },
+  {
+    "id": 2704,
+    "shareId": 494,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "name": "贪食匿叶龙山王",
+    "englishName": "Gluttonous Yumkasaur Mountain King",
+    "tags": [
+      "GCG_TAG_ELEMENT_DENDRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_MONSTER"
+    ],
+    "storyTitle": "巨硕山中之王·贪食匿叶龙山王",
+    "storyText": "自古老的年代存活至今，经历了无数战场的强大匿叶龙。",
+    "skills": [
+      {
+        "id": 27041,
+        "name": "沉重尾击",
+        "englishName": "Crushing Tail Attack",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 27042,
+        "name": "喷吐草实",
+        "englishName": "Flying Fruit",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，抓1张「{SPRITE_PRESET#3101}料理」牌。",
+        "description": "造成2点草元素伤害，抓1张「料理」牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_DENDRO",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "MonsterSkill_S_HookwalkerPrimo_01",
+        "iconHash": "13197617504724689317"
+      },
+      {
+        "id": 27043,
+        "name": "榴果爆轰",
+        "englishName": "Flamegranate Conflagration",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成5点火元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_DENDRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 5
+        },
+        "icon": "MonsterSkill_E_HookwalkerPrimo_01_HD",
+        "iconHash": "13731486030547102964"
+      },
+      {
+        "id": 27044,
+        "name": "贪食之王",
+        "englishName": "Gluttonous Rex",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "自身不会<color=#FFFFFFFF>饱腹</color>。\\n<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3101}料理」牌后：</color>随机附属1层<color=#FFFFFFFF>$[C127041]</color>或<color=#FFFFFFFF>$[C127042]</color>，或获得1点额外最大生命值。（每回合2次）",
+        "description": "自身不会饱腹。\n我方打出「料理」牌后：随机附属1层食足力增或食足体健，或获得1点额外最大生命值。（每回合2次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "MonsterSkill_S_HookwalkerPrimo_02",
+        "iconHash": "17571852310239309453"
+      },
+      {
+        "id": 27045,
+        "name": "贪食之王",
+        "englishName": "Gluttonous Rex",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "自身不会<color=#FFFFFFFF>饱腹</color>。\\n<color=#FFFFFFFF>我方打出「{SPRITE_PRESET#3101}料理」牌后：</color>随机附属1层<color=#FFFFFFFF>$[C127041]</color>或<color=#FFFFFFFF>$[C127042]</color>，或获得1点额外最大生命值。（每回合2次）",
+        "description": "自身不会饱腹。\n我方打出「料理」牌后：随机附属1层食足力增或食足体健，或获得1点额外最大生命值。（每回合2次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "keyMap": {},
+        "icon": "MonsterSkill_S_HookwalkerPrimo_02",
+        "iconHash": "17571852310239309453"
+      }
+    ],
+    "hp": 7,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_HookwalkerPrimo",
+    "icon": "UI_Gcg_Char_MonsterIcon_HookwalkerPrimo"
   },
   {
     "id": 6301,

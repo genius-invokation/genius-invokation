@@ -243,7 +243,8 @@
     "name": "咬咬鲨鱼",
     "englishName": "Bitey Shark",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [],
     "relatedCharacterId": null,
@@ -291,7 +292,8 @@
     "name": "驰轮车·跃升",
     "englishName": "Flamestrider: Soaring Ascent",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -324,7 +326,8 @@
     "name": "驰轮车·涉渡",
     "englishName": "Flamestrider: Blazing Trail",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -357,7 +360,8 @@
     "name": "驰轮车·疾驰",
     "englishName": "Flamestrider: Full Throttle",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -422,7 +426,8 @@
     "name": "竹星",
     "englishName": "Starwicker",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -450,7 +455,8 @@
     "name": "灵枪·仪式杖",
     "englishName": "Soulsniper: Ritual Staff",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [],
     "relatedCharacterId": null,
@@ -598,7 +604,8 @@
     "name": "冲天转转",
     "englishName": "Turbo Twirly",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [],
     "relatedCharacterId": null,
@@ -615,7 +622,8 @@
     "name": "刃轮装束",
     "englishName": "Combat Blading Gear",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [],
     "relatedCharacterId": null,
@@ -632,7 +640,8 @@
     "name": "水泡史莱姆",
     "englishName": "Mist Bubble Slime",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -660,7 +669,8 @@
     "name": "厄灵·炎之魔蝎",
     "englishName": "Spirit of Omen: Pyro Scorpion",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -723,7 +733,8 @@
     "name": "厄灵·草之灵蛇",
     "englishName": "Spirit of Omen: Dendro Spirit-Serpent",
     "tags": [
-      "GCG_TAG_VEHICLE"
+      "GCG_TAG_VEHICLE",
+      "GCG_TAG_NON_DISCOVERABLE"
     ],
     "targetList": [
       {
@@ -1277,7 +1288,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_CRYO",
-        "count": 1
+        "count": 2
       }
     ],
     "rawDescription": "<color=#FFFFFFFF>敌方受到冻结或融化反应伤害后：</color>我方下2次造成的<color=#FFFFFFFF>$[K102]</color>和<color=#FFFFFFFF>$[K103]</color>+1，并使<color=#FFFFFFFF>$[A1114]</color>获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合1次）\\n（牌组中包含$[A1114]，才能加入牌组）",
@@ -2333,13 +2344,13 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_PYRO",
-        "count": 2
+        "count": 1
       }
     ],
-    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1314]</color>时，对该角色打出，使$[A1314]附属3层<color=#FFFFFFFF>$[C122]</color>。\\n装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。\\n（牌组中包含$[A1314]，才能加入牌组）",
-    "description": "战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出，使阿蕾奇诺附属3层生命之契。\n装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。\n（牌组中包含阿蕾奇诺，才能加入牌组）",
-    "rawPlayingDescription": "装备有此牌的<color=#FFFFFFFF>$[A1314]</color>受到伤害时，若可能，消耗1层<color=#FFFFFFFF>$[C122]</color>，以抵消1点伤害。",
-    "playingDescription": "装备有此牌的阿蕾奇诺受到伤害时，若可能，消耗1层生命之契，以抵消1点伤害。",
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1314]</color>时，对该角色打出，使$[A1314]附属3层<color=#FFFFFFFF>$[C122]</color>。\\n<color=#FFFFFFFF>装备有此牌的$[A1314]受到伤害时：</color>如果<color=#FFFFFFFF>$[A1314]</color>附属了<color=#FFFFFFFF>$[C122]</color>，则消耗1层<color=#FFFFFFFF>$[C122]</color>，抵消1点伤害。\\n（牌组中包含$[A1314]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为阿蕾奇诺时，对该角色打出，使阿蕾奇诺附属3层生命之契。\n装备有此牌的阿蕾奇诺受到伤害时：如果阿蕾奇诺附属了生命之契，则消耗1层生命之契，抵消1点伤害。\n（牌组中包含阿蕾奇诺，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的$[A1314]受到伤害时：</color>如果<color=#FFFFFFFF>$[A1314]</color>附属了<color=#FFFFFFFF>$[C122]</color>，则消耗1层<color=#FFFFFFFF>$[C122]</color>，抵消1点伤害。",
+    "playingDescription": "装备有此牌的阿蕾奇诺受到伤害时：如果阿蕾奇诺附属了生命之契，则消耗1层生命之契，抵消1点伤害。",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Arlecchino"
   },
   {
@@ -3321,6 +3332,82 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Chasca"
   },
   {
+    "id": 215121,
+    "shareId": 495,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "舞袂翩兮扬玉霓",
+    "englishName": "Dance Vestments Billow Like Rainbow Jade",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11512,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>蓝砚</color>",
+        "hintText": "装备给出战中的蓝砚"
+      }
+    ],
+    "relatedCharacterId": 1512,
+    "relatedCharacterTags": [],
+    "storyTitle": "蓝砚·舞袂翩兮扬玉霓",
+    "storyText": "「搬疾运厄。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1512]</color>时，装备此牌。\\n$[A1512]装备此牌后，立刻使用一次<color=#FFD780FF>$[S15122]</color>。\\n<color=#FFFFFFFF>装备有此牌的$[A1512]在场，我方角色进行普通攻击时：</color>获得1层<color=#FFFFFFFF>$[C115121]</color>。（每回合1次）\\n（牌组中包含$[A1512]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为蓝砚时，装备此牌。\n蓝砚装备此牌后，立刻使用一次凤缕随翦舞。\n装备有此牌的蓝砚在场，我方角色进行普通攻击时：获得1层凤缕护盾。（每回合1次）\n（牌组中包含蓝砚，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>装备有此牌的$[A1512]在场，我方角色进行普通攻击时：</color>获得1层<color=#FFFFFFFF>$[C115121]</color>。（每回合1次）",
+    "playingDescription": "装备有此牌的蓝砚在场，我方角色进行普通攻击时：获得1层凤缕护盾。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Lanyan"
+  },
+  {
+    "id": 215131,
+    "shareId": 496,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "奇想天开捕物帐",
+    "englishName": "Curious Casefiles",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11513,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>鹿野院平藏</color>",
+        "hintText": "装备给出战中的鹿野院平藏"
+      }
+    ],
+    "relatedCharacterId": 1513,
+    "relatedCharacterTags": [],
+    "storyTitle": "鹿野院平藏·奇想天开捕物帐",
+    "storyText": "「破开迷雾！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1513]</color>时，装备此牌。\\n$[A1513]装备此牌后，立刻使用一次<color=#FFD780FF>$[S15132]</color>。\\n<color=#FFFFFFFF>$[C115132]</color>提高的伤害额外+1。\\n（牌组中包含$[A1513]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为鹿野院平藏时，装备此牌。\n鹿野院平藏装备此牌后，立刻使用一次勠心拳。\n变格提高的伤害额外+1。\n（牌组中包含鹿野院平藏，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>$[C115132]</color>提高的伤害额外+1。",
+    "playingDescription": "变格提高的伤害额外+1。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Heizo"
+  },
+  {
     "id": 216011,
     "shareId": 102,
     "sinceVersion": "v3.3.0",
@@ -3701,10 +3788,10 @@
         "count": 1
       }
     ],
-    "rawDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）\\n（牌组中包含$[A1610]，才能加入牌组）",
-    "description": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）\n（牌组中包含卡齐娜，才能加入牌组）",
-    "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合2次）",
-    "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合2次）",
+    "rawDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合1次）\\n（牌组中包含$[A1610]，才能加入牌组）",
+    "description": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合1次）\n（牌组中包含卡齐娜，才能加入牌组）",
+    "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C116102]</color>或<color=#FFFFFFFF>$[C116103]</color>触发效果后，抓1张牌。（每回合1次）",
+    "playingDescription": "我方冲天转转或冲天转转·脱离触发效果后，抓1张牌。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Kachina"
   },
   {
@@ -4126,7 +4213,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_DENDRO",
-        "count": 1
+        "count": 2
       }
     ],
     "rawDescription": "所附属角色造成的$[K100]变为$[K107]。\\n装备有此牌的<color=#FFFFFFFF>$[A1710]</color><color=#FFFFFFFF>普通攻击</color>后：我方最高等级的<color=#FFFFFFFF>「柔灯之匣」</color>立刻行动1次。（每回合1次）\\n（牌组中包含$[A1710]，才能加入牌组）",
@@ -5189,6 +5276,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_EremiteGrass"
   },
   {
+    "id": 227041,
+    "shareId": 497,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "饕噬尽吞",
+    "englishName": "The All-Devourer",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 12704,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>贪食匿叶龙山王</color>",
+        "hintText": "装备给我方的贪食匿叶龙山王"
+      }
+    ],
+    "relatedCharacterId": 2704,
+    "relatedCharacterTags": [],
+    "storyTitle": "贪食匿叶龙山王·饕噬尽吞",
+    "storyText": "「有部族人认为，它有着现在这样的体态，是与绒翼龙的『暴君』一般，拥有着特殊的体质…但也许只是因为它活得太长，而吃得也实在太多了的缘故。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_DENDRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "$[K2]：装备给我方的<color=#FFFFFFFF>$[A2704]</color>，敌方抓1张牌，然后我方窃取1张原本元素骰费用最高的对方手牌。\\n<color=#FFFFFFFF>我方打出名称不存在于本局最初牌组的牌时：</color>触发$[S27044]1次。（每回合1次）\\n（牌组中包含$[A2704]，才能加入牌组）",
+    "description": "快速行动：装备给我方的贪食匿叶龙山王，敌方抓1张牌，然后我方窃取1张原本元素骰费用最高的对方手牌。\n我方打出名称不存在于本局最初牌组的牌时：触发贪食之王1次。（每回合1次）\n（牌组中包含贪食匿叶龙山王，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>我方打出名称不存在于本局最初牌组的牌时：</color>触发$[S27044]1次。（每回合1次）",
+    "playingDescription": "我方打出名称不存在于本局最初牌组的牌时：触发贪食之王1次。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_HookwalkerPrimo"
+  },
+  {
     "id": 300006,
     "obtainable": false,
     "type": "GCG_CARD_ASSIST",
@@ -5217,6 +5341,94 @@
     "rawDescription": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\\n对我方出战角色造成1点$[K5]，抓1张牌。",
     "description": "无法使用此牌进行元素调和，且每回合最多只能打出1张「禁忌知识」。\n对我方出战角色造成1点穿透伤害，抓1张牌。",
     "cardFace": "UI_Gcg_CardFace_Summon_ChiWangLin"
+  },
+  {
+    "id": 301033,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "积木小人",
+    "englishName": "Toy Guard",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "召唤<color=#FFFFFFFF>$[C301028]</color>。\\n（<color=#FFFFFFFF>$[C301028]</color>：<color=#FFFFFFFF>结束阶段：</color>造成1点$[K100]。\\n<color=#FFFFFFFF>$[K3]：2</color>）",
+    "description": "召唤积木小人。\n（积木小人：结束阶段：造成1点物理伤害。\n可用次数：2）",
+    "cardFace": "UI_Gcg_CardFace_Summon_JimuBing"
+  },
+  {
+    "id": 301034,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "折纸飞鼠",
+    "englishName": "Origami Flying Squirrel",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "召唤<color=#FFFFFFFF>$[C301029]</color>。\\n（<color=#FFFFFFFF>$[C301029]</color>：<color=#FFFFFFFF>结束阶段：</color>获得1层<color=#FFFFFFFF>$[C169]</color>。\\n<color=#FFFFFFFF>$[K3]：2</color>）",
+    "description": "召唤折纸飞鼠。\n（折纸飞鼠：结束阶段：获得1层高效切换。\n可用次数：2）",
+    "cardFace": "UI_Gcg_CardFace_Summon_ZhezhiSongsu"
+  },
+  {
+    "id": 301035,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "跳跳纸蛙",
+    "englishName": "Pop-Up Paper Frog",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "召唤<color=#FFFFFFFF>$[C301030]</color>。\\n（<color=#FFFFFFFF>$[C301030]</color>：<color=#FFFFFFFF>结束阶段：</color>抓1张牌。\\n<color=#FFFFFFFF>$[K3]：2</color>）",
+    "description": "召唤跳跳纸蛙。\n（跳跳纸蛙：结束阶段：抓1张牌。\n可用次数：2）",
+    "cardFace": "UI_Gcg_CardFace_Summon_ZhezhiWa"
+  },
+  {
+    "id": 301036,
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "折纸胖胖鼠",
+    "englishName": "Origami Hamster",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "召唤<color=#FFFFFFFF>$[C301031]</color>。\\n（<color=#FFFFFFFF>$[C301031]</color>：<color=#FFFFFFFF>结束阶段：</color>治疗受伤最多的我方角色2点。\\n<color=#FFFFFFFF>$[K3]：1</color>）",
+    "description": "召唤折纸胖胖鼠。\n（折纸胖胖鼠：结束阶段：治疗受伤最多的我方角色2点。\n可用次数：1）",
+    "cardFace": "UI_Gcg_CardFace_Summon_ZhezhiLaoshu"
   },
   {
     "id": 302202,
@@ -8442,6 +8654,70 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Artifact_JinchengYongzhe"
   },
   {
+    "id": 312035,
+    "shareId": 498,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "失冕的宝冠",
+    "englishName": "Crownless Crown",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "漫漫空待·失冕的宝冠",
+    "storyText": "「她带着那些刻有他名字的事物，就这样走入了深沉的夜色中，再未归来。」",
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>我方触发燃烧反应后：</color>敌方当前出战角色下次受到的伤害+1。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "我方触发燃烧反应后：敌方当前出战角色下次受到的伤害+1。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>我方触发燃烧反应后：</color>敌方当前出战角色下次受到的伤害+1。（每回合1次）",
+    "playingDescription": "我方触发燃烧反应后：敌方当前出战角色下次受到的伤害+1。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Xiasi"
+  },
+  {
+    "id": 312036,
+    "shareId": 499,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "异想零落的圆舞",
+    "englishName": "Whimsical Dance of the Withered",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "统帅面具·异想零落的圆舞",
+    "storyText": "「最后，所有的梦都将汇聚为一，为普天之下的万民带去最终的救赎。」",
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>双方出战角色附属1层<color=#FFFFFFFF>$[C122]</color>。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色使用技能后：双方出战角色附属1层生命之契。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>双方出战角色获得1层<color=#FFFFFFFF>$[C122]</color>。（每回合1次）",
+    "playingDescription": "附属角色使用技能后：双方出战角色获得1层生命之契。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Xielve"
+  },
+  {
     "id": 312101,
     "shareId": 165,
     "sinceVersion": "v3.3.0",
@@ -9980,6 +10256,58 @@
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Woluzhibang"
   },
   {
+    "id": 321029,
+    "shareId": 500,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "墨色酒馆",
+    "englishName": "Calligraphy Tavern",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "墨色酒馆",
+    "storyText": "「要一杯泡泡桔味的魔水，呃…不加魔水！谢谢！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>入场时：</color>从<color=#FFFFFFFF>$[C301034]</color>、<color=#FFFFFFFF>$[C301035]</color>、<color=#FFFFFFFF>$[C301036]</color>中随机生成1张手牌。\\n<color=#FFFFFFFF>我方宣布结束时：</color>随机触发我方1个$[K1035]的「结束阶段」效果。\\n<color=#FFFFFFFF>$[K3]：3</color>",
+    "description": "入场时：从折纸飞鼠、跳跳纸蛙、折纸胖胖鼠中随机生成1张手牌。\n我方宣布结束时：随机触发我方1个「希穆兰卡」召唤物的「结束阶段」效果。\n可用次数：3",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_MoseJiuguan"
+  },
+  {
+    "id": 321030,
+    "shareId": 501,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "星轨王城",
+    "englishName": "Constellation Metropole",
+    "tags": [
+      "GCG_TAG_PLACE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "星轨王城",
+    "storyText": "「群杰举目眺云霄，悬车衔灯琼城绕。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>入场时：</color>生成手牌<color=#FFFFFFFF>$[C301033]</color>。\\n<color=#FFFFFFFF>我方角色使用「元素战技」后：</color>下次打出<color=#FFFFFFFF>$[C301033]</color>少花费1个元素骰。（不可叠加）\\n<color=#FFFFFFFF>我方角色使用「元素爆发」后：</color>下次打出的<color=#FFFFFFFF>$[C301033]</color>效果量+1。（不可叠加）",
+    "description": "入场时：生成手牌积木小人。\n我方角色使用「元素战技」后：下次打出积木小人少花费1个元素骰。（不可叠加）\n我方角色使用「元素爆发」后：下次打出的积木小人效果量+1。（不可叠加）",
+    "cardFace": "UI_Gcg_CardFace_Assist_Location_XinguiWangcheng"
+  },
+  {
     "id": 322001,
     "shareId": 194,
     "sinceVersion": "v3.3.0",
@@ -10676,6 +11004,58 @@
     "cardFace": "UI_Gcg_CardFace_Assist_NPC_AimiTa"
   },
   {
+    "id": 322029,
+    "shareId": 502,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "森林的祝福",
+    "englishName": "Forest Blessing",
+    "tags": [
+      "GCG_TAG_ALLY"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "森林的祝福",
+    "storyText": "「我赐予你森林的祝福，愿你成为森林的一员…」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>入场时及我方触发元素反应后：</color>从<color=#FFFFFFFF>$[C301034]</color>、<color=#FFFFFFFF>$[C301035]</color>、<color=#FFFFFFFF>$[C301036]</color>中随机生成1张加入手牌。",
+    "description": "入场时及我方触发元素反应后：从折纸飞鼠、跳跳纸蛙、折纸胖胖鼠中随机生成1张加入手牌。",
+    "cardFace": "UI_Gcg_CardFace_Assist_NPC_ZhezhiJiazu"
+  },
+  {
+    "id": 322030,
+    "shareId": 503,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_ASSIST",
+    "name": "预言女神的礼物",
+    "englishName": "Gift of the Goddess of Prophecy",
+    "tags": [
+      "GCG_TAG_ALLY"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "预言女神的礼物",
+    "storyText": "「届时我将起舞，将众生脚下的轨道还予千星…」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>入场时：</color>生成2张手牌<color=#FFFFFFFF>$[C301033]</color>，并生成2张<color=#FFFFFFFF>$[C301033]</color>，随机置入我方牌组中。\\n我方打出$[K1035]后，使其效果量+1。\\n<color=#FFFFFFFF>$[K3]：2</color>",
+    "description": "入场时：生成2张手牌积木小人，并生成2张积木小人，随机置入我方牌组中。\n我方打出「希穆兰卡」召唤物后，使其效果量+1。\n可用次数：2",
+    "cardFace": "UI_Gcg_CardFace_Assist_NPC_JimuRen"
+  },
+  {
     "id": 323001,
     "shareId": 214,
     "sinceVersion": "v3.3.0",
@@ -11132,12 +11512,16 @@
     "storyText": "「并非是托喻或者修辞，枫丹每一个人都是罪人。而末日与审判终会落到每一个枫丹人头上。」",
     "playCost": [
       {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      },
+      {
         "type": "GCG_COST_LEGEND",
         "count": 1
       }
     ],
-    "rawDescription": "本回合中，目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。\\n（整局游戏只能打出一张「{SPRITE_PRESET#3007}秘传」卡牌；这张牌一定在你的起始手牌中）",
-    "description": "本回合中，目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。\n（整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）",
+    "rawDescription": "治疗目标角色2点。\\n目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换，持续2个回合。\\n（整局游戏只能打出一张「{SPRITE_PRESET#3007}秘传」卡牌；这张牌一定在你的起始手牌中）",
+    "description": "治疗目标角色2点。\n目标角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换，持续2个回合。\n（整局游戏只能打出一张「秘传」卡牌；这张牌一定在你的起始手牌中）",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Wuzui"
   },
   {
@@ -12915,6 +13299,54 @@
     "rawDescription": "选一个我方角色，<color=#FFFFFFFF>我方其他角色准备技能时：</color>所选角色下次<color=#FFFFFFFF>元素战技</color>少花费1个元素骰。（至多触发2次，不可叠加）",
     "description": "选一个我方角色，我方其他角色准备技能时：所选角色下次元素战技少花费1个元素骰。（至多触发2次，不可叠加）",
     "cardFace": "UI_Gcg_CardFace_Event_Event_TujiaoLong"
+  },
+  {
+    "id": 332049,
+    "shareId": 504,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "收获时间",
+    "englishName": "Harvest Time",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "收获时间",
+    "storyText": "「很好，就是这样，加油。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "从3张随机「{SPRITE_PRESET#3101}料理」牌中<color=#FFFFFFFF>$[K59]</color>1张。\\n<color=#FFFFFFFF>结束阶段：</color>生成一张<color=#FFFFFFFF>$[C332049]</color>，随机置入我方牌组。",
+    "description": "从3张随机「料理」牌中挑选1张。\n结束阶段：生成一张收获时间，随机置入我方牌组。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Olorun"
+  },
+  {
+    "id": 332050,
+    "shareId": 505,
+    "sinceVersion": "v5.8.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "很棒，哥们。",
+    "englishName": "Awesome, Bro",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "很棒，哥们。",
+    "storyText": "「嗯，来，坐好，张嘴，然后——啊——！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 1
+      }
+    ],
+    "rawDescription": "抓1张「{SPRITE_PRESET#3008}特技」牌，下次打出「{SPRITE_PRESET#3008}特技」牌后，生成1个$[K411]。",
+    "description": "抓1张「特技」牌，下次打出「特技」牌后，生成1个万能元素。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Ifa"
   },
   {
     "id": 333001,
