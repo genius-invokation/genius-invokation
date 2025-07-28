@@ -281,6 +281,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         if (value.healKind === PbHealKind.IMMUNE_DEFEATED || value.healKind === PbHealKind.REVIVE) {
           const info = getPreviewingCharacter(value.targetId);
           info.revived = true;
+          info.negativeHealth = null;
         } else if (value.causeDefeated) {
           const info = getPreviewingCharacter(value.targetId);
           info.negativeHealth = value.oldHealth - value.value;
