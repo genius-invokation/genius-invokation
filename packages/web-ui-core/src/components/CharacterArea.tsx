@@ -466,7 +466,13 @@ export function CharacterArea(props: CharacterAreaProps) {
                     <For each={reaction}>
                       {(e) => (
                         <Show when={e}>
-                          {(e) => <Image imageId={e()} class="h-5 w-5" fallback="aura" />}
+                          {(e) => (
+                            <Image
+                              imageId={e()}
+                              class="h-5 w-5"
+                              fallback="aura"
+                            />
+                          )}
                         </Show>
                       )}
                     </For>
@@ -524,7 +530,9 @@ export function CharacterArea(props: CharacterAreaProps) {
             <VariableDiff
               class="absolute z-5 top-0.6 left-6"
               oldValue={data().health}
-              newValue={props.preview!.newHealth!}
+              newValue={
+                props.preview!.negativeHealth ?? props.preview!.newHealth!
+              }
               direction={props.preview!.newHealthDirection}
               defeated={props.preview?.defeated}
               revived={props.preview?.revived}

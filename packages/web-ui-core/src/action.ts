@@ -148,6 +148,8 @@ export interface RealCosts {
 
 export interface PreviewingCharacterInfo {
   newHealth: number | null;
+  /** 超杀时可能出现的“负数”血量 */
+  negativeHealth: number | null;
   newHealthDirection: PbModifyDirection;
   newEnergy: number | null;
   reactions: ReactionInfo[];
@@ -190,6 +192,7 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
     }
     info = {
       newHealth: null,
+      negativeHealth: null,
       newHealthDirection: PbModifyDirection.UNSPECIFIED,
       newEnergy: null,
       reactions: [],
@@ -274,11 +277,14 @@ function parsePreviewData(previewData: PreviewData[]): ParsedPreviewData {
         }
         break;
       }
-      // @ts-expect-error fallthrough
       case "damage": {
         if (value.healKind === PbHealKind.IMMUNE_DEFEATED || value.healKind === PbHealKind.REVIVE) {
           const info = getPreviewingCharacter(value.targetId);
           info.revived = true;
+          info.negativeHealth = null;
+        } else if (value.causeDefeated) {
+          const info = getPreviewingCharacter(value.targetId);
+          info.negativeHealth = value.oldHealth - value.value;
         }
         // fallthrough
       }
