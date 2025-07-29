@@ -3,6 +3,7 @@ import { Version } from "@gi-tcg/core";
 export const MOYU_S7_VERSIONS: Record<number, Version> = {
   117: "v3.3.0",
   124051: "v4.7.0",
+  13052: "v4.7.0",
   113051: "v4.7.0",
   113053: "v4.7.0",
   111042: "v3.3.0",
@@ -32,7 +33,7 @@ export const MOYU_S7_VERSIONS: Record<number, Version> = {
   2503: "v4.7.0",
   2702: "v4.7.0",
   211011: "v3.3.0",
-  211041: "v4.2.0",
+  211041: "v3.3.0",
   211141: "v5.7.0",
   213051: "v4.7.0",
   214041: "v4.8.0",

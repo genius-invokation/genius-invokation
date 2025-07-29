@@ -57,6 +57,9 @@ export const assignVersion = (
 };
 
 const assignResult = assignVersion(CURRENT_VERSION, MOYU_S7_VERSIONS);
+// @ts-expect-error
+assignResult["$base"] = CURRENT_VERSION;
+
 await Bun.write(
   `${import.meta.dirname}/../dist/moyu-7s-versions.json`,
   JSON.stringify(assignResult, null, 2),
