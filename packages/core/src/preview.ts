@@ -327,6 +327,7 @@ export class ActionPreviewer {
           ctx.state,
           card,
           "elementalTuning",
+          null,
         );
         ctx.mutate({
           type: "removeCard",

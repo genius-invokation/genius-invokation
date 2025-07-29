@@ -813,6 +813,7 @@ export class Game {
             this.state,
             actionInfo.card,
             "elementalTuning",
+            null,
           );
           this.mutate({
             type: "removeCard",
