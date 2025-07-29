@@ -56,8 +56,4 @@ for (const [, file] of tcgProject.files) {
     );
   }
 }
-// await Bun.write("../out/deps.json", JSON.stringify(Object.fromEntries(entityDependency), null, 2));
-
-const baseVersion = CURRENT_VERSION
-const versions: Record<number, Version> = {};
-
+await Bun.write(`${import.meta.dirname}/../dist/deps.json`, JSON.stringify(Object.fromEntries(entityDependency), null, 2));
