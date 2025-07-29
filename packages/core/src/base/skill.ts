@@ -1038,6 +1038,7 @@ export class DisposeOrTuneCardEventArg extends DisposeEventArg<CardState> {
     state: GameState,
     public readonly card: CardState,
     public readonly method: DisposeOrTuneMethod,
+    public readonly via: SkillInfo | null,
   ) {
     super(state, card);
   }

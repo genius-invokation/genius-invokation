@@ -84,27 +84,27 @@ const FlyingCloudFlagFormation = combatStatus(116073)
  */
 const BurstScan = combatStatus(117082)
   .until("v4.7.0")
-  .on("beforeAction")
+  .on("beforeAction", (c) => c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`))
   .usage(1, { append: { limit: 3 }, autoDecrease: false })
   .usagePerRound(1, { autoDecrease: false })
   .listenToAll()
   .do((c) => {
-    const core = c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`);
-    if (core) {
-      core.addVariable("usage", -1);
-      const pileTop = c.player.pile[0];
-      const cost = diceCostOfCard(pileTop.definition);
-      c.disposeCard(pileTop);
-      c.damage(DamageType.Dendro, cost + 1);
-      if (c.$(`my equipment with definition id ${TheArtOfBudgeting}`)) {
-        c.createHandCard(pileTop.definition.id as CardHandle);
-        if (pileTop.definition.tags.includes("place")) {
-          c.combatStatus(TheArtOfBudgetingInEffect);
-        }
-        c.consumeUsagePerRound();
+    c.disposeCard(c.player.pile[0]);
+  })
+  .on("disposeCard", (c, e) => e.via?.caller.id === c.self.id)
+  .do((c, e) => {
+    c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)?.consumeUsage(1);
+    const cardDef = e.card.definition;
+    const cost = diceCostOfCard(cardDef);
+    c.damage(DamageType.Dendro, cost + 1);
+    if (c.$(`my equipment with definition id ${TheArtOfBudgeting}`)) {
+      c.createHandCard(cardDef.id as CardHandle);
+      if (cardDef.tags.includes("place")) {
+        c.combatStatus(TheArtOfBudgetingInEffect);
       }
-      c.consumeUsage();
+      c.consumeUsagePerRound();
     }
+    c.consumeUsage();
   })
   .done();
 

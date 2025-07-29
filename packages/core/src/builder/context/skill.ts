@@ -1425,7 +1425,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
       );
       const method: DisposeOrTuneMethod =
         where === "hands" ? "disposeFromHands" : "disposeFromPiles";
-      this.emitEvent("onDisposeOrTuneCard", this.rawState, card, method);
+      this.emitEvent(
+        "onDisposeOrTuneCard",
+        this.rawState,
+        card,
+        method,
+        this.skillInfo,
+      );
       this.mutate({
         type: "removeCard",
         who,
