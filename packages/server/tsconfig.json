@@ -3,6 +3,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "Bundler",
+    "lib": ["ES2024"],
     "allowJs": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
