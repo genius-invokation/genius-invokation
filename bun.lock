@@ -120,7 +120,7 @@
     },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.17.1-5-7-0",
+      "version": "0.17.1-5-8-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -137,6 +137,7 @@
         "ts-morph": "^26.0.0",
       },
       "devDependencies": {
+        "@gi-tcg/core": "workspace:*",
         "@gi-tcg/data": "workspace:*",
         "typescript": "^5.6.2",
       },
@@ -265,7 +266,7 @@
     },
     "packages/static-data": {
       "name": "@gi-tcg/static-data",
-      "version": "0.17.1-5-7-0",
+      "version": "0.17.1-5-8-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",

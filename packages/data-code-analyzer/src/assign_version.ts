@@ -1,6 +1,6 @@
 import { CURRENT_VERSION, Version } from "@gi-tcg/core";
-import entityDependency_ from "../dist/deps.json";
-import { MOYU_S7_VERSIONS } from "./moyu-s7-version";
+import entityDependency_ from "./deps.json" with { type: "json" };
+import { MOYU_S7_VERSIONS } from "./moyu_s7_version";
 const entityDependency = new Map<number, number[]>(
   Object.entries(entityDependency_ as Record<number, number[]>).map(
     ([k, v]) => [Number(k), v] as const,
@@ -59,8 +59,3 @@ export const assignVersion = (
 const assignResult = assignVersion(CURRENT_VERSION, MOYU_S7_VERSIONS);
 // @ts-expect-error
 assignResult["$base"] = CURRENT_VERSION;
-
-await Bun.write(
-  `${import.meta.dirname}/../dist/moyu-7s-versions.json`,
-  JSON.stringify(assignResult, null, 2),
-);

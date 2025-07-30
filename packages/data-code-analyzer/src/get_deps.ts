@@ -17,7 +17,7 @@ import { Glob } from "bun";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Project } from "ts-morph";
-import { TcgDataSourceFile } from "./source-file";
+import { TcgDataSourceFile } from "./source_file";
 import { TcgDataProject } from "./project";
 import { CURRENT_VERSION, Version } from "@gi-tcg/core";
 
@@ -56,4 +56,4 @@ for (const [, file] of tcgProject.files) {
     );
   }
 }
-await Bun.write(`${import.meta.dirname}/../dist/deps.json`, JSON.stringify(Object.fromEntries(entityDependency), null, 2));
+await Bun.write(`${import.meta.dirname}/deps.json`, JSON.stringify(Object.fromEntries(entityDependency), null, 2));

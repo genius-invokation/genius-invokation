@@ -1,5 +1,5 @@
 import { Project, SourceFile } from "ts-morph";
-import { TcgDataSourceFile } from "./source-file";
+import { TcgDataSourceFile } from "./source_file";
 
 export class TcgDataProject {
   

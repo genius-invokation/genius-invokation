@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { BETA_VERSION, IS_BETA } from "@gi-tcg/config";
+import type { VersionResolver } from "../builder";
 
 type BetaVersions = typeof IS_BETA extends true ? [typeof BETA_VERSION] : [];
 const BETA_VERSIONS = (IS_BETA ? [BETA_VERSION] : []) as BetaVersions;
@@ -79,6 +80,7 @@ export type VersionInfo = {
 }[keyof VersionMetadata];
 
 export interface WithVersionInfo {
+  readonly id: number;
   readonly version: VersionInfo;
 }
 
@@ -118,6 +120,17 @@ export function resolveOfficialVersion<T extends WithVersionInfo>(
     return since;
   }
   return until[0] ?? null;
+}
+
+export function resolveManuallySelectedOfficialVersion(
+  versions: Record<number, Version>,
+  baseVersion: Version = CURRENT_VERSION,
+): VersionResolver {
+  return <T extends WithVersionInfo>(candidates: readonly T[]) => {
+    const id = candidates[0].id;
+    const version = versions[id] ?? baseVersion;
+    return resolveOfficialVersion(candidates, version);
+  }
 }
 
 export const DEFAULT_VERSION_INFO: VersionInfo = {
