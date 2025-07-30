@@ -20,24 +20,30 @@ import {
   State,
   Equipment,
   Summon,
+  DeclaredEnd,
+  Card,
+  Status,
 } from "#test";
+import { Aura, SkillHandle } from "@gi-tcg/core/builder";
+import { Chasca, NightsoulsBlessing, ShiningShadowhuntShellPyro, SoulsniperRitualStaff } from "@gi-tcg/data/internal/characters/anemo/chasca";
+import { AlldevouringNarwhal, DarkShadow } from "@gi-tcg/data/internal/characters/hydro/alldevouring_narwhal";
 import { test } from "bun:test";
-import { GaleBlade, Jean } from "@gi-tcg/data/internal/characters/anemo/jean";
-import { Albedo, DescentOfDivinity, FavoniusBladeworkWeiss, SolarIsotoma } from "@gi-tcg/data/internal/characters/geo/albedo";
 
 test("Effect-caused switchActive should mark canPlunging", async () => {
+  const darkShadow = ref();
   const c = setup(
     <State currentTurn="opp">
-      <Character opp active def={Jean} health={10} />
-      <Character my active />
-      <Character my def={Albedo} >
-        <Equipment def={DescentOfDivinity} />
+      <Card opp def={ShiningShadowhuntShellPyro} />
+      <Character opp active def={Chasca} >
+        <Equipment def={SoulsniperRitualStaff} usage={2} />
+        <Status def={NightsoulsBlessing} v={{ nightsoul: 2 }} />
       </Character>
-      <Summon my def={SolarIsotoma} />
+      <Character my active health={10} />
+      <Character my def={AlldevouringNarwhal} />
+      <Summon my def={DarkShadow} ref={darkShadow} v={{ atk: 3, usage: 12 }}  />
     </State>,
   );
-  await c.opp.skill(GaleBlade);
-  await c.me.skill(FavoniusBladeworkWeiss);
-  // 阿贝多天赋：下落攻击+1伤
-  c.expect("opp active").toHaveVariable({ health: 7 });
+  await c.opp.skill(1151121 as SkillHandle);
+  c.expect("my active").toHaveVariable({ aura: Aura.Pyro, health: 9 });
+  c.expect(darkShadow).toHaveVariable({ usage: 10 });
 });
