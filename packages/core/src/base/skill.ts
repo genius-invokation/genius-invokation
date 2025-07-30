@@ -200,6 +200,7 @@ export interface SkillInfoOfContextConstruction extends SkillInfo {
 }
 
 export interface DamageInfo {
+  readonly id: number;
   readonly type: Exclude<DamageType, typeof DamageType.Heal>;
   readonly value: number;
   readonly source: AnyState;
@@ -220,6 +221,7 @@ export type HealKind =
   | "increaseMaxHealth"; // 增加最大生命值（吞星之鲸）
 
 export interface HealInfo {
+  readonly id: number;
   readonly type: typeof DamageType.Heal;
   readonly cancelled: boolean;
   readonly expectedValue: number;
