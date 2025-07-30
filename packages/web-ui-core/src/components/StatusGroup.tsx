@@ -24,18 +24,28 @@ function Status(props: StatusProps) {
   const data = createMemo(() => props.data);
   const defId = createMemo(() => props.data.definitionId);
   return (
-    <div
-      class="pointer-events-auto h-5 w-5 rounded-full relative"
-      bool:data-entering={props.animation === "entering"}
-      bool:data-disposing={props.animation === "disposing"}
-      bool:data-triggered={props.triggered}
-    >
-      <Image imageId={defId()} class="h-full w-full" fallback="state"/>
+    <div class="pointer-events-auto h-5 w-5 rounded-full relative">
+      <Image
+        imageId={defId()}
+        class="h-full w-full status"
+        fallback="state"
+        bool:data-disposing={props.animation === "disposing"}
+      />
       <Show when={typeof data().variableValue === "number"}>
         <div class="w-3 h-3 text-3 text-white line-height-none absolute bottom--1 right--1 rounded-full bg-black/50 flex items-center justify-center ">
           {data().variableValue}
         </div>
       </Show>
+      <div
+        class="absolute h-full w-full rounded-full top-0 left-0 status-usage"
+        bool:data-usable={data().hasUsagePerRound}
+      />
+      <div
+        class="absolute h-full w-full rounded-full top-0 left-0 status-animation"
+        bool:data-entering={props.animation === "entering"}
+        bool:data-disposing={props.animation === "disposing"}
+        bool:data-triggered={props.triggered}
+      />
     </div>
   );
 }
