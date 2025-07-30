@@ -1825,6 +1825,7 @@ export const FruitsOfTraining = card(332048)
  * 可用次数：2
  */
 export const ToyGuardSummon = summon(301028)
+  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(DamageType.Physical, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1842,6 +1843,7 @@ export const ToyGuardSummon = summon(301028)
  * 可用次数：2
  */
 export const OrigamiFlyingSquirrelSummon = summon(301029)
+  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1863,6 +1865,7 @@ export const OrigamiFlyingSquirrelSummon = summon(301029)
  * 可用次数：2
  */
 export const PopupPaperFrogSummon = summon(301030)
+  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1880,6 +1883,7 @@ export const PopupPaperFrogSummon = summon(301030)
  * 可用次数：1
  */
 export const OrigamiHamsterSummon = summon(301031)
+  .tags("simulanka")
   .variable("effect", 2, { forceOverwrite: true })
   .hint(DamageType.Heal, (c, e) => e.variables.effect)
   .on("endPhase")
