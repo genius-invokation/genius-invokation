@@ -1889,17 +1889,6 @@ export const OrigamiHamsterSummon = summon(301031)
   })
   .done();
 
-export const SIMULANKA_SUMMONS = [
-  ToyGuardSummon,
-  OrigamiFlyingSquirrelSummon,
-  PopupPaperFrogSummon,
-  OrigamiHamsterSummon
-];
-
-export const SIMULANKA_QUERY = SIMULANKA_SUMMONS
-  .map((id) => `(my summons with definition id ${id})`)
-  .join(` or `) as `${string} summons ${string}`;
-
 /**
  * @id 301033
  * @name 积木小人
