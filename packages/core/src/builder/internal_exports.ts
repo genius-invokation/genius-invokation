@@ -25,6 +25,6 @@ export {
 } from "./skill";
 export { EntityBuilder } from "./entity";
 export { CharacterBuilder } from "./character";
-export { ExtensionBuilder } from "./extension";
+export { ExtensionBuilder, EXTENSION_ID_OFFSET } from "./extension";
 export { SkillContext } from "./context/skill";
 export { EVENT_MAP } from "../base/skill";
