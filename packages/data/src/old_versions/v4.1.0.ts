@@ -211,7 +211,7 @@ const NaganoharaMeteorSwarm = card(213051)
   .talent(Yoimiya)
   .on("enter")
   .useSkill(NiwabiFiredance)
-  .on("useSkill", (c, e) => e.isSkillType("normal"))
+  .on("useSkill", (c, e) => e.isSkillType("normal") && c.self.master.hasStatus(NiwabiEnshou))
   .damage(DamageType.Pyro, 1)
   .done();
 
