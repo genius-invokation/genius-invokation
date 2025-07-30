@@ -29,7 +29,7 @@ import { Chasca, NightsoulsBlessing, ShiningShadowhuntShellPyro, SoulsniperRitua
 import { AlldevouringNarwhal, DarkShadow } from "@gi-tcg/data/internal/characters/hydro/alldevouring_narwhal";
 import { test } from "bun:test";
 
-test("Effect-caused switchActive should mark canPlunging", async () => {
+test("dark shadow: do not barrier on nested damage", async () => {
   const darkShadow = ref();
   const c = setup(
     <State currentTurn="opp">
