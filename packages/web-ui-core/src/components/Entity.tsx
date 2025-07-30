@@ -88,7 +88,7 @@ export function Entity(props: EntityProps) {
   const data = createMemo(() => props.data);
   return (
     <div
-      class="absolute left-0 top-0 h-17.7 w-15 transition-all rounded-1.2 clickable-outline entity-disposing"
+      class="absolute left-0 top-0 h-17.7 w-15 transition-all rounded-1.2 clickable-outline entity"
       style={cssPropertyOfTransform(props.uiState.transform)}
       bool:data-disposing={props.animation === "disposing"}
       bool:data-clickable={
@@ -106,17 +106,17 @@ export function Entity(props: EntityProps) {
       />
       <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
       <Show when={data().hasUsagePerRound}>
-        <div class="absolute inset-1px rounded-1 overflow-hidden entity-usage-a">
-          <div class="absolute h-full w-full scale-200 entity-usage-b" />
+        <div class="absolute inset-1px rounded-1 overflow-hidden entity-usage-1">
+          <div class="absolute h-full w-full scale-200 entity-usage-2" />
         </div>
       </Show>
       <div
-        class="absolute h-full w-full rounded-1.2 entity-a"
+        class="absolute h-full w-full rounded-1.2 entity-animation-1"
         bool:data-entering={props.animation === "entering"}
         bool:data-triggered={props.triggered}
       />
       <div
-        class="absolute h-full w-full rounded-1.2 entity-b"
+        class="absolute h-full w-full rounded-1.2 entity-animation-2"
         bool:data-entering={props.animation === "entering"}
       />
       <Show when={props.preview && props.preview.newVariableValue !== null}>

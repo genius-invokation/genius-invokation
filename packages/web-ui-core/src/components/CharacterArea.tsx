@@ -26,6 +26,7 @@ import {
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
+  children,
   createEffect,
   createMemo,
   createSignal,
@@ -515,7 +516,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <div class="relative w-6 h-6 rounded-full mt-0.75">
                   <Image
-                    class="w-6 h-6 equipment-disposing"
+                    class="w-6 h-6 equipment"
                     imageId={et().data.definitionId}
                     type={"icon"}
                     fallback="technique"
@@ -527,13 +528,13 @@ export function CharacterArea(props: CharacterAreaProps) {
                     bool:data-disposing={et().animation === "disposing"}
                   />
                   <div
-                    class="absolute top-0 w-6 h-6 rounded-full equipment-a"
+                    class="absolute top-0 w-6 h-6 rounded-full equipment-animation-1"
                     bool:data-entering={et().animation === "entering"}
                     bool:data-disposing={et().animation === "disposing"}
                     bool:data-triggered={et().triggered}
                   />
                   <div
-                    class="absolute top-0 w-6 h-6 rounded-full equipment-b"
+                    class="absolute top-0 w-6 h-6 rounded-full equipment-animation-2"
                     bool:data-entering={et().animation === "entering"}
                     bool:data-disposing={et().animation === "disposing"}
                     bool:data-triggered={et().triggered}
@@ -559,7 +560,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <WeaponIcon
-                    class="w-7 h-7 equipment-disposing"
+                    class="w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -569,7 +570,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <ArtifactIcon
-                    class="w-7 h-7 equipment-disposing"
+                    class="w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -579,7 +580,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <TalentIcon
-                    class="w-7 h-7 equipment-disposing"
+                    class="w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -648,13 +649,13 @@ export function CharacterArea(props: CharacterAreaProps) {
         <CharacterTagMasks tags={data().tags} />
         <Show when={triggered()}>
           <div class="absolute h-21 w-21 top-7.5">
-            <div class="absolute h-full w-full triggered-f" />
-            <div class="absolute h-full w-full triggered-d">
-              <div class="absolute h-full w-full triggered-a" />
-              <div class="absolute h-full w-full triggered-b" />
-              <div class="absolute h-full w-full triggered-c" />
+            <div class="absolute h-full w-full triggered-animation-6" />
+            <div class="absolute h-full w-full triggered-animation-4">
+              <div class="absolute h-full w-full triggered-animation-1" />
+              <div class="absolute h-full w-full triggered-animation-2" />
+              <div class="absolute h-full w-full triggered-animation-3" />
             </div>
-            <div class="absolute h-full w-full triggered-e" />
+            <div class="absolute h-full w-full triggered-animation-5" />
           </div>
         </Show>
       </div>
@@ -802,24 +803,24 @@ interface EquipmentProps {
 }
 
 function Equipment(props: EquipmentProps) {
-  const children = createMemo(() => props.children);
+  const ch = children(() => props.children);
   const data = createMemo(() => props.data);
   return (
     <div class="relative w-6.5 h-6.5 rounded-full">
-      {children()}
+      {ch()}
       <div
         class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
         bool:data-usable={data().data.hasUsagePerRound}
         bool:data-disposing={data().animation === "disposing"}
       />
       <div
-        class="absolute top-0 w-7 h-7 rounded-full equipment-a"
+        class="absolute top-0 w-7 h-7 rounded-full equipment-animation-1"
         bool:data-entering={data().animation === "entering"}
         bool:data-disposing={data().animation === "disposing"}
         bool:data-triggered={data().triggered}
       />
       <div
-        class="absolute top-0 w-7 h-7 rounded-full equipment-b"
+        class="absolute top-0 w-7 h-7 rounded-full equipment-animation-2"
         bool:data-entering={data().animation === "entering"}
         bool:data-disposing={data().animation === "disposing"}
         bool:data-triggered={data().triggered}

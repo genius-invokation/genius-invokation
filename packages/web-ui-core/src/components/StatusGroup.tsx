@@ -27,7 +27,7 @@ function Status(props: StatusProps) {
     <div class="pointer-events-auto h-5 w-5 rounded-full relative">
       <Image
         imageId={defId()}
-        class="h-full w-full status-disposing"
+        class="h-full w-full status"
         fallback="state"
         bool:data-disposing={props.animation === "disposing"}
       />
@@ -41,7 +41,7 @@ function Status(props: StatusProps) {
         bool:data-usable={data().hasUsagePerRound}
       />
       <div
-        class="absolute h-full w-full rounded-full top-0 left-0 status"
+        class="absolute h-full w-full rounded-full top-0 left-0 status-animation"
         bool:data-entering={props.animation === "entering"}
         bool:data-disposing={props.animation === "disposing"}
         bool:data-triggered={props.triggered}
