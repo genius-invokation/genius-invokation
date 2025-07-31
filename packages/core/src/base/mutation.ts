@@ -54,6 +54,11 @@ export interface StepRandomM {
   value: number; // output
 }
 
+export interface StepIdM {
+  readonly type: "stepId";
+  value: number; // output
+}
+
 export interface ChangePhaseM {
   readonly type: "changePhase";
   readonly newPhase: PhaseType;
@@ -207,6 +212,7 @@ export interface ClearDelayingEventM {
 
 export type Mutation =
   | StepRandomM
+  | StepIdM
   | ChangePhaseM
   | StepRoundM
   | SwitchTurnM
@@ -247,6 +253,12 @@ function doMutation(state: GameState, m: Mutation): GameState {
       m.value = next;
       return produce(state, (draft) => {
         draft.iterators.random = next;
+      });
+    }
+    case "stepId": {
+      m.value = state.iterators.id;
+      return produce(state, (draft) => {
+        draft.iterators.id--;
       });
     }
     case "changePhase": {
