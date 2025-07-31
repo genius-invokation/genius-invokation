@@ -33,7 +33,7 @@ export const MOYU_S7_VERSIONS: Record<number, Version> = {
   2503: "v4.7.0",
   2702: "v4.7.0",
   211011: "v3.3.0",
-  211041: "v3.3.0",
+  // 211041: "v3.3.0", // use 111042 instead
   211141: "v5.7.0",
   213051: "v4.7.0",
   214041: "v4.8.0",
@@ -56,7 +56,7 @@ export const MOYU_S7_VERSIONS: Record<number, Version> = {
   323005: "v4.3.0",
   323007: "v4.5.0",
   323008: "v4.7.0",
-  330005: "v4.2.0",
+  // 330005: "v4.2.0",  // use latest version and modify
   331801: "v3.7.0",
   332005: "v3.3.0",
   332013: "v3.3.0",

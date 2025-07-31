@@ -28,7 +28,7 @@ export const assignVersion = (
     if (!et) {
       return;
     }
-    if (et.strong) {
+    if (fromIds.length > 0 && et.strong) {
       return;
     }
     if (fromIds.includes(id)) {
@@ -59,3 +59,8 @@ export const assignVersion = (
 const assignResult = assignVersion(CURRENT_VERSION, MOYU_S7_VERSIONS);
 // @ts-expect-error
 assignResult["$base"] = CURRENT_VERSION;
+
+await Bun.write(
+  `${import.meta.dirname}/../dist/moyu_s7_versions.json`,
+  JSON.stringify(assignResult, null, 2),
+);
