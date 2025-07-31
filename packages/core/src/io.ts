@@ -198,7 +198,6 @@ export function exposeMutation(
 ): ExposedMutation | null {
   switch (m.type) {
     case "stepRandom":
-    case "stepId":
     case "mutateExtensionState":
     case "pushRoundSkillLog":
     case "clearRoundSkillLog":
