@@ -12,7 +12,6 @@ import { DetailLogType, type IDetailLogger } from "./log";
 import {
   type CreateCardM,
   type Mutation,
-  type StepIdM,
   type StepRandomM,
   type TransferCardM,
   applyMutation,
@@ -302,14 +301,6 @@ export class StateMutator {
     this.mutate(mut);
     return mut.value;
   }
-  stepId(): number {
-    const mut: StepIdM = {
-      type: "stepId",
-      value: 0,
-    };
-    this.mutate(mut);
-    return mut.value;
-  }
 
   randomDice(count: number, alwaysOmni?: boolean): readonly DiceType[] {
     if (alwaysOmni) {
@@ -483,9 +474,7 @@ export class StateMutator {
       targetState.variables.maxHealth - targetState.variables.health;
     const finalValue = Math.min(value, targetInjury);
 
-    const healId = this.stepId();
     let healInfo: HealInfo = {
-      id: healId,
       type: damageType,
       cancelled: false,
       expectedValue: value,

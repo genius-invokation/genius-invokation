@@ -678,9 +678,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         isSkillMainDamage = true;
       }
       const { aura, alive, health } = target.variables;
-      const damageId = this.mutator.stepId();
       let damageInfo: DamageInfo = {
-        id: damageId,
         source: this.skillInfo.caller,
         target: target.latest(),
         targetAura: aura,
