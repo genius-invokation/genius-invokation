@@ -48,7 +48,6 @@ function App() {
             },
           },
         ],
-        tags: 0,
       },
       [
         {

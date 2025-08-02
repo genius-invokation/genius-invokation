@@ -1,10 +1,8 @@
 import { CURRENT_VERSION, Version } from "@gi-tcg/core";
-import entityDependency_ from "./deps.json" with { type: "json" };
+import analyzeResult from "./result.json" with { type: "json" };
 import { MOYU_S7_VERSIONS } from "./moyu_s7_version";
 const entityDependency = new Map<number, number[]>(
-  Object.entries(entityDependency_ as Record<number, number[]>).map(
-    ([k, v]) => [Number(k), v] as const,
-  ),
+  analyzeResult.map(({ id, dependencies }) => [id, dependencies] as const),
 );
 
 interface VersionAssignment {

@@ -1,5 +1,7 @@
-import { Expression, Node, ts } from "ts-morph";
+import { Expression, Node, ts, VariableDeclaration } from "ts-morph";
 import { EXTENSION_ID_OFFSET } from "@gi-tcg/core/builder/internal";
+import { base } from "./index";
+import path from "node:path";
 
 export interface Location {
   filename: string;
@@ -24,7 +26,7 @@ interface EntityInfo {
 
 const getLocation = (node: Node): Location => {
   return {
-    filename: node.getSourceFile().getFilePath(),
+    filename: path.relative(base, node.getSourceFile().getFilePath()).replace(/\\/g, '/'),
     line: node.getStartLineNumber(),
     column: node.getStartLinePos(),
   };
@@ -45,16 +47,19 @@ export type TcgEntityDeclaration = TcgDataDeclaration & { id: number };
 
 export class TcgDataDeclaration {
   readonly entityInfo: EntityInfo | null = null;
+  readonly initializer: Expression | null = null;
+  readonly isExported: boolean;
 
   constructor(
     public readonly name: string,
     /** if declaration is array binding, provides name's index */
-    nameIndex: number | null,
-    readonly isExported: boolean,
-    public readonly initializer?: Expression,
+    public readonly nameIndex: number | null,
+    public readonly declaration: VariableDeclaration,
   ) {
-    if (initializer) {
-      const result = TcgDataDeclaration.#analyzeInitializer(initializer);
+    this.isExported = declaration.isExported();
+    this.initializer = declaration.getInitializer() ?? null;
+    if (this.initializer) {
+      const result = TcgDataDeclaration.#analyzeInitializer(this.initializer);
       if (result) {
         this.entityInfo = {
           id: result.ids[nameIndex ?? 0],
@@ -183,6 +188,26 @@ export class TcgDataDeclaration {
   }
   isEntity(): this is TcgEntityDeclaration {
     return this.id !== null;
+  }
+
+  getCode() {
+    return this.initializer?.getText()?.replace(/\r\n/g, "\n") ?? "";
+  }
+
+  getJsDocComment() {
+    const docComments =
+      this.declaration
+        .getAncestors()
+        .find((n) => n.isKind(ts.SyntaxKind.VariableStatement))
+        ?.getLeadingCommentRanges()
+        .filter(
+          (range) => range.getKind() === ts.SyntaxKind.MultiLineCommentTrivia,
+        ) ?? [];
+    return docComments.map((range) => range.getText()).join("\n");
+  }
+
+  getLocation() {
+    return getLocation(this.declaration);
   }
 
   *referencingIdentifiers() {
