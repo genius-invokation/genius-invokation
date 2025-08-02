@@ -26,14 +26,19 @@ import {
   PbPhaseType,
   PbPlayerStatus,
 } from "@gi-tcg/typings";
-import { createSignal, type ComponentProps, type JSX } from "solid-js";
+import {
+  createSignal,
+  type Component,
+  type ComponentProps,
+  type JSX,
+} from "solid-js";
 import {
   Chessboard,
   type ChessboardViewType,
   type ChessboardData,
   type StepActionStateHandler,
-  type Rotation,
   type RpcTimer,
+  type ChessboardProps,
 } from "./components/Chessboard";
 import type {
   ChooseActiveResponse,
@@ -50,8 +55,14 @@ import {
   type ActionState,
 } from "./action";
 import { AssetsManager, DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
-import { StateRecorder, updateHistory, type HistoryData } from "./history/parser";
+import {
+  StateRecorder,
+  updateHistory,
+  type HistoryData,
+} from "./history/parser";
 import { createStore, produce } from "solid-js/store";
+import type { Rotation } from "./components/TransformWrapper";
+import { OppChessboard } from "./components/OppChessboard";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -106,7 +117,11 @@ export interface ClientChessboardProps extends ComponentProps<"div"> {
   gameEndExtra?: JSX.Element;
 }
 
-export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
+function createClientImpl(
+  Comp: Component<ChessboardProps>,
+  who: 0 | 1,
+  option: ClientOption,
+): Client {
   const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;
   const [data, setData] = createSignal<ChessboardData>({
     raw: [],
@@ -260,6 +275,9 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
           produce((history) => updateHistory(savedState, mutation, history)),
         );
         const { promise, resolve } = Promise.withResolvers<void>();
+        if (Comp === OppChessboard) {
+          resolve();
+        }
         setData({
           previousState: savedState ?? state,
           state,
@@ -341,7 +359,7 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
         assetsManager,
       }}
     >
-      <Chessboard
+      <Comp
         who={who}
         data={data()}
         actionState={actionState()}
@@ -360,4 +378,14 @@ export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   );
 
   return [io, Wrapper];
+}
+
+export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
+  return createClientImpl(Chessboard, who, option);
+}
+export function createClientForOpp(
+  who: 0 | 1,
+  option: ClientOption = {},
+): Client {
+  return createClientImpl(OppChessboard, who, option);
 }

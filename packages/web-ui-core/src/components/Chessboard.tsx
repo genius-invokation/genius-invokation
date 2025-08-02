@@ -41,6 +41,7 @@ import {
   Show,
   splitProps,
   untrack,
+  children as solidChildren,
   type ComponentProps,
   type JSX,
 } from "solid-js";
@@ -133,6 +134,7 @@ import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
 import type { HistoryBlock } from "../history/typings";
 import { FastActionMarker } from "./FastActionMarker";
+import { TransformWrapper, type Rotation } from "./TransformWrapper";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -255,19 +257,10 @@ export type ChessboardViewType =
   | "rerollDiceEnd"
   | "switchHandsEnd";
 
-export type Rotation = 0 | 90 | 180 | 270;
 export interface RpcTimer {
   current: number;
   total: number;
 }
-
-const PRE_ROTATION_TRANSFORM = `translate(-50%, -50%)`;
-const POST_ROTATION_TRANSFORM = {
-  0: "translate(50%, 50%)",
-  90: "translate(50%, -50%)",
-  180: "translate(-50%, -50%)",
-  270: "translate(-50%, 50%)",
-};
 
 export interface ChessboardProps extends ComponentProps<"div"> {
   who: 0 | 1;
@@ -985,11 +978,11 @@ export function Chessboard(props: ChessboardProps) {
     "onSelectCard",
     "onGiveUp",
     "class",
+    "children",
   ]);
   let chessboardElement!: HTMLDivElement;
-  let transformWrapperEl!: HTMLDivElement;
-  let transformScale = 1;
-  let containerEl!: HTMLDivElement;
+  const [transformScale, setTransformScale] = createSignal(1);
+  const inner = solidChildren(() => localProps.children);
 
   const { assetsManager } = useUiContext();
   const { CardDataViewer, ...dataViewerController } = createCardDataViewer({
@@ -1041,56 +1034,10 @@ export function Chessboard(props: ChessboardProps) {
   );
   let shouldMoveWhenHandBlurring: PromiseWithResolvers<boolean>;
 
-  const onContainerResize = () => {
-    const containerWidth = containerEl.clientWidth;
-    let containerHeight = containerEl.clientHeight;
-    const autoHeight = untrack(() => localProps.autoHeight) ?? true;
-    const rotate = untrack(() => localProps.rotation) ?? 0;
-    const UNIT = unitInPx();
-    let height: number;
-    let width: number;
-    let scale: number;
-    const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
-    if (rotate % 180 === 0) {
-      if (autoHeight) {
-        containerHeight = 0.9 * DEFAULT_HEIGHT_WIDTH_RATIO * containerWidth;
-        containerEl.style.height = `${containerHeight}px`;
-      }
-      scale = Math.min(
-        containerHeight / (UNIT * MINIMUM_HEIGHT),
-        containerWidth / (UNIT * MINIMUM_WIDTH),
-      );
-      height = containerHeight / scale;
-      width = containerWidth / scale;
-    } else {
-      if (autoHeight) {
-        containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
-        containerEl.style.height = `${containerHeight}px`;
-      }
-      scale = Math.min(
-        containerHeight / (UNIT * MINIMUM_WIDTH),
-        containerWidth / (UNIT * MINIMUM_HEIGHT),
-      );
-      height = containerWidth / scale;
-      width = containerHeight / scale;
-    }
-    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
-    transformWrapperEl.style.height = `${height}px`;
-    transformWrapperEl.style.width = `${width}px`;
-    transformScale = scale;
-  };
-
   const onResizeDebouncer = funnel(onResize, {
     minQuietPeriodMs: 200,
   });
   const resizeObserver = new ResizeObserver(onResizeDebouncer.call);
-  const onContainerResizeDebouncer = funnel(onContainerResize, {
-    minQuietPeriodMs: 200,
-  });
-  const containerResizeObserver = new ResizeObserver(
-    onContainerResizeDebouncer.call,
-  );
-
   const [children, setChildren] = createSignal<ChessboardChildren>({
     characters: [],
     cards: [],
@@ -1466,16 +1413,13 @@ export function Chessboard(props: ChessboardProps) {
         tuneStep: cardInfo.tuneStep ?? null,
         updatePos: (e2) => {
           const rot = ((untrack(() => props.rotation) ?? 0) * -Math.PI) / 180;
+          const scale = untrack(transformScale);
           const cos = Math.cos(rot);
           const sin = Math.sin(rot);
           const dx = e2.clientX - initialPointerX;
           const dy = e2.clientY - initialPointerY;
-          const x =
-            originalX +
-            ((cos * dx - sin * dy) / transformScale / unit) * zRatio;
-          const y =
-            originalY +
-            ((sin * dx + cos * dy) / transformScale / unit) * zRatio;
+          const x = originalX + ((cos * dx - sin * dy) / scale / unit) * zRatio;
+          const y = originalY + ((sin * dx + cos * dy) / scale / unit) * zRatio;
           return [x, y];
         },
       });
@@ -1621,14 +1565,10 @@ export function Chessboard(props: ChessboardProps) {
 
   onMount(() => {
     onResize();
-    onContainerResize();
     resizeObserver.observe(chessboardElement);
-    containerResizeObserver.observe(containerEl);
   });
   onCleanup(() => {
-    onContainerResize();
     resizeObserver.disconnect();
-    containerResizeObserver.disconnect();
   });
   return (
     <div
@@ -1636,9 +1576,14 @@ export function Chessboard(props: ChessboardProps) {
         localProps.class ?? ""
       }`}
       {...elProps}
-      ref={containerEl}
     >
-      <div class="relative  bg-#554433 overflow-clip" ref={transformWrapperEl}>
+      <TransformWrapper
+        class="relative bg-#554433"
+        autoHeight={localProps.autoHeight}
+        rotation={localProps.rotation}
+        transformScale={transformScale()}
+        setTransformScale={setTransformScale}
+      >
         <ChessboardBackground />
         {/* 3d space */}
         <div
@@ -1847,6 +1792,7 @@ export function Chessboard(props: ChessboardProps) {
             }}
           />
         </Show>
+        {inner()}
         {/* 上层 UI 组件 */}
         <Show when={showHistory()}>
           <HistoryPanel
@@ -1901,7 +1847,7 @@ export function Chessboard(props: ChessboardProps) {
             {localProps.gameEndExtra}
           </div>
         </Show>
-      </div>
+      </TransformWrapper>
     </div>
   );
 }
