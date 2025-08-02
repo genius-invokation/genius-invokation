@@ -46,11 +46,9 @@ export class TcgDataSourceFile {
   }
 
   #addDeclaration(decl: VariableDeclaration) {
-    const initializer = decl.getInitializer();
     const name = decl.getNameNode();
-    const isExported = decl.isExported();
     if (name.isKind(ts.SyntaxKind.Identifier)) {
-      const tcgDecl = new TcgDataDeclaration(name.getText(), null, isExported, initializer);
+      const tcgDecl = new TcgDataDeclaration(name.getText(), null, decl);
       this.varDecls.set(tcgDecl.name, tcgDecl);
     } else if (name.isKind(ts.SyntaxKind.ArrayBindingPattern)) {
       const arrayElements = name.getElements();
@@ -64,8 +62,7 @@ export class TcgDataSourceFile {
           const tcgDecl = new TcgDataDeclaration(
             elementName.getText(),
             i,
-            isExported,
-            initializer,
+            decl,
           );
           this.varDecls.set(tcgDecl.name, tcgDecl);
         } else {
@@ -82,7 +79,10 @@ export class TcgDataSourceFile {
   }
 
   #referenceCache = new Map<TcgDataDeclaration, Set<TcgEntityDeclaration>>();
-  getReferencesOfDecl(decl: TcgDataDeclaration, from: TcgDataDeclaration[] = []): Set<TcgEntityDeclaration> {
+  getReferencesOfDecl(
+    decl: TcgDataDeclaration,
+    from: TcgDataDeclaration[] = [],
+  ): Set<TcgEntityDeclaration> {
     if (this.#referenceCache.has(decl)) {
       return this.#referenceCache.get(decl)!;
     }
@@ -97,7 +97,9 @@ export class TcgDataSourceFile {
         if (varDecl.isEntity()) {
           result.add(varDecl);
         } else {
-          result = result.union(this.getReferencesOfDecl(varDecl, [...from, decl]));
+          result = result.union(
+            this.getReferencesOfDecl(varDecl, [...from, decl]),
+          );
         }
         continue;
       }
@@ -118,7 +120,9 @@ export class TcgDataSourceFile {
         if (thatDecl.isEntity()) {
           result.add(thatDecl);
         } else {
-          result = result.union(tcgFile.getReferencesOfDecl(thatDecl, [...from, decl]));
+          result = result.union(
+            tcgFile.getReferencesOfDecl(thatDecl, [...from, decl]),
+          );
         }
         continue;
       }
