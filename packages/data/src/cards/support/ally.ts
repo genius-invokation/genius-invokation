@@ -458,7 +458,7 @@ export const Setaria = card(322019)
  * 我方打出「圣遗物」手牌时：少花费1个元素骰；如果我方场上已有2个已装备「圣遗物」的角色，就额外少花费1个元素骰。（每回合1次）
  */
 export const YayoiNanatsuki = card(322020)
-  .since("v4.2.0")
+  .since("v4.1.0")
   .costSame(1)
   .support("ally")
   .on("deductOmniDiceCard", (c, e) => e.hasCardTag("artifact"))
