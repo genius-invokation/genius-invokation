@@ -59,7 +59,11 @@ export function SelectCardView(props: SelectCardViewProps) {
                     <SelectingIcon class="w-21 h-21" />
                   </div>
                 </Show>
-                <DiceCostAsync cardDefinitionId={cardId} size={36} />
+                <DiceCostAsync
+                  cardDefinitionId={cardId}
+                  size={36}
+                  class="left-1.8 top--1"
+                />
               </div>
               <div class="mt-2 w-36 text-center font-size-4 text-center color-black/60 font-bold">
                 {props.nameGetter(cardId)}
@@ -90,6 +94,7 @@ export function SelectCardView(props: SelectCardViewProps) {
 export interface DiceCostAsyncProps {
   cardDefinitionId: number;
   size: number;
+  class?: string;
 }
 
 export const DiceCostAsync = (props: DiceCostAsyncProps) => {
@@ -129,7 +134,7 @@ export const DiceCostAsync = (props: DiceCostAsyncProps) => {
       <Match when={data()}>
         {(data) => (
           <DiceCost
-            class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
+            class={`absolute translate-x--50% backface-hidden flex flex-col gap-1 ${props.class}`}
             cost={renderCost(data())}
             size={props.size}
           />

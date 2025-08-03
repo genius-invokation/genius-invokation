@@ -415,7 +415,11 @@ const renderHistoryChild = (
         content: (
           <>
             <span>附着</span>
-            <Image imageId={child.elementType} class="h-3.5 w-3.5" fallback="aura"/>
+            <Image
+              imageId={child.elementType}
+              class="h-3.5 w-3.5"
+              fallback="aura"
+            />
             <span
               style={{ color: `var(--c-${DAMAGE_COLOR[child.elementType]})` }}
             >
@@ -1463,14 +1467,10 @@ function HistoryChildBox(props: { data: HistoryChildData }) {
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
                     <Switch>
                       <Match when={healthChange().type === "heal"}>
-                        <RevivePreviewIcon
-                          class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
-                        />
+                        <RevivePreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                       </Match>
                       <Match when={healthChange().type === "damage"}>
-                        <DefeatedPreviewIcon
-                          class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
-                        />
+                        <DefeatedPreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                       </Match>
                     </Switch>
                   </div>
@@ -1514,7 +1514,9 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
           </Match>
           <Match when={!!props.data.aura}>
             <For each={props.data.aura as DamageType[]}>
-              {(damageType) => <Image imageId={damageType} class="h-3 w-3" fallback="aura" />}
+              {(damageType) => (
+                <Image imageId={damageType} class="h-3 w-3" fallback="aura" />
+              )}
             </For>
           </Match>
         </Switch>
@@ -1532,9 +1534,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                     <Show
                       when={!!imageId}
                       fallback={
-                        <CardbackNormal
-                          class="absolute inset-0 w-10.5 h-18"
-                        />
+                        <CardbackNormal class="absolute inset-0 w-10.5 h-18" />
                       }
                     >
                       <CardFace definitionId={imageId} />
@@ -1561,9 +1561,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
                         fallback="summon"
                       />
                     </Show>
-                    <CardFrameSummon
-                      class="absolute inset-0 w-10.5 h-12.375 pointer-events-none"
-                    />
+                    <CardFrameSummon class="absolute inset-0 w-10.5 h-12.375 pointer-events-none" />
                   </div>
                 </div>
               )}
@@ -1586,9 +1584,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#d14f51">
                 <Show when={props.data.innerValueSpecial}>
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
-                    <DefeatedPreviewIcon
-                      class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
-                    />
+                    <DefeatedPreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                   </div>
                 </Show>
                 <StrokedText
@@ -1606,9 +1602,7 @@ function HistorySummaryShot(props: { data: SummaryShot }) {
               <div class="h-4 w-12 flex flex-row gap-0.5 items-center justify-center text-white text-3 rounded-full b-1 b-black bg-#6e9b3a">
                 <Show when={props.data.innerValueSpecial}>
                   <div class="relative overflow-visible h-3 w-4 flex-shrink-0">
-                    <RevivePreviewIcon
-                      class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%"
-                    />
+                    <RevivePreviewIcon class="absolute h-5 w-5 top-50% left-50% -translate-x-50% -translate-y-50%" />
                   </div>
                 </Show>
                 <StrokedText
@@ -1732,9 +1726,7 @@ function HistoryBlockBox(props: {
                       fallback="summon"
                     />
                   </Show>
-                  <CardFrameSummon
-                    class="absolute inset-0 h-full w-full pointer-events-none"
-                  />
+                  <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
                 </div>
               </Match>
             </Switch>
@@ -1919,16 +1911,20 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div
-        class="absolute inset-0 z-0 bg-black/50"
+        class="absolute inset-0 z-0 bg-black/50 watch-mode-hidden"
         onClick={() => {
-          if (selectedBlock()) {
-            setSelectedBlock(null);
-          } else {
-            props.onBackdropClick();
-          }
+          props.onBackdropClick();
         }}
       />
-      <div class="absolute right-0 top-0 bottom-0 w-70 touch-pan shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)]">
+      <Show when={selectedBlock()}>
+        <div
+          class="absolute inset-0 z-0"
+          onClick={() => {
+            setSelectedBlock(null);
+          }}
+        />
+      </Show>
+      <div class="absolute right-0 top-0 bottom-0 w-70 touch-pan shadow-lg bg-[linear-gradient(to_bottom,_#2f333bff_30%,_#2f333bdd_100%)] history-panel">
         <div class="w-full h-12" />
         <div
           class="h-[calc(100%-4.5rem)] overflow-y-auto py-2 pl-2 pr-1.2 space-y-1.5 relative flex flex-col history-scrollbar"

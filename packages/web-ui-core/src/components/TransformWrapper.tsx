@@ -47,6 +47,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
 
   const onContainerResize = () => {
     const containerEl = transformWrapperEl.parentElement!;
+    const hasOppChessboard = !! containerEl.querySelector("[data-gi-tcg-opp-chessboard]");
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
     const autoHeight = untrack(() => props.autoHeight) ?? true;
@@ -55,6 +56,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
     let height: number;
     let width: number;
     let scale: number;
+    let offsetX = 0;
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
     if (rotate % 180 === 0) {
       if (autoHeight) {
@@ -65,6 +67,10 @@ export function TransformWrapper(props: TransformWrapperProps) {
         containerHeight / (UNIT * MINIMUM_HEIGHT),
         containerWidth / (UNIT * MINIMUM_WIDTH),
       );
+      if (hasOppChessboard) {
+        scale = scale * 0.8;
+        offsetX = -10;
+      }
       height = containerHeight / scale;
       width = containerWidth / scale;
     } else {
@@ -81,7 +87,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
     }
     containerEl.style.setProperty("--actual-width", `${containerWidth}px`);
     containerEl.style.setProperty("--actual-height", `${containerHeight}px`);
-    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
+    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) translate(${offsetX}%, 0) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
     props.setTransformScale(scale);
@@ -103,7 +109,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
 
   const inner = children(() => props.children);
   return (
-    <div class={`overflow-clip ${props.class ?? ""}`} ref={transformWrapperEl}>
+    <div class={`${props.class ?? ""}`} ref={transformWrapperEl}>
       {inner()}
     </div>
   );

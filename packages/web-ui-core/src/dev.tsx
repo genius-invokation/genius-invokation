@@ -88,7 +88,7 @@ function App() {
     <>
       <Chessboard0
         rotation={0}
-        style={{ width: "100vw", height: "100vh" }}
+        style={{ width: "96vw", height: "48.6vw" }}
         autoHeight={false}
         myPlayerInfo={{
           avatarUrl: "https://http.cat/404",
@@ -98,7 +98,7 @@ function App() {
         <Chessboard0Opp />
       </Chessboard0>
       <Chessboard1
-        style={{ width: "100vw", height: "200px" }}
+        style={{ width: "96vw", height: "48.6vw" }}
         autoHeight={false}
         timer={{ current: 114, total: 514 }}
       />

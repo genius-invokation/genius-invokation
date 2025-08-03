@@ -24,9 +24,70 @@
   --dice-panel-y-offset: 0;
   :has([data-gi-tcg-opp-chessboard]) {
     --dice-panel-y-offset: 50%;
+    --chessboard-bg-scale: 86%;
+    --chessboard-scale: 80%;
+    --chessboard-offset-x: 10%;
+    --skill-button-offset-x: 1.5rem;
+    --history-panel-offset-x: -8.3rem;
+    --watch-mode-visible: hidden;
+    --special-view-scale: 50%;
   }
   :has([data-gi-tcg-opp-chessboard]) [data-gi-tcg-opp-chessboard] {
     --dice-panel-y-offset: 0;
+  }
+  .chessboard-bg-scale {
+    scale: var(--chessboard-bg-scale, 100%);
+  }
+  .aspect-ratio-container {
+    width: var(--chessboard-scale, 100%);
+    left: var(--chessboard-offset-x, 0%);
+  }
+  .skill-button-group {
+    right: var(--skill-button-offset-x, 0.5rem);
+  }
+  .history-panel {
+    right: var(--history-panel-offset-x, 0rem);
+  }
+  .watch-mode-hidden {
+    visibility: var(--watch-mode-visible, visible);
+  }
+  .dice-panel-watch-mode {
+    background-color: #554433;
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  }
+  .dice-panel-watch-mode[data-opp="false"] {
+    box-shadow:
+      inset 8px 0px 8px 0px #e78a2b40,
+      inset 4px 0px 4px 0px #fcffab66;
+    top: 52%;
+  }
+  .dice-panel-watch-mode[data-opp="true"] {
+    box-shadow:
+      inset 8px 0px 8px 0px #5e7ea740,
+      inset 4px 0px 4px 0px #bffffe66;
+    bottom: 52%;
+  }
+  .dice-panel-watch-mode[data-has-mini-view] {
+    transform: translateX(-90%);
+    opacity: 0.6;
+  }
+  .opp-hands-bg-watch-mode {
+    background-image: linear-gradient(to top, #63524a 6%, #554433 50%);
+  }
+  .opp-hands-border-watch-mode {
+    background-image: linear-gradient(to top, #63524a80 0%, transparent 100%);
+  }
+  .opp-hands-shadow-watch-mode {
+    box-shadow: 0 0 12px #000000aa;
+  }
+  .mini-view[data-opp="false"] {
+    top: 52%;
+  }
+  .mini-view[data-opp="true"] {
+    bottom: 52%;
+  }
+  .mini-view {
+    box-shadow: inset 0 0 12px #00000080;
   }
 
   [data-gi-tcg-contain-strict] {

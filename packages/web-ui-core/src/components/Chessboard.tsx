@@ -45,7 +45,7 @@ import {
   type ComponentProps,
   type JSX,
 } from "solid-js";
-import { funnel } from "remeda";
+import { funnel, set } from "remeda";
 import {
   ACTION_OUTLINED_Z,
   CARD_WIDTH,
@@ -135,6 +135,7 @@ import { TimerCapsule, TimerAlert } from "./Timer";
 import type { HistoryBlock } from "../history/typings";
 import { FastActionMarker } from "./FastActionMarker";
 import { TransformWrapper, type Rotation } from "./TransformWrapper";
+import { MiniView } from "./MiniSpecialView";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -302,13 +303,15 @@ interface CardInfoCalcContext {
   hoveringHand: CardInfo | null;
   draggingHand: DraggingCardInfo | null;
   availableSteps: ActionStep[];
+  watchMode: boolean;
 }
 
 function calcCardsInfo(
   state: PbGameState,
   ctx: CardInfoCalcContext,
 ): CardInfo[] {
-  const { who, size, myHandState, hoveringHand, availableSteps } = ctx;
+  const { who, size, myHandState, hoveringHand, availableSteps, watchMode } =
+    ctx;
   const cards: CardInfo[] = [];
   for (const who2 of [0, 1] as const) {
     const opp = who2 !== who;
@@ -378,7 +381,7 @@ function calcCardsInfo(
         continue;
       }
       let x, y;
-      if (!opp && myHandState === "switching") {
+      if (!opp && myHandState === "switching" && !watchMode) {
         [x, y] = getShowingCardPos(size, totalHandCardCount, i);
       } else if (!opp && myHandState === "focusing") {
         [x, y] = getHandCardFocusedPos(
@@ -396,6 +399,9 @@ function calcCardsInfo(
           i,
           skillCount,
         );
+      }
+      if (opp && watchMode) {
+        x = x - MINIMUM_WIDTH / 4;
       }
       cards.push({
         id: card.id,
@@ -583,6 +589,7 @@ function rerenderChildren(opt: {
   data: ChessboardData;
   previewData: ParsedPreviewData;
   availableSteps: ActionStep[];
+  watchMode: boolean;
 }): ChessboardChildren {
   const {
     size,
@@ -592,6 +599,7 @@ function rerenderChildren(opt: {
     data,
     previewData,
     availableSteps,
+    watchMode,
   } = opt;
   // console.log(data);
 
@@ -634,6 +642,7 @@ function rerenderChildren(opt: {
     hoveringHand,
     draggingHand,
     availableSteps,
+    watchMode,
   });
 
   if (animatingCards.length > 0) {
@@ -644,6 +653,7 @@ function rerenderChildren(opt: {
       hoveringHand,
       draggingHand,
       availableSteps: [],
+      watchMode,
     });
     const showingCards = Map.groupBy(animatingCards, (x) => x.delay);
     let totalDelayMs = 0;
@@ -1077,6 +1087,7 @@ export function Chessboard(props: ChessboardProps) {
           data,
           previewData: localProps.actionState?.previewData ?? NO_PREVIEW,
           availableSteps: localProps.actionState?.availableSteps ?? [],
+          watchMode: hasOppChessboard(),
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: true });
@@ -1110,6 +1121,7 @@ export function Chessboard(props: ChessboardProps) {
           data: localProps.data,
           previewData: actionState?.previewData ?? NO_PREVIEW,
           availableSteps: actionState?.availableSteps ?? [],
+          watchMode: hasOppChessboard(),
         });
         setChildren(newChildren);
         triggerUpdateChildren({ force: false });
@@ -1293,14 +1305,14 @@ export function Chessboard(props: ChessboardProps) {
     }
   });
 
-  const [specialViewVisible, setSpecialViewVisible] = createSignal(true);
+  const [specialViewVisible, setSpecialViewVisible] = createSignal(false);
   const hasSpecialView = createMemo(() =>
     ["rerollDice", "rerollDiceEnd", "switchHands", "selectCard"].includes(
       localProps.viewType,
     ),
   );
   const displayUiComponents = createMemo(
-    () => !hasSpecialView() || !specialViewVisible(),
+    () => !hasSpecialView() || !specialViewVisible() || hasOppChessboard(),
   );
   /** 当显示特殊视图时，隐藏所有选中对象 */
   createEffect(() => {
@@ -1310,8 +1322,14 @@ export function Chessboard(props: ChessboardProps) {
   });
   /** 当存在特殊视图可用时，使其可见 */
   createEffect(() => {
-    if (hasSpecialView()) {
+    if (hasSpecialView() && !hasOppChessboard()) {
       setSpecialViewVisible(true);
+    }
+  });
+  /** 特殊视图结束时，重新设为不可见 */
+  createEffect(() => {
+    if (!hasSpecialView()) {
+      setSpecialViewVisible(false);
     }
   });
 
@@ -1563,22 +1581,44 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
+  let containerElement!: HTMLDivElement;
+  const [hasOppChessboard, setHasOppChessboard] = createSignal(false);
+  createEffect(() => {
+    if (hasOppChessboard()) {
+      setShowHistory(true);
+    }
+  });
+  const checkOppChessboard = () => {
+    const exists = containerElement.querySelector(
+      "[data-gi-tcg-opp-chessboard]",
+    );
+    setHasOppChessboard(!!exists);
+  };
+  const oppChessboardObserver = new MutationObserver(checkOppChessboard);
+
   onMount(() => {
     onResize();
     resizeObserver.observe(chessboardElement);
+    queueMicrotask(checkOppChessboard);
+    oppChessboardObserver.observe(containerElement, {
+      childList: true,
+      subtree: true,
+    });
   });
   onCleanup(() => {
     resizeObserver.disconnect();
+    oppChessboardObserver.disconnect();
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset touch-none all:touch-none ${
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433  ${
         localProps.class ?? ""
       }`}
+      ref={containerElement}
       {...elProps}
     >
       <TransformWrapper
-        class="relative bg-#554433"
+        class="relative translate-x--10%"
         autoHeight={localProps.autoHeight}
         rotation={localProps.rotation}
         transformScale={transformScale()}
@@ -1623,9 +1663,11 @@ export function Chessboard(props: ChessboardProps) {
                 }
                 hidden={
                   // 存在特殊视图时：视图可见时只显示正在切换的手牌，反之只显示其他行动牌
-                  hasSpecialView()
-                    ? (card().kind === "switching") !== specialViewVisible()
-                    : false
+                  hasOppChessboard()
+                    ? card().kind === "oppHand"
+                    : hasSpecialView()
+                      ? (card().kind === "switching") !== specialViewVisible()
+                      : false
                 }
                 realCost={localProps.actionState?.realCosts.cards.get(
                   card().id,
@@ -1655,7 +1697,11 @@ export function Chessboard(props: ChessboardProps) {
             {(hint) => (
               <CardCountHint
                 {...hint()}
-                shown={isShowCardHint[hint().area] !== null}
+                shown={
+                  isShowCardHint[hint().area] !== null ||
+                  (hasOppChessboard() &&
+                    (hint().area === "myPile" || hint().area === "oppPile"))
+                }
               />
             )}
           </Key>
@@ -1704,9 +1750,16 @@ export function Chessboard(props: ChessboardProps) {
               onSelectDice={setSelectedDice}
               state={dicePanelState()}
               onStateChange={setDicePanelState}
+              watchMode={hasOppChessboard() || specialViewVisible()}
+              opp={false}
+              hasMiniView={
+                hasOppChessboard() &&
+                (props.viewType === "selectCard" ||
+                  props.viewType === "switchHands")
+              }
             />
             <SkillButtonGroup
-              class="absolute bottom-3 right-2 scale-120% translate-x--10% translate-y--10%"
+              class="absolute bottom-3 transform-origin-br scale-120% skill-button-group"
               skills={mySkills()}
               switchActiveButton={switchActiveStep() ?? null}
               switchActiveCost={
@@ -1792,9 +1845,8 @@ export function Chessboard(props: ChessboardProps) {
             }}
           />
         </Show>
-        {inner()}
         {/* 上层 UI 组件 */}
-        <Show when={showHistory()}>
+        <Show when={showHistory() || hasOppChessboard()}>
           <HistoryPanel
             who={localProps.who}
             history={localProps.history}
@@ -1802,11 +1854,44 @@ export function Chessboard(props: ChessboardProps) {
           />
         </Show>
         <AspectRatioContainer>
+          {inner()}
+          <Show when={hasOppChessboard() && props.viewType === "switchHands"}>
+            <MiniView
+              viewType={"switching"}
+              ids={children()
+                .cards.filter((c) => c.kind === "switching")
+                .map((c) => c.data.definitionId)}
+              nameGetter={() => void 0}
+              opp={false}
+            />
+          </Show>
+          <Show when={hasOppChessboard() && props.viewType === "selectCard"}>
+            <MiniView
+              viewType={"selecting"}
+              ids={localProps.selectCardCandidates}
+              nameGetter={(name) => assetsManager.getNameSync(name)}
+              opp={false}
+            />
+          </Show>
+          <Show
+            when={
+              hasOppChessboard() &&
+              (props.viewType === "rerollDice" ||
+                props.viewType === "rerollDiceEnd")
+            }
+          >
+            <MiniView
+              viewType={"rerolling"}
+              ids={myDice()}
+              nameGetter={() => void 0}
+              opp={false}
+            />
+          </Show>
           <div class="absolute inset-3 pointer-events-none touch-pan scale-68% translate-x--16% translate-y--16%">
             <CardDataViewer />
           </div>
-          {/* 左上角部件 */}
-          <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
+          {/* 右上角部件 */}
+          <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2 watch-mode-hidden">
             <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
               <button
                 class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
@@ -1832,6 +1917,20 @@ export function Chessboard(props: ChessboardProps) {
             />
             <TimerCapsule timer={timer()} />
           </div>
+          <Show when={hasOppChessboard()}>
+            <div class="absolute top-2.5 right--62 flex flex-row-reverse gap-2 watch-mode-hidden1">
+              <div class="h-8 w-24 flex items-center justify-center rounded-full b-2 line-height-none font-bold bg-#e9e2d3 text-black/70 b-black/70">
+                观战模式
+              </div>
+              <button
+                class="h-8 w-8 flex items-center justify-center rounded-full b-2 line-height-none font-bold bg-#e9e2d3 text-black/70 b-black/70 cursor-pointer"
+                title="自动"
+                onClick={()=>{}}
+              >
+                {">"}
+              </button>
+            </div>
+          </Show>
         </AspectRatioContainer>
         <TimerAlert timer={timer()} />
         <Alert />

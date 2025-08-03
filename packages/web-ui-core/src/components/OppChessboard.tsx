@@ -13,15 +13,16 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo, For, Index, Show, splitProps } from "solid-js";
-import type { ChessboardProps } from "./Chessboard";
-import { Dice } from "./Dice";
+import { createMemo, Show, splitProps } from "solid-js";
+import type { ChessboardProps, SkillInfo } from "./Chessboard";
 import { DicePanel } from "./DicePanel";
 import type { DiceType } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
-import { Card, CardFace } from "./Card";
-import { DiceCostAsync } from "./SelectCardView";
+import { Card } from "./Card";
 import { useUiContext } from "../hooks/context";
+import type { ActionStep, ClickSkillButtonActionStep } from "../action";
+import { SkillButtonGroup } from "./SkillButtonGroup";
+import { MiniView } from "./MiniSpecialView";
 
 export function OppChessboard(props: ChessboardProps) {
   const { assetsManager } = useUiContext();
@@ -49,7 +50,45 @@ export function OppChessboard(props: ChessboardProps) {
   ]);
   const dice = createMemo(() => props.data.state.player[props.who].dice);
   const hands = createMemo(() => props.data.state.player[props.who].handCard);
-  const handOffset = createMemo(() => 94 / Math.max(1, hands().length - 1));
+  const handOffset = createMemo(() => 10);
+  const findSkillStep = (
+    steps: ActionStep[],
+    id: SkillInfo["id"],
+  ): ClickSkillButtonActionStep | null => {
+    return (
+      steps.find(
+        (s): s is ClickSkillButtonActionStep =>
+          s.type === "clickSkillButton" && s.skillId === id,
+      ) ?? null
+    );
+  };
+  const isTechnique = (id: SkillInfo["id"]): boolean =>
+    typeof id === "number" && id.toString().length > 5;
+  const myActiveEnergy = createMemo(() => {
+    const player = localProps.data.state.player[localProps.who];
+    const { energy = 0, maxEnergy = 1 } =
+      player.character.find((ch) => ch.id === player.activeCharacterId) ?? {};
+    return { energy, maxEnergy };
+  });
+  const energyPercentage = (): number => {
+    const { energy, maxEnergy } = myActiveEnergy();
+    return Math.min(energy / maxEnergy, 1);
+  };
+  const mySkills = createMemo<SkillInfo[]>(() => {
+    const actionState = localProps.actionState;
+    const steps = actionState?.availableSteps ?? [];
+    const realCosts = actionState?.realCosts.skills;
+    return localProps.data.state.player[localProps.who].initiativeSkill.map(
+      (sk) => ({
+        id: sk.definitionId,
+        cost: sk.definitionCost,
+        realCost: realCosts?.get(sk.definitionId),
+        step: findSkillStep(steps, sk.definitionId),
+        isTechnique: isTechnique(sk.definitionId),
+        energy: energyPercentage(),
+      }),
+    );
+  });
   return (
     <div
       class={`absolute inset-0 h-full w-full pointer-events-none ${
@@ -58,43 +97,9 @@ export function OppChessboard(props: ChessboardProps) {
       data-gi-tcg-opp-chessboard
       {...elProps}
     >
-      <div class="absolute left-50% text-3xl">{localProps.viewType}</div>
-      <Show when={localProps.viewType === "rerollDice"}>
-        <div class="absolute left-50 top-0 w-50 h-30 b-solid b-white b-2 bg-green-50 rounded-xl overflow-clip flex flex-col justify-center items-center gap-4 ">
-          <div>对方重掷界面</div>
-          <ul class="grid grid-rows-2 grid-flow-col gap-2">
-            <Index each={dice()}>
-              {(die, index) => (
-                <li>
-                  <Dice type={die()} size={24} />
-                </li>
-              )}
-            </Index>
-          </ul>
-        </div>
-      </Show>
-      <Show when={localProps.viewType === "selectCard"}>
-        <div class="absolute left-50 top-0 w-50 h-30 b-solid b-white b-2 bg-green-50 rounded-xl overflow-clip flex flex-col justify-center items-center gap-4 ">
-          <div>对方挑选界面</div>
-          <ul class="flex flex-row gap-1">
-            <For each={props.selectCardCandidates}>
-              {(cardId) => (
-                <li class="flex flex-col items-center">
-                  <div class="h-12 w-7 relative">
-                    <CardFace definitionId={cardId} />
-                    {/* <DiceCostAsync cardDefinitionId={cardId} size={12} /> */}
-                  </div>
-                  <div class="mt-2 w-8 text-center font-size-2 text-center color-black/60 font-bold">
-                    {assetsManager.getNameSync(cardId)}
-                  </div>
-                </li>
-              )}
-            </For>
-          </ul>
-        </div>
-      </Show>
-      <div class="absolute top-0 bottom-[calc(var(--actual-height,33.75rem)/2+11rem)] left-100 right-21 b-solid b-white b-2 bg-green-50 rounded-xl overflow-clip">
-        <div class="absolute bottom-2 left-2 right-2 h-36 ">
+      <div class="absolute top-14.5% bottom-82% left-42% translate-x--50% w-120 rounded-3 opp-hands-shadow-watch-mode" />
+      <div class="absolute top-0 bottom-82% left-42% translate-x--50% w-120 rounded-xl overflow-clip opp-hands-bg-watch-mode">
+        <div class="absolute top-2 left-4 right-2 h-36 ">
           <Key each={hands()} by="id">
             {(card, index) => (
               <Card
@@ -124,6 +129,7 @@ export function OppChessboard(props: ChessboardProps) {
           </Key>
         </div>
       </div>
+      <div class="absolute top-13.4% bottom-81.8% left-42% translate-x--50% w-120 b-#443322 b-x-6 b-b-6 rounded-lb-3 rounded-rb-3 opp-hands-border-watch-mode" />
       <DicePanel
         state="hidden"
         dice={dice() as DiceType[]}
@@ -132,6 +138,50 @@ export function OppChessboard(props: ChessboardProps) {
         onSelectDice={() => {}}
         onStateChange={() => {}}
         selectedDice={[]}
+        watchMode={true}
+        opp={true}
+        hasMiniView={
+          localProps.viewType === "selectCard" ||
+          localProps.viewType === "switchHands"
+        }
+      />
+      <Show when={localProps.viewType === "switchHands"}>
+        <MiniView
+          viewType={"switching"}
+          ids={hands().map((c) => c.definitionId)}
+          nameGetter={() => void 0}
+          opp={true}
+        />
+      </Show>
+      <Show when={localProps.viewType === "selectCard"}>
+        <MiniView
+          viewType={"selecting"}
+          ids={localProps.selectCardCandidates}
+          nameGetter={(name) => assetsManager.getNameSync(name)}
+          opp={true}
+        />
+      </Show>
+      <Show
+        when={
+          localProps.viewType === "rerollDice" ||
+          localProps.viewType === "rerollDiceEnd"
+        }
+      >
+        <MiniView
+          viewType={"rerolling"}
+          ids={dice()}
+          nameGetter={() => void 0}
+          opp={true}
+        />
+      </Show>
+      <SkillButtonGroup
+        class="absolute top-1.2 transform-origin-tr scale-120% skill-button-group"
+        skills={mySkills()}
+        switchActiveButton={null}
+        switchActiveCost={
+          localProps.actionState?.realCosts.switchActive ?? null
+        }
+        shown={true}
       />
     </div>
   );
