@@ -29,7 +29,7 @@ export const DarkShadow = summon(122043)
   .tags("barrier")
   .usage(0)
   .variable("atk", 0, { visible: false })
-  .variable("decreasedDamageId", 0)
+  .variable("decreasedDamageId", 0, { visible: false })
   .hint(DamageType.Electro, (c, e) => e.variables.atk)
   .on("enter")
   .do((c) => {
