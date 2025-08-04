@@ -38,7 +38,7 @@ export {
   resolveManuallySelectedOfficialVersion,
 } from "./base/version";
 export { executeQueryOnState } from "./query";
-export { type PlayerIO, exposeState } from "./io";
+export { type PlayerIO, exposeState, mergeIo } from "./io";
 export * from "./error";
 export * from "@gi-tcg/typings";
 

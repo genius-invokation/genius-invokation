@@ -686,3 +686,39 @@ export function exposeHealKind(healKind: HealKind | null): PbHealKind {
     distribution: PbHealKind.DISTRIBUTION,
   }[healKind];
 }
+
+export interface CancellablePlayerIO extends PlayerIO {
+  cancelRpc?: () => void;
+}
+
+/**
+ * 合并多个 playerIo。只有 mainIo 的 rpc response 会被接受；
+ * 其余的 io 只会接受 notification 和 request，以及 rpc 的 cancellation
+ * @param mainIo
+ * @param restIos
+ * @returns
+ */
+export function mergeIo<T extends PlayerIO>(
+  mainIo: T,
+  ...restIos: CancellablePlayerIO[]
+): T {
+  const allIos = [mainIo, ...restIos];
+  return {
+    ...mainIo,
+    notify: (notification) => {
+      for (const io of allIos) {
+        io.notify(notification);
+      }
+    },
+    rpc: (request) => {
+      for (const io of restIos) {
+        Promise.try(() => io.rpc(request)).catch(() => {});
+      }
+      return mainIo.rpc(request).finally(() => {
+        for (const io of restIos) {
+          io.cancelRpc?.();
+        }
+      });
+    },
+  };
+}
