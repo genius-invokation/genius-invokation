@@ -88,7 +88,7 @@ function App() {
     <>
       <Chessboard0
         rotation={0}
-        style={{ width: "96vw", height: "30vw" }}
+        style={{ width: "80vw", height: "80vh" }}
         autoHeight={false}
         liveStreamingMode
       >
@@ -106,8 +106,9 @@ function App() {
         <Chessboard0Opp />
       </Chessboard0>
       <Chessboard1
-        style={{ width: "96vw", height: "30vw" }}
+        style={{ width: "30vw", height: "96vw" }}
         autoHeight={false}
+        rotation={90}
         timer={{ current: 114, total: 514 }}
       />
       <DetailLogViewer logs={logs()} />

@@ -61,29 +61,31 @@ export function DicePanel(props: DicePanelProps) {
       props.onStateChange("visible");
     }
   };
-  const compactView = createMemo(() => props.compactView);
+  const compactView = createMemo(() => props.state === "hidden" && props.compactView);
   return (
     <Switch>
       <Match when={compactView()}>
-        <div
-          class="absolute right-3 w-22 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-compact transition-all-500"
-          bool:data-shown={props.state !== "visible"}
-          data-opp={props.opp}
-          bool:data-has-mini-view={props.hasMiniView}
-        >
-          <ul class="absolute grid grid-rows-6 grid-flow-col items-center gap-1.5">
-            <Index each={props.dice}>
-              {(dice, index) => (
-                <Dice
-                  type={dice()}
-                  size={25}
-                  selected={
-                    props.state === "wrapped" && props.selectedDice[index]
-                  }
-                />
-              )}
-            </Index>
-          </ul>
+        <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% pointer-events-none">
+          <div
+            class="absolute right-3 w-22 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-compact transition-all-500"
+            bool:data-shown={props.state !== "visible"}
+            data-opp={props.opp}
+            bool:data-has-mini-view={props.hasMiniView}
+          >
+            <ul class="absolute grid grid-rows-6 grid-flow-col items-center gap-1.5">
+              <Index each={props.dice}>
+                {(dice, index) => (
+                  <Dice
+                    type={dice()}
+                    size={25}
+                    selected={
+                      props.state === "wrapped" && props.selectedDice[index]
+                    }
+                  />
+                )}
+              </Index>
+            </ul>
+          </div>
         </div>
       </Match>
       <Match when={true}>

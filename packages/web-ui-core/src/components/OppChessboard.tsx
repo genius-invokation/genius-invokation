@@ -93,43 +93,45 @@ export function OppChessboard(props: ChessboardProps) {
     <div
       class={`absolute inset-0 h-full w-full pointer-events-none ${
         localProps.class ?? ""
-      }`}
+      } outline-red outline-5 outline-dashed`}
       data-gi-tcg-opp-chessboard
       {...elProps}
     >
-      <div class="absolute top-14.5% bottom-82% left-42% translate-x--50% w-120 rounded-3 opp-hands-shadow-watch-mode" />
-      <div class="absolute top-0 bottom-82% left-42% translate-x--50% w-120 rounded-xl overflow-clip opp-hands-bg-watch-mode">
-        <div class="absolute top-2 left-4 right-2 h-36 ">
-          <Key each={hands()} by="id">
-            {(card, index) => (
-              <Card
-                data={card()}
-                enableShadow
-                id={card().id}
-                kind="myHand"
-                playStep={null}
-                uiState={{
-                  type: "cardStatic",
-                  transform: {
-                    x: index() * handOffset(),
-                    y: 0,
-                    z: 0,
-                    ry: 1,
-                    rz: 0,
-                  },
-                  draggingEndAnimation: false,
-                  isAnimating: false,
-                }}
-                enableTransition={false}
-                selected={false}
-                toBeSwitched={false}
-                tuneStep={null}
-              />
-            )}
-          </Key>
+      <div class="absolute opp-chessboard-hands-container outline-yellow outline-5 outline-dashed">
+        <div class="absolute translate-x--50% w-120 rounded-3 opp-chessboard-hands-shadow" />
+        <div class="absolute translate-x--50% w-120 rounded-xl overflow-clip opp-chessboard-hands-bg pointer-events-auto">
+          <div class="absolute top-2 left-4 right-2 h-36 ">
+            <Key each={hands()} by="id">
+              {(card, index) => (
+                <Card
+                  data={card()}
+                  enableShadow
+                  id={card().id}
+                  kind="myHand"
+                  playStep={null}
+                  uiState={{
+                    type: "cardStatic",
+                    transform: {
+                      x: index() * handOffset(),
+                      y: 0,
+                      z: 0,
+                      ry: 1,
+                      rz: 0,
+                    },
+                    draggingEndAnimation: false,
+                    isAnimating: false,
+                  }}
+                  enableTransition={false}
+                  selected={false}
+                  toBeSwitched={false}
+                  tuneStep={null}
+                />
+              )}
+            </Key>
+          </div>
         </div>
+        <div class="absolute translate-x--50% w-120 b-#443322 b-x-6 b-b-6 rounded-lb-3 rounded-rb-3 opp-chessboard-hands-border" />
       </div>
-      <div class="absolute top-13.4% bottom-81.8% left-42% translate-x--50% w-120 b-#443322 b-x-6 b-b-6 rounded-lb-3 rounded-rb-3 opp-hands-border-watch-mode" />
       <DicePanel
         state="hidden"
         dice={dice() as DiceType[]}

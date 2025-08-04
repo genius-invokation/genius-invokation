@@ -20,7 +20,7 @@ export interface SwitchHandsBackdropProps {
 export function SpecialViewBackdrop(props: SwitchHandsBackdropProps) {
   return (
     <div
-      class="absolute inset-0 bg-green-50/90 select-none transform-origin-lc scale-x-110 translate-z-0.1"
+      class="absolute inset-0 bg-green-50/90 select-none transform-origin-lc translate-z-0.1"
       onClick={(e) => {
         e.stopPropagation();
         props.onClick?.(e);

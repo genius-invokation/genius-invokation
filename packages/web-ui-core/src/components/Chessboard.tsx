@@ -1608,7 +1608,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433  ${
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433 flex items-center justify-center ${
         localProps.class ?? ""
       }`}
       ref={containerElement}
@@ -1616,10 +1616,9 @@ export function Chessboard(props: ChessboardProps) {
       {...elProps}
     >
       <TransformWrapper
-        class="relative"
+        class="relative flex-shrink-0 flex-grow-0"
         autoHeight={localProps.autoHeight}
         rotation={localProps.rotation}
-        transformScale={transformScale()}
         setTransformScale={setTransformScale}
       >
         <ChessboardBackground />

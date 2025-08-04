@@ -30,7 +30,6 @@ export interface TransformWrapperProps {
   autoHeight?: boolean;
   rotation?: Rotation;
   children: JSX.Element;
-  transformScale: number;
   setTransformScale: Setter<number>;
 }
 
@@ -47,7 +46,9 @@ export function TransformWrapper(props: TransformWrapperProps) {
 
   const onContainerResize = () => {
     const containerEl = transformWrapperEl.parentElement!;
-    const hasOppChessboard = !! containerEl.querySelector("[data-gi-tcg-opp-chessboard]");
+    const hasOppChessboard = !!containerEl.querySelector(
+      "[data-gi-tcg-opp-chessboard]",
+    );
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
     const autoHeight = untrack(() => props.autoHeight) ?? true;
@@ -56,8 +57,22 @@ export function TransformWrapper(props: TransformWrapperProps) {
     let height: number;
     let width: number;
     let scale: number;
-    let offsetX = 0;
+    let oppOffsetX = 0;
+    let oppScale = 1;
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
+    const adjustScale = () => {
+      height /= scale;
+      width /= scale;
+      if (hasOppChessboard) {
+        oppOffsetX = -10;
+        oppScale = 0.8;
+        height /= oppScale;
+        transformWrapperEl.style.setProperty(
+          "--chessboard-right-offset",
+          `-${((1 - oppScale) / oppScale) * 100}%`,
+        );
+      }
+    };
     if (rotate % 180 === 0) {
       if (autoHeight) {
         containerHeight = 0.9 * DEFAULT_HEIGHT_WIDTH_RATIO * containerWidth;
@@ -67,12 +82,9 @@ export function TransformWrapper(props: TransformWrapperProps) {
         containerHeight / (UNIT * MINIMUM_HEIGHT),
         containerWidth / (UNIT * MINIMUM_WIDTH),
       );
-      if (hasOppChessboard) {
-        scale = scale * 0.8;
-        offsetX = -10;
-      }
-      height = containerHeight / scale;
-      width = containerWidth / scale;
+      height = containerHeight;
+      width = containerWidth;
+      adjustScale();
     } else {
       if (autoHeight) {
         containerHeight = containerWidth / DEFAULT_HEIGHT_WIDTH_RATIO;
@@ -82,15 +94,22 @@ export function TransformWrapper(props: TransformWrapperProps) {
         containerHeight / (UNIT * MINIMUM_WIDTH),
         containerWidth / (UNIT * MINIMUM_HEIGHT),
       );
-      height = containerWidth / scale;
-      width = containerHeight / scale;
+      height = containerWidth;
+      width = containerHeight;
+      adjustScale();
     }
-    containerEl.style.setProperty("--actual-width", `${containerWidth}px`);
-    containerEl.style.setProperty("--actual-height", `${containerHeight}px`);
-    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale}) translate(${offsetX}%, 0) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
+    transformWrapperEl.style.setProperty(
+      "--chessboard-inner-width",
+      `${(MINIMUM_WIDTH * UNIT)}px`,
+    );
+    transformWrapperEl.style.setProperty(
+      "--chessboard-inner-height",
+      `${(MINIMUM_HEIGHT * UNIT) / oppScale}px`,
+    );
+    transformWrapperEl.style.transform = `scale(${scale}) translateX(${oppOffsetX}%) scale(${oppScale}) rotate(${rotate}deg)`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
-    props.setTransformScale(scale);
+    untrack(() => props.setTransformScale)(scale * oppScale);
   };
 
   const onContainerResizeDebouncer = funnel(onContainerResize, {

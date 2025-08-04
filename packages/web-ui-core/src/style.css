@@ -20,13 +20,10 @@
   .touch-pan * {
     touch-action: pan-x pan-y;
   }
+  --chessboard-right-offset: 0;
 
   :has([data-gi-tcg-opp-chessboard]) {
-    --chessboard-bg-scale: 86%;
-    --chessboard-scale: 80%;
-    --chessboard-offset-x: 10%;
     --skill-button-offset-x: 1.5rem;
-    --right-offset: calc(0rem - var(--chessboard-offset-x));
   }
   [data-gi-tcg-opp-chessboard] {
     --skill-button-offset-x: 15rem;
@@ -38,18 +35,18 @@
   :has([data-gi-tcg-opp-chessboard]) .has-opp-chessboard-hidden {
     display: none;
   }
-  .chessboard-bg-scale {
-    scale: var(--chessboard-bg-scale, 100%);
+  :has(.dice-panel[data-state=visible]) .dice-panel-compact {
+    display: none;
   }
-  .aspect-ratio-container {
-    width: var(--chessboard-scale, 100%);
-    left: var(--chessboard-offset-x, 0%);
+  :has(.dice-panel[data-state=wrapped]) .dice-panel-compact {
+    display: none;
   }
+
   .skill-button-group {
     right: var(--skill-button-offset-x, 0.5rem);
   }
   .history-panel {
-    right: var(--right-offset, 0);
+    right: var(--chessboard-right-offset, 0);
   }
   .dice-panel-compact {
     background-color: #554433;
@@ -71,13 +68,36 @@
     transform: translateX(-90%);
     opacity: 0.6;
   }
-  .opp-hands-bg-watch-mode {
+  .opp-chessboard-hands-container {
+    position: absolute;
+    --width: calc(var(--chessboard-inner-width) / var(--chessboard-scale, 1));
+    width: var(--width);
+    --inner-height: calc(var(--width) * 9 / 16);
+    --top-offset: calc(100% - var(--inner-height) / 2);
+    top: 0;
+    left: 0;
+    height: 50%;
+
+  }
+  .opp-chessboard-hands-bg {
+    top: 0;
+    bottom: 82%;
+    left: 42%;
+    height: calc(0.18 * var(--inner-height) + var(--top-offset));
     background-image: linear-gradient(to top, #63524a 6%, #554433 50%);
   }
-  .opp-hands-border-watch-mode {
+  .opp-chessboard-hands-border {
+    position: absolute;
+    top: calc(0.134 * var(--inner-height) + var(--top-offset));
+    left: 42%;
+    height: calc(0.048 * var(--inner-height));
     background-image: linear-gradient(to top, #63524a80 0%, transparent 100%);
   }
-  .opp-hands-shadow-watch-mode {
+  .opp-chessboard-hands-shadow {
+    position: absolute;
+    top: calc(0.145 * var(--inner-height) + var(--top-offset));
+    left: 42%;
+    height: calc(0.035 * var(--inner-height));
     box-shadow: 0 0 12px #000000aa;
   }
   .mini-view[data-opp="false"] {
