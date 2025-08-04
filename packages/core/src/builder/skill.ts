@@ -387,10 +387,18 @@ const detailedEventDictionary = {
     );
   }),
   cancelHealed: defineDescriptor("modifyHeal0", (e, r) => {
-    return checkRelative(e.onTimeState, e.target.id, r) && e.modifiable() && !e.cancelled;
+    return (
+      checkRelative(e.onTimeState, e.target.id, r) &&
+      e.modifiable() &&
+      !e.cancelled
+    );
   }),
   decreaseHealed: defineDescriptor("modifyHeal1", (e, r) => {
-    return checkRelative(e.onTimeState, e.target.id, r) && e.modifiable() && !e.cancelled;
+    return (
+      checkRelative(e.onTimeState, e.target.id, r) &&
+      e.modifiable() &&
+      !e.cancelled
+    );
   }),
   beforeDefeated: defineDescriptor("modifyZeroHealth", (e, r) => {
     return (
@@ -1369,17 +1377,18 @@ export class InitiativeSkillBuilder<
     return this.setVersionInfo("official", { predicate: "until", version });
   }
 
-  associateExtension<NewExtT>(ext: ExtensionHandle<NewExtT>) {
+  associateExtension<NewExtT>(
+    ext: ExtensionHandle<NewExtT>,
+  ): BuilderWithShortcut<
+    InitiativeSkillBuilder<KindTs, ExtensionHandle<NewExtT>>
+  > {
     if (this.associatedExtensionId !== null) {
       throw new GiTcgDataError(
         `This skill has already associated with extension ${this.id}`,
       );
     }
     this.associatedExtensionId = ext;
-    return this as unknown as InitiativeSkillBuilder<
-      KindTs,
-      ExtensionHandle<NewExtT>
-    >;
+    return this as any;
   }
 
   prepared(): this {

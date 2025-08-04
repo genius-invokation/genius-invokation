@@ -46,6 +46,7 @@ import {
   unFlattenOneof,
 } from "@gi-tcg/typings";
 import { exposeMutation } from "./io";
+import { GiTcgError } from "./error";
 
 export type ActionInfoWithModification = ActionInfo & {
   eventArg: InstanceType<typeof GenericModifyActionEventArg>;
@@ -56,7 +57,7 @@ class PreviewContext {
   private stateMutations: Mutation[] = [];
   private exposedMutations: ExposedMutation[] = [];
   public stopped = false;
-  constructor(private readonly initialState: GameState) {
+  constructor(private readonly initialState: GameState, private readonly skipError: boolean) {
     this.mutator = new StateMutator(initialState, {
       onNotify: ({ stateMutations, exposedMutations }) => {
         this.stateMutations.push(...stateMutations);
@@ -87,6 +88,8 @@ class PreviewContext {
     } catch (e) {
       if (e instanceof GiTcgPreviewAbortedError) {
         this.stopped = true;
+      } else if ((e instanceof GiTcgError) && this.skipError) {
+        // skip.
       } else {
         throw e;
       }
@@ -102,6 +105,8 @@ class PreviewContext {
     } catch (e) {
       if (e instanceof GiTcgPreviewAbortedError) {
         this.stopped = true;
+      } else if (e instanceof GiTcgError && this.skipError) {
+        // skip.
       } else {
         throw e;
       }
@@ -218,6 +223,7 @@ export class ActionPreviewer {
   constructor(
     private readonly originalState: GameState,
     private readonly who: 0 | 1,
+    private readonly skipError: boolean,
   ) {}
 
   async modifyAndPreview(
@@ -239,7 +245,7 @@ export class ActionPreviewer {
         eventArg: eventArgReal,
       };
     }
-    const ctx = new PreviewContext(this.originalState);
+    const ctx = new PreviewContext(this.originalState, this.skipError);
     await ctx.previewEvent("modifyAction0", eventArgPreCalc);
     await ctx.previewEvent("modifyAction1", eventArgPreCalc);
     await ctx.previewEvent("modifyAction2", eventArgPreCalc);
@@ -327,6 +333,7 @@ export class ActionPreviewer {
           ctx.state,
           card,
           "elementalTuning",
+          null,
         );
         ctx.mutate({
           type: "removeCard",

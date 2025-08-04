@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2025 Guyutongxue
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,18 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// INTERNAL exports
-// 为其他包提供一些内部接口，如 @gi-tcg/test, @gi-tcg/data-vscode-ext
+import type { AnalyzeResult } from "../scripts/index";
+import analyzeResult_ from "./result.json";
 
-export { builderWeakRefs } from "./registry";
-export { CardBuilder } from "./card";
-export {
-  TriggeredSkillBuilder,
-  InitiativeSkillBuilder,
-  TechniqueBuilder,
-} from "./skill";
-export { EntityBuilder } from "./entity";
-export { CharacterBuilder } from "./character";
-export { ExtensionBuilder, EXTENSION_ID_OFFSET } from "./extension";
-export { SkillContext } from "./context/skill";
-export { EVENT_MAP } from "../base/skill";
+export const analyzeResult = analyzeResult_ as AnalyzeResult[];
+export { type AnalyzeResult, analyzeResult as default };

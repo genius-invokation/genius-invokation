@@ -20,7 +20,7 @@ import { render } from "solid-js/web";
 function App() {
   const { CardDataViewer, showCharacter, showState, showCard, showSkill } =
     createCardDataViewer({
-      // includesImage: true,
+      includesImage: true,
     });
   onMount(() => {
     showState(
@@ -48,7 +48,6 @@ function App() {
             },
           },
         ],
-        tags: 0,
       },
       [
         {
@@ -79,7 +78,7 @@ function App() {
     //   variableValue: 2,
     // });
     showCard(212111);
-    // showCharacter(1610);
+    showCharacter(1610);
     // showSkill(12111);
   });
   return <CardDataViewer />;

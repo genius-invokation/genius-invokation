@@ -41,7 +41,10 @@ export type StateKind = "game" | "player" | "card" | "character" | "entity" | "e
 export const StateSymbol: unique symbol = Symbol("GiTcgCoreState");
 export type StateSymbol = typeof StateSymbol;
 
+export type ErrorLevel = "strict" | "toleratePreview" | "skipPhase";
+
 export interface GameConfig {
+  readonly errorLevel: ErrorLevel;
   readonly randomSeed: number;
   readonly initialHandsCount: number;
   readonly maxHandsCount: number;

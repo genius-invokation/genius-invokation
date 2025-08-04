@@ -52,7 +52,7 @@ export function Character(props: CardDataProps) {
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId, {type: "icon"}),
+    (defId) => assetsManager.getImageUrl(defId, { type: "icon" }),
   );
   return (
     <div class={props.class}>
@@ -69,7 +69,13 @@ export function Character(props: CardDataProps) {
                   </Show>
                 </div>
               </Show>
-              <h3 class="font-bold mb-3">{data().name}</h3>
+              <h3 class="font-bold mb-1">{data().name}</h3>
+              <dl class="flex flex-row gap-1 mb-1 text-sm">
+                <dt>HP</dt>
+                <dd class="font-bold">{data().hp}</dd>
+                <dt>&nbsp;&nbsp;&nbsp;MP</dt>
+                <dd class="font-bold">{data().maxEnergy}</dd>
+              </dl>
               <Tags tags={data().tags} />
               <ul class="clear-both flex flex-col gap-2">
                 <For each={data().skills}>
@@ -397,9 +403,9 @@ export function Reference(props: ReferenceProps) {
                 src={image()}
                 class="absolute w-full top-50% left-50% translate-x--50% translate-y--50%"
                 classList={{
-                "skill-icon":
-                  data.state === "ready" &&
-                  data()?.type.startsWith("GCG_SKILL_"),
+                  "skill-icon":
+                    data.state === "ready" &&
+                    data()?.type.startsWith("GCG_SKILL_"),
                 }}
               />
             )}

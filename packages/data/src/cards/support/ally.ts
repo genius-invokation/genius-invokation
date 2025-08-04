@@ -39,7 +39,6 @@ import {
   PopupPaperFrog,
   PucasSupport,
   SerenesSupport,
-  SIMULANKA_SUMMONS,
   SluasisSupport,
   TaroumarusSavings,
   ThironasSupport,
@@ -459,7 +458,7 @@ export const Setaria = card(322019)
  * 我方打出「圣遗物」手牌时：少花费1个元素骰；如果我方场上已有2个已装备「圣遗物」的角色，就额外少花费1个元素骰。（每回合1次）
  */
 export const YayoiNanatsuki = card(322020)
-  .since("v4.2.0")
+  .since("v4.1.0")
   .costSame(1)
   .support("ally")
   .on("deductOmniDiceCard", (c, e) => e.hasCardTag("artifact"))
@@ -792,7 +791,7 @@ export const GiftOfTheGoddessOfProphecy = card(322030)
   .createPileCards(ToyGuard, 2, "random")
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "summon" &&
-    (SIMULANKA_SUMMONS as number[]).includes(e.entity.definition.id))
+    e.entity.definition.tags.includes("simulanka"))
   .usage(2)
   .do((c, e) => {
     e.entity.cast<"summon">().addVariable("effect", 1);

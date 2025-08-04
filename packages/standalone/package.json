@@ -17,6 +17,7 @@
     "@gi-tcg/web-ui-core": "workspace:*",
     "@gi-tcg/deck-builder": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
+    "@gi-tcg/data-code-analyzer": "workspace:*",
     "@vercel/analytics": "^1.2.0",
     "core-js": "3.38.1",
     "solid-js": "^1.9.4"
@@ -34,6 +35,7 @@
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-solid": "^0.13.1",
     "vite": "^6.0.11",
-    "vite-plugin-solid": "^2.11.1"
+    "vite-plugin-solid": "^2.11.1",
+    "vite-plugin-static-copy": "^3.1.1"
   }
 }

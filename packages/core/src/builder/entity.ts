@@ -188,7 +188,7 @@ export class EntityBuilder<
   replaceDescription(
     key: DescriptionDictionaryKey,
     getter: EntityDescriptionDictionaryGetter<AssociatedExt>,
-  ) {
+  ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }

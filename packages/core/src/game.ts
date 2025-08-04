@@ -26,14 +26,13 @@ import {
   type PbExposedMutation,
   unFlattenOneof,
   ActionValidity,
-  Reaction,
-  PbSwitchActiveFromAction,
 } from "@gi-tcg/typings";
 import {
   StateSymbol,
   type AnyState,
   type CardState,
   type CharacterState,
+  type ErrorLevel,
   type ExtensionState,
   type GameConfig,
   type GameState,
@@ -74,11 +73,9 @@ import {
   PlayCardEventArg,
   PlayerEventArg,
   type SkillInfo,
-  SwitchActiveEventArg,
   UseSkillEventArg,
   type InitiativeSkillEventArg,
   defineSkillInfo,
-  type SwitchActiveInfo,
 } from "./base/skill";
 import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
@@ -98,7 +95,6 @@ import {
   StateMutator,
 } from "./mutator";
 import { type ActionInfoWithModification, ActionPreviewer } from "./preview";
-import type { Version } from "./base/version";
 import { Player } from "./player";
 import type { CharacterDefinition } from "./base/character";
 
@@ -336,6 +332,18 @@ export class Game {
     }
   }
 
+  private async tryPhase(fn: (this: Game) => Promise<void>) {
+    try {
+      await fn.call(this);
+    } catch (e) {
+      if (e instanceof GiTcgError && this.config.errorLevel === "skipPhase") {
+        // skip.
+      } else {
+        throw e;
+      }
+    }
+  }
+
   async start(): Promise<0 | 1 | null> {
     if (this.finishResolvers !== null) {
       throw new GiTcgCoreInternalError(
@@ -350,19 +358,19 @@ export class Game {
         while (!this._terminated) {
           switch (this.state.phase) {
             case "initHands":
-              await this.initHands();
+              await this.tryPhase(this.initHands);
               break;
             case "initActives":
-              await this.initActives();
+              await this.tryPhase(this.initActives);
               break;
             case "roll":
-              await this.rollPhase();
+              await this.tryPhase(this.rollPhase);
               break;
             case "action":
-              await this.actionPhase();
+              await this.tryPhase(this.actionPhase);
               break;
             case "end":
-              await this.endPhase();
+              await this.tryPhase(this.endPhase);
               break;
             default:
               break;
@@ -813,6 +821,7 @@ export class Game {
             this.state,
             actionInfo.card,
             "elementalTuning",
+            null,
           );
           this.mutate({
             type: "removeCard",
@@ -1068,7 +1077,10 @@ export class Game {
     });
 
     // Add preview and apply modifyAction
-    const previewer = new ActionPreviewer(this.state, who);
+    const skipError = (
+      ["toleratePreview", "skipPhase"] as ErrorLevel[]
+    ).includes(this.config.errorLevel);
+    const previewer = new ActionPreviewer(this.state, who, skipError);
     return await Promise.all(
       result.map((a) =>
         previewer
@@ -1155,6 +1167,7 @@ export function mergeGameConfigWithDefault(
 ): GameConfig {
   config = JSON.parse(JSON.stringify(config ?? {}));
   return {
+    errorLevel: "strict",
     initialDiceCount: 8,
     initialHandsCount: 5,
     maxDiceCount: 16,

@@ -177,7 +177,7 @@ export class CardBuilder<
   replaceDescription(
     key: DescriptionDictionaryKey,
     getter: CardDescriptionDictionaryGetter<AssociatedExt>,
-  ) {
+  ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
@@ -191,14 +191,16 @@ export class CardBuilder<
     return this;
   }
 
-  associateExtension<NewExtT>(ext: ExtensionHandle<NewExtT>) {
+  associateExtension<NewExtT>(
+    ext: ExtensionHandle<NewExtT>,
+  ): BuilderWithShortcut<CardBuilder<KindTs, ExtensionHandle<NewExtT>>> {
     if (this.associatedExtensionId !== null) {
       throw new GiTcgDataError(
         `This card has already associated with extension ${this.id}`,
       );
     }
     this.associatedExtensionId = ext;
-    return this as unknown as CardBuilder<KindTs, ExtensionHandle<NewExtT>>;
+    return this as any;
   }
 
   tags(...tags: CardTag[]): this {

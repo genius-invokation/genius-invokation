@@ -26,6 +26,7 @@ import {
 } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import {
+  children,
   createEffect,
   createMemo,
   createSignal,
@@ -37,9 +38,15 @@ import {
   untrack,
   type Component,
   type ComponentProps,
+  type JSX,
 } from "solid-js";
 import { Image } from "./Image";
-import type { CharacterInfo, DamageInfo, ReactionInfo } from "./Chessboard";
+import type {
+  CharacterInfo,
+  DamageInfo,
+  ReactionInfo,
+  StatusInfo,
+} from "./Chessboard";
 import { Damage, DAMAGE_COLOR } from "./Damage";
 import { cssPropertyOfTransform } from "../ui_state";
 import { StatusGroup } from "./StatusGroup";
@@ -424,6 +431,7 @@ export function CharacterArea(props: CharacterAreaProps) {
   );
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
+  const triggered = createMemo(() => props.triggered);
 
   const statuses = createMemo(() =>
     props.entities.filter((et) => typeof et.data.equipment === "undefined"),
@@ -497,30 +505,39 @@ export function CharacterArea(props: CharacterAreaProps) {
             isMax={data().health === data().maxHealth}
             bondOfLife={!!(data().tags & CHARACTER_TAG_BOND_OF_LIFE)}
           />
-          <div class="absolute z-1 right-0.4 top-4 translate-x-50% flex flex-col gap-0 items-center">
+          <div class="absolute z-1 right-0.4 top-3 translate-x-50% flex flex-col gap-0 items-center">
             <EnergyBar
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
               total={data().maxEnergy}
               specialEnergyName={data().specialEnergyName}
             />
-            <Show when={technique()} keyed>
+            <Show when={technique()}>
               {(et) => (
-                <div
-                  class="relative w-6 h-6 rounded-full"
-                  bool:data-entering={et.animation === "entering"}
-                  bool:data-disposing={et.animation === "disposing"}
-                  bool:data-triggered={et.triggered}
-                >
+                <div class="relative w-6 h-6 rounded-full mt-0.75">
                   <Image
-                    class="w-6 h-6"
-                    imageId={et.data.definitionId}
+                    class="w-6 h-6 equipment"
+                    imageId={et().data.definitionId}
                     type={"icon"}
                     fallback="technique"
+                    bool:data-disposing={et().animation === "disposing"}
                   />
                   <div
-                    class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full data-[usable]:bg-white/30"
-                    bool:data-usable={et.data.hasUsagePerRound}
+                    class="absolute top-0 w-6 h-6 rounded-full technique-usage"
+                    bool:data-usable={et().data.hasUsagePerRound}
+                    bool:data-disposing={et().animation === "disposing"}
+                  />
+                  <div
+                    class="absolute top-0 w-6 h-6 rounded-full equipment-animation-1"
+                    bool:data-entering={et().animation === "entering"}
+                    bool:data-disposing={et().animation === "disposing"}
+                    bool:data-triggered={et().triggered}
+                  />
+                  <div
+                    class="absolute top-0 w-6 h-6 rounded-full equipment-animation-2"
+                    bool:data-entering={et().animation === "entering"}
+                    bool:data-disposing={et().animation === "disposing"}
+                    bool:data-triggered={et().triggered}
                   />
                 </div>
               )}
@@ -541,57 +558,38 @@ export function CharacterArea(props: CharacterAreaProps) {
           <div class="absolute z-3 hover:z-10 left-0 -translate-x-2.5 top-8 flex flex-col items-center justify-center">
             <Show when={weapon()}>
               {(et) => (
-                <div
-                  class="relative w-6.5 h-6.5 rounded-full"
-                  bool:data-entering={et().animation === "entering"}
-                  bool:data-disposing={et().animation === "disposing"}
-                  bool:data-triggered={et().triggered}
-                >
-                  <WeaponIcon class="w-7 h-7" />
-                  <div
-                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
-                    bool:data-usable={et().data.hasUsagePerRound}
+                <Equipment data={et()}>
+                  <WeaponIcon
+                    class="w-7 h-7 equipment"
+                    bool:data-disposing={et().animation === "disposing"}
                   />
-                </div>
+                </Equipment>
               )}
             </Show>
             <Show when={artifact()}>
               {(et) => (
-                <div
-                  class="relative w-6.5 h-6.5 rounded-full"
-                  bool:data-entering={et().animation === "entering"}
-                  bool:data-disposing={et().animation === "disposing"}
-                  bool:data-triggered={et().triggered}
-                >
-                  <ArtifactIcon class="w-7 h-7" />
-                  <div
-                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
-                    bool:data-usable={et().data.hasUsagePerRound}
+                <Equipment data={et()}>
+                  <ArtifactIcon
+                    class="w-7 h-7 equipment"
+                    bool:data-disposing={et().animation === "disposing"}
                   />
-                </div>
+                </Equipment>
               )}
             </Show>
             <Key each={otherEquipments()} by="id">
               {(et) => (
-                <div
-                  class="relative w-6.5 h-6.5 rounded-full"
-                  bool:data-entering={et().animation === "entering"}
-                  bool:data-disposing={et().animation === "disposing"}
-                  bool:data-triggered={et().triggered}
-                >
-                  <TalentIcon class="w-7 h-7" />
-                  <div
-                    class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
-                    bool:data-usable={et().data.hasUsagePerRound}
+                <Equipment data={et()}>
+                  <TalentIcon
+                    class="w-7 h-7 equipment"
+                    bool:data-disposing={et().animation === "disposing"}
                   />
-                </div>
+                </Equipment>
               )}
             </Key>
           </div>
         </Show>
         <div
-          class="h-full w-full rounded-1 clickable-outline transition-shadow data-[defeated]:brightness-50 preserve-3d"
-          bool:data-triggered={props.triggered}
+          class="h-full w-full rounded-1.2 clickable-outline transition-shadow data-[defeated]:brightness-50 preserve-3d"
           bool:data-clickable={
             props.clickStep && props.clickStep.ui >= ActionStepEntityUi.Outlined
           }
@@ -649,6 +647,17 @@ export function CharacterArea(props: CharacterAreaProps) {
           {(dmg) => <Damage info={dmg()} shown={showDamage()} />}
         </Show>
         <CharacterTagMasks tags={data().tags} />
+        <Show when={triggered()}>
+          <div class="absolute h-21 w-21 top-7.5">
+            <div class="absolute h-full w-full triggered-animation-6" />
+            <div class="absolute h-full w-full triggered-animation-4">
+              <div class="absolute h-full w-full triggered-animation-1" />
+              <div class="absolute h-full w-full triggered-animation-2" />
+              <div class="absolute h-full w-full triggered-animation-3" />
+            </div>
+            <div class="absolute h-full w-full triggered-animation-5" />
+          </div>
+        </Show>
       </div>
       <Show when={props.active}>
         <StatusGroup class="h-6 w-20 z-10" statuses={props.combatStatus} />
@@ -785,5 +794,37 @@ function CharacterTagMasks(props: CharacterTagMasksProps) {
         </div>
       )}
     </WithDelicateUi>
+  );
+}
+
+interface EquipmentProps {
+  data: StatusInfo;
+  children: JSX.Element;
+}
+
+function Equipment(props: EquipmentProps) {
+  const ch = children(() => props.children);
+  const data = createMemo(() => props.data);
+  return (
+    <div class="relative w-6.5 h-6.5 rounded-full">
+      {ch()}
+      <div
+        class="absolute top-0 w-7 h-7 rounded-full equipment-usage"
+        bool:data-usable={data().data.hasUsagePerRound}
+        bool:data-disposing={data().animation === "disposing"}
+      />
+      <div
+        class="absolute top-0 w-7 h-7 rounded-full equipment-animation-1"
+        bool:data-entering={data().animation === "entering"}
+        bool:data-disposing={data().animation === "disposing"}
+        bool:data-triggered={data().triggered}
+      />
+      <div
+        class="absolute top-0 w-7 h-7 rounded-full equipment-animation-2"
+        bool:data-entering={data().animation === "entering"}
+        bool:data-disposing={data().animation === "disposing"}
+        bool:data-triggered={data().triggered}
+      />
+    </div>
   );
 }

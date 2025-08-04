@@ -481,9 +481,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.costSortedHands(who, useTieBreak).slice(0, count);
   }
 
-  isInInitialPile(card: PlainCardState): boolean {
+  isInInitialPile(card: PlainCardState, who: "my" | "opp" = "my"): boolean {
     const defId = card.definition.id;
-    return this.player.initialPile.some((c) => c.id === defId);
+    const player = this.getRawPlayer(who);
+    return player.initialPile.some((c) => c.id === defId);
   }
 
   /** 我方或对方支援区剩余空位 */
@@ -678,7 +679,9 @@ export class SkillContext<Meta extends ContextMetaBase> {
         isSkillMainDamage = true;
       }
       const { aura, alive, health } = target.variables;
+      const damageId = this.mutator.stepId();
       let damageInfo: DamageInfo = {
+        id: damageId,
         source: this.skillInfo.caller,
         target: target.latest(),
         targetAura: aura,
@@ -1403,16 +1406,11 @@ export class SkillContext<Meta extends ContextMetaBase> {
 
   /** 弃置一张行动牌，并触发其“弃置时”效果。 */
   disposeCard(...cards: PlainCardState[]) {
-    const player = this.player;
-    const who = this.callerArea.who;
     for (const c of cards) {
-      const card = this.get(c).latest();
-      let where: "hands" | "pile";
-      if (player.hands.find((c) => c.id === card.id)) {
-        where = "hands";
-      } else if (player.pile.find((c) => c.id === card.id)) {
-        where = "pile";
-      } else {
+      const card = this.get(c);
+      const cardState = card.latest();
+      const { who, type: where } = card.area;
+      if (where !== "hands" && where !== "pile") {
         throw new GiTcgDataError(
           `Cannot dispose card ${stringifyState(
             card,
@@ -1421,16 +1419,22 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Dispose card ${stringifyState(card)} from player ${who}`,
+        `Dispose card ${stringifyState(cardState)} from player ${who}`,
       );
       const method: DisposeOrTuneMethod =
         where === "hands" ? "disposeFromHands" : "disposeFromPiles";
-      this.emitEvent("onDisposeOrTuneCard", this.rawState, card, method);
+      this.emitEvent(
+        "onDisposeOrTuneCard",
+        this.rawState,
+        cardState,
+        method,
+        this.skillInfo,
+      );
       this.mutate({
         type: "removeCard",
         who,
         where,
-        oldState: card,
+        oldState: cardState,
         reason: "disposed",
       });
     }

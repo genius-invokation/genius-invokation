@@ -35,6 +35,7 @@ export {
   VERSIONS,
   CURRENT_VERSION,
   resolveOfficialVersion,
+  resolveManuallySelectedOfficialVersion,
 } from "./base/version";
 export { executeQueryOnState } from "./query";
 export { type PlayerIO, exposeState, mergeIo } from "./io";
