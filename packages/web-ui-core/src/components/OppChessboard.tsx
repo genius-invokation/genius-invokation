@@ -16,11 +16,19 @@
 import { createMemo, createSignal, Show, splitProps } from "solid-js";
 import type { ChessboardProps, SkillInfo } from "./Chessboard";
 import { DicePanel } from "./DicePanel";
-import type { DiceType, PbCardState } from "@gi-tcg/typings";
+import {
+  PlayCardAction,
+  type DiceType,
+  type PbCardState,
+} from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import { Card } from "./Card";
 import { useUiContext } from "../hooks/context";
-import type { ActionStep, ClickSkillButtonActionStep } from "../action";
+import type {
+  ActionStep,
+  ClickSkillButtonActionStep,
+  PlayCardActionStep,
+} from "../action";
 import { SkillButtonGroup } from "./SkillButtonGroup";
 import { MiniView } from "./MiniSpecialView";
 
@@ -124,6 +132,7 @@ export function OppChessboard(props: ChessboardProps) {
                   id={card().id}
                   kind="myHand"
                   playStep={null}
+                  realCost={props.actionState?.realCosts.cards.get(card().id)}
                   uiState={{
                     type: "cardStatic",
                     transform: {
