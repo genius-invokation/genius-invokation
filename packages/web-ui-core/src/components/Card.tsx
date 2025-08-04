@@ -200,7 +200,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transform-origin-tl card data-[dragging-end]:pointer-events-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transform-origin-tl card pointer-events-auto data-[dragging-end]:pointer-events-none"
       style={style()}
       bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}

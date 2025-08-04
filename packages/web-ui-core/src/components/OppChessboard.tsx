@@ -13,16 +13,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { createMemo, Show, splitProps } from "solid-js";
+import { createMemo, createSignal, Show, splitProps } from "solid-js";
 import type { ChessboardProps, SkillInfo } from "./Chessboard";
 import { DicePanel } from "./DicePanel";
-import type { DiceType } from "@gi-tcg/typings";
+import type { DiceType, PbCardState } from "@gi-tcg/typings";
 import { Key } from "@solid-primitives/keyed";
 import { Card } from "./Card";
 import { useUiContext } from "../hooks/context";
 import type { ActionStep, ClickSkillButtonActionStep } from "../action";
 import { SkillButtonGroup } from "./SkillButtonGroup";
 import { MiniView } from "./MiniSpecialView";
+
+export const OPP_CARD_CLICK_EVENT_NAME = "gi-tcg-opp-card-click";
+export const OPP_CARD_BLUR_EVENT_NAME = "gi-tcg-opp-card-blur";
+
+declare global {
+  interface GlobalEventHandlersEventMap {
+    [OPP_CARD_CLICK_EVENT_NAME]: CustomEvent<PbCardState>;
+    [OPP_CARD_BLUR_EVENT_NAME]: CustomEvent<void>;
+  }
+}
 
 export function OppChessboard(props: ChessboardProps) {
   const { assetsManager } = useUiContext();
@@ -89,6 +99,11 @@ export function OppChessboard(props: ChessboardProps) {
       }),
     );
   });
+  const blurCardHandler = (e: CustomEvent<void>) => {
+    e.stopPropagation();
+    setSelectingId(null);
+  };
+  const [selectingId, setSelectingId] = createSignal<number | null>(null);
   return (
     <div
       class={`absolute inset-0 h-full w-full pointer-events-none ${
@@ -99,8 +114,8 @@ export function OppChessboard(props: ChessboardProps) {
     >
       <div class="absolute opp-chessboard-hands-container rounded-3">
         <div class="opp-chessboard-hands-shadow" />
-        <div class="absolute bottom-0 w-full h-full max-h-40 rounded-xl overflow-clip pointer-events-auto">
-          <div class="absolute top-2 left-4 right-2 h-36 ">
+        <div class="absolute bottom-0 w-full h-full max-h-40 rounded-xl overflow-clip ">
+          <div class="absolute top-2 left-4 right-2 h-36">
             <Key each={hands()} by="id">
               {(card, index) => (
                 <Card
@@ -122,9 +137,25 @@ export function OppChessboard(props: ChessboardProps) {
                     isAnimating: false,
                   }}
                   enableTransition={false}
-                  selected={false}
+                  selected={selectingId() === card().id}
                   toBeSwitched={false}
                   tuneStep={null}
+                  onClick={(e) => {
+                    e.target?.dispatchEvent(
+                      new CustomEvent(OPP_CARD_CLICK_EVENT_NAME, {
+                        bubbles: true,
+                        detail: card(),
+                      }),
+                    );
+                    setSelectingId(card().id);
+                    (e.target as HTMLElement)?.addEventListener(
+                      OPP_CARD_BLUR_EVENT_NAME,
+                      blurCardHandler,
+                      {
+                        once: true,
+                      },
+                    );
+                  }}
                 />
               )}
             </Key>

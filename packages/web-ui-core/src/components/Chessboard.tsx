@@ -136,6 +136,10 @@ import type { HistoryBlock } from "../history/typings";
 import { FastActionMarker } from "./FastActionMarker";
 import { TransformWrapper, type Rotation } from "./TransformWrapper";
 import { MiniView } from "./MiniSpecialView";
+import {
+  OPP_CARD_BLUR_EVENT_NAME,
+  OPP_CARD_CLICK_EVENT_NAME,
+} from "./OppChessboard";
 
 export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
@@ -973,6 +977,10 @@ type SelectingItem =
   | {
       type: "skill";
       info: SkillInfo & { id: number };
+    }
+  | {
+      type: "external";
+      info: PbCardState;
     };
 
 export function Chessboard(props: ChessboardProps) {
@@ -1013,6 +1021,11 @@ export function Chessboard(props: ChessboardProps) {
   );
   createEffect(() => {
     const item = selectingItem();
+    if (item?.type === "external") {
+      dataViewerController.showState("card", item.info);
+      return;
+    }
+    blurOppChessboardCard();
     if (item === null) {
       dataViewerController.hide();
     } else if (item.type === "card") {
@@ -1597,6 +1610,21 @@ export function Chessboard(props: ChessboardProps) {
   };
   const oppChessboardObserver = new MutationObserver(checkOppChessboard);
 
+  const oppChessboardCardClickHandler = (e: CustomEvent<PbCardState>) => {
+    setSelectingItem({
+      type: "external",
+      info: e.detail,
+    });
+    oppChessboardCardClickTarget = e.target;
+  };
+  let oppChessboardCardClickTarget: EventTarget | null = null;
+  const blurOppChessboardCard = () => {
+    console.log(oppChessboardCardClickTarget);
+    oppChessboardCardClickTarget?.dispatchEvent(
+      new CustomEvent(OPP_CARD_BLUR_EVENT_NAME, { bubbles: true }),
+    );
+  };
+
   onMount(() => {
     setSpecialViewVisible(!localProps.liveStreamingMode);
     onResize();
@@ -1606,10 +1634,18 @@ export function Chessboard(props: ChessboardProps) {
       childList: true,
       subtree: true,
     });
+    containerElement.addEventListener(
+      OPP_CARD_CLICK_EVENT_NAME,
+      oppChessboardCardClickHandler,
+    );
   });
   onCleanup(() => {
     resizeObserver.disconnect();
     oppChessboardObserver.disconnect();
+    containerElement.removeEventListener(
+      OPP_CARD_CLICK_EVENT_NAME,
+      oppChessboardCardClickHandler,
+    );
   });
   return (
     <div
