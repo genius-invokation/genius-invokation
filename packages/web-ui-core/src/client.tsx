@@ -114,6 +114,7 @@ export interface ClientChessboardProps extends ComponentProps<"div"> {
   timer?: RpcTimer | null;
   myPlayerInfo?: PlayerInfo;
   oppPlayerInfo?: PlayerInfo;
+  liveStreamingMode?: boolean;
   gameEndExtra?: JSX.Element;
 }
 
@@ -199,7 +200,8 @@ function createClientImpl(
       } finally {
         if (result && result.removedHandIds.length > 0) {
           setViewType("switchHandsEnd");
-          setTimeout(() => {
+          setTimeout(async () => {
+            await uiQueue.push(async () => {});
             setViewType((t) => (t === "switchHandsEnd" ? "normal" : t));
             forceRefreshData();
           }, 1200);

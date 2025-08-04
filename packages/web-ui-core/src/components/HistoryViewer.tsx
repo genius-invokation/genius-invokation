@@ -1911,7 +1911,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
   return (
     <WhoContext.Provider value={who}>
       <div
-        class="absolute inset-0 z-0 bg-black/50 watch-mode-hidden"
+        class="absolute inset-0 z-0 bg-black/50 has-opp-chessboard-hidden"
         onClick={() => {
           props.onBackdropClick();
         }}

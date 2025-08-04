@@ -88,7 +88,15 @@ function App() {
     <>
       <Chessboard0
         rotation={0}
-        style={{ width: "96vw", height: "48.6vw" }}
+        style={{ width: "96vw", height: "30vw" }}
+        autoHeight={false}
+        liveStreamingMode
+      >
+        <Chessboard0Opp />
+      </Chessboard0>
+      <Chessboard0
+        rotation={0}
+        style={{ width: "96vw", height: "30vw" }}
         autoHeight={false}
         myPlayerInfo={{
           avatarUrl: "https://http.cat/404",
@@ -98,7 +106,7 @@ function App() {
         <Chessboard0Opp />
       </Chessboard0>
       <Chessboard1
-        style={{ width: "96vw", height: "48.6vw" }}
+        style={{ width: "96vw", height: "30vw" }}
         autoHeight={false}
         timer={{ current: 114, total: 514 }}
       />

@@ -138,8 +138,8 @@ export function OppChessboard(props: ChessboardProps) {
         onSelectDice={() => {}}
         onStateChange={() => {}}
         selectedDice={[]}
-        watchMode={true}
-        opp={true}
+        compactView
+        opp
         hasMiniView={
           localProps.viewType === "selectCard" ||
           localProps.viewType === "switchHands"

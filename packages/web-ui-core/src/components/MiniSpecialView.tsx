@@ -13,22 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  createResource,
-  createSignal,
-  For,
-  Index,
-  Match,
-  Show,
-  Switch,
-} from "solid-js";
-import { Button } from "./Button";
-import { DiceCost } from "./DiceCost";
+import { For, Match, Switch } from "solid-js";
 import { CardFace } from "./Card";
-import SelectingIcon from "../svg/SelectingIcon.svg?fb";
-import { useUiContext } from "../hooks/context";
 import { DiceType } from "@gi-tcg/typings";
-import type { AnyData } from "@gi-tcg/assets-manager";
 import { DiceCostAsync } from "./SelectCardView";
 import { Dice } from "./Dice";
 
@@ -83,7 +70,7 @@ export function MiniView(props: MiniViewProps) {
                         class="top-0 left-0.8"
                       />
                     </div>
-                    <div class="mt-1 w-10.5 text-center text-2 text-center color-black/60 font-bold whitespace-nowrap">
+                    <div class="mt-1 w-10.5 text-2 text-center color-black/60 font-bold whitespace-nowrap">
                       {props.nameGetter(cardId)}
                     </div>
                   </li>

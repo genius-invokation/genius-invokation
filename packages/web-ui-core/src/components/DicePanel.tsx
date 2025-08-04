@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { DiceType } from "@gi-tcg/typings";
-import { Index, Match, Show, Switch } from "solid-js";
+import { createMemo, Index, Match, Show, Switch } from "solid-js";
 import { Dice } from "./Dice";
 import { WithDelicateUi } from "../primitives/delicate_ui";
 
@@ -28,7 +28,7 @@ export interface DicePanelProps {
   onSelectDice: (selectedDice: boolean[]) => void;
   state: DicePanelState;
   onStateChange: (state: DicePanelState) => void;
-  watchMode: boolean;
+  compactView: boolean;
   opp?: boolean;
   hasMiniView?: boolean;
 }
@@ -61,12 +61,12 @@ export function DicePanel(props: DicePanelProps) {
       props.onStateChange("visible");
     }
   };
-  const watchMode = () => props.watchMode;
+  const compactView = createMemo(() => props.compactView);
   return (
     <Switch>
-      <Match when={watchMode()}>
+      <Match when={compactView()}>
         <div
-          class="absolute right-3 w-22 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-watch-mode transition-all-500"
+          class="absolute right-3 w-22 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-compact transition-all-500"
           bool:data-shown={props.state !== "visible"}
           data-opp={props.opp}
           bool:data-has-mini-view={props.hasMiniView}
