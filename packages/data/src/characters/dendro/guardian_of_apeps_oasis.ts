@@ -244,6 +244,8 @@ export const AThousandYoung = card(227021)
   .since("v4.7.0")
   .costDendro(2)
   .talent(GuardianOfApepsOasis, "none")
+  .on("enter")
+  .createPileCards(AwakenMyKindred, 4, "random")
   .on("increaseDamage", (c, e) => 
     [
       ProliferatedOrganism01,
