@@ -17,10 +17,10 @@ import { AspectRatioContainer } from "./AspectRatioContainer";
 
 export function ChessboardBackground() {
   return (
-    <div class="absolute inset-0 flex items-center justify-center">
+    <div class="absolute inset-0 flex items-center justify-center chessboard-bg-container">
       <AspectRatioContainer>
-        <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% bg-#554433 flex items-center justify-center outline-green outline-5 outline-solid">
-          <div class="w-95% h-85% flex-grow-0 flex-shrink-0 chessboard-bg rounded-15% border-6 border-#443322" />
+        <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% bg-#554433">
+          <div class="chessboard-bg" />
         </div>
       </AspectRatioContainer>
     </div>

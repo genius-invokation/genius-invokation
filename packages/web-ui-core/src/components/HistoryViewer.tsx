@@ -26,6 +26,9 @@ import {
   createResource,
   createMemo,
   onMount,
+  on,
+  createEffect,
+  untrack,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
 import type {
@@ -1888,25 +1891,30 @@ export function HistoryPanel(props: HistoryPanelProps) {
   const [selectedBlock, setSelectedBlock] = createSignal<HistoryBlock | null>(
     null,
   );
+  const [keepScrollingBottom, setKeepScrollingBottom] = createSignal(true);
   const [showBackToBottom, setShowBackToBottom] = createSignal(false);
   let scrollRef!: HTMLDivElement;
 
-  const scrollToBottom = () => {
-    scrollRef?.scrollTo({ top: scrollRef.scrollHeight, behavior: "smooth" });
+  const scrollToBottom = (behavior?: ScrollBehavior) => {
+    scrollRef.scrollTo({ top: scrollRef.scrollHeight, behavior });
   };
 
   const handleScroll = () => {
-    if (!scrollRef) return;
     const distance =
       scrollRef.scrollHeight - scrollRef.scrollTop - scrollRef.clientHeight;
     setShowBackToBottom(distance > 100);
+    setKeepScrollingBottom(distance <= 100);
   };
 
   const who = createMemo(() => props.who);
 
-  onMount(() => {
-    scrollToBottom();
+  createEffect(() => {
+    void props.history.at(-1);
+    if (untrack(keepScrollingBottom)) {
+      scrollToBottom("smooth");
+    }
   });
+
 
   return (
     <WhoContext.Provider value={who}>
@@ -1974,7 +1982,7 @@ export function HistoryPanel(props: HistoryPanelProps) {
         <Show when={showBackToBottom()}>
           <button
             class="absolute w-66 h-6 bottom-3 right-2 bg-#e9e2d3 opacity-80 text-#3b4255 text-3 font-bold rounded-full hover:bg-#e9e2d3 hover:shadow-[inset_0_0_16px_rgba(216,212,204,1),0_0_8px_rgba(255,255,255,0.2)] hover:b-white hover:b-2 hover:opacity-100"
-            onClick={scrollToBottom}
+            onClick={() => scrollToBottom("instant")}
           >
             跳转至最新
           </button>

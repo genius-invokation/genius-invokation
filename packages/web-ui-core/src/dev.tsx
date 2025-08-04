@@ -90,14 +90,7 @@ function App() {
         rotation={0}
         style={{ width: "80vw", height: "80vh" }}
         autoHeight={false}
-        liveStreamingMode
-      >
-        <Chessboard0Opp />
-      </Chessboard0>
-      <Chessboard0
-        rotation={0}
-        style={{ width: "96vw", height: "30vw" }}
-        autoHeight={false}
+        // liveStreamingMode
         myPlayerInfo={{
           avatarUrl: "https://http.cat/404",
           name: "啊啊啊宝宝你是一个松松软软香香甜甜的小蛋糕",

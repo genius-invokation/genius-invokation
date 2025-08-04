@@ -93,13 +93,13 @@ export function OppChessboard(props: ChessboardProps) {
     <div
       class={`absolute inset-0 h-full w-full pointer-events-none ${
         localProps.class ?? ""
-      } outline-red outline-5 outline-dashed`}
+      }`}
       data-gi-tcg-opp-chessboard
       {...elProps}
     >
-      <div class="absolute opp-chessboard-hands-container outline-yellow outline-5 outline-dashed">
-        <div class="absolute translate-x--50% w-120 rounded-3 opp-chessboard-hands-shadow" />
-        <div class="absolute translate-x--50% w-120 rounded-xl overflow-clip opp-chessboard-hands-bg pointer-events-auto">
+      <div class="absolute opp-chessboard-hands-container rounded-3">
+        <div class="opp-chessboard-hands-shadow" />
+        <div class="absolute bottom-0 w-full h-full max-h-40 rounded-xl overflow-clip pointer-events-auto">
           <div class="absolute top-2 left-4 right-2 h-36 ">
             <Key each={hands()} by="id">
               {(card, index) => (
@@ -130,7 +130,7 @@ export function OppChessboard(props: ChessboardProps) {
             </Key>
           </div>
         </div>
-        <div class="absolute translate-x--50% w-120 b-#443322 b-x-6 b-b-6 rounded-lb-3 rounded-rb-3 opp-chessboard-hands-border" />
+        <div class="opp-chessboard-hands-border" />
       </div>
       <DicePanel
         state="hidden"
@@ -149,7 +149,7 @@ export function OppChessboard(props: ChessboardProps) {
       />
       <Show when={localProps.viewType === "switchHands"}>
         <MiniView
-          viewType={"switching"}
+          viewType="switching"
           ids={hands().map((c) => c.definitionId)}
           nameGetter={() => void 0}
           opp={true}
@@ -157,7 +157,7 @@ export function OppChessboard(props: ChessboardProps) {
       </Show>
       <Show when={localProps.viewType === "selectCard"}>
         <MiniView
-          viewType={"selecting"}
+          viewType="selecting"
           ids={localProps.selectCardCandidates}
           nameGetter={(name) => assetsManager.getNameSync(name)}
           opp={true}
@@ -170,7 +170,7 @@ export function OppChessboard(props: ChessboardProps) {
         }
       >
         <MiniView
-          viewType={"rerolling"}
+          viewType="rerolling"
           ids={dice()}
           nameGetter={() => void 0}
           opp={true}

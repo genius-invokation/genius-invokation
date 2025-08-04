@@ -408,7 +408,8 @@ function calcCardsInfo(
         );
       }
       if (opp && hasOppChessboard) {
-        x = x - MINIMUM_WIDTH / 4;
+        x -= MINIMUM_WIDTH / 4;
+        y -= 2;
       }
       cards.push({
         id: card.id,
@@ -983,6 +984,7 @@ export function Chessboard(props: ChessboardProps) {
     "myPlayerInfo",
     "oppPlayerInfo",
     "gameEndExtra",
+    "liveStreamingMode",
     "data",
     "actionState",
     "history",
@@ -1068,7 +1070,10 @@ export function Chessboard(props: ChessboardProps) {
     viewType: ChessboardViewType,
     actionState: ActionState | null,
   ): MyHandState => {
-    if (viewType === "switchHands" || viewType === "switchHandsEnd") {
+    if (
+      !localProps.liveStreamingMode &&
+      (viewType === "switchHands" || viewType === "switchHandsEnd")
+    ) {
       return "switching";
     } else if (actionState && !actionState.showHands) {
       return "hidden";
@@ -1329,7 +1334,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   /** 当存在特殊视图可用时，使其可见 */
   createEffect(() => {
-    if (hasSpecialView() && !props.liveStreamingMode) {
+    if (hasSpecialView() && !localProps.liveStreamingMode) {
       setSpecialViewVisible(true);
     }
   });
@@ -1593,7 +1598,7 @@ export function Chessboard(props: ChessboardProps) {
   const oppChessboardObserver = new MutationObserver(checkOppChessboard);
 
   onMount(() => {
-    setSpecialViewVisible(!props.liveStreamingMode);
+    setSpecialViewVisible(!localProps.liveStreamingMode);
     onResize();
     resizeObserver.observe(chessboardElement);
     queueMicrotask(checkOppChessboard);
@@ -1608,15 +1613,15 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433 flex items-center justify-center ${
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433 relative ${
         localProps.class ?? ""
       }`}
       ref={containerElement}
-      bool:data-livestreaming={props.liveStreamingMode}
+      bool:data-livestreaming={localProps.liveStreamingMode}
       {...elProps}
     >
       <TransformWrapper
-        class="relative flex-shrink-0 flex-grow-0"
+        class="absolute left-0"
         autoHeight={localProps.autoHeight}
         rotation={localProps.rotation}
         setTransformScale={setTransformScale}
@@ -1660,7 +1665,7 @@ export function Chessboard(props: ChessboardProps) {
                 }
                 hidden={
                   // 存在特殊视图时：视图可见时只显示正在切换的手牌，反之只显示其他行动牌
-                  hasSpecialView()
+                  hasSpecialView() && !localProps.liveStreamingMode
                     ? (card().kind === "switching") !== specialViewVisible()
                     : false
                 }
@@ -1694,7 +1699,7 @@ export function Chessboard(props: ChessboardProps) {
                 {...hint()}
                 shown={
                   isShowCardHint[hint().area] !== null ||
-                  (hasOppChessboard() &&
+                  (!!localProps.liveStreamingMode &&
                     (hint().area === "myPile" || hint().area === "oppPile"))
                 }
               />
@@ -1863,10 +1868,10 @@ export function Chessboard(props: ChessboardProps) {
             }
           >
             <MiniView
-              viewType={"switching"}
-              ids={children()
-                .cards.filter((c) => c.kind === "switching")
-                .map((c) => c.data.definitionId)}
+              viewType="switching"
+              ids={localProps.data.state.player[localProps.who].handCard.map(
+                (card) => card.definitionId,
+              )}
               nameGetter={() => void 0}
               opp={false}
             />
@@ -1879,7 +1884,7 @@ export function Chessboard(props: ChessboardProps) {
             }
           >
             <MiniView
-              viewType={"selecting"}
+              viewType="selecting"
               ids={localProps.selectCardCandidates}
               nameGetter={(name) => assetsManager.getNameSync(name)}
               opp={false}
@@ -1894,7 +1899,7 @@ export function Chessboard(props: ChessboardProps) {
             }
           >
             <MiniView
-              viewType={"rerolling"}
+              viewType="rerolling"
               ids={myDice()}
               nameGetter={() => void 0}
               opp={false}
@@ -1904,7 +1909,7 @@ export function Chessboard(props: ChessboardProps) {
             <CardDataViewer />
           </div>
           {/* 右上角部件 */}
-          <Show when={!props.liveStreamingMode}>
+          <Show when={!localProps.liveStreamingMode}>
             <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
               <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
                 <button
@@ -1919,7 +1924,11 @@ export function Chessboard(props: ChessboardProps) {
                   &#10005;
                 </button>
               </Show>
-              <HistoryToggleButton onClick={() => setShowHistory((v) => !v)} />
+              <Show when={!hasOppChessboard()}>
+                <HistoryToggleButton
+                  onClick={() => setShowHistory((v) => !v)}
+                />
+              </Show>
               <Show when={hasSpecialView()}>
                 <SpecialViewToggleButton
                   onClick={() => setSpecialViewVisible((v) => !v)}
@@ -1933,8 +1942,8 @@ export function Chessboard(props: ChessboardProps) {
             </div>
           </Show>
         </AspectRatioContainer>
-        <Show when={hasOppChessboard() && props.liveStreamingMode}>
-          <div class="absolute top-2.5 right-[calc(-10%+0.625rem)] flex flex-row-reverse gap-2">
+        <Show when={hasOppChessboard() && localProps.liveStreamingMode}>
+          <div class="absolute top-2.5 right-[calc(var(--chessboard-right-offset)+0.625rem)] flex flex-row-reverse gap-2">
             <div class="h-8 w-24 flex items-center justify-center rounded-full b-2 line-height-none font-bold bg-#e9e2d3 text-black/70 b-black/70">
               观战模式
             </div>

@@ -65,7 +65,7 @@ export function SelectCardView(props: SelectCardViewProps) {
                   class="left-1.8 top--1"
                 />
               </div>
-              <div class="mt-2 w-36 text-center font-size-4 text-center color-black/60 font-bold">
+              <div class="mt-2 w-36 font-size-4 text-center color-black/60 font-bold">
                 {props.nameGetter(cardId)}
               </div>
             </li>

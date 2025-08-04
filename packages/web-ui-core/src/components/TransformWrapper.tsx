@@ -57,20 +57,18 @@ export function TransformWrapper(props: TransformWrapperProps) {
     let height: number;
     let width: number;
     let scale: number;
-    let oppOffsetX = 0;
     let oppScale = 1;
     const DEFAULT_HEIGHT_WIDTH_RATIO = MINIMUM_HEIGHT / MINIMUM_WIDTH;
     const adjustScale = () => {
       height /= scale;
       width /= scale;
       if (hasOppChessboard) {
-        oppOffsetX = -10;
-        oppScale = 0.8;
+        if (height / width > DEFAULT_HEIGHT_WIDTH_RATIO) {
+          oppScale = 0.75;
+        } else {
+          oppScale = 0.8;
+        }
         height /= oppScale;
-        transformWrapperEl.style.setProperty(
-          "--chessboard-right-offset",
-          `-${((1 - oppScale) / oppScale) * 100}%`,
-        );
       }
     };
     if (rotate % 180 === 0) {
@@ -99,14 +97,10 @@ export function TransformWrapper(props: TransformWrapperProps) {
       adjustScale();
     }
     transformWrapperEl.style.setProperty(
-      "--chessboard-inner-width",
-      `${(MINIMUM_WIDTH * UNIT)}px`,
+      "--chessboard-opp-scale",
+      `${oppScale}`,
     );
-    transformWrapperEl.style.setProperty(
-      "--chessboard-inner-height",
-      `${(MINIMUM_HEIGHT * UNIT) / oppScale}px`,
-    );
-    transformWrapperEl.style.transform = `scale(${scale}) translateX(${oppOffsetX}%) scale(${oppScale}) rotate(${rotate}deg)`;
+    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale * oppScale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
     untrack(() => props.setTransformScale)(scale * oppScale);
@@ -128,7 +122,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
 
   const inner = children(() => props.children);
   return (
-    <div class={`${props.class ?? ""}`} ref={transformWrapperEl}>
+    <div class={`transform-origin-center ${props.class ?? ""}`} ref={transformWrapperEl}>
       {inner()}
     </div>
   );

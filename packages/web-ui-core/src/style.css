@@ -20,13 +20,33 @@
   .touch-pan * {
     touch-action: pan-x pan-y;
   }
+  --chessboard-min-width: 60rem;
+  --chessboard-min-height: 33.75rem;
+
+  --chessboard-bg-x-border-width: 0.3rem;
+  --chessboard-bg-y-border-width-initial: 2.53125rem;
+  --chessboard-bg-y-border-width: var(--chessboard-bg-y-border-width-initial);
+  --opp-chessboard-hands-prominent-height: 28px;
+
+  --chessboard-opp-scale: 1;
   --chessboard-right-offset: 0;
+
+  * {
+    --chessboard-y-offset: calc(50% * (1 - var(--chessboard-opp-scale)));
+    --chessboard-right-offset: calc(
+      -100% * ((1 / var(--chessboard-opp-scale)) - 1)
+    );
+  }
 
   :has([data-gi-tcg-opp-chessboard]) {
     --skill-button-offset-x: 1.5rem;
+    --chessboard-bg-y-border-width: calc(
+      var(--chessboard-bg-y-border-width-initial) -
+        var(--opp-chessboard-hands-prominent-height)
+    );
   }
   [data-gi-tcg-opp-chessboard] {
-    --skill-button-offset-x: 15rem;
+    --skill-button-offset-x: 12rem;
   }
   &[data-livestreaming] [data-gi-tcg-opp-chessboard] {
     --skill-button-offset-x: 1.5rem;
@@ -35,11 +55,16 @@
   :has([data-gi-tcg-opp-chessboard]) .has-opp-chessboard-hidden {
     display: none;
   }
-  :has(.dice-panel[data-state=visible]) .dice-panel-compact {
+  :has(.dice-panel[data-state="visible"]) .dice-panel-compact {
     display: none;
   }
-  :has(.dice-panel[data-state=wrapped]) .dice-panel-compact {
+  :has(.dice-panel[data-state="wrapped"]) .dice-panel-compact {
     display: none;
+  }
+
+  .chessboard-bg-container {
+    top: var(--chessboard-y-offset);
+    bottom: var(--chessboard-y-offset);
   }
 
   .skill-button-group {
@@ -70,34 +95,29 @@
   }
   .opp-chessboard-hands-container {
     position: absolute;
-    --width: calc(var(--chessboard-inner-width) / var(--chessboard-scale, 1));
-    width: var(--width);
-    --inner-height: calc(var(--width) * 9 / 16);
-    --top-offset: calc(100% - var(--inner-height) / 2);
+    width: 30rem;
+    --top-offset: calc(50% - var(--chessboard-min-height) / 2);
     top: 0;
-    left: 0;
-    height: 50%;
-
-  }
-  .opp-chessboard-hands-bg {
-    top: 0;
-    bottom: 82%;
-    left: 42%;
-    height: calc(0.18 * var(--inner-height) + var(--top-offset));
-    background-image: linear-gradient(to top, #63524a 6%, #554433 50%);
+    left: max(calc(42% - 15rem), 12rem);
+    height: calc(
+      var(--top-offset) + var(--chessboard-bg-y-border-width) +
+        var(--opp-chessboard-hands-prominent-height)
+    );
+    background-image: linear-gradient(to top, #63524a 6.5px, #554433 54px);
   }
   .opp-chessboard-hands-border {
     position: absolute;
-    top: calc(0.134 * var(--inner-height) + var(--top-offset));
-    left: 42%;
-    height: calc(0.048 * var(--inner-height));
+    bottom: 0;
+    width: 100%;
+    height: var(--opp-chessboard-hands-prominent-height);
     background-image: linear-gradient(to top, #63524a80 0%, transparent 100%);
+    @apply b-#443322 b-x-6 b-b-6 rounded-lb-3 rounded-rb-3;
   }
   .opp-chessboard-hands-shadow {
     position: absolute;
-    top: calc(0.145 * var(--inner-height) + var(--top-offset));
+    top: calc(0.145 * var(--chessboard-min-height) + var(--top-offset));
     left: 42%;
-    height: calc(0.035 * var(--inner-height));
+    height: calc(0.035 * var(--chessboard-min-height));
     box-shadow: 0 0 12px #000000aa;
   }
   .mini-view[data-opp="false"] {
@@ -387,6 +407,10 @@
   }
 
   .chessboard-bg {
+    position: absolute;
+    inset: var(--chessboard-bg-y-border-width)
+      var(--chessboard-bg-x-border-width);
+    @apply rounded-15% border-6 border-#443322;
     background-image: linear-gradient(
       to bottom,
       #f0fdf4ff 49.5%,
@@ -511,7 +535,6 @@
   }
 
   .clickable-outline {
-    cursor: pointer;
     box-shadow:
       #00000066 0 0 1px 1px,
       inset #00000066 0 0 1px 1px;
