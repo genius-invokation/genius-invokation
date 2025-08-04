@@ -67,7 +67,7 @@ export function DicePanel(props: DicePanelProps) {
       <Match when={compactView()}>
         <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% pointer-events-none">
           <div
-            class="absolute right-0 w-25 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-compact transition-all-500"
+            class="absolute right-1 w-25 h-43 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity b-l-5 b-y-5 b-#443322 rounded-lt-4 rounded-lb-4 px-3 py-4 dice-panel-compact transition-all-500"
             bool:data-shown={props.state !== "visible"}
             data-opp={props.opp}
             bool:data-has-mini-view={props.hasMiniView}

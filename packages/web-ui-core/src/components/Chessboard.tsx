@@ -1347,8 +1347,8 @@ export function Chessboard(props: ChessboardProps) {
   });
   /** 当存在特殊视图可用时，使其可见 */
   createEffect(() => {
-    if (hasSpecialView() && !localProps.liveStreamingMode) {
-      setSpecialViewVisible(true);
+    if (hasSpecialView()) {
+      setSpecialViewVisible(!localProps.liveStreamingMode);
     }
   });
 
@@ -1603,10 +1603,10 @@ export function Chessboard(props: ChessboardProps) {
   let containerElement!: HTMLDivElement;
   const [hasOppChessboard, setHasOppChessboard] = createSignal(false);
   const checkOppChessboard = () => {
-    const exists = containerElement.querySelector(
+    const exists = !!containerElement.querySelector(
       "[data-gi-tcg-opp-chessboard]",
     );
-    setHasOppChessboard(!!exists);
+    setHasOppChessboard(exists);
   };
   const oppChessboardObserver = new MutationObserver(checkOppChessboard);
 
@@ -1660,6 +1660,7 @@ export function Chessboard(props: ChessboardProps) {
         class="absolute left-0"
         autoHeight={localProps.autoHeight}
         rotation={localProps.rotation}
+        hasOppChessboard={hasOppChessboard()}
         setTransformScale={setTransformScale}
       >
         <ChessboardBackground />
@@ -1981,7 +1982,7 @@ export function Chessboard(props: ChessboardProps) {
         <Show when={hasOppChessboard() && localProps.liveStreamingMode}>
           <div class="absolute top-2.5 right-[calc(var(--chessboard-right-offset)+0.625rem)] flex flex-row-reverse gap-2">
             <div class="h-8 w-24 flex items-center justify-center rounded-full b-2 line-height-none font-bold bg-#e9e2d3 text-black/70 b-black/70">
-              观战模式
+              直播模式
             </div>
           </div>
         </Show>

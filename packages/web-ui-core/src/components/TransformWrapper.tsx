@@ -15,6 +15,8 @@
 
 import {
   children,
+  createEffect,
+  on,
   onCleanup,
   onMount,
   untrack,
@@ -26,6 +28,7 @@ import { funnel } from "remeda";
 
 export type Rotation = 0 | 90 | 180 | 270;
 export interface TransformWrapperProps {
+  hasOppChessboard: boolean;
   class?: string;
   autoHeight?: boolean;
   rotation?: Rotation;
@@ -46,9 +49,7 @@ export function TransformWrapper(props: TransformWrapperProps) {
 
   const onContainerResize = () => {
     const containerEl = transformWrapperEl.parentElement!;
-    const hasOppChessboard = !!containerEl.querySelector(
-      "[data-gi-tcg-opp-chessboard]",
-    );
+    const hasOppChessboard = untrack(() => props.hasOppChessboard) ?? false;
     const containerWidth = containerEl.clientWidth;
     let containerHeight = containerEl.clientHeight;
     const autoHeight = untrack(() => props.autoHeight) ?? true;
@@ -100,7 +101,9 @@ export function TransformWrapper(props: TransformWrapperProps) {
       "--chessboard-opp-scale",
       `${oppScale}`,
     );
-    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${scale * oppScale}) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
+    transformWrapperEl.style.transform = `${PRE_ROTATION_TRANSFORM} scale(${
+      scale * oppScale
+    }) rotate(${rotate}deg) ${POST_ROTATION_TRANSFORM[rotate]}`;
     transformWrapperEl.style.height = `${height}px`;
     transformWrapperEl.style.width = `${width}px`;
     untrack(() => props.setTransformScale)(scale * oppScale);
@@ -116,13 +119,24 @@ export function TransformWrapper(props: TransformWrapperProps) {
     onContainerResize();
     containerResizeObserver.observe(transformWrapperEl.parentElement!);
   });
+  createEffect(
+    on(
+      () => props.hasOppChessboard,
+      () => {
+        onContainerResizeDebouncer.call();
+      },
+    ),
+  );
   onCleanup(() => {
     containerResizeObserver.disconnect();
   });
 
   const inner = children(() => props.children);
   return (
-    <div class={`transform-origin-center ${props.class ?? ""}`} ref={transformWrapperEl}>
+    <div
+      class={`transform-origin-center ${props.class ?? ""}`}
+      ref={transformWrapperEl}
+    >
       {inner()}
     </div>
   );

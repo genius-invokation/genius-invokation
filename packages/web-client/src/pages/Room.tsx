@@ -44,6 +44,7 @@ import {
 import {
   Client,
   createClient,
+  createClientForOpp,
   PlayerIOWithCancellation,
 } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
@@ -71,12 +72,14 @@ interface ActionRequestPayload {
 const SSE_RECONNECT_TIMEOUT = 30 * 1000;
 
 const createReconnectSse = <T,>(
-  url: string,
+  url: string | (() => string),
   onPayload: (payload: T) => void,
   onError?: (e: Error) => void,
 ) => {
   let reconnectTimeout: Timer | null = null;
   let abortController: AbortController | null = null;
+  let cancelled = false;
+  let activating = false;
 
   const resetReconnectTimer = () => {
     if (reconnectTimeout) {
@@ -89,9 +92,16 @@ const createReconnectSse = <T,>(
   };
 
   const connect = () => {
+    if (cancelled) {
+      return;
+    }
+    if (activating) {
+      return;
+    }
+    activating = true;
     abortController = new AbortController();
     axios
-      .get(url, {
+      .get(typeof url === "function" ? url() : url, {
         headers: {
           Accept: "text/event-stream",
         },
@@ -144,7 +154,14 @@ const createReconnectSse = <T,>(
       });
   };
 
-  return [connect];
+  return [
+    connect,
+    () => {
+      cancelled = true;
+      activating = false;
+      abortController?.abort();
+    },
+  ];
 };
 
 export function Room() {
@@ -161,6 +178,12 @@ export function Room() {
   const [loading, setLoading] = createSignal(true);
   const [failed, setFailed] = createSignal<null | string>(null);
   const [chessboard, setChessboard] = createSignal<Component>();
+
+  const [showOpp, setShowOpp] = createSignal(false);
+  const [liveMode, setLiveMode] = createSignal(true);
+  const [oppChessboard, setOppChessboard] = createSignal<Component>();
+  const [oppPlayerIo, setOppPlayerIo] =
+    createSignal<PlayerIOWithCancellation>();
 
   const reportStreamError = async (e: Error) => {
     if (e instanceof AxiosError) {
@@ -296,7 +319,7 @@ export function Room() {
     axios.get<{ status: string }>(`rooms/${id}`).then((res) => res.data),
   );
 
-  const [fetchNotification] = createReconnectSse(
+  const [fetchMyNotification, abortMyNotification] = createReconnectSse(
     `rooms/${id}/players/${playerId}/notification`,
     (payload: any) => {
       setLoading(false);
@@ -345,6 +368,64 @@ export function Room() {
     },
     reportStreamError,
   );
+
+  const getOppPlayerId = () => initialized()?.oppPlayerInfo.id;
+  const allowWatchOpp = () => !action;
+
+  const [fetchOppNotification, abortOppNotification] = createReconnectSse(
+    () => `rooms/${id}/players/${getOppPlayerId()}/notification`,
+    (payload: any) => {
+      setLoading(false);
+      switch (payload.type) {
+        case "initialized": {
+          const [oppPlayerIo, OppChessboard] = createClientForOpp(payload.who);
+          setOppPlayerIo(oppPlayerIo);
+          setOppChessboard(() => OppChessboard);
+          break;
+        }
+        case "notification": {
+          const notification: Notification = payload.data;
+          oppPlayerIo()?.notify(notification);
+          // 观战时，收到我方状态变更为非行动通知时，取消 rpc
+          if (
+            notification.mutation.find(
+              (mut) =>
+                mut.mutation?.$case === "playerStatusChange" &&
+                mut.mutation.value.who === initialized()?.who &&
+                mut.mutation.value.status === PbPlayerStatus.UNSPECIFIED,
+            )
+          ) {
+            oppPlayerIo()?.cancelRpc();
+          }
+          break;
+        }
+        case "rpc": {
+          oppPlayerIo()?.cancelRpc();
+          setTimeout(() => {
+            oppPlayerIo()
+              ?.rpc(payload.request)
+              .catch(() => void 0);
+          }, 100);
+          break;
+        }
+        case "error": {
+          break;
+        }
+        default: {
+          console.log("%c%s", "color: orange", JSON.stringify(payload));
+          break;
+        }
+      }
+    },
+    reportStreamError,
+  );
+
+  createEffect(() => {
+    if (showOpp()) {
+      fetchOppNotification();
+    }
+  });
+
   const downloadGameLog = async () => {
     try {
       const { data } = await axios.get(`rooms/${id}/gameLog`);
@@ -376,7 +457,7 @@ export function Room() {
   const mobile = useMobile();
 
   onMount(() => {
-    fetchNotification();
+    fetchMyNotification();
     setActionTimer();
   });
 
@@ -418,6 +499,26 @@ export function Room() {
                 >
                   <i class="i-mdi-link-variant" />
                 </button>
+                <Show when={allowWatchOpp()}>
+                  <input
+                    id="showOpp"
+                    type="checkbox"
+                    class="checkbox-primary"
+                    checked={showOpp()}
+                    onChange={(e) => setShowOpp(e.currentTarget.checked)}
+                  />
+                  <label for="showOpp">显示对手棋盘</label>
+                  <Show when={showOpp()}>
+                    <input
+                      id="liveMode"
+                      type="checkbox"
+                      class="checkbox-primary"
+                      checked={liveMode()}
+                      onChange={(e) => setLiveMode(e.currentTarget.checked)}
+                    />
+                    <label for="liveMode">直播模式</label>
+                  </Show>
+                </Show>
               </Show>
             </div>
             <div>
@@ -516,7 +617,12 @@ export function Room() {
                     </div>
                   </div>
                 }
-              />
+                liveStreamingMode={showOpp() && liveMode()}
+              >
+                <Show when={showOpp()}>
+                  <Dynamic<Client[1]> component={oppChessboard()} />
+                </Show>
+              </Dynamic>
             </div>
           )}
         </Show>
