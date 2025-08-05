@@ -103,17 +103,26 @@ export type WritableMetaOf<BM extends SkillBuilderMetaBase> = {
 
 export type SkillOperation<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<WritableMetaOf<Meta>>,
-  e: ApplyReactive<WritableMetaOf<Meta>, Meta["eventArgType"]>,
+  e: ApplyReactive<
+    WritableMetaOf<Meta>,
+    Omit<Meta["eventArgType"], `_${string}`>
+  >,
 ) => void;
 
 export type SkillOperationFilter<Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
-  e: ApplyReactive<ReadonlyMetaOf<Meta>, Meta["eventArgType"]>,
+  e: ApplyReactive<
+    ReadonlyMetaOf<Meta>,
+    Omit<Meta["eventArgType"], `_${string}`>
+  >,
 ) => unknown;
 
 type SkillProjection<Projected, Meta extends SkillBuilderMetaBase> = (
   c: TypedSkillContext<ReadonlyMetaOf<Meta>>,
-  e: ApplyReactive<ReadonlyMetaOf<Meta>, Meta["eventArgType"]>,
+  e: ApplyReactive<
+    ReadonlyMetaOf<Meta>,
+    Omit<Meta["eventArgType"], `_${string}`>
+  >,
 ) => Projected;
 
 type StateOf<TargetKindTs extends InitiativeSkillTargetKind> =
