@@ -1209,6 +1209,7 @@ export class NightsoulEventArg extends CharacterEventArg {
   }
 }
 export class BeforeNightsoulEventArg extends NightsoulEventArg {
+  /** @deprecated TODO 似乎玛薇卡不会取消夜魂值消耗 */
   cancel() {
     this._cancelled = true;
   }

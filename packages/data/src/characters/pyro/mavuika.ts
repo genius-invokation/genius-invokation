@@ -48,8 +48,10 @@ export const CrucibleOfDeathAndLife = status(113152)
   .consumeUsage()
   .on("cancelConsumeNightsoul")
   .listenToPlayer()
-  .cancel()
-  .consumeUsage()
+  .do((c, e) => {
+    e.cancel();
+    c.consumeUsage(e.info.consumedValue);
+  })
   .done();
 
 /**
