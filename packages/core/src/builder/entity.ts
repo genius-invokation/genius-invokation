@@ -523,7 +523,8 @@ export class EntityBuilder<
     );
     if (opt.autoDispose) {
       self
-        .on("consumeNightsoul", (c, e) => c.getVariable("nightsoul") <= 0)
+        .on("beforeAction", (c, e) => c.getVariable("nightsoul") <= 0)
+        .listenToAll()
         .dispose()
         .endOn();
     }
