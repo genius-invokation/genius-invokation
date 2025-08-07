@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, ImATeapotException } from "@nestjs/common";
 import { Public } from "./auth/auth.guard";
 import { CORE_VERSION, CURRENT_VERSION, VERSIONS } from "@gi-tcg/core";
 import simpleGit from "simple-git";
@@ -34,6 +34,12 @@ export class AppController {
       currentGameVersion: CURRENT_VERSION,
       coreVersion: CORE_VERSION,
     };
+  }
+
+  @Public()
+  @Get("/teapot")
+  imATeapot() {
+    throw new ImATeapotException("I'm a teapot~");
   }
 
   @Public()
