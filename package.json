@@ -14,17 +14,28 @@
     "@arethetypeswrong/cli": "^0.16.4",
     "@bufbuild/buf": "^1.47.2",
     "@microsoft/api-extractor": "^7.47.9",
-    "@types/bun": "^1.2.18",
-    "bun": "^1.2.18",
+    "@types/bun": "^1.2.19",
+    "bun": "^1.2.19",
     "dependency-graph": "^1.0.0",
     "tsup": "^8.3.0",
-    "type-fest": "^4.26.1",
-    "typescript": "^5.6.2"
+    "type-fest": "^4.26.1"
   },
   "overrides": {
     "esbuild": "0.19.11",
     "caniuse-lite": "1.0.30001690",
-    "babel-plugin-jsx-dom-expressions": "0.39.6"
+    "babel-plugin-jsx-dom-expressions": "0.39.6",
+    "ajv": "8.5.0"
+  },
+  "catalog": {
+    "typescript": "^5.6.2",
+    "vite": "^7.1.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-solid": "^2.11.8",
+    "rollup-plugin-node-externals": "^8.0.1",
+    "unocss": "^66.3.3",
+    "@unocss/preset-icons": "^66.3.3",
+    "@unocss/reset": "^66.3.3",
+    "solid-js": "^1.9.8"
   },
   "patchedDependencies": {
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",

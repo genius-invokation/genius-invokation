@@ -28,7 +28,7 @@
     "remeda": "^2.26.1"
   },
   "peerDependencies": {
-    "solid-js": "^1.9.4"
+    "solid-js": "catalog:"
   },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
@@ -43,12 +43,12 @@
     "eslint-plugin-solid": "^0.13.1",
     "puppeteer-core": "^24.14.0",
     "puppeteer-screen-recorder": "^3.0.6",
-    "rollup-plugin-node-externals": "^7.0.1",
+    "rollup-plugin-node-externals": "catalog:",
     "solid-devtools": "^0.29.2",
     "svgo": "^4.0.0",
-    "unocss": "^66.3.3",
-    "vite": "^6.0.11",
-    "vite-plugin-dts": "^3.7.0",
-    "vite-plugin-solid": "^2.11.1"
+    "unocss": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:",
+    "vite-plugin-solid": "catalog:"
   }
 }

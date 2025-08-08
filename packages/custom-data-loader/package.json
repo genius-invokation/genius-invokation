@@ -29,8 +29,8 @@
     "@gi-tcg/assets-manager": "workspace:*",
     "dts-bundle-generator": "^9.5.1",
     "monaco-editor": "^0.52.2",
-    "solid-js": "^1.9.4",
-    "vite": "^6.0.11",
-    "vite-plugin-solid": "^2.11.1"
+    "solid-js": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:"
   }
 }
