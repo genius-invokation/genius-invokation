@@ -22,6 +22,7 @@ import { $ } from "bun";
 import { existsSync } from "node:fs";
 import { PackageJson } from "type-fest";
 import { IS_BETA } from "@gi-tcg/config";
+import rootPackageJson from "../package.json";
 
 if (IS_BETA) {
   throw new Error(`You should not publish packages when IS_BETA is true.`);
@@ -62,6 +63,8 @@ function transferWorkspaceDeps(deps: Partial<Record<string, string>> = {}) {
         throw new Error(`Workspace dependency not found: ${key}`);
       }
       deps[key] = foundDep.packageJson.version;
+    } else if (value === "catalog:") {
+      deps[key] = rootPackageJson.catalog[key];
     }
   }
 }

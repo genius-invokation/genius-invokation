@@ -20,7 +20,7 @@
     "@gi-tcg/data-code-analyzer": "workspace:*",
     "@vercel/analytics": "^1.2.0",
     "core-js": "3.38.1",
-    "solid-js": "^1.9.4"
+    "solid-js": "catalog:"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
