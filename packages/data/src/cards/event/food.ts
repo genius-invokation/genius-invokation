@@ -1,19 +1,19 @@
 // Copyright (C) 2024-2025 Guyutongxue
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DiceType, card, combatStatus, status } from "@gi-tcg/core/builder";
+import { DiceType, StatusHandle, card, combatStatus, status } from "@gi-tcg/core/builder";
 import { Satiated } from "../../commons";
 
 /**
@@ -129,21 +129,31 @@ export const [MushroomPizza] = card(333007)
   .done();
 
 /**
+ * @id 303306
+ * @name 兽肉薄荷卷（生效中）
+ * @description
+ * 角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。
+ */
+const MintyMeatRollsInEffect: StatusHandle = status(303306)
+  .since("v3.3.0")
+  .oneDuration()
+  .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
+  .usage(3)
+  .deductVoidCost(1)
+  .done();
+
+/**
  * @id 333008
  * @name 兽肉薄荷卷
  * @description
  * 目标角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。
  * （每回合每个角色最多食用1次「料理」）
  */
-export const [MintyMeatRolls] = card(333008)
+const MintyMeatRolls = card(333008)
   .since("v3.3.0")
   .costSame(1)
   .food()
-  .toStatus(303306, "@targets.0")
-  .oneDuration()
-  .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
-  .usage(3)
-  .deductVoidCost(1)
+  .characterStatus(MintyMeatRollsInEffect, "@targets.0")
   .done();
 
 /**
@@ -353,7 +363,7 @@ export const [PuffPops] = card(333018)
   .toStatus(303315, "@targets.0")
   .on("handCardInserted", (c, e) => !c.isInInitialPile(e.card))
   .usage(3)
-  .heal(1, "@master") 
+  .heal(1, "@master")
   .done();
 
 /**
