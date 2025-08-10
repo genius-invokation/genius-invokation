@@ -819,7 +819,7 @@ export const MarechausseeHunter = card(312024)
   .setVariable("count", 0)
   .on("damagedOrHealed")
   .do((c) => {
-    c.addVariable("count", 1);
+    c.addVariableWithMax("count", 1, 4);
     const v = c.getVariable("count");
     if (v === 1 || v === 4) {
       c.generateDice(c.self.master.element(), 1);
