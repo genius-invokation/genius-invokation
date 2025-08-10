@@ -1,4 +1,4 @@
-import { DamageType, DiceType, SkillHandle, card, character, combatStatus, skill } from "@gi-tcg/core/builder";
+import { DamageType, DiceType, SkillHandle, StatusHandle, card, character, combatStatus, skill, status } from "@gi-tcg/core/builder";
 import { AurousBlaze, FireworkFlareup, NiwabiFiredance } from "../characters/pyro/yoimiya";
 import { ShadowswordGallopingFrost, ShadowswordLoneGale, TranscendentAutomaton } from "../characters/anemo/maguu_kenki";
 import { Collei, FloralBrush } from "../characters/dendro/collei";
@@ -65,17 +65,13 @@ const FrostyAssault: SkillHandle = skill(25013)
   .done();
 
 /**
- * @id 333008
- * @name 兽肉薄荷卷
+ * @id 303306
+ * @name 兽肉薄荷卷（生效中）
  * @description
- * 目标角色在本回合结束前，所有普通攻击都少花费1无色元素。
-（每回合每个角色最多食用1次「料理」）
+ * 角色在本回合结束前，所有普通攻击都少花费1无色元素。
  */
-const [MintyMeatRolls] = card(333008)
+const MintyMeatRollsInEffect = status(303306)
   .until("v3.3.0")
-  .costSame(1)
-  .food()
-  .toStatus(303306, "@targets.0")
   .oneDuration()
   .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
   .deductVoidCost(1)
