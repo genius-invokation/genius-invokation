@@ -78,20 +78,6 @@ const MintyMeatRollsInEffect = status(303306)
   .done();
 
 /**
- * @id 333008
- * @name 兽肉薄荷卷
- * @description
- * 目标角色在本回合结束前，所有普通攻击都少花费1无色元素。
-（每回合每个角色最多食用1次「料理」）
- */
-const MintyMeatRolls = card(333008)
-  .until("v3.3.0")
-  .costSame(1)
-  .food()
-  .characterStatus(MintyMeatRollsInEffect, "@targets.0")
-  .done();
-
-/**
  * @id 117
  * @name 激化领域
  * @description
