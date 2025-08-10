@@ -134,7 +134,7 @@ export const [MushroomPizza] = card(333007)
  * @description
  * 角色在本回合结束前，之后3次「普通攻击」都少花费1个无色元素。
  */
-const MintyMeatRollsInEffect: StatusHandle = status(303306)
+const MintyMeatRollsInEffect = status(303306)
   .since("v3.3.0")
   .oneDuration()
   .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))

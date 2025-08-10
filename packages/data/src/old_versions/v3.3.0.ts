@@ -71,7 +71,7 @@ const FrostyAssault: SkillHandle = skill(25013)
  * @description
  * 角色在本回合结束前，所有普通攻击都少花费1无色元素。
  */
-const MintyMeatRollsInEffect: StatusHandle = status(303306)
+const MintyMeatRollsInEffect = status(303306)
   .until("v3.3.0")
   .oneDuration()
   .on("deductVoidDiceSkill", (c, e) => e.isSkillType("normal"))
@@ -85,7 +85,7 @@ const MintyMeatRollsInEffect: StatusHandle = status(303306)
  * 目标角色在本回合结束前，所有普通攻击都少花费1无色元素。
 （每回合每个角色最多食用1次「料理」）
  */
-const [MintyMeatRolls] = card(333008)
+const MintyMeatRolls = card(333008)
   .until("v3.3.0")
   .costSame(1)
   .food()
