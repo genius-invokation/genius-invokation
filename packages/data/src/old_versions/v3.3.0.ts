@@ -84,7 +84,7 @@ const MintyMeatRollsInEffect = status(303306)
  * 目标角色在本回合结束前，所有普通攻击都少花费1无色元素。
 （每回合每个角色最多食用1次「料理」）
  */
-export const MintyMeatRolls = card(333008)
+const MintyMeatRolls = card(333008)
   .until("v3.3.0")
   .costSame(1)
   .food()
