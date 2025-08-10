@@ -733,10 +733,8 @@ export const VeteransVisage = card(312023)
   .on("roundEnd")
   .setVariable("count", 0)
   .on("damagedOrHealed")
+  .if((c) => c.getVariable("count") < 2)
   .do((c) => {
-    const vb = c.getVariable("count");
-    if (vb === 2)
-      return;
     c.addVariable("count", 1);
     const v = c.getVariable("count");
     if (v === 1) {
@@ -821,10 +819,8 @@ export const MarechausseeHunter = card(312024)
   .on("roundEnd")
   .setVariable("count", 0)
   .on("damagedOrHealed")
+  .if((c) => c.getVariable("count") < 4)
   .do((c) => {
-    const vb = c.getVariable("count");
-    if (vb === 4)
-      return;
     c.addVariable("count", 1);
     const v = c.getVariable("count");
     if (v === 1 || v === 4) {

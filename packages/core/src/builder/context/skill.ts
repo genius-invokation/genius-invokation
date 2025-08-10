@@ -1650,6 +1650,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.shuffleTail(items, items.length);
   }
   randomSubset<T>(items: readonly T[], count: number): T[] {
+    if (count <= 0) return [];
     const partiallyShuffled = this.shuffleTail(items, count);
     return partiallyShuffled.slice(-count);
   }
