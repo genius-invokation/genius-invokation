@@ -71,7 +71,7 @@ export const ThunderboreBlast = skill(24053)
     c.damage(DamageType.Electro, 3);
     const cards = c.player.hands.filter((card) => card.definition.id === BonecrunchersEnergyBlock).slice(0, 3);
     c.disposeCard(...cards);
-    if (cards) {
+    if (cards.length) {
       c.combatStatus(ThunderboreTrap, "opp", {
         overrideVariables: { usage: cards.length }
       });
