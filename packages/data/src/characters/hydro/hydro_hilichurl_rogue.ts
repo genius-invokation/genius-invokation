@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType, SkillHandle, StatusHandle } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, SkillHandle, StatusHandle, customEvent } from "@gi-tcg/core/builder";
 import { Frozen } from "../../commons";
 
 /**
@@ -91,6 +91,8 @@ export const WhirlingScythe = skill(22051)
   .damage(DamageType.Physical, 2)
   .done();
 
+export const ShouldGainEnergy = customEvent("hydroHilichurl/shouldGainEnergy");
+
 /**
  * @id 22052
  * @name 狂澜镰击
@@ -102,6 +104,8 @@ export const SlashOfSurgingTides = skill(22052)
   .type("elemental")
   .costHydro(3)
   .damage(DamageType.Hydro, 3)
+  .if((c) => c.$(`opp characters has status with definition id ${Frozen} or opp characters has status with definition id ${MistBubblePrison}`))
+  .emitCustomEvent(ShouldGainEnergy)
   .done();
 
 /**
@@ -127,8 +131,7 @@ export const BubblefloatBlitz = skill(22053)
  */
 export const SlashOfSurgingTidesPassive = skill(22054)
   .type("passive")
-  .on("useSkill", (c, e) => e.skill.definition.id === SlashOfSurgingTides && 
-    c.$(`opp characters has status with definition id ${Frozen} or opp characters has status with definition id ${MistBubblePrison}`))
+  .on(ShouldGainEnergy)
   .usagePerRound(1, { name: "usagePerRound1" })
   .gainEnergy(1, "@self")
   .done();
