@@ -1,6 +1,7 @@
 import { card, character, DamageType, DiceType, skill, summon, SummonHandle } from "@gi-tcg/core/builder";
 import { NORMAL_MIMICS, PREVIEW_MIMICS } from "../characters/hydro/rhodeia_of_loch";
 import { BladeAblaze, Prowl, Stealth, StealthMaster, Thrust } from "../characters/pyro/fatui_pyro_agent";
+import { WindAndFreedomInEffect } from "../cards/event/other";
 
 /**
  * @id 331801
@@ -9,13 +10,11 @@ import { BladeAblaze, Prowl, Stealth, StealthMaster, Thrust } from "../character
  * 本回合中，我方角色使用技能后：将下一个我方后台角色切换到场上。
  * （牌组包含至少2个「蒙德」角色，才能加入牌组）
  */
-const [WindAndFreedom] = card(331801)
+const WindAndFreedom = card(331801)
   .until("v4.2.0")
   .costSame(1)
-  .toCombatStatus(303181)
-  .oneDuration()
-  .on("useSkill")
-  .switchActive("my next")
+  .filter((c) => c.$(`my standby characters`))
+  .combatStatus(WindAndFreedomInEffect)
   .done();
 
 /**

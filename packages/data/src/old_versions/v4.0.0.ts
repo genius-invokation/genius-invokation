@@ -1,4 +1,4 @@
-import { DamageType, DiceType, StatusHandle, SummonHandle, card, character, flip, skill, status, summon } from "@gi-tcg/core/builder";
+import { DamageType, DiceType, StatusHandle, SummonHandle, card, character, combatStatus, flip, skill, status, summon } from "@gi-tcg/core/builder";
 import { MeleeStance, RangedStance, Tartaglia } from "../characters/hydro/tartaglia";
 import { GardenOfPurity, KamisatoArtKyouka, KamisatoArtMarobashi, KyoukaFuushi } from "../characters/hydro/kamisato_ayato";
 import { FatuiCryoCicinMage } from "../characters/cryo/fatui_cryo_cicin_mage";
@@ -307,17 +307,8 @@ const EmblemOfSeveredFate = card(312008)
   .increaseDamage(2)
   .done();
 
-/**
- * @id 331801
- * @name 风与自由
- * @description
- * 本回合中，轮到我方行动期间有对方角色被击倒时：本次行动结束后，我方可以再连续行动一次。
- * 可用次数：1
- * （牌组包含至少2个「蒙德」角色，才能加入牌组）
- */
-const [WindAndFreedom] = card(331801)
+const WindAndFreedomInEffect = combatStatus(331801) 
   .until("v4.0.0")
-  .toCombatStatus(303181)
   .oneDuration()
   .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
   .listenToAll()
@@ -331,3 +322,19 @@ const [WindAndFreedom] = card(331801)
     });
   })
   .done();
+
+/**
+ * @id 331801
+ * @name 风与自由
+ * @description
+ * 本回合中，轮到我方行动期间有对方角色被击倒时：本次行动结束后，我方可以再连续行动一次。
+ * 可用次数：1
+ * （牌组包含至少2个「蒙德」角色，才能加入牌组）
+ */
+const WindAndFreedom = card(331801)
+  .until("v4.0.0")
+  .costSame(1)
+  .filter((c) => c.$(`my standby characters`))
+  .combatStatus(WindAndFreedomInEffect)
+  .done();
+  
