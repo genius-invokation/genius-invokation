@@ -307,7 +307,14 @@ const EmblemOfSeveredFate = card(312008)
   .increaseDamage(2)
   .done();
 
-const WindAndFreedomInEffect = combatStatus(331801) 
+/**
+ * @id 303181
+ * @name 风与自由（生效中）
+ * @description
+ * 本回合中，轮到我方行动期间有对方角色被击倒时：本次行动结束后，我方可以再连续行动一次。
+ * 可用次数：1
+ */
+const WindAndFreedomInEffect = combatStatus(303181) 
   .until("v4.0.0")
   .oneDuration()
   .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
