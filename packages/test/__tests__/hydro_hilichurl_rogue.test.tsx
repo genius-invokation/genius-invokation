@@ -16,7 +16,7 @@
 import { Card, Character, DeclaredEnd, Equipment, ref, setup, State, Status } from "#test";
 import { Aura, SkillHandle } from "@gi-tcg/core/builder";
 import { Keqing, StellarRestoration } from "@gi-tcg/data/internal/characters/electro/keqing";
-import { HydroHilichurlRogue, MistBubbleSlime } from "@gi-tcg/data/internal/characters/hydro/hydro_hilichurl_rogue";
+import { HydroHilichurlRogue, MistBubbleSlime, SlashOfSurgingTides } from "@gi-tcg/data/internal/characters/hydro/hydro_hilichurl_rogue";
 
 test("MistBubbleLockdown: normal", async () => {
   const active = ref();
@@ -53,4 +53,17 @@ test("MistBubbleLockdown: switched during preparing", async () => {
   await c.expect("my prev").toBe(active);
   await c.expect(target).toHaveVariable({ health: 10 });
   await c.expect(`my equipment with definition id ${MistBubbleSlime}`).toNotExist();
+});
+
+test("SlashOfSurgingTides gain energy on critical damage", async () => {
+  const active = ref();
+  const c = setup(
+    <State>
+      <Character opp active health={2} aura={Aura.Cryo} />
+      <Character my active ref={active} def={HydroHilichurlRogue} energy={0} />
+    </State>
+  );
+  await c.me.skill(SlashOfSurgingTides);
+  c.expect("opp active").toNotExist(); // 被击倒
+  c.expect(active).toHaveVariable({ energy: 2 });
 });
