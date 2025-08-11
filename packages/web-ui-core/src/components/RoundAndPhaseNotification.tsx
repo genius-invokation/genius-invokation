@@ -54,13 +54,13 @@ export function RoundAndPhaseNotification(
   });
   return (
     <div
-      class={`grid grid-cols-1 grid-rows-1 justify-items-center items-center pointer-events-none select-none group ${props.class} children:row-span-full children:col-span-full`}
+      class={`grid grid-cols-1 grid-rows-1 justify-items-center items-center pointer-events-none select-none ${props.class} children:row-span-full children:col-span-full`}
       data-opp={opp()}
     >
       <Switch>
         <Match when={typeof props.info.value === "number"}>
           <div
-            class="w-192 h-6 flex flex-row justify-center items-center bg-gradient-to-r from-yellow-600/0 via-yellow-600 to-yellow-600/0 text-white animate-[phase-notification_500ms_both] data-[delay]:animate-[phase-notification_500ms_800ms_both]"
+            class="w-210 h-6 flex flex-row justify-center items-center action-hint text-#f5ebd2 font-bold text-3.5 animate-[phase-notification_500ms_both] data-[delay]:animate-[phase-notification_500ms_800ms_both]"
             bool:data-delay={props.info.showRound}
           >
             {PHASE_TYPE_TEXT_MAP[props.info.value as PbPhaseType]}
@@ -71,18 +71,24 @@ export function RoundAndPhaseNotification(
             props.info.value === "action" || props.info.value === "declareEnd"
           }
         >
-          <div class="w-192 h-6 flex flex-row justify-center items-center bg-gradient-to-r group-data-[opp=true]:from-blue-200/0 group-data-[opp=true]:via-blue-200 group-data-[opp=true]:to-blue-200/0 group-data-[opp=false]:from-yellow-200/0 group-data-[opp=false]:via-yellow-200 group-data-[opp=false]:to-yellow-200/0 group-data-[opp=true]:text-blue-700 group-data-[opp=false]:text-yellow-700 animate-[phase-notification_500ms_both]">
+          <div
+            class="w-210 h-6 flex flex-row justify-center items-center font-bold text-3.5 action-hint-who animate-[phase-notification_500ms_both]"
+            bool:data-opp={opp()}
+          >
             {opp() ? "对方" : "我方"}
-            {props.info.value === "action" ? "行动" : "宣布结束"}
-            <Show when={props.info.value === "declareEnd"}>
-              ，获得{isFirst() ? "后手" : "先手"}
+            {props.info.value === "action" ? "行动" : "宣布回合结束"}
+            <Show when={props.info.value === "declareEnd" && !isFirst()}>
+              {"，获得先手"}
             </Show>
           </div>
         </Match>
       </Switch>
       <Show when={props.info.showRound}>
-        <div class="w-192 p-3 flex flex-col justify-center items-center gap-2 bg-gradient-to-r from-gray-200/0 via-gray-200 to-gray-200/0 text-gray-700 animate-[phase-notification_800ms_both]">
-          <h5 class="font-bold text-lg">第 {props.roundNumber} 回合</h5>
+        <div
+          class="w-210 h-6 pb-6 flex flex-col justify-center items-center font-bold text-3.5 action-hint-who animate-[phase-notification_800ms_both]"
+          bool:data-opp={props.currentTurn !== props.who}
+        >
+          <h5 class="font-bold text-3">第 {props.roundNumber} 回合</h5>
           <span>{props.currentTurn === props.who ? "我方" : "对方"}先手</span>
         </div>
       </Show>

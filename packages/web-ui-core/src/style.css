@@ -325,6 +325,32 @@
     );
   }
 
+  .action-hint-who {
+    background: linear-gradient(
+      to right,
+      #fce6b100 0%,
+      #fce6b180 30%,
+      #ffffccff 40%,
+      #ffffccff 60%,
+      #fce6b180 70%,
+      #fce6b100 100%
+    );
+    color: #a0703b;
+  }
+
+  .action-hint-who[data-opp] {
+    background: linear-gradient(
+      to right,
+      #a6cdff00 0%,
+      #a6cdff80 30%,
+      #e6ffffff 40%,
+      #e6ffffff 60%,
+      #a6cdff80 70%,
+      #a6cdff00 100%
+    );
+    color: #46648b;
+  }
+
   .playerinfo-box {
     background-image: linear-gradient(to right, #deab65 25%, #845f39 100%);
     border-color: #ffd89f;
