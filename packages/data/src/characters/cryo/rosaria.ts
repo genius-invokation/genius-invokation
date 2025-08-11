@@ -116,7 +116,7 @@ export const RitesOfTermination = skill(11133)
   .damage(DamageType.Cryo, 1)
   .combatStatus(ScopeOutSoftSpots, "my", {
     overrideVariables: {
-      usage: 2
+      layer: 2
     }
   })
   .summon(EvercoldFrostlance)
