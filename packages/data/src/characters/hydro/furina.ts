@@ -35,12 +35,14 @@ export const SeatsSacredAndSecular = card(112113)
       const summon = c.$(`my summon with definition id ${SalonMembers}`);
       if (summon) {
         c.transformDefinition<"summon">(summon, SingerOfManyWaters)
+        summon.setVariable("hintIcon", DamageType.Heal);
       }
     } else {
       c.transformDefinition(furina, FurinaPneuma);
       const summon = c.$(`my summon with definition id ${SingerOfManyWaters}`);
       if (summon) {
         c.transformDefinition<"summon">(summon, SalonMembers)
+        summon.setVariable("hintIcon", DamageType.Hydro);
       }
     }
   })
