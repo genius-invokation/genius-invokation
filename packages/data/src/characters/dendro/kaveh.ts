@@ -27,12 +27,12 @@ import { DendroCore } from "../../commons";
 export const BurstScan = combatStatus(117082)
   .on("beforeAction", (c) => c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`))
   .usage(1, { append: { limit: 3 }, autoDecrease: false })
-  .usagePerRound(1, { autoDecrease: false })
   .listenToAll()
   .do((c) => {
     c.disposeCard(c.player.pile[0]);
   })
   .on("disposeCard", (c, e) => e.via?.caller.id === c.self.id)
+  .usagePerRound(1, { autoDecrease: false })
   .do((c, e) => {
     c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)?.consumeUsage(1);
     const cardDef = e.card.definition;
