@@ -45,7 +45,7 @@ export const FierySanctumField = summon(113093)
   .combatStatus(FierySanctumsProtection)
   .on("actionPhase")
   .combatStatus(FierySanctumsProtection)
-  .on("dispose")
+  .on("selfDispose")
   .do((c) => {
     c.$(`my combat status with definition id ${FierySanctumsProtection}`)?.dispose();
   })
