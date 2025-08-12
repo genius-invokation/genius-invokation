@@ -608,6 +608,9 @@ export class SkillExecutor {
             requestBy: arg.via,
           });
           const eventArg = new EventArg(this.state);
+          if (!(0, skill.filter)(this.state, skillInfo, eventArg)) {
+            continue;
+          }
           await this.finalizeSkill(skillInfo, eventArg);
         }
       } else {

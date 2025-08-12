@@ -20,7 +20,7 @@ const GildedDreams = card(312018)
       c.generateDice(DiceType.Omni, 1);
     }
   })
-  .on("damaged", (c, e) => !e.target.isMine() && e.getReaction())
+  .on("damaged", (c, e) => !e.target.isMine() && c.self.master.isActive() && e.getReaction())
   .listenToAll()
   .usagePerRound(2)
   .drawCards(1)
