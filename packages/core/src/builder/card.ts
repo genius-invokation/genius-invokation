@@ -89,7 +89,7 @@ export type TargetKindOfQuery<Q extends TargetQuery> = GuessedTypeOfQuery<Q>;
 
 const SATIATED_ID = 303300 as StatusHandle;
 
-type TalentRequirement = "action" | "active" | "none";
+type TalentRequirement = "action" | "actionSkill" | "active" | "none";
 
 export interface FoodOption {
   /** 只允许对受伤角色打出 */
@@ -389,8 +389,10 @@ export class CardBuilder<
   ): `${string} character ${string}` {
     this.tags("talent");
     let extraCond = "";
-    if (requires === "action") {
+    if (requires === "action" || requires === "actionSkill") {
       this.tags("action");
+    }
+    if (requires === "actionSkill") {
       // 出战行动的天赋牌，要求目标未被控制
       extraCond = "and not has status with tag (disableSkill)";
     }
@@ -414,7 +416,7 @@ export class CardBuilder<
 
   talent(
     ch: CharacterHandle | CharacterHandle[],
-    requires: TalentRequirement = "action",
+    requires: TalentRequirement = "actionSkill",
   ) {
     const equipQuery = this.prepareTalent(ch, requires);
     return this.equipment(equipQuery).tags("talent");
