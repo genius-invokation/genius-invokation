@@ -161,7 +161,7 @@ export const Arlecchino = character(1314)
 export const AllReprisalsAndArrearsMineToBear: EquipmentHandle = card(213141)
   .since("v5.4.0")
   .costPyro(1)
-  .talent(Arlecchino)
+  .talent(Arlecchino, "action")
   .on("enter")
   .characterStatus(BondOfLife, "@master", {
     overrideVariables: { usage: 3 }
