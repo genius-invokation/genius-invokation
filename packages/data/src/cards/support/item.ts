@@ -198,12 +198,15 @@ export const Kusava = card(323008)
   .support("item")
   .variable("memory", 0)
   .variable("cardPlayed", 0, { visible: false })
-  .on("actionPhase", (c) => c.getVariable("memory") < 2)
+  .on("actionPhase")
   .do((c) => {
-    const disposed = c.disposeMaxCostHands(2 - c.getVariable("memory"));
-    const count = disposed.length;
-    c.addVariableWithMax("memory", count, 2);
-    c.setVariable("cardPlayed", 0)
+    const memory = c.getVariable("memory");
+    if (memory < 2) {
+      const disposed = c.disposeMaxCostHands(2 - memory);
+      const count = disposed.length;
+      c.addVariableWithMax("memory", count, 2);
+    }
+    c.setVariable("cardPlayed", 0);
   })
   .on("playCard")
   .setVariable("cardPlayed", 1)
