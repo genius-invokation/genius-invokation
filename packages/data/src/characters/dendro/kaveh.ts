@@ -39,7 +39,7 @@ export const BurstScan = combatStatus(117082)
     const cardDef = e.card.definition;
     const cost = diceCostOfCard(cardDef);
     c.damage(DamageType.Dendro, cost);
-    c.emitCustomEvent(ShouldTriggerTalent, e.card);
+    c.emitCustomEvent(ShouldTriggerTalent, e.card.latest());
   })
   .done();
 
