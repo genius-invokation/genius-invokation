@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "solid-element": "^1.8.0",
-    "solid-js": "^",
+    "solid-js": "catalog:",
     "@gi-tcg/web-ui-core": "workspace:*",
     "@gi-tcg/detail-log-viewer": "workspace:*",
-    "vite": "^",
-    "vite-plugin-dts": "^",
-    "vite-plugin-solid": "^"
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:",
+    "vite-plugin-solid": "catalog:"
   }
 }
