@@ -22,7 +22,7 @@
     "build": "bun build:vite"
   },
   "peerDependencies": {
-    "solid-js": "catalog:"
+    "solid-js": "^"
   },
   "dependencies": {
     "@gi-tcg/assets-manager": "workspace:*",
@@ -38,11 +38,11 @@
     "eslint": "^8.56.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-solid": "^0.13.1",
-    "rollup-plugin-node-externals": "catalog:",
+    "rollup-plugin-node-externals": "^",
     "solid-devtools": "^0.29.2",
-    "unocss": "catalog:",
-    "vite": "catalog:",
-    "vite-plugin-dts": "catalog:",
-    "vite-plugin-solid": "catalog:"
+    "unocss": "^",
+    "vite": "^",
+    "vite-plugin-dts": "^",
+    "vite-plugin-solid": "^"
   }
 }

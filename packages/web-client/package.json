@@ -18,11 +18,11 @@
     "@solid-primitives/storage": "^4.2.1",
     "@solidjs/router": "^0.13.5",
     "@una-ui/preset": "^0.34.0-beta.1",
-    "@unocss/reset": "catalog:",
+    "@unocss/reset": "^",
     "axios": "^1.7.2",
     "core-js": "3.38.1",
     "dayjs": "^1.11.13",
-    "solid-js": "catalog:"
+    "solid-js": "^"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
@@ -34,12 +34,12 @@
     "@types/core-js": "^2.5.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@unocss/preset-icons": "catalog:",
+    "@unocss/preset-icons": "^",
     "eslint": "^8.56.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-solid": "^0.13.1",
-    "unocss": "catalog:",
-    "vite": "catalog:",
-    "vite-plugin-solid": "catalog:"
+    "unocss": "^",
+    "vite": "^",
+    "vite-plugin-solid": "^"
   }
 }

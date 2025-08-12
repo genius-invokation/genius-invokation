@@ -13,9 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, DiceType } from "@gi-tcg/core/builder";
+import { CardState, character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, DiceType, customEvent } from "@gi-tcg/core/builder";
 import { BountifulCore } from "../hydro/nilou";
 import { DendroCore } from "../../commons";
+
+export const ShouldTriggerTalent = customEvent<CardState>("kaveh/shouldTriggerTalent");
 
 /**
  * @id 117082
@@ -26,26 +28,18 @@ import { DendroCore } from "../../commons";
  */
 export const BurstScan = combatStatus(117082)
   .on("beforeAction", (c) => c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`))
-  .usage(1, { append: { limit: 3 }, autoDecrease: false })
   .listenToAll()
   .do((c) => {
     c.disposeCard(c.player.pile[0]);
   })
   .on("disposeCard", (c, e) => e.via?.caller.id === c.self.id)
-  .usagePerRound(1, { autoDecrease: false })
+  .usageCanAppend(1, 3)
   .do((c, e) => {
     c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)?.consumeUsage(1);
     const cardDef = e.card.definition;
     const cost = diceCostOfCard(cardDef);
     c.damage(DamageType.Dendro, cost);
-    if (c.$(`my equipment with definition id ${TheArtOfBudgeting}`)) {
-      c.createHandCard(cardDef.id as CardHandle);
-      if (cardDef.tags.includes("place")) {
-        c.combatStatus(TheArtOfBudgetingInEffect);
-      }
-      c.consumeUsagePerRound();
-    }
-    c.consumeUsage();
+    c.emitCustomEvent(ShouldTriggerTalent, e.card);
   })
   .done();
 
@@ -150,4 +144,13 @@ export const TheArtOfBudgeting = card(217081)
   .talent(Kaveh)
   .on("enter")
   .useSkill(ArtisticIngenuity)
+  .on(ShouldTriggerTalent)
+  .usagePerRound(1)
+  .do((c, e) => {
+    const cardDef = e.arg.definition;
+    c.createHandCard(cardDef.id as CardHandle);
+    if (cardDef.tags.includes("place")) {
+      c.combatStatus(TheArtOfBudgetingInEffect);
+    }
+  })
   .done();

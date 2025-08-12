@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "rxjs": "^7.8.1",
-    "typescript": "catalog:",
+    "typescript": "^",
     "@gi-tcg/core": "workspace:*",
     "@types/vscode": "^1.96.0",
     "@types/mocha": "^10.0.10",

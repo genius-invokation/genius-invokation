@@ -18,7 +18,7 @@
     "build": "bunx --bun vite build"
   },
   "peerDependencies": {
-    "solid-js": "catalog:"
+    "solid-js": "^"
   },
   "dependencies": {
     "@gi-tcg/utils": "workspace:*",
@@ -27,10 +27,10 @@
   "devDependencies": {
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
-    "unocss": "catalog:",
-    "vite": "catalog:",
-    "vite-plugin-dts": "catalog:",
-    "vite-plugin-solid": "catalog:",
-    "rollup-plugin-node-externals": "catalog:"
+    "unocss": "^",
+    "vite": "^",
+    "vite-plugin-dts": "^",
+    "vite-plugin-solid": "^",
+    "rollup-plugin-node-externals": "^"
   }
 }
