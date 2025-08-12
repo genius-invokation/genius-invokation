@@ -553,7 +553,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   emitCustomEvent(event: CustomEvent<void>): ShortcutReturn<Meta>;
   emitCustomEvent<T, U extends T & { [ReactiveStateSymbol]?: never }>(
     event: CustomEvent<T>,
-    arg?: U, // forbidden reactive
+    arg: U, // forbidden reactive
   ): ShortcutReturn<Meta>;
   emitCustomEvent<T>(event: CustomEvent<T>, arg?: T) {
     this.emitEvent(
