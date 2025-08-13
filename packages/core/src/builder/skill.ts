@@ -477,7 +477,7 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
       e.reason === "draw" &&
-      area.type === "hands"
+      (area.type === "hands" || e.overflowed)
     );
   }),
   handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {

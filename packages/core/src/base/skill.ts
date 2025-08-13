@@ -1157,6 +1157,7 @@ export class HandCardInsertedEventArg extends PlayerEventArg {
     who: 0 | 1,
     public readonly card: CardState,
     public readonly reason: TransferCardM["reason"] | "create",
+    public readonly overflowed: boolean
   ) {
     super(state, who);
   }
