@@ -97,6 +97,23 @@ export class SkillExecutor {
       `skill caller: ${stringifyState(skillInfo.caller)}`,
     );
     const skillDef = skillInfo.definition;
+    const { who } = getEntityArea(this.state, skillInfo.caller.id);
+
+    // 重置下落攻击判定。
+    // 官方描述：“角色被切换为「出战角色」后，本回合内的下一个战斗行动若为「普通攻击」，则被视为「下落攻击」”
+    // 中的“下一个战斗行动”实际为“下一此使用技能（非特技）”
+    // 也即下一次使用技能（非特技）时，不再判定下落攻击， canPlunging 为 false
+    if (
+      skillDef.initiativeSkillConfig &&
+      skillDef.initiativeSkillConfig.skillType !== "technique"
+    ) {
+      this.mutate({
+        type: "setPlayerFlag",
+        who,
+        flagName: "canPlunging",
+        value: false,
+      });
+    }
 
     const oldState = this.state;
     this.mutator.notify();
@@ -138,7 +155,6 @@ export class SkillExecutor {
         }
       }
       if (skillDef.initiativeSkillConfig || newState !== oldState) {
-        const { who } = getEntityArea(this.state, skillInfo.caller.id);
         prependMutations.push({
           $case: "skillUsed",
           who,

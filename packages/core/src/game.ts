@@ -740,24 +740,6 @@ export class Game {
         });
       }
 
-      // 重置下落攻击判定。
-      // 官方描述：“角色被切换为「出战角色」后，本回合内的下一个战斗行动若为「普通攻击」，则被视为「下落攻击」”
-      // 中的“下一个战斗行动”实际为“下一个使用技能（非特技）的战斗行动”
-      // 也即执行下一个使用技能（非特技）的战斗行动时，不再判定下落攻击， canPlunging 为 false
-      if (
-        !actionInfo.fast &&
-        actionInfo.type === "useSkill" &&
-        actionInfo.skill.definition.initiativeSkillConfig.skillType !==
-          "technique"
-      ) {
-        this.mutate({
-          type: "setPlayerFlag",
-          who,
-          flagName: "canPlunging",
-          value: false,
-        });
-      }
-
       switch (actionInfo.type) {
         case "useSkill": {
           const callerArea = getEntityArea(this.state, activeCh().id);
