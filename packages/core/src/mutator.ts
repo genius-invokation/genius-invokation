@@ -629,12 +629,14 @@ export class StateMutator {
 
   insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
     const who = payload.who;
-    const reason = payload.type === "createCard" ? "create" as const : payload.reason;
+    const reason =
+      payload.type === "createCard" ? ("create" as const) : payload.reason;
     this.mutate(payload);
     const state: CardState = {
       ...payload.value,
       [StateSymbol]: "card",
     };
+    let overflowed = false;
     if (
       this.state.players[who].hands.length > this.state.config.maxHandsCount
     ) {
@@ -645,15 +647,20 @@ export class StateMutator {
         oldState: state,
         reason: "overflow",
       });
-      return [];
-    } else {
-      return [
-        [
-          "onHandCardInserted",
-          new HandCardInsertedEventArg(this.state, who, state, reason),
-        ],
-      ];
+      overflowed = true;
     }
+    return [
+      [
+        "onHandCardInserted",
+        new HandCardInsertedEventArg(
+          this.state,
+          who,
+          state,
+          reason,
+          overflowed,
+        ),
+      ],
+    ];
   }
 
   drawCardsPlain(who: 0 | 1, count: number): EventAndRequest[] {
