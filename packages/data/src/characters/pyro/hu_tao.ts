@@ -42,6 +42,8 @@ export const ParamitaPapilio = status(113071)
   .changeDamageType(DamageType.Pyro)
   .on("increaseSkillDamage", (c, e) => e.type === DamageType.Pyro)
   .increaseDamage(1)
+  .if((c, e) => e.viaChargedAttack())
+  .characterStatus(BloodBlossom, "@damage.target")
   .done();
 
 /**
@@ -55,8 +57,6 @@ export const SecretSpearOfWangsheng = skill(13071)
   .costPyro(1)
   .costVoid(2)
   .damage(DamageType.Physical, 2)
-  .if((c) => c.self.hasStatus(ParamitaPapilio) && c.skillInfo.charged)
-  .characterStatus(BloodBlossom, "opp active")
   .done();
 
 /**
