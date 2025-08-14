@@ -1629,10 +1629,10 @@ export function Chessboard(props: ChessboardProps) {
   const fullscreenHandler = () => {
     setIsFullscreen(document.fullscreenElement === containerElement);
   };
-  document.addEventListener("fullscreenchange", fullscreenHandler);
+
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      containerElement.requestFullscreen();
+      containerElement.requestFullscreen().catch(() => {});
     } else {
       document.exitFullscreen();
     }
@@ -1651,6 +1651,7 @@ export function Chessboard(props: ChessboardProps) {
       OPP_CARD_CLICK_EVENT_NAME,
       oppChessboardCardClickHandler,
     );
+    document.addEventListener("fullscreenchange", fullscreenHandler);
   });
   onCleanup(() => {
     resizeObserver.disconnect();
@@ -1975,7 +1976,10 @@ export function Chessboard(props: ChessboardProps) {
                   &#10005;
                 </button>
               </Show>
-              <FullScreenToggleButton isFullScreen={isFullscreen()} onClick={toggleFullscreen} />
+              <FullScreenToggleButton
+                isFullScreen={isFullscreen()}
+                onClick={toggleFullscreen}
+              />
               <Show when={!hasOppChessboard()}>
                 <HistoryToggleButton
                   onClick={() => setShowHistory((v) => !v)}
