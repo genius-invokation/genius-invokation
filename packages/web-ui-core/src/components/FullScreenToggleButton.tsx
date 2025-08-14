@@ -12,13 +12,16 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import VisibilityIcon from "../svg/VisibilityIcon.svg?fb";
+import { Show } from "solid-js";
+import FullScreen from "../svg/FullScreen.svg?fb";
+import NormalScreen from "../svg/NormalScreen.svg?fb";
 
-export interface SpecialViewToggleButtonProps {
+export interface FullScreenToggleButtonProps {
+  isFullScreen: boolean;
   onClick?: () => void;
 }
 
-export function SpecialViewToggleButton(props: SpecialViewToggleButtonProps) {
+export function FullScreenToggleButton(props: FullScreenToggleButtonProps) {
   return (
     <button
       class="h-8 w-8 flex items-center justify-center rounded-full b-2 bg-#e9e2d3 text-black/70 b-black/70 hover:b-white active:bg-#cfa56a active:b-#91744a transition-colors line-height-none cursor-pointer"
@@ -26,7 +29,12 @@ export function SpecialViewToggleButton(props: SpecialViewToggleButtonProps) {
         props.onClick?.();
       }}
     >
-      <VisibilityIcon class="h-5 w-5" />
+      <Show
+        when={!props.isFullScreen}
+        fallback={<NormalScreen class="h-5 w-5" />}
+      >
+        <FullScreen class="h-5 w-5" />
+      </Show>
     </button>
   );
 }

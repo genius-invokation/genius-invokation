@@ -129,6 +129,7 @@ import { SwitchHandsView } from "./SwitchHandsView";
 import { HistoryToggleButton, HistoryPanel } from "./HistoryViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
+import { FullScreenToggleButton } from "./FullScreenToggleButton";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
@@ -1624,6 +1625,18 @@ export function Chessboard(props: ChessboardProps) {
       new CustomEvent(OPP_CARD_BLUR_EVENT_NAME, { bubbles: true }),
     );
   };
+  const [isFullscreen, setIsFullscreen] = createSignal(false);
+  const fullscreenHandler = () => {
+    setIsFullscreen(document.fullscreenElement === containerElement);
+  };
+  document.addEventListener("fullscreenchange", fullscreenHandler);
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   onMount(() => {
     setSpecialViewVisible(!localProps.liveStreamingMode);
@@ -1646,6 +1659,7 @@ export function Chessboard(props: ChessboardProps) {
       OPP_CARD_CLICK_EVENT_NAME,
       oppChessboardCardClickHandler,
     );
+    document.removeEventListener("fullscreenchange", fullscreenHandler);
   });
   return (
     <div
@@ -1950,7 +1964,7 @@ export function Chessboard(props: ChessboardProps) {
             <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
               <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
                 <button
-                  class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-1 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
+                  class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-2 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
                   title="放弃对局"
                   onClick={async () => {
                     if (await confirm("确定放弃对局吗？")) {
@@ -1961,6 +1975,7 @@ export function Chessboard(props: ChessboardProps) {
                   &#10005;
                 </button>
               </Show>
+              <FullScreenToggleButton isFullScreen={isFullscreen()} onClick={toggleFullscreen} />
               <Show when={!hasOppChessboard()}>
                 <HistoryToggleButton
                   onClick={() => setShowHistory((v) => !v)}
