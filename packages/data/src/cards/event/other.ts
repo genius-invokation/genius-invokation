@@ -1652,7 +1652,7 @@ export const EremiteTeatime = card(332040)
       const candidates = c.randomSubset(cards, 3);
       c.selectAndCreateHandCard(candidates);
     }
-    if (new Set(nations).size < characters.length) {
+    if (new Set(nations).size < nations.length) {
       const cards = c.allCardDefinitions("food");
       const candidates = c.randomSubset(cards, 3);
       c.selectAndCreateHandCard(candidates);
