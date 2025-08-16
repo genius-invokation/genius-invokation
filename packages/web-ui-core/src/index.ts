@@ -35,4 +35,5 @@ export {
   type ClientOption,
   type Client,
   type ClientChessboardProps,
+  type WebUiPlayerIO,
 } from "./client.tsx";

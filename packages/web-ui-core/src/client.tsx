@@ -97,12 +97,13 @@ export interface ClientOption {
   disableAction?: boolean;
 }
 
-export interface WebUiPlayerIo extends CancellablePlayerIO {
+export interface WebUiPlayerIO extends CancellablePlayerIO {
+  cancelRpc: () => void;
   oppController: IOppChessboardController;
 }
 
 export type Client = [
-  io: WebUiPlayerIo,
+  io: WebUiPlayerIO,
   Chessboard: (props: ClientChessboardProps) => JSX.Element,
 ];
 
@@ -278,7 +279,7 @@ export function createClient(who: 0 | 1, option: ClientOption): Client {
     },
   });
 
-  const io: WebUiPlayerIo = {
+  const io: WebUiPlayerIO = {
     oppController,
     cancelRpc,
     notify: ({ mutation, state }) => {

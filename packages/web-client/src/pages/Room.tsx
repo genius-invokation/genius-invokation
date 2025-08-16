@@ -41,15 +41,11 @@ import {
   type Notification,
   type RpcRequest,
 } from "@gi-tcg/typings";
-import {
-  Client,
-  createClient,
-  createClientForOpp,
-  PlayerIOWithCancellation,
-} from "@gi-tcg/web-ui-core";
+import { Client, createClient, WebUiPlayerIO } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import { Dynamic } from "solid-js/web";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
+import { CancellablePlayerIO } from "@gi-tcg/core";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -155,7 +151,11 @@ const createReconnectSse = <T,>(
   };
 
   return [
-    connect,
+    () => {
+      cancelled = false;
+      activating = false;
+      connect();
+    },
     () => {
       cancelled = true;
       activating = false;
@@ -173,7 +173,7 @@ export function Room() {
   const action = !!searchParams.action;
   const playerId = searchParams.player;
   const id = roomCodeToId(code);
-  const [playerIo, setPlayerIo] = createSignal<PlayerIOWithCancellation>();
+  const [playerIo, setPlayerIo] = createSignal<WebUiPlayerIO>();
   const [initialized, setInitialized] = createSignal<InitializedPayload>();
   const [loading, setLoading] = createSignal(true);
   const [failed, setFailed] = createSignal<null | string>(null);
@@ -181,9 +181,7 @@ export function Room() {
 
   const [showOpp, setShowOpp] = createSignal(false);
   const [liveMode, setLiveMode] = createSignal(true);
-  const [oppChessboard, setOppChessboard] = createSignal<Component>();
-  const [oppPlayerIo, setOppPlayerIo] =
-    createSignal<PlayerIOWithCancellation>();
+  const [oppPlayerIo, setOppPlayerIo] = createSignal<CancellablePlayerIO>();
 
   const reportStreamError = async (e: Error) => {
     if (e instanceof AxiosError) {
@@ -375,12 +373,13 @@ export function Room() {
   const [fetchOppNotification, abortOppNotification] = createReconnectSse(
     () => `rooms/${id}/players/${getOppPlayerId()}/notification`,
     (payload: any) => {
-      setLoading(false);
       switch (payload.type) {
         case "initialized": {
-          const [oppPlayerIo, OppChessboard] = createClientForOpp(payload.who);
-          setOppPlayerIo(oppPlayerIo);
-          setOppChessboard(() => OppChessboard);
+          const myPlayerIo = playerIo();
+          if (myPlayerIo) {
+            const oppPlayerIo = myPlayerIo.oppController.open();
+            setOppPlayerIo(oppPlayerIo);
+          }
           break;
         }
         case "notification": {
@@ -395,12 +394,12 @@ export function Room() {
                 mut.mutation.value.status === PbPlayerStatus.UNSPECIFIED,
             )
           ) {
-            oppPlayerIo()?.cancelRpc();
+            oppPlayerIo()?.cancelRpc?.();
           }
           break;
         }
         case "rpc": {
-          oppPlayerIo()?.cancelRpc();
+          oppPlayerIo()?.cancelRpc?.();
           setTimeout(() => {
             oppPlayerIo()
               ?.rpc(payload.request)
@@ -423,6 +422,9 @@ export function Room() {
   createEffect(() => {
     if (showOpp()) {
       fetchOppNotification();
+    } else {
+      abortOppNotification();
+      playerIo()?.oppController.close();
     }
   });
 
@@ -476,7 +478,12 @@ export function Room() {
         bool:data-mobile={mobile() && chessboard()}
       >
         <div class="group-data-[mobile]:fixed top-0 right-0 z-100 group-data-[mobile]:translate-x-100% group-data-[mobile]-rotate-90 transform-origin-top-left flex group-data-[mobile]:flex-col flex-row group-data-[mobile]:items-start items-center has-[.visibility-control:checked]:bg-white group-data-[mobile]:pl-[calc(var(--root-padding-top)+1rem)] group-data-[mobile]:p-4 rounded-br-2xl">
-          <input hidden type="checkbox" class="peer visibility-control" id={checkboxId} />
+          <input
+            hidden
+            type="checkbox"
+            class="peer visibility-control"
+            id={checkboxId}
+          />
           <label
             for={checkboxId}
             class="hidden ml-4 mb-3 group-data-[mobile]:inline-flex btn btn-soft-primary peer-checked:btn-solid-primary text-primary peer-checked:text-white text-1.2rem h-8 w-8 p-0 items-center justify-center opacity-50 peer-checked:opacity-100"
@@ -618,11 +625,7 @@ export function Room() {
                   </div>
                 }
                 liveStreamingMode={showOpp() && liveMode()}
-              >
-                <Show when={showOpp()}>
-                  <Dynamic<Client[1]> component={oppChessboard()} />
-                </Show>
-              </Dynamic>
+              />
             </div>
           )}
         </Show>
