@@ -271,9 +271,7 @@ export function createClient(who: 0 | 1, option: ClientOption): Client {
     assetsManager,
     who: flip(who),
     onUpdate: async (info) => {
-      console.log("Waiting...", {...info})
       await uiQueue.push(async () => {});
-      console.log("Done", {...info})
       setOpp(info);
       forceRefreshData();
     },
