@@ -13,26 +13,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { For, Match, Switch } from "solid-js";
+import { For, Match, Show, Switch } from "solid-js";
 import { CardFace } from "./Card";
 import { DiceType } from "@gi-tcg/typings";
 import { DiceCostAsync } from "./SelectCardView";
 import { Dice } from "./Dice";
+import type { PbPlayerState } from "@gi-tcg/core";
+import type { ChessboardViewType } from "./Chessboard";
+import { useUiContext } from "../hooks/context";
 
-export interface MiniViewProps {
+export interface MiniSpecialViewProps {
   viewType: "switching" | "selecting" | "rerolling";
   ids: number[] | DiceType[];
   nameGetter: (id: number) => string | undefined;
-  opp: boolean;
+  opp?: boolean;
 }
 
-export function MiniView(props: MiniViewProps) {
+function MiniView(props: MiniSpecialViewProps) {
   const whoText = () => (props.opp ? "对方" : "我方");
   return (
     <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% pointer-events-none">
       <div
         class="absolute w-91.5 h-43 right--66.5 flex flex-col items-center justify-center gap-4 select-none mini-view bg-green-50 b-5 b-#443322 rounded-4"
-        data-opp={props.opp}
+        data-opp={!!props.opp}
       >
         <Switch>
           <Match when={props.viewType === "switching"}>
@@ -97,5 +100,48 @@ export function MiniView(props: MiniViewProps) {
         </Switch>
       </div>
     </div>
+  );
+}
+
+export interface MiniSpecialViewGroupProps {
+  opp?: boolean;
+  viewType: ChessboardViewType;
+  player: PbPlayerState;
+  selectCardCandidates: number[];
+}
+
+export function MiniSpecialViewGroup(props: MiniSpecialViewGroupProps) {
+  const { assetsManager } = useUiContext();
+  return (
+    <>
+      <Show when={props.viewType === "switchHands"}>
+        <MiniView
+          viewType="switching"
+          ids={props.player.handCard.map((card) => card.definitionId)}
+          nameGetter={() => void 0}
+          opp={props.opp}
+        />
+      </Show>
+      <Show when={props.viewType === "selectCard"}>
+        <MiniView
+          viewType="selecting"
+          ids={props.selectCardCandidates}
+          nameGetter={(name) => assetsManager.getNameSync(name)}
+          opp={props.opp}
+        />
+      </Show>
+      <Show
+        when={
+          props.viewType === "rerollDice" || props.viewType === "rerollDiceEnd"
+        }
+      >
+        <MiniView
+          viewType="rerolling"
+          ids={props.player.dice}
+          nameGetter={() => void 0}
+          opp={props.opp}
+        />
+      </Show>
+    </>
   );
 }
