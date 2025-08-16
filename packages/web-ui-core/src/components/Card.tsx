@@ -202,6 +202,7 @@ export function Card(props: CardProps) {
       ref={el}
       class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transform-origin-tl card pointer-events-auto data-[dragging-end]:pointer-events-none"
       style={style()}
+      bool:data-opp-hand={props.kind === "oppHand"}
       bool:data-hidden={props.hidden}
       bool:data-transition-transform={props.enableTransition}
       bool:data-shadow={props.enableShadow}
@@ -269,7 +270,7 @@ export function Card(props: CardProps) {
         />
       </Show>
       <DiceCost
-        class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1"
+        class="absolute left-1.8 top--1 translate-x--50% backface-hidden flex flex-col gap-1 [&:where([data-opp-hand]>*)]:rotate-180"
         cost={data().definitionCost}
         size={36}
         realCost={realCost()}

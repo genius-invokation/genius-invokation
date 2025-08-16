@@ -26,7 +26,7 @@ import {
   type DeckConfig,
   mergeIo,
 } from "@gi-tcg/core";
-import { createClient, createClientForOpp } from "./client";
+import { createClient } from "./client";
 import { AssetsManager } from "@gi-tcg/assets-manager";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 
@@ -56,7 +56,6 @@ function App() {
     apiEndpoint: `https://beta.assets.gi-tcg.guyutongxue.site/api/v3`,
   });
   const [io0, Chessboard0] = createClient(0, { assetsManager });
-  const [io0Opp, Chessboard0Opp] = createClientForOpp(1, { assetsManager });
   const [io1, Chessboard1] = createClient(1, {
     assetsManager,
     disableDelicateUi: true,
@@ -72,6 +71,8 @@ function App() {
     });
 
     const game = new Game(state);
+
+    const io0Opp = io0.oppController.open();
 
     game.players[0].io = io0;
     game.players[1].io = mergeIo(io1, io0Opp);
@@ -90,14 +91,22 @@ function App() {
         rotation={0}
         style={{ width: "80vw", height: "80vh" }}
         autoHeight={false}
+        liveStreamingMode
+        myPlayerInfo={{
+          avatarUrl: "https://http.cat/404",
+          name: "啊啊啊宝宝你是一个松松软软香香甜甜的小蛋糕",
+        }}
+      />
+      <Chessboard0
+        rotation={0}
+        style={{ width: "80vw", height: "80vh" }}
+        autoHeight={false}
         // liveStreamingMode
         myPlayerInfo={{
           avatarUrl: "https://http.cat/404",
           name: "啊啊啊宝宝你是一个松松软软香香甜甜的小蛋糕",
         }}
-      >
-        <Chessboard0Opp />
-      </Chessboard0>
+      />
       <Chessboard1
         style={{ width: "30vw", height: "96vw" }}
         autoHeight={false}

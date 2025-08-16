@@ -32,9 +32,7 @@ export {
 export {
   EMPTY_GAME_STATE,
   createClient,
-  createClientForOpp,
   type ClientOption,
-  type PlayerIOWithCancellation,
   type Client,
   type ClientChessboardProps,
 } from "./client.tsx";

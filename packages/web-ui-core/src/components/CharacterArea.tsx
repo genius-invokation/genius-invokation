@@ -121,7 +121,6 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
     (-Math.atan((info.targetX - info.sourceX) / (info.targetY - info.sourceY)) *
       180) /
     Math.PI;
-  console.log({ ...info, rz });
   const diffX = info.targetX - info.sourceX;
   const diffY = info.targetY - info.sourceY;
   const rx = Math.sign(diffY);
@@ -411,7 +410,6 @@ export function CharacterArea(props: CharacterAreaProps) {
     }
     const damageType = props.uiState.animation.damageType;
     if (damageType > DamageType.Physical && damageType < DamageType.Piercing) {
-      console.log(DAMAGE_COLOR[damageType]);
       return `var(--c-${DAMAGE_COLOR[damageType]})`;
     }
   });
