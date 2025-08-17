@@ -31,8 +31,9 @@ export interface VariableDiffProps {
 export function VariableDiff(props: VariableDiffProps) {
   const increase = createMemo(
     () =>
-      props.direction !== PbModifyDirection.DECREASE &&
-      props.newValue >= props.oldValue,
+      props.newValue > props.oldValue ||
+      (props.newValue === props.oldValue &&
+        props.direction !== PbModifyDirection.DECREASE),
   );
   const backgroundColor = createMemo(() =>
     increase() ? "#6e9b3a" : props.defeated ? "#a25053" : "#d14f51",
