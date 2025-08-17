@@ -36,6 +36,7 @@ import type {
   PlayingCardInfo,
   ReactionInfo,
 } from "./components/Chessboard";
+import type { OppChessboardController } from "./opp";
 
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
@@ -80,7 +81,13 @@ export interface ParsedMutation {
   disposingEntities: number[];
 }
 
-export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
+export function parseMutations(
+  mutations: PbExposedMutation[],
+  oppController?: OppChessboardController,
+): ParsedMutation {
+  const oppKnownCardState =
+    !oppController || oppController.closed ? null : oppController.handCards;
+
   let playingCard: PlayingCardInfo | null = null;
   const animatingCards: AnimatingCardWithDestination[] = [];
   // 保证同一刻的同一卡牌区域的进出方向一致（要么全进要么全出）
@@ -111,7 +118,10 @@ export function parseMutations(mutations: PbExposedMutation[]): ParsedMutation {
       case "createCard":
       case "transferCard":
       case "removeCard": {
-        const card = mutation.value.card!;
+        let card = mutation.value.card!;
+        if (oppKnownCardState?.has(card.id)) {
+          card = oppKnownCardState.get(card.id)!;
+        }
         let showing = card.definitionId !== 0;
         if (mutation.$case === "removeCard") {
           if (

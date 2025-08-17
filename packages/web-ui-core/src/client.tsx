@@ -43,6 +43,7 @@ import {
 import type {
   ChooseActiveResponse,
   PbDiceType,
+  PbSkillInfo,
   PlayerIO,
   RpcResponsePayloadOf,
 } from "@gi-tcg/core";
@@ -62,7 +63,9 @@ import {
 } from "./history/parser";
 import { createStore, produce } from "solid-js/store";
 import type { Rotation } from "./components/TransformWrapper";
-import { OppChessboard } from "./components/OppChessboard";
+import type { CancellablePlayerIO } from "@gi-tcg/core";
+import { OppChessboardController, type IOppChessboardController, type OppInfo } from "./opp";
+import { flip } from "@gi-tcg/utils";
 
 const EMPTY_PLAYER_DATA: PbPlayerState = {
   activeCharacterId: 0,
@@ -94,12 +97,13 @@ export interface ClientOption {
   disableAction?: boolean;
 }
 
-export interface PlayerIOWithCancellation extends PlayerIO {
+export interface WebUiPlayerIO extends CancellablePlayerIO {
   cancelRpc: () => void;
+  oppController: IOppChessboardController;
 }
 
 export type Client = [
-  io: PlayerIOWithCancellation,
+  io: WebUiPlayerIO,
   Chessboard: (props: ClientChessboardProps) => JSX.Element,
 ];
 
@@ -118,11 +122,7 @@ export interface ClientChessboardProps extends ComponentProps<"div"> {
   gameEndExtra?: JSX.Element;
 }
 
-function createClientImpl(
-  Comp: Component<ChessboardProps>,
-  who: 0 | 1,
-  option: ClientOption,
-): Client {
+export function createClient(who: 0 | 1, option: ClientOption): Client {
   const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;
   const [data, setData] = createSignal<ChessboardData>({
     raw: [],
@@ -147,6 +147,7 @@ function createClientImpl(
   const [selectCardCandidates, setSelectCardCandidates] = createSignal<
     number[]
   >([]);
+  const [opp, setOpp] = createSignal<OppInfo | null>(null);
 
   const uiQueue = new AsyncQueue();
   let savedState: PbGameState | undefined = void 0;
@@ -243,10 +244,11 @@ function createClientImpl(
     if (!savedState) {
       return;
     }
-    const parsed = parseMutations([]);
+    const state = oppController.mergeState(savedState);
+    const parsed = parseMutations([], oppController);
     setData({
-      previousState: savedState,
-      state: savedState,
+      previousState: state,
+      state,
       ...parsed,
     } satisfies ChessboardData);
   };
@@ -265,21 +267,30 @@ function createClientImpl(
     recorder: new StateRecorder(),
   });
 
-  const io: PlayerIOWithCancellation = {
+  const oppController = new OppChessboardController({
+    assetsManager,
+    who: flip(who),
+    onUpdate: async (info) => {
+      await uiQueue.push(async () => {});
+      setOpp(info);
+      forceRefreshData();
+    },
+  });
+
+  const io: WebUiPlayerIO = {
+    oppController,
     cancelRpc,
     notify: ({ mutation, state }) => {
       if (!state) {
         return;
       }
       uiQueue.push(async () => {
-        const parsed = parseMutations(mutation);
+        state = oppController.mergeState(state!);
+        const parsed = parseMutations(mutation, oppController);
         setHistory(
           produce((history) => updateHistory(savedState, mutation, history)),
         );
         const { promise, resolve } = Promise.withResolvers<void>();
-        if (Comp === OppChessboard) {
-          resolve();
-        }
         setData({
           previousState: savedState ?? state,
           state,
@@ -361,7 +372,7 @@ function createClientImpl(
         assetsManager,
       }}
     >
-      <Comp
+      <Chessboard
         who={who}
         data={data()}
         actionState={actionState()}
@@ -374,20 +385,11 @@ function createClientImpl(
         onSwitchHands={onSwitchHands}
         onSelectCard={onSelectCard}
         onGiveUp={onGiveUp}
+        opp={opp()}
         {...props}
       />
     </UiContext.Provider>
   );
 
   return [io, Wrapper];
-}
-
-export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
-  return createClientImpl(Chessboard, who, option);
-}
-export function createClientForOpp(
-  who: 0 | 1,
-  option: ClientOption = {},
-): Client {
-  return createClientImpl(OppChessboard, who, option);
 }

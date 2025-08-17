@@ -38,21 +38,21 @@
     );
   }
 
-  :has([data-gi-tcg-opp-chessboard]) {
+  [data-has-opp-chessboard] {
     --skill-button-offset-x: 1.5rem;
     --chessboard-bg-y-border-width: calc(
       var(--chessboard-bg-y-border-width-initial) -
         var(--opp-chessboard-hands-prominent-height)
     );
   }
-  [data-gi-tcg-opp-chessboard] {
+  .opp {
     --skill-button-offset-x: 12rem;
   }
-  &[data-livestreaming] [data-gi-tcg-opp-chessboard] {
+  &[data-livestreaming] .opp {
     --skill-button-offset-x: 1.5rem;
   }
 
-  :has([data-gi-tcg-opp-chessboard]) .has-opp-chessboard-hidden {
+  &[data-has-opp-chessboard] .has-opp-chessboard-hidden {
     display: none;
   }
   :has(.dice-panel[data-state="visible"]) .dice-panel-compact {

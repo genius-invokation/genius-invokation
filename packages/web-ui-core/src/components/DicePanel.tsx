@@ -28,14 +28,13 @@ export interface DicePanelProps {
   onSelectDice: (selectedDice: boolean[]) => void;
   state: DicePanelState;
   onStateChange: (state: DicePanelState) => void;
-  compactView: boolean;
+  compactView?: boolean;
   opp?: boolean;
   hasMiniView?: boolean;
 }
 
 export function DicePanel(props: DicePanelProps) {
   const toggleDice = (dice: DiceType, index: number) => {
-    console.log(props.maxSelectedCount);
     if (props.disabledDiceTypes.includes(dice)) {
       return;
     }
