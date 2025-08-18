@@ -34,7 +34,7 @@ import { unwrap } from "solid-js/store";
 import { useMobile } from "../App";
 import { copyToClipboard } from "../utils";
 
-export function EditDeck() {
+export default function EditDeck() {
   const params = useParams();
   const mobile = useMobile();
   const { status } = useAuth();

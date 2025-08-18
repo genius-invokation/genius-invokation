@@ -15,7 +15,7 @@
 
 import { Layout } from "../layouts/Layout";
 
-export function NotFound() {
+export default function NotFound() {
   return (
     <Layout>
       <div class="flex flex-col items-center justify-center h-full">

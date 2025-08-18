@@ -34,7 +34,7 @@ import { useDecks } from "./Decks";
 import { Login } from "../components/Login";
 import { useAuth } from "../auth";
 
-export function Home() {
+export default function Home() {
   const {
     status,
     loading: userLoading,
