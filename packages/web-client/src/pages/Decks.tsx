@@ -73,7 +73,7 @@ export function useDecks(): UseDecksResult {
   };
 }
 
-export function Decks() {
+export default function Decks() {
   const { decks, loading, error, refetch } = useDecks();
   return (
     <Layout>

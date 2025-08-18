@@ -164,7 +164,7 @@ const createReconnectSse = <T,>(
   ];
 };
 
-export function Room() {
+export default function Room() {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const checkboxId = createUniqueId();

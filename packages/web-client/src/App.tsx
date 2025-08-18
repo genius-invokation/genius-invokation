@@ -23,15 +23,17 @@ import {
   Resource,
   useContext,
   type Accessor,
+  lazy,
 } from "solid-js";
-import { Home } from "./pages/Home";
 import axios from "axios";
-import { User } from "./pages/User";
-import { Decks } from "./pages/Decks";
-import { EditDeck } from "./pages/EditDeck";
-import { Room } from "./pages/Room";
-import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./auth";
+
+const Home = lazy(() => import("./pages/Home"));
+const User = lazy(() => import("./pages/User"));
+const Decks = lazy(() => import("./pages/Decks"));
+const EditDeck = lazy(() => import("./pages/EditDeck"));
+const Room = lazy(() => import("./pages/Room"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export interface VersionContextValue {
   versionInfo: Resource<any>;
