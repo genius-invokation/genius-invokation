@@ -20,7 +20,7 @@ import axios, { AxiosError } from "axios";
 import { UserInfo } from "../components/UserInfo";
 import { useAuth } from "../auth";
 
-export function User() {
+export default function User() {
   const params = useParams();
   const { status: mine } = useAuth();
   const userId = Number(params.id);

@@ -1345,22 +1345,36 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
+  // TODO use mutator method
   stealHandCard(card: PlainCardState) {
     const cardState = this.get(card).latest();
+    const who = flip(this.callerArea.who);
     this.mutate({
       type: "transferCard",
       from: "hands",
       to: "oppHands",
-      who: flip(this.callerArea.who),
+      who,
       value: cardState,
       reason: "steal",
     });
+    let overflowed = false;
+    if (this.oppPlayer.hands.length > this.state.config.maxHandsCount) {
+      this.mutate({
+        type: "removeCard",
+        oldState: cardState,
+        reason: "overflow",
+        where: "hands",
+        who,
+      });
+      overflowed = true;
+    }
     this.emitEvent(
       "onHandCardInserted",
       this.rawState,
       this.callerArea.who,
       cardState,
       "steal",
+      overflowed,
     );
   }
 
@@ -1382,6 +1396,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.callerArea.who,
         card,
         "steal",
+        false,
       );
     }
     for (const card of myHands) {
@@ -1399,6 +1414,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         flip(this.callerArea.who),
         card,
         "steal",
+        false,
       );
     }
     return this.enableShortcut();

@@ -13,13 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, combatStatus, card, DamageType, StatusHandle } from "@gi-tcg/core/builder";
+import { character, skill, status, combatStatus, card, DamageType, StatusHandle, customEvent } from "@gi-tcg/core/builder";
 
 // 蕴种印描述修正：
 // 入场时，此牌携带3点可用次数。可用次数耗尽时，弃置此牌。
-// 角色受到元素反应伤害后：对所附属角色造成1点穿透伤害，消耗1点可用次数。（称此伤害为“一类伤害”）
+// 角色受到元素反应伤害后：对所附属角色造成1点穿透伤害，消耗1点可用次数。
 //     注：若对方装备有心识蕴藏之种，且摩耶之殿在场，且对方有火元素角色，则改为造成1点草元素伤害。
-// 其它我方阵营角色受到“一类伤害”后：对所附属角色造成1点穿透伤害，消耗1点可用次数。
+// 其它我方阵营的蕴种印触发上述效果后：对所附属角色造成1点穿透伤害，消耗1点可用次数。
+
+export const TriggerOtherSeed = customEvent("nahida/triggerOtherSeed");
 
 /**
  * @id 117031
@@ -31,6 +33,7 @@ import { character, skill, status, combatStatus, card, DamageType, StatusHandle 
 export const SeedOfSkandha: StatusHandle = status(117031)
   .usage(2)
   .on("damaged", (c, e) => e.getReaction() !== null)
+  .beforeDefaultDispose()
   .do((c) => {
     if (
       // 由于蕴种印在对方场上，故查找我方信息时使用 opp
@@ -43,12 +46,9 @@ export const SeedOfSkandha: StatusHandle = status(117031)
       c.damage(DamageType.Piercing, 1, "@master")
     }
     c.consumeUsage();
+    c.emitCustomEvent(TriggerOtherSeed);
   })
-  .on("damaged", (c, e) =>
-    // 当受到“蕴种印造成的一类伤害”时。“一类伤害”的判断方法：伤害来自蕴种印，且非本技能造成的
-    e.source.definition.id === SeedOfSkandha && 
-    e.via.definition.id !== c.skillInfo.definition.id &&
-    e.target.id !== c.self.master.id)
+  .on(TriggerOtherSeed, (c, e) => e.entity.id !== c.self.id)
   .listenToPlayer()
   .damage(DamageType.Piercing, 1, "@master")
   .consumeUsage()

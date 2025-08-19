@@ -740,16 +740,6 @@ export class Game {
         });
       }
 
-      // 非快速行动，重置下落攻击的可能性
-      if (!actionInfo.fast) {
-        this.mutate({
-          type: "setPlayerFlag",
-          who,
-          flagName: "canPlunging",
-          value: false,
-        });
-      }
-
       switch (actionInfo.type) {
         case "useSkill": {
           const callerArea = getEntityArea(this.state, activeCh().id);

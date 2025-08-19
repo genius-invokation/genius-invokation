@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, CharacterHandle } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, CharacterHandle, CardHandle } from "@gi-tcg/core/builder";
 
 /**
  * @id 112113
@@ -22,11 +22,12 @@ import { character, skill, summon, status, combatStatus, card, DamageType, Chara
  * 在「始基力：荒性」和「始基力：芒性」之中，切换芙宁娜的形态。
  * 如果我方场上存在沙龙成员或众水的歌者，也切换其形态。
  */
-export const SeatsSacredAndSecular = card(112113)
+export const SeatsSacredAndSecular: CardHandle = card(112113)
   .since("v4.7.0")
   .unobtainable()
+  .filter((c) => c.$(`my character with definition id ${FurinaPneuma} or my character with definition id ${FurinaOusia}`))
   .do((c) => {
-    const furina = c.player.characters.find((char) => [FurinaPneuma, FurinaOusia].includes(char.definition.id as CharacterHandle));
+    const furina = c.$(`my character with definition id ${FurinaPneuma} or my character with definition id ${FurinaOusia}`);
     if (!furina) {
       return;
     }
@@ -34,14 +35,14 @@ export const SeatsSacredAndSecular = card(112113)
       c.transformDefinition(furina, FurinaOusia);
       const summon = c.$(`my summon with definition id ${SalonMembers}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon, SingerOfManyWaters)
+        c.transformDefinition(summon, SingerOfManyWaters);
         summon.setVariable("hintIcon", DamageType.Heal);
       }
     } else {
       c.transformDefinition(furina, FurinaPneuma);
       const summon = c.$(`my summon with definition id ${SingerOfManyWaters}`);
       if (summon) {
-        c.transformDefinition<"summon">(summon, SalonMembers)
+        c.transformDefinition(summon, SalonMembers)
         summon.setVariable("hintIcon", DamageType.Hydro);
       }
     }
