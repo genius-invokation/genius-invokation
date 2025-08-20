@@ -543,6 +543,7 @@ export const CrownOfWatatsumi = card(312015)
   .variable("bubble", 0)
   .replaceDescription("[GCG_TOKEN_SHIELD]", (_, self) => self.variables.healedPts)
   .on("healed")
+  .listenToPlayer()
   .do((c, e) => {
     c.addVariable("healedPts", e.value);
     const totalPts = c.getVariable("healedPts");
@@ -579,6 +580,7 @@ export const OceanhuedClam = card(312016)
   .on("enter")
   .heal(2, "@master")
   .on("healed")
+  .listenToPlayer()
   .do((c, e) => {
     c.addVariable("healedPts", e.value);
     const totalPts = c.getVariable("healedPts");
