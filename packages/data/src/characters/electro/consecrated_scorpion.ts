@@ -24,10 +24,9 @@ import { BonecrunchersEnergyBlock } from "../../cards/event/other";
  * 可用次数：初始为创建时所弃置的噬骸能量块张数。（最多叠加到3）
  */
 export const ThunderboreTrap = combatStatus(124052)
-  .usage(0)
   .on("useSkill")
+  .usageCanAppend(0, 3)
   .damage(DamageType.Electro, 2, "my active")
-  .consumeUsage()
   .done();
 
 /**

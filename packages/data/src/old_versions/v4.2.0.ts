@@ -160,6 +160,7 @@ const OceanhuedClam = card(312016)
   .on("enter")
   .heal(3, "@master")
   .on("healed")
+  .listenToPlayer()
   .do((c, e) => {
     c.addVariable("healedPts", e.value);
     const totalPts = c.getVariable("healedPts");
