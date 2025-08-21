@@ -341,7 +341,6 @@ const WindAndFreedomInEffect = combatStatus(303181)
 const WindAndFreedom = card(331801)
   .until("v4.0.0")
   .costSame(1)
-  .filter((c) => c.$(`my standby characters`))
   .combatStatus(WindAndFreedomInEffect)
   .done();
   

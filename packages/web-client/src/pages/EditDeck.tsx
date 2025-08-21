@@ -188,7 +188,10 @@ export default function EditDeck() {
         setDirty(false);
       } else {
         if (type === "guest") {
-          await updateGuestDeck(deckId, { ...deck });
+          await updateGuestDeck(deckId, {
+            cards: deck.cards,
+            characters: deck.characters,
+          });
         } else if (type === "user") {
           await axios.patch(`decks/${deckId}`, { ...deck });
         }
