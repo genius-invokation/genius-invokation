@@ -278,5 +278,5 @@ export const HearMeLetUsRaiseTheChaliceOfLove = card(212111)
     }
   })
   .on("useSkill", (c, e) => e.isSkillType("elemental"))
-  .characterStatus(CenterOfAttention, "@self")
+  .characterStatus(CenterOfAttention, "@master")
   .done();
