@@ -25,6 +25,7 @@ import {
   Status,
 } from "#test";
 import { Aura, SkillHandle } from "@gi-tcg/core/builder";
+import { Paimon } from "@gi-tcg/data/internal/cards/support/ally";
 import { Chasca, NightsoulsBlessing, ShiningShadowhuntShellPyro, SoulsniperRitualStaff } from "@gi-tcg/data/internal/characters/anemo/chasca";
 import { AlldevouringNarwhal, DarkShadow } from "@gi-tcg/data/internal/characters/hydro/alldevouring_narwhal";
 import { test } from "bun:test";
@@ -34,6 +35,8 @@ test("dark shadow: do not barrier on nested damage", async () => {
   const c = setup(
     <State currentTurn="opp">
       <Card opp def={ShiningShadowhuntShellPyro} />
+      <Card opp def={Paimon} />
+      <Card opp def={Paimon} />
       <Character opp active def={Chasca} >
         <Equipment def={SoulsniperRitualStaff} usage={2} />
         <Status def={NightsoulsBlessing} v={{ nightsoul: 2 }} />
