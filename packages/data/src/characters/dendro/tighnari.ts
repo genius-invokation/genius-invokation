@@ -38,8 +38,8 @@ export const VijnanaSuffusion = status(117021)
   .on("modifySkillDamageType", (c, e) => e.viaChargedAttack() && e.type === DamageType.Physical)
   .changeDamageType(DamageType.Dendro)
   .on("useSkill", (c, e) => e.isChargedAttack())
-  .summon(ClusterbloomArrow)
   .usage(2)
+  .summon(ClusterbloomArrow)
   .done();
 
 /**
