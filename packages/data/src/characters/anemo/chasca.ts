@@ -41,7 +41,10 @@ export const SoulsniperRitualStaff = card(115112)
   .nightsoulTechnique()
   .provideSkill(1151121)
   .costAnemo(2)
-  .filter((c) => c.self.master.hasNightsoulsBlessing()?.variables.nightsoul)
+  .filter((c) =>
+    c.self.master.hasNightsoulsBlessing()?.variables.nightsoul &&
+    c.player.hands.length >= 3
+  )
   .consumeNightsoul("@master", 1)
   .do((c) => {
     c.damage(DamageType.Anemo, 1);
