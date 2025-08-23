@@ -36,10 +36,10 @@ export const ClusterbloomArrow = summon(117022)
  */
 export const VijnanaSuffusion = status(117021)
   .on("modifySkillDamageType", (c, e) => e.viaChargedAttack() && e.type === DamageType.Physical)
-  .usage(2)
   .changeDamageType(DamageType.Dendro)
   .on("useSkill", (c, e) => e.isChargedAttack())
   .summon(ClusterbloomArrow)
+  .usage(2)
   .done();
 
 /**
