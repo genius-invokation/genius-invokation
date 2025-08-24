@@ -38,7 +38,7 @@
     );
   }
 
-  [data-has-opp-chessboard] {
+  &[data-has-opp-chessboard] {
     --skill-button-offset-x: 1.5rem;
     --chessboard-bg-y-border-width: calc(
       var(--chessboard-bg-y-border-width-initial) -
