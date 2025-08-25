@@ -39,6 +39,7 @@ import {
   PopupPaperFrog,
   PucasSupport,
   SerenesSupport,
+  SIMULANKA_SUMMONS,
   SluasisSupport,
   TaroumarusSavings,
   ThironasSupport,
@@ -791,7 +792,7 @@ export const GiftOfTheGoddessOfProphecy = card(322030)
   .createPileCards(ToyGuard, 2, "random")
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "summon" &&
-    e.entity.definition.tags.includes("simulanka"))
+    (SIMULANKA_SUMMONS as number[]).includes(e.entity.definition.id))
   .usage(2)
   .do((c, e) => {
     e.entity.cast<"summon">().addVariable("effect", 1);

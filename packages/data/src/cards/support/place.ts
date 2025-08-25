@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, EntityState, card, combatStatus, diceCostOfCard, status } from "@gi-tcg/core/builder";
-import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, ToyGuard, ToyGuardSummon } from "../event/other";
+import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, SIMULANKA_QUERY, SIMULANKA_SUMMONS, ToyGuard } from "../event/other";
 
 /**
  * @id 321001
@@ -724,10 +724,10 @@ export const CalligraphyTavern = card(321029)
     const newCard = c.random([OrigamiFlyingSquirrel, PopupPaperFrog, OrigamiHamster]);
     c.createHandCard(newCard);
   })
-  .on("declareEnd", (c, e) => c.$(`my summons with tag (simulanka)`))
+  .on("declareEnd", (c, e) => c.$(SIMULANKA_QUERY))
   .usage(3)
   .do((c, e) =>{
-    const mySimulankaSummons = c.$$(`my summons with tag (simulanka)`);
+    const mySimulankaSummons = c.$$(SIMULANKA_QUERY);
     const chosen = c.random(mySimulankaSummons);
     if (chosen) {
       c.triggerEndPhaseSkill(chosen);
@@ -753,7 +753,9 @@ export const ConstellationMetropoleInEffect01 = combatStatus(301032)
  * 下次打出的积木小人效果量+1。
  */
 export const ConstellationMetropoleInEffect02 = combatStatus(321037)
-  .once("enterRelative", (c, e) => e.entity.definition.id === ToyGuardSummon)
+  .once("enterRelative", (c, e) =>
+    e.entity.definition.type === "summon" &&
+    (SIMULANKA_SUMMONS as number[]).includes(e.entity.definition.id))
   .do((c, e) => {
     e.entity.cast<"summon">().addVariable("effect", 1);
   })
