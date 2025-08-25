@@ -1834,7 +1834,6 @@ export const FruitsOfTraining = card(332048)
  * 可用次数：2
  */
 export const ToyGuardSummon = summon(301028)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(DamageType.Physical, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1852,7 +1851,6 @@ export const ToyGuardSummon = summon(301028)
  * 可用次数：2
  */
 export const OrigamiFlyingSquirrelSummon = summon(301029)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1874,7 +1872,6 @@ export const OrigamiFlyingSquirrelSummon = summon(301029)
  * 可用次数：2
  */
 export const PopupPaperFrogSummon = summon(301030)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1892,7 +1889,6 @@ export const PopupPaperFrogSummon = summon(301030)
  * 可用次数：1
  */
 export const OrigamiHamsterSummon = summon(301031)
-  .tags("simulanka")
   .variable("effect", 2, { forceOverwrite: true })
   .hint(DamageType.Heal, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1901,6 +1897,17 @@ export const OrigamiHamsterSummon = summon(301031)
     c.heal(c.getVariable("effect"), "my characters order by health - maxHealth limit 1");
   })
   .done();
+
+export const SIMULANKA_SUMMONS = [
+  ToyGuardSummon,
+  OrigamiFlyingSquirrelSummon,
+  PopupPaperFrogSummon,
+  OrigamiHamsterSummon
+];
+
+export const SIMULANKA_QUERY = SIMULANKA_SUMMONS
+  .map((id) => `(my summons with definition id ${id})`)
+  .join(` or `) as `${string} summons ${string}`;
 
 /**
  * @id 301033
