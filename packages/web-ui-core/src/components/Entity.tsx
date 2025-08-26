@@ -105,7 +105,7 @@ export function Entity(props: EntityProps) {
         fallback="summon"
       />
       <CardFrameSummon class="absolute inset-0 h-full w-full pointer-events-none" />
-      <Show when={data().hasUsagePerRound}>
+      <Show when={data().hasUsagePerRound || props.previewingNew}>
         <div class="absolute inset-1px rounded-1 overflow-hidden entity-usage-1">
           <div class="absolute h-full w-full scale-200 entity-usage-2" />
         </div>
@@ -119,7 +119,7 @@ export function Entity(props: EntityProps) {
         class="absolute h-full w-full rounded-1.2 entity-animation-2"
         bool:data-entering={props.animation === "entering"}
       />
-      <Show when={props.preview && props.preview.newVariableValue !== null}>
+      <Show when={props.preview && props.preview.newVariableValue !== null && !props.previewingNew}>
         <VariableDiff
           class="absolute z-5 top--1.6 right-1"
           oldValue={data().variableValue!}
@@ -128,13 +128,13 @@ export function Entity(props: EntityProps) {
           defeated={props.preview!.disposed}
         />
       </Show>
-      <Show when={typeof data().variableValue === "number"}>
+      <Show when={typeof data().variableValue === "number" && !props.previewingNew}>
         <EntityTopHint
           cardDefinitionId={data().definitionId}
           value={data().variableValue as number}
         />
       </Show>
-      <Show when={typeof data().hintIcon === "number"}>
+      <Show when={typeof data().hintIcon === "number" && !props.previewingNew}>
         <div class="absolute h-7 w-7 min-w-0 left-0 bottom-0.5">
           <Image
             imageId={data().hintIcon!}
