@@ -1,5 +1,5 @@
 <svg viewBox="0 0 900 216" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g filter="url(#filter0_ddd_254_89)">
+    <g>
         <rect x="90" y="10" width="720" height="196" rx="20" fill="#5D462E" />
         <rect x="66" y="26" width="769" height="164" rx="10" fill="#5D462E" />
         <path
@@ -44,31 +44,6 @@
             fill="#C79D63" />
     </g>
     <defs>
-        <filter id="filter0_ddd_254_89" x="-6.88919" y="-4.30574" width="913.778" height="229.778"
-            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset />
-            <feGaussianBlur stdDeviation="0.215287" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_254_89" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset dy="2.58345" />
-            <feGaussianBlur stdDeviation="3.44459" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-            <feBlend mode="normal" in2="effect1_dropShadow_254_89"
-                result="effect2_dropShadow_254_89" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset dx="0.861149" dy="2.58345" />
-            <feGaussianBlur stdDeviation="1.29172" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-            <feBlend mode="normal" in2="effect2_dropShadow_254_89"
-                result="effect3_dropShadow_254_89" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_254_89" result="shape" />
-        </filter>
         <filter id="filter1_f_254_89" x="44" y="19" width="813" height="178"
             filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix" />

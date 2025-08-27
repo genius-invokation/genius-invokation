@@ -1,5 +1,5 @@
 <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g filter="url(#filter0_ddd_302_2)" opacity="0.7">
+    <g opacity="0.7">
         <mask id="mask0_302_2" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
             width="56" height="56">
             <path d="M7.07132e-09 0H56V28H28V56H0L7.07132e-09 0Z" fill="black" />
@@ -16,29 +16,4 @@
             d="M28 31C29.6569 31 31 29.6569 31 28L31 13C31 11.343146 29.6569 10 28 10C26.3431 10 25 11.343146 25 13L25 25L13 25C11.343146 25 10 26.3431 10 28C10 29.6569 11.343146 31 13 31L28 31ZM12 12L9.87868 14.1213L25.8787 30.1213L28 28L30.1213 25.8787L14.1213 9.87868L12 12Z"
             fill="black" />
     </g>
-    <defs>
-        <filter id="filter0_ddd_302_2" x="-3" y="-2.625" width="68" height="68"
-            filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset />
-            <feGaussianBlur stdDeviation="0.03125" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_302_2" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset dy="0.375" />
-            <feGaussianBlur stdDeviation="0.5" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-            <feBlend mode="normal" in2="effect1_dropShadow_302_2" result="effect2_dropShadow_302_2" />
-            <feColorMatrix in="SourceAlpha" type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-            <feOffset dx="0.125" dy="0.375" />
-            <feGaussianBlur stdDeviation="0.1875" />
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-            <feBlend mode="normal" in2="effect2_dropShadow_302_2" result="effect3_dropShadow_302_2" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_302_2" result="shape" />
-        </filter>
-    </defs>
 </svg>
