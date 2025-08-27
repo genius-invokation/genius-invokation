@@ -173,6 +173,7 @@ import "./old_versions/v5.3.0";
 import "./old_versions/v5.4.0";
 import "./old_versions/v5.5.0";
 import "./old_versions/v5.6.0";
+import "./old_versions/v5.6.1";
 import "./old_versions/v5.7.0";
 
 export * from "./end";

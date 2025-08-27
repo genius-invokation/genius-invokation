@@ -24,7 +24,7 @@ import { AbiogenesisSolarIsotoma, FavoniusBladeworkWeiss, RiteOfProgenitureTecto
  * [1161024: ] ()
  */
 const TurboTwirly = card(116102)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .unobtainable()
   .nightsoulTechnique()
   .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
@@ -58,7 +58,7 @@ const TurboTwirly = card(116102)
  * （牌组中包含钟离，才能加入牌组）
  */
 const DominanceOfEarth = card(216031)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .costGeo(5)
   .talent(Zhongli)
   .on("enter")
@@ -81,7 +81,7 @@ const DominanceOfEarth = card(216031)
  * （装备有水泡史莱姆的角色可以使用特技：水泡战法）
  */
 const BubblefloatBlitz = skill(22053)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .type("burst")
   .costHydro(3)
   .costEnergy(2)
@@ -96,7 +96,7 @@ const BubblefloatBlitz = skill(22053)
  * 黑土与白垩，赤成与黄金。
  */
 const Albedo = character(1604)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("geo", "sword", "mondstadt")
   .health(10)
   .energy(2)
@@ -109,7 +109,7 @@ const Albedo = character(1604)
  * 凡高大者，无不蔑视。
  */
 const Neuvillette = character(1210)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("hydro", "catalyst", "fontaine", "ousia")
   .health(10)
   .energy(2)
@@ -123,7 +123,7 @@ const Neuvillette = character(1210)
  * 「记住这一天，你差点赢了南十字船队老大的钱。」
  */
 const Beidou = character(1405)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("electro", "claymore", "liyue")
   .health(10)
   .energy(3)
@@ -138,7 +138,7 @@ const Beidou = character(1405)
  * 赤沙浮金，恪誓戍御。
  */
 const Candace = character(1207)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("hydro", "pole", "sumeru")
   .health(10)
   .energy(2)
@@ -152,7 +152,7 @@ const Candace = character(1207)
  * 生老三千疾，何处可问医。
  */
 const Baizhu = character(1705)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("dendro", "catalyst", "liyue")
   .health(10)
   .energy(2)
@@ -166,7 +166,7 @@ const Baizhu = character(1705)
  * 不属于任何部族的丘丘人流浪者，如同自我流放一般在荒野中四处漫游。
  */
 const HydroHilichurlRogue = character(2205)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .tags("hydro", "monster", "hilichurl")
   .health(10)
   .energy(2)
@@ -180,7 +180,7 @@ const HydroHilichurlRogue = character(2205)
  * 造成3点雷元素伤害，其他我方角色获得2点充能。
  */
 const SecretArtMusouShinsetsu = skill(14073)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .type("burst")
   .costElectro(4)
   .costEnergy(2)
@@ -199,7 +199,7 @@ const SecretArtMusouShinsetsu = skill(14073)
  * （牌组中包含雷电将军，才能加入牌组）
  */
 const WishesUnnumbered = card(214071)
-  .until("v5.6.0")
+  .until("v5.6.1")
   .costElectro(4)
   .costEnergy(2)
   .talent(RaidenShogun)
