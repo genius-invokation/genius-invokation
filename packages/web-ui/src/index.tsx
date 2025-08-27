@@ -17,7 +17,7 @@ import { type JSX } from "solid-js";
 import { render } from "solid-js/web";
 import {
   EMPTY_GAME_STATE,
-  type PlayerIOWithCancellation,
+  type WebUiPlayerIO,
   StandaloneChessboard,
   type StandaloneChessboardProps,
   type ClientOption,
@@ -36,7 +36,7 @@ export function createClient(
   const style = document.createElement("style");
   style.textContent = webUiCss;
   shadow.appendChild(style);
-  let io: PlayerIOWithCancellation;
+  let io: WebUiPlayerIO;
   render(() => {
     let Chessboard: (props: JSX.HTMLAttributes<HTMLDivElement>) => JSX.Element;
     [io, Chessboard] = createClientSolid(who, opt);

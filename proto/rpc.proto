@@ -72,7 +72,7 @@ message Request {
 
 message RerollDiceResponse {
   reserved 1; // reroll_indexes in previous version
-  repeated int32 dice_to_reroll = 2;
+  repeated DiceType dice_to_reroll = 2;
 }
 
 message SwitchHandsResponse {

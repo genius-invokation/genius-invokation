@@ -122,7 +122,7 @@ export interface ClientChessboardProps extends ComponentProps<"div"> {
   gameEndExtra?: JSX.Element;
 }
 
-export function createClient(who: 0 | 1, option: ClientOption): Client {
+export function createClient(who: 0 | 1, option: ClientOption = {}): Client {
   const assetsManager = option.assetsManager ?? DEFAULT_ASSETS_MANAGER;
   const [data, setData] = createSignal<ChessboardData>({
     raw: [],
