@@ -1431,29 +1431,7 @@ export const VirdasSupport = card(302212)
  * @description
  * 随机生成「伙伴」到场上，直到填满双方支援区。
  */
-export const PucasSupport = card(302213)
-  .since("v4.8.0")
-  .do((c) => {
-    const allies = c.allCardDefinitions("ally")
-      // .filter((c) => !c.skills.some((s) => s.triggerOn === "onEnter"));
-    const myCount = c.remainingSupportCount("my");
-    const myAllies = c.randomSubset(allies, myCount);
-    for (const def of myAllies) {
-      c.createEntity("support", def.id as SupportHandle, {
-        type: "supports",
-        who: c.self.who
-      });
-    }
-    const oppCount = c.remainingSupportCount("opp");
-    const oppAllies = c.randomSubset(allies, oppCount);
-    for (const def of oppAllies) {
-      c.createEntity("support", def.id as SupportHandle, {
-        type: "supports",
-        who: flip(c.self.who)
-      });
-    }
-  })
-  .done();
+const PucasSupport = void 0; /* moves to support/ally.ts */
 
 /**
  * @id 302216

@@ -37,7 +37,6 @@ import {
   OrigamiFlyingSquirrel,
   OrigamiHamster,
   PopupPaperFrog,
-  PucasSupport,
   SerenesSupport,
   SluasisSupport,
   TaroumarusSavings,
@@ -697,6 +696,57 @@ export const SirArthur = card(322026)
     c.addVariable("clue", -2);
     const top = c.oppPlayer.pile[0];
     c.createHandCard(top.definition.id as CardHandle);
+  })
+  .done();
+
+const PUCAS_ALLIES = () => [
+  Paimon,
+  Katheryne,
+  ChefMao,
+  Tubby,
+  Liben,
+  ChangTheNinth,
+  Ellin,
+  IronTongueTian,
+  LiuSu,
+  Hanachirusato,
+  KidKujirai,
+  Xudong,
+  Rana,
+  MasterZhang,
+  Setaria,
+  YayoiNanatsuki,
+  Mamere,
+  SilverAndMelus,
+  TheWhiteGloveAndTheFisherman,
+  SirArthur,
+];
+
+/**
+ * @id 302213
+ * @name 芙佳的声援
+ * @description
+ * 随机生成「伙伴」到场上，直到填满双方支援区。
+ */
+export const PucasSupport = card(302213)
+  .since("v4.8.0")
+  .do((c) => {
+    const myCount = c.remainingSupportCount("my");
+    const myAllies = c.randomSubset(PUCAS_ALLIES(), myCount);
+    for (const def of myAllies) {
+      c.createEntity("support", def, {
+        type: "supports",
+        who: c.self.who
+      });
+    }
+    const oppCount = c.remainingSupportCount("opp");
+    const oppAllies = c.randomSubset(PUCAS_ALLIES(), oppCount);
+    for (const def of oppAllies) {
+      c.createEntity("support", def, {
+        type: "supports",
+        who: flip(c.self.who)
+      });
+    }
   })
   .done();
 
