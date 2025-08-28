@@ -699,7 +699,7 @@ export const SirArthur = card(322026)
   })
   .done();
 
-const pucasAllies = () => [
+const PUCAS_ALLIES = () => [
   Paimon,
   Katheryne,
   ChefMao,
@@ -732,7 +732,7 @@ export const PucasSupport = card(302213)
   .since("v4.8.0")
   .do((c) => {
     const myCount = c.remainingSupportCount("my");
-    const myAllies = c.randomSubset(pucasAllies(), myCount);
+    const myAllies = c.randomSubset(PUCAS_ALLIES(), myCount);
     for (const def of myAllies) {
       c.createEntity("support", def, {
         type: "supports",
@@ -740,7 +740,7 @@ export const PucasSupport = card(302213)
       });
     }
     const oppCount = c.remainingSupportCount("opp");
-    const oppAllies = c.randomSubset(pucasAllies(), oppCount);
+    const oppAllies = c.randomSubset(PUCAS_ALLIES(), oppCount);
     for (const def of oppAllies) {
       c.createEntity("support", def, {
         type: "supports",
