@@ -30,6 +30,7 @@ const AC_TYPE_TEXT = {
       GCG_TAG_WEAPON_POLE: "长柄武器",
       GCG_TAG_WEAPON_CATALYST: "法器",
       GCG_TAG_ARTIFACT: "圣遗物",
+      GCG_TAG_VEHICLE: "特技",
       GCG_TAG_TALENT: "天赋",
     },
   },
