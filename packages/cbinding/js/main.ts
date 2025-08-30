@@ -385,6 +385,7 @@ export class Game {
     this.#stepDoneResolvers = Promise.withResolvers();
     this.#stepResolvers.resolve();
     await this.#stepDoneResolvers.promise;
+    this.#resumable = false;
   }
   #encoder = new TextEncoder();
   async #onIoError(e: GiTcgIoError) {
