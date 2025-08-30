@@ -23,7 +23,6 @@ export type EntityTag =
   | "immuneControl" // 免疫冻结石化眩晕，禁用效果切人（仅角色状态）
   | "shield" // 护盾
   | "barrier" // 紫盾
-  | "simulanka" // 希慕兰卡
   | "preparingSkill" // 角色将准备技能（仅角色状态）
   | "eventEffectless" // 禁用事件牌效果（仅出战状态）
   | "normalAsPlunging" // 普通攻击视为下落攻击
