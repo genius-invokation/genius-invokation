@@ -44,7 +44,7 @@ const url = `http://${server.hostname}:${server.port}/`;
 console.log(`SVG server running at ${url}`);
 
 const browser = (await puppeteer.launch({
-  executablePath: '/Users/bytedance/.cache/puppeteer/chrome/mac_arm-138.0.7204.157/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+  executablePath: '/usr/bin/microsoft-edge',
   headless: false,
 })) as unknown as import("puppeteer").Browser;
 const page = await browser.newPage();
