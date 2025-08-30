@@ -383,7 +383,11 @@ export class Game {
     this.#resumable = resumable;
     this.#stepDoneResolvers = Promise.withResolvers();
     this.#stepResolvers.resolve();
-    await this.#stepDoneResolvers.promise;
+    try {
+      await this.#stepDoneResolvers.promise;
+    } finally {
+      this.#resumable = false;
+    }
   }
   #encoder = new TextEncoder();
   async #onIoError(e: GiTcgIoError) {
