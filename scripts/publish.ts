@@ -39,7 +39,7 @@ const packages = [
   "web-ui-core",
   "web-ui",
 ];
-const VERSION = "0.17.3";
+const VERSION = "0.17.4";
 
 const doPublish = !!process.env.PUBLISH;
 if (!doPublish) {
