@@ -220,9 +220,10 @@ class State {
     });
   }
   static fromJson(json: string): State {
-    const { gv, ...log } = JSON.parse(json);
+    const parsed = JSON.parse(json);
+    const { gv } = parsed;
     return new State(
-      deserializeGameStateLog(getData(gv), JSON.parse(log))[0]!.state,
+      deserializeGameStateLog(getData(gv), parsed)[0]!.state,
       gv,
     );
   }
