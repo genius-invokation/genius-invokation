@@ -48,7 +48,7 @@ wheels = [
 
 [[package]]
 name = "gitcg"
-version = "0.17.2"
+version = "0.17.3"
 source = { editable = "." }
 dependencies = [
     { name = "cffi" },
