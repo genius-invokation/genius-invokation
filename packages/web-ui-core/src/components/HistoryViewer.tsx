@@ -1883,7 +1883,7 @@ export function HistoryToggleButton(props: HistoryToggleButtonProps) {
         props.onClick?.();
       }}
     >
-      <HistoryIcon class="h-5 w-5" />
+      <HistoryIcon class="h-5.4 w-5.4" />
     </button>
   );
 }

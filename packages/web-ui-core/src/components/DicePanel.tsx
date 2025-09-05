@@ -124,10 +124,10 @@ export function DicePanel(props: DicePanelProps) {
           </div>
         </div>
         <div
-          class="absolute right-0 top-0 bottom-0 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity"
+          class="absolute right-4 top-0 bottom-0 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity"
           bool:data-shown={props.state !== "visible"}
         >
-          <div class=" m-2 flex flex-col select-none gap-2 items-center">
+          <div class="m-2 flex flex-col select-none gap-2 items-center">
             <WithDelicateUi
               assetId={"UI_Gcg_DiceL_Count_03"}
               fallback={

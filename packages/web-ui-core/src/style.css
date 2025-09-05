@@ -74,7 +74,7 @@
     right: var(--chessboard-right-offset, 0);
   }
   .dice-panel-compact {
-    background-color: #554433;
+    background-color: #443322;
     mask-image: linear-gradient(to right, black 90%, transparent 100%);
   }
   .dice-panel-compact[data-opp="false"] {
@@ -103,7 +103,7 @@
       var(--top-offset) + var(--chessboard-bg-y-border-width) +
         var(--opp-chessboard-hands-prominent-height)
     );
-    background-image: linear-gradient(to top, #63524a 6.5px, #554433 54px);
+    background-image: linear-gradient(to top, #63524a 6.5px, #443322 54px);
   }
   .opp-chessboard-hands-border {
     position: absolute;
@@ -770,6 +770,27 @@
       #ffffffcc 60%,
       transparent 70%
     );
+  }
+
+  .function-button {
+    border-radius: 1rem;
+    border-width: 2px;
+    background-color: #e9e2d3;
+    color: rgba(0, 0, 0, 0.7);
+    border-color: rgba(0, 0, 0, 0.7);
+    line-height: 1;
+    cursor: pointer;
+    transition-property: color, background-color, border-color;
+    transition-duration: 150ms;
+  }
+
+  .function-button:hover {
+    border-color: #ffffff;
+  }
+
+  .function-button:active {
+    background-color: #cfa56a;
+    border-color: #91744a;
   }
 }
 

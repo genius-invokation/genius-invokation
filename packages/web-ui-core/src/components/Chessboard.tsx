@@ -36,11 +36,13 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  Match,
   on,
   onCleanup,
   onMount,
   Show,
   splitProps,
+  Switch,
   untrack,
   type ComponentProps,
   type JSX,
@@ -130,7 +132,15 @@ import { SwitchHandsView } from "./SwitchHandsView";
 import { HistoryToggleButton, HistoryPanel } from "./HistoryViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
 import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
-import { FullScreenToggleButton } from "./FullScreenToggleButton";
+import {
+  BackwardButton,
+  ClothButton,
+  ColorsButtonGroup,
+  ExitButton,
+  FullScreenToggleButton,
+  SettingButton,
+  type ButtonGroup,
+} from "./FunctionButtonGroup";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
 import { TimerCapsule, TimerAlert } from "./Timer";
@@ -1637,6 +1647,11 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
+  const [buttonGroup, setButtonGroup] = createSignal<ButtonGroup>("normal");
+  const [chessboardColor, setChessboardColor] = createSignal(
+    Math.floor(Math.random() * 6),
+  );
+
   onMount(() => {
     setSpecialViewVisible(!localProps.liveStreamingMode);
     onResize();
@@ -1649,7 +1664,7 @@ export function Chessboard(props: ChessboardProps) {
   });
   return (
     <div
-      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#554433 relative ${
+      class={`gi-tcg-chessboard-new reset touch-none all:touch-none bg-#443322 relative ${
         localProps.class ?? ""
       }`}
       ref={containerElement}
@@ -1664,7 +1679,7 @@ export function Chessboard(props: ChessboardProps) {
         hasOppChessboard={!!localProps.opp}
         setTransformScale={setTransformScale}
       >
-        <ChessboardBackground />
+        <ChessboardBackground colorIndex={chessboardColor()} />
         {/* 3d space */}
         <div
           class="relative h-full w-full preserve-3d select-none"
@@ -1935,28 +1950,39 @@ export function Chessboard(props: ChessboardProps) {
           {/* 右上角部件 */}
           <Show when={!localProps.liveStreamingMode}>
             <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
-              <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
-                <button
-                  class="h-8 w-8 flex items-center justify-center rounded-full b-red-800 b-2 bg-red-500 hover:bg-red-600 active:bg-red-600 text-white transition-colors line-height-none cursor-pointer"
-                  title="放弃对局"
-                  onClick={async () => {
-                    if (await confirm("确定放弃对局吗？")) {
-                      localProps.onGiveUp?.();
-                    }
-                  }}
-                >
-                  &#10005;
-                </button>
-              </Show>
-              <FullScreenToggleButton
-                isFullScreen={isFullscreen()}
-                onClick={toggleFullscreen}
-              />
-              <Show when={!localProps.opp}>
-                <HistoryToggleButton
-                  onClick={() => setShowHistory((v) => !v)}
-                />
-              </Show>
+              <Switch>
+                <Match when={buttonGroup() === "normal"}>
+                  <Show
+                    when={localProps.data.state.phase !== PbPhaseType.GAME_END}
+                  >
+                    <ExitButton
+                      onClick={() => {
+                        (async () => {
+                          if (await confirm("确定放弃对局吗？")) {
+                            localProps.onGiveUp?.();
+                          }
+                        })();
+                      }}
+                    />
+                  </Show>
+                  <SettingButton onClick={() => setButtonGroup("settings")} />
+                  <HistoryToggleButton
+                    onClick={() => setShowHistory((v) => !v)}
+                  />
+                </Match>
+                <Match when={buttonGroup() === "settings"}>
+                  <BackwardButton onClick={() => setButtonGroup("normal")} />
+                  <FullScreenToggleButton
+                    isFullScreen={isFullscreen()}
+                    onClick={toggleFullscreen}
+                  />
+                  <ClothButton onClick={() => setButtonGroup("cloth")} />
+                </Match>
+                <Match when={buttonGroup() === "cloth"}>
+                  <BackwardButton onClick={() => setButtonGroup("settings")} />
+                  <ColorsButtonGroup onClick={(i) => setChessboardColor(i)} />
+                </Match>
+              </Switch>
               <Show when={hasSpecialView()}>
                 <SpecialViewToggleButton
                   onClick={() => setSpecialViewVisible((v) => !v)}

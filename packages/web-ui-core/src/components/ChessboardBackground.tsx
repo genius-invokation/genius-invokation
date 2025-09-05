@@ -14,13 +14,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { AspectRatioContainer } from "./AspectRatioContainer";
+import Background from "../svg/ChessboardBackground.svg?fb";
+import { WithDelicateUi } from "../primitives/delicate_ui";
+import { CHESSBOARD_COLORS } from "./FunctionButtonGroup";
 
-export function ChessboardBackground() {
+export interface ChessboardBackgroundProps {
+  colorIndex: number;
+}
+
+export function ChessboardBackground(props: ChessboardBackgroundProps) {
   return (
     <div class="absolute inset-0 flex items-center justify-center chessboard-bg-container">
       <AspectRatioContainer>
-        <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% bg-#554433">
-          <div class="chessboard-bg" />
+        <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% bg-#443322">
+          <WithDelicateUi
+            assetId={"ChessboardBackground"}
+            fallback={
+              <Background class="absolute h-full w-full scale-108% transform-origin-c" />
+            }
+          >
+            {(image) => (
+              <div class="absolute h-full w-full scale-108% transform-origin-c">
+                {image}
+              </div>
+            )}
+          </WithDelicateUi>
+          <div
+            class="h-full w-full"
+            style={{ "background-color": CHESSBOARD_COLORS[props.colorIndex] }}
+          />
         </div>
       </AspectRatioContainer>
     </div>

@@ -185,7 +185,7 @@ export function getPilePos([height, width]: Size, opp: boolean): Pos {
   const y = opp
     ? (height - MINIMUM_HEIGHT) / 2 + quarterHeight + CARD_WIDTH / 2
     : (height - MINIMUM_HEIGHT) / 2 + quarterHeight * 3 + CARD_WIDTH / 2;
-  const x = (width - MINIMUM_WIDTH) / 2 + 20;
+  const x = (width - MINIMUM_WIDTH) / 2 + 24;
   return [x, y];
 }
 
