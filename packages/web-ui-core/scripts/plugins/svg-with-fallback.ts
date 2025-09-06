@@ -1,3 +1,18 @@
+// Copyright (C) 2025 Guyutongxue
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import { optimize } from "svgo";
 import { Plugin, ResolvedConfig } from "vite";
 import { readFile } from "node:fs/promises";
@@ -15,29 +30,34 @@ import { Show, onMount, createSignal } from "solid-js";
 export default (props = {}) => {
   const remoteRenderedUrl = ${JSON.stringify(remoteRenderedUrl)};
   const [remoteError, setRemoteError] = createSignal(false);
+  const [remoteLoaded, setRemoteLoaded] = createSignal(false);
   let div;
   onMount(() => {
     window.GI_TCG_REMOTE_RENDERED_ERRORS ??= [];
   });
   const errored = () => window.GI_TCG_REMOTE_RENDERED_ERRORS?.includes(remoteRenderedUrl) || remoteError();
+  const isAppleMobile = () => !!window.GestureEvent;
   return (
-    <Show when={window.GestureEvent && !remoteError()}
-      fallback={
-        <div data-gi-tcg-contain-strict ref={div} {...props}>
+    <>
+      <Show when={!errored()}>
+        <img
+          bool:data-display-none={!remoteLoaded()}
+          {...props}
+          src={remoteRenderedUrl}
+          draggable={false}
+          onError={() => {
+            setRemoteError(true);
+            window.GI_TCG_REMOTE_RENDERED_ERRORS.push(remoteRenderedUrl);
+          }}
+          onLoad={() => setRemoteLoaded(true)}
+        />
+      </Show>
+      <Show when={errored() || (!remoteLoaded() && !isAppleMobile())}>
+        <div data-contain-strict ref={div} {...props}>
           <Portal mount={div} useShadow={true}>${svgSource}</Portal>
         </div>
-      }  
-    >
-      <img
-        {...props}
-        src={remoteRenderedUrl}
-        draggable={false}
-        onError={() => {
-          setRemoteError(true);
-          window.GI_TCG_REMOTE_RENDERED_ERRORS.push(remoteRenderedUrl);
-        }}
-      />
-    </Show>
+      </Show>
+    </>
   );
 }
 `;
