@@ -27,7 +27,7 @@ export function PlayingCard(props: PlayingCardProps) {
       class="absolute top-50% -translate-y-42.5 data-[opp=false]:left-30 data-[opp=true]:right-30 z-100 shadow-xl w-35 h-60 rounded-6 animate-[playing-card_700ms_both]"
       data-opp={props.opp}
     >
-      <div class="absolute inset-0 h-full w-full p-1 bg-#bdaa8a rounded-4" />
+      <div class="absolute inset-0.5 bg-#bdaa8a rounded-3" />
       <Image
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.data.definitionId}

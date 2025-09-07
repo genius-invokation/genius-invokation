@@ -355,7 +355,7 @@ function calcCardsInfo(
           transform: {
             x,
             y,
-            z: (pileSize - 1 - i) / 4,
+            z: (pileSize - 1 - i) * 0.15,
             ry: 180,
             rz: 90,
           },
@@ -1813,7 +1813,7 @@ export function Chessboard(props: ChessboardProps) {
               }
             />
             <SkillButtonGroup
-              class="absolute bottom-3 transform-origin-br scale-120% skill-button-group"
+              class="absolute bottom-2 transform-origin-br scale-120% skill-button-group"
               skills={mySkills()}
               switchActiveButton={switchActiveStep() ?? null}
               switchActiveCost={
@@ -1950,7 +1950,7 @@ export function Chessboard(props: ChessboardProps) {
           </div>
           {/* 右上角部件 */}
           <Show when={!localProps.liveStreamingMode}>
-            <div class="absolute top-2.5 right-2.3 flex flex-row-reverse gap-2">
+            <div class="absolute top-2 right-2 flex flex-row-reverse gap-1.5">
               <Switch>
                 <Match when={buttonGroup() === "normal"}>
                   <Show

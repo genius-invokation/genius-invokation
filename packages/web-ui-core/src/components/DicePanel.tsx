@@ -124,28 +124,28 @@ export function DicePanel(props: DicePanelProps) {
           </div>
         </div>
         <div
-          class="absolute right-4 top-0 bottom-0 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity"
+          class="absolute right-2 top-0 bottom-0 opacity-0 pointer-events-none data-[shown]:opacity-100 transition-opacity"
           bool:data-shown={props.state !== "visible"}
         >
-          <div class="m-2 flex flex-col select-none gap-2 items-center">
+          <div class="m-2 flex flex-col select-none gap-1.5 items-center">
             <WithDelicateUi
               assetId={"UI_Gcg_DiceL_Count_03"}
               fallback={
-                <div class="h-8 w-8 mt-10 mr-0.3 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1 text-yellow-800">
+                <div class="h-8 w-8 mt-9 mr-0.3 flex items-center justify-center rounded-full bg-yellow-100 b-yellow-800 b-1 text-yellow-800">
                   {props.dice.length}
                 </div>
               }
             >
               {(image) => (
-                <div class="relative h-8 w-8.6 mt-10 mb-1 items-center justify-center">
+                <div class="relative h-8 w-8.6 mt-9 mb-1 items-center justify-center">
                   <div class="children-h-full children-w-full">{image}</div>
-                  <div class="absolute inset-0 top-0.5 flex items-center justify-center text-white font-bold">
+                  <div class="absolute inset-0 top-1 flex items-center justify-center text-white font-bold">
                     {props.dice.length}
                   </div>
                 </div>
               )}
             </WithDelicateUi>
-            <ul class="flex flex-col gap-2 items-center">
+            <ul class="flex flex-col gap-1.5 items-center dice-shadow">
               <Index each={props.dice}>
                 {(dice, index) => (
                   <li

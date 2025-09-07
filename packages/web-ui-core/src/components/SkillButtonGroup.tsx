@@ -216,7 +216,7 @@ export function SkillButtonGroup(props: SkillButtonGroupProps) {
   });
   return (
     <div
-      class={`flex flex-row-reverse gap-1 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto ${
+      class={`flex flex-row-reverse gap-0.8 transition-all-100 transition-opacity opacity-0 data-[shown]:opacity-100 pointer-events-none data-[shown]:pointer-events-auto ${
         props.class ?? ""
       }`}
       bool:data-shown={props.shown}

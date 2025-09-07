@@ -68,7 +68,7 @@
   }
 
   .skill-button-group {
-    right: var(--skill-button-offset-x, 0.5rem);
+    right: var(--skill-button-offset-x, 1rem);
   }
   .history-panel {
     right: var(--chessboard-right-offset, 0);
@@ -228,7 +228,7 @@
   }
 
   .card[data-playable] {
-    --playable-shadow: 0 0 5px 5px rgb(254 240 138);
+    --playable-shadow: 0 0 5px 5px rgb(252 240 168 / 0.7);
   }
 
   .card[data-transition-transform] {
@@ -305,6 +305,14 @@
     .delicate-dice[data-selected] {
       --blink-opacity: 0.5;
     }
+  }
+
+  .dice-shadow {
+    background-color: #443322a0;
+    border-radius: 0.5rem;
+    box-shadow:
+      0 0 8px #44332280,
+      0 0 16px #443322;
   }
 
   .action-hint {

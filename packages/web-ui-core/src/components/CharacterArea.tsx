@@ -609,7 +609,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               element={Number(data().definitionId.toString()[1]) as DiceType}
             />
           </Show>
-          <div class="absolute inset-0 h-full w-full p-1 bg-#bdaa8a rounded-2" />
+          <div class="absolute inset-0.5 bg-#bdaa8a rounded-1.2" />
           <Image
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
