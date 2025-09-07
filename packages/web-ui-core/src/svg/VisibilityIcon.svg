@@ -4,9 +4,10 @@
 >
   <g
     fill="none"
-    stroke="currentColor"
+    stroke="black"
     stroke-linecap="round"
     stroke-width="2.5"
+    opacity="0.7"
   >
     <path
       stroke-linejoin="round"
