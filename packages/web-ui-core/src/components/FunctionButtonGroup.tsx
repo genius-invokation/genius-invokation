@@ -134,6 +134,7 @@ export function BackwardButton(props: BackwardButtonProps) {
 }
 
 export const CHESSBOARD_COLORS = [
+  "#c0cac3",
   "#537a76",
   "#7f7473",
   "#66588a",

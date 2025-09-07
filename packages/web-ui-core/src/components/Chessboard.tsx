@@ -1649,9 +1649,7 @@ export function Chessboard(props: ChessboardProps) {
   };
 
   const [buttonGroup, setButtonGroup] = createSignal<ButtonGroup>("normal");
-  const [chessboardColor, setChessboardColor] = createSignal(
-    Math.floor(Math.random() * 6),
-  );
+  const [chessboardColor, setChessboardColor] = createSignal(0);
 
   onMount(() => {
     setSpecialViewVisible(!localProps.liveStreamingMode);
