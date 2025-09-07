@@ -104,21 +104,22 @@ for await (const file of new Glob("*.svg").scan(svgFolder)) {
     const recorder = new PuppeteerScreenRecorder(page, {
       format: "png",
       fps: 25,
+      
     } as PuppeteerScreenRecorderOptions);
     await recorder.start(`${outFolder}/${file}`);
     console.log(`Waiting for ${ANIMATED[file]}ms...`);
     await Bun.sleep(ANIMATED[file]);
     await recorder.stop();
-    await $`ffmpeg -y -i ${`${outFolder}/${file}/frame-%d.png`} -loop 0 -an -vf fps=fps=25 ${`${outFolder}/${file}.webp`}`;
+    await $`ffmpeg -y -i ${`${outFolder}/${file}/frame-%d.png`} -loop 0 -an -vf "fps=25,scale=${info.width}:${info.height}" ${`${outFolder}/${file}.webp`}`;
   } else {
     console.log(`Render static SVG for ${file}...`);
     const outfile = `${outFolder}/${file}.webp` as const;
     await page.screenshot({
       type: "webp",
       quality: 100,
-      fullPage: true,
       omitBackground: true,
       path: outfile,
+      clip: { x: 0, y: 0, width: info.width, height: info.height },
     });
     // await $`magick ${outfile} -fuzz 5% -transparent "#0f0" ${outfile}`;
   }
