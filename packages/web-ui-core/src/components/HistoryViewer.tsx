@@ -51,7 +51,6 @@ import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?fb";
 import TriggerIcon from "../svg/TriggerIcon.svg?fb";
 import CardFrameSummon from "../svg/CardFrameSummon.svg?fb";
 import CardbackNormal from "../svg/CardbackNormal.svg?fb";
-import HistoryIcon from "../svg/HistoryIcon.svg?fb";
 import { CardFace } from "./Card";
 import { StrokedText } from "./StrokedText";
 import { DAMAGE_COLOR } from "./Damage";
@@ -1869,23 +1868,6 @@ export interface HistoryPanelProps {
   who: 0 | 1;
   history: HistoryBlock[];
   onBackdropClick: () => void;
-}
-
-export interface HistoryToggleButtonProps {
-  onClick?: () => void;
-}
-
-export function HistoryToggleButton(props: HistoryToggleButtonProps) {
-  return (
-    <button
-      class="h-8 w-8 flex items-center justify-center rounded-full b-2 bg-#e9e2d3 text-black/70 b-black/70 hover:b-white active:bg-#cfa56a active:b-#91744a transition-colors line-height-none cursor-pointer"
-      onClick={() => {
-        props.onClick?.();
-      }}
-    >
-      <HistoryIcon class="h-5.4 w-5.4" />
-    </button>
-  );
 }
 
 export function HistoryPanel(props: HistoryPanelProps) {

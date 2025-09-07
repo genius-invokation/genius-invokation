@@ -31,7 +31,7 @@
                 d="M1235 608C1235 693.604 1165.6 763 1080 763C994.396 763 925 693.604 925 608C925 522.396 994.396 453 1080 453C1165.6 453 1235 522.396 1235 608Z"
                 fill="black" />
         </mask>
-        <g opacity="0.25" filter="url(#filter3_f_323_2)" mask="url(#mask1_323_2)">
+        <g mask="url(#mask1_323_2)" opacity="0.5" filter="url(#filter3_f_323_2)">
             <path
                 d="M1557 608C1557 871.44 1343.44 1085 1080 1085C816.56 1085 603 871.44 603 608C603 344.56 816.56 131 1080 131C1343.44 131 1557 344.56 1557 608Z"
                 fill="#F8EEDD" />
@@ -1440,7 +1440,7 @@
                     stroke="white" />
             </g>
         </g>
-        <g opacity="0.18" filter="url(#filter282_f_323_2)">
+        <g opacity="0.25" filter="url(#filter282_f_323_2)">
             <path
                 d="M1235 608C1235 693.604 1165.6 763 1080 763C994.396 763 925 693.604 925 608C925 522.396 994.396 453 1080 453C1165.6 453 1235 522.396 1235 608Z"
                 fill="#F8EEDD" />
@@ -1937,7 +1937,7 @@
             filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-            <feGaussianBlur stdDeviation="200" result="effect1_foregroundBlur_323_2" />
+            <feGaussianBlur stdDeviation="300" result="effect1_foregroundBlur_323_2" />
         </filter>
         <filter id="filter4_f_323_2" x="641" y="99" width="135.741" height="154"
             filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">

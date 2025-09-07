@@ -15,7 +15,6 @@
 
 import { AspectRatioContainer } from "./AspectRatioContainer";
 import Background from "../svg/ChessboardBackground.svg?fb";
-import { WithDelicateUi } from "../primitives/delicate_ui";
 import { CHESSBOARD_COLORS } from "./FunctionButtonGroup";
 
 export interface ChessboardBackgroundProps {
@@ -27,18 +26,7 @@ export function ChessboardBackground(props: ChessboardBackgroundProps) {
     <div class="absolute inset-0 flex items-center justify-center chessboard-bg-container">
       <AspectRatioContainer>
         <div class="absolute aspect-ratio-[16/9] w-full max-h-full top-50% translate-y--50% bg-#443322">
-          <WithDelicateUi
-            assetId={"ChessboardBackground"}
-            fallback={
-              <Background class="absolute h-full w-full scale-108% transform-origin-c" />
-            }
-          >
-            {(image) => (
-              <div class="absolute h-full w-full scale-108% transform-origin-c">
-                {image}
-              </div>
-            )}
-          </WithDelicateUi>
+          <Background class="absolute h-full w-full scale-108% transform-origin-c" />
           <div
             class="h-full w-full"
             style={{ "background-color": CHESSBOARD_COLORS[props.colorIndex] }}

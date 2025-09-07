@@ -129,10 +129,11 @@ import { RerollDiceView } from "./RerollDiceView";
 import { SelectCardView } from "./SelectCardView";
 import { SpecialViewBackdrop } from "./ViewPanelBackdrop";
 import { SwitchHandsView } from "./SwitchHandsView";
-import { HistoryToggleButton, HistoryPanel } from "./HistoryViewer";
+import { HistoryPanel } from "./HistoryViewer";
 import { CurrentTurnHint } from "./CurrentTurnHint";
-import { SpecialViewToggleButton } from "./SpecialViewToggleButton";
 import {
+  SpecialViewToggleButton,
+  HistoryToggleButton,
   BackwardButton,
   ClothButton,
   ColorsButtonGroup,
@@ -1976,7 +1977,7 @@ export function Chessboard(props: ChessboardProps) {
                     isFullScreen={isFullscreen()}
                     onClick={toggleFullscreen}
                   />
-                  <ClothButton onClick={() => setButtonGroup("cloth")} />
+                  <ClothButton onClick={() => setButtonGroup("cloth")} colorIndex={chessboardColor()}/>
                 </Match>
                 <Match when={buttonGroup() === "cloth"}>
                   <BackwardButton onClick={() => setButtonGroup("settings")} />
