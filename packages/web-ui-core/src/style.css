@@ -130,11 +130,14 @@
     box-shadow: inset 0 0 12px #00000080;
   }
 
-  [data-gi-tcg-contain-strict] {
+  [data-contain-strict] {
     contain: style size;
     > * {
       pointer-events: none;
     }
+  }
+  [data-display-none] {
+    display: none;
   }
 
   .status-animation[data-entering],

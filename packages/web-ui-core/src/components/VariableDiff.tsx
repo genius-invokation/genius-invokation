@@ -55,12 +55,12 @@ export function VariableDiff(props: VariableDiffProps) {
         <Switch>
           <Match when={props.defeated}>
             <div class="relative h-8 w-8 overflow-visible shrink-0">
-              <DefeatedPreviewIcon class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+              <DefeatedPreviewIcon noRender class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
             </div>
           </Match>
           <Match when={props.revived}>
             <div class="relative h-8 w-8 overflow-visible shrink-0">
-              <RevivePreviewIcon class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
+              <RevivePreviewIcon noRender class="absolute top-50% left-50% h-10 w-10 -translate-x-50% -translate-y-55%" />
             </div>
           </Match>          
         </Switch>

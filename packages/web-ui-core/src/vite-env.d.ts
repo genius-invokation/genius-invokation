@@ -17,6 +17,6 @@
 
 declare module "*.svg?fb" {
   import { Component, type ComponentProps } from "solid-js";
-  const content: Component<ComponentProps<"div">>;
+  const content: Component<ComponentProps<"div"> & ComponentProps<"img"> & { noRender?: boolean }>;
   export default content;
 }

@@ -44,7 +44,7 @@ export function Damage(props: DamageProps) {
         }}
       >
         <div class="absolute h-full w-full">
-          {damageType() === DamageType.Heal ? <HealIcon /> : <DamageIcon />}
+          {damageType() === DamageType.Heal ? <HealIcon noRender /> : <DamageIcon noRender />}
         </div>
         <div
           class="relative h-full w-full data-[heal=false]:animate-[damage-text-enter_200ms_both] text-5xl font-bold text-center"
