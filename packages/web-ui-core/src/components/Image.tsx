@@ -25,9 +25,7 @@ import {
   splitProps,
 } from "solid-js";
 import { useUiContext } from "../hooks/context";
-import CardFaceLoading from "../svg/CardFaceLoading.svg?fb";
 import CardFaceNormal from "../svg/CardFaceNormal.svg?fb";
-import SummonLoading from "../svg/SummonLoading.svg?fb";
 import SummonNormal from "../svg/SummonNormal.svg?fb";
 import TechniqueNormal from "../svg/TechniqueNormal.svg?fb";
 import UnknownIcon from "../svg/Unknown.svg?fb";
@@ -128,7 +126,6 @@ export function ImageFallback(props: ImageFallbackProps) {
   return (
     <Switch>
       <Match when={props.type === "card" && props.loading}>
-        <CardFaceLoading class="absolute h-full w-full" />
         <div class="absolute top-72% text-3 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
           {props.alt}
         </div>
@@ -140,7 +137,6 @@ export function ImageFallback(props: ImageFallbackProps) {
         </div>
       </Match>
       <Match when={props.type === "summon" && props.loading}>
-        <SummonLoading class="absolute h-full w-full" />
         <div class="absolute top-60% text-2.5 text-center w-90% overflow-hidden text-nowrap text-ellipsis">
           {props.alt}
         </div>
@@ -155,13 +151,13 @@ export function ImageFallback(props: ImageFallbackProps) {
         <UnknownStatus />
       </Match>
       <Match when={props.type === "technique"}>
-        <TechniqueNormal class="absolute h-full w-full" />
+        <TechniqueNormal noRender class="absolute h-full w-full" />
       </Match>
       <Match when={props.type === "aura"}>
         <SimplyElemental id={props.imageId ?? 0} />
       </Match>
       <Match when={props.type === "general"}>
-        <UnknownIcon class="absolute h-75% w-75%" />
+        <UnknownIcon noRender class="absolute h-75% w-75%" />
       </Match>
       <Match when={props.type === "alert"}>
         <div
@@ -187,7 +183,7 @@ export function UnknownStatus() {
         "--bg-outer-color": "#938161",
       }}
     >
-      <UnknownIcon class="absolute h-90% w-90% inset-5%" />
+      <UnknownIcon noRender class="absolute h-90% w-90% inset-5%" />
     </div>
   );
 }
