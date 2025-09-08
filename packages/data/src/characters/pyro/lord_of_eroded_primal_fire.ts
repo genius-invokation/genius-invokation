@@ -90,7 +90,6 @@ export const SeveringPrimalFire = skill(23053)
   .type("burst")
   .costPyro(3)
   .costEnergy(2)
-  .damage(DamageType.Pyro, 1)
   .do((c) => {
     const layer = c.self.hasStatus(Resentment)?.getVariable("layer") ?? 0;
     c.damage(DamageType.Piercing, layer + 1, "opp standby");
