@@ -1943,6 +1943,7 @@ export const OrigamiHamster = card(301036)
 /**
  * @id 303244
  * @name 收获时间（生效中）
+ * @description
  * 结束阶段：生成一张收获时间，随机置入我方牌组。（可叠加，最多叠加到2）
  */
 export const HarvestTimeInEffect = combatStatus(303244)
@@ -1985,4 +1986,56 @@ export const AwesomeBro = card(332050)
   .toCombatStatus(303243)
   .once("playCard", (c, e) => e.hasCardTag("technique"))
   .generateDice(DiceType.Omni, 1)
+  .done();
+
+/**
+ * @id 332051
+ * @name 「邪龙」的苏醒
+ * @description
+ * 召唤「邪龙」。
+ * 本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到5）
+ * （「邪龙」：结束阶段：造成1点穿透伤害。
+ * 可用次数：1）
+ * 【此卡含描述变量】
+ */
+export const FellDragonsAwakening = card(332051)
+  .since("v6.0.0")
+  .costSame(2)
+  // TODO
+  .done();
+
+/**
+ * @id 332052
+ * @name 旁白的注脚
+ * @description
+ * 双方召唤积木小人。
+ * （积木小人：结束阶段：造成1点物理伤害。
+ * 可用次数：2）
+ */
+export const NarrationFootnotes = card(332052)
+  .since("v6.0.0")
+  // TODO
+  .done();
+
+/**
+ * @id 332054
+ * @name 「魔女M的祝福」
+ * @description
+ * 选择并弃置一个我方召唤物，将其可用次数转化为至多2个不同类型的基础元素骰，如果其可用次数不低于3，则额外治疗我方受伤最多的角色2点。
+ */
+export const ABlessingFromM = card(332054)
+  .since("v6.0.0")
+  // TODO
+  .done();
+
+/**
+ * @id 332055
+ * @name 「狂欢节奏」
+ * @description
+ * 抓2张牌，如果我方手牌中的「武器」牌或「圣遗物」牌数量大于1张，则各生成1个万能元素。
+ */
+export const RevelrousBeats = card(332055)
+  .since("v6.0.0")
+  .costVoid(2)
+  // TODO
   .done();

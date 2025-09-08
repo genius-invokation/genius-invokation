@@ -103,7 +103,7 @@ export const SignatureMix = skill(11023)
 export const Diona = character(1102)
   .since("v3.3.0")
   .tags("cryo", "bow", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(3)
   .skills(KatzleinStyle, IcyPaws, SignatureMix)
   .done();

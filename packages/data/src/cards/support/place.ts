@@ -71,6 +71,8 @@ export const JadeChamber = card(321003)
  * @id 321004
  * @name 晨曦酒庄
  * @description
+ * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合2次）
+ * @outdated
  * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合至多2次）
  */
 export const DawnWinery = card(321004)
@@ -145,6 +147,8 @@ export const Tenshukaku = card(321007)
  * @id 321008
  * @name 鸣神大社
  * @description
+ * 我方角色使用技能后：如果元素骰总数为奇数，则生成1个万能元素。（每回合2次）
+ * @outdated
  * 每回合自动触发1次：生成1个随机的基础元素骰。
  * 可用次数：3
  */
@@ -229,6 +233,9 @@ export const Vanarana = card(321011)
  * @id 321012
  * @name 镇守之森
  * @description
+ * 我方选择行动前：如果当前元素骰总数为偶数，则我方角色「普通攻击」少花费1个无色元素。
+ * 可用次数：4
+ * @outdated
  * 行动阶段开始时：如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。
  * 可用次数：3
  */

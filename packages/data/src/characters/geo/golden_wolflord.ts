@@ -66,6 +66,8 @@ export const WolflordsStrike = skill(26031)
  * @id 26032
  * @name 兽境轰召
  * @description
+ * 造成2点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。
+ * @outdated
  * 造成1点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。
  */
 export const HowlingRiftcall = skill(26032)

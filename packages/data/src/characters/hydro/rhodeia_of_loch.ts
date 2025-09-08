@@ -62,6 +62,11 @@ export const OceanicMimicSquirrel = summon(122011)
  * @id 122010
  * @name 纯水幻形
  * @description
+ * 「纯水幻形」共有3种：
+ * 花鼠：结束阶段造成2点水元素伤害，可用2次。
+ * 飞鸢：结束阶段造成1点水元素伤害，可用3次。
+ * 蛙：抵挡1点出战角色受到的伤害，可用1次；耗尽后，在结束阶段造成2点水元素伤害。
+ * @outdated
  * 「纯水幻形」共有3种，最多同时存在2种：
  * 花鼠：结束阶段造成2点水元素伤害，可用2次。
  * 飞鸢：结束阶段造成1点水元素伤害，可用3次。
@@ -112,6 +117,8 @@ export const PREVIEW_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptorPreview, 
  * @id 22012
  * @name 纯水幻造
  * @description
+ * 随机召唤1种纯水幻形。（优先生成不同的类型）
+ * @outdated
  * 随机召唤1种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）
  */
 export const OceanidMimicSummoning = skill(22012)
@@ -135,6 +142,8 @@ export const OceanidMimicSummoning = skill(22012)
  * @id 22013
  * @name 林野百态
  * @description
+ * 随机召唤2种纯水幻形。（优先生成不同的类型）
+ * @outdated
  * 随机召唤2种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）
  */
 export const TheMyriadWilds = skill(22013)

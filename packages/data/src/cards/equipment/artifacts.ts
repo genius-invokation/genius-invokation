@@ -775,6 +775,10 @@ export const GoldenTroupesReward = card(312025)
  * @id 312027
  * @name 紫晶的花冠
  * @description
+ * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到2）
+ * 行动阶段开始时：如果「花冠水晶」数量为2，则本回合内下次我方引发元素反应时伤害额外+2。
+ * （角色最多装备1件「圣遗物」）
+ * @outdated
  * 所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。
  * （每回合至多生成2个）
  * （角色最多装备1件「圣遗物」）
@@ -862,6 +866,10 @@ export const GoldenTroupe = card(312026)
  * @id 312028
  * @name 乐园遗落之花
  * @description
+ * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到5）
+ * 行动阶段开始或我方触发元素反应时：如果「花冠水晶」数量为5，则生成1个万能元素，并抓1张牌。（每回合2次）
+ * （角色最多装备1件「圣遗物」）
+ * @outdated
  * 所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。
  * （每回合至多生成2个）
  * （角色最多装备1件「圣遗物」）
@@ -1082,4 +1090,45 @@ export const WhimsicalDanceOfTheWithered = card(312036)
   .on("useSkill")
   .usagePerRound(1)
   .characterStatus(BondOfLife, "my active or opp active")
+  .done();
+
+/**
+ * @id 312037
+ * @name 宗室面具
+ * @description
+ * 附属角色使用元素爆发后：我方下一个角色本回合内造成的伤害+1。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const RoyalMasque = card(312037)
+  .since("v6.0.0")
+  .artifact()
+  // TODO
+  .done();
+
+/**
+ * @id 312038
+ * @name 未竟的遐思
+ * @description
+ * 我方燃烧烈焰以及造成的燃烧反应伤害+1。（每回合2次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const UnfinishedReverie = card(312038)
+  .since("v6.0.0")
+  .costSame(2)
+  .artifact()
+  // TODO
+  .done();
+
+/**
+ * @id 312039
+ * @name 谐律异想断章
+ * @description
+ * 附属角色使用技能后：我方所有角色附属1层生命之契，下次我方角色使用技能时少花费1个元素骰。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const FragmentOfHarmonicWhimsy = card(312039)
+  .since("v6.0.0")
+  .costSame(2)
+  .artifact()
+  // TODO
   .done();

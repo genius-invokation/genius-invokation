@@ -175,6 +175,7 @@ export const ViciousAncientBattle = card(330008)
 /**
  * @id 300005
  * @name 赦免宣告（生效中）
+ * @description
  * 所附属角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
  * 持续回合：2
  */

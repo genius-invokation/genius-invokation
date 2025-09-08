@@ -20,6 +20,8 @@ import { Satiated } from "../../commons";
  * @id 127041
  * @name 食足力增
  * @description
+ * 每层使自身下次造成的伤害+1。（可叠加，没有上限，每次最多生效2层）
+ * @outdated
  * 自身下次造成的伤害+1。（可叠加，没有上限）
  */
 export const WellFedAndStrong = status(127041)
@@ -133,7 +135,7 @@ export const GluttonousRex02 = skill(27045)
 export const GluttonousYumkasaurMountainKing = character(2704)
   .since("v5.8.0")
   .tags("dendro", "monster")
-  .health(7)
+  .health(8)
   .energy(2)
   .skills(CrushingTailAttack, FlyingFruit, FlamegranateConflagration, GluttonousRex01, GluttonousRex02)
   .done();
