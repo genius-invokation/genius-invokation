@@ -63,13 +63,13 @@ export function PlayerInfoBox(props: PlayerInfoProps) {
           }
         >
           {(image) => (
-            <div class="relative flex items-center justify-center  ml-2">
-              <div class="h-10 w-10">{image}</div>
+            <div class="relative flex items-center justify-center ml-2.5">
+              <div class="h-9 w-9">{image}</div>
               <StrokedText
                 text={String(props.diceCount)}
                 strokeWidth={2}
                 strokeColor="#000000B0"
-                class="absolute inset-0 text-center text-white font-bold text-5 line-height-10"
+                class="absolute inset-0 text-center text-white font-bold text-4.5 line-height-9"
               />
             </div>
           )}

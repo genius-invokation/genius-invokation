@@ -558,7 +558,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <WeaponIcon
-                    class="w-7 h-7 equipment"
+                    class="absolute w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -568,7 +568,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <ArtifactIcon
-                    class="w-7 h-7 equipment"
+                    class="absolute w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -578,7 +578,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               {(et) => (
                 <Equipment data={et()}>
                   <TalentIcon
-                    class="w-7 h-7 equipment"
+                    class="absolute w-7 h-7 equipment"
                     bool:data-disposing={et().animation === "disposing"}
                   />
                 </Equipment>
@@ -609,7 +609,7 @@ export function CharacterArea(props: CharacterAreaProps) {
               element={Number(data().definitionId.toString()[1]) as DiceType}
             />
           </Show>
-          <div class="absolute inset-0 h-full w-full p-1 bg-#bdaa8a rounded-2" />
+          <div class="absolute inset-0.5 bg-#bdaa8a rounded-1.2" />
           <Image
             imageId={data().definitionId}
             class="absolute inset-0 h-full w-full p-1px"
@@ -805,7 +805,7 @@ function Equipment(props: EquipmentProps) {
   const ch = children(() => props.children);
   const data = createMemo(() => props.data);
   return (
-    <div class="relative w-6.5 h-6.5 rounded-full">
+    <div class="relative w-7 h-6.5 rounded-full">
       {ch()}
       <div
         class="absolute top-0 w-7 h-7 rounded-full equipment-usage"

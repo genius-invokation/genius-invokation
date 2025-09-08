@@ -125,7 +125,7 @@ export interface CardFaceProps {
 export function CardFace(props: CardFaceProps) {
   return (
     <div class="absolute h-full w-full backface-hidden">
-      <div class="absolute inset-0 h-full w-full p-1 bg-#bdaa8a rounded-2" />
+      <div class="absolute inset-0.5 bg-#bdaa8a rounded-2" />
       <Image
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}
@@ -201,7 +201,7 @@ export function Card(props: CardProps) {
   return (
     <div
       ref={el}
-      class="absolute top-0 left-0 h-36 w-21 rounded-xl preserve-3d transform-origin-tl card pointer-events-auto data-[dragging-end]:pointer-events-none"
+      class="absolute top-0 left-0 h-36 w-21 rounded-1.5 preserve-3d transform-origin-tl card pointer-events-auto data-[dragging-end]:pointer-events-none"
       style={style()}
       bool:data-opp-hand={props.kind === "oppHand"}
       bool:data-hidden={props.hidden}
