@@ -1943,6 +1943,7 @@ export const OrigamiHamster = card(301036)
 /**
  * @id 303244
  * @name 收获时间（生效中）
+ * @description
  * 结束阶段：生成一张收获时间，随机置入我方牌组。（可叠加，最多叠加到2）
  */
 export const HarvestTimeInEffect = combatStatus(303244)
@@ -1985,4 +1986,117 @@ export const AwesomeBro = card(332050)
   .toCombatStatus(303243)
   .once("playCard", (c, e) => e.hasCardTag("technique"))
   .generateDice(DiceType.Omni, 1)
+  .done();
+
+export const DisposedSupportAndSummonsCountExtension = extension(332051, pair({
+  disposedSupportCount: 0,
+  disposedSummonsCount: 0,
+}))
+  .description("记录本场对局中双方支援区和召唤区弃置卡牌的数量")
+  .mutateWhen("onDispose", (st, e) => {
+    if (e.entity.definition.type === "support") {
+      st[e.who].disposedSupportCount++;
+    } else if (e.entity.definition.type === "summon") {
+      st[e.who].disposedSummonsCount++;
+    }
+  })
+  .done();
+
+/**
+ * @id 303245
+ * @name 「邪龙」
+ * @description
+ * 结束阶段：造成1点穿透伤害。
+ * 可用次数：1
+ */
+export const FellDragon = summon(303245)
+  .tags("simulanka")
+  .variable("effect", 1, { forceOverwrite: true })
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .hint(DamageType.Physical, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(1)
+  .do((c, e) => {
+    c.damage(DamageType.Piercing, c.getVariable("effect"));
+  })
+  .on("enter")
+  .do((c, e) => {
+    const ext = c.getExtensionState()[c.self.who];
+    const addUsage = Math.min(ext.disposedSupportCount, 5);
+    const addDmg = Math.min(ext.disposedSummonsCount, 5);
+    c.addVariable("usage", addUsage);
+    c.addVariable("effect", addDmg);
+  })
+  .done();
+
+/**
+ * @id 332051
+ * @name 「邪龙」的苏醒
+ * @description
+ * 召唤「邪龙」。
+ * 本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到5）
+ * （「邪龙」：结束阶段：造成1点穿透伤害。
+ * 可用次数：1）
+ * 【此卡含描述变量】
+ */
+export const FellDragonsAwakening = card(332051)
+  .since("v6.0.0")
+  .costSame(2)
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (c, { area }, ext) => ext[area.who].disposedSupportCount)
+  .replaceDescription("[GCG_TOKEN_COUNTER_2]", (c, { area }, ext) => ext[area.who].disposedSummonsCount)
+  .summon(FellDragon)
+  .done();
+
+/**
+ * @id 332052
+ * @name 旁白的注脚
+ * @description
+ * 双方召唤积木小人。
+ * （积木小人：结束阶段：造成1点物理伤害。
+ * 可用次数：2）
+ */
+export const NarrationFootnotes = card(332052)
+  .since("v6.0.0")
+  .summon(ToyGuardSummon)
+  .summon(ToyGuardSummon, "opp")
+  .done();
+
+/**
+ * @id 332054
+ * @name 「魔女M的祝福」
+ * @description
+ * 选择并弃置一个我方召唤物，将其可用次数转化为至多2个不同类型的基础元素骰，如果其可用次数不低于3，则额外治疗我方受伤最多的角色2点。
+ */
+export const ABlessingFromM = card(332054)
+  .since("v6.0.0")
+  .addTarget("my summon")
+  .do((c, e) => {
+    const usage = e.targets[0].variables.usage!;
+    e.targets[0].dispose();
+    c.generateDice("randomElement", Math.min(usage, 2));
+    if (usage >= 3) {
+      c.heal(2, "my characters order by health - maxHealth limit 1");
+    }
+  })
+  .done();
+
+/**
+ * @id 332055
+ * @name 「狂欢节奏」
+ * @description
+ * 抓2张牌，如果我方手牌中的「武器」牌或「圣遗物」牌数量大于1张，则各生成1个万能元素。
+ */
+export const RevelrousBeats = card(332055)
+  .since("v6.0.0")
+  .costVoid(2)
+  .do((c, e) => {
+    c.drawCards(2);
+    if (c.$$("my hands with tag (weapon)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+    if (c.$$("my hands with tag (artifact)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+  })
   .done();

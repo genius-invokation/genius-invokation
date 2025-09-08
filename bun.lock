@@ -85,7 +85,7 @@
     },
     "packages/custom-data-loader": {
       "name": "@gi-tcg/custom-data-loader",
-      "version": "0.17.4-5-8-0",
+      "version": "0.17.4-6-0-0",
       "dependencies": {
         "@gi-tcg/data": "workspace:*",
       },
@@ -103,7 +103,7 @@
     },
     "packages/data": {
       "name": "@gi-tcg/data",
-      "version": "0.17.4-5-8-0",
+      "version": "0.17.4-6-0-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/static-data": "workspace:*",
@@ -251,7 +251,7 @@
     },
     "packages/static-data": {
       "name": "@gi-tcg/static-data",
-      "version": "0.17.4-5-8-0",
+      "version": "0.17.4-6-0-0",
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "lossless-json": "^4.0.1",
