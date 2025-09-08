@@ -14,6 +14,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { character, skill, summon, status, card, DamageType } from "@gi-tcg/core/builder";
+import { ResistantForm } from "../../commons";
+/**
+ * @id 115142
+ * @name 梦见风名物点心
+ * @description
+ * 此卡牌进入手牌时：如果我方出战角色生命值大于5，则造成1点风元素伤害；否则治疗我方出战角色2点。效果结算后抓1张牌，随后弃置此卡牌。
+ */
+export const YumemiStyleSpecialSnacks = card(115142)
+  .tags("food")
+  .unobtainable()
+  .descriptionOnHCI()
+  .do((c) => {
+    if (c.$("my active character with health > 5")){
+      c.damage(DamageType.Anemo, 1);
+    } else {
+      c.heal(2, "my active");
+    }
+    c.drawCards(1);
+  })
+  .done();
 
 /**
  * @id 115143
@@ -24,7 +44,10 @@ import { character, skill, summon, status, card, DamageType } from "@gi-tcg/core
  */
 export const MiniBaku = summon(115143)
   .since("v6.0.0")
-  // TODO
+  .hint(ResistantForm, (c, self) => self.variables.usage!)
+  .on("endPhase")
+  .usage(3)
+  .createPileCards(YumemiStyleSpecialSnacks, 1, "top")
   .done();
 
 /**
@@ -36,7 +59,10 @@ export const MiniBaku = summon(115143)
  */
 export const Dreamdrifter = status(115141)
   .since("v6.0.0")
-  // TODO
+  .on("declareEnd")
+  .usage(1)
+  .switchActive("@master")
+  .damage(DamageType.Anemo, 1)
   .done();
 
 /**
@@ -49,7 +75,7 @@ export const PureHeartPureDreams = skill(15141)
   .type("normal")
   .costAnemo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Anemo, 1)
   .done();
 
 /**
@@ -61,7 +87,8 @@ export const PureHeartPureDreams = skill(15141)
 export const AisaUtamakuraPilgrimage = skill(15142)
   .type("elemental")
   .costAnemo(3)
-  // TODO
+  .damage(DamageType.Anemo, 2)
+  .characterStatus(Dreamdrifter, "@self")
   .done();
 
 /**
@@ -74,7 +101,9 @@ export const AnrakuSecretSpringTherapy = skill(15143)
   .type("burst")
   .costAnemo(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Anemo, 3)
+  .createPileCards(YumemiStyleSpecialSnacks, 1, "top")
+  .summon(MiniBaku)
   .done();
 
 /**
@@ -104,5 +133,13 @@ export const YourEchoIMeetInDreams = card(215141)
   .since("v6.0.0")
   .costAnemo(3)
   .talent(YumemizukiMizuki)
-  // TODO
+  .on("enter")
+  .useSkill(AisaUtamakuraPilgrimage)
+  .on("increaseDamage", (c, e) =>
+    c.self.master.isActive() &&
+    ([DamageType.Cryo, DamageType.Hydro, DamageType.Pyro, DamageType.Electro] as DamageType[]).includes(e.type)
+  )
+  .listenToPlayer()
+  .usagePerRound(2)
+  .increaseDamage(1)
   .done();

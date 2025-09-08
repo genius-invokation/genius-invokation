@@ -218,5 +218,8 @@ export const AquaSimulacra = card(311208)
   .since("v6.0.0")
   .costSame(2)
   .weapon("bow")
-  // TODO
+  .on("increaseSkillDamage", (c) => c.self.master.health >= 11)
+  .increaseDamage(2)
+  .on("enter")
+  .increaseMaxHealth(1, "@master")
   .done();

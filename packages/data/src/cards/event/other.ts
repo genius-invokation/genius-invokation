@@ -1988,6 +1988,47 @@ export const AwesomeBro = card(332050)
   .generateDice(DiceType.Omni, 1)
   .done();
 
+export const DisposedSupportAndSummonsCountExtension = extension(332051, pair({
+  disposedSupportCount: 0,
+  disposedSummonsCount: 0,
+}))
+  .description("记录本场对局中双方支援区和召唤区弃置卡牌的数量")
+  .mutateWhen("onDispose", (st, e) => {
+    if (e.entity.definition.type === "support") {
+      st[e.who].disposedSupportCount++;
+    } else if (e.entity.definition.type === "summon") {
+      st[e.who].disposedSummonsCount++;
+    }
+  })
+  .done();
+
+/**
+ * @id 303245
+ * @name 「邪龙」
+ * @description
+ * 结束阶段：造成1点穿透伤害。
+ * 可用次数：1
+ */
+export const FellDragon = summon(303245)
+  .tags("simulanka")
+  .variable("effect", 1, { forceOverwrite: true })
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .hint(DamageType.Physical, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(1)
+  .do((c, e) => {
+    c.damage(DamageType.Piercing, c.getVariable("effect"));
+  })
+  .on("enter")
+  .do((c, e) => {
+    const ext = c.getExtensionState()[c.self.who];
+    const addUsage = Math.min(ext.disposedSupportCount, 5);
+    const addDmg = Math.min(ext.disposedSummonsCount, 5);
+    c.addVariable("usage", addUsage);
+    c.addVariable("effect", addDmg);
+  })
+  .done();
+
 /**
  * @id 332051
  * @name 「邪龙」的苏醒
@@ -2001,7 +2042,10 @@ export const AwesomeBro = card(332050)
 export const FellDragonsAwakening = card(332051)
   .since("v6.0.0")
   .costSame(2)
-  // TODO
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (c, { area }, ext) => ext[area.who].disposedSupportCount)
+  .replaceDescription("[GCG_TOKEN_COUNTER_2]", (c, { area }, ext) => ext[area.who].disposedSummonsCount)
+  .summon(FellDragon)
   .done();
 
 /**
@@ -2014,7 +2058,8 @@ export const FellDragonsAwakening = card(332051)
  */
 export const NarrationFootnotes = card(332052)
   .since("v6.0.0")
-  // TODO
+  .summon(ToyGuardSummon)
+  .summon(ToyGuardSummon, "opp")
   .done();
 
 /**
@@ -2025,7 +2070,15 @@ export const NarrationFootnotes = card(332052)
  */
 export const ABlessingFromM = card(332054)
   .since("v6.0.0")
-  // TODO
+  .addTarget("my summon")
+  .do((c, e) => {
+    const usage = e.targets[0].variables.usage!;
+    e.targets[0].dispose();
+    c.generateDice("randomElement", Math.min(usage, 2));
+    if (usage >= 3) {
+      c.heal(2, "my characters order by health - maxHealth limit 1");
+    }
+  })
   .done();
 
 /**
@@ -2037,5 +2090,13 @@ export const ABlessingFromM = card(332054)
 export const RevelrousBeats = card(332055)
   .since("v6.0.0")
   .costVoid(2)
-  // TODO
+  .do((c, e) => {
+    c.drawCards(2);
+    if (c.$$("my hands with tag (weapon)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+    if (c.$$("my hands with tag (artifact)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+  })
   .done();

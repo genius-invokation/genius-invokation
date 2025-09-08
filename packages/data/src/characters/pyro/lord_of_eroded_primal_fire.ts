@@ -21,9 +21,13 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  * @description
  * 每层使所附属角色造成的伤害和「元素爆发」造成的穿透伤害+1。（可叠加，没有上限）
  */
-export const ResentmentStatus = status(123051)
+export const Resentment = status(123051)
   .since("v6.0.0")
-  // TODO
+  .variableCanAppend("layer", 1, Infinity)
+  .on("increaseDamage")
+  .do((c, e) => {
+    e.increaseDamage(c.getVariable("layer"));
+  })
   .done();
 
 /**
@@ -35,7 +39,15 @@ export const ResentmentStatus = status(123051)
  */
 export const CardsDiscarded = status(123052)
   .since("v6.0.0")
-  // TODO
+  .variable("cardCount", 0)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (c, self) => self.variables.cardCount)
+  .on("disposeCard")
+  .do((c, e) => {
+    c.addVariable("cardCount", 1);
+    if (c.getVariable("cardCount") % 6 === 0){
+      c.characterStatus(Resentment, "@master");
+    }
+  })
   .done();
 
 /**
@@ -48,7 +60,7 @@ export const VoidClawStrike = skill(23051)
   .type("normal")
   .costPyro(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -60,7 +72,11 @@ export const VoidClawStrike = skill(23051)
 export const ErodedFlamingFeathers = skill(23052)
   .type("elemental")
   .costPyro(3)
-  // TODO
+  .do((c) => {
+    if (c.player.pile.length > 0) {
+      c.disposeCard(c.player.pile[0]);
+    }
+  })
   .done();
 
 /**
@@ -73,7 +89,17 @@ export const SeveringPrimalFire = skill(23053)
   .type("burst")
   .costPyro(3)
   .costEnergy(2)
-  // TODO
+  .do((c) => {
+    const layer = c.self.hasStatus(Resentment)?.getVariable("layer") ?? 0;
+    c.damage(DamageType.Piercing, layer + 1, "opp standby");
+    c.damage(DamageType.Pyro, 1);
+    for (const player of [c.player, c.oppPlayer]) {
+      for (const card of player.pile.slice(0, 3)) {
+        c.disposeCard(card);
+      }
+    }
+    c.characterStatus(Resentment, "@self");
+  })
   .done();
 
 /**
@@ -82,9 +108,12 @@ export const SeveringPrimalFire = skill(23053)
  * @description
  * 【被动】我方每舍弃6张卡牌，自身附属1层忿恨。
  */
-export const Resentment01 = skill(23054)
+export const ResentmentPassive = skill(23054)
   .type("passive")
-  // TODO
+  .on("battleBegin")
+  .characterStatus(CardsDiscarded)
+  .on("revive")
+  .characterStatus(CardsDiscarded)
   .done();
 
 /**
@@ -95,8 +124,7 @@ export const Resentment01 = skill(23054)
  */
 export const Resentment02 = skill(23056)
   .type("passive")
-  // TODO
-  .done();
+  .reserve();
 
 /**
  * @id 2305
@@ -109,7 +137,18 @@ export const LordOfErodedPrimalFire = character(2305)
   .tags("pyro", "monster")
   .health(12)
   .energy(2)
-  .skills(VoidClawStrike, ErodedFlamingFeathers, SeveringPrimalFire, Resentment01, Resentment02)
+  .skills(VoidClawStrike, ErodedFlamingFeathers, SeveringPrimalFire, ResentmentPassive)
+  .done();
+
+/**
+ * @id 223052
+ * @name 罔极盛怒（生效中）
+ * @description
+ * 所附属角色下次造成的伤害+1。
+ */
+export const UndyingFuryInEffect = status(223052)
+  .once("increaseDamage")
+  .increaseDamage(1)
   .done();
 
 /**
@@ -123,6 +162,15 @@ export const LordOfErodedPrimalFire = character(2305)
 export const UndyingFury = card(223051)
   .since("v6.0.0")
   .costPyro(1)
-  .talent(LordOfErodedPrimalFire)
-  // TODO
+  .talent(LordOfErodedPrimalFire, "none")
+  .on("playCard", (c, e) => {
+    if (e.who === c.self.who) {
+      return false;
+    }
+    return !c.isInInitialPile(e.card, "opp");
+  })
+  .listenToAll()
+  .usagePerRound(1)
+  .gainEnergy(1, "@master")
+  .characterStatus(UndyingFuryInEffect, "@master")
   .done();

@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, combatStatus, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, combatStatus, card, DamageType, SkillHandle } from "@gi-tcg/core/builder";
+import { AgileSwitch } from "../../commons";
 
 /**
  * @id 114141
@@ -24,7 +25,7 @@ import { character, skill, status, combatStatus, card, DamageType } from "@gi-tc
  */
 export const NightsoulsBlessing = status(114141)
   .since("v6.0.0")
-  // TODO
+  .nightsoulsBlessing(2, { autoDispose: true })
   .done();
 
 /**
@@ -36,8 +37,19 @@ export const NightsoulsBlessing = status(114141)
  */
 export const KineticEnergyScale = combatStatus(114142)
   .since("v6.0.0")
-  // TODO
+  .on("increaseSkillDamage")
+  .usage(2, { autoDecrease: false })
+  .do((c, e) => {
+    e.increaseDamage(2);
+    const iansan = c.$(`my character with definition id ${Iansan}`);
+    if (iansan?.hasNightsoulsBlessing()){
+      c.consumeNightsoul(iansan);
+    } else {
+      c.consumeUsage();
+    }
+  })
   .done();
+
 
 /**
  * @id 14141
@@ -49,7 +61,7 @@ export const WeightedSpike = skill(14141)
   .type("normal")
   .costElectro(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Physical, 2)
   .done();
 
 /**
@@ -61,7 +73,9 @@ export const WeightedSpike = skill(14141)
 export const ThunderboltRush = skill(14142)
   .type("elemental")
   .costElectro(3)
-  // TODO
+  .damage(DamageType.Electro, 2)
+  .gainNightsoul("@self", 1)
+  .combatStatus(AgileSwitch)
   .done();
 
 /**
@@ -70,11 +84,18 @@ export const ThunderboltRush = skill(14142)
  * @description
  * 造成3点雷元素伤害，自身进入夜魂加持，获得1点「夜魂值」，生成动能标示。
  */
-export const TheThreePrinciplesOfPower = skill(14143)
+export const TheThreePrinciplesOfPower: SkillHandle = skill(14143)
   .type("burst")
   .costElectro(3)
   .costEnergy(2)
-  // TODO
+  .damage(DamageType.Electro, 3)
+  .gainNightsoul("@self", 1)
+  .if((c) => c.self.hasEquipment(TeachingsOfTheCollectiveOfPlenty))
+  .combatStatus(KineticEnergyScale, "my", {
+    overrideVariables: { usage: 3 }
+  })
+  .else()
+  .combatStatus(KineticEnergyScale)
   .done();
 
 /**
@@ -85,7 +106,41 @@ export const TheThreePrinciplesOfPower = skill(14143)
  */
 export const CaloricBalancingPlan01 = skill(14144)
   .type("passive")
-  // TODO
+  .variable("switchCount", 0)
+  .variable("gainNightsoulPassiveUsagePerRound", 3)
+  .defineSnippet((c, e) => {
+    const nightsoul = c.self.hasNightsoulsBlessing();
+    if (!nightsoul) {
+      return;
+    }
+    if (nightsoul.getVariable("nightsoul") === 2) {
+      c.heal(1, "my characters order by health - maxHealth limit 1");
+    } else {
+      c.gainNightsoul("@self");
+    }
+    c.addVariable("gainNightsoulPassiveUsagePerRound", -1);
+  })
+  // 我方角色准备技能
+  .on("enterRelative", (c, e) =>
+    c.self.hasNightsoulsBlessing() &&
+    c.getVariable("gainNightsoulPassiveUsagePerRound") &&
+    e.entity.definition.type === "status" &&
+    e.entity.definition.tags.includes("preparingSkill"))
+  .listenToPlayer()
+  .callSnippet()
+  // 或累计2次……
+  .on("switchActive", (c, e) => c.self.hasNightsoulsBlessing())
+  .listenToPlayer()
+  .addVariable("switchCount", 1)
+  // ……「切换角色」后
+  .on("switchActive", (c, e) =>
+    c.self.hasNightsoulsBlessing() &&
+    c.getVariable("gainNightsoulPassiveUsagePerRound") &&
+    c.getVariable("switchCount") % 2 === 0)
+  .listenToPlayer()
+  .callSnippet()
+  .on("roundEnd")
+  .setVariable("gainNightsoulPassiveUsagePerRound", 3)
   .done();
 
 /**
@@ -96,8 +151,7 @@ export const CaloricBalancingPlan01 = skill(14144)
  */
 export const CaloricBalancingPlan02 = skill(14145)
   .type("passive")
-  // TODO
-  .done();
+  .reserve();
 
 /**
  * @id 14146
@@ -107,8 +161,7 @@ export const CaloricBalancingPlan02 = skill(14145)
  */
 export const CaloricBalancingPlan03 = skill(14146)
   .type("passive")
-  // TODO
-  .done();
+  .reserve();
 
 /**
  * @id 1414
@@ -121,7 +174,8 @@ export const Iansan = character(1414)
   .tags("electro", "pole", "natlan")
   .health(12)
   .energy(2)
-  .skills(WeightedSpike, ThunderboltRush, TheThreePrinciplesOfPower, CaloricBalancingPlan01, CaloricBalancingPlan02, CaloricBalancingPlan03)
+  .skills(WeightedSpike, ThunderboltRush, TheThreePrinciplesOfPower, CaloricBalancingPlan01)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
@@ -138,5 +192,6 @@ export const TeachingsOfTheCollectiveOfPlenty = card(214141)
   .costElectro(3)
   .costEnergy(2)
   .talent(Iansan)
-  // TODO
+  .on("enter")
+  .useSkill(TheThreePrinciplesOfPower)
   .done();

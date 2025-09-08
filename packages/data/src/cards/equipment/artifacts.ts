@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, Reaction, card, combatStatus, status } from "@gi-tcg/core/builder";
-import { BondOfLife } from "../../commons";
+import { BondOfLife, BurningFlame } from "../../commons";
 
 /**
  * @id 312101
@@ -1084,6 +1084,18 @@ export const WhimsicalDanceOfTheWithered = card(312036)
   .done();
 
 /**
+ * @id 301208
+ * @name 宗室面具（生效中）
+ * @description
+ * 本回合内，所附属角色造成的伤害+1。
+ */
+export const RoyalMasqueInEffect = status(301208)
+  .oneDuration()
+  .on("increaseDamage")
+  .increaseDamage(1)
+  .done();
+
+/**
  * @id 312037
  * @name 宗室面具
  * @description
@@ -1093,7 +1105,9 @@ export const WhimsicalDanceOfTheWithered = card(312036)
 export const RoyalMasque = card(312037)
   .since("v6.0.0")
   .artifact()
-  // TODO
+  .on("useSkill", (c, e) => e.isSkillType("burst") && c.$("my next"))
+  .usagePerRound(1)
+  .characterStatus(RoyalMasqueInEffect, "my next")
   .done();
 
 /**
@@ -1107,7 +1121,23 @@ export const UnfinishedReverie = card(312038)
   .since("v6.0.0")
   .costSame(2)
   .artifact()
-  // TODO
+  .on("increaseDamage", (c, e) =>
+    e.getReaction() === Reaction.Burning ||
+    e.source.definition.id === BurningFlame)
+  .listenToPlayer()
+  .usagePerRound(2)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 301207
+ * @name 谐律异想断章（生效中）
+ * @description
+ * 角色使用技能时少花费1个元素骰。
+ */
+export const HarmoniousSymphonyPreludeInEffect = combatStatus(301207)
+  .once("deductOmniDiceSkill")
+  .deductOmniCost(1)
   .done();
 
 /**
@@ -1121,5 +1151,8 @@ export const FragmentOfHarmonicWhimsy = card(312039)
   .since("v6.0.0")
   .costSame(2)
   .artifact()
-  // TODO
+  .on("useSkill")
+  .usagePerRound(1)
+  .characterStatus(BondOfLife, "my characters")
+  .combatStatus(HarmoniousSymphonyPreludeInEffect)
   .done();
