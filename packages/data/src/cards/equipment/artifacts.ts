@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, DiceType, Reaction, card, status } from "@gi-tcg/core/builder";
+import { DamageType, DiceType, Reaction, card, combatStatus, status } from "@gi-tcg/core/builder";
 import { BondOfLife } from "../../commons";
 
 /**
@@ -772,39 +772,37 @@ export const GoldenTroupesReward = card(312025)
   .done();
 
 /**
+ * @id 301209
+ * @name 紫晶的花冠（生效中）
+ * @description
+ * 本回合内下次我方引发元素反应时伤害额外+2。
+ */
+export const AmethystCrownInEffect = combatStatus(301209)
+  .oneDuration()
+  .on("increaseDamage", (c, e) => e.getReaction())
+  .increaseDamage(2)
+  .done();
+/**
  * @id 312027
  * @name 紫晶的花冠
  * @description
  * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到2）
  * 行动阶段开始时：如果「花冠水晶」数量为2，则本回合内下次我方引发元素反应时伤害额外+2。
  * （角色最多装备1件「圣遗物」）
- * @outdated
- * 所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。
- * （每回合至多生成2个）
- * （角色最多装备1件「圣遗物」）
  */
 export const AmethystCrown = card(312027)
   .since("v4.6.0")
-  .costSame(1)
+  .costSame(0)
   .artifact()
-  .variable("generatedCount", 0, { visible: false })
   .variable("crystal", 0)
-  .on("roundEnd")
-  .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
+    c.getVariable("crystal") < 2 &&
     !e.target.isMine() &&
-    e.type === DamageType.Dendro &&
-    c.self.master.isActive())
+    (e.type === DamageType.Dendro || e.isReactionRelatedTo(DamageType.Dendro)))
   .listenToAll()
-  .do((c) => {
-    c.addVariable("crystal", 1);
-    const crystal = c.getVariable("crystal");
-    const hands = c.player.hands.length;
-    if (crystal >= hands && c.getVariable("generatedCount") < 2) {
-      c.generateDice("randomElement", 1);
-      c.addVariable("generatedCount", 1);
-    }
-  })
+  .addVariableWithMax("crystal", 1, 2)
+  .on("actionPhase", (c) => c.getVariable("crystal") === 2)
+  .combatStatus(AmethystCrownInEffect)
   .done();
 
 /**
@@ -869,33 +867,26 @@ export const GoldenTroupe = card(312026)
  * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到5）
  * 行动阶段开始或我方触发元素反应时：如果「花冠水晶」数量为5，则生成1个万能元素，并抓1张牌。（每回合2次）
  * （角色最多装备1件「圣遗物」）
- * @outdated
- * 所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。
- * （每回合至多生成2个）
- * （角色最多装备1件「圣遗物」）
  */
 export const FlowerOfParadiseLost = card(312028)
   .since("v4.7.0")
   .costSame(2)
   .artifact()
   .variable("crystal", 0)
-  .variable("generatedCount", 0, { visible: false })
-  .on("roundEnd")
-  .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
-    c.self.master.isActive() &&
+    c.getVariable("crystal") < 5 &&
     !e.target.isMine() &&
     (e.type === DamageType.Dendro || e.isReactionRelatedTo(DamageType.Dendro)))
   .listenToAll()
-  .do((c) => {
-    c.addVariable("crystal", 2);
-    const crystal = c.getVariable("crystal");
-    const hands = c.player.hands.length;
-    if (crystal >= hands && c.getVariable("generatedCount") < 2) {
-      c.generateDice(DiceType.Omni, 1);
-      c.addVariable("generatedCount", 1);
-    }
-  })
+  .addVariable("crystal", 1)
+  .on("actionPhase", (c) => c.getVariable("crystal") === 5)
+  .generateDice(DiceType.Omni, 1)
+  .drawCards(1)
+  .on("reaction", (c, e) => c.getVariable("crystal") === 5 && e.caller.isMine())
+  .listenToAll()
+  .usagePerRound(1)
+  .generateDice(DiceType.Omni, 1)
+  .drawCards(1)
   .done();
 
 /**

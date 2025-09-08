@@ -58,6 +58,20 @@ export const CryoElementalInfusion = status(111052)
   .done();
 
 /**
+ * @id 111054
+ * @name 神里流·霰步
+ * @description
+ * 本回合内，所附属角色下次「普通攻击」造成的伤害+1。
+ */
+export const KamisatoArtSenhoStatus = status(111054)
+  .since("v6.0.0")
+  .oneDuration()
+  .once("increaseSkillDamage", (c, e) => e.viaSkillType("normal"))
+  .increaseDamage(1)
+  .done();
+
+
+/**
  * @id 11051
  * @name 神里流·倾
  * @description
@@ -101,10 +115,8 @@ export const KamisatoArtSoumetsu = skill(11053)
  * @name 神里流·霰步
  * @description
  * 【被动】此角色被切换为「出战角色」时，附属冰元素附魔，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。
- * @outdated
- * 【被动】此角色被切换为「出战角色」时，附属冰元素附魔。
  */
-export const KamisatoArtSenho: PassiveSkillHandle = skill(11054)
+export const KamisatoArtSenho01: PassiveSkillHandle = skill(11054)
   .type("passive")
   .on("battleBegin", (c, e) => c.self.isActive()) // 战斗开始时也附属附魔
   .characterStatus(CryoElementalInfusion)
@@ -113,6 +125,22 @@ export const KamisatoArtSenho: PassiveSkillHandle = skill(11054)
   .characterStatus(CryoElementalInfusion01)
   .else()
   .characterStatus(CryoElementalInfusion)
+  .done();
+
+/**
+ * @id 11055
+ * @name 神里流·霰步
+ * @description
+ * 【被动】此角色被切换为「出战角色」时，附属冰元素附魔，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。
+ */
+export const KamisatoArtSenho02 = skill(11055)
+  .type("passive")
+  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.id)
+  .usagePerRound(2, { name: "usagePerRound1" })
+  .characterStatus(KamisatoArtSenhoStatus)
+  .on("battleBegin", (c) => c.self.isActive())
+  .characterStatus(KamisatoArtSenhoStatus)
+  .addVariable("usagePerRound1", -1)
   .done();
 
 /**
@@ -126,7 +154,7 @@ export const KamisatoAyaka = character(1105)
   .tags("cryo", "sword", "inazuma")
   .health(10)
   .energy(3)
-  .skills(KamisatoArtKabuki, KamisatoArtHyouka, KamisatoArtSoumetsu, KamisatoArtSenho)
+  .skills(KamisatoArtKabuki, KamisatoArtHyouka, KamisatoArtSoumetsu, KamisatoArtSenho01, KamisatoArtSenho02)
   .done();
 
 /**
@@ -144,26 +172,4 @@ export const KantenSenmyouBlessing = card(211051)
   .on("deductOmniDiceSwitch", (c, e) => e.action.to.id === c.self.master.id)
   .usagePerRound(1)
   .deductOmniCost(1)
-  .done();
-
-/**
- * @id 111054
- * @name 神里流·霰步
- * @description
- * 本回合内，所附属角色下次「普通攻击」造成的伤害+1。
- */
-export const KamisatoArtSenhoStatus = status(111054)
-  .since("v6.0.0")
-  // TODO
-  .done();
-
-/**
- * @id 11055
- * @name 神里流·霰步
- * @description
- * 【被动】此角色被切换为「出战角色」时，附属冰元素附魔，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。
- */
-export const KamisatoArtSenho02 = skill(11055)
-  .type("passive")
-  // TODO
   .done();

@@ -21,14 +21,17 @@ import { Satiated } from "../../commons";
  * @name 食足力增
  * @description
  * 每层使自身下次造成的伤害+1。（可叠加，没有上限，每次最多生效2层）
- * @outdated
- * 自身下次造成的伤害+1。（可叠加，没有上限）
  */
 export const WellFedAndStrong = status(127041)
   .since("v5.8.0")
   .on("increaseSkillDamage")
   .usageCanAppend(1, Infinity)
-  .increaseDamage(1)
+  .do((c, e) => {
+    const currentUsage = c.getVariable("usage");
+    const effectiveLayers = Math.min(currentUsage, 2);
+    e.increaseDamage(effectiveLayers);
+    c.consumeUsage(effectiveLayers);
+  })
   .done();
 
 /**

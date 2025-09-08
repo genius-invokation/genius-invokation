@@ -66,11 +66,6 @@ export const OceanicMimicSquirrel = summon(122011)
  * 花鼠：结束阶段造成2点水元素伤害，可用2次。
  * 飞鸢：结束阶段造成1点水元素伤害，可用3次。
  * 蛙：抵挡1点出战角色受到的伤害，可用1次；耗尽后，在结束阶段造成2点水元素伤害。
- * @outdated
- * 「纯水幻形」共有3种，最多同时存在2种：
- * 花鼠：结束阶段造成2点水元素伤害，可用2次。
- * 飞鸢：结束阶段造成1点水元素伤害，可用3次。
- * 蛙：抵挡1点出战角色受到的伤害，可用1次；耗尽后，在结束阶段造成2点水元素伤害。
  */
 export const OceanicMimicRaptorPreview = summon(122010) // 这是纯水幻形·飞鸢的预览版本
   .endPhaseDamage(DamageType.Hydro, 1)
@@ -118,8 +113,6 @@ export const PREVIEW_MIMICS = [OceanicMimicSquirrel, OceanicMimicRaptorPreview, 
  * @name 纯水幻造
  * @description
  * 随机召唤1种纯水幻形。（优先生成不同的类型）
- * @outdated
- * 随机召唤1种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）
  */
 export const OceanidMimicSummoning = skill(22012)
   .type("elemental")
@@ -128,11 +121,11 @@ export const OceanidMimicSummoning = skill(22012)
     const mimics = c.isPreview ? PREVIEW_MIMICS : NORMAL_MIMICS;
     const exists = c.player.summons.map((s) => s.definition.id).filter((id) => mimics.includes(id));
     let target;
-    if (exists.length >= 2) {
-      target = c.random(exists);
-    } else {
-      const rest = mimics.filter((id) => !exists.includes(id));
+    const rest = mimics.filter((id) => !exists.includes(id));
+    if (rest.length > 0) {
       target = c.random(rest);
+    } else {
+      target = c.random(mimics);
     }
     c.summon(target as SummonHandle);
   })
@@ -143,8 +136,6 @@ export const OceanidMimicSummoning = skill(22012)
  * @name 林野百态
  * @description
  * 随机召唤2种纯水幻形。（优先生成不同的类型）
- * @outdated
- * 随机召唤2种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）
  */
 export const TheMyriadWilds = skill(22013)
   .type("elemental")
@@ -154,11 +145,11 @@ export const TheMyriadWilds = skill(22013)
     const exists = c.player.summons.map((s) => s.definition.id).filter((id) => mimics.includes(id));
     for (let i = 0; i < 2; i++) {
       let target;
-      if (exists.length >= 2) {
-        target = c.random(exists);
-      } else {
-        const rest = mimics.filter((id) => !exists.includes(id));
+      const rest = mimics.filter((id) => !exists.includes(id));
+      if (rest.length > 0) {
         target = c.random(rest);
+      } else {
+        target = c.random(mimics);
       }
       c.summon(target as SummonHandle);
       exists.push(target);
