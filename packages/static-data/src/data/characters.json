@@ -206,7 +206,7 @@
         "iconHash": "7021566678637418165"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Diona",
     "icon": "UI_Gcg_Char_AvatarIcon_Diona"
@@ -495,11 +495,25 @@
         "name": "神里流·霰步",
         "englishName": "Kamisato Art: Senho",
         "type": "GCG_SKILL_TAG_PASSIVE",
-        "rawDescription": "【被动】此角色被切换为「出战角色」时，附属<color=#FFFFFFFF>$[C111052]</color>。",
-        "description": "【被动】此角色被切换为「出战角色」时，附属冰元素附魔。",
+        "rawDescription": "【被动】此角色被切换为「出战角色」时，附属<color=#FFFFFFFF>$[C111052]</color>，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。",
+        "description": "【被动】此角色被切换为「出战角色」时，附属冰元素附魔，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。",
         "playCost": [],
         "targetList": [],
         "hidden": false,
+        "keyMap": {},
+        "icon": "Skill_S_Ayaka_02",
+        "iconHash": "16565744091224246055"
+      },
+      {
+        "id": 11055,
+        "name": "神里流·霰步",
+        "englishName": "Kamisato Art: Senho",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】此角色被切换为「出战角色」时，附属<color=#FFFFFFFF>$[C111052]</color>，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。",
+        "description": "【被动】此角色被切换为「出战角色」时，附属冰元素附魔，本回合下次「普通攻击」造成的伤害+1。（每回合2次）。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
         "icon": "Skill_S_Ayaka_02",
         "iconHash": "16565744091224246055"
       }
@@ -2592,6 +2606,7 @@
   },
   {
     "id": 1212,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "name": "芙宁娜",
     "englishName": "Furina",
@@ -3335,7 +3350,7 @@
         "iconHash": "4621831992827005406"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Ambor",
     "icon": "UI_Gcg_Char_AvatarIcon_Amber"
@@ -5835,6 +5850,143 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Sethos"
   },
   {
+    "id": 1414,
+    "shareId": 506,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "name": "伊安珊",
+    "englishName": "Iansan",
+    "tags": [
+      "GCG_TAG_ELEMENT_ELECTRO",
+      "GCG_TAG_WEAPON_POLE",
+      "GCG_TAG_NATION_NATLAN"
+    ],
+    "storyTitle": "熔石百炼·伊安珊",
+    "storyText": "早睡早起，低糖低盐。",
+    "skills": [
+      {
+        "id": 14141,
+        "name": "负重锥击",
+        "englishName": "Weighted Spike",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_A_03",
+        "iconHash": "6801928435021247855"
+      },
+      {
+        "id": 14142,
+        "name": "电掣雷驰",
+        "englishName": "Thunderbolt Rush",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，自身进入<color=#FFFFFFFF>$[C114141]</color>，获得1点<color=#FFFFFFFF>「夜魂值」</color>，生成1层<color=#FFFFFFFF>$[C170]</color>。",
+        "description": "造成2点雷元素伤害，自身进入夜魂加持，获得1点「夜魂值」，生成1层敏捷切换。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_S_Iansan_01",
+        "iconHash": "16998404945433975957"
+      },
+      {
+        "id": 14143,
+        "name": "力的三原理",
+        "englishName": "The Three Principles of Power",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，自身进入<color=#FFFFFFFF>$[C114141]</color>，获得1点<color=#FFFFFFFF>「夜魂值」</color>，生成<color=#FFFFFFFF>$[C114142]</color>。",
+        "description": "造成3点雷元素伤害，自身进入夜魂加持，获得1点「夜魂值」，生成动能标示。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ELECTRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ELECTRO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "Skill_E_Iansan_01_HD",
+        "iconHash": "14667989941662510669"
+      },
+      {
+        "id": 14144,
+        "name": "热量均衡计划",
+        "englishName": "Caloric Balancing Plan",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】自身处于<color=#FFFFFFFF>$[C114141]</color>时，我方角色$[K53]或累计2次「切换角色」后，如果<color=#FFFFFFFF>「夜魂值」</color>为2，则治疗我方受伤最多的角色1点，否则，获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合3次）",
+        "description": "【被动】自身处于夜魂加持时，我方角色准备技能或累计2次「切换角色」后，如果「夜魂值」为2，则治疗我方受伤最多的角色1点，否则，获得1点「夜魂值」。（每回合3次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "UI_Talent_S_Iansan_08",
+        "iconHash": "2149304041888332526"
+      },
+      {
+        "id": 14145,
+        "name": "热量均衡计划",
+        "englishName": "Caloric Balancing Plan",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】自身处于<color=#FFFFFFFF>$[C114141]</color>时，我方角色$[K53]或累计2次「切换角色」后，如果<color=#FFFFFFFF>「夜魂值」</color>为2，则治疗我方受伤最多的角色1点，否则，获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合3次）",
+        "description": "【被动】自身处于夜魂加持时，我方角色准备技能或累计2次「切换角色」后，如果「夜魂值」为2，则治疗我方受伤最多的角色1点，否则，获得1点「夜魂值」。（每回合3次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "keyMap": {},
+        "icon": "UI_Talent_S_Iansan_08",
+        "iconHash": "2149304041888332526"
+      },
+      {
+        "id": 14146,
+        "name": "热量均衡计划",
+        "englishName": "Caloric Balancing Plan",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】自身处于<color=#FFFFFFFF>$[C114141]</color>时，我方角色$[K53]或累计2次「切换角色」后，如果<color=#FFFFFFFF>「夜魂值」</color>为2，则治疗我方受伤最多的角色1点，否则，获得1点<color=#FFFFFFFF>「夜魂值」</color>。（每回合3次）",
+        "description": "【被动】自身处于夜魂加持时，我方角色准备技能或累计2次「切换角色」后，如果「夜魂值」为2，则治疗我方受伤最多的角色1点，否则，获得1点「夜魂值」。（每回合3次）",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "keyMap": {},
+        "icon": "UI_Talent_S_Iansan_08",
+        "iconHash": "2149304041888332526"
+      }
+    ],
+    "hp": 12,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Iansan",
+    "icon": "UI_Gcg_Char_AvatarIcon_Iansan"
+  },
+  {
     "id": 1501,
     "shareId": 36,
     "sinceVersion": "v3.3.0",
@@ -7139,6 +7291,101 @@
     "icon": "UI_Gcg_Char_AvatarIcon_Heizo"
   },
   {
+    "id": 1514,
+    "shareId": 507,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "name": "梦见月瑞希",
+    "englishName": "Yumemizuki Mizuki",
+    "tags": [
+      "GCG_TAG_ELEMENT_ANEMO",
+      "GCG_TAG_WEAPON_CATALYST",
+      "GCG_TAG_NATION_INAZUMA"
+    ],
+    "storyTitle": "绮梦缱绻·梦见月瑞希",
+    "storyText": "愁云拂散，梦间月明。",
+    "skills": [
+      {
+        "id": 15141,
+        "name": "梦我梦心",
+        "englishName": "Pure Heart, Pure Dreams",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]。",
+        "description": "造成1点风元素伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_Catalyst_MD",
+        "iconHash": "15584209743353740735"
+      },
+      {
+        "id": 15142,
+        "name": "秋沙歌枕巡礼",
+        "englishName": "Aisa Utamakura Pilgrimage",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，自身附属<color=#FFFFFFFF>$[C115141]</color>。",
+        "description": "造成2点风元素伤害，自身附属梦浮。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "Skill_S_Mizuki_01",
+        "iconHash": "16220947044950644324"
+      },
+      {
+        "id": 15143,
+        "name": "安乐秘汤疗法",
+        "englishName": "Anraku Secret Spring Therapy",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，生成1张<color=#FFFFFFFF>$[C115142]</color>，将其置于我方牌组顶部，并召唤<color=#FFFFFFFF>$[C115143]</color>。",
+        "description": "造成3点风元素伤害，生成1张梦见风名物点心，将其置于我方牌组顶部，并召唤小貘。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_ANEMO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_ANEMO",
+          "D__KEY__DAMAGE": 3
+        },
+        "icon": "Skill_E_Mizuki_01_HD",
+        "iconHash": "10803369555451738689"
+      }
+    ],
+    "hp": 10,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Avatar_Mizuki",
+    "icon": "UI_Gcg_Char_AvatarIcon_Mizuki"
+  },
+  {
     "id": 1601,
     "shareId": 42,
     "sinceVersion": "v3.3.0",
@@ -8269,7 +8516,7 @@
         "iconHash": "13066422030210532358"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Xilonen",
     "icon": "UI_Gcg_Char_AvatarIcon_Xilonen"
@@ -9039,7 +9286,7 @@
         "iconHash": "12063459325769057541"
       }
     ],
-    "hp": 10,
+    "hp": 12,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Avatar_Kaveh",
     "icon": "UI_Gcg_Char_AvatarIcon_Kaveh"
@@ -9769,8 +10016,8 @@
         "name": "纯水幻造",
         "englishName": "Oceanid Mimic Summoning",
         "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "随机召唤1种<color=#FFFFFFFF>$[C122010]</color>。（优先生成不同的类型，召唤区最多同时存在2种$[C122010]。）",
-        "description": "随机召唤1种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）",
+        "rawDescription": "随机召唤1种<color=#FFFFFFFF>$[C122010]</color>。（优先生成不同的类型）",
+        "description": "随机召唤1种纯水幻形。（优先生成不同的类型）",
         "playCost": [
           {
             "type": "GCG_COST_DICE_HYDRO",
@@ -9787,8 +10034,8 @@
         "name": "林野百态",
         "englishName": "The Myriad Wilds",
         "type": "GCG_SKILL_TAG_E",
-        "rawDescription": "随机召唤2种<color=#FFFFFFFF>$[C122010]</color>。（优先生成不同的类型，召唤区最多同时存在2种$[C122010]。）",
-        "description": "随机召唤2种纯水幻形。（优先生成不同的类型，召唤区最多同时存在2种纯水幻形。）",
+        "rawDescription": "随机召唤2种<color=#FFFFFFFF>$[C122010]</color>。（优先生成不同的类型）",
+        "description": "随机召唤2种纯水幻形。（优先生成不同的类型）",
         "playCost": [
           {
             "type": "GCG_COST_DICE_HYDRO",
@@ -9830,7 +10077,7 @@
         "iconHash": "17401473624550425004"
       }
     ],
-    "hp": 10,
+    "hp": 11,
     "maxEnergy": 3,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_Oceanid",
     "icon": "UI_Gcg_Char_MonsterIcon_Oceanid"
@@ -10785,6 +11032,127 @@
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_HermitCrabPrimo",
     "icon": "UI_Gcg_Char_MonsterIcon_HermitCrabPrimo"
+  },
+  {
+    "id": 2305,
+    "shareId": 508,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "name": "蚀灭的源焰之主",
+    "englishName": "Lord of Eroded Primal Fire",
+    "tags": [
+      "GCG_TAG_ELEMENT_PYRO",
+      "GCG_TAG_WEAPON_NONE",
+      "GCG_TAG_CAMP_MONSTER"
+    ],
+    "storyTitle": "受塑的已死之龙·蚀灭的源焰之主",
+    "storyText": "被称为深渊浮灭主亦被称为「古斯托特」的虚界魔物，拥有侵蚀地脉之中的回忆并将之凝聚为实体的如同灾厄的权能。",
+    "skills": [
+      {
+        "id": 23051,
+        "name": "虚界玄爪",
+        "englishName": "Void Claw Strike",
+        "type": "GCG_SKILL_TAG_A",
+        "rawDescription": "造成2点$[D__KEY__ELEMENT]。",
+        "description": "造成2点物理伤害。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 1
+          },
+          {
+            "type": "GCG_COST_DICE_VOID",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PHYSIC",
+          "D__KEY__DAMAGE": 1
+        },
+        "icon": "Skill_A_00",
+        "iconHash": "6499903474057818465"
+      },
+      {
+        "id": 23052,
+        "name": "蚀灭火羽",
+        "englishName": "Eroded Flaming Feathers",
+        "type": "GCG_SKILL_TAG_E",
+        "rawDescription": "造成3点$[D__KEY__ELEMENT]，我方$[K56]牌组顶部1张牌。",
+        "description": "造成3点火元素伤害，我方舍弃牌组顶部1张牌。",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 3
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO",
+          "D__KEY__DAMAGE": 2
+        },
+        "icon": "MonsterSkill_S_TheAbyssXiuhcoatl_01",
+        "iconHash": "4423077773429961435"
+      },
+      {
+        "id": 23053,
+        "name": "斫劫源焰",
+        "englishName": "Severing Primal Fire",
+        "type": "GCG_SKILL_TAG_Q",
+        "rawDescription": "造成1点$[D__KEY__ELEMENT]，对所有敌方后台角色造成1点$[K5]。双方$[K56]牌组顶部3张牌，自身附属1层<color=#FFFFFFFF>$[C123051]</color>.",
+        "description": "造成1点火元素伤害，对所有敌方后台角色造成1点穿透伤害。双方舍弃牌组顶部3张牌，自身附属1层忿恨.",
+        "playCost": [
+          {
+            "type": "GCG_COST_DICE_PYRO",
+            "count": 3
+          },
+          {
+            "type": "GCG_COST_ENERGY",
+            "count": 2
+          }
+        ],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {
+          "D__KEY__ELEMENT": "GCG_ELEMENT_PYRO"
+        },
+        "icon": "MonsterSkill_E_TheAbyssXiuhcoatl_01_HD",
+        "iconHash": "14251603945942348556"
+      },
+      {
+        "id": 23054,
+        "name": "忿恨",
+        "englishName": "Resentment",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】我方每$[K56]6张卡牌，自身附属1层<color=#FFFFFFFF>$[C123051]</color>。",
+        "description": "【被动】我方每舍弃6张卡牌，自身附属1层忿恨。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": false,
+        "keyMap": {},
+        "icon": "MonsterSkill_S_TheAbyssXiuhcoatl_02",
+        "iconHash": "4969180162511325285"
+      },
+      {
+        "id": 23056,
+        "name": "忿恨",
+        "englishName": "Resentment",
+        "type": "GCG_SKILL_TAG_PASSIVE",
+        "rawDescription": "【被动】我方每$[K56]6张卡牌，自身附属1层<color=#FFFFFFFF>$[C123051]</color>。",
+        "description": "【被动】我方每舍弃6张卡牌，自身附属1层忿恨。",
+        "playCost": [],
+        "targetList": [],
+        "hidden": true,
+        "icon": "MonsterSkill_S_TheAbyssXiuhcoatl_02",
+        "iconHash": "4969180162511325285"
+      }
+    ],
+    "hp": 12,
+    "maxEnergy": 2,
+    "cardFace": "UI_Gcg_CardFace_Char_Monster_TheAbyssXiuhcoatl",
+    "icon": "UI_Gcg_Char_MonsterIcon_TheAbyssXiuhcoatl"
   },
   {
     "id": 2401,
@@ -12134,7 +12502,7 @@
         "englishName": "Howling Riftcall",
         "type": "GCG_SKILL_TAG_E",
         "rawDescription": "造成$[D__KEY__DAMAGE]点$[D__KEY__ELEMENT]，目标角色附属2层<color=#FFFFFFFF>$[C126031]</color>，召唤<color=#FFFFFFFF>$[C126032]</color>。",
-        "description": "造成1点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。",
+        "description": "造成2点岩元素伤害，目标角色附属2层黄金侵蚀，召唤兽境犬首。",
         "playCost": [
           {
             "type": "GCG_COST_DICE_GEO",
@@ -12145,7 +12513,7 @@
         "hidden": false,
         "keyMap": {
           "D__KEY__ELEMENT": "GCG_ELEMENT_GEO",
-          "D__KEY__DAMAGE": 1
+          "D__KEY__DAMAGE": 2
         },
         "icon": "MonsterSkill_S_Planelurker_01",
         "iconHash": "5425251551373986186"
@@ -12626,13 +12994,14 @@
         "iconHash": "17571852310239309453"
       }
     ],
-    "hp": 7,
+    "hp": 8,
     "maxEnergy": 2,
     "cardFace": "UI_Gcg_CardFace_Char_Monster_HookwalkerPrimo",
     "icon": "UI_Gcg_Char_MonsterIcon_HookwalkerPrimo"
   },
   {
     "id": 6301,
+    "sinceVersion": "v4.3.0",
     "obtainable": false,
     "name": "焚尽的炽炎魔女",
     "englishName": "Crimson Witch of Embers",
@@ -12741,6 +13110,7 @@
   },
   {
     "id": 6601,
+    "sinceVersion": "v4.3.0",
     "obtainable": false,
     "name": "若陀龙王",
     "englishName": "Azhdaha",
@@ -12868,6 +13238,7 @@
   },
   {
     "id": 6602,
+    "sinceVersion": "v4.3.0",
     "obtainable": false,
     "name": "若陀龙王",
     "englishName": "Azhdaha",
@@ -12995,6 +13366,7 @@
   },
   {
     "id": 6603,
+    "sinceVersion": "v4.3.0",
     "obtainable": false,
     "name": "若陀龙王",
     "englishName": "Azhdaha",
@@ -13122,6 +13494,7 @@
   },
   {
     "id": 6604,
+    "sinceVersion": "v4.3.0",
     "obtainable": false,
     "name": "若陀龙王",
     "englishName": "Azhdaha",

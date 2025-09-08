@@ -1,6 +1,7 @@
 [
   {
     "id": 81,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：冰",
@@ -25,6 +26,7 @@
   },
   {
     "id": 82,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：水",
@@ -49,6 +51,7 @@
   },
   {
     "id": 83,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：火",
@@ -73,6 +76,7 @@
   },
   {
     "id": 84,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：雷",
@@ -97,6 +101,7 @@
   },
   {
     "id": 85,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：风",
@@ -121,6 +126,7 @@
   },
   {
     "id": 86,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：岩",
@@ -145,6 +151,7 @@
   },
   {
     "id": 87,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "元素附魔：草",
@@ -169,6 +176,7 @@
   },
   {
     "id": 112113,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "圣俗杂座",
@@ -193,6 +201,7 @@
   },
   {
     "id": 112131,
+    "sinceVersion": "v5.2.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "激愈水球·大",
@@ -208,6 +217,7 @@
   },
   {
     "id": 112132,
+    "sinceVersion": "v5.2.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "激愈水球·中",
@@ -223,6 +233,7 @@
   },
   {
     "id": 112133,
+    "sinceVersion": "v5.2.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "激愈水球·小",
@@ -238,6 +249,7 @@
   },
   {
     "id": 112142,
+    "sinceVersion": "v5.3.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "咬咬鲨鱼",
@@ -256,6 +268,7 @@
   },
   {
     "id": 113131,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "超量装药弹头",
@@ -287,6 +300,7 @@
   },
   {
     "id": 113154,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "驰轮车·跃升",
@@ -321,6 +335,7 @@
   },
   {
     "id": 113155,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "驰轮车·涉渡",
@@ -355,6 +370,7 @@
   },
   {
     "id": 113156,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "驰轮车·疾驰",
@@ -389,6 +405,7 @@
   },
   {
     "id": 114031,
+    "sinceVersion": "v3.3.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "雷楔",
@@ -421,6 +438,7 @@
   },
   {
     "id": 115102,
+    "sinceVersion": "v5.0.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "竹星",
@@ -450,6 +468,7 @@
   },
   {
     "id": 115112,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "灵枪·仪式杖",
@@ -470,6 +489,7 @@
   },
   {
     "id": 115113,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "追影弹",
@@ -490,6 +510,7 @@
   },
   {
     "id": 115114,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "焕光追影弹·火",
@@ -510,6 +531,7 @@
   },
   {
     "id": 115115,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "焕光追影弹·水",
@@ -530,6 +552,7 @@
   },
   {
     "id": 115116,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "焕光追影弹·雷",
@@ -550,6 +573,7 @@
   },
   {
     "id": 115117,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "焕光追影弹·冰",
@@ -569,7 +593,27 @@
     "cardFace": "UI_Gcg_CardFace_Summon_Chasca_Ice"
   },
   {
+    "id": 115142,
+    "sinceVersion": "v6.0.0",
+    "obtainable": false,
+    "type": "GCG_CARD_EVENT",
+    "name": "梦见风名物点心",
+    "englishName": "Yumemi Style Special Snacks",
+    "tags": [
+      "GCG_TAG_FOOD",
+      "GCG_TAG_NON_DISCOVERABLE"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>此卡牌进入手牌时：</color>如果我方出战角色生命值大于5，则造成1点$[K105]；否则治疗我方出战角色2点。效果结算后抓1张牌，随后弃置此卡牌。",
+    "description": "此卡牌进入手牌时：如果我方出战角色生命值大于5，则造成1点风元素伤害；否则治疗我方出战角色2点。效果结算后抓1张牌，随后弃置此卡牌。",
+    "cardFace": "UI_Gcg_CardFace_Summon_Mizuki_Food"
+  },
+  {
     "id": 116081,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "裂晶弹片",
@@ -599,6 +643,7 @@
   },
   {
     "id": 116102,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "冲天转转",
@@ -617,6 +662,7 @@
   },
   {
     "id": 116112,
+    "sinceVersion": "v5.6.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "刃轮装束",
@@ -635,6 +681,7 @@
   },
   {
     "id": 122051,
+    "sinceVersion": "v5.0.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "水泡史莱姆",
@@ -664,6 +711,7 @@
   },
   {
     "id": 123031,
+    "sinceVersion": "v5.1.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "厄灵·炎之魔蝎",
@@ -693,6 +741,7 @@
   },
   {
     "id": 124051,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "噬骸能量块",
@@ -708,6 +757,7 @@
   },
   {
     "id": 127021,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "唤醒眷属",
@@ -728,6 +778,7 @@
   },
   {
     "id": 127032,
+    "sinceVersion": "v5.1.0",
     "obtainable": false,
     "type": "GCG_CARD_MODIFY",
     "name": "厄灵·草之灵蛇",
@@ -860,7 +911,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_CRYO",
-        "count": 4
+        "count": 3
       }
     ],
     "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1103]</color>时，装备此牌。\\n$[A1103]装备此牌后，立刻使用一次<color=#FFD780FF>$[S11032]</color>。\\n装备有此牌的$[A1103]使用<color=#FFFFFFFF>$[S11032]</color>后：治疗自身2点。（每回合1次）\\n（牌组中包含$[A1103]，才能加入牌组）",
@@ -2899,6 +2950,48 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Sethos"
   },
   {
+    "id": 214141,
+    "shareId": 509,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "「沃陆之邦」的训教",
+    "englishName": "Teachings of the Collective of Plenty",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11414,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>伊安珊</color>",
+        "hintText": "装备给出战中的伊安珊"
+      }
+    ],
+    "relatedCharacterId": 1414,
+    "relatedCharacterTags": [],
+    "storyTitle": "伊安珊·「沃陆之邦」的训教",
+    "storyText": "「听我的口号！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ELECTRO",
+        "count": 3
+      },
+      {
+        "type": "GCG_COST_ENERGY",
+        "count": 2
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1414]</color>时，装备此牌。\\n$[A1414]装备此牌后，立刻使用一次<color=#FFD780FF>$[S14143]</color>。\\n装备有此牌的$[A1414]生成的<color=#FFFFFFFF>$[C114142]</color>，初始$[K3]+1。\\n（牌组中包含$[A1414]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为伊安珊时，装备此牌。\n伊安珊装备此牌后，立刻使用一次力的三原理。\n装备有此牌的伊安珊生成的动能标示，初始可用次数+1。\n（牌组中包含伊安珊，才能加入牌组）",
+    "rawPlayingDescription": "装备有此牌的$[A1414]生成的<color=#FFFFFFFF>$[C114142]</color>，初始$[K3]+1。",
+    "playingDescription": "装备有此牌的伊安珊生成的动能标示，初始可用次数+1。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Iansan"
+  },
+  {
     "id": 215011,
     "shareId": 96,
     "sinceVersion": "v3.3.0",
@@ -3408,6 +3501,44 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_Heizo"
   },
   {
+    "id": 215141,
+    "shareId": 510,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "缠忆君影梦相见",
+    "englishName": "Your Echo I Meet in Dreams",
+    "tags": [
+      "GCG_TAG_TALENT",
+      "GCG_TAG_SLOWLY"
+    ],
+    "targetList": [
+      {
+        "id": 11514,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给出战中的<color=#FFD780FF>梦见月瑞希</color>",
+        "hintText": "装备给出战中的梦见月瑞希"
+      }
+    ],
+    "relatedCharacterId": 1514,
+    "relatedCharacterTags": [],
+    "storyTitle": "梦见月瑞希·缠忆君影梦相见",
+    "storyText": "「…晓时枕貘醒春风。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_ANEMO",
+        "count": 3
+      }
+    ],
+    "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1514]</color>时，装备此牌。\\n$[A1514]装备此牌后，立刻使用一次<color=#FFD780FF>$[S15142]</color>。\\n如果$[A1514]是出战角色，则我方造成的$[K101]$[K102]$[K103]$[K104]+1。（包括角色引发的任意元素扩散的伤害，每回合2次）\\n（牌组中包含$[A1514]，才能加入牌组）",
+    "description": "战斗行动：我方出战角色为梦见月瑞希时，装备此牌。\n梦见月瑞希装备此牌后，立刻使用一次秋沙歌枕巡礼。\n如果梦见月瑞希是出战角色，则我方造成的冰元素伤害水元素伤害火元素伤害雷元素伤害+1。（包括角色引发的任意元素扩散的伤害，每回合2次）\n（牌组中包含梦见月瑞希，才能加入牌组）",
+    "rawPlayingDescription": "如果$[A1514]是出战角色，则我方造成的$[K101]$[K102]$[K103]$[K104]+1。（包括角色引发的任意元素扩散的伤害，每回合2次）",
+    "playingDescription": "如果梦见月瑞希是出战角色，则我方造成的冰元素伤害水元素伤害火元素伤害雷元素伤害+1。（包括角色引发的任意元素扩散的伤害，每回合2次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_Mizuki"
+  },
+  {
     "id": 216011,
     "shareId": 102,
     "sinceVersion": "v3.3.0",
@@ -3436,7 +3567,7 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_GEO",
-        "count": 4
+        "count": 3
       }
     ],
     "rawDescription": "$[K1]：我方出战角色为<color=#FFFFFFFF>$[A1601]</color>时，装备此牌。\\n$[A1601]装备此牌后，立刻使用一次<color=#FFD780FF>$[S16012]</color>。\\n装备有此牌的$[A1601]在场时，<color=#FFFFFFFF>$[C116011]</color>会使我方造成的<color=#FFE699FF>$[K106]</color>+1。\\n（牌组中包含$[A1601]，才能加入牌组）",
@@ -4716,6 +4847,43 @@
     "cardFace": "UI_Gcg_CardFace_Modify_Talent_HermitCrabPrimo"
   },
   {
+    "id": 223051,
+    "shareId": 511,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "罔极盛怒",
+    "englishName": "Undying Fury",
+    "tags": [
+      "GCG_TAG_TALENT"
+    ],
+    "targetList": [
+      {
+        "id": 12305,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "装备给我方的<color=#FFD780FF>蚀灭的源焰之主</color>",
+        "hintText": "装备给我方的蚀灭的源焰之主"
+      }
+    ],
+    "relatedCharacterId": 2305,
+    "relatedCharacterTags": [],
+    "storyTitle": "蚀灭的源焰之主·罔极盛怒",
+    "storyText": "「漆黑的福音令其永困于生命的最后一日，无穷的怒火吞没所有的理智，此刻，唯有战意不遑宁息，燃烧不止。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_PYRO",
+        "count": 1
+      }
+    ],
+    "rawDescription": "$[K2]：装备给我方的<color=#FFFFFFFF>$[A2305]</color>。\\n<color=#FFFFFFFF>敌方打出名称不存在于本局最初牌组的牌时：</color>所附属角色获得1点$[K310]，下次造成的伤害+1。（每回合1次）\\n（牌组中包含$[A2305]，才能加入牌组）",
+    "description": "快速行动：装备给我方的蚀灭的源焰之主。\n敌方打出名称不存在于本局最初牌组的牌时：所附属角色获得1点充能，下次造成的伤害+1。（每回合1次）\n（牌组中包含蚀灭的源焰之主，才能加入牌组）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>敌方打出名称不存在于本局最初牌组的牌时：</color>所附属角色获得1点$[K310]，下次造成的伤害+1。（每回合1次）",
+    "playingDescription": "敌方打出名称不存在于本局最初牌组的牌时：所附属角色获得1点充能，下次造成的伤害+1。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Talent_TheAbyssXiuhcoatl"
+  },
+  {
     "id": 224011,
     "shareId": 117,
     "sinceVersion": "v3.7.0",
@@ -5314,6 +5482,7 @@
   },
   {
     "id": 300006,
+    "sinceVersion": "v5.3.0",
     "obtainable": false,
     "type": "GCG_CARD_ASSIST",
     "name": "斗争之火",
@@ -5329,6 +5498,7 @@
   },
   {
     "id": 301020,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "禁忌知识",
@@ -5344,6 +5514,7 @@
   },
   {
     "id": 301033,
+    "sinceVersion": "v5.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "积木小人",
@@ -5366,6 +5537,7 @@
   },
   {
     "id": 301034,
+    "sinceVersion": "v5.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "折纸飞鼠",
@@ -5388,6 +5560,7 @@
   },
   {
     "id": 301035,
+    "sinceVersion": "v5.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "跳跳纸蛙",
@@ -5410,6 +5583,7 @@
   },
   {
     "id": 301036,
+    "sinceVersion": "v5.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "折纸胖胖鼠",
@@ -5432,6 +5606,7 @@
   },
   {
     "id": 302202,
+    "sinceVersion": "v4.6.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "太郎丸的存款",
@@ -5447,6 +5622,7 @@
   },
   {
     "id": 302203,
+    "sinceVersion": "v4.6.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "「清洁工作」",
@@ -5462,6 +5638,7 @@
   },
   {
     "id": 302206,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "瑟琳的声援",
@@ -5477,6 +5654,7 @@
   },
   {
     "id": 302207,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "洛梅的声援",
@@ -5492,6 +5670,7 @@
   },
   {
     "id": 302208,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "柯莎的声援",
@@ -5507,6 +5686,7 @@
   },
   {
     "id": 302209,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "夏诺蒂拉的声援",
@@ -5527,6 +5707,7 @@
   },
   {
     "id": 302210,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "希洛娜的声援",
@@ -5542,6 +5723,7 @@
   },
   {
     "id": 302211,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "希露艾的声援",
@@ -5562,6 +5744,7 @@
   },
   {
     "id": 302212,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "薇尔妲的声援",
@@ -5582,6 +5765,7 @@
   },
   {
     "id": 302213,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "芙佳的声援",
@@ -5597,6 +5781,7 @@
   },
   {
     "id": 302214,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "托皮娅的声援",
@@ -5612,6 +5797,7 @@
   },
   {
     "id": 302215,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "卢蒂妮的声援",
@@ -5627,6 +5813,7 @@
   },
   {
     "id": 302218,
+    "sinceVersion": "v4.8.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "美露莘的声援",
@@ -5642,6 +5829,7 @@
   },
   {
     "id": 303230,
+    "sinceVersion": "v4.6.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "海底宝藏",
@@ -6334,6 +6522,46 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>我方打出名称不存在于本局最初牌组中的行动牌后：</color>此牌累积1点<color=#FFFFFFFF>「渔猎」</color>。（最多累积2点）\\n<color=#FFFFFFFF>角色使用技能时：</color>如果此牌已有<color=#FFFFFFFF>「渔猎」</color>，则消耗所有<color=#FFFFFFFF>「渔猎」</color>，使此技能伤害+1，并且每消耗1点<color=#FFFFFFFF>「渔猎」</color>就抓1张牌。",
     "playingDescription": "我方打出名称不存在于本局最初牌组中的行动牌后：此牌累积1点「渔猎」。（最多累积2点）\n角色使用技能时：如果此牌已有「渔猎」，则消耗所有「渔猎」，使此技能伤害+1，并且每消耗1点「渔猎」就抓1张牌。",
     "cardFace": "UI_Gcg_CardFace_Modify_Weapon_Jieze"
+  },
+  {
+    "id": 311208,
+    "shareId": 520,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "若水",
+    "englishName": "Aqua Simulacra",
+    "tags": [
+      "GCG_TAG_WEAPON",
+      "GCG_TAG_WEAPON_BOW"
+    ],
+    "targetList": [
+      {
+        "id": 112,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [
+          "GCG_TAG_WEAPON_BOW"
+        ],
+        "rawHintText": "请选择要装备<color=#FFD780FF>弓</color>的角色",
+        "hintText": "请选择要装备弓的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "无常之智·若水",
+    "storyText": "「为了保护源头的纯净，水的温柔意志亦当化作利刃，成为良弓。\n淡蓝满月之下，阴谋与密语交织之中游刃有余，是为水形之智。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>所附属角色生命值至少为11时：</color>造成的伤害+2。\\n<color=#FFFFFFFF>入场时：</color>所附属角色获得1点最大生命值。\\n（<color=#FFFFFFFF>「{SPRITE_PRESET#3202}弓」角色</color>才能装备。角色最多装备1件「{SPRITE_PRESET#3003}武器」）",
+    "description": "所附属角色生命值至少为11时：造成的伤害+2。\n入场时：所附属角色获得1点最大生命值。\n（「弓」角色才能装备。角色最多装备1件「武器」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色生命值至少为11时：</color>造成的伤害+2。\\n<color=#FFFFFFFF>入场时：</color>所附属角色获得1点最大生命值。",
+    "playingDescription": "所附属角色生命值至少为11时：造成的伤害+2。\n入场时：所附属角色获得1点最大生命值。",
+    "cardFace": "UI_Gcg_CardFace_Modify_Weapon_RuoShui"
   },
   {
     "id": 311301,
@@ -8387,16 +8615,11 @@
     "relatedCharacterTags": [],
     "storyTitle": "深情盟约·紫晶的花冠",
     "storyText": "「为了永恒的绿洲乐土，为了盛放的帕蒂莎兰，花之女主人戴上了紫水晶的王冠。」",
-    "playCost": [
-      {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 1
-      }
-    ],
-    "rawDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到$[K107]后：</color>累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个随机基础元素骰。\\n（每回合至多生成2个）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
-    "description": "所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。\n（每回合至多生成2个）\n（角色最多装备1件「圣遗物」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到$[K107]后：</color>累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个随机基础元素骰。\\n（每回合至多生成2个）",
-    "playingDescription": "所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。\n（每回合至多生成2个）",
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。（最多叠加到2）\\n<color=#FFFFFFFF>行动阶段开始时：</color>如果<color=#FFFFFFFF>「花冠水晶」</color>数量为2，则本回合内下次我方引发元素反应时伤害额外+2。\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到2）\n行动阶段开始时：如果「花冠水晶」数量为2，则本回合内下次我方引发元素反应时伤害额外+2。\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。（最多叠加到2）\\n<color=#FFFFFFFF>行动阶段开始时：</color>如果<color=#FFFFFFFF>「花冠水晶」</color>数量为2，则本回合内下次我方引发元素反应时伤害额外+2。",
+    "playingDescription": "敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到2）\n行动阶段开始时：如果「花冠水晶」数量为2，则本回合内下次我方引发元素反应时伤害额外+2。",
     "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Zijinghuaguan"
   },
   {
@@ -8430,10 +8653,10 @@
         "count": 2
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积2枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个$[K411]。\\n（每回合至多生成2个）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
-    "description": "所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。\n（每回合至多生成2个）\n（角色最多装备1件「圣遗物」）",
-    "rawPlayingDescription": "<color=#FFFFFFFF>所附属角色为出战角色，敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积2枚<color=#FFFFFFFF>「花冠水晶」</color>。如果<color=#FFFFFFFF>「花冠水晶」</color>大于等于我方手牌数，则生成1个$[K411]。\\n（每回合至多生成2个）",
-    "playingDescription": "所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。\n（每回合至多生成2个）",
+    "rawDescription": "<color=#FFFFFFFF>敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。（最多叠加到5）\\n<color=#FFFFFFFF>行动阶段开始或我方触发元素反应时：</color>如果<color=#FFFFFFFF>「花冠水晶」</color>数量为5，则生成1个$[K411]，并抓1张牌。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到5）\n行动阶段开始或我方触发元素反应时：如果「花冠水晶」数量为5，则生成1个万能元素，并抓1张牌。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>敌方受到伤害后：</color>如果此伤害是$[K107]或发生了$[K217]，则累积1枚<color=#FFFFFFFF>「花冠水晶」</color>。（最多叠加到5）\\n<color=#FFFFFFFF>行动阶段开始或我方触发元素反应时：</color>如果<color=#FFFFFFFF>「花冠水晶」</color>数量为5，则生成1个$[K411]，并抓1张牌。（每回合2次）",
+    "playingDescription": "敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到5）\n行动阶段开始或我方触发元素反应时：如果「花冠水晶」数量为5，则生成1个万能元素，并抓1张牌。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Artifact_ZijinghuaguanDa"
   },
   {
@@ -8716,6 +8939,112 @@
     "rawPlayingDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>双方出战角色获得1层<color=#FFFFFFFF>$[C122]</color>。（每回合1次）",
     "playingDescription": "附属角色使用技能后：双方出战角色获得1层生命之契。（每回合1次）",
     "cardFace": "UI_Gcg_CardFace_Modify_Artifact_Xielve"
+  },
+  {
+    "id": 312037,
+    "shareId": 512,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "宗室面具",
+    "englishName": "Royal Masque",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "昔日盛景·宗室面具",
+    "storyText": "「在那个黄金的年代，贵族把知识和利润公平地分与众人。\n但后来，贵族渐渐堕落，宴会也蜕化成权贵虚浮的享乐。」",
+    "playCost": [],
+    "rawDescription": "<color=#FFFFFFFF>附属角色使用元素爆发后：</color>我方下一个角色本回合内造成的伤害+1。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色使用元素爆发后：我方下一个角色本回合内造成的伤害+1。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色使用元素爆发后：</color>我方下一个角色本回合内造成的伤害+1。（每回合1次）",
+    "playingDescription": "附属角色使用元素爆发后：我方下一个角色本回合内造成的伤害+1。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_ZongShixiao"
+  },
+  {
+    "id": 312038,
+    "shareId": 513,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "未竟的遐思",
+    "englishName": "Unfinished Reverie",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "英杰余晖·未竟的遐思",
+    "storyText": "「莫辜负他们仍愿将视线投以炽热焰光的眼睛。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "我方<color=#FFFFFFFF>$[C115]</color>以及造成的燃烧反应伤害+1。（每回合2次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "我方燃烧烈焰以及造成的燃烧反应伤害+1。（每回合2次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "我方<color=#FFFFFFFF>$[C115]</color>以及造成的燃烧反应伤害+1。（每回合2次）",
+    "playingDescription": "我方燃烧烈焰以及造成的燃烧反应伤害+1。（每回合2次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_XiasiDa"
+  },
+  {
+    "id": 312039,
+    "shareId": 514,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_MODIFY",
+    "name": "谐律异想断章",
+    "englishName": "Fragment of Harmonic Whimsy",
+    "tags": [
+      "GCG_TAG_ARTIFACT"
+    ],
+    "targetList": [
+      {
+        "id": 110,
+        "type": "GCG_CARD_CHARACTER",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "请选择要装备<color=#FFD780FF>圣遗物</color>的角色",
+        "hintText": "请选择要装备圣遗物的角色"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "零落圆舞·谐律异想断章",
+    "storyText": "「但若我真有选择的机会，就必能改变你口中那无可改变的结局。」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>我方所有角色附属1层<color=#FFFFFFFF>$[C122]</color>，下次我方角色使用技能时少花费1个元素骰。（每回合1次）\\n（角色最多装备1件「{SPRITE_PRESET#3004}圣遗物」）",
+    "description": "附属角色使用技能后：我方所有角色附属1层生命之契，下次我方角色使用技能时少花费1个元素骰。（每回合1次）\n（角色最多装备1件「圣遗物」）",
+    "rawPlayingDescription": "<color=#FFFFFFFF>附属角色使用技能后：</color>我方所有角色附属1层<color=#FFFFFFFF>$[C122]</color>，下次我方角色使用技能少花费1个元素骰。（每回合1次）",
+    "playingDescription": "附属角色使用技能后：我方所有角色附属1层生命之契，下次我方角色使用技能少花费1个元素骰。（每回合1次）",
+    "cardFace": "UI_Gcg_CardFace_Modify_Artifact_XieLveDa"
   },
   {
     "id": 312101,
@@ -9651,12 +9980,12 @@
     "storyText": "「最好的永远是明年酿造出的酒。」",
     "playCost": [
       {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 2
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>我方执行「切换角色」行动时：</color>少花费1个元素骰。（每回合至多2次）",
-    "description": "我方执行「切换角色」行动时：少花费1个元素骰。（每回合至多2次）",
+    "rawDescription": "<color=#FFFFFFFF>我方执行「切换角色」行动时：</color>少花费1个元素骰。（每回合2次）",
+    "description": "我方执行「切换角色」行动时：少花费1个元素骰。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Chenxijiuzhuang"
   },
   {
@@ -9755,12 +10084,12 @@
     "storyText": "「影向山樱常盛，一如鸣神永恒。」",
     "playCost": [
       {
-        "type": "GCG_COST_DICE_SAME",
-        "count": 2
+        "type": "GCG_COST_DICE_VOID",
+        "count": 3
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>每回合自动触发1次：</color>生成1个随机的基础元素骰。\\n<color=#FFFFFFFF>$[K3]：3</color>",
-    "description": "每回合自动触发1次：生成1个随机的基础元素骰。\n可用次数：3",
+    "rawDescription": "<color=#FFFFFFFF>我方角色使用技能后：</color>如果元素骰总数为奇数，则生成1个$[K411]。（每回合2次）",
+    "description": "我方角色使用技能后：如果元素骰总数为奇数，则生成1个万能元素。（每回合2次）",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Mingshendashe"
   },
   {
@@ -9855,11 +10184,11 @@
     "playCost": [
       {
         "type": "GCG_COST_DICE_SAME",
-        "count": 1
+        "count": 2
       }
     ],
-    "rawDescription": "<color=#FFFFFFFF>行动阶段开始时：</color>如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。\\n<color=#FFFFFFFF>$[K3]：3</color>",
-    "description": "行动阶段开始时：如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。\n可用次数：3",
+    "rawDescription": "<color=#FFFFFFFF>我方选择行动前：</color>如果当前元素骰总数为偶数，则我方角色「普通攻击」少花费1个$[K309]。\\n<color=#FFFFFFFF>$[K3]：4</color>",
+    "description": "我方选择行动前：如果当前元素骰总数为偶数，则我方角色「普通攻击」少花费1个无色元素。\n可用次数：4",
     "cardFace": "UI_Gcg_CardFace_Assist_Location_Zhengshoui"
   },
   {
@@ -12966,6 +13295,7 @@
   },
   {
     "id": 332033,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "幻戏倒计时：2",
@@ -12986,6 +13316,7 @@
   },
   {
     "id": 332034,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "幻戏倒计时：1",
@@ -13006,6 +13337,7 @@
   },
   {
     "id": 332035,
+    "sinceVersion": "v4.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "幻戏开始！",
@@ -13245,6 +13577,7 @@
   },
   {
     "id": 332047,
+    "sinceVersion": "v5.7.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "火与战争（test）",
@@ -13347,6 +13680,109 @@
     "rawDescription": "抓1张「{SPRITE_PRESET#3008}特技」牌，下次打出「{SPRITE_PRESET#3008}特技」牌后，生成1个$[K411]。",
     "description": "抓1张「特技」牌，下次打出「特技」牌后，生成1个万能元素。",
     "cardFace": "UI_Gcg_CardFace_Event_Event_Ifa"
+  },
+  {
+    "id": 332051,
+    "shareId": 515,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "「邪龙」的苏醒",
+    "englishName": "Fell Dragon's Awakening",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「邪龙」的苏醒",
+    "storyText": "「他裹挟着不祥的黑雾，从天而降，踏平了我们的家园…」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_SAME",
+        "count": 2
+      }
+    ],
+    "rawDescription": "召唤<color=#FFFFFFFF>$[C303245]</color>。\\n本场对局中，我方支援区每弃置1张卡牌，则<color=#FFFFFFFF>$[C303245]</color>可用次数+1；我方召唤区每弃置1张卡牌，则<color=#FFFFFFFF>$[C303245]</color>效果量+1。（可叠加，最多叠加到5）\\n（<color=#FFFFFFFF>$[C303245]</color>：<color=#FFFFFFFF>结束阶段：</color>造成1点$[K5]。\\n<color=#FFFFFFFF>$[K3]：1</color>）",
+    "description": "召唤「邪龙」。\n本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到5）\n（「邪龙」：结束阶段：造成1点穿透伤害。\n可用次数：1）",
+    "rawPlayingDescription": "召唤<color=#FFFFFFFF>$[C303245]</color>。\\n本场对局中，我方支援区每弃置1张卡牌，则<color=#FFFFFFFF>$[C303245]</color>可用次数+1（<color=#D3BC8EFF>当前增加${[GCG_TOKEN_COUNTER]}点</color>）；我方召唤区每弃置1张卡牌，则<color=#FFFFFFFF>$[C303245]</color>效果量+1（<color=#D3BC8EFF>当前增加${[GCG_TOKEN_COUNTER_2]}点</color>）。（可叠加，最多叠加到5）\\n（<color=#FFFFFFFF>$[C303245]</color>：<color=#FFFFFFFF>结束阶段：</color>造成1点$[K5]。\\n<color=#FFFFFFFF>$[K3]：1</color>）",
+    "playingDescription": "召唤「邪龙」。\n本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1（当前增加${[GCG_TOKEN_COUNTER]}点）；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1（当前增加${[GCG_TOKEN_COUNTER_2]}点）。（可叠加，最多叠加到5）\n（「邪龙」：结束阶段：造成1点穿透伤害。\n可用次数：1）",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Elong"
+  },
+  {
+    "id": 332052,
+    "shareId": 516,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "旁白的注脚",
+    "englishName": "Narration Footnotes",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "旁白的注脚",
+    "storyText": "「犯人严肃一点，见义勇为的几位不要笑得那么僵硬，开心一点。还有，被害者和亲友不要跟着一起笑。被害者别爬起来，趴下趴下。你起来了就破坏现场了！」",
+    "playCost": [],
+    "rawDescription": "双方召唤<color=#FFFFFFFF>$[C301028]</color>。\\n（<color=#FFFFFFFF>$[C301028]</color>：<color=#FFFFFFFF>结束阶段：</color>造成1点$[K100]。\\n<color=#FFFFFFFF>$[K3]：2</color>）",
+    "description": "双方召唤积木小人。\n（积木小人：结束阶段：造成1点物理伤害。\n可用次数：2）",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Pangbai"
+  },
+  {
+    "id": 332054,
+    "shareId": 518,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "「魔女M的祝福」",
+    "englishName": "\"A Blessing From 'M'\"",
+    "tags": [
+      "GCG_TAG_NATION_SIMULANKA"
+    ],
+    "targetList": [
+      {
+        "id": 507,
+        "type": "GCG_CARD_SUMMON",
+        "camp": "FRIENDLY",
+        "tags": [],
+        "rawHintText": "对所选我方召唤物生效",
+        "hintText": "对所选我方召唤物生效"
+      }
+    ],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「魔女M的祝福」",
+    "storyText": "「去见证这个世界吧，我的孩子…要和大家好好相处哦…\n在不久的将来，你一定会交到好朋友的，这是我对你的祝福。」",
+    "playCost": [],
+    "rawDescription": "选择并弃置一个我方召唤物，将其可用次数转化为至多2个不同类型的基础元素骰，如果其可用次数不低于3，则额外治疗我方受伤最多的角色2点。",
+    "description": "选择并弃置一个我方召唤物，将其可用次数转化为至多2个不同类型的基础元素骰，如果其可用次数不低于3，则额外治疗我方受伤最多的角色2点。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_ElongCry"
+  },
+  {
+    "id": 332055,
+    "shareId": 519,
+    "sinceVersion": "v6.0.0",
+    "obtainable": true,
+    "type": "GCG_CARD_EVENT",
+    "name": "「狂欢节奏」",
+    "englishName": "\"Revelrous Beats\"",
+    "tags": [],
+    "targetList": [],
+    "relatedCharacterId": null,
+    "relatedCharacterTags": [],
+    "storyTitle": "「狂欢节奏」",
+    "storyText": "「来吧！跟上这个节拍！」",
+    "playCost": [
+      {
+        "type": "GCG_COST_DICE_VOID",
+        "count": 2
+      }
+    ],
+    "rawDescription": "抓2张牌，如果我方手牌中的「{SPRITE_PRESET#3003}武器」牌或「{SPRITE_PRESET#3004}圣遗物」牌数量大于1张，则各生成1个$[K411]。",
+    "description": "抓2张牌，如果我方手牌中的「武器」牌或「圣遗物」牌数量大于1张，则各生成1个万能元素。",
+    "cardFace": "UI_Gcg_CardFace_Event_Event_Xilonen"
   },
   {
     "id": 333001,
@@ -14003,6 +14439,7 @@
   },
   {
     "id": 333021,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·疗愈",
@@ -14020,6 +14457,7 @@
   },
   {
     "id": 333022,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·助佑",
@@ -14037,6 +14475,7 @@
   },
   {
     "id": 333023,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·激愤",
@@ -14054,6 +14493,7 @@
   },
   {
     "id": 333024,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·宁静",
@@ -14071,6 +14511,7 @@
   },
   {
     "id": 333025,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·安神",
@@ -14088,6 +14529,7 @@
   },
   {
     "id": 333026,
+    "sinceVersion": "v5.5.0",
     "obtainable": false,
     "type": "GCG_CARD_EVENT",
     "name": "奇瑰之汤·鼓舞",
