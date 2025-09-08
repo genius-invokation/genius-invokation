@@ -72,6 +72,7 @@ export const VoidClawStrike = skill(23051)
 export const ErodedFlamingFeathers = skill(23052)
   .type("elemental")
   .costPyro(3)
+  .damage(DamageType.Pyro, 3)
   .do((c) => {
     if (c.player.pile.length > 0) {
       c.disposeCard(c.player.pile[0]);
@@ -89,6 +90,7 @@ export const SeveringPrimalFire = skill(23053)
   .type("burst")
   .costPyro(3)
   .costEnergy(2)
+  .damage(DamageType.Pyro, 1)
   .do((c) => {
     const layer = c.self.hasStatus(Resentment)?.getVariable("layer") ?? 0;
     c.damage(DamageType.Piercing, layer + 1, "opp standby");
