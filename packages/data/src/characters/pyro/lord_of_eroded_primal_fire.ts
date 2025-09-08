@@ -72,6 +72,7 @@ export const VoidClawStrike = skill(23051)
 export const ErodedFlamingFeathers = skill(23052)
   .type("elemental")
   .costPyro(3)
+  .damage(DamageType.Pyro, 3)
   .do((c) => {
     if (c.player.pile.length > 0) {
       c.disposeCard(c.player.pile[0]);
