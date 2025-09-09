@@ -145,6 +145,7 @@ export const TheArtOfBudgeting = card(217081)
   .on("enter")
   .useSkill(ArtisticIngenuity)
   .on(ShouldTriggerTalent)
+  .listenToPlayer()
   .usagePerRound(1)
   .do((c, e) => {
     const cardDef = e.arg.definition;
