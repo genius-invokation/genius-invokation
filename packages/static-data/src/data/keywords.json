@@ -791,6 +791,13 @@
     "description": "所在阵营选择行动前：对所附属角色造成1点对应元素伤害，可用次数1。"
   },
   {
+    "id": 1037,
+    "rawName": "<color=#FFFFFFFF>「希穆兰卡」卡牌</color>",
+    "name": "「希穆兰卡」卡牌",
+    "rawDescription": "「希穆兰卡」卡牌包括：<color=#FFFFFFFF>墨色酒馆</color>、<color=#FFFFFFFF>星轨王城</color>、<color=#FFFFFFFF>森林的祝福</color>、<color=#FFFFFFFF>预言女神的礼物</color>、<color=#FFFFFFFF>「邪龙」的苏醒</color>、<color=#FFFFFFFF>旁白的注脚</color>、<color=#FFFFFFFF>「魔女M的祝福」</color>。",
+    "description": "「希穆兰卡」卡牌包括：墨色酒馆、星轨王城、森林的祝福、预言女神的礼物、「邪龙」的苏醒、旁白的注脚、「魔女M的祝福」。"
+  },
+  {
     "id": 2001,
     "rawName": "太郎丸的存款",
     "name": "太郎丸的存款",

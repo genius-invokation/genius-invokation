@@ -46,7 +46,7 @@ export const SKILL_LIST = match(
   (s) => Array.isArray(s) && s[0] === 11011,
 );
 export const IS_CAN_OBTAIN = match(xchar, ID, 1101, true);
-export const HP = match(xchar, ID, 1102, 10);
+export const HP = match(xchar, ID, 1101, 12);
 export const MAX_ENERGY = match(xchar, ID, 1102, 3);
 export const IS_REMOVE_AFTER_DIE = match(xchar, ID, 3001, true); // 打手丘丘人
 

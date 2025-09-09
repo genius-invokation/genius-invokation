@@ -220,9 +220,10 @@ class State {
     });
   }
   static fromJson(json: string): State {
-    const { gv, ...log } = JSON.parse(json);
+    const parsed = JSON.parse(json);
+    const { gv } = parsed;
     return new State(
-      deserializeGameStateLog(getData(gv), JSON.parse(log))[0]!.state,
+      deserializeGameStateLog(getData(gv), parsed)[0]!.state,
       gv,
     );
   }
@@ -383,7 +384,11 @@ export class Game {
     this.#resumable = resumable;
     this.#stepDoneResolvers = Promise.withResolvers();
     this.#stepResolvers.resolve();
-    await this.#stepDoneResolvers.promise;
+    try {
+      await this.#stepDoneResolvers.promise;
+    } finally {
+      this.#resumable = false;
+    }
   }
   #encoder = new TextEncoder();
   async #onIoError(e: GiTcgIoError) {

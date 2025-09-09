@@ -139,7 +139,8 @@ async function getExistsComments(path: string): Promise<CommentInfo[]> {
       }
     }
     if (id === null || name === null || description === null) {
-      console.warn(`${path} (${range.pos}) has incomplete documentation`);
+      const { line, character } = ts.getLineAndCharacterOfPosition(file, range.pos);
+      console.warn(`${path}:${line + 1}:${character + 1} has incomplete documentation`);
       continue;
     }
     if (outdated !== null) {

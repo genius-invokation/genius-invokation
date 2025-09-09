@@ -125,6 +125,7 @@ export interface CardFaceProps {
 export function CardFace(props: CardFaceProps) {
   return (
     <div class="absolute h-full w-full backface-hidden">
+      <div class="absolute inset-0 h-full w-full p-1 bg-#bdaa8a rounded-2" />
       <Image
         class="absolute inset-0 h-full w-full p-1px"
         imageId={props.definitionId}

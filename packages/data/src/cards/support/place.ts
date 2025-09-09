@@ -71,11 +71,11 @@ export const JadeChamber = card(321003)
  * @id 321004
  * @name 晨曦酒庄
  * @description
- * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合至多2次）
+ * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合2次）
  */
 export const DawnWinery = card(321004)
   .since("v3.3.0")
-  .costSame(2)
+  .costVoid(3)
   .support("place")
   .on("deductOmniDiceSwitch")
   .usagePerRound(2)
@@ -145,18 +145,15 @@ export const Tenshukaku = card(321007)
  * @id 321008
  * @name 鸣神大社
  * @description
- * 每回合自动触发1次：生成1个随机的基础元素骰。
- * 可用次数：3
+ * 我方角色使用技能后：如果元素骰总数为奇数，则生成1个万能元素。（每回合2次）
  */
 export const GrandNarukamiShrine = card(321008)
   .since("v3.6.0")
-  .costSame(2)
+  .costVoid(3)
   .support("place")
-  .on("enter")
-  .generateDice("randomElement", 1)
-  .on("actionPhase")
-  .usage(2)
-  .generateDice("randomElement", 1)
+  .on("useSkill", (c) => c.player.dice.length % 2 === 1)
+  .usagePerRound(2)
+  .generateDice(DiceType.Omni, 1)
   .done();
 
 /**
@@ -229,18 +226,16 @@ export const Vanarana = card(321011)
  * @id 321012
  * @name 镇守之森
  * @description
- * 行动阶段开始时：如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。
- * 可用次数：3
+ * 我方选择行动前：如果当前元素骰总数为偶数，则我方角色「普通攻击」少花费1个无色元素。
+ * 可用次数：4
  */
 export const ChinjuForest = card(321012)
   .since("v3.7.0")
-  .costSame(1)
+  .costSame(2)
   .support("place")
-  .on("actionPhase", (c) => !c.isMyTurn())
-  .usage(3)
-  .do((c) => {
-    c.generateDice(c.$("my active")!.element(), 1);
-  })
+  .on("deductVoidDiceSkill", (c, e) => e.isChargedAttack())
+  .usage(4)
+  .deductVoidCost(1)
   .done();
 
 /**
