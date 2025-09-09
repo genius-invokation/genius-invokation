@@ -112,7 +112,7 @@ export function collateActionCards(langCode: string) {
     const deckcardObj = xdeckcard.find((e) => e[ID] === id);
 
     const shareId = deckcardObj?.[SHARE_ID];
-    const sinceVersion = getVersion(shareId);
+    const sinceVersion = getVersion(id);
     const storyTitle = deckcardObj
       ? locale[deckcardObj[STORY_TITLE_TEXT_MAP_HASH]]
       : void 0;
