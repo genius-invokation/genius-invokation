@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, EntityState, card, combatStatus, diceCostOfCard, status } from "@gi-tcg/core/builder";
-import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, ToyGuard, ToyGuardSummon } from "../event/other";
+import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, SIMULANKA_QUERY, SIMULANKA_SUMMONS, ToyGuard, ToyGuardSummon } from "../event/other";
 
 /**
  * @id 321001
@@ -719,10 +719,10 @@ export const CalligraphyTavern = card(321029)
     const newCard = c.random([OrigamiFlyingSquirrel, PopupPaperFrog, OrigamiHamster]);
     c.createHandCard(newCard);
   })
-  .on("declareEnd", (c, e) => c.$(`my summons with tag (simulanka)`))
+  .on("declareEnd", (c, e) => c.$(SIMULANKA_QUERY))
   .usage(3)
   .do((c, e) =>{
-    const mySimulankaSummons = c.$$(`my summons with tag (simulanka)`);
+    const mySimulankaSummons = c.$$(SIMULANKA_QUERY);
     const chosen = c.random(mySimulankaSummons);
     if (chosen) {
       c.triggerEndPhaseSkill(chosen);
