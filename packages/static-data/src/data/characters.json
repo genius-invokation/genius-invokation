@@ -5949,7 +5949,7 @@
         "targetList": [],
         "hidden": false,
         "keyMap": {},
-        "icon": "UI_Talent_S_Iansan_08",
+        "icon": "Skill_S_Iansan_05",
         "iconHash": "2149304041888332526"
       },
       {
@@ -5963,7 +5963,7 @@
         "targetList": [],
         "hidden": true,
         "keyMap": {},
-        "icon": "UI_Talent_S_Iansan_08",
+        "icon": "Skill_S_Iansan_05",
         "iconHash": "2149304041888332526"
       },
       {
@@ -5977,7 +5977,7 @@
         "targetList": [],
         "hidden": true,
         "keyMap": {},
-        "icon": "UI_Talent_S_Iansan_08",
+        "icon": "Skill_S_Iansan_05",
         "iconHash": "2149304041888332526"
       }
     ],

@@ -19,7 +19,7 @@ import { version as packageJsonVersion } from "../package.json" with { type: "js
 const existingVersion = Object.fromEntries(
   [...characters, ...actionCards]
     .filter((d) => d.sinceVersion)
-    .map((d) => [d.shareId!, d.sinceVersion!] as const),
+    .map((d) => [d.id!, d.sinceVersion!] as const),
 );
 
 const giIndex = packageJsonVersion.indexOf("gi-");
@@ -38,12 +38,12 @@ function checkNewVersion() {
   }
 }
 
-export function getVersion(shareId: number | undefined): string | undefined {
-  if (typeof shareId === "undefined") {
+export function getVersion(id: number | undefined): string | undefined {
+  if (typeof id === "undefined") {
     return;
   }
-  if (shareId in existingVersion) {
-    return existingVersion[shareId];
+  if (id in existingVersion) {
+    return existingVersion[id];
   }
   checkNewVersion();
   return newVersion;
