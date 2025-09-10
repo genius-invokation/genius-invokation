@@ -1544,6 +1544,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
+  /** 某方（默认 `my`）继续行动 */
+  continueNextTurn(who: "my" | "opp" = "my") {
+    const skipWho =
+      who === "my" ? flip(this.callerArea.who) : this.callerArea.who;
+    this.mutate({
+      type: "setPlayerFlag",
+      who: skipWho,
+      flagName: "skipNextTurn",
+      value: true,
+    });
+    return this.enableShortcut();
+  }
+
   setExtensionState(setter: Setter<Meta["associatedExtension"]["type"]>) {
     const oldState = this.getExtensionState();
     const newState = produce(oldState, (d) => {

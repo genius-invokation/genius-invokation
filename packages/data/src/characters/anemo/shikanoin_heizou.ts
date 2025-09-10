@@ -24,23 +24,15 @@ import { character, skill, status, card, DamageType, Aura, StatusHandle } from "
 export const Declension: StatusHandle = status(115132)
   .since("v5.8.0")
   .variableCanAppend("henkaku", 1, Infinity)
-  .variable("increaseDmg", 0, {visible: false})
-  .on("modifyAction", (c, e) =>
+  .on("increaseSkillDamage", (c, e) =>
     c.self.getVariable("henkaku") >= 2 &&
-    ((e.action.type === "useSkill" && e.action.skill.definition.id === HeartstopperStrike) ||
-      (e.action.type === "playCard" && e.action.skill.caller.definition.id === CuriousCasefiles)))
-  .do((c, e) => {
-    c.addVariable("henkaku", -2);
-    e.setFastAction();
-    c.addVariable("increaseDmg", 1);
-    if (c.self.master.hasEquipment(CuriousCasefiles)){
-      c.addVariable("increaseDmg", 1);
-    }
-  })
-  .on("increaseSkillDamage", (c, e) => c.getVariable("increaseDmg") > 0 && e.damageInfo.via.definition.id === HeartstopperStrikeCharge)
+    e.damageInfo.via.definition.id === HeartstopperStrikeCharge)
   .do((c, e) =>{
-    e.increaseDamage(c.getVariable("increaseDmg"));
-    c.setVariable("increaseDmg", 0);
+    // 并非视为快速行动；而是我方继续行动一次
+    c.continueNextTurn();
+    const increasedDmg = c.self.master.hasEquipment(CuriousCasefiles) ? 2 : 1;
+    e.increaseDamage(increasedDmg);
+    c.addVariable("henkaku", -2);
     if (c.getVariable("henkaku") <= 0){
       c.dispose();
     }
