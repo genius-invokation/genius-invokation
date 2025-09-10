@@ -46,6 +46,7 @@ import {
   type HealInfo,
   type HealKind,
   type InlineEventNames,
+  ModifyReactionEventArg,
   PlayCardRequestArg,
   ReactionEventArg,
   type ReactionInfo,
@@ -415,12 +416,20 @@ export class StateMutator {
         DetailLogType.Other,
         `Apply reaction ${reaction} to ${stringifyState(target)}`,
       );
-      const reactionInfo: ReactionInfo = {
+      let reactionInfo: ReactionInfo = {
         target: target,
         type: reaction,
         via: opt.via,
         fromDamage: opt.fromDamage,
+        cancelEffects: false,
+        postApply: null,
       };
+      const modifyEventArg = new ModifyReactionEventArg(
+        this.state,
+        reactionInfo,
+      );
+      this.handleInlineEvent(opt.via, "modifyReaction", modifyEventArg);
+      reactionInfo = modifyEventArg.reactionInfo;
       events.push([
         "onReaction",
         new ReactionEventArg(this.state, reactionInfo),
@@ -433,7 +442,7 @@ export class StateMutator {
         isActive: opt.targetIsActive,
       };
       const reactionDescription = getReactionDescription(reaction);
-      if (reactionDescription) {
+      if (!reactionInfo.cancelEffects && reactionDescription) {
         events.push(
           ...this.executeInlineSkill(
             reactionDescription,
@@ -441,6 +450,16 @@ export class StateMutator {
             reactionDescriptionEventArg,
           ),
         );
+      }
+      if (reactionInfo.postApply) {
+        const [postAura] = REACTION_MAP[newAura][reactionInfo.postApply];
+        this.mutate({
+          type: "modifyEntityVar",
+          state: target,
+          varName: "aura",
+          value: postAura,
+          direction: null,
+        });
       }
     }
     return events;

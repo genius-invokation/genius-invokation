@@ -140,10 +140,7 @@ function initialize() {
 
   reaction(Reaction.Bloom)
     .do((c, e) => {
-      if (!c.$(`${e.here} combat status with definition id 112081`)) {
-        // 如果没有金杯的丰馈（妮露），就生成草原核
-        c.combatStatus(DendroCore, e.here);
-      }
+      c.combatStatus(DendroCore, e.here);
     })
     .done();
 
