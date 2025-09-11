@@ -924,7 +924,7 @@ export class Game {
         who,
         skill: skillInfo,
         targets: [],
-        fast: skill.initiativeSkillConfig.fast,
+        fast: skill.initiativeSkillConfig.shouldFast,
         cost: skill.initiativeSkillConfig.requiredCost,
         autoSelectedDice: [],
       };
@@ -979,7 +979,7 @@ export class Game {
         who,
         skill: skillInfo,
         cost: skillDef.initiativeSkillConfig.requiredCost,
-        fast: skillDef.initiativeSkillConfig.fast,
+        fast: skillDef.initiativeSkillConfig.shouldFast,
         autoSelectedDice: [],
         targets: [],
         willBeEffectless: false,

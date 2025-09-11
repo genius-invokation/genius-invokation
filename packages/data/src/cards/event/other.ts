@@ -2017,7 +2017,6 @@ export const DisposedSupportAndSummonsCountExtension = extension(332051, pair({
  * 可用次数：1
  */
 export const FellDragon = summon(303245)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .associateExtension(DisposedSupportAndSummonsCountExtension)
   .hint(DamageType.Physical, (c, e) => e.variables.effect)

@@ -1297,10 +1297,15 @@ export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
   protected _targetQueries: string[] = [];
-  protected _fast = false;
+  protected _alwaysCharged = false;
+  protected _alwaysPlunging = false;
 
-  fast(): this {
-    this._fast = true;
+  forceCharged(): this {
+    this._alwaysCharged = true;
+    return this;
+  }
+  forcePlunging(): this {
+    this._alwaysPlunging = true;
     return this;
   }
 
@@ -1458,7 +1463,9 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
-          fast: this._fast,
+          shouldFast: false,
+          alwaysCharged: this._alwaysCharged,
+          alwaysPlunging: this._alwaysPlunging,
           hidden: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
@@ -1602,7 +1609,9 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
-        fast: this._fast,
+        shouldFast: false,
+        alwaysCharged: this._alwaysCharged,
+        alwaysPlunging: this._alwaysPlunging,
         hidden: this._prepared,
         getTarget: this.buildTargetGetter(),
       },
