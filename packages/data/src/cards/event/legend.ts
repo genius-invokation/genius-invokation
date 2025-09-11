@@ -79,17 +79,10 @@ export const [FreshWindOfFreedom] = card(330004)
   .legend()
   .toCombatStatus(300002)
   .oneDuration()
-  .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
+  .on("defeated", (c, e) => c.isMyTurn() && !e.target.isMine())
   .listenToAll()
   .usage(1)
-  .do((c) => {
-    c.mutate({
-      type: "setPlayerFlag",
-      who: flip(c.self.who),
-      flagName: "skipNextTurn",
-      value: true
-    });
-  })
+  .continueNextTurn()
   .done();
 
 /**

@@ -143,9 +143,9 @@ export const FlamestriderBlazingTrail = card(113155)
   .technique(`my character with definition id 1315`)
   .provideSkill(1131551)
   .usage(2)
-  .fast()
   .switchActive("my next")
   .convertDice(DiceType.Omni, 2)
+  .continueNextTurn()
   .done();
 
 /**

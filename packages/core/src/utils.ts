@@ -399,16 +399,18 @@ export function isChargedPlunging(skill: SkillDefinition, player: PlayerState) {
   if (!skill.initiativeSkillConfig) {
     return { charged: false, plunging: false };
   }
+  let charged = skill.initiativeSkillConfig.alwaysCharged;
+  let plunging = skill.initiativeSkillConfig.alwaysPlunging;
   const isNormal = skill.initiativeSkillConfig.skillType === "normal";
   if (!isNormal) {
-    return { charged: false, plunging: false };
+    return { charged, plunging };
   }
   const activeCh = player.characters[getActiveCharacterIndex(player)];
-  const forcePlunging = activeCh.entities.some((et) =>
+  const asPlunging = activeCh.entities.some((et) =>
     et.definition.tags.includes("normalAsPlunging"),
   );
-  const charged = player.canCharged;
-  const plunging = player.canPlunging || forcePlunging;
+  charged ||= player.canCharged;
+  plunging ||= player.canPlunging || asPlunging;
   return { charged, plunging };
 }
 

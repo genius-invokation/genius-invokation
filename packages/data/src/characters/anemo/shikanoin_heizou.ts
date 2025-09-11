@@ -24,23 +24,20 @@ import { character, skill, status, card, DamageType, Aura, StatusHandle } from "
 export const Declension: StatusHandle = status(115132)
   .since("v5.8.0")
   .variableCanAppend("henkaku", 1, Infinity)
-  .variable("increaseDmg", 0, {visible: false})
-  .on("modifyAction", (c, e) =>
-    c.self.getVariable("henkaku") >= 2 &&
-    ((e.action.type === "useSkill" && e.action.skill.definition.id === HeartstopperStrike) ||
-      (e.action.type === "playCard" && e.action.skill.caller.definition.id === CuriousCasefiles)))
-  .do((c, e) => {
-    c.addVariable("henkaku", -2);
-    e.setFastAction();
-    c.addVariable("increaseDmg", 1);
-    if (c.self.master.hasEquipment(CuriousCasefiles)){
-      c.addVariable("increaseDmg", 1);
+  .on("useSkill", (c, e) =>
+    e.skill.definition.id === HeartstopperStrike &&
+    c.self.getVariable("henkaku") >= 2)
+  .do((c) => {
+    // 使用 勠心拳 后，我方继续行动一个回合
+    c.continueNextTurn();
+    // 为 角色 添加 增伤数值
+    if (c.self.master.hasEquipment(CuriousCasefiles)) {
+      c.self.master.setVariable("increaseDmg", 2);
+    } else {
+      c.self.master.setVariable("increaseDmg", 1);
     }
-  })
-  .on("increaseSkillDamage", (c, e) => c.getVariable("increaseDmg") > 0 && e.damageInfo.via.definition.id === HeartstopperStrikeCharge)
-  .do((c, e) =>{
-    e.increaseDamage(c.getVariable("increaseDmg"));
-    c.setVariable("increaseDmg", 0);
+    // 消耗 2 层变格
+    c.addVariable("henkaku", -2);
     if (c.getVariable("henkaku") <= 0){
       c.dispose();
     }
@@ -56,7 +53,12 @@ export const Declension: StatusHandle = status(115132)
 export const HeartstopperStrikeCharge = skill(15135)
   .type("elemental")
   .prepared()
-  .damage(DamageType.Anemo, 4)
+  .do((c) => {
+    // 读取 角色 的 增伤数值，随后清空
+    const increaseDmg = c.self.getVariable("increaseDmg") ?? 0;
+    c.damage(DamageType.Anemo, 4 + increaseDmg);
+    c.self.setVariable("increaseDmg", 0);
+  })
   .done();
 
 /**
@@ -192,6 +194,7 @@ export const WindmusterKick = skill(15133)
  */
 export const ParadoxicalPractice = skill(15134)
   .type("passive")
+  .variable("increaseDmg", 0)
   .on("dealDamage", (c, e) => e.isReactionRelatedTo(DamageType.Anemo))
   .listenToPlayer()
   .characterStatus(Declension, "@self")

@@ -126,7 +126,9 @@ export interface InitiativeSkillConfig {
   readonly computed$costSize: number;
   readonly computed$diceCostSize: number;
   readonly gainEnergy: boolean;
-  readonly fast: boolean;
+  readonly shouldFast: boolean;
+  readonly alwaysCharged: boolean;
+  readonly alwaysPlunging: boolean;
   readonly hidden: boolean;
   readonly getTarget: InitiativeSkillTargetGetter;
 }
