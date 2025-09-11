@@ -1,5 +1,5 @@
 import { ref, setup, Character, State, Status, Equipment, Summon, CombatStatus } from "#test";
-import { ShikanoinHeizou, Declension } from "@gi-tcg/data/internal/characters/anemo/shikanoin_heizou";
+import { ShikanoinHeizou, Declension, HeartstopperStrike } from "@gi-tcg/data/internal/characters/anemo/shikanoin_heizou";
 import { AurousBlaze } from "@gi-tcg/data/internal/characters/pyro/yoimiya"
 import { Aura } from "@gi-tcg/typings";
 import { test } from "bun:test";
