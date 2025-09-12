@@ -574,6 +574,12 @@ const detailedEventDictionary = {
   selectCard: defineDescriptor("onSelectCard", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
+  adventure: defineDescriptor("onEnter", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.entity.id, r) &&
+      (e.entity as EntityState).definition.tags.includes("adventureSpot")
+    );
+  }),
   customEvent: defineDescriptor("onCustomEvent", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
