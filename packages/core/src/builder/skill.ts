@@ -576,7 +576,7 @@ const detailedEventDictionary = {
   }),
   adventure: defineDescriptor("onEnter", (e, r) => {
     return (
-      checkRelative(e.onTimeState, e.entity.id, r) &&
+      checkRelative(e.onTimeState, { who: e.who }, r) &&
       (e.entity as EntityState).definition.tags.includes("adventureSpot")
     );
   }),
