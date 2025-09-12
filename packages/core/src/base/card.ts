@@ -27,7 +27,7 @@ export type EquipmentTag =
   | "weapon"
   | WeaponCardTag;
 
-export type SupportTag = "ally" | "place" | "item";
+export type SupportTag = "ally" | "place" | "item" | "adventureSpot";
 
 export type CardTag =
   | "legend" // 秘传
@@ -35,6 +35,7 @@ export type CardTag =
   | "food"
   | "resonance" // 元素共鸣
   | "noTuning" // 禁用调和
+  | "adventureSpot" // 冒险地点
   | EquipmentTag
   | SupportTag;
 

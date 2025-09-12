@@ -395,6 +395,33 @@ export function isSkillDisabled(character: CharacterState): boolean {
   );
 }
 
+/**
+ * createEntity 在已有 `exists` 实体时，是否叠加在某个已存在实体上
+ * @param exists 待入场区域的全部实体
+ * @param incoming 待入场的实体定义
+ * @returns 若可叠加且存在可叠加的已存在实体，返回之
+ */
+export function shouldEnterOverride<T extends AnyState>(
+  exists: T[],
+  incoming: T["definition"],
+): T | null {
+  if (incoming.type === "character") {
+    return null;
+  }
+  const existOne =
+    exists.find((et) => et.definition.id === incoming.id) ?? null;
+  if (incoming.type === "support") {
+    // 仅冒险地点可叠加
+    if (incoming.tags.includes("adventureSpot")) {
+      return existOne;
+    } else {
+      return null;
+    }
+  }
+  // 状态、装备、出战状态、召唤物 可叠加
+  return existOne;
+}
+
 export function isChargedPlunging(skill: SkillDefinition, player: PlayerState) {
   if (!skill.initiativeSkillConfig) {
     return { charged: false, plunging: false };
