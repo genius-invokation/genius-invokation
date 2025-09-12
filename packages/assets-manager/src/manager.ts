@@ -269,9 +269,11 @@ export class AssetsManager {
         description: "",
         hidden: false,
       };
-      this.dataCacheSync.set(et.id, data);
-      this.customDataNames.set(et.id, et.name);
-      this.customDataImageUrls.set(et.id, et.cardFaceOrBuffIconUrl);
+      if (!this.dataCacheSync.has(et.id)) {
+        this.dataCacheSync.set(et.id, data);
+        this.customDataNames.set(et.id, et.name);
+        this.customDataImageUrls.set(et.id, et.cardFaceOrBuffIconUrl);
+      }
     }
   }
 
