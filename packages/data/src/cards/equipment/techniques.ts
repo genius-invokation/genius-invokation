@@ -245,7 +245,7 @@ export const Waverider = card(313007)
   .endProvide()
   .on("enter")
   .characterStatus(WaveriderShield, "@master")
-  .on("switchActive", (c, e) => e.switchInfo.from.id === c.self.master.id)
+  .on("switchActive", (c, e) => e.switchInfo.from?.id === c.self.master.id)
   .addVariable("usage", 1)
   .done();
 

@@ -118,8 +118,6 @@ export const KamisatoArtSoumetsu = skill(11053)
  */
 export const KamisatoArtSenho01: PassiveSkillHandle = skill(11054)
   .type("passive")
-  .on("battleBegin", (c, e) => c.self.isActive()) // 战斗开始时也附属附魔
-  .characterStatus(CryoElementalInfusion)
   .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.id)
   .if((c) => c.self.hasEquipment(KantenSenmyouBlessing))
   .characterStatus(CryoElementalInfusion01)
@@ -137,8 +135,6 @@ export const KamisatoArtSenho02 = skill(11055)
   .type("passive")
   .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.id)
   .usagePerRound(2, { name: "usagePerRound1" })
-  .characterStatus(KamisatoArtSenhoStatus)
-  .on("battleBegin", (c) => c.self.isActive())
   .characterStatus(KamisatoArtSenhoStatus)
   .addVariable("usagePerRound1", -1)
   .done();

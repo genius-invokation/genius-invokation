@@ -468,7 +468,8 @@ const detailedEventDictionary = {
   }),
   switchActive: defineDescriptor("onSwitchActive", (e, r) => {
     return (
-      checkRelative(e.onTimeState, e.switchInfo.from.id, r) ||
+      (e.switchInfo.from &&
+        checkRelative(e.onTimeState, e.switchInfo.from.id, r)) ||
       checkRelative(e.onTimeState, e.switchInfo.to.id, r)
     );
   }),

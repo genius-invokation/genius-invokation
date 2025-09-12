@@ -319,6 +319,7 @@ export function setup(state: JSX.Element): TestController {
             id,
             definition,
             variables,
+            fromCardId: null,
           };
           entities.push(state as Draft<EntityState>);
         }
@@ -393,6 +394,7 @@ export function setup(state: JSX.Element): TestController {
           id,
           definition,
           variables,
+          fromCardId: null,
         };
         const area =
           comp === CombatStatus
@@ -448,6 +450,7 @@ export function setup(state: JSX.Element): TestController {
     [StateSymbol]: "game",
     data,
     config: {
+      errorLevel: "strict",
       initialDiceCount: 8,
       initialHandsCount: 5,
       maxDiceCount: 16,
