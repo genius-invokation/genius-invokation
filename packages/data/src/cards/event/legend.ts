@@ -244,7 +244,7 @@ export const FlamesOfWarExtension = extension(300006, {
    */
   export const FlamesOfWar = card(300006)
     .unobtainable()
-    .support(null)
+    .support()
     .variable("spirit", 0)
     .associateExtension(FlamesOfWarExtension)
     .on("enter")
