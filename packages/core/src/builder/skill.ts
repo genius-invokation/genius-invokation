@@ -513,6 +513,9 @@ const detailedEventDictionary = {
   damagedOrHealed: defineDescriptor("onDamageOrHeal", (e, r) => {
     return checkRelative(e.onTimeState, e.target.id, r);
   }),
+  modifyReaction: defineDescriptor("modifyReaction", (e, r) => {
+    return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
+  }),
   reaction: defineDescriptor("onReaction", (e, r) => {
     return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
   }),

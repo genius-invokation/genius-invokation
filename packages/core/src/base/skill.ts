@@ -64,6 +64,7 @@ import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
 import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 import type { PlainCharacterState } from "../builder/context/utils";
+import type { AppliableDamageType } from "../builder/type";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -242,6 +243,8 @@ export interface ReactionInfo {
   readonly via: SkillInfo;
   readonly target: CharacterState;
   readonly fromDamage: DamageInfo | null;
+  readonly cancelEffects: boolean;
+  readonly postApply: AppliableDamageType | null;
 }
 
 export interface UseSkillInfo {
@@ -1074,9 +1077,13 @@ export class CharacterEventArg extends EventArg {
 export class ReactionEventArg extends CharacterEventArg {
   constructor(
     state: GameState,
-    public readonly reactionInfo: ReactionInfo,
+    protected readonly _reactionInfo: ReactionInfo,
   ) {
-    super(state, reactionInfo.target);
+    super(state, _reactionInfo.target);
+  }
+
+  get reactionInfo() {
+    return this._reactionInfo;
   }
 
   get caller() {
@@ -1101,6 +1108,27 @@ export class ReactionEventArg extends CharacterEventArg {
     return `[reaction:${this.reactionInfo.type}] occurred on ${stringifyState(
       this.reactionInfo.target,
     )} via skill [skill:${this.reactionInfo.via.definition.id}]`;
+  }
+}
+
+export class ModifyReactionEventArg extends ReactionEventArg {
+  private _cancelEffects = false;
+  private _postApply: AppliableDamageType | null = null;
+  constructor(state: GameState, _reactionInfo: ReactionInfo) {
+    super(state, _reactionInfo);
+  }
+  cancelEffects() {
+    this._cancelEffects = true;
+  }
+  reApplyTo(type: AppliableDamageType) {
+    this._postApply = type;
+  }
+  get reactionInfo(): ReactionInfo {
+    return {
+      ...this._reactionInfo,
+      cancelEffects: this._cancelEffects,
+      postApply: this._postApply,
+    }
   }
 }
 
@@ -1290,6 +1318,7 @@ export const EVENT_MAP = {
   modifyDamage3: ModifyDamage3EventArg, // 减
   modifyHeal0: ModifyHeal0EventArg, // 取消（克洛琳德）
   modifyHeal1: ModifyHeal1EventArg, // 减（生命之契）
+  modifyReaction: ModifyReactionEventArg,
   onDamageOrHeal: DamageOrHealEventArg,
 
   onEnter: EnterEventArg,
@@ -1311,7 +1340,8 @@ export type InlineEventNames =
   | "modifyDamage3"
   | "modifyHeal0"
   | "modifyHeal1"
-  | "modifyChangeNightsoul";
+  | "modifyChangeNightsoul"
+  | "modifyReaction";
 
 export type EventArgOf<E extends EventNames> = InstanceType<EventMap[E]>;
 
