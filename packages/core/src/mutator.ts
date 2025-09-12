@@ -30,6 +30,7 @@ import {
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  shouldEnterOverride,
   sortDice,
 } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
@@ -829,7 +830,7 @@ export class StateMutator {
       DetailLogType.Primitive,
       `Create entity [${def.type}:${def.id}] at ${stringifyEntityArea(area)}`,
     );
-    const entitiesAtArea = allEntitiesAtArea(this.state, area);
+    const entitiesAtArea = allEntitiesAtArea(this.state, area) as EntityState[];
     // handle immuneControl vs disableSkill;
     // do not generate Frozen etc. on those characters
     const immuneControl = entitiesAtArea.find(
@@ -848,12 +849,7 @@ export class StateMutator {
       );
       return { oldState: null, newState: null, events: [] };
     }
-    const oldState = entitiesAtArea.find(
-      (e): e is EntityState =>
-        e.definition.type !== "character" &&
-        e.definition.type !== "support" &&
-        e.definition.id === def.id,
-    );
+    const oldState = shouldEnterOverride(entitiesAtArea, def);
     const { varConfigs } = def;
     const overrideVariables = opt.overrideVariables ?? {};
     if (oldState) {
@@ -922,7 +918,13 @@ export class StateMutator {
     } else {
       if (
         area.type === "summons" &&
-        entitiesAtArea.length === this.state.config.maxSummonsCount
+        entitiesAtArea.length >= this.state.config.maxSummonsCount
+      ) {
+        return { oldState: null, newState: null, events: [] };
+      }
+      if (
+        area.type === "supports" &&
+        entitiesAtArea.length >= this.state.config.maxSupportsCount
       ) {
         return { oldState: null, newState: null, events: [] };
       }

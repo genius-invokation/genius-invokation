@@ -30,6 +30,7 @@ export function getCardTypeAndTags(card: ActionCardRawData) {
     GCG_TAG_WEAPON_CATALYST: "catalyst",
     GCG_TAG_ALLY: "ally",
     GCG_TAG_PLACE: "place",
+    GCG_TAG_ADVENTURE_PLACE: "adventureSpot",
     GCG_TAG_RESONANCE: "resonance",
     GCG_TAG_WEAPON_POLE: "pole",
     GCG_TAG_ITEM: "item",
@@ -63,7 +64,9 @@ export function getCardCode(card: ActionCardRawData, extra = ""): string {
     }
   } else if (type === "support") {
     const tag = tags.shift();
-    if (tag) {
+    if (tag === "place" && tags.includes("adventureSpot")) {
+      typeCode = `\n  .adventureSpot()`;
+    } else if (tag) {
       typeCode = `\n  .support("${tag}")`;
     } else {
       typeCode = `\n  .support()`;

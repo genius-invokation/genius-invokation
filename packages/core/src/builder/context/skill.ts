@@ -73,6 +73,7 @@ import type {
   StatusHandle,
   SummonHandle,
   EquipmentHandle,
+  SupportHandle,
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
 import type { GuessedTypeOfQuery } from "../../query/types";
@@ -1663,6 +1664,26 @@ export class SkillContext<Meta extends ContextMetaBase> {
     });
     return this.enableShortcut();
   }
+  /** 冒险 */
+  adventure() {
+    const mySupports = this.getRawPlayer("my").supports;
+    const currentSpot = mySupports.find((et) =>
+      et.definition.tags.includes("adventureSpot"),
+    );
+    if (currentSpot) {
+      this.createEntity("support", currentSpot.definition.id as SupportHandle);
+    } else if (mySupports.length < this.rawState.config.maxSupportsCount) {
+      const spots = this.data.cards
+        .values()
+        .filter((d) => d.tags.includes("adventureSpot"))
+        .toArray();
+      this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
+        type: "requestPlayCard",
+        cards: spots,
+        targets: [],
+      });
+    }
+  }
 
   random<T>(items: readonly T[]): T {
     return items[this.mutator.stepRandom() % items.length];
@@ -1724,12 +1745,14 @@ type SkillContextMutativeProps =
   | "undrawCards"
   | "stealHandCard"
   | "swapPlayerHandCards"
+  | "continueNextTurn"
   | "setExtensionState"
   | "switchCards"
   | "reroll"
   | "useSkill"
   | "selectAndSummon"
-  | "selectAndCreateHandCard";
+  | "selectAndCreateHandCard"
+  | "adventure";
 
 /**
  * 所谓 `Typed` 是指，若 `Readonly` 则忽略那些可以改变游戏状态的方法。

@@ -287,10 +287,10 @@ export class CardBuilder<
     return self;
   }
 
-  support(type: SupportTag | null): EntityBuilderPublic<"support"> {
+  support(...tags: SupportTag[]): EntityBuilderPublic<"support"> {
     this.type("support");
-    if (type !== null) {
-      this.tags(type);
+    if (tags.length > 0) {
+      this.tags(...tags);
     }
     const cardId = this.cardId as SupportHandle;
     this.do((c, e) => {
@@ -311,11 +311,15 @@ export class CardBuilder<
       "support",
       cardId,
     );
-    if (type !== null) {
-      builder.tags(type);
+    if (tags.length > 0) {
+      builder.tags(...tags);
     }
     builder._versionInfo = this._versionInfo;
     return builder;
+  }
+
+  adventureSpot(): EntityBuilderPublic<"support", "progress"> {
+    return this.support("place", "adventureSpot").variable("progress", 1);
   }
 
   /**
