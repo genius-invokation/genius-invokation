@@ -321,7 +321,7 @@ export class CardBuilder<
   adventureSpot(): EntityBuilderPublic<"support", "progress"> {
     return this.unobtainable()
       .support("place", "adventureSpot")
-      .variable("progress", 1);
+      .variableCanAppend("progress", 1, Infinity);
   }
 
   /**
