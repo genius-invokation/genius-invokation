@@ -95,6 +95,7 @@ export async function generateCards() {
   const supportCode: Record<string, SourceInfo[]> = {
     ally: [],
     place: [],
+    adventureSpot: [],
     item: [],
     other: [],
   };
@@ -132,6 +133,8 @@ export async function generateCards() {
     } else if (type === "support") {
       if (typeof supportCode[tags[0]] === "undefined") {
         target = supportCode.other;
+      } else if (tags.includes("adventureSpot")) {
+        target = supportCode.adventureSpot;
       } else {
         target = supportCode[tags[0]];
       }
@@ -201,6 +204,7 @@ export async function generateCards() {
       supportCode.place,
     ),
     writeSourceCode("cards/support/item.ts", INIT_CARD_CODE, supportCode.item),
+    writeSourceCode("cards/support/adventure.ts", INIT_CARD_CODE, supportCode.adventureSpot),
     // writeSourceCode("cards/support/other.ts", INIT_CARD_CODE, supportCode.other),
   ]);
 }

@@ -731,7 +731,7 @@ export const CalligraphyTavern = card(321029)
   .done();
 
 /**
- * @id 321032
+ * @id 301032
  * @name 星轨王城（生效中）
  * @description
  * 下次打出积木小人少花费1个元素骰。
