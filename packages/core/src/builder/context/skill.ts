@@ -1683,6 +1683,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         targets: [],
       });
     }
+    return this.enableShortcut();
   }
 
   random<T>(items: readonly T[]): T {
