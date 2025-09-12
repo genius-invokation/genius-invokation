@@ -961,31 +961,40 @@ export class StateMutator {
     target: CharacterState,
     opt: SwitchActiveOption = {},
   ): EventAndRequest[] {
-    const from =
-      this.state.players[who].characters[
-        getActiveCharacterIndex(this.state.players[who])
-      ];
-    if (from.id === target.id) {
+    let from: CharacterState | null;
+    if (this.state.players[who].activeCharacterId === 0) {
+      from = null;
+    } else {
+      from =
+        this.state.players[who].characters[
+          getActiveCharacterIndex(this.state.players[who])
+        ];
+    }
+    if (from?.id === target.id) {
       return [];
     }
     let immuneControlStatus: EntityState | undefined;
     if (
       opt.via &&
-      (immuneControlStatus = from.entities.find((st) =>
+      (immuneControlStatus = from?.entities.find((st) =>
         st.definition.tags.includes("immuneControl"),
       ))
     ) {
       this.log(
         DetailLogType.Other,
-        `Switch active from ${stringifyState(from)} to ${stringifyState(
-          target,
-        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
+        `Switch active from ${
+          from ? stringifyState(from) : "(null)"
+        } to ${stringifyState(target)}, but ${stringifyState(
+          immuneControlStatus,
+        )} disabled this!`,
       );
       return [];
     }
     using l = this.subLog(
       DetailLogType.Primitive,
-      `Switch active from ${stringifyState(from)} to ${stringifyState(target)}`,
+      `Switch active from ${
+        from ? stringifyState(from) : "(null)"
+      } to ${stringifyState(target)}`,
     );
     this.mutate({
       type: "switchActive",
@@ -996,7 +1005,7 @@ export class StateMutator {
     const switchInfo: SwitchActiveInfo = {
       type: "switchActive",
       who,
-      from: from,
+      from,
       via: opt.via,
       to: target,
       fromReaction: fromReaction !== null,

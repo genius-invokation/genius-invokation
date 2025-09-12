@@ -266,7 +266,7 @@ export interface PlayCardInfo {
 export interface SwitchActiveInfo {
   readonly type: "switchActive";
   readonly who: 0 | 1;
-  readonly from: CharacterState;
+  readonly from: CharacterState | null;
   readonly via?: SkillInfo;
   readonly to: CharacterState;
   readonly fromReaction: boolean;
@@ -649,9 +649,9 @@ export class SwitchActiveEventArg extends EventArg {
     super(state);
   }
   override toString() {
-    let result = `player ${this.switchInfo.who}, switch from ${stringifyState(
-      this.switchInfo.from,
-    )} to ${stringifyState(this.switchInfo.to)}`;
+    let result = `player ${this.switchInfo.who}, switch from ${
+      this.switchInfo.from ? stringifyState(this.switchInfo.from) : "(null)"
+    } to ${stringifyState(this.switchInfo.to)}`;
     if (this.switchInfo.via) {
       result += `, via skill [skill:${this.switchInfo.via.definition.id}]`;
     }
@@ -1128,7 +1128,7 @@ export class ModifyReactionEventArg extends ReactionEventArg {
       ...this._reactionInfo,
       cancelEffects: this._cancelEffects,
       postApply: this._postApply,
-    }
+    };
   }
 }
 
@@ -1187,7 +1187,7 @@ export class HandCardInsertedEventArg extends PlayerEventArg {
     who: 0 | 1,
     public readonly card: CardState,
     public readonly reason: TransferCardM["reason"] | "create",
-    public readonly overflowed: boolean
+    public readonly overflowed: boolean,
   ) {
     super(state, who);
   }

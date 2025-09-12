@@ -410,9 +410,9 @@ export class SkillExecutor {
       if (info) {
         using l = this.mutator.subLog(
           DetailLogType.Primitive,
-          `Player ${info.who} switch active from ${stringifyState(
-            info.from,
-          )} to ${stringifyState(info.to)}`,
+          `Player ${info.who} switch active from ${
+            info.from ? stringifyState(info.from) : "(null)"
+          } to ${stringifyState(info.to)}`,
         );
         switchEvents[info.who].push(
           ...this.mutator.switchActive(info.who, info.to),

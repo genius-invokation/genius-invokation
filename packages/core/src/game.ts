@@ -525,16 +525,8 @@ export class Game {
       this.mutator.chooseActive(1),
     ]);
     this.mutator.postChooseActive(a0, a1);
-    this.mutate({
-      type: "switchActive",
-      who: 0,
-      value: a0,
-    });
-    this.mutate({
-      type: "switchActive",
-      who: 1,
-      value: a1,
-    });
+    await this.switchActive(0, a0, null);
+    await this.switchActive(1, a1, null);
     await this.handleEvent("onBattleBegin", new EventArg(this.state));
     this.mutate({
       type: "changePhase",

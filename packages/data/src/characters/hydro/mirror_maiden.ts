@@ -30,7 +30,7 @@ export const Refraction01 = status(122022)
   .duration(3)
   .on("increaseDamaged", (c, e) => e.type === DamageType.Hydro)
   .increaseDamage(1)
-  .on("addDice", (c, e) => e.action.type === "switchActive" && c.self.master.id === e.action.from.id)
+  .on("addDice", (c, e) => e.action.type === "switchActive" && c.self.master.id === e.action.from?.id)
   .addCost(DiceType.Void, 1)
   .done();
 
@@ -46,7 +46,7 @@ export const Refraction = status(122021)
   .conflictWith(122022)
   .unique(122022)
   .duration(2)
-  .on("addDice", (c, e) => e.action.type === "switchActive" && c.self.master.id === e.action.from.id)
+  .on("addDice", (c, e) => e.action.type === "switchActive" && c.self.master.id === e.action.from?.id)
   .addCost(DiceType.Void, 1)
   .done();
 
