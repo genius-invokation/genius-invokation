@@ -1669,23 +1669,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
   /** 冒险 */
   adventure() {
-    const mySupports = this.getRawPlayer("my").supports;
-    const currentSpot = mySupports.find((et) =>
-      et.definition.tags.includes("adventureSpot"),
-    );
-    if (currentSpot) {
-      this.createEntity("support", currentSpot.definition.id as SupportHandle);
-    } else if (mySupports.length < this.rawState.config.maxSupportsCount) {
-      const spots = this.data.cards
-        .values()
-        .filter((d) => d.tags.includes("adventureSpot"))
-        .toArray();
-      this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
-        type: "requestPlayCard",
-        cards: spots,
-        targets: [],
-      });
-    }
+    this.emitEvent("requestAdventure", this.skillInfo, this.callerArea.who);
     return this.enableShortcut();
   }
 
