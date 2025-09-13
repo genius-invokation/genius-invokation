@@ -24,6 +24,7 @@ import {
   type InitiativeSkillEventArg,
   RequestArg,
   SelectCardEventArg,
+  type SelectCardInfo,
   type SkillInfo,
   type SwitchActiveInfo,
   type TriggeredSkillDefinition,
@@ -607,6 +608,42 @@ export class SkillExecutor {
           requestBy: arg.via,
         });
         await this.finalizeSkill(skillInfo, { targets: arg.targets });
+      } else if (name === "requestAdventure") {
+        using l = this.mutator.subLog(
+          DetailLogType.Event,
+          `request player ${arg.who} to adventure`,
+        );
+        const hisSupports = this.state.players[arg.who].supports;
+        const currentSpot = hisSupports.find((et) =>
+          et.definition.tags.includes("adventureSpot"),
+        );
+        if (currentSpot) {
+          const { events } = this.mutator.createEntity(currentSpot.definition, {
+            type: "supports",
+            who: arg.who,
+          });
+          await this.handleEvent(...events);
+        } else if (hisSupports.length < this.state.config.maxSupportsCount) {
+          const spots = this.state.data.cards
+            .values()
+            .filter((d) => d.tags.includes("adventureSpot"))
+            .toArray();
+          const selectCardInfo: SelectCardInfo = {
+            type: "requestPlayCard",
+            cards: spots,
+            targets: [],
+          };
+          const events = await this.mutator.selectCard(
+            arg.who,
+            arg.via,
+            selectCardInfo,
+          );
+          await this.handleEvent(...events);
+          await this.handleEvent([
+            "onSelectCard",
+            new SelectCardEventArg(this.state, arg.who, selectCardInfo),
+          ]);
+        }
       } else if (name === "requestTriggerEndPhaseSkill") {
         using l = this.mutator.subLog(
           DetailLogType.Event,

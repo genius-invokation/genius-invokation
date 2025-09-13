@@ -1384,6 +1384,15 @@ class SelectCardRequestArg extends RequestArg {
   }
 }
 
+class AdventureRequestArg extends RequestArg {
+  constructor(
+    via: SkillInfo,
+    public readonly who: 0 | 1,
+  ) {
+    super(via);
+  }
+}
+
 class RerollRequestArg extends RequestArg {
   constructor(
     via: SkillInfo,
@@ -1434,6 +1443,7 @@ class TriggerEndPhaseSkillRequestArg extends RequestArg {
 const REQUEST_MAP = {
   requestSwitchHands: SwitchHandsRequestArg,
   requestSelectCard: SelectCardRequestArg,
+  requestAdventure: AdventureRequestArg,
   requestReroll: RerollRequestArg,
   requestUseSkill: UseSkillRequestArg,
   requestPlayCard: PlayCardRequestArg,
