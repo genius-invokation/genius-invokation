@@ -779,9 +779,10 @@ export const GoldenTroupesReward = card(312025)
  */
 export const AmethystCrownInEffect = combatStatus(301209)
   .oneDuration()
-  .on("increaseDamage", (c, e) => e.getReaction())
+  .once("increaseDamage", (c, e) => e.getReaction())
   .increaseDamage(2)
   .done();
+
 /**
  * @id 312027
  * @name 紫晶的花冠
