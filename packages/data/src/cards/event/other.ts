@@ -1771,7 +1771,8 @@ export const FlyingSquadAttack = card(332046)
  * 该角色下次元素战技花费1个元素骰。（不可叠加）
  */
 export const FruitsOfTrainingInEffect02 = status(303242)
-  .once("deductOmniDiceSkill", (c, e) => e.isSkillType("elemental"))
+  .on("deductOmniDiceSkill", (c, e) => e.isSkillType("elemental"))
+  .usageCanAppend(1, Infinity) // 所谓“不可叠加”是指无法一次减多个骰子，但是可用次数可以叠加
   .deductOmniCost(1)
   .done();
 
@@ -1785,8 +1786,7 @@ export const FruitsOfTrainingInEffect01 = status(303241)
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill") &&
-    e.entity.cast<"status">().master.id !== c.self.master.id &&
-    !c.self.master.hasStatus(FruitsOfTrainingInEffect02))
+    e.entity.cast<"status">().master.id !== c.self.master.id)
   .listenToPlayer()
   .usage(2)
   .characterStatus(FruitsOfTrainingInEffect02, "@master")

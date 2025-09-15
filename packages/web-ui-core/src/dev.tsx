@@ -31,7 +31,7 @@ import { AssetsManager } from "@gi-tcg/assets-manager";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
 
 const deck0: DeckConfig = {
-  characters: [1315, 1511, 1709],
+  characters: [1105, 1511, 1709],
   cards: [
     115114, 115115, 115116, 321024, 321011, 322012, 332045, 332042, 331802,
     332006, 332042, 223041, 223041, 226031, 226031, 312009, 312009, 312010,
