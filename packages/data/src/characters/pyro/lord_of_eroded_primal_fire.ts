@@ -94,6 +94,7 @@ export const SeveringPrimalFire = skill(23053)
     const layer = c.self.hasStatus(Resentment)?.getVariable("layer") ?? 0;
     c.damage(DamageType.Piercing, layer + 1, "opp standby");
     c.damage(DamageType.Pyro, 1);
+    c.abortPreview();
     for (const player of [c.player, c.oppPlayer]) {
       for (const card of player.pile.slice(0, 3)) {
         c.disposeCard(card);
