@@ -318,10 +318,10 @@ export class CardBuilder<
     return builder;
   }
 
-  adventureSpot(): EntityBuilderPublic<"support", "progress"> {
+  adventureSpot(): EntityBuilderPublic<"support", "exp"> {
     return this.unobtainable()
       .support("place", "adventureSpot")
-      .variableCanAppend("progress", 1, Infinity);
+      .variableCanAppend("exp", 1, Infinity);
   }
 
   /**
