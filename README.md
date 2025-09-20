@@ -43,18 +43,17 @@
 <tr>
 <td>
 
-如果有意图参与本项目开发，欢迎加 QQ 群 [693466327](https://qm.qq.com/q/X7XpZg4rW8) 讨论。
+如果有意图参与本项目开发，欢迎加 QQ 群 [1015846340](https://qm.qq.com/q/n6TIu51Ae4) 讨论。
 
 </td>
 <td>
 
-[![qq_group_qr](./docs/images/qq_group.jpg)](https://qm.qq.com/q/X7XpZg4rW8)
 
 </td>
 <tr>
 <td colspan="2">
 
-进群口令可在 [`packages/data/src/characters/pyro/amber.ts`](./packages/data/src/characters/pyro/amber.ts) 中找到~
+进群口令请在代码中自行查找～
 
 </td>
 </tr>
