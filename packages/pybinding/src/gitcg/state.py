@@ -19,6 +19,7 @@ from cffi import FFI
 from .create_param import CreateParam
 from .entity import Entity
 from . import low_level as ll
+from .proto.notification_pb2 import Notification
 
 
 class State:
@@ -34,13 +35,26 @@ class State:
         create_param: CreateParam | None = None,
         json: str | None = None,
         handle: FFI.CData | None = None,
+        notification: Notification | None = None,
     ):
         """
         Create a state from an `gitcg.CreateParam`, or from a JSON representation.
 
         **Notice**: The JSON representation is not stable. We only guarantee that the JSON string produced from `gitcg.State.json` from the same version of this library is valid. We encourage to use `gitcg.State.query` to extract detailed state data.
         """
-        if create_param is not None:
+        not_none_number = sum([x is not None for x in (
+            create_param, 
+            json, 
+            handle, 
+            notification
+        )])
+        if not_none_number == 0:
+            raise ValueError("You must set one of create_param, json, handle or notification to initialize a State")
+        if not_none_number > 1:
+            raise ValueError("You can only set one of create_param, json, handle or notification to initialize a State")
+        if notification is not None:
+            self._state_handle = notification.state
+        elif create_param is not None:
             self._state_handle = ll.state_new(create_param._createparam_handle)
         elif json is not None:
             self._state_handle = ll.state_from_json(json)
