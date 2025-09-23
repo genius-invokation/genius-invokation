@@ -705,9 +705,11 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
     };
   }
 
-  protected buildFilter<Arg = Meta["eventArgType"]>(): SkillActionFilter<Arg> {
+  protected buildFilter<Arg = Meta["eventArgType"]>(
+    overrideFilters?: SkillOperationFilter<any>[],
+  ): SkillActionFilter<Arg> {
     const extId = this.associatedExtensionId;
-    const filters = this.filters;
+    const filters = overrideFilters ?? this.filters;
     return function (state: GameState, skillInfo: SkillInfo, arg: Arg) {
       const ctx = new SkillContext<ReadonlyMetaOf<Meta>>(
         state,

@@ -44,8 +44,8 @@ import {
   withShortcut,
   type BuilderWithShortcut,
   type SkillOperation,
+  type SkillOperationFilter,
   type StrictInitiativeSkillEventArg,
-  type StrictInitiativeSkillFilter,
 } from "./skill";
 import type {
   CardHandle,
@@ -144,6 +144,12 @@ export class CardBuilder<
   private _satiatedTarget: string | null = null;
   private _descriptionOnHCI = false;
   private _doSameWhenDisposed = false;
+  private _disposeFilter: SkillOperationFilter<{
+    callerType: "card";
+    callerVars: never;
+    eventArgType: DisposeOrTuneCardEventArg;
+    associatedExtension: AssociatedExt;
+  }> = () => true;
   private _disposeOperation: SkillOperation<
     DisposeCardBuilderMeta<AssociatedExt>
   > | null = null;
@@ -469,7 +475,14 @@ export class CardBuilder<
     return this.tags("food");
   }
 
-  doSameWhenDisposed() {
+  doSameWhenDisposed(
+    filter?: SkillOperationFilter<{
+      callerType: "card";
+      callerVars: never;
+      eventArgType: DisposeOrTuneCardEventArg;
+      associatedExtension: AssociatedExt;
+    }>,
+  ) {
     if (this._disposeOperation || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .onDispose() or .descriptionOnDraw().`,
@@ -479,6 +492,9 @@ export class CardBuilder<
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );
+    }
+    if (filter) {
+      this._disposeFilter = filter;
     }
     this._doSameWhenDisposed = true;
     return this;
@@ -541,6 +557,9 @@ export class CardBuilder<
     const targetGetter = this.buildTargetGetter();
     if (this._doSameWhenDisposed || this._disposeOperation !== null) {
       const disposeOp = this._disposeOperation;
+      const disposeFilter = this.buildFilter<DisposeOrTuneCardEventArg>([
+        this._disposeFilter,
+      ]);
       const disposeAction = disposeOp
         ? this.buildAction<DisposeOrTuneCardEventArg>(disposeOp)
         : this.buildAction<DisposeOrTuneCardEventArg>();
@@ -553,7 +572,9 @@ export class CardBuilder<
         action: disposeAction,
         filter: (st, info, arg) => {
           return (
-            info.caller.id === arg.entity.id && arg.method !== "elementalTuning"
+            info.caller.id === arg.entity.id &&
+            arg.method !== "elementalTuning" &&
+            disposeFilter(st, info, arg)
           );
         },
         usagePerRoundVariableName: null,
