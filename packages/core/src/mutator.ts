@@ -871,6 +871,10 @@ export class StateMutator {
         }
         const oldValue = oldState.variables[name] ?? 0;
         switch (recreateBehavior.type) {
+          case "keep": {
+            // just skip this variable
+            break;
+          }
           case "overwrite": {
             newValues[name] = initialValue;
             break;
@@ -891,6 +895,10 @@ export class StateMutator {
               appendResult,
               recreateBehavior.appendLimit,
             );
+            break;
+          }
+          default: {
+            const _check: never = recreateBehavior;
             break;
           }
         }
