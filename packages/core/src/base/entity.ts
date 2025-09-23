@@ -78,6 +78,9 @@ export type VariableRecreateBehavior<ValueT extends number = number> =
       readonly type: "overwrite";
     }
   | {
+      readonly type: "keep";
+    }
+  | {
       readonly type: "takeMax";
     }
   | {

@@ -618,10 +618,19 @@ export class SkillExecutor {
           et.definition.tags.includes("adventureSpot"),
         );
         if (currentSpot) {
-          const { events } = this.mutator.createEntity(currentSpot.definition, {
-            type: "supports",
-            who: arg.who,
-          });
+          const { events } = this.mutator.createEntity(
+            currentSpot.definition,
+            {
+              type: "supports",
+              who: arg.who,
+            },
+            {
+              modifyOverriddenVariablesOnly: true,
+              overrideVariables: {
+                exp: 1,
+              },
+            },
+          );
           await this.handleEvent(...events);
         } else if (hisSupports.length < this.state.config.maxSupportsCount) {
           const spots = this.state.data.cards
