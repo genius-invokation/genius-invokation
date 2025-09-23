@@ -102,9 +102,8 @@ export class SkillExecutor {
     const { who } = getEntityArea(this.state, skillInfo.caller.id);
 
     // 重置下落攻击判定。
-    // 官方描述：“角色被切换为「出战角色」后，本回合内的下一个战斗行动若为「普通攻击」，则被视为「下落攻击」”
-    // 中的“下一个战斗行动”实际为“下一此使用技能（非特技）”
-    // 也即下一次使用角色主动技能（非特技）时，不再判定下落攻击， canPlunging 为 false
+    // 官方描述：“角色被切换为「出战角色」后，本回合内的下一次使用技能（非特技）若为「普通攻击」，则被视为「下落攻击」”
+    // 本次技能使用后便不再判定下落攻击， canPlunging 更新为 false
     if (isCharacterInitiativeSkill(skillInfo)) {
       this.mutate({
         type: "setPlayerFlag",
