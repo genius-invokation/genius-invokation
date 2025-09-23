@@ -264,6 +264,12 @@ export const FlamesOfWarExtension = extension(300006, {
         c.characterStatus(FlamesOfWarInEffect, "my active");
       }
     })
+    .on("selfDispose")
+    .do((c) => {
+      c.setExtensionState((st) => {
+        st.spirit[c.self.who] = 0;
+      });
+    })
     .done();
 
 /**
