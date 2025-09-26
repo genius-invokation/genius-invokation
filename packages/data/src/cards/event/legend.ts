@@ -321,7 +321,10 @@ export const FightForDeath = card(330011)
   .legend()
   .drawCards(1)
   .do((c) => {
-    const increasedValue = c.$$(`all my defeated characters`).length * 2;
-      c.increaseMaxHealth(increasedValue, `all my characters`)
+    const defeatedCount = c.$$(`my defeated characters`).length;
+    if (defeatedCount > 0) {
+      const increasedValue = defeatedCount * 2;
+      c.increaseMaxHealth(increasedValue, `my characters`);
+    }
   })
   .done();
