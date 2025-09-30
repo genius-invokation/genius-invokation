@@ -347,7 +347,7 @@ export class AssetsManager {
 
   getImageUrlSync(id: number, options: GetImageOptions = {}): string {
     const searchParams = new URLSearchParams({
-      thumb: options.thumbnail ? "true" : "",
+      thumbnail: options.thumbnail ? "true" : "",
       type: options.type ?? "unspecified",
     });
     const url =
