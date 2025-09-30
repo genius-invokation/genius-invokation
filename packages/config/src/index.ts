@@ -18,6 +18,7 @@ export const IS_BETA = false;
 
 export const BETA_VERSION = "v9999.0.0-beta";
 
+/** @deprecated the default v3 API which is deprecated */
 export const DEFAULT_ASSET_API_ENDPOINT = IS_BETA
   ? `https://beta.assets.gi-tcg.guyutongxue.site/api/v3`
   : `https://assets.gi-tcg.guyutongxue.site/api/v3`;
