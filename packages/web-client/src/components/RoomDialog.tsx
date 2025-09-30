@@ -28,8 +28,8 @@ import { roomIdToCode } from "../utils";
 import { useNavigate } from "@solidjs/router";
 import { useAuth } from "../auth";
 import { useVersionContext } from "../App";
-import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import { useGuestDecks, useGuestInfo } from "../guest";
+import { DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 
 function SelectableDeckInfo(
   props: DeckInfoProps & Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "id">,
@@ -54,7 +54,9 @@ function SelectableDeckInfo(
             {(id) => (
               <img
                 class="h-12 w-12 b-2 b-yellow-100 rounded-full"
-                src={`${DEFAULT_ASSET_API_ENDPOINT}/images/${id}?type=icon`}
+                src={DEFAULT_ASSETS_MANAGER.getImageUrlSync(id, {
+                  type: "icon",
+                })}
               />
             )}
           </For>
