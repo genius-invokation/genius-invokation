@@ -37,6 +37,7 @@ import { DiceType } from "@gi-tcg/typings";
 import { getDeckData, type DeckData } from "./deck_data";
 import { getStaticDeckData } from "./static_deck_data";
 import { DEFAULT_ASSETS_MANAGER } from "./index";
+import { limitFunction } from "p-limit";
 
 export type AnyData =
   | ActionCardRawData
@@ -64,9 +65,10 @@ export interface AssetsManagerOption {
   version: "beta" | "latest" | (string & {});
   language: "EN" | "CHS";
   customData: CustomData[];
+  concurrency: number;
 }
 
-const DEFAULT_API_ENDPOINT = "https://assets-gi-tcg-cf.guyutongxue.site/api/v4";
+export const DEFAULT_ASSETS_API_ENDPOINT = "https://gi-tcg-assets-api-hf.guyutongxue.site/api/v4";
 
 const FETCH_OPTION: RequestInit = {
   headers: {
@@ -83,16 +85,26 @@ export class AssetsManager {
   private readonly customDataImageUrls = new Map<number, string>();
   private readonly options: AssetsManagerOption;
 
+  private readonly limitedFetch: (url: string | URL, requestInit?: RequestInit) => Promise<Response>;
+
   constructor(options: Partial<AssetsManagerOption> = {}) {
     this.options = {
-      apiEndpoint: DEFAULT_API_ENDPOINT,
+      apiEndpoint: DEFAULT_ASSETS_API_ENDPOINT,
       language: "CHS",
       version: IS_BETA ? "beta" : "latest",
       customData: [],
+      concurrency: 32,
       ...options,
     };
     for (const data of this.options.customData) {
       this.setupCustomData(data);
+    }
+    if (this.options.concurrency > 0) {
+      this.limitedFetch = limitFunction(fetch, {
+        concurrency: this.options.concurrency,
+      });
+    } else {
+      this.limitedFetch = fetch;
     }
   }
 
@@ -295,7 +307,7 @@ export class AssetsManager {
       return this.dataCache.get(id)!;
     }
     const url = `${this.options.apiEndpoint}/datum/${this.options.version}/${this.options.language}/${id}`;
-    const promise = fetch(url, FETCH_OPTION)
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(id, data);
@@ -315,7 +327,7 @@ export class AssetsManager {
     const url = `${this.options.apiEndpoint}/datum/${this.options.version}/${
       this.options.language
     }/${-id}`;
-    const promise = fetch(url, FETCH_OPTION)
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(-id, data);
@@ -335,7 +347,7 @@ export class AssetsManager {
       return this.imageCache.get(cacheKey)!;
     }
     const url = this.getImageUrlSync(id, options);
-    const promise = fetch(url, FETCH_OPTION)
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.blob())
       .then((blob) => {
         this.imageCacheSync.set(cacheKey, blob);
@@ -382,7 +394,7 @@ export class AssetsManager {
   private prepareSyncData() {
     return (this.preparedSyncData ??= (async () => {
       const dataUrl = `${this.options.apiEndpoint}/data/${this.options.version}/${this.options.language}/all`;
-      const data = await fetch(dataUrl, FETCH_OPTION).then((r) => r.json());
+      const data = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) => r.json());
       // Data
       for (const d of data) {
         if (!this.dataCacheSync.has(d.id)) {
