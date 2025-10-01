@@ -51,8 +51,8 @@ self.addEventListener("fetch", (/** @type {FetchEvent} */ event) => {
     /** @type {Request | URL} */
     const url = new URL(event.request.url);
     const search = new URLSearchParams(url.search);
-    if (FEATURE_NO_THUMB && search.get("thumb")) {
-      search.delete("thumb");
+    if (FEATURE_NO_THUMB && search.get("thumbnail")) {
+      search.delete("thumbnail");
       url.search = "?" + search.toString();
     }
     event.respondWith(cacheFirst(url, event.preloadResponse, event));
@@ -127,7 +127,7 @@ const cacheFirst = async (request, preloadResponsePromise, event) => {
     // response may be used only once
     // we need to save clone to put one copy in cache
     // and serve second one
-    if (version) {
+    if (version && responseFromNetwork.ok) {
       event.waitUntil(
         putInCache(version, request, responseFromNetwork.clone()),
       );

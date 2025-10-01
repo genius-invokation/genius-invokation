@@ -16,6 +16,7 @@
 import { AssetsManager } from "./manager";
 
 export {
+  DEFAULT_ASSETS_API_ENDPOINT,
   AssetsManager,
   type GetDataOptions,
   type GetImageOptions,

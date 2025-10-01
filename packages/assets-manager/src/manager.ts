@@ -13,7 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DEFAULT_ASSET_API_ENDPOINT } from "@gi-tcg/config";
 import type {
   ActionCardRawData,
   CharacterRawData,
@@ -22,6 +21,7 @@ import type {
   PlayCost,
   SkillRawData,
 } from "@gi-tcg/static-data";
+import { IS_BETA } from "@gi-tcg/config";
 import { blobToDataUrl } from "./data_url";
 import { getAllNamesSync, getNameSync } from "./names";
 import type { CustomData, CustomSkill } from "./custom_data";
@@ -37,6 +37,7 @@ import { DiceType } from "@gi-tcg/typings";
 import { getDeckData, type DeckData } from "./deck_data";
 import { getStaticDeckData } from "./static_deck_data";
 import { DEFAULT_ASSETS_MANAGER } from "./index";
+import { limitFunction } from "p-limit";
 
 export type AnyData =
   | ActionCardRawData
@@ -61,8 +62,13 @@ export interface PrepareForSyncOptions {}
 
 export interface AssetsManagerOption {
   apiEndpoint: string;
+  version: "beta" | "latest" | (string & {});
+  language: "EN" | "CHS";
   customData: CustomData[];
+  concurrency: number;
 }
+
+export const DEFAULT_ASSETS_API_ENDPOINT = "https://gi-tcg-assets-api-hf.guyutongxue.site/api/v4";
 
 const FETCH_OPTION: RequestInit = {
   headers: {
@@ -79,14 +85,26 @@ export class AssetsManager {
   private readonly customDataImageUrls = new Map<number, string>();
   private readonly options: AssetsManagerOption;
 
+  private readonly limitedFetch: (url: string | URL, requestInit?: RequestInit) => Promise<Response>;
+
   constructor(options: Partial<AssetsManagerOption> = {}) {
     this.options = {
-      apiEndpoint: DEFAULT_ASSET_API_ENDPOINT,
+      apiEndpoint: DEFAULT_ASSETS_API_ENDPOINT,
+      language: "CHS",
+      version: IS_BETA ? "beta" : "latest",
       customData: [],
+      concurrency: 32,
       ...options,
     };
     for (const data of this.options.customData) {
       this.setupCustomData(data);
+    }
+    if (this.options.concurrency > 0) {
+      this.limitedFetch = limitFunction(fetch, {
+        concurrency: this.options.concurrency,
+      });
+    } else {
+      this.limitedFetch = fetch;
     }
   }
 
@@ -154,6 +172,7 @@ export class AssetsManager {
       technique: "GCG_TAG_VEHICLE",
       action: "GCG_TAG_SLOWLY",
       noTuning: "",
+      adventureSpot: "GCG_TAG_ADVENTURE_PLACE",
     };
     const ENTITY_TYPE_MAP: Record<EntityType, string> = {
       combatStatus: "GCG_CARD_ONSTAGE",
@@ -287,8 +306,8 @@ export class AssetsManager {
     if (this.dataCache.has(id)) {
       return this.dataCache.get(id)!;
     }
-    const url = `${this.options.apiEndpoint}/data/${id}`;
-    const promise = fetch(url, FETCH_OPTION)
+    const url = `${this.options.apiEndpoint}/datum/${this.options.version}/${this.options.language}/${id}`;
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(id, data);
@@ -305,8 +324,10 @@ export class AssetsManager {
     if (this.dataCache.has(-id)) {
       return this.dataCache.get(-id)!;
     }
-    const url = `${this.options.apiEndpoint}/data/${-id}`;
-    const promise = fetch(url, FETCH_OPTION)
+    const url = `${this.options.apiEndpoint}/datum/${this.options.version}/${
+      this.options.language
+    }/${-id}`;
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.json())
       .then((data) => {
         this.dataCacheSync.set(-id, data);
@@ -325,14 +346,8 @@ export class AssetsManager {
     if (this.imageCache.has(cacheKey)) {
       return this.imageCache.get(cacheKey)!;
     }
-    const searchParams = new URLSearchParams({
-      thumb: options.thumbnail ? "1" : "",
-      type: options.type ?? "unspecified",
-    });
-    const url =
-      this.customDataImageUrls.get(id) ??
-      `${this.options.apiEndpoint}/images/${id}?${searchParams}`;
-    const promise = fetch(url, FETCH_OPTION)
+    const url = this.getImageUrlSync(id, options);
+    const promise = this.limitedFetch(url, FETCH_OPTION)
       .then((r) => r.blob())
       .then((blob) => {
         this.imageCacheSync.set(cacheKey, blob);
@@ -340,6 +355,17 @@ export class AssetsManager {
       });
     this.imageCache.set(cacheKey, promise);
     return promise;
+  }
+
+  getImageUrlSync(id: number, options: GetImageOptions = {}): string {
+    const searchParams = new URLSearchParams({
+      thumbnail: String(options.thumbnail ?? false),
+      type: options.type ?? "unspecified",
+    });
+    const url =
+      this.customDataImageUrls.get(id) ??
+      `${this.options.apiEndpoint}/image/${id}?${searchParams}`;
+    return url;
   }
 
   async getImageUrl(
@@ -367,8 +393,8 @@ export class AssetsManager {
   private preparedSyncData: Promise<void> | undefined;
   private prepareSyncData() {
     return (this.preparedSyncData ??= (async () => {
-      const dataUrl = `${this.options.apiEndpoint}/data`;
-      const data = await fetch(dataUrl, FETCH_OPTION).then((r) => r.json());
+      const dataUrl = `${this.options.apiEndpoint}/data/${this.options.version}/${this.options.language}/all`;
+      const data = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) => r.json());
       // Data
       for (const d of data) {
         if (!this.dataCacheSync.has(d.id)) {
