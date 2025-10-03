@@ -171,7 +171,7 @@ const SpiritOfOmensPower = skill(23034)
   .until("v5.0.0")
   .type("passive")
   .on("damaged", (c) => c.self.health <= 7)
-  .usage(1, { name: "damagedEnergySkillUsage", autoDispose: false })
+  .usage(1, { name: "damagedEnergySkillUsage" })
   .gainEnergy(1, "@self")
   .done();
 
