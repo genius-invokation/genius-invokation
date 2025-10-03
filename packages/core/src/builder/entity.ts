@@ -476,7 +476,7 @@ export class EntityBuilder<
       }
     }
     if (!perRound && name !== "usage" && typeof opt?.autoDispose === "boolean") {
-      console?.warn(`No need to specify \`autoDispose\` of an non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`);
+      console?.warn(`No need to specify \`autoDispose\` of a non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`);
       console?.trace();
     }
     const autoDispose = name === "usage" && opt?.autoDispose !== false;
