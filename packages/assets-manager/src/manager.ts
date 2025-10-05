@@ -68,7 +68,9 @@ export interface AssetsManagerOption {
   concurrency: number;
 }
 
-export const DEFAULT_ASSETS_API_ENDPOINT = "https://gi-tcg-assets-api-hf.guyutongxue.site/api/v4";
+export const DEFAULT_ASSETS_API_ENDPOINT =
+  import.meta.env.DEFAULT_ASSETS_API_ENDPOINT ||
+  "https://gi-tcg-assets-api-hf.guyutongxue.site/api/v4";
 
 const FETCH_OPTION: RequestInit = {
   headers: {
@@ -85,7 +87,10 @@ export class AssetsManager {
   private readonly customDataImageUrls = new Map<number, string>();
   private readonly options: AssetsManagerOption;
 
-  private readonly limitedFetch: (url: string | URL, requestInit?: RequestInit) => Promise<Response>;
+  private readonly limitedFetch: (
+    url: string | URL,
+    requestInit?: RequestInit,
+  ) => Promise<Response>;
 
   constructor(options: Partial<AssetsManagerOption> = {}) {
     this.options = {
@@ -394,7 +399,9 @@ export class AssetsManager {
   private prepareSyncData() {
     return (this.preparedSyncData ??= (async () => {
       const dataUrl = `${this.options.apiEndpoint}/data/${this.options.version}/${this.options.language}/all`;
-      const data = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) => r.json());
+      const data = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) =>
+        r.json(),
+      );
       // Data
       for (const d of data) {
         if (!this.dataCacheSync.has(d.id)) {
