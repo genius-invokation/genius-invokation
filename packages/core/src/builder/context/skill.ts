@@ -1100,7 +1100,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     // 万能骰排最后。其余按照数量排序，相等时按照骰子类型排序
     const sorted = this.player.dice.toSortedBy((dice) => [
-      dice === DiceType.Omni ? 0 : 1,
+      +(dice === DiceType.Omni),
       -countMap.get(dice)!,
       dice,
     ]);
