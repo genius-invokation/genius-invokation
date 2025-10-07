@@ -18,7 +18,7 @@
   - `@gi-tcg/cbinding` 提供核心模拟器+官方卡牌数据的 C 接口
   - `@gi-tcg/pybinding` 基于 C 接口的 Python 接口实现
 - **其它**
-  - `@gi-tcg/static-data` 官方静态数据源
+  - `@gi-tcg/assets-manager` 获取官方静态数据
   - `@gi-tcg/typings` 定义基本数据类型前后端通信格式
   - `@gi-tcg/utils` 实用工具集合
   - `@gi-tcg/test` 核心与卡牌数据测试框架
