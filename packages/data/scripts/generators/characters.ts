@@ -13,13 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  characters,
-  entities,
-  actionCards,
-  EntityRawData,
-  PlayCost,
-} from "@gi-tcg/static-data";
+import { EntityRawData, characters, actionCards, entities } from "./data";
+
 import { snakeCase } from "case-anything";
 import { writeSourceCode, SourceInfo, identifier } from "./source";
 import { getCostCode, inlineCostDescription } from "./cost";
@@ -88,7 +83,9 @@ function getAuxiliaryOfCharacter(id: number): AuxiliaryFound {
     if (obj.tags.includes("GCG_TAG_VEHICLE")) {
       const et = entities.find((et) => et.id === obj.id)!;
       for (const skill of et.skills) {
-        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(skill.playCost)}) ${skill.description}`;
+        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(
+          skill.playCost,
+        )}) ${skill.description}`;
       }
     }
     return {
