@@ -36,23 +36,17 @@ const [actionCards, characters, entities, keywords] = (await Promise.all(
 ];
 
 const names = Object.fromEntries([
-  ...[...characters, ...actionCards, ...entities].flatMap((e) => [
+  ...[...characters, ...actionCards, ...entities, ...keywords].flatMap((e) => [
     [e.id, e.name],
     ...("skills" in e ? e.skills.map((s) => [s.id, s.name]) : []),
   ]),
-  ...keywords.map((e) => [-e.id, e.name]),
 ]);
 
 const deckData = getDeckData(characters, actionCards);
 
 const shareMap = Object.fromEntries(
-  [...characters, ...actionCards].map((card) => [
-    card.shareId,
-    card.id,
-  ]),
+  [...characters, ...actionCards].map((card) => [card.shareId, card.id]),
 );
-
-
 
 const mapReplacer = (key: string, value: unknown) => {
   if (value instanceof Map) {
@@ -60,7 +54,6 @@ const mapReplacer = (key: string, value: unknown) => {
   }
   return value;
 };
-
 
 const DESTINATION_DIR = path.resolve(import.meta.dirname, "../src/data");
 const write = async (data: unknown, ...paths: string[]) => {
