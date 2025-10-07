@@ -41,7 +41,7 @@ import { DecksService } from "./decks.service";
 import { PaginationDto, parseStringToInt } from "../utils";
 import { VERSIONS, type Version } from "@gi-tcg/core";
 import { Transform } from "class-transformer";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import { Public } from "../auth/auth.guard";
 
 export class DeckDto implements Deck {

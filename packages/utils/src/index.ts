@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export * from "./dice";
-export * from "./sharing";
 
 export function flip(who: 0 | 1): 0 | 1 {
   return (1 - who) as 0 | 1;

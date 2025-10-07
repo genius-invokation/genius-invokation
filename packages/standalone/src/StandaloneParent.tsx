@@ -15,6 +15,7 @@
 
 import getData from "@gi-tcg/data";
 import {
+  CancellablePlayerIO,
   DetailLogEntry,
   Game,
   GameState,
@@ -24,15 +25,11 @@ import {
   serializeGameStateLog,
 } from "@gi-tcg/core";
 
-import {
-  createClient,
-  PlayerIOWithCancellation,
-  StandaloneChessboard,
-} from "@gi-tcg/web-ui-core";
+import { createClient, StandaloneChessboard } from "@gi-tcg/web-ui-core";
 import "@gi-tcg/web-ui-core/style.css";
 import { For, Show, createSignal, onCleanup, onMount } from "solid-js";
-import { decode as decodeShareCode } from "@gi-tcg/utils";
 import { DetailLogViewer } from "@gi-tcg/detail-log-viewer";
+import { DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 
 export interface StandaloneParentProps {
   logs?: GameStateLogEntry[];
@@ -92,7 +89,7 @@ export function StandaloneParent(props: StandaloneParentProps) {
     });
   };
 
-  const childIo: PlayerIOWithCancellation = {
+  const childIo: CancellablePlayerIO = {
     notify: (...params) => {
       popupWindow()?.postMessage({
         giTcg: "1.0",
@@ -191,8 +188,8 @@ export function StandaloneParent(props: StandaloneParentProps) {
 
   const createGame = (state?: GameState) => {
     if (!state) {
-      const deck0 = decodeShareCode(props.deck0);
-      const deck1 = decodeShareCode(props.deck1);
+      const deck0 = DEFAULT_ASSETS_MANAGER.decode(props.deck0);
+      const deck1 = DEFAULT_ASSETS_MANAGER.decode(props.deck1);
       state = Game.createInitialState({
         decks: [deck0, deck1],
         data: getData(props.version),
@@ -219,8 +216,8 @@ export function StandaloneParent(props: StandaloneParentProps) {
   const resumeGame = async () => {
     await showPopup();
     const logs = stateLog().slice(0, viewingLogIndex() + 1);
-    childIo.cancelRpc();
-    uiIo.cancelRpc();
+    childIo.cancelRpc?.();
+    uiIo.cancelRpc?.();
     game?.terminate();
     const latestState = logs[logs.length - 1];
     const newGame = createGame(latestState.state);

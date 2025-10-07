@@ -166,3 +166,8 @@ export function unFlattenOneof<T extends OneofBase>(
 export { RpcRequest, RpcResponse };
 export { PbExposedMutation };
 export type ExposedMutation = FlattenOneof<PbExposedMutation["mutation"]>;
+
+export interface Deck {
+  characters: number[];
+  cards: number[];
+}

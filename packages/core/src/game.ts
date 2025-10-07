@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { checkDice, type Deck, flip } from "@gi-tcg/utils";
+import { checkDice, flip } from "@gi-tcg/utils";
 import {
   DiceType,
   type ExposedMutation,
@@ -26,6 +26,7 @@ import {
   type PbExposedMutation,
   unFlattenOneof,
   ActionValidity,
+  type Deck,
 } from "@gi-tcg/typings";
 import {
   StateSymbol,

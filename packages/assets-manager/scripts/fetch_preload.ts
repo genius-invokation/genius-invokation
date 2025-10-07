@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2025 Guyutongxue
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,16 +13,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { defineConfig } from "tsup";
+// Because fetch.ts uses AssetsManager that needs data/*.json to be exists, so generate them with a placeholder first.
 
-export default defineConfig({
-  entry: {
-    index: "./src/index.ts",
-    buffIconMapping: "./src/buffIconMapping.ts",
-  },
-  format: "esm",
-  clean: true,
-  sourcemap: true,
-  dts: !process.env.NO_TYPING,
-  minify: true,
-});
+import path from "node:path";
+import { existsSync } from "node:fs";
+const neededModules = ["deck", "names", "share_id"];
+
+for (const mod of neededModules) {
+  const filepath = path.resolve(
+    import.meta.dirname,
+    "../src/data",
+    `${mod}.json`,
+  );
+  if (!existsSync(filepath)) {
+    await Bun.write(filepath, "null");
+  }
+}

@@ -1,4 +1,4 @@
-import namesJson from "./names.json" with { type: "json" };
+import namesJson from "./data/names.json";
 
 export function getNameSync(id: number): string | undefined {
   const name = (namesJson as Record<number, string>)[id];

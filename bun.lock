@@ -23,7 +23,6 @@
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/core": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
       },
     },
     "packages/card-data-viewer": {
@@ -106,8 +105,8 @@
       "name": "@gi-tcg/data",
       "version": "0.17.4-6-0-0",
       "devDependencies": {
+        "@gi-tcg/assets-manager": "workspace:*",
         "@gi-tcg/config": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
         "@microsoft/tsdoc": "^0.14.2",
         "case-anything": "^2.1.13",
       },
@@ -150,7 +149,6 @@
       },
       "devDependencies": {
         "@gi-tcg/config": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
         "@typescript-eslint/eslint-plugin": "^6.18.0",
         "@typescript-eslint/parser": "^6.18.0",
         "eslint": "^8.56.0",
@@ -192,10 +190,10 @@
       "version": "0.17.4",
       "dependencies": {
         "@fastify/static": "^7.0.4",
+        "@gi-tcg/assets-manager": "workspace:*",
         "@gi-tcg/config": "workspace:*",
         "@gi-tcg/core": "workspace:*",
         "@gi-tcg/data": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
         "@gi-tcg/typings": "workspace:*",
         "@gi-tcg/utils": "workspace:*",
         "@nestjs/common": "^10.3.9",
@@ -222,6 +220,7 @@
       "name": "@gi-tcg/standalone",
       "version": "0.0.0",
       "dependencies": {
+        "@gi-tcg/assets-manager": "workspace:*",
         "@gi-tcg/core": "workspace:*",
         "@gi-tcg/data": "workspace:*",
         "@gi-tcg/data-code-analyzer": "workspace:*",
@@ -237,7 +236,6 @@
         "@babel/core": "^7.24.4",
         "@babel/preset-env": "^7.24.4",
         "@gi-tcg/config": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
         "@rollup/plugin-babel": "^6.0.4",
         "@types/core-js": "^2.5.8",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -248,15 +246,6 @@
         "vite": "^6.0.11",
         "vite-plugin-solid": "^2.11.1",
         "vite-plugin-static-copy": "^3.1.1",
-      },
-    },
-    "packages/static-data": {
-      "name": "@gi-tcg/static-data",
-      "version": "0.17.4-6-0-0",
-      "devDependencies": {
-        "@gi-tcg/config": "workspace:*",
-        "lossless-json": "^4.0.1",
-        "smol-toml": "^1.3.4",
       },
     },
     "packages/test": {
@@ -281,7 +270,6 @@
       "name": "@gi-tcg/utils",
       "version": "0.17.4",
       "devDependencies": {
-        "@gi-tcg/static-data": "workspace:*",
         "@gi-tcg/typings": "workspace:*",
       },
     },
@@ -306,7 +294,6 @@
         "@babel/core": "^7.24.4",
         "@babel/preset-env": "^7.24.4",
         "@gi-tcg/config": "workspace:*",
-        "@gi-tcg/static-data": "workspace:*",
         "@iconify-json/mdi": "^1.1.66",
         "@rollup/plugin-babel": "^6.0.4",
         "@types/core-js": "^2.5.8",
@@ -794,8 +781,6 @@
     "@gi-tcg/server": ["@gi-tcg/server@workspace:packages/server"],
 
     "@gi-tcg/standalone": ["@gi-tcg/standalone@workspace:packages/standalone"],
-
-    "@gi-tcg/static-data": ["@gi-tcg/static-data@workspace:packages/static-data"],
 
     "@gi-tcg/test": ["@gi-tcg/test@workspace:packages/test"],
 
@@ -1933,8 +1918,6 @@
 
     "log-symbols": ["log-symbols@4.1.0", "", { "dependencies": { "chalk": "^4.1.0", "is-unicode-supported": "^0.1.0" } }, "sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg=="],
 
-    "lossless-json": ["lossless-json@4.0.1", "", {}, "sha512-l0L+ppmgPDnb+JGxNLndPtJZGNf6+ZmVaQzoxQm3u6TXmhdnsA+YtdVR8DjzZd/em58686CQhOFDPewfJ4l7MA=="],
-
     "lru-cache": ["lru-cache@10.4.3", "", {}, "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="],
 
     "magic-string": ["magic-string@0.30.17", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0" } }, "sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA=="],
@@ -2314,8 +2297,6 @@
     "smart-buffer": ["smart-buffer@4.2.0", "", {}, "sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg=="],
 
     "smob": ["smob@1.5.0", "", {}, "sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig=="],
-
-    "smol-toml": ["smol-toml@1.3.4", "", {}, "sha512-UOPtVuYkzYGee0Bd2Szz8d2G3RfMfJ2t3qVdZUAozZyAk+a0Sxa+QKix0YCwjL/A1RR0ar44nCxaoN9FxdJGwA=="],
 
     "socks": ["socks@2.8.3", "", { "dependencies": { "ip-address": "^9.0.5", "smart-buffer": "^4.2.0" } }, "sha512-l5x7VUUWbjVFbafGLxPWkYsHIhEvmF85tbIeFZWc8ZPtoMyybuEhL7Jye/ooC4/d48FgOjSJXgsF/AJPYCW8Zw=="],
 

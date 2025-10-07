@@ -15,7 +15,7 @@
 
 import { render } from "solid-js/web";
 import { DeckBuilder } from ".";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import { createEffect, createSignal } from "solid-js";
 
 const EMPTY_DECK: Deck = {

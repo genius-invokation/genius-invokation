@@ -36,8 +36,20 @@ export type {
   CustomEntity,
   CustomSkill,
 } from "./custom_data";
-export type {
-  DeckData,
-  DeckDataActionCardInfo,
-  DeckDataCharacterInfo,
+export {
+  getDeckData,
+  type DeckData,
+  type DeckDataActionCardInfo,
+  type DeckDataCharacterInfo,
 } from "./deck_data";
+export {
+  ALL_CATEGORIES,
+  type Category,
+  type PlayCost,
+  type CharacterRawData,
+  type SkillRawData,
+  type ActionCardRawData,
+  type EntityRawData,
+  type KeywordRawData,
+} from "./data_types";
+export { staticEncode, staticDecode } from "./sharing";

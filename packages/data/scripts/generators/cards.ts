@@ -15,7 +15,7 @@
 
 import { getCostCode, inlineCostDescription, isLegend } from "./cost";
 import { identifier, SourceInfo, writeSourceCode } from "./source";
-import { ActionCardRawData, actionCards, entities } from "@gi-tcg/static-data";
+import { ActionCardRawData, actionCards, entities } from "./data";
 import { NEW_VERSION } from "./config";
 
 export function getCardTypeAndTags(card: ActionCardRawData) {

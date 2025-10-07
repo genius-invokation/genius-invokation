@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { PlayCost } from "@gi-tcg/static-data";
+import type { PlayCost } from "@gi-tcg/assets-manager";
 
 function costMap(s: string) {
   if (s === "GCG_COST_ENERGY") return "Energy";

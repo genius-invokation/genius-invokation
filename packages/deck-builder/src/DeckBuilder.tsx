@@ -28,7 +28,7 @@ import {
 } from "solid-js";
 import { AllCards } from "./AllCards";
 import { CurrentDeck } from "./CurrentDeck";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import { createCardDataViewer } from "@gi-tcg/card-data-viewer";
 import {
   DEFAULT_ASSETS_MANAGER,

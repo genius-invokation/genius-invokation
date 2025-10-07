@@ -29,7 +29,6 @@ if (IS_BETA) {
 }
 
 const packages = [
-  "static-data",
   "typings",
   "utils",
   "core",
