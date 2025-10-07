@@ -16,7 +16,7 @@
 import { Accessor, createResource, createSignal } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
 import type { DeckInfo } from "./pages/Decks";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import axios from "axios";
 import { createStore, produce } from "solid-js/store";
 

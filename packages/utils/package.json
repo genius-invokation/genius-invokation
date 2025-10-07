@@ -13,11 +13,9 @@
     "./reset.css": "./src/reset.css"
   },
   "scripts": {
-    "build:json": "bun scripts/get_share_id.ts",
-    "build": "bun build:json && tsup"
+    "build": "tsup"
   },
   "devDependencies": {
-    "@gi-tcg/typings": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*"
+    "@gi-tcg/typings": "workspace:*"
   }
 }

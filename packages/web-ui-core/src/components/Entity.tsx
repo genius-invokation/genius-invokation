@@ -36,7 +36,7 @@ import ClockIcon from "../svg/ClockIcon.svg?fb";
 import HourglassIcon from "../svg/HourglassIcon.svg?fb";
 import BarrierIcon from "../svg/BarrierIcon.svg?fb";
 import { useUiContext } from "../hooks/context";
-import type { EntityRawData } from "@gi-tcg/static-data";
+import type { EntityRawData } from "@gi-tcg/assets-manager";
 import { Dynamic } from "solid-js/web";
 
 export interface EntityProps extends EntityInfo {

@@ -1,4 +1,4 @@
-// Copyright (C) 2024-2025 Guyutongxue
+// Copyright (C) 2025 Guyutongxue
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -13,7 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import shareIdMap from "./share_id.json";
+import type { Deck } from "@gi-tcg/typings";
+import shareIdMap from "./data/share_id.json";
 
 const BLOCK_WORDS = [
   /64/i,
@@ -39,13 +40,13 @@ export function decodeRaw(src: string) {
   }
   const last = arr.pop()!;
   const reordered = [
-    ...Array.from({ length: 25 }, (_, i) => (arr[2 * i] - last) & 0xff),
-    ...Array.from({ length: 25 }, (_, i) => (arr[2 * i + 1] - last) & 0xff),
+    ...Array.from({ length: 25 }, (_, i) => (arr[2 * i]! - last) & 0xff),
+    ...Array.from({ length: 25 }, (_, i) => (arr[2 * i + 1]! - last) & 0xff),
     0,
   ];
   const result = Array.from({ length: 17 }).flatMap((_, i) => [
-    (reordered[i * 3] << 4) + (reordered[i * 3 + 1] >> 4),
-    ((reordered[i * 3 + 1] & 0xf) << 8) + reordered[i * 3 + 2],
+    (reordered[i * 3]! << 4) + (reordered[i * 3 + 1]! >> 4),
+    ((reordered[i * 3 + 1]! & 0xf) << 8) + reordered[i * 3 + 2]!,
   ]);
   result.pop();
   return result;
@@ -58,14 +59,14 @@ export function encodeRaw(arr: readonly number[]) {
   }
   const padded = [...arr, 0];
   const reordered = Array.from({ length: 17 }).flatMap((_, i) => [
-    padded[i * 2] >> 4,
-    ((padded[i * 2] & 0xf) << 4) + (padded[i * 2 + 1] >> 8),
-    arr[i * 2 + 1] & 0xff,
+    padded[i * 2]! >> 4,
+    ((padded[i * 2]! & 0xf) << 4) + (padded[i * 2 + 1]! >> 8),
+    arr[i * 2 + 1]! & 0xff,
   ]);
   for (let last = 0; last < 0xff; last++) {
     const original = Array.from({ length: 25 }).flatMap((_, i) => [
-      (reordered[i] + last) & 0xff,
-      (reordered[i + 25] + last) & 0xff,
+      (reordered[i]! + last) & 0xff,
+      (reordered[i + 25]! + last) & 0xff,
     ]);
     const encoded = btoa(String.fromCodePoint(...original, last));
     if (BLOCK_WORDS.every((word) => !word.test(encoded))) {
@@ -75,17 +76,12 @@ export function encodeRaw(arr: readonly number[]) {
   throw new Error("Not found");
 }
 
-export interface Deck {
-  cards: number[];
-  characters: number[];
-}
-
 /**
  * 将分享码 id 转换为卡牌定义 id
  * @param shareId 分享码 id
  * @returns 卡牌定义 id
  */
-export function shareIdToId(shareId: number): number {
+function shareIdToId(shareId: number): number {
   const map = shareIdMap as Record<string, number>;
   const id = map[shareId];
   if (!id) {
@@ -99,7 +95,7 @@ export function shareIdToId(shareId: number): number {
  * @param id 卡牌定义 id
  * @returns 分享码 id
  */
-export function idToShareId(id: number): number {
+function idToShareId(id: number): number {
   const map = shareIdMap as Record<string, number>;
   const shareId = Object.entries(map).find(([, v]) => v === id);
   if (!shareId) {
@@ -113,7 +109,7 @@ export function idToShareId(id: number): number {
  * @param deck 牌组（卡牌定义 id）
  * @returns 分享码
  */
-export function encode(deck: Deck) {
+export function staticEncode(deck: Deck) {
   const raw = [...deck.characters, ...deck.cards].map(idToShareId);
   return encodeRaw(raw);
 }
@@ -123,7 +119,7 @@ export function encode(deck: Deck) {
  * @param src 分享码
  * @returns 解析得到的牌组（卡牌定义 id）
  */
-export function decode(src: string) {
+export function staticDecode(src: string) {
   const raw = decodeRaw(src).map(shareIdToId);
   return {
     characters: raw.slice(0, 3),

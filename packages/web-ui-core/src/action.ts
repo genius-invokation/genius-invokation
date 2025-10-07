@@ -36,7 +36,7 @@ import {
 import type { DicePanelState } from "./components/DicePanel";
 import { DICE_COLOR } from "./components/Dice";
 import { checkDice } from "@gi-tcg/utils";
-import type { SkillRawData, ActionCardRawData } from "@gi-tcg/static-data";
+import type { SkillRawData, ActionCardRawData } from "@gi-tcg/assets-manager";
 import type { AssetsManager } from "@gi-tcg/assets-manager";
 import type { ReactionInfo } from "./components/Chessboard";
 

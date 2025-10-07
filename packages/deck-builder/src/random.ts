@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { AssetsManager } from "@gi-tcg/assets-manager";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 
 const LEGEND = "GCG_TAG_LEGEND";
 

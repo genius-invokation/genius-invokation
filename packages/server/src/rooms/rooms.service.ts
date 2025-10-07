@@ -37,9 +37,9 @@ import {
   CURRENT_VERSION,
   type Version,
 } from "@gi-tcg/core";
-import { dispatchRpc } from "@gi-tcg/typings";
+import { dispatchRpc, type Deck } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
-import { type Deck, flip } from "@gi-tcg/utils";
+import { flip } from "@gi-tcg/utils";
 import {
   BehaviorSubject,
   Observable,
@@ -688,7 +688,7 @@ export class RoomsService {
     };
 
     try {
-      const version = verifyDeck(playerInfo.deck);
+      const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, roomConfig.gameVersion) > 0) {
         throw new BadRequestException(
           `Deck version required ${version}, it's higher game version ${roomConfig.gameVersion}`,
@@ -808,7 +808,7 @@ export class RoomsService {
     }
 
     try {
-      const version = verifyDeck(playerInfo.deck);
+      const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, room.config.gameVersion) > 0) {
         throw new BadRequestException(
           `Deck version required ${version}, it's higher game version ${room.config.gameVersion}`,

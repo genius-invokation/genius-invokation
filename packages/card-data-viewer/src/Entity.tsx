@@ -30,7 +30,7 @@ import type {
   KeywordRawData,
   PlayCost,
   SkillRawData,
-} from "@gi-tcg/static-data";
+} from "@gi-tcg/assets-manager";
 import { PlayCostList } from "./PlayCost";
 import { Description } from "./Description";
 import { Tags } from "./Tags";

@@ -30,6 +30,7 @@ import type {
   CardType,
   CharacterTag,
   CommonSkillType,
+  Deck,
   DiceRequirement,
   EntityType,
 } from "@gi-tcg/core";
@@ -39,6 +40,7 @@ import { getStaticDeckData } from "./static_deck_data";
 import { DEFAULT_ASSETS_MANAGER } from "./index";
 import { limitFunction } from "p-limit";
 import type { Category } from "./data_types";
+import { staticDecode, staticEncode } from "./sharing";
 
 export type AnyData =
   | ActionCardRawData
@@ -469,5 +471,15 @@ export class AssetsManager {
       .filter((data: any) => data.category === "action_cards")
       .toArray() as ActionCardRawData[];
     return getDeckData(characters, actionCards);
+  }
+
+  encode(deck: Deck) {
+    if (this === DEFAULT_ASSETS_MANAGER) {
+      return staticEncode(deck);
+    }
+    throw new Error(`Unsupported`);
+  }
+  decode(code: string) {
+    return staticDecode(code);
   }
 }

@@ -18,7 +18,7 @@ import { Layout } from "../layouts/Layout";
 import axios from "axios";
 import { A } from "@solidjs/router";
 import { DeckBriefInfo } from "../components/DeckBriefInfo";
-import { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import { useGuestDecks } from "../guest";
 import { useAuth } from "../auth";
 

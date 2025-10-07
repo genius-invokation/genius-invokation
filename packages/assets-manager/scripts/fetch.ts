@@ -43,6 +43,17 @@ const names = Object.fromEntries([
   ...keywords.map((e) => [-e.id, e.name]),
 ]);
 
+const deckData = getDeckData(characters, actionCards);
+
+const shareMap = Object.fromEntries(
+  [...characters, ...actionCards].map((card) => [
+    card.shareId,
+    card.id,
+  ]),
+);
+
+
+
 const mapReplacer = (key: string, value: unknown) => {
   if (value instanceof Map) {
     return Object.fromEntries(value.entries());
@@ -50,7 +61,6 @@ const mapReplacer = (key: string, value: unknown) => {
   return value;
 };
 
-const deckData = getDeckData(characters, actionCards);
 
 const DESTINATION_DIR = path.resolve(import.meta.dirname, "../src/data");
 const write = async (data: unknown, ...paths: string[]) => {
@@ -65,3 +75,4 @@ await write(actionCards, "action_cards.json");
 await write(characters, "characters.json");
 await write(entities, "entities.json");
 await write(keywords, "keywords.json");
+await write(shareMap, "share_id.json");

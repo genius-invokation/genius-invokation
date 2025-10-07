@@ -52,3 +52,4 @@ export {
   type EntityRawData,
   type KeywordRawData,
 } from "./data_types";
+export { staticEncode, staticDecode } from "./sharing";

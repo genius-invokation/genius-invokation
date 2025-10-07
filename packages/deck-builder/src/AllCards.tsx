@@ -16,7 +16,7 @@
 import { createSignal, Index, Show } from "solid-js";
 import { AllCharacterCards } from "./AllCharacterCards";
 import { AllActionCards } from "./AllActionCards";
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import type { DeckData } from "@gi-tcg/assets-manager";
 
 export interface AllCardsProps extends DeckData {

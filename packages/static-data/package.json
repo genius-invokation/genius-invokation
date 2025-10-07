@@ -4,23 +4,8 @@
   "version": "0.0.0",
   "description": "Standard card data for Genius Invokation TCG",
   "type": "module",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "bun": "./src/index.ts",
-      "import": "./dist/index.js"
-    },
-    "./buffIconMapping": {
-      "types": "./dist/buffIconMapping.d.ts",
-      "bun": "./src/buffIconMapping.ts",
-      "import": "./dist/buffIconMapping.js"
-    }
-  },
-  "scripts": {
-    "update": "bun scripts/fetch.ts",
-    "build": "bun run update && tsup"
-  },
+  "types": "./src/index.ts",
+  "exports": "./src/index.ts",
   "dependencies": {
     "@gi-tcg/assets-manager": "workspace:*"
   }
