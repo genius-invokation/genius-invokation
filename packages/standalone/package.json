@@ -26,7 +26,6 @@
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/core-js": "^2.5.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",

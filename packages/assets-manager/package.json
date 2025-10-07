@@ -9,19 +9,25 @@
   },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/core": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*"
+    "@gi-tcg/core": "workspace:*"
   },
   "main": "./dist/index.js",
+  "imports": {
+    "#src/*": "./src/*.ts"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "bun": "./src/index.ts",
       "import": "./dist/index.js"
+    },
+    "./data/*": {
+      "bun": "./src/data/*.json",
+      "import": "./dist/*.json"
     }
   },
   "scripts": {
-    "build:data": "bun scripts/generate_names.ts && bun scripts/generate_deck_data.ts",
+    "build:data": "bun --preload=./scripts/fetch_preload.ts ./scripts/fetch.ts",
     "build:ts": "tsup",
     "build": "bun run build:data && bun run build:ts"
   }

@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",

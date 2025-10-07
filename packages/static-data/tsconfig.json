@@ -16,6 +16,6 @@
     
     "module": "preserve",
     "noEmit": true,
-    "lib": ["ES2023"]
+    "lib": ["ES2023"],
   }
 }

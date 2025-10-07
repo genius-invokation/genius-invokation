@@ -20,10 +20,10 @@ import type {
   KeywordRawData,
   PlayCost,
   SkillRawData,
-} from "@gi-tcg/static-data";
+} from "./data_types";
 import { IS_BETA } from "@gi-tcg/config";
 import { blobToDataUrl } from "./data_url";
-import { getAllNamesSync, getNameSync } from "./names";
+import { getNameSync } from "./names";
 import type { CustomData, CustomSkill } from "./custom_data";
 import type {
   CardTag,
@@ -38,6 +38,7 @@ import { getDeckData, type DeckData } from "./deck_data";
 import { getStaticDeckData } from "./static_deck_data";
 import { DEFAULT_ASSETS_MANAGER } from "./index";
 import { limitFunction } from "p-limit";
+import type { Category } from "./data_types";
 
 export type AnyData =
   | ActionCardRawData
@@ -342,6 +343,41 @@ export class AssetsManager {
     return promise;
   }
 
+  async getCategory(
+    category: "characters",
+    options?: GetDataOptions,
+  ): Promise<CharacterRawData[]>;
+  async getCategory(
+    category: "action_cards",
+    options?: GetDataOptions,
+  ): Promise<ActionCardRawData[]>;
+  async getCategory(
+    category: "entities",
+    options?: GetDataOptions,
+  ): Promise<EntityRawData[]>;
+  async getCategory(
+    category: "keywords",
+    options?: GetDataOptions,
+  ): Promise<KeywordRawData[]>;
+  async getCategory(
+    category: Category,
+    options?: GetDataOptions,
+  ): Promise<
+    (ActionCardRawData | CharacterRawData | EntityRawData | KeywordRawData)[]
+  >;
+  async getCategory(
+    category: Category,
+    options: GetDataOptions = {},
+  ): Promise<
+    (ActionCardRawData | CharacterRawData | EntityRawData | KeywordRawData)[]
+  > {
+    const dataUrl = `${this.options.apiEndpoint}/data/${this.options.version}/${this.options.language}/${category}`;
+    const { data } = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) =>
+      r.json(),
+    );
+    return data;
+  }
+
   async getImage(id: number, options: GetImageOptions = {}): Promise<Blob> {
     const type = options.type ?? "unspecified";
     const cacheKey = `${id}-${type}-${options.thumbnail ? "thumb" : "full"}`;
@@ -399,8 +435,8 @@ export class AssetsManager {
   private prepareSyncData() {
     return (this.preparedSyncData ??= (async () => {
       const dataUrl = `${this.options.apiEndpoint}/data/${this.options.version}/${this.options.language}/all`;
-      const data = await this.limitedFetch(dataUrl, FETCH_OPTION).then((r) =>
-        r.json(),
+      const { data } = await this.limitedFetch(dataUrl, FETCH_OPTION).then(
+        (r) => r.json(),
       );
       // Data
       for (const d of data) {

@@ -1,4 +1,4 @@
-import type { ActionCardRawData, CharacterRawData } from "@gi-tcg/static-data";
+import type { ActionCardRawData, CharacterRawData } from "./data_types";
 
 export interface DeckDataCharacterInfo {
   id: number;
