@@ -1014,7 +1014,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (current > 0) {
       this.addVariable("usage", -Math.min(count, current), target);
       if (
-        Reflect.has(target.definition.varConfigs, "disposeWhenUsageIsZero") &&
+        target.definition.disposeWhenUsageIsZero &&
         this.getVariable("usage", target) <= 0
       ) {
         this.dispose(target);

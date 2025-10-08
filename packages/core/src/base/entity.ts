@@ -47,6 +47,7 @@ export interface EntityDefinition {
   readonly tags: readonly EntityTag[];
   readonly hintText: string | null;
   readonly varConfigs: EntityVariableConfigs;
+  readonly disposeWhenUsageIsZero: boolean;
   readonly skills: readonly SkillDefinition[];
   readonly descriptionDictionary: DescriptionDictionary;
 }
@@ -114,7 +115,6 @@ export type UsagePerRoundVariableNames =
 export type EntityVariableConfigs = {
   readonly usage?: VariableConfig;
   readonly duration?: VariableConfig;
-  readonly disposeWhenUsageIsZero?: VariableConfig<1>;
 } & {
   readonly [x in UsagePerRoundVariableNames]?: VariableConfig;
 } & {

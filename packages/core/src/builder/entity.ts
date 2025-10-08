@@ -140,6 +140,7 @@ export class EntityBuilder<
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
+  private _disposeWhenUsageIsZero = false;
   private _visibleVarName: string | null = null;
   _associatedExtensionId: number | null = null;
   private _hintText: string | null = null;
@@ -482,7 +483,7 @@ export class EntityBuilder<
     const autoDispose = name === "usage" && opt?.autoDispose !== false;
     this.variable(name, count, opt);
     if (autoDispose) {
-      this._varConfigs.disposeWhenUsageIsZero = createVariable(1);
+      this._disposeWhenUsageIsZero = true;
     }
     return name;
   }
@@ -692,7 +693,7 @@ export class EntityBuilder<
     Snippets
   > {
     if (opt.autoDispose !== false) {
-      this.variable("disposeWhenUsageIsZero", 1);
+      this._disposeWhenUsageIsZero = true;
     }
     return this.variable("usage", count);
   }
@@ -829,6 +830,7 @@ export class EntityBuilder<
         version: this._versionInfo,
         visibleVarName: this._visibleVarName,
         varConfigs: this._varConfigs,
+        disposeWhenUsageIsZero: this._disposeWhenUsageIsZero,
         hintText: this._hintText,
         skills,
         tags: this._tags,
