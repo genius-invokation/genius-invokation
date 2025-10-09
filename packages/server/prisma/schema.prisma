@@ -23,16 +23,17 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id              Int              @id
-  ghToken         String?
-  games           PlayerOnGames[]
-  createdAt       DateTime         @default(now())
-  decks           Deck[]
+  id        Int             @id
+  ghToken   String?
+  games     PlayerOnGames[]
+  createdAt DateTime        @default(now())
+  decks     Deck[]
 }
 
 model Game {
