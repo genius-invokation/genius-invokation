@@ -16,18 +16,15 @@
 import inlineFrontendPlugin from "./bun_plugin_frontend";
 import simpleGit from "simple-git";
 
-let latestLog;
-try {
-  latestLog = await simpleGit().log({ maxCount: 1 });
-} catch {
-  latestLog = {
+const latestLog = await simpleGit()
+  .log({ maxCount: 1 })
+  .catch(() => ({
     latest: {
       message: process.env.GIT_MESSAGE,
       hash: process.env.GIT_HASH,
       date: process.env.GIT_DATE ?? new Date().toISOString(),
     },
-  };
-}
+  }));
 
 await Bun.build({
   entrypoints: [`${import.meta.dirname}/../src/main.ts`],
