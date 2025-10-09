@@ -27,7 +27,7 @@ export async function frontend(app: FastifyInstance) {
       });
     }
     const indexHtml = Buffer.from(contents["index.html"]!, "base64");
-    app.get(baseNoSuffix, (req, reply) => {
+    app.get(baseNoSuffix, (_req, reply) => {
       reply.type("text/html").send(indexHtml);
     });
     app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {
