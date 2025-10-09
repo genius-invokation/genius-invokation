@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --watch ./src/main.ts",
     "prisma:generate": "bun prisma generate",
-    "build": "bun run prisma:generate",
+    "build": "bun run prisma:generate && bun build scripts/revision.ts --outdir dist",
     "check": "tsc",
     "debug": "nest start --debug --watch",
     "app-name": "bun --print '(await import(\"@gi-tcg/config\")).IS_BETA?\"gi-tcg-beta\":\"gi-tcg\"'",

@@ -16,9 +16,7 @@
 import { Controller, Get, ImATeapotException } from "@nestjs/common";
 import { Public } from "./auth/auth.guard";
 import { CORE_VERSION, CURRENT_VERSION, VERSIONS } from "@gi-tcg/core";
-import simpleGit from "simple-git";
-
-const git = simpleGit();
+import { revision } from "../dist/revision";
 
 @Controller()
 export class AppController {
@@ -27,9 +25,8 @@ export class AppController {
   @Public()
   @Get("/version")
   async getVersion() {
-    const { latest } = await git.log({ maxCount: 1 });
     return {
-      revision: latest,
+      revision,
       supportedGameVersions: VERSIONS,
       currentGameVersion: CURRENT_VERSION,
       coreVersion: CORE_VERSION,
