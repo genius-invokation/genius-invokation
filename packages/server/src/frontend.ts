@@ -23,7 +23,7 @@ export async function frontend(app: FastifyInstance) {
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
     for (const [filename, content] of Object.entries(contents)) {
       app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (req, reply) => {
-        reply.type(mime.getType(filename) ?? "text/plain").send(Buffer.from(content, "base64"));
+        reply.type(mime.getType(filename) ?? "application/octet-stream").send(Buffer.from(content, "base64"));
       });
     }
     const indexHtml = Buffer.from(contents["index.html"]!, "base64");
