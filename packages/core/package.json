@@ -22,7 +22,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "test": "bun test",
-    "build:ohm": "ohm generateBundles -et src/query/query.ohm",
+    "build:ohm": "ohm generateBundles -et src/query-legacy/query.ohm",
     "build": "bun build:ohm && tsup"
   },
   "dependencies": {
