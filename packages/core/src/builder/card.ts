@@ -57,7 +57,7 @@ import type {
   SupportHandle,
 } from "./type";
 import { EntityBuilder, type EntityBuilderPublic } from "./entity";
-import type { GuessedTypeOfQuery } from "../query/types";
+import type { GuessedTypeOfQuery } from "../query-legacy/types";
 import { GiTcgDataError } from "../error";
 import { costSize, diceCostSize, normalizeCost, type Writable } from "../utils";
 import {
