@@ -6,14 +6,11 @@
   "scripts": {
     "dev": "bun --watch ./src/main.ts",
     "prisma:generate": "bun prisma generate",
-    "build": "bun run prisma:generate",
+    "build": "bun run prisma:generate && NODE_ENV=production bun scripts/build.ts",
+    "start": "bun run src/main.ts",
+    "start:prod": "bun run dist/main.js",
     "check": "tsc",
-    "debug": "nest start --debug --watch",
-    "app-name": "bun --print '(await import(\"@gi-tcg/config\")).IS_BETA?\"gi-tcg-beta\":\"gi-tcg\"'",
-    "start": "APP_NAME=$(bun app-name) pm2 startOrRestart pm2.config.cjs",
-    "status": "bun scripts/status.ts",
-    "status:detail": "{ APP_NAME=$(bun app-name); pm2 show $APP_NAME --no-color; pm2 logs $APP_NAME --raw --nostream --lines=500 2>&1; }",
-    "stop": "pm2 delete $(bun app-name)"
+    "debug": "nest start --debug --watch"
   },
   "dependencies": {
     "@fastify/static": "^7.0.4",
@@ -32,6 +29,7 @@
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "mime": "^4.0.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "simple-git": "^3.27.0"
@@ -39,7 +37,6 @@
   "devDependencies": {
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
-    "pm2": "^6.0.8",
     "prisma": "5.20.0"
   }
 }
