@@ -9,7 +9,6 @@
     "build": "bun run scripts/index.ts"
   },
   "devDependencies": {
-    "typescript": "catalog:",
     "@gi-tcg/data": "workspace:*",
     "@gi-tcg/core": "workspace:*"
   },

@@ -14,13 +14,3 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /// <reference types="vite/client" />
-
-import "@gi-tcg/core";
-
-declare module "@gi-tcg/core" {
-  namespace GiTcg {
-    export interface VersionMetadata {
-      customData: {};
-    }
-  }
-}

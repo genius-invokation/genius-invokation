@@ -45,7 +45,7 @@ import { Client, createClient, WebUiPlayerIO } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import { Dynamic } from "solid-js/web";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
-import { CancellablePlayerIO } from "@gi-tcg/core";
+import type { CancellablePlayerIO } from "@gi-tcg/core";
 
 interface InitializedPayload {
   who: 0 | 1;

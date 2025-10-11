@@ -14,5 +14,7 @@
   },
   "scripts": {
     "build": "tsup"
+  },
+  "devDependencies": {
   }
 }
