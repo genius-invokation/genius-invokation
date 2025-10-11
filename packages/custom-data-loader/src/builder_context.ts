@@ -27,6 +27,14 @@ import * as originalBuilderExport from "@gi-tcg/core/builder";
 
 const DISABLED_BUILDER_METHODS = ["since", "until", "setVersionInfo"];
 
+declare global {
+  namespace GiTcg {
+    export interface VersionMetadata {
+      customData: {};
+    }
+  }
+}
+
 export class BuilderContext {
   constructor(
     private readonly registry: originalBuilderExport.Registry,

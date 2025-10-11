@@ -7,6 +7,8 @@
     "lib": ["ESNext"],
 
     "noEmit": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
 
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

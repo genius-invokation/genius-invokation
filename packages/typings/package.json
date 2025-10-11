@@ -16,7 +16,6 @@
     "build": "bun build:buf && tsup"
   },
   "devDependencies": {
-    "@types/node": "^20.3.1"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.2.2"

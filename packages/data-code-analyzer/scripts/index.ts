@@ -17,9 +17,7 @@ import { Glob } from "bun";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Project } from "ts-morph";
-import { TcgDataSourceFile } from "./source_file";
 import { TcgDataProject } from "./project";
-import { CURRENT_VERSION, Version } from "@gi-tcg/core";
 import { Location } from "./declaration";
 
 export const base = fileURLToPath(new URL("../../data", import.meta.url).href);

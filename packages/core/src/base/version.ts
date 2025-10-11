@@ -65,9 +65,11 @@ export interface OfficialVersionData {
   readonly version: Version;
 }
 
-export namespace GiTcg {
-  export interface VersionMetadata {
-    official: OfficialVersionData;
+declare global {
+  export namespace GiTcg {
+    export interface VersionMetadata {
+      official: OfficialVersionData;
+    }
   }
 }
 
