@@ -41,7 +41,7 @@ model Game {
   players     PlayerOnGames[]
   coreVersion String
   gameVersion String
-  data        String // JSON log
+  data        Json // JSON log
   winnerId    Int?
   createdAt   DateTime        @default(now())
 }

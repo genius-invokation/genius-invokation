@@ -12,7 +12,7 @@ CREATE TABLE "Game" (
     "id" SERIAL NOT NULL,
     "coreVersion" TEXT NOT NULL,
     "gameVersion" TEXT NOT NULL,
-    "data" TEXT NOT NULL,
+    "data" JSONB NOT NULL,
     "winnerId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
