@@ -53,7 +53,7 @@ export class AppController {
   async getVersion() {
     const { latest } = await git
       .log({ maxCount: 1 })
-      .catch(() => fallbackGitLog());
+      .catch(fallbackGitLog);
     return {
       revision: latest,
       supportedGameVersions: VERSIONS,
