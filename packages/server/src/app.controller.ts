@@ -27,7 +27,14 @@ export class AppController {
   @Public()
   @Get("/version")
   async getVersion() {
-    const { latest } = __LATEST_GIT_LOG__ ?? (await git.log({ maxCount: 1 }));
+    const { latest } = process.env.RAILWAY_SERVICE_NAME
+      ? {
+          latest: {
+            message: process.env.RAILWAY_GIT_COMMIT_MESSAGE,
+            hash: process.env.RAILWAY_GIT_COMMIT_SHA,
+          },
+        }
+      : __LATEST_GIT_LOG__ ?? (await git.log({ maxCount: 1 }));
     return {
       revision: latest,
       supportedGameVersions: VERSIONS,
