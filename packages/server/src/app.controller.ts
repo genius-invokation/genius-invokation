@@ -16,9 +16,33 @@
 import { Controller, Get, ImATeapotException } from "@nestjs/common";
 import { Public } from "./auth/auth.guard";
 import { CORE_VERSION, CURRENT_VERSION, VERSIONS } from "@gi-tcg/core";
-import simpleGit from "simple-git";
+import simpleGit, { type LogResult } from "simple-git";
 
 const git = simpleGit();
+
+const fallbackGitLog = (): LogResult => {
+  const latestLog: LogResult["latest"] = {
+    message: "",
+    hash: "unknown",
+    author_email: "unknown@.local",
+    author_name: "unknown",
+    body: "",
+    date: new Date().toISOString(),
+    refs: "",
+  };
+  if (process.env.RAILWAY_SERVICE_NAME) {
+    latestLog.message = process.env.RAILWAY_GIT_COMMIT_MESSAGE || "";
+    latestLog.hash = process.env.RAILWAY_GIT_COMMIT_SHA || "unknown";
+    latestLog.author_email = `${process.env.RAILWAY_SERVICE_NAME}@${process.env.RAILWAY_PUBLIC_DOMAIN}`;
+    latestLog.author_name = process.env.RAILWAY_GIT_AUTHOR || "unknown";
+    latestLog.refs = `HEAD -> ${process.env.RAILWAY_GIT_BRANCH}, origin/${process.env.RAILWAY_GIT_BRANCH}`;
+  }
+  return {
+    latest: latestLog,
+    all: [latestLog],
+    total: 1,
+  };
+};
 
 @Controller()
 export class AppController {
@@ -27,14 +51,9 @@ export class AppController {
   @Public()
   @Get("/version")
   async getVersion() {
-    const { latest } = process.env.RAILWAY_SERVICE_NAME
-      ? {
-          latest: {
-            message: process.env.RAILWAY_GIT_COMMIT_MESSAGE,
-            hash: process.env.RAILWAY_GIT_COMMIT_SHA,
-          },
-        }
-      : __LATEST_GIT_LOG__ ?? (await git.log({ maxCount: 1 }));
+    const { latest } = await git
+      .log({ maxCount: 1 })
+      .catch(() => fallbackGitLog());
     return {
       revision: latest,
       supportedGameVersions: VERSIONS,
