@@ -40,6 +40,7 @@
   "patchedDependencies": {
     "ohm-js@17.1.0": "patches/ohm-js@17.1.0.patch",
     "importx@0.5.1": "patches/importx@0.5.1.patch",
-    "puppeteer-screen-recorder@3.0.6": "patches/puppeteer-screen-recorder@3.0.6.patch"
+    "puppeteer-screen-recorder@3.0.6": "patches/puppeteer-screen-recorder@3.0.6.patch",
+    "@prisma/client@5.20.0": "patches/@prisma%2Fclient@5.20.0.patch"
   }
 }

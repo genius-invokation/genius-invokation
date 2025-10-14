@@ -18,20 +18,22 @@
 
 generator client {
   provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
   previewFeatures = ["omitApi"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id              Int              @id
-  ghToken         String?
-  games           PlayerOnGames[]
-  createdAt       DateTime         @default(now())
-  decks           Deck[]
+  id        Int             @id
+  ghToken   String?
+  games     PlayerOnGames[]
+  createdAt DateTime        @default(now())
+  decks     Deck[]
 }
 
 model Game {
@@ -39,7 +41,7 @@ model Game {
   players     PlayerOnGames[]
   coreVersion String
   gameVersion String
-  data        String // JSON log
+  data        Json // JSON log
   winnerId    Int?
   createdAt   DateTime        @default(now())
 }
