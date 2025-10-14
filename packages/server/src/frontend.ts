@@ -22,7 +22,7 @@ export async function frontend(app: FastifyInstance) {
     const { default: contents } = await import("@gi-tcg/web-client");
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
     for (const [filename, content] of Object.entries(contents)) {
-      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (req, reply) => {
+      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (_req, reply) => {
         reply.type(mime.getType(filename) ?? "application/octet-stream").send(Buffer.from(content, "base64"));
       });
     }
