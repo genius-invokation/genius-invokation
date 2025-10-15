@@ -15,7 +15,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../db/prisma.service";
-import type { Game as GameModel, PlayerOnGames } from "../../generated/prisma/client";
+import type { Game as GameModel, PlayerOnGames } from "#prisma/client";
 import type { PaginationDto, PaginationResult } from "../utils";
 
 export interface AddGameOption {

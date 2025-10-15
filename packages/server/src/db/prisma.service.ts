@@ -15,7 +15,7 @@
 
 import { Injectable, type OnModuleInit } from "@nestjs/common";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Prisma } from "../../generated/prisma/client";
+import { PrismaClient, Prisma } from "#prisma/client";
 
 // https://github.com/prisma/prisma/discussions/3087
 // https://github.com/prisma/prisma/issues/7550

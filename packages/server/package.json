@@ -12,6 +12,9 @@
     "check": "tsc",
     "debug": "nest start --debug --watch"
   },
+  "imports": {
+    "#prisma/*": "./generated/prisma/*.ts"
+  },
   "dependencies": {
     "@fastify/static": "^7.0.4",
     "@gi-tcg/assets-manager": "workspace:*",
