@@ -27,7 +27,7 @@ await Bun.build({
   ],
   plugins: [inlineFrontendPlugin],
   target: "bun",
-  conditions: ["bun", "es2015", "module", "import", "default"],
+  conditions: ["bun", "es2015", "module"],
   minify: true,
   naming: {
     asset: `[name].[ext]`,
