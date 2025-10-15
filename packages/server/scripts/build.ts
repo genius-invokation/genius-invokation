@@ -29,7 +29,7 @@ await Bun.build({
   target: "bun",
   conditions: ["bun", "es2015", "module"],
   minify: true,
-  sourcemap: "external",
+  sourcemap: "linked",
   naming: {
     asset: `[name].[ext]`,
   },
