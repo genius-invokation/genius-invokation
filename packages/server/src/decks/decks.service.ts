@@ -21,7 +21,7 @@ import type {
   UpdateDeckDto,
 } from "./decks.controller";
 import { type Deck } from "@gi-tcg/typings";
-import { type Deck as DeckModel } from "@prisma/client";
+import { type Deck as DeckModel } from "#prisma/client";
 import {
   ASSETS_MANAGER,
   verifyDeck,
