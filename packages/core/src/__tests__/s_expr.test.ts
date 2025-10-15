@@ -41,8 +41,10 @@ describe("S-expression Parser", () => {
     expect(() => parseSExpr("1.2.3")).toThrow(
       "Invalid number format '1.2.3' at position 0.",
     );
-    expect(() => parseSExpr("-.e10")).toThrow(
-      "Invalid number format '-.e10' at position 0.",
+    expect(parseSExpr("+")).toEqual("+");
+    expect(parseSExpr("-")).toEqual("-");
+    expect(() => parseSExpr("-1f")).toThrow(
+      "Invalid number format '-1f' at position 0.",
     );
   });
 });

@@ -13,7 +13,7 @@ export type Result = string | number | Array<Result>;
  * - List elements are separated by whitespace.
  * - Line comments start with `;` and are treated as whitespace.
  * - An identifier is a string of characters not containing whitespace or brackets,
- *   and not starting with a numeric character or `-`.
+ *   and not starting with a number-like prefix.
  *
  * @param input The string to parse.
  * @returns The parsed S-expression structure.
@@ -87,16 +87,13 @@ export function parseSExpr(input: string): Result {
     // `isFinite(Number(token))` is a robust check that handles integers, floats, and scientific notation
     // while correctly rejecting mixed alpha-numeric strings like "123a".
     // The `token.trim()` check prevents an empty string from being parsed as `0`.
-    if (
-      !isNaN(parseFloat(token)) &&
-      isFinite(Number(token)) &&
-      token.trim() !== ""
-    ) {
+    const likesNumber = !isNaN(parseFloat(token));
+    if (likesNumber && isFinite(Number(token)) && token.trim() !== "") {
       return Number(token);
     }
 
     // Per the rules, if it looks like a number but isn't one, it's an error.
-    if (/^(-|\d)/.test(token)) {
+    if (likesNumber) {
       throw new Error(`Invalid number format '${token}' at position ${start}.`);
     }
 
