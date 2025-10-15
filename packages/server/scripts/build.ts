@@ -28,7 +28,8 @@ await Bun.build({
   plugins: [inlineFrontendPlugin],
   target: "bun",
   conditions: ["bun", "es2015", "module"],
-  minify: true,
+  env: "inline",
+  // minify: true,
   sourcemap: "linked",
   naming: {
     asset: `[name].[ext]`,

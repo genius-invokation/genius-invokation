@@ -4,7 +4,7 @@
   "version": "0.17.4",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch ./src/main.ts",
+    "dev": "bun run prisma:generate && bun --watch ./src/main.ts",
     "prisma:generate": "bun prisma generate",
     "build": "bun run prisma:generate && NODE_ENV=production bun scripts/build.ts",
     "start": "bun run src/main.ts",
@@ -41,6 +41,8 @@
   "devDependencies": {
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
+    "@prisma/dev": "^0.11.1",
+    "get-port": "^7.1.0",
     "prisma": "^6.17.1"
   }
 }
