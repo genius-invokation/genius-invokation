@@ -15,7 +15,7 @@
 
 import { type ArgumentsHost, Catch, HttpStatus } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../generated/prisma/client";
 import type { FastifyReply } from "fastify";
 
 @Catch(Prisma.PrismaClientKnownRequestError)
@@ -27,7 +27,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     const message = exception.message.replace(/\n/g, "");
 
     switch (exception.code) {
-      case "P2001": 
+      case "P2001":
       case "P2025": {
         const status = HttpStatus.NOT_FOUND;
         response.status(status).send({
