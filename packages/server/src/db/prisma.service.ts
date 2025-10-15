@@ -14,19 +14,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Injectable, type OnModuleInit } from "@nestjs/common";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient, Prisma } from "../../generated/prisma/client";
 
 // https://github.com/prisma/prisma/discussions/3087
 // https://github.com/prisma/prisma/issues/7550
 
 const createPrismaClient = () => {
-  const prisma = new PrismaClient().$extends({
+  const connectionString = `${process.env.DIRECT_URL}`;
+  const adapter = new PrismaPg({ connectionString });
+  const prisma = new PrismaClient({ adapter }).$extends({
     name: "findManyAndCount",
     model: {
       $allModels: {
         findManyAndCount<Model, Args>(
           this: Model,
-          args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>,
+          args: Prisma.Exact<Args, Prisma.Args<Model, "findMany">>
         ): Promise<[Prisma.Result<Model, Args, "findMany">, number]> {
           return prisma.$transaction([
             (this as any).findMany(args),

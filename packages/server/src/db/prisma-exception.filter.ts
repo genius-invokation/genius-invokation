@@ -15,7 +15,7 @@
 
 import { type ArgumentsHost, Catch, HttpStatus } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../generated/prisma/client";
 import type { FastifyReply } from "fastify";
 
 @Catch(Prisma.PrismaClientKnownRequestError)

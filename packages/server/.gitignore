@@ -6,5 +6,8 @@ node_modules
 dev.db
 *.db-journal
 
+# Generated files
+generated
+
 # vscode
 .vscode/*
