@@ -25,7 +25,8 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-fastify": "^10.3.9",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "5.20.0",
+    "@prisma/adapter-pg": "^6.17.1",
+    "@prisma/client": "^6.17.1",
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -37,6 +38,6 @@
   "devDependencies": {
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
-    "prisma": "5.20.0"
+    "prisma": "^6.17.1"
   }
 }
