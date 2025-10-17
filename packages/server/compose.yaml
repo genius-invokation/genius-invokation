@@ -15,6 +15,8 @@ services:
     build:
       context: ../..
       dockerfile: packages/server/Dockerfile
+      args:
+        DEFAULT_ASSETS_API_ENDPOINT: ${DEFAULT_ASSETS_API_ENDPOINT}
 
   server:
     image: genius-invokation-server
@@ -25,7 +27,6 @@ services:
       GH_CLIENT_ID: ${GH_CLIENT_ID}
       GH_CLIENT_SECRET: ${GH_CLIENT_SECRET}
       DEBUG_LOG_RECEIVE_URL: ${DEBUG_LOG_RECEIVE_URL}
-      DEFAULT_ASSETS_API_ENDPOINT: ${DEFAULT_ASSETS_API_ENDPOINT}
     depends_on:
       migrate:
         condition: service_completed_successfully
