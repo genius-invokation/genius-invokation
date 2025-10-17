@@ -39,6 +39,14 @@
 - ~测试服卡牌抢先看~
 - 目前**仍有很多 bug**，需要更多测试
 
+## 部署对战平台
+
+可以通过 Railway 一键部署对战平台：
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/genius-invokation?referralCode=JF0EXE&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+如果想要在 Railway 上降低部署对战平台的成本，可以开启 `genius-invokation` 服务的 Serverless 选项，详情可参见 [Railway Serverless 文档](https://docs.railway.com/reference/app-sleeping)
+
 ## [关于开发](./docs/development/README.md)
 
 上述链接可查看（可能是过时的）开发文档和注记。
