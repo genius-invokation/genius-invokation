@@ -4,7 +4,7 @@
   "version": "0.17.4",
   "type": "module",
   "scripts": {
-    "dev": "bun run prisma:generate && bun --watch ./src/main.ts",
+    "dev": "bun --watch ./src/dev.ts",
     "prisma:generate": "bun prisma generate",
     "build": "bun run prisma:generate && NODE_ENV=production bun scripts/build.ts",
     "start": "bun run src/main.ts",

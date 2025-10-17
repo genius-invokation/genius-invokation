@@ -20,26 +20,9 @@ import { PrismaClient, Prisma } from "#prisma/client";
 // https://github.com/prisma/prisma/discussions/3087
 // https://github.com/prisma/prisma/issues/7550
 
-let connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-  if (process.env.NODE_ENV !== "production") {
-    const { default: getPort } = await import("get-port");
-    const { unstable_startServer } = await import("@prisma/dev");
-    const port = await getPort({ port: 51213 });
-    const server = await unstable_startServer({
-      name: 'gi-tcg-server-dev',
-      port,
-      persistenceMode: "stateful",
-    });
-    connectionString = server.database.connectionString;
-    console.log("Started temporary dev Postgres server at", connectionString);
-    await Bun.$`bunx prisma migrate dev --skip-generate`.env({
-      DATABASE_URL: server.ppg.url,
-    });
-    console.log(`dev Postgres server migration done.`);
-  } else {
-    throw new Error("DATABASE_URL is not set");
-  }
+  throw new Error("DATABASE_URL is not set");
 }
 
 const createPrismaClient = () => {
