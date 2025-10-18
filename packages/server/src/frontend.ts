@@ -31,8 +31,8 @@ export async function frontend(app: FastifyInstance) {
     for (const [name, content] of Object.entries(rest)) {
       const buffer = Buffer.from(content, "base64");
       app.get(`${WEB_CLIENT_BASE_PATH}${name}`, (_req, reply) => {
-        reply.header("Cache-Control", "public, max-age=31536000, immutable");
         reply
+          .header("Cache-Control", "public, max-age=31536000, immutable")
           .type(mime.getType(name) ?? "application/octet-stream")
           .send(buffer);
       });
