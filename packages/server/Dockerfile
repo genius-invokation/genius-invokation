@@ -7,6 +7,7 @@ COPY . .
 RUN bun install --frozen-lockfile && bun run build -n server
 
 FROM gcr.io/distroless/base AS deploy
+WORKDIR /app
 COPY --from=build /app/packages/server/dist/* /app/packages/server/prisma ./
 
-CMD ["./main"]
+CMD ["/app/main"]
