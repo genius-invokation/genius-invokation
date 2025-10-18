@@ -192,6 +192,7 @@
       "name": "@gi-tcg/server",
       "version": "0.17.4",
       "dependencies": {
+        "@fastify/etag": "5",
         "@fastify/static": "^7.0.4",
         "@gi-tcg/assets-manager": "workspace:*",
         "@gi-tcg/config": "workspace:*",
@@ -743,6 +744,8 @@
     "@fastify/cors": ["@fastify/cors@9.0.1", "", { "dependencies": { "fastify-plugin": "^4.0.0", "mnemonist": "0.39.6" } }, "sha512-YY9Ho3ovI+QHIL2hW+9X4XqQjXLjJqsU+sMV/xFsxZkE8p3GNnYVFpoOxF7SsP5ZL76gwvbo3V9L+FIekBGU4Q=="],
 
     "@fastify/error": ["@fastify/error@3.4.1", "", {}, "sha512-wWSvph+29GR783IhmvdwWnN4bUxTD01Vm5Xad4i7i1VuAOItLvbPAb69sb0IQ2N57yprvhNIwAP5B6xfKTmjmQ=="],
+
+    "@fastify/etag": ["@fastify/etag@5.2.0", "", { "dependencies": { "fastify-plugin": "^4.0.0" } }, "sha512-8uFpxgMCH2Q91j6Ty5aMOTdfEy2azu+elLR9leMlYWrk5pN+NbM30riVjgr42jj0Mm6VOvtXhSMVLL7zVxaRXQ=="],
 
     "@fastify/fast-json-stringify-compiler": ["@fastify/fast-json-stringify-compiler@4.3.0", "", { "dependencies": { "fast-json-stringify": "^5.7.0" } }, "sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA=="],
 

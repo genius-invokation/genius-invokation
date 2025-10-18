@@ -15,15 +15,8 @@
 
 import mime from "mime";
 import type { FastifyInstance } from "fastify";
+import fastifyEtag from "@fastify/etag";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
-import { createHash } from "crypto";
-
-// 计算内容的 ETag
-function generateETag(content: Buffer): string {
-  return `"${createHash("md5")
-    .update(content as unknown as string)
-    .digest("hex")}"`;
-}
 
 // 判断是否应该长期缓存（非 HTML 文件）
 function shouldLongCache(filename: string): boolean {
@@ -32,32 +25,25 @@ function shouldLongCache(filename: string): boolean {
 }
 
 export async function frontend(app: FastifyInstance) {
+  // 注册 ETag 插件
+  await app.register(fastifyEtag as any);
+
   if (process.env.NODE_ENV === "production") {
     const { default: contents } = await import("@gi-tcg/web-client");
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
 
-    // 预计算所有文件的 Buffer 和 ETag
-    const fileCache = new Map<string, { buffer: Buffer; etag: string }>();
+    // 预计算所有文件的 Buffer
+    const fileCache = new Map<string, Buffer>();
     for (const [filename, content] of Object.entries(contents)) {
       const buffer = Buffer.from(content, "base64");
-      const etag = generateETag(buffer);
-      fileCache.set(filename, { buffer, etag });
+      fileCache.set(filename, buffer);
     }
 
     for (const [filename, _content] of Object.entries(contents)) {
-      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (req, reply) => {
-        const cached = fileCache.get(filename)!;
-        const { buffer, etag } = cached;
-
-        // 检查 If-None-Match 头
-        const ifNoneMatch = req.headers["if-none-match"];
-        if (ifNoneMatch === etag) {
-          reply.code(304).send();
-          return;
-        }
+      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (_req, reply) => {
+        const buffer = fileCache.get(filename)!;
 
         // 设置缓存头
-        reply.header("ETag", etag);
         if (shouldLongCache(filename)) {
           // 静态资源：1 年缓存
           reply.header("Cache-Control", "public, max-age=31536000, immutable");
@@ -72,32 +58,17 @@ export async function frontend(app: FastifyInstance) {
       });
     }
 
-    const indexHtml = fileCache.get("index.html")!.buffer;
-    const indexETag = fileCache.get("index.html")!.etag;
+    const indexHtml = fileCache.get("index.html")!;
 
-    app.get(baseNoSuffix, (req, reply) => {
-      const ifNoneMatch = req.headers["if-none-match"];
-      if (ifNoneMatch === indexETag) {
-        reply.code(304).send();
-        return;
-      }
-
+    app.get(baseNoSuffix, (_req, reply) => {
       reply
-        .header("ETag", indexETag)
         .header("Cache-Control", "public, no-cache, must-revalidate")
         .type("text/html")
         .send(indexHtml);
     });
 
-    app.get(`${WEB_CLIENT_BASE_PATH}*`, (req, reply) => {
-      const ifNoneMatch = req.headers["if-none-match"];
-      if (ifNoneMatch === indexETag) {
-        reply.code(304).send();
-        return;
-      }
-
+    app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {
       reply
-        .header("ETag", indexETag)
         .header("Cache-Control", "public, no-cache, must-revalidate")
         .type("text/html")
         .send(indexHtml);

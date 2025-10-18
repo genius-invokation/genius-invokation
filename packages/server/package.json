@@ -16,6 +16,7 @@
     "#prisma/*": "./generated/prisma/*.ts"
   },
   "dependencies": {
+    "@fastify/etag": "5",
     "@fastify/static": "^7.0.4",
     "@gi-tcg/assets-manager": "workspace:*",
     "@gi-tcg/config": "workspace:*",
