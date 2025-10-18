@@ -34,4 +34,5 @@ await Bun.build({
   naming: {
     asset: `[name].[ext]`,
   },
+  compile: true,
 });

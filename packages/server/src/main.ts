@@ -23,13 +23,23 @@ import { ValidationPipe } from "@nestjs/common";
 import { PrismaClientExceptionFilter } from "./db/prisma-exception.filter";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
 import { frontend } from "./frontend";
+import { parseArgs } from "util";
+import { $ } from "bun";
+
+const { values } = parseArgs({
+  options: { migrate: { type: "boolean", short: "m", default: false } },
+});
+const { migrate } = values;
+if (migrate) {
+  await $`bun prisma migrate deploy`;
+}
 
 const app = await NestFactory.create<NestFastifyApplication>(
   AppModule,
   new FastifyAdapter({
     // Oops. https://github.com/oven-sh/bun/issues/8823
     // http2: true
-  }),
+  })
 );
 app.useGlobalPipes(new ValidationPipe({ transform: true }));
 app.useGlobalFilters(new PrismaClientExceptionFilter(app.getHttpAdapter()));

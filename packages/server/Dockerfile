@@ -6,7 +6,7 @@ FROM base AS build
 COPY . .
 RUN bun install --frozen-lockfile && bun run build -n server
 
-FROM base AS deploy
+FROM ghcr.io/distroless/base AS deploy
 COPY --from=build /app/packages/server/dist/* /app/packages/server/prisma ./
 
-CMD ["bun", "main.js"]
+CMD ["./main"]
