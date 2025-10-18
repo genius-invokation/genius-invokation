@@ -19,7 +19,6 @@ import fastifyEtag from "@fastify/etag";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
 
 export async function frontend(app: FastifyInstance) {
-  // 注册 ETag 插件
   await app.register(fastifyEtag as any);
 
   if (process.env.NODE_ENV === "production") {
@@ -27,33 +26,36 @@ export async function frontend(app: FastifyInstance) {
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
     const NO_CACHE = "public, no-cache, must-revalidate";
 
-    // 解构 contents：把 index.html 单独取出，其他文件遍历注册路由
-    const { "index.html": indexHtml, ...rest } = contents as Record<string, string>;
+    const { "index.html": indexHtml, ...rest } = contents;
 
-    for (const [name, content] of Object.entries(rest)) {
+    const staticAssets = Object.entries(rest).map(([name, content]) => ({
+      name,
+      buffer: Buffer.from(content, "base64"),
+    }));
+
+    for (const { name, buffer } of staticAssets) {
       app.get(`${WEB_CLIENT_BASE_PATH}${name}`, (_req, reply) => {
-        const buffer = Buffer.from(content, "base64");
-
-        // 静态资源：1 年缓存
         reply.header("Cache-Control", "public, max-age=31536000, immutable");
-
         reply
           .type(mime.getType(name) ?? "application/octet-stream")
           .send(buffer);
       });
     }
 
-    if (!indexHtml) {
-      throw new Error("@gi-tcg/web-client package does not contain index.html");
-    }
-    const indexHtmlBuffer = Buffer.from(indexHtml, "base64");
+    const indexHtmlBuffer = Buffer.from(indexHtml!, "base64");
 
     app.get(baseNoSuffix, (_req, reply) => {
-      reply.header("Cache-Control", NO_CACHE).type("text/html").send(indexHtmlBuffer);
+      reply
+        .header("Cache-Control", NO_CACHE)
+        .type("text/html")
+        .send(indexHtmlBuffer);
     });
 
     app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {
-      reply.header("Cache-Control", NO_CACHE).type("text/html").send(indexHtmlBuffer);
+      reply
+        .header("Cache-Control", NO_CACHE)
+        .type("text/html")
+        .send(indexHtmlBuffer);
     });
   }
 }
