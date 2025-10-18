@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  migrate:
+    image: genius-invokation-server
+    pull_policy: never
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+    command: ["bunx", "prisma", "migrate", "deploy"]
+    build:
+      context: ../..
+      dockerfile: packages/server/Dockerfile
+      args:
+        DEFAULT_ASSETS_API_ENDPOINT: ${DEFAULT_ASSETS_API_ENDPOINT}
+
+  server:
+    image: genius-invokation-server
+    pull_policy: never
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+      JWT_SECRET: ${JWT_SECRET}
+      GH_CLIENT_ID: ${GH_CLIENT_ID}
+      GH_CLIENT_SECRET: ${GH_CLIENT_SECRET}
+      DEBUG_LOG_RECEIVE_URL: ${DEBUG_LOG_RECEIVE_URL}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
