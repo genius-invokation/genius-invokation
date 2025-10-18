@@ -28,12 +28,8 @@ export async function frontend(app: FastifyInstance) {
 
     const { "index.html": indexHtml, ...rest } = contents;
 
-    const staticAssets = Object.entries(rest).map(([name, content]) => ({
-      name,
-      buffer: Buffer.from(content, "base64"),
-    }));
-
-    for (const { name, buffer } of staticAssets) {
+    for (const [name, content] of Object.entries(rest)) {
+      const buffer = Buffer.from(content, "base64");
       app.get(`${WEB_CLIENT_BASE_PATH}${name}`, (_req, reply) => {
         reply.header("Cache-Control", "public, max-age=31536000, immutable");
         reply
