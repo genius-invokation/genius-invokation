@@ -18,12 +18,6 @@ import type { FastifyInstance } from "fastify";
 import fastifyEtag from "@fastify/etag";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
 
-// 判断是否应该长期缓存（非 HTML 文件）
-function shouldLongCache(filename: string): boolean {
-  const ext = filename.split(".").pop()?.toLowerCase();
-  return !["html", "htm"].includes(ext ?? "");
-}
-
 export async function frontend(app: FastifyInstance) {
   // 注册 ETag 插件
   await app.register(fastifyEtag as any);
@@ -31,47 +25,35 @@ export async function frontend(app: FastifyInstance) {
   if (process.env.NODE_ENV === "production") {
     const { default: contents } = await import("@gi-tcg/web-client");
     const baseNoSuffix = WEB_CLIENT_BASE_PATH.replace(/(.+)\/$/, "$1");
+    const NO_CACHE = "public, no-cache, must-revalidate";
 
-    // 预计算所有文件的 Buffer
-    const fileCache = new Map<string, Buffer>();
-    for (const [filename, content] of Object.entries(contents)) {
-      const buffer = Buffer.from(content, "base64");
-      fileCache.set(filename, buffer);
-    }
+    // 解构 contents：把 index.html 单独取出，其他文件遍历注册路由
+    const { "index.html": indexHtml, ...rest } = contents as Record<string, string>;
 
-    for (const [filename, _content] of Object.entries(contents)) {
-      app.get(`${WEB_CLIENT_BASE_PATH}${filename}`, (_req, reply) => {
-        const buffer = fileCache.get(filename)!;
+    for (const [name, content] of Object.entries(rest)) {
+      app.get(`${WEB_CLIENT_BASE_PATH}${name}`, (_req, reply) => {
+        const buffer = Buffer.from(content, "base64");
 
-        // 设置缓存头
-        if (shouldLongCache(filename)) {
-          // 静态资源：1 年缓存
-          reply.header("Cache-Control", "public, max-age=31536000, immutable");
-        } else {
-          // HTML 文件：协商缓存
-          reply.header("Cache-Control", "public, no-cache, must-revalidate");
-        }
+        // 静态资源：1 年缓存
+        reply.header("Cache-Control", "public, max-age=31536000, immutable");
 
         reply
-          .type(mime.getType(filename) ?? "application/octet-stream")
+          .type(mime.getType(name) ?? "application/octet-stream")
           .send(buffer);
       });
     }
 
-    const indexHtml = fileCache.get("index.html")!;
+    if (!indexHtml) {
+      throw new Error("@gi-tcg/web-client package does not contain index.html");
+    }
+    const indexHtmlBuffer = Buffer.from(indexHtml, "base64");
 
     app.get(baseNoSuffix, (_req, reply) => {
-      reply
-        .header("Cache-Control", "public, no-cache, must-revalidate")
-        .type("text/html")
-        .send(indexHtml);
+      reply.header("Cache-Control", NO_CACHE).type("text/html").send(indexHtmlBuffer);
     });
 
     app.get(`${WEB_CLIENT_BASE_PATH}*`, (_req, reply) => {
-      reply
-        .header("Cache-Control", "public, no-cache, must-revalidate")
-        .type("text/html")
-        .send(indexHtml);
+      reply.header("Cache-Control", NO_CACHE).type("text/html").send(indexHtmlBuffer);
     });
   }
 }
