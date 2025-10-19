@@ -76,6 +76,10 @@ export interface VariableConfig<ValueT extends number = number> {
 
 export type VariableRecreateBehavior<ValueT extends number = number> =
   | {
+      // 取决于 `versionBehavior.defaultRecreateBehavior` 设置
+      readonly type: "default";
+    }
+  | {
       readonly type: "overwrite";
     }
   | {

@@ -29,6 +29,8 @@ import {
   ExtensionState,
   CardDefinition,
   StateSymbol,
+  getVersionBehavior,
+  CURRENT_VERSION,
 } from "@gi-tcg/core";
 import {
   Aura,
@@ -172,7 +174,7 @@ export function State(props: State.Prop): JSX.Element {
 }
 
 function childrenToArray(
-  children?: JSX.Element[] | JSX.Element,
+  children?: JSX.Element[] | JSX.Element
 ): JSX.Element[] {
   if (typeof children === "undefined") {
     return [];
@@ -246,7 +248,7 @@ export function setup(state: JSX.Element): TestController {
       who = 1;
     } else {
       throw new Error(
-        `An entity of type ${comp.name} in global state neither have 'my' or 'opp'`,
+        `An entity of type ${comp.name} in global state neither have 'my' or 'opp'`
       );
     }
     delete prop.my;
@@ -279,7 +281,7 @@ export function setup(state: JSX.Element): TestController {
             Object.entries(definition.varConfigs).map(([k, v]) => [
               k,
               v.initialValue,
-            ]),
+            ])
           ),
           ...v,
           ...namedV,
@@ -289,7 +291,7 @@ export function setup(state: JSX.Element): TestController {
         for (const child of childrenToArray(children)) {
           if (!([Status, Equipment] as Function[]).includes(child.comp)) {
             throw new Error(
-              `An entity of type ${comp.name} can only have Status or Equipment`,
+              `An entity of type ${comp.name} can only have Status or Equipment`
             );
           }
           const { def, ref, v, ...namedV } =
@@ -297,7 +299,7 @@ export function setup(state: JSX.Element): TestController {
           const id = ref?.id ?? nextId();
           if (!def) {
             throw new Error(
-              `An entity of type ${comp.name} must have a def prop`,
+              `An entity of type ${comp.name} must have a def prop`
             );
           }
           const definition = data.entities.get(def);
@@ -309,7 +311,7 @@ export function setup(state: JSX.Element): TestController {
               Object.entries(definition.varConfigs).map(([k, v]) => [
                 k,
                 v.initialValue,
-              ]),
+              ])
             ),
             ...v,
             ...namedV,
@@ -345,7 +347,7 @@ export function setup(state: JSX.Element): TestController {
         const id = ref?.id ?? nextId();
         if (!def) {
           throw new Error(
-            `An entity of type ${comp.name} must have a def prop`,
+            `An entity of type ${comp.name} must have a def prop`
           );
         }
         const definition = data.cards.get(def);
@@ -372,7 +374,7 @@ export function setup(state: JSX.Element): TestController {
         const id = ref?.id ?? nextId();
         if (!def) {
           throw new Error(
-            `An entity of type ${comp.name} must have a def prop`,
+            `An entity of type ${comp.name} must have a def prop`
           );
         }
         const definition = data.entities.get(def);
@@ -384,7 +386,7 @@ export function setup(state: JSX.Element): TestController {
             Object.entries(definition.varConfigs).map(([k, v]) => [
               k,
               v.initialValue,
-            ]),
+            ])
           ),
           ...v,
           ...namedV,
@@ -400,14 +402,14 @@ export function setup(state: JSX.Element): TestController {
           comp === CombatStatus
             ? "combatStatuses"
             : comp === Summon
-              ? "summons"
-              : "supports";
+            ? "summons"
+            : "supports";
         player[area].push(state as Draft<EntityState>);
         break;
       }
       default: {
         throw new Error(
-          `An entity of type ${comp.name} is not allowed in global state`,
+          `An entity of type ${comp.name} is not allowed in global state`
         );
       }
     }
@@ -424,7 +426,7 @@ export function setup(state: JSX.Element): TestController {
           Object.entries(definition.varConfigs).map(([k, v]) => [
             k,
             v.initialValue,
-          ]),
+          ])
         ) as CharacterVariables,
         entities: [],
       };
@@ -443,7 +445,7 @@ export function setup(state: JSX.Element): TestController {
         [StateSymbol]: "extension",
         definition: def,
         state: def.initialState,
-      }),
+      })
     )
     .toArray();
   const gameState: GameState = {
@@ -461,6 +463,9 @@ export function setup(state: JSX.Element): TestController {
       maxSupportsCount: 4,
       randomSeed: 0,
     },
+    versionBehavior: getVersionBehavior(
+      stateProp.dataVersion ?? CURRENT_VERSION
+    ),
     iterators: {
       random: stateProp.random ?? 0,
       id: nextId(),

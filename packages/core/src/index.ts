@@ -25,7 +25,7 @@ export {
   deserializeGameStateLog,
 } from "./log";
 export type * from "./base/state";
-export { StateSymbol } from "./base/state";
+export { StateSymbol, getVersionBehavior } from "./base/state";
 export { type Mutation } from "./base/mutation";
 export { type CommonSkillType } from "./base/skill";
 export {
@@ -37,7 +37,12 @@ export {
   resolveManuallySelectedOfficialVersion,
 } from "./base/version";
 export { executeQueryOnState } from "./query";
-export { type PlayerIO, type CancellablePlayerIO, exposeState, mergeIo } from "./io";
+export {
+  type PlayerIO,
+  type CancellablePlayerIO,
+  exposeState,
+  mergeIo,
+} from "./io";
 export * from "./error";
 export * from "@gi-tcg/typings";
 
