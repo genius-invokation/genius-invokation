@@ -43,6 +43,7 @@ import {
   type PlayerState,
   type VersionBehavior,
 } from "./base/state";
+import type { Version } from "./base/version";
 import type { Mutation } from "./base/mutation";
 import {
   type IoErrorHandler,
@@ -100,7 +101,6 @@ import {
 import { type ActionInfoWithModification, ActionPreviewer } from "./preview";
 import { Player } from "./player";
 import type { CharacterDefinition } from "./base/character";
-import type { Version } from ".";
 
 export interface DeckConfig extends Deck {
   noShuffle?: boolean;
