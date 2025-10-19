@@ -60,6 +60,10 @@ const lastVersionIndex = (VERSIONS.length - 1) as LastVersionIndex;
 
 export const CURRENT_VERSION = VERSIONS[lastVersionIndex];
 
+export const versionLt = (a: Version, b: Version): boolean => {
+  return VERSIONS.indexOf(a) < VERSIONS.indexOf(b);
+}
+
 export interface OfficialVersionData {
   readonly predicate: "since" | "until";
   readonly version: Version;

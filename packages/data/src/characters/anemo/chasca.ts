@@ -46,11 +46,8 @@ export const SoulsniperRitualStaff = card(115112)
     c.player.hands.length >= 3
   )
   .consumeNightsoul("@master", 1)
-  .do((c) => {
-    c.damage(DamageType.Anemo, 1);
-    const cards = c.maxCostHands(3);
-    c.disposeCard(...cards);
-  })
+  .damage(DamageType.Anemo, 1)
+  .disposeMaxCostHands(3, { allowPreview: true })
   .done();
 
 /**

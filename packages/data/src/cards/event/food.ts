@@ -376,7 +376,7 @@ export const [PuffPops] = card(333018)
 export const HotSpringOclock = card(333019)
   .since("v5.4.0")
   .costSame(1)
-  .food()
+  .food({ injuredOnly: true })
   .do((c) => {
     c.heal(1 + c.$$(`my summons`).length, "@targets.0");
   })

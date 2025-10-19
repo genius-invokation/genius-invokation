@@ -193,6 +193,7 @@ export function StandaloneParent(props: StandaloneParentProps) {
       state = Game.createInitialState({
         decks: [deck0, deck1],
         data: getData(props.version),
+        versionBehavior: props.version,
       });
     }
     const game = new Game(state);

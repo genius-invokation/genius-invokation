@@ -871,6 +871,15 @@ export class StateMutator {
         }
         const oldValue = oldState.variables[name] ?? 0;
         switch (recreateBehavior.type) {
+          case "default": {
+            const defaultBehaviorType = this.state.versionBehavior.defaultRecreateBehavior;
+            if (defaultBehaviorType === "overwrite") {
+              newValues[name] = initialValue;
+            } else if (defaultBehaviorType === "takeMax") {
+              newValues[name] = Math.max(initialValue, oldValue);
+            }
+            break;
+          }
           case "keep": {
             // just skip this variable
             break;

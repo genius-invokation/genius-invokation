@@ -29,6 +29,8 @@ import {
   type Deck,
 } from "@gi-tcg/typings";
 import {
+  getDefaultGameConfig,
+  getVersionBehavior,
   StateSymbol,
   stringifyState,
   type AnyState,
@@ -39,7 +41,9 @@ import {
   type GameConfig,
   type GameState,
   type PlayerState,
+  type VersionBehavior,
 } from "./base/state";
+import { CURRENT_VERSION, type Version } from "./base/version";
 import type { Mutation } from "./base/mutation";
 import {
   type IoErrorHandler,
@@ -68,7 +72,6 @@ import {
   ActionEventArg,
   type ActionInfo,
   DisposeOrTuneCardEventArg,
-  HandCardInsertedEventArg,
   type EventAndRequest,
   EventArg,
   ModifyRollEventArg,
@@ -88,7 +91,6 @@ import {
   GiTcgIoError,
 } from "./error";
 import { DetailLogType, DetailLogger } from "./log";
-import { randomSeed } from "./random";
 import { type GeneralSkillArg, SkillExecutor } from "./skill_executor";
 import {
   type InternalNotifyOption,
@@ -196,6 +198,7 @@ function initPlayerState(
 
 export interface CreateInitialStateConfig
   extends Writable<Partial<GameConfig>> {
+  versionBehavior?: VersionBehavior | Version;
   decks: readonly [DeckConfig, DeckConfig];
   data: GameData;
 }
@@ -234,7 +237,12 @@ export class Game {
   }
 
   static createInitialState(opt: CreateInitialStateConfig): GameState {
-    const { decks, data, ...partialConfig } = opt;
+    const {
+      decks,
+      data,
+      versionBehavior = CURRENT_VERSION,
+      ...partialConfig
+    } = opt;
     const extensions = data.extensions
       .values()
       .map<ExtensionState>((v) => ({
@@ -244,11 +252,16 @@ export class Game {
       }))
       .toArray();
     const config = mergeGameConfigWithDefault(partialConfig);
+    const behavior =
+      typeof versionBehavior === "string"
+        ? getVersionBehavior(versionBehavior)
+        : versionBehavior;
     const idIter = new IdIter();
     const state: GameState = {
       [StateSymbol]: "game",
       data,
       config,
+      versionBehavior: behavior,
       players: [
         initPlayerState(0, data, decks[0], idIter),
         initPlayerState(1, data, decks[1], idIter),
@@ -1144,16 +1157,7 @@ export function mergeGameConfigWithDefault(
 ): GameConfig {
   config = JSON.parse(JSON.stringify(config ?? {}));
   return {
-    errorLevel: "strict",
-    initialDiceCount: 8,
-    initialHandsCount: 5,
-    maxDiceCount: 16,
-    maxHandsCount: 10,
-    maxPileCount: 200,
-    maxRoundsCount: 15,
-    maxSummonsCount: 4,
-    maxSupportsCount: 4,
-    randomSeed: randomSeed(),
+    ...getDefaultGameConfig(),
     ...config,
   };
 }

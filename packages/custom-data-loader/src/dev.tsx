@@ -33,7 +33,7 @@ import { render, Dynamic } from "solid-js/web";
 import { AssetsManager } from "@gi-tcg/assets-manager";
 import { DeckBuilder } from "@gi-tcg/deck-builder";
 import { Game } from "@gi-tcg/core";
-import { type Deck, decode } from "@gi-tcg/utils";
+import { type Deck } from "@gi-tcg/typings";
 import { createClient } from "@gi-tcg/web-ui-core";
 
 import "@gi-tcg/deck-builder/style.css";
@@ -169,7 +169,7 @@ const MyCharacter = character("银狼")
 
   const loadFromCode = () => {
     const code = prompt("请输入官方牌组码：");
-    return decode(code ?? "");
+    return assetsManager()!.decode(code ?? "");
   };
 
   // 检查所有卡组是否有效并进入下一步

@@ -35,9 +35,18 @@ import type {
   InitiativeSkillDefinition,
   TriggeredSkillDefinition,
 } from "./skill";
+import { randomSeed } from "../random";
+import type { Version } from "..";
+import { versionLt } from "./version";
 
 // 为不同层级的 state object 添加 marker symbol
-export type StateKind = "game" | "player" | "card" | "character" | "entity" | "extension";
+export type StateKind =
+  | "game"
+  | "player"
+  | "card"
+  | "character"
+  | "entity"
+  | "extension";
 export const StateSymbol: unique symbol = Symbol("GiTcgCoreState");
 export type StateSymbol = typeof StateSymbol;
 
@@ -56,6 +65,49 @@ export interface GameConfig {
   readonly maxDiceCount: number;
 }
 
+export const getDefaultGameConfig = (): GameConfig => ({
+  errorLevel: "strict",
+  initialDiceCount: 8,
+  initialHandsCount: 5,
+  maxDiceCount: 16,
+  maxHandsCount: 10,
+  maxPileCount: 200,
+  maxRoundsCount: 15,
+  maxSummonsCount: 4,
+  maxSupportsCount: 4,
+  randomSeed: randomSeed(),
+});
+
+/**
+ * 记录不同版本的核心结算差异。
+ */
+export interface VersionBehavior {
+  /**
+   * 实体重复入场时，`default` 行为。
+   * @note v3.5.0 起设置为 `takeMax`，此前为 `overwrite`
+   */
+  readonly defaultRecreateBehavior: "takeMax" | "overwrite";
+
+  /**
+   * 带有 `injuredOnly` 的食物事件牌，是否可以对满生命值角色使用。
+   * @note v6.1.0 起设置为 `true`
+   */
+  readonly foodOmitInjuredOnly: boolean;
+
+  /**
+   * `disposeMaxCostHands` 是否终止预览。
+   * @note v6.1.0 起设置为 `true`
+   */
+  readonly disposeMaxCostHandsAbortPreview: boolean;
+}
+
+export const getVersionBehavior = (version: Version): VersionBehavior => ({
+  defaultRecreateBehavior: versionLt(version, "v3.5.0") ? "overwrite" : "takeMax",
+  // TODO: update when 6.1 out
+  foodOmitInjuredOnly: true,
+  disposeMaxCostHandsAbortPreview: true,
+});
+
 export interface IteratorState {
   readonly random: number;
   readonly id: number;
@@ -73,6 +125,7 @@ export interface GameState {
   readonly [StateSymbol]: "game";
   readonly data: GameData;
   readonly config: GameConfig;
+  readonly versionBehavior: VersionBehavior;
   readonly iterators: IteratorState;
   readonly phase: PhaseType;
   readonly roundNumber: number;

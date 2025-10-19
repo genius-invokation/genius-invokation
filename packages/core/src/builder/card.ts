@@ -443,16 +443,24 @@ export class CardBuilder<
   }
 
   /** 增加 food 标签；设置目标为我方非饱腹角色 */
-  food(opt: FoodOption = {}) {
+  food(
+    opt: FoodOption = {},
+  ): BuilderWithShortcut<
+    CardBuilder<readonly [...KindTs, "character"], AssociatedExt>
+  > {
     if (!opt.noSatiated) {
       this._satiatedTarget = "@targets.0";
     }
-    let targetFilter =
-      "(my characters and not has status with definition id 303300)";
-    if (opt?.injuredOnly) {
-      targetFilter += ` and (characters with health < maxHealth)`;
-    }
-    return this.tags("food").addTarget(targetFilter as "characters");
+    const injuredOnly = !!opt?.injuredOnly;
+    this.tags("food").addTargetImpl((c) => {
+      let queryString =
+        "(my characters and not has status with definition id 303300)";
+      if (injuredOnly && !c.state.versionBehavior.foodOmitInjuredOnly) {
+        queryString += " and (characters with health < maxHealth)";
+      }
+      return c.$$(queryString).map((s) => s.latest());
+    });
+    return this as any;
   }
 
   /**
@@ -488,7 +496,7 @@ export class CardBuilder<
         `Cannot specify dispose action when using .onDispose() or .descriptionOnDraw().`,
       );
     }
-    if (this._targetQueries.length > 0) {
+    if (this._targetGetters.length > 0) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );
@@ -512,7 +520,7 @@ export class CardBuilder<
         `Cannot specify descriptionOnHCI when using .doSameWhenDisposed() or .onDispose().`,
       );
     }
-    if (this._targetQueries.length > 0) {
+    if (this._targetGetters.length > 0) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .descriptionOnHCI().`,
       );
@@ -543,7 +551,7 @@ export class CardBuilder<
   }
 
   done(): CardHandle {
-    if (this._targetQueries.length > 0 && this._doSameWhenDisposed) {
+    if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );

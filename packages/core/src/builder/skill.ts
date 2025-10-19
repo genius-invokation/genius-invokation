@@ -38,9 +38,6 @@ import {
   ModifyHeal0EventArg,
   ModifyHeal1EventArg,
   CustomEventEventArg,
-  EventArg,
-  type EventAndRequest,
-  type SkillResult,
   EMPTY_SKILL_RESULT,
   UseSkillEventArg,
 } from "../base/skill";
@@ -1256,17 +1253,19 @@ TriggeredSkillBuilder.prototype.callSnippet = function (...args) {
   return self.do(operation);
 };
 
+type TargetGetter = (ctx: SkillContext<any>) => AnyState[];
+
 function generateTargetList(
   state: GameState,
   skillInfo: SkillInfo,
   known: AnyState[],
-  targetQuery: string[],
+  getTarget: TargetGetter[],
   associatedExtensionId: number | null,
 ): AnyState[][] {
-  if (targetQuery.length === 0) {
+  if (getTarget.length === 0) {
     return [[]];
   }
-  const [first, ...rest] = targetQuery;
+  const [first, ...rest] = getTarget;
   const ctx = new SkillContext<ReadonlyMetaOf<SkillBuilderMetaBase>>(
     state,
     wrapSkillInfoWithExt(skillInfo, associatedExtensionId),
@@ -1274,7 +1273,7 @@ function generateTargetList(
       targets: known,
     },
   );
-  const states = ctx.$$(first).map((c) => c.latest());
+  const states = first(ctx);
   return states.flatMap((st) =>
     generateTargetList(
       state,
@@ -1287,7 +1286,7 @@ function generateTargetList(
 }
 
 export function buildTargetGetter(
-  targetQuery: string[],
+  targetQuery: TargetGetter[],
   associatedExtensionId: number | null,
 ): InitiativeSkillTargetGetter {
   return (state, skillInfo) => {
@@ -1305,7 +1304,7 @@ export function buildTargetGetter(
 export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
-  protected _targetQueries: string[] = [];
+  protected _targetGetters: TargetGetter[] = [];
   protected _alwaysCharged = false;
   protected _alwaysPlunging = false;
 
@@ -1323,12 +1322,19 @@ export abstract class SkillBuilderWithCost<
     return this;
   }
 
-  protected addTargetImpl(targetQuery: string) {
-    this._targetQueries = [...this._targetQueries, targetQuery];
+  protected addTargetImpl(targetGetter: TargetGetter | string) {
+    if (typeof targetGetter === "string") {
+      this._targetGetters.push(function (ctx) {
+        return ctx.$$(targetGetter).map((st) => st.latest());
+      });
+    } else {
+      this._targetGetters.push(targetGetter);
+    }
+    return this;
   }
 
   protected buildTargetGetter() {
-    return buildTargetGetter(this._targetQueries, this.associatedExtensionId);
+    return buildTargetGetter(this._targetGetters, this.associatedExtensionId);
   }
 
   constructor(skillId: number) {

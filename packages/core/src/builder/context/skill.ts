@@ -1457,9 +1457,19 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
   }
 
-  /** 弃置我方原本元素骰费用最多的 `count` 张牌 */
-  disposeMaxCostHands(count: number) {
+  /**
+   * 弃置我方原本元素骰费用最多的 `count` 张牌
+   * @param count 弃置的牌数
+   * @param option.allowPreview 总是允许预览（即使版本行为 `disposeMaxCostHandsAbortPreview = true` 也如此）
+   */
+  disposeMaxCostHands(count: number, option: { allowPreview?: boolean } = {}) {
     const disposed = this.maxCostHands(count, { useTieBreak: true });
+    if (
+      this.state.versionBehavior.disposeMaxCostHandsAbortPreview &&
+      !option.allowPreview
+    ) {
+      this.abortPreview();
+    }
     this.disposeCard(...disposed);
     return this.enableShortcut<RxEntityState<Meta, "card">[]>(disposed);
   }
