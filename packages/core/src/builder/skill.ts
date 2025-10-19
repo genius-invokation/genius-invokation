@@ -1253,7 +1253,7 @@ TriggeredSkillBuilder.prototype.callSnippet = function (...args) {
   return self.do(operation);
 };
 
-type TargetGetter = (string | ((ctx: SkillContext<any>) => AnyState[]));
+type TargetGetter = (ctx: SkillContext<any>) => AnyState[];
 
 function generateTargetList(
   state: GameState,
@@ -1273,10 +1273,7 @@ function generateTargetList(
       targets: known,
     },
   );
-  const states =
-    typeof first === "string"
-      ? ctx.$$(first).map((c) => c.latest())
-      : first(ctx);
+  const states = first(ctx);
   return states.flatMap((st) =>
     generateTargetList(
       state,
@@ -1325,8 +1322,15 @@ export abstract class SkillBuilderWithCost<
     return this;
   }
 
-  protected addTargetImpl(targetGetter: TargetGetter) {
-    this._targetGetters = [...this._targetGetters, targetGetter];
+  protected addTargetImpl(targetGetter: TargetGetter | string) {
+    if (typeof targetGetter === "string") {
+      this._targetGetters.push(function (ctx) {
+        return ctx.$$(targetGetter).map((st) => st.latest());
+      });
+    } else {
+      this._targetGetters.push(targetGetter);
+    }
+    return this;
   }
 
   protected buildTargetGetter() {
