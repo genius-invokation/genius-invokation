@@ -43,7 +43,7 @@ import {
   type PlayerState,
   type VersionBehavior,
 } from "./base/state";
-import type { Version } from "./base/version";
+import { CURRENT_VERSION, type Version } from "./base/version";
 import type { Mutation } from "./base/mutation";
 import {
   type IoErrorHandler,
@@ -198,7 +198,7 @@ function initPlayerState(
 
 export interface CreateInitialStateConfig
   extends Writable<Partial<GameConfig>> {
-  versionBehavior: VersionBehavior | Version;
+  versionBehavior?: VersionBehavior | Version;
   decks: readonly [DeckConfig, DeckConfig];
   data: GameData;
 }
@@ -237,7 +237,12 @@ export class Game {
   }
 
   static createInitialState(opt: CreateInitialStateConfig): GameState {
-    const { decks, data, versionBehavior, ...partialConfig } = opt;
+    const {
+      decks,
+      data,
+      versionBehavior = CURRENT_VERSION,
+      ...partialConfig
+    } = opt;
     const extensions = data.extensions
       .values()
       .map<ExtensionState>((v) => ({
