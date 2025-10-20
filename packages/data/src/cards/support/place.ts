@@ -778,3 +778,17 @@ export const ConstellationMetropole = card(321030)
     }
   })
   .done();
+
+/**
+ * @id 321031
+ * @name 冒险家协会
+ * @description
+ * 结束阶段：冒险1次。
+ * 可用次数：3
+ */
+export const AdventurersGuild = card(321031)
+  .since("v6.1.0")
+  .costSame(2)
+  .support("place")
+  // TODO
+  .done();

@@ -2106,3 +2106,15 @@ export const RevelrousBeats = card(332055)
     }
   })
   .done();
+
+/**
+ * @id 332056
+ * @name 祀珑在昔，灵锦歆诚
+ * @description
+ * 冒险1次。如果我方冒险经历不低于4，则改为对我方「出战角色」造成1点物理伤害，冒险2次。
+ */
+export const AnAncientSacrificeOfSacredBrocade = card(332056)
+  .since("v6.1.0")
+  .costSame(1)
+  // TODO
+  .done();
