@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, EquipmentHandle } from "@gi-tcg/core/builder";
 
 /**
  * @id 114151
@@ -24,7 +24,32 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const NightsoulsBlessing = status(114151)
   .since("v6.1.0")
-  // TODO
+  .nightsoulsBlessing(2, { autoDispose: true })
+  .done();
+
+/**
+ * @id 14155
+ * @name 闪烈降临·大火山崩落
+ * @description
+ * 造成2点雷元素伤害，此技能视为下落攻击。
+ */
+export const GuardianVentVolcanoKablam = skill(14155)
+  .type("burst")
+  .prepared()
+  .forcePlunging()
+  .damage(DamageType.Electro, 2)
+  .done();
+
+
+/**
+ * @id 114153
+ * @name 闪烈降临·大火山崩落
+ * @description
+ * 本角色将在下次行动时，直接使用技能：闪烈降临·大火山崩落。
+ */
+export const GuardianVentVolcanoKablamStatus = status(114153)
+  .since("v6.1.0")
+  .prepare(GuardianVentVolcanoKablam)
   .done();
 
 /**
@@ -36,18 +61,9 @@ export const NightsoulsBlessing = status(114151)
  */
 export const ApexDrive = status(114152)
   .since("v6.1.0")
-  // TODO
-  .done();
-
-/**
- * @id 114153
- * @name 闪烈降临·大火山崩落
- * @description
- * 本角色将在下次行动时，直接使用技能：闪烈降临·大火山崩落。
- */
-export const GuardianVentVolcanoKablam01 = status(114153)
-  .since("v6.1.0")
-  // TODO
+  .on("switchActive", (c, e) => e.switchInfo.to.id === c.self.master.id)
+  .usage(1)
+  .characterStatus(GuardianVentVolcanoKablamStatus, "@master")
   .done();
 
 /**
@@ -58,7 +74,8 @@ export const GuardianVentVolcanoKablam01 = status(114153)
  */
 export const SuddenOnrush = status(114154)
   .since("v6.1.0")
-  // TODO
+  .once("beforeAction")
+  .switchActive("@master")
   .done();
 
 /**
@@ -71,7 +88,14 @@ export const ByTheHorns = skill(14151)
   .type("normal")
   .costElectro(1)
   .costVoid(2)
-  // TODO
+  .do((c) => {
+    if (c.skillInfo.plunging) {
+      c.damage(DamageType.Electro, 2);
+      c.gainNightsoul("@self", 1);
+    } else {
+      c.damage(DamageType.Electro, 1);
+    }
+  })
   .done();
 
 /**
@@ -83,7 +107,10 @@ export const ByTheHorns = skill(14151)
 export const RidingTheNightrainbow = skill(14152)
   .type("elemental")
   .costElectro(3)
-  // TODO
+  .damage(DamageType.Electro, 2)
+  .characterStatus(SuddenOnrush)
+  .gainNightsoul("@self", 1)
+  .switchActive("my next")
   .done();
 
 /**
@@ -96,7 +123,8 @@ export const GuardianVent = skill(14153)
   .type("burst")
   .costElectro(3)
   .costEnergy(3)
-  // TODO
+  .damage(DamageType.Electro, 3)
+  .characterStatus(ApexDrive)
   .done();
 
 /**
@@ -107,18 +135,11 @@ export const GuardianVent = skill(14153)
  */
 export const TagteamTripleJump = skill(14154)
   .type("passive")
-  // TODO
-  .done();
-
-/**
- * @id 14155
- * @name 闪烈降临·大火山崩落
- * @description
- * 造成2点雷元素伤害，此技能视为下落攻击。
- */
-export const GuardianVentVolcanoKablam = skill(14155)
-  .type("burst")
-  // TODO
+  .on("useSkill", (c) => c.self.hasNightsoulsBlessing()?.variables.nightsoul === 2)
+  .consumeNightsoul("@self", 2)
+  .characterStatus(ApexDrive)
+  .if((c) => c.self.hasEquipment(AHeroOfJusticesTriumph))
+  .gainEnergy(1, "@self")
   .done();
 
 /**
@@ -133,6 +154,7 @@ export const Varesa = character(1415)
   .health(10)
   .energy(3)
   .skills(ByTheHorns, RidingTheNightrainbow, GuardianVent, TagteamTripleJump, GuardianVentVolcanoKablam)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
@@ -144,9 +166,10 @@ export const Varesa = character(1415)
  * 装备有此牌的瓦雷莎的「元素爆发」造成的伤害+1。
  * （牌组中包含瓦雷莎，才能加入牌组）
  */
-export const AHeroOfJusticesTriumph = card(214151)
+export const AHeroOfJusticesTriumph: EquipmentHandle = card(214151)
   .since("v6.1.0")
   .costElectro(1)
-  .talent(Varesa)
-  // TODO
+  .talent(Varesa, "none")
+  .on("increaseSkillDamage", (c, e) => e.viaSkillType("burst"))
+  .increaseDamage(1)
   .done();

@@ -272,5 +272,8 @@ export const EverlastingMoonglow = card(311111)
   .since("v6.1.0")
   .costSame(2)
   .weapon("catalyst")
-  // TODO
+  .on("increaseSkillDamage", (c) => c.self.master.health >= 11)
+  .increaseDamage(2)
+  .on("enter")
+  .increaseMaxHealth(1, "@master")
   .done();

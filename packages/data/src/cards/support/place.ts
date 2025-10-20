@@ -790,5 +790,9 @@ export const AdventurersGuild = card(321031)
   .since("v6.1.0")
   .costSame(2)
   .support("place")
-  // TODO
+  .on("endPhase")
+  .usage(3, { autoDispose: false })
+  .adventure()
+  .on("adventure", (c) => c.getVariable("usage") === 0)
+  .dispose()
   .done();

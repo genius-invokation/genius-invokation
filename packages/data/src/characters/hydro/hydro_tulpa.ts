@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, summon, card, DamageType, status } from "@gi-tcg/core/builder";
 
 /**
  * @id 122061
@@ -25,7 +25,10 @@ import { character, skill, summon, card, DamageType } from "@gi-tcg/core/builder
  */
 export const HalfTulpa01 = summon(122061)
   .since("v6.1.0")
-  // TODO
+  .endPhaseDamage(DamageType.Hydro, 1)
+  .usage(2)
+  .on("selfDispose")
+  .heal(2, `my characters with definition id 2206`)
   .done();
 
 /**
@@ -38,7 +41,10 @@ export const HalfTulpa01 = summon(122061)
  */
 export const HalfTulpa02 = summon(122062)
   .since("v6.1.0")
-  // TODO
+  .endPhaseDamage(DamageType.Hydro, 1)
+  .usage(2)
+  .on("selfDispose")
+  .heal(2, `my characters with definition id 2206`)
   .done();
 
 /**
@@ -51,7 +57,10 @@ export const HalfTulpa02 = summon(122062)
  */
 export const HalfTulpa03 = summon(122063)
   .since("v6.1.0")
-  // TODO
+  .endPhaseDamage(DamageType.Hydro, 1)
+  .usage(2)
+  .on("selfDispose")
+  .heal(2, `my characters with definition id 2206`)
   .done();
 
 /**
@@ -64,7 +73,10 @@ export const HalfTulpa03 = summon(122063)
  */
 export const HalfTulpa04 = summon(122064)
   .since("v6.1.0")
-  // TODO
+  .endPhaseDamage(DamageType.Hydro, 1)
+  .usage(2)
+  .on("selfDispose")
+  .heal(2, `my characters with definition id 2206`)
   .done();
 
 /**
@@ -77,7 +89,7 @@ export const SavageSwell = skill(22061)
   .type("normal")
   .costHydro(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Hydro, 1)
   .done();
 
 /**
@@ -89,7 +101,7 @@ export const SavageSwell = skill(22061)
 export const StormSurge = skill(22062)
   .type("elemental")
   .costHydro(3)
-  // TODO
+  .damage(DamageType.Hydro, 2)
   .done();
 
 /**
@@ -102,7 +114,7 @@ export const ThunderingTide = skill(22063)
   .type("burst")
   .costHydro(3)
   .costEnergy(3)
-  // TODO
+  .damage(DamageType.Hydro, 4)
   .done();
 
 /**
@@ -113,7 +125,43 @@ export const ThunderingTide = skill(22063)
  */
 export const BranchingFlow = skill(22064)
   .type("passive")
-  // TODO
+  // 分流：每回合一次在召唤物离场时召唤半幻人
+  .on("dispose", (c, e) =>
+    e.entity.definition.type === "summon" &&
+    !([HalfTulpa01, HalfTulpa02, HalfTulpa03, HalfTulpa04] as number[]).includes(e.entity.definition.id) &&
+    c.self.health >= 3
+  )
+  .listenToPlayer()
+  .usagePerRound(1, { name: "usagePerRound1" })
+  .do((c) => {
+    c.damage(DamageType.Piercing, 2, "@self");
+    if (!c.$(`my summon with definition id ${HalfTulpa01}`)) {
+      c.summon(HalfTulpa01);
+    } else if (!c.$(`my summon with definition id ${HalfTulpa02}`)) {
+      c.summon(HalfTulpa02);
+    } else if (!c.$(`my summon with definition id ${HalfTulpa03}`)) {
+      c.summon(HalfTulpa03);
+    } else {
+      c.summon(HalfTulpa04);
+    }
+  })
+  // 汛波：随机触发一个召唤物的结束阶段技能
+  .on("useSkill", (c, e) => e.skill.definition.id === StormSurge && c.$(`my summons`))
+  .abortPreview()
+  .do((c) => {
+    const target = c.random(c.player.summons);
+    c.triggerEndPhaseSkill(target);
+  })
+  // 汛波：随后造成1点穿透伤害
+  .on("useSkill", (c, e) => e.skill.definition.id === StormSurge && c.self.health >= 2)
+  .damage(DamageType.Piercing, 1, "@self")
+  // 洪啸：触发所有召唤物的结束阶段技能
+  .on("useSkill", (c, e) => e.skill.definition.id === ThunderingTide)
+  .do((c) => {
+    for (const summon of c.$$(`my summons`)) {
+      c.triggerEndPhaseSkill(summon);
+    }
+  })
   .done();
 
 /**
@@ -167,6 +215,25 @@ export const HydroTulpa = character(2206)
   .done();
 
 /**
+ * @id 222062
+ * @name 元素生命·水
+ * @description
+ * 角色总是附着水元素，并且免疫水元素伤害。
+ * 持续回合：2
+ */
+export const ElementalLifeformHydro = status(222062)
+  .duration(2)
+  .on("enter")
+  .apply(DamageType.Hydro, "@master")
+  .on("modifyReaction")
+  .reApplyTo(DamageType.Hydro)
+  .on("decreaseDamaged", (c, e) => e.type === DamageType.Hydro)
+  .do((c, e) => {
+    e.decreaseDamage(e.value);
+  })
+  .done();
+
+/**
  * @id 222061
  * @name 汇流
  * @description
@@ -177,6 +244,20 @@ export const HydroTulpa = character(2206)
 export const FlowConvergence = card(222061)
   .since("v6.1.0")
   .costHydro(2)
-  .talent(HydroTulpa)
-  // TODO
+  .talent(HydroTulpa, "none")
+  .on("enter")
+  .characterStatus(ElementalLifeformHydro, "@master")
+  .on("declareEnd", (c, e) => c.self.master.health >= 3)
+  .damage(DamageType.Piercing, 2, "@master")
+  .do((c) => {
+    if (!c.$(`my summon with definition id ${HalfTulpa01}`)) {
+      c.summon(HalfTulpa01);
+    } else if (!c.$(`my summon with definition id ${HalfTulpa02}`)) {
+      c.summon(HalfTulpa02);
+    } else if (!c.$(`my summon with definition id ${HalfTulpa03}`)) {
+      c.summon(HalfTulpa03);
+    } else {
+      c.summon(HalfTulpa04);
+    }
+  })
   .done();

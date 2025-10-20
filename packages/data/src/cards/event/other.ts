@@ -2116,5 +2116,12 @@ export const RevelrousBeats = card(332055)
 export const AnAncientSacrificeOfSacredBrocade = card(332056)
   .since("v6.1.0")
   .costSame(1)
-  // TODO
+  .do((c) => {
+    const exp = c.$(`my support with tag (adventureSpot)`)?.variables.exp ?? 0;
+    if (exp >= 4) {
+      c.damage(DamageType.Physical, 1, "my active");
+      c.adventure();
+    }
+    c.adventure();
+  })
   .done();

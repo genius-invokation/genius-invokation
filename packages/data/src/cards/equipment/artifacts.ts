@@ -1169,7 +1169,22 @@ export const FellDragonsMonocle = card(312040)
   .since("v6.1.0")
   .costSame(1)
   .artifact()
-  // TODO
+  .on("useSkill", (c, e) => e.isSkillType("elemental"))
+  .usagePerRound(1)
+  .adventure()
+  .done();
+
+/**
+ * @id 301210
+ * @name 昔日宗室之仪（生效中）
+ * @description
+ * 我方角色造成的伤害+1。
+ * 可用次数：3
+ */
+export const NoblesseObligeInEffect = combatStatus(301210)
+  .on("increaseSkillDamage")
+  .usage(3)
+  .increaseDamage(1)
   .done();
 
 /**
@@ -1184,5 +1199,8 @@ export const NoblesseOblige = card(312041)
   .since("v6.1.0")
   .costVoid(3)
   .artifact()
-  // TODO
+  .on("enter")
+  .gainEnergy(1, "@master")
+  .on("useSkill", (c, e) => e.isSkillType("burst"))
+  .combatStatus(NoblesseObligeInEffect)
   .done();

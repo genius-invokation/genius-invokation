@@ -13,7 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { card } from "@gi-tcg/core/builder";
+import { card, DamageType } from "@gi-tcg/core/builder";
+import { ChenyuBrew } from "../event/food";
+import { AgileSwitch, EfficientSwitch } from "../../commons";
 
 /**
  * @id 321032
@@ -25,7 +27,34 @@ import { card } from "@gi-tcg/core/builder";
  */
 export const ChenyuVale = card(321032)
   .since("v6.1.0")
-  .tags("adventureSpot")
   .adventureSpot()
-  // TODO
+  .on("adventure", (c) => c.getVariable("exp") >= 2)
+  .usage(1, { name: "stage1", autoDispose: false, visible: false })
+  .createHandCard(ChenyuBrew)
+  .createHandCard(ChenyuBrew)
+  .on("adventure", (c) => c.getVariable("exp") >= 4)
+  .usage(1, { name: "stage2", autoDispose: false, visible: false })
+  .combatStatus(EfficientSwitch, "my", {
+    overrideVariables: {
+      usage: 3
+    }
+  })
+  .combatStatus(AgileSwitch, "my", {
+    overrideVariables: {
+      usage: 3
+    }
+  })
+  .on("adventure", (c) => c.getVariable("exp") >= 7)
+  .usage(1, { name: "stage3", visible: false })
+  .apply(DamageType.Hydro, "all my characters")
+  .do((c) => {
+    const targetCh = c.$(`my characters order by health - maxHealth limit 1`);
+    if (!targetCh) {
+      return;
+    }
+    const healValue = 999; // interesting.
+    c.heal(healValue, targetCh);
+    c.increaseMaxHealth(2, targetCh);
+    c.dispose();
+  })
   .done();

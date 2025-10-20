@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder";
+import { character, skill, status, card, DamageType, Reaction, StatusHandle, Aura } from "@gi-tcg/core/builder";
 
 /**
  * @id 115151
@@ -23,8 +23,9 @@ import { character, skill, status, card, DamageType } from "@gi-tcg/core/builder
  */
 export const NightsoulsBlessing = status(115151)
   .since("v6.1.0")
-  // TODO
+  .nightsoulsBlessing(2)
   .done();
+
 
 /**
  * @id 115153
@@ -35,7 +36,9 @@ export const NightsoulsBlessing = status(115151)
  */
 export const SedationMarkCryo = status(115153)
   .since("v6.1.0")
-  // TODO
+  .on("beforeAction")
+  .usage(1)
+  .damage(DamageType.Cryo, 2, "@master")
   .done();
 
 /**
@@ -47,7 +50,9 @@ export const SedationMarkCryo = status(115153)
  */
 export const SedationMarkHydro = status(115154)
   .since("v6.1.0")
-  // TODO
+  .on("beforeAction")
+  .usage(1)
+  .damage(DamageType.Hydro, 2, "@master")
   .done();
 
 /**
@@ -59,7 +64,9 @@ export const SedationMarkHydro = status(115154)
  */
 export const SedationMarkPyro = status(115155)
   .since("v6.1.0")
-  // TODO
+  .on("beforeAction")
+  .usage(1)
+  .damage(DamageType.Pyro, 2, "@master")
   .done();
 
 /**
@@ -71,7 +78,9 @@ export const SedationMarkPyro = status(115155)
  */
 export const SedationMarkElectro = status(115156)
   .since("v6.1.0")
-  // TODO
+  .on("beforeAction")
+  .usage(1)
+  .damage(DamageType.Electro, 2, "@master")
   .done();
 
 /**
@@ -86,7 +95,12 @@ export const SedationMarkElectro = status(115156)
  */
 export const Cacucu = card(115152)
   .since("v6.1.0")
-  // TODO
+  .nightsoulTechnique()
+  .provideSkill(1151521)
+  .costVoid(2)
+  .consumeNightsoul("@master", 1)
+  .damage(DamageType.Anemo, 1, "opp prev")
+  .heal(2, `my characters order by health - maxHealth limit 1`)
   .done();
 
 /**
@@ -99,7 +113,7 @@ export const RiteOfDispellingWinds = skill(15151)
   .type("normal")
   .costAnemo(1)
   .costVoid(2)
-  // TODO
+  .damage(DamageType.Anemo, 1)
   .done();
 
 /**
@@ -112,7 +126,10 @@ export const RiteOfDispellingWinds = skill(15151)
 export const AirborneDiseasePrevention = skill(15152)
   .type("elemental")
   .costAnemo(2)
-  // TODO
+  .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
+  .damage(DamageType.Anemo, 1)
+  .gainNightsoul("@self", 2)
+  .equip(Cacucu, "@self")
   .done();
 
 /**
@@ -125,7 +142,28 @@ export const CompoundSedationField = skill(15153)
   .type("burst")
   .costAnemo(3)
   .costEnergy(2)
-  // TODO
+  .do((c) => {
+    const aura = c.$(`opp active`)?.aura;
+    c.damage(DamageType.Anemo, 2);
+    let mark: StatusHandle | null = null;
+    switch (aura) {
+      case Aura.Cryo:
+        mark = SedationMarkCryo;
+        break;
+      case Aura.Hydro:
+        mark = SedationMarkHydro;
+        break;
+      case Aura.Pyro:
+        mark = SedationMarkPyro;
+        break;
+      case Aura.Electro:
+        mark = SedationMarkElectro;
+        break;
+    }
+    if (mark) {
+      c.characterStatus(mark, "opp active");
+    }
+  })
   .done();
 
 /**
@@ -140,6 +178,7 @@ export const Ifa = character(1515)
   .health(10)
   .energy(2)
   .skills(RiteOfDispellingWinds, AirborneDiseasePrevention, CompoundSedationField)
+  .associateNightsoul(NightsoulsBlessing)
   .done();
 
 /**
@@ -153,6 +192,11 @@ export const Ifa = character(1515)
 export const TacticalWarmCompressBandaging = card(215151)
   .since("v6.1.0")
   .costAnemo(1)
-  .talent(Ifa)
-  // TODO
+  .talent(Ifa, "none")
+  .on("enter")
+  .heal(1, `my characters order by health - maxHealth limit 1`)
+  .on("dealReaction", (c, e) => e.relatedTo(DamageType.Anemo) || e.type === Reaction.ElectroCharged)
+  .listenToPlayer()
+  .usagePerRound(2)
+  .heal(2, `my characters order by health - maxHealth limit 1`)
   .done();
