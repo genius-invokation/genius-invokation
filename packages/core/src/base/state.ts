@@ -103,9 +103,8 @@ export interface VersionBehavior {
 
 export const getVersionBehavior = (version: Version): VersionBehavior => ({
   defaultRecreateBehavior: versionLt(version, "v3.5.0") ? "overwrite" : "takeMax",
-  // TODO: update when 6.1 out
-  foodOmitInjuredOnly: true,
-  disposeMaxCostHandsAbortPreview: true,
+  foodOmitInjuredOnly: !versionLt(version, "v6.1.0"),
+  disposeMaxCostHandsAbortPreview: !versionLt(version, "v6.1.0"),
 });
 
 export interface IteratorState {
