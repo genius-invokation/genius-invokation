@@ -1,6 +1,6 @@
 {
   "name": "@gi-tcg/data",
-  "version": "0.17.4+gi-6-0-0",
+  "version": "0.17.4+gi-6-1-0",
   "description": "Standard card data for Genius Invokation TCG",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -22,9 +22,10 @@
     "@gi-tcg/core": "workspace:*"
   },
   "devDependencies": {
+    "@gi-tcg/assets-manager": "workspace:*",
+    "@gi-tcg/config": "workspace:*",
     "@microsoft/tsdoc": "^0.14.2",
     "case-anything": "^2.1.13",
-    "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/assets-manager": "workspace:*"
+    "glob": "^11.0.3"
   }
 }

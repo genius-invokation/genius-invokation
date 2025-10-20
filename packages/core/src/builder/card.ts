@@ -118,6 +118,29 @@ export interface NightsoulTechniqueOption {
   alsoDisposeNightsoulsBlessing?: boolean;
 }
 
+export interface DoSameWhenDisposedOption<
+  AssociatedExt extends ExtensionHandle,
+> {
+  filter?: SkillOperationFilter<{
+    callerType: "card";
+    callerVars: never;
+    eventArgType: DisposeOrTuneCardEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+  prependOp?: SkillOperation<{
+    callerType: "card";
+    callerVars: never;
+    eventArgType: DisposeOrTuneCardEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+  appendOp?: SkillOperation<{
+    callerType: "card";
+    callerVars: never;
+    eventArgType: DisposeOrTuneCardEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+}
+
 type CardArea = { readonly who: 0 | 1 };
 type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
   st: GameState,
@@ -143,7 +166,8 @@ export class CardBuilder<
    */
   private _satiatedTarget: string | null = null;
   private _descriptionOnHCI = false;
-  private _doSameWhenDisposed = false;
+  private _doSameWhenDisposed: DoSameWhenDisposedOption<AssociatedExt> | null =
+    null;
   private _disposeFilter: SkillOperationFilter<{
     callerType: "card";
     callerVars: never;
@@ -483,14 +507,7 @@ export class CardBuilder<
     return this.tags("food");
   }
 
-  doSameWhenDisposed(
-    filter?: SkillOperationFilter<{
-      callerType: "card";
-      callerVars: never;
-      eventArgType: DisposeOrTuneCardEventArg;
-      associatedExtension: AssociatedExt;
-    }>,
-  ) {
+  doSameWhenDisposed(opt: DoSameWhenDisposedOption<AssociatedExt> = {}) {
     if (this._disposeOperation || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .onDispose() or .descriptionOnDraw().`,
@@ -501,10 +518,7 @@ export class CardBuilder<
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );
     }
-    if (filter) {
-      this._disposeFilter = filter;
-    }
-    this._doSameWhenDisposed = true;
+    this._doSameWhenDisposed = opt;
     return this;
   }
   /** @deprecated use `descriptionOnHCI` */
@@ -564,13 +578,18 @@ export class CardBuilder<
 
     const targetGetter = this.buildTargetGetter();
     if (this._doSameWhenDisposed || this._disposeOperation !== null) {
-      const disposeOp = this._disposeOperation;
+      const disposeOps: SkillOperation<any>[] = this._disposeOperation
+        ? [this._disposeOperation]
+        : [
+            this._doSameWhenDisposed?.prependOp,
+            ...this.operations,
+            this._doSameWhenDisposed?.appendOp,
+          ].filter((op) => !!op);
       const disposeFilter = this.buildFilter<DisposeOrTuneCardEventArg>([
-        this._disposeFilter,
+        this._doSameWhenDisposed?.filter ?? (() => true),
       ]);
-      const disposeAction = disposeOp
-        ? this.buildAction<DisposeOrTuneCardEventArg>(disposeOp)
-        : this.buildAction<DisposeOrTuneCardEventArg>();
+      const disposeAction =
+        this.buildAction<DisposeOrTuneCardEventArg>(disposeOps);
       const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
         type: "skill",
         id: this.cardId + 0.02,
@@ -595,7 +614,7 @@ export class CardBuilder<
       let filter: SkillActionFilter<InitiativeSkillEventArg>;
       let action: SkillDescription<InitiativeSkillEventArg>;
       if (hciOp) {
-        drawAction = this.buildAction<HandCardInsertedEventArg>(hciOp);
+        drawAction = this.buildAction<HandCardInsertedEventArg>([hciOp]);
         filter = this.buildFilter();
         action = this.buildAction();
       } else {

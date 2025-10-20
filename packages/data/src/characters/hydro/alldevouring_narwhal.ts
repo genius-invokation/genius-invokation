@@ -22,7 +22,7 @@ import { character, skill, summon, status, combatStatus, card, DamageType, diceC
  * @name 黑色幻影
  * @description
  * 入场时：获得我方已吞噬卡牌中最高元素骰费用值的「攻击力」，获得该费用的已吞噬卡牌数量的可用次数。
- * 结束阶段和我方宣布结束时：造成此牌「攻击力」值的雷元素伤害。
+ * 结束阶段：造成此牌「攻击力」值的雷元素伤害。
  * 我方出战角色受到伤害时：抵消1点伤害，然后此牌可用次数-2。
  */
 export const DarkShadow = summon(122043)
@@ -44,11 +44,6 @@ export const DarkShadow = summon(122043)
     }
   })
   .on("endPhase")
-  .do((c) => {
-    c.damage(DamageType.Electro, c.getVariable("atk"));
-    c.consumeUsage();
-  })
-  .on("declareEnd")
   .do((c) => {
     c.damage(DamageType.Electro, c.getVariable("atk"));
     c.consumeUsage();
@@ -106,7 +101,7 @@ export const DevourersInstinct = status(122044)
  * @id 122041
  * @name 深噬之域
  * @description
- * 我方舍弃或调和的卡牌，会被吞噬。
+ * 我方从手牌中舍弃或调和的卡牌，会被吞噬。
  * 每吞噬3张牌：吞星之鲸在回合结束时获得1点额外最大生命；如果其中存在原本元素骰费用值相同的牌，则额外获得1点；如果3张均相同，再额外获得1点。
  * 【此卡含描述变量】
  */
@@ -118,7 +113,7 @@ export const DeepDevourersDomain = combatStatus(122041)
   .variable("card1Cost", 0, { visible: false })
   .variable("extraMaxHealth", 0, { visible: false })
   .replaceDescription("[GCG_TOKEN_SHIELD]", (_, self) => self.variables.extraMaxHealth)
-  .on("disposeOrTuneCard")
+  .on("disposeOrTuneCard", (c, e) => e.method === "disposeFromHands" || e.method === "elementalTuning")
   .do((c, e) => {
     const cost = e.diceCost();
     c.addVariable("cardCount", 1);

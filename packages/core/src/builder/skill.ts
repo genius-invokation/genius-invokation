@@ -681,10 +681,10 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
    * @returns 即 `SkillDescription` 的返回值
    */
   protected buildAction<Arg = Meta["eventArgType"]>(
-    overrideOperation?: SkillOperation<any>,
+    overrideOperations?: SkillOperation<any>[],
   ): SkillDescription<Arg> {
     const extId = this.associatedExtensionId;
-    const operation = overrideOperation ? [overrideOperation] : this.operations;
+    const operations = overrideOperations ?? this.operations;
     return function (
       state: GameState,
       skillInfo: SkillInfo,
@@ -695,7 +695,7 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
         wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
-      for (const op of operation) {
+      for (const op of operations) {
         op(ctx as any, ctx.eventArg);
       }
       return ctx._terminate();

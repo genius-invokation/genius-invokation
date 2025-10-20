@@ -530,3 +530,23 @@ export const HarvestsBoon = card(333028)
   .usage(2)
   .heal(1, "@master")
   .done();
+
+/**
+ * @id 333029
+ * @name 沉玉茶露
+ * @description
+ * 选择1个我方角色，我方下2次冒险或结束阶段时，治疗目标角色1点。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const [ChenyuBrew] = card(333029)
+  .since("v6.1.0")
+  .food()
+  .toStatus(303323, "@targets.0")
+  .usage(2)
+  .on("adventure")
+  .heal(1, "@master")
+  .consumeUsage()
+  .on("endPhase")
+  .heal(1, "@master")
+  .consumeUsage()
+  .done();

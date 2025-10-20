@@ -259,3 +259,21 @@ export const FlowingPurity = card(311110)
   .generateDice("randomElement", 1)
   .characterStatus(FlowingPurityInEffect, "@master")
   .done();
+
+/**
+ * @id 311111
+ * @name 不灭月华
+ * @description
+ * 所附属角色生命值至少为11时：造成的伤害+2。
+ * 入场时：所附属角色获得1点最大生命值。
+ * （「法器」角色才能装备。角色最多装备1件「武器」）
+ */
+export const EverlastingMoonglow = card(311111)
+  .since("v6.1.0")
+  .costSame(2)
+  .weapon("catalyst")
+  .on("increaseSkillDamage", (c) => c.self.master.health >= 11)
+  .increaseDamage(2)
+  .on("enter")
+  .increaseMaxHealth(1, "@master")
+  .done();

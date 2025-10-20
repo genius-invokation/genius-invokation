@@ -1157,3 +1157,50 @@ export const FragmentOfHarmonicWhimsy = card(312039)
   .characterStatus(BondOfLife, "my characters")
   .combatStatus(HarmoniousSymphonyPreludeInEffect)
   .done();
+
+/**
+ * @id 312040
+ * @name 恶龙的单片镜
+ * @description
+ * 附属角色使用「元素战技」后：冒险1次。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const FellDragonsMonocle = card(312040)
+  .since("v6.1.0")
+  .costSame(1)
+  .artifact()
+  .on("useSkill", (c, e) => e.isSkillType("elemental"))
+  .usagePerRound(1)
+  .adventure()
+  .done();
+
+/**
+ * @id 301210
+ * @name 昔日宗室之仪（生效中）
+ * @description
+ * 我方角色造成的伤害+1。
+ * 可用次数：3
+ */
+export const NoblesseObligeInEffect = combatStatus(301210)
+  .on("increaseSkillDamage")
+  .usage(3)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 312041
+ * @name 昔日宗室之仪
+ * @description
+ * 入场时：使所附属角色获得1点充能。
+ * 所附属角色使用「元素爆发」后：我方角色下3次造成的伤害+1。
+ * （角色最多装备1件「圣遗物」）
+ */
+export const NoblesseOblige = card(312041)
+  .since("v6.1.0")
+  .costVoid(3)
+  .artifact()
+  .on("enter")
+  .gainEnergy(1, "@master")
+  .on("useSkill", (c, e) => e.isSkillType("burst"))
+  .combatStatus(NoblesseObligeInEffect)
+  .done();
