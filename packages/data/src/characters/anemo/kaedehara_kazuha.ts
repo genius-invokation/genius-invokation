@@ -47,9 +47,6 @@ export const GaryuuBladework = skill(15051)
  * @description
  * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
  * 如果所附属角色为「出战角色」，则所附属角色将在下次行动时直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为风元素伤害，结算后移除此效果。
- * @outdated
- * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
- * 我方选择行动前：如果所附属角色为「出战角色」，则直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为风元素伤害，结算后移除此效果。
  */
 export const MidareRanzan = status(115051)
   .on("beforeFastSwitch", (c, e) => c.self.master.id === e.action.to.id)
@@ -69,9 +66,6 @@ export const MidareRanzan = status(115051)
  * @description
  * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
  * 如果所附属角色为「出战角色」，则所附属角色将在下次行动时直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为冰元素伤害，结算后移除此效果。
- * @outdated
- * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
- * 我方选择行动前：如果所附属角色为「出战角色」，则直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为冰元素伤害，结算后移除此效果。
  */
 export const MidareRanzanCryo = status(115053)
   .on("beforeFastSwitch", (c, e) => c.self.master.id === e.action.to.id)
@@ -91,9 +85,6 @@ export const MidareRanzanCryo = status(115053)
  * @description
  * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
  * 如果所附属角色为「出战角色」，则所附属角色将在下次行动时直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为雷元素伤害，结算后移除此效果。
- * @outdated
- * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
- * 我方选择行动前：如果所附属角色为「出战角色」，则直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为雷元素伤害，结算后移除此效果。
  */
 export const MidareRanzanElectro = status(115056)
   .on("beforeFastSwitch", (c, e) => c.self.master.id === e.action.to.id)
@@ -113,9 +104,6 @@ export const MidareRanzanElectro = status(115056)
  * @description
  * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
  * 如果所附属角色为「出战角色」，则所附属角色将在下次行动时直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为水元素伤害，结算后移除此效果。
- * @outdated
- * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
- * 我方选择行动前：如果所附属角色为「出战角色」，则直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为水元素伤害，结算后移除此效果。
  */
 export const MidareRanzanHydro = status(115054)
   .on("beforeFastSwitch", (c, e) => c.self.master.id === e.action.to.id)
@@ -135,9 +123,6 @@ export const MidareRanzanHydro = status(115054)
  * @description
  * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
  * 如果所附属角色为「出战角色」，则所附属角色将在下次行动时直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为火元素伤害，结算后移除此效果。
- * @outdated
- * 我方下次通过「切换角色」行动切换到所附属角色时：将此次切换视为「快速行动」而非「战斗行动」。
- * 我方选择行动前：如果所附属角色为「出战角色」，则直接使用「普通攻击」；本次「普通攻击」造成的物理伤害变为火元素伤害，结算后移除此效果。
  */
 export const MidareRanzanPyro = status(115055)
   .on("beforeFastSwitch", (c, e) => c.self.master.id === e.action.to.id)

@@ -1,5 +1,105 @@
-import { card, combatStatus, DamageType, skill, summon } from "@gi-tcg/core/builder";
+import { card, combatStatus, DamageType, diceCostOfCard, DiceType, skill, summon } from "@gi-tcg/core/builder";
 import { AlldevouringNarwhal, AnomalousAnatomy } from "../characters/hydro/alldevouring_narwhal";
+import { FestiveFires } from "../characters/pyro/xinyan";
+
+/**
+ * @id 115113
+ * @name 追影弹
+ * @description
+ * 加入手牌时：若我方出战角色为火/水/雷/冰，则将此牌转化为对应元素。
+ * 打出或从手牌中舍弃此牌时：造成1点风元素伤害，然后将一张追影弹随机放进牌库。
+ */
+const ShadowhuntShell = card(115113)
+  .until("v6.0.0")
+  .unobtainable()
+  .costAnemo(3)
+  .onHCI((c) => {
+    const element = c.$(`my active`)?.element();
+    if (element === DiceType.Pyro) {
+      c.transformDefinition(c.self, ShiningShadowhuntShellPyro);
+    } else if (element === DiceType.Hydro) {
+      c.transformDefinition(c.self, ShiningShadowhuntShellHydro);
+    } else if (element === DiceType.Electro) {
+      c.transformDefinition(c.self, ShiningShadowhuntShellElectro);
+    } else if (element === DiceType.Cryo) {
+      c.transformDefinition(c.self, ShiningShadowhuntShellCryo);
+    }
+  })
+  .doSameWhenDisposed()
+  .damage(DamageType.Anemo, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115114
+ * @name 焕光追影弹·火
+ * @description
+ * 打出或从手牌中舍弃此牌时：造成1点火元素伤害，然后将一张追影弹随机放进牌库。
+ */
+const ShiningShadowhuntShellPyro = card(115114)
+  .until("v6.0.0")
+  .unobtainable()
+  .costPyro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Pyro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115115
+ * @name 焕光追影弹·水
+ * @description
+ * 打出或从手牌中舍弃此牌时：造成1点水元素伤害，然后将一张追影弹随机放进牌库。
+ */
+const ShiningShadowhuntShellHydro = card(115115)
+  .until("v6.0.0")
+  .unobtainable()
+  .costHydro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Hydro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115116
+ * @name 焕光追影弹·雷
+ * @description
+ * 打出或从手牌中舍弃此牌时：造成1点雷元素伤害，然后将一张追影弹随机放进牌库。
+ */
+const ShiningShadowhuntShellElectro = card(115116)
+  .until("v6.0.0")
+  .unobtainable()
+  .costElectro(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Electro, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
+/**
+ * @id 115117
+ * @name 焕光追影弹·冰
+ * @description
+ * 打出或从手牌中舍弃此牌时：造成1点冰元素伤害，然后将一张追影弹随机放进牌库。
+ */
+const ShiningShadowhuntShellCryo = card(115117)
+  .until("v6.0.0")
+  .unobtainable()
+  .costCryo(3)
+  .doSameWhenDisposed()
+  .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")
+  .do((c) => {
+    c.createPileCards(ShadowhuntShell, 1, "random");
+  })
+  .done();
+
 
 /**
  * @id 122043
@@ -109,6 +209,44 @@ const DeepDevourersDomain = combatStatus(122041)
         c.increaseMaxHealth(extraMaxHealth, narwhal);
       }
       c.setVariable("extraMaxHealth", 0);
+    }
+  })
+  .done();
+
+/**
+ * @id 13123
+ * @name 叛逆刮弦
+ * @description
+ * 造成3点物理伤害，对所有敌方后台角色造成2点穿透伤害；舍弃我方所有手牌，生成氛围烈焰。
+ */
+const RiffRevolution = skill(13123)
+  .until("v6.0.0")
+  .type("burst")
+  .costPyro(3)
+  .costEnergy(2)
+  .damage(DamageType.Piercing, 2, "opp standby")
+  .damage(DamageType.Physical, 3)
+  .do((c) => {
+    const cards = c.player.hands.toSorted((a, b) => diceCostOfCard(b.definition) - diceCostOfCard(a.definition));
+    c.disposeCard(...cards);
+  })
+  .combatStatus(FestiveFires)
+  .done();
+
+/**
+ * @id 23052
+ * @name 蚀灭火羽
+ * @description
+ * 造成3点火元素伤害，我方舍弃牌组顶部1张牌。
+ */
+const ErodedFlamingFeathers = skill(23052)
+  .until("v6.0.0")
+  .type("elemental")
+  .costPyro(3)
+  .damage(DamageType.Pyro, 3)
+  .do((c) => {
+    if (c.player.pile.length > 0) {
+      c.disposeCard(c.player.pile[0]);
     }
   })
   .done();
