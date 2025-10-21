@@ -48,6 +48,7 @@ import {
   concat,
   defer,
   filter,
+  finalize,
   interval,
   map,
   mergeWith,
@@ -918,7 +919,19 @@ export class RoomsService {
     for (const player of players) {
       if (player.playerInfo.id === watchingPlayerId) {
         const observable = player.notificationSse$;
-        return observable.pipe(map((data) => ({ data })));
+        return observable.pipe(
+          finalize(() => {
+            if (
+              visitorPlayerId === watchingPlayerId &&
+              room.status !== RoomStatus.Finished
+            ) {
+              this.logger.warn(
+                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`,
+              );
+            }
+          }),
+          map((data) => ({ data })),
+        );
       }
     }
     throw new InternalServerErrorException("unreachable");
