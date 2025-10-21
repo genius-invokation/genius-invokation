@@ -31,7 +31,14 @@ type MetaBase = {
   position: "active" | "prev" | "next" | "standby";
   defeated: "only" | "includes";
   id: number;
+  returns: "identical" | MetaBase;
 };
+
+type ReturnOfMeta<M extends MetaBase> = M["returns"] extends "identical"
+  ? M
+  : M["returns"] extends MetaBase
+    ? ReturnOfMeta<M["returns"]>
+    : never;
 
 type PositionPatch<T extends MetaBase["position"]> = {
   type: "character";
@@ -174,21 +181,54 @@ const PRIMARY_METHODS = Object.getOwnPropertyDescriptors(
 ) as {
   [K in PrimaryMethodNames]: PropertyDescriptor;
 } & {
-  ["constructor"]?: unknown;
+  ["constructor"]?: PropertyDescriptor;
 };
 delete PRIMARY_METHODS.constructor;
 
-const PRIMARY_METHOD_NAMES = Object.keys(
-  PRIMARY_METHODS,
-) as PrimaryMethodNames[];
+type CharacterMetaBase = MetaBase & {
+  type: "character";
+  areaType: "characters";
+};
+type EntityOnCharacterMetaBase = MetaBase & {
+  type: "status" | "equipment";
+  areaType: "characters";
+};
 
-type Dollar = PrimaryMethods<MetaBase>;
+type UnaryOperator = "not" | "unaryHas" | "unaryAt" | "recentFrom";
+type BinaryOperator = "has" | "at" | "orElse" | "union" | "intersection";
+
+type CompositeOperator = UnaryOperator | BinaryOperator;
+
+type UnaryOperatorMetas = {
+  not: {
+    operand: MetaBase;
+    result: MetaBase;
+  };
+  unaryHas: {
+    operand: EntityOnCharacterMetaBase;
+    result: CharacterMetaBase;
+  };
+  unaryAt: {
+    operand: CharacterMetaBase;
+    result: EntityOnCharacterMetaBase;
+  };
+  recentFrom: {
+    operand: CharacterMetaBase;
+    result: CharacterMetaBase;
+  };
+};
+
+type DollarUnaryOperatorMethods = {
+  [K in keyof UnaryOperatorMetas]: {
+    (arg: /* TODO */ unknown): PrimaryQuery<UnaryOperatorMetas[K]["result"]>;
+  };
+};
 
 class PrimaryQuery<Meta extends MetaBase>
   extends PrimaryMethods<Meta>
   implements IQuery
 {
-  constructor() {
+  constructor(private leadingUnaryOp: UnaryOperator | null) {
     super();
   }
 
@@ -266,15 +306,6 @@ type RestrictedPrimaryQuery<Meta extends MetaBase> = Omit<
 
 type X = OmittedMethods<{ who: "opp" } & MetaBase>;
 
-type CompositeOperator =
-  | "not"
-  | "recentFrom"
-  | "has"
-  | "at"
-  | "orElse"
-  | "union"
-  | "intersection";
-
 class CompositeQuery implements IQuery {
   constructor(private readonly type: CompositeOperator) {}
   [toExpression](): Expression {
@@ -283,4 +314,43 @@ class CompositeQuery implements IQuery {
   }
 }
 
-declare const $: Dollar;
+class Dollar {
+  get has() {
+    return new PrimaryQuery<EntityOnCharacterMetaBase>("unaryHas");
+  }
+  get at() {
+    return new PrimaryQuery<CharacterMetaBase>("unaryAt");
+  }
+  get not() {
+    return new PrimaryQuery<MetaBase>(`not`);
+  }
+  get recentFrom() {
+    return new PrimaryQuery<CharacterMetaBase>("recentFrom");
+  }
+}
+
+for (const [method, descriptor] of Object.entries<PropertyDescriptor>(
+  PRIMARY_METHODS,
+) as [PrimaryMethodNames, PropertyDescriptor][]) {
+  if (descriptor.get) {
+    Object.defineProperty(Dollar.prototype, method, {
+      get() {
+        return new PrimaryQuery(null)[method];
+      },
+    });
+  } else if (descriptor.value) {
+    Object.defineProperty(Dollar.prototype, method, {
+      value(...args: unknown[]) {
+        return (
+          new PrimaryQuery(null)[method] as (...args: unknown[]) => unknown
+        )(...args);
+      },
+    });
+  }
+}
+
+type IDollar = Dollar & PrimaryMethods<MetaBase>;
+
+const $ = new Dollar() as IDollar;
+
+console.log($.my);
