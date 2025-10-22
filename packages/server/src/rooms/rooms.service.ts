@@ -36,6 +36,7 @@ import {
   RpcResponse,
   CURRENT_VERSION,
   type Version,
+  type GameState,
 } from "@gi-tcg/core";
 import { dispatchRpc, type Deck } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
@@ -477,13 +478,21 @@ class Room {
     if (player0 === null || player1 === null) {
       throw new ConflictException("player not ready");
     }
-    player0.setTimeoutConfig(this.config);
-    player1.setTimeoutConfig(this.config);
-    const state = InternalGame.createInitialState({
-      decks: [player0.playerInfo.deck, player1.playerInfo.deck],
-      data: getData(this.config.gameVersion),
-      versionBehavior: this.config.gameVersion,
-    });
+    let state: GameState;
+    try {
+      player0.setTimeoutConfig(this.config);
+      player1.setTimeoutConfig(this.config);
+      state = InternalGame.createInitialState({
+        decks: [player0.playerInfo.deck, player1.playerInfo.deck],
+        data: getData(this.config.gameVersion),
+        versionBehavior: this.config.gameVersion,
+      });
+    } catch (e) {
+      this.stop();
+      throw new InternalServerErrorException(
+        `Failed to create initial game state: ${e}; propably due to invalid decks`
+      );
+    }
     const game = new InternalGame(state);
     game.onPause = async (state, mutations, canResume) => {
       this.stateLog.push({ state, canResume });
@@ -926,11 +935,11 @@ export class RoomsService {
               room.status !== RoomStatus.Finished
             ) {
               this.logger.warn(
-                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`,
+                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`
               );
             }
           }),
-          map((data) => ({ data })),
+          map((data) => ({ data }))
         );
       }
     }
