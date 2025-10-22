@@ -24,11 +24,13 @@ const BLOCK_WORDS = [
   /cag/i,
   /flg/i,
   /gay/i,
+  /gwg/i,
   /hjt/i,
+  /j8/i,
   /jba/i,
   /jzm/i,
   /ntr/i,
-  /pcp/i,
+  /pcp/i, // might be removed
   /rbq/i,
   /xjp/i,
 ];
