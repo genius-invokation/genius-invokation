@@ -81,4 +81,5 @@ export type AppliableDamageType =
   | typeof DamageType.Hydro
   | typeof DamageType.Pyro
   | typeof DamageType.Electro
-  | typeof DamageType.Dendro;
+  | typeof DamageType.Dendro
+  | typeof DamageType.Geo;
