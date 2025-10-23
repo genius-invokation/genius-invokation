@@ -48,6 +48,8 @@ interface IQuery {
   [toExpression]: () => Expression;
 }
 
+type InferResult<Q extends IQuery> = ReturnOfMeta<Q[MetaSymbol]>;
+
 type MetaBase = {
   type: ExEntityType;
   areaType: EntityArea["type"];
@@ -60,7 +62,7 @@ type MetaBase = {
 };
 
 type ReturnOfMeta<M extends MetaBase> = M["returns"] extends "identical"
-  ? M
+  ? Computed<M>
   : M["returns"] extends MetaBase
     ? ReturnOfMeta<M["returns"]>
     : never;
@@ -100,7 +102,9 @@ type DefPatch<T extends HandleT<ExEntityType>> = (T extends EquipmentHandle
             ? {
                 type: "card";
               }
-            : {}) & { definition: T };
+            : {}) & {
+  definition: T & { readonly _defSpecified: unique symbol };
+};
 
 type Assign<
   T extends MetaBase,
@@ -183,7 +187,9 @@ class PrimaryMethods<Meta extends MetaBase> {
   var(...args: unknown[]): Assign<Meta> {
     return this._self;
   }
-  id(id: number): Assign<Meta, { id: number }> {
+  id<Id extends number>(
+    id: Id,
+  ): Assign<Meta, { id: Id & { readonly _idSpecified: unique symbol } }> {
     return this._self;
   }
   def<T extends HandleT<Meta["type"]>>(id: T): Assign<Meta, DefPatch<T>>;
@@ -261,10 +267,10 @@ type DollarUnaryOperatorMethods = {
       > extends true
         ? T
         : never,
-    ): RestrictedPrimaryQuery<UnaryOperatorMetas[K]["result"] & MetaBase>;
+    ): RestrictedPrimaryQuery<UnaryOperatorMetas[K]["result"] & InitialMeta>;
   } & RestrictedPrimaryQuery<
-    Omit<MetaBase & UnaryOperatorMetas[K]["operand"], "returns"> & {
-      returns: UnaryOperatorMetas[K]["result"] & MetaBase;
+    Omit<InitialMeta & UnaryOperatorMetas[K]["operand"], "returns"> & {
+      returns: UnaryOperatorMetas[K]["result"] & InitialMeta;
     }
   > &
     NotFunctionPrototype;
@@ -316,6 +322,12 @@ type _Check1 = StaticAssert<
   >
 >;
 
+type StrictlySuperTypeOf<T, U> = U extends T
+  ? T extends U
+    ? false
+    : true
+  : false;
+
 /**
  * T is not a strictly super type of U.
  * That is, T is either:
@@ -323,10 +335,8 @@ type _Check1 = StaticAssert<
  * - a sub type of U
  * - not related to U
  */
-type NotStrictlySuperTypeOf<T, U> = U extends T
-  ? T extends U
-    ? true
-    : false
+type NotStrictlySuperTypeOf<T, U> = StrictlySuperTypeOf<T, U> extends true
+  ? false
   : true;
 type PickingPropsNotStrictlySuperTypeOf<
   Meta,
@@ -344,7 +354,15 @@ type OmittedMethods<Meta extends MetaBase> = {
       > extends true
       ? K
       : never
-    : never;
+    : K extends "id"
+      ? StrictlySuperTypeOf<number, Meta["id"]> extends true
+        ? K
+        : never
+      : K extends "def"
+        ? StrictlySuperTypeOf<number, Meta["definition"]> extends true
+          ? K
+          : never
+        : never;
 }[PrimaryMethodNames];
 
 type RestrictedPrimaryQuery<Meta extends MetaBase> = Omit<
@@ -430,7 +448,9 @@ for (const [operator, name] of Object.entries(UNARY_OPS) as [
   });
 }
 
-type InitialMeta = Omit<MetaBase, "returns"> & { returns: "identical" };
+type InitialMeta = Computed<
+  Omit<MetaBase, "returns"> & { returns: "identical" }
+>;
 
 type IDollar = Dollar &
   PrimaryMethods<InitialMeta> &
@@ -438,4 +458,6 @@ type IDollar = Dollar &
 
 const $ = new Dollar() as IDollar;
 
-console.log(($.has($.my)));
+const x = $.my.active;
+
+type X = InferResult<typeof x>;
