@@ -1683,6 +1683,25 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
+  /** 完成冒险：弃置自身，生成出战状态“完成冒险”（若版本支持）。 */
+  finishAdventure() {
+    if (
+      !(
+        this.self.definition.type === "support" &&
+        this.self.definition.tags.includes("adventureSpot")
+      )
+    ) {
+      throw new GiTcgDataError(
+        `Only support card with adventureSpot tag can call .finishAdventure()`,
+      );
+    }
+    const ADVENTURE_COMPLETE_ID = 171 as CombatStatusHandle;
+    if (this.state.data.entities.has(ADVENTURE_COMPLETE_ID)) {
+      this.combatStatus(ADVENTURE_COMPLETE_ID);
+    }
+    this.dispose();
+  }
+
   random<T>(items: readonly T[]): T {
     return items[this.mutator.stepRandom() % items.length];
   }

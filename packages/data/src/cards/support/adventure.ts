@@ -55,6 +55,6 @@ export const ChenyuVale = card(321032)
     const healValue = 999; // interesting.
     c.heal(healValue, targetCh);
     c.increaseMaxHealth(2, targetCh);
-    c.dispose();
+    c.finishAdventure();
   })
   .done();
