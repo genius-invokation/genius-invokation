@@ -90,7 +90,7 @@ export type MetaBase = {
 export type ReturnOfMeta<M extends MetaBase> = Computed<
   M extends HeterogeneousMetaBase
     ? M["returns"] extends "identical"
-      ? Omit<M, "returns"> & { returns: "identical" }
+      ? Omit<M, "returns">
       : M["returns"] extends MetaBase
         ? M["returns"]
         : never
@@ -107,29 +107,25 @@ export type EntityOnCharacterMetaReq = {
   areaType: "characters";
 };
 
-export type UnaryOperator = "not" | "unaryHas" | "unaryAt" | "recentFrom";
-export type BinaryOperator = "has" | "at" | "orElse" | "union" | "intersection";
+export type UnaryOperator = "not" | "has" | "at" | "recentFrom";
+export type BinaryOperator = "orElse" | "union" | "intersection";
 
 export type CompositeOperator = UnaryOperator | BinaryOperator;
 
 export type UnaryOperatorMetas = {
   not: {
-    name: "not";
     operand: {};
     result: {};
   };
-  unaryHas: {
-    name: "has";
+  has: {
     operand: EntityOnCharacterMetaReq;
     result: CharacterMetaReq;
   };
-  unaryAt: {
-    name: "at";
+  at: {
     operand: CharacterMetaReq;
     result: EntityOnCharacterMetaReq;
   };
   recentFrom: {
-    name: "recentFrom";
     operand: CharacterMetaReq;
     result: CharacterMetaReq;
   };

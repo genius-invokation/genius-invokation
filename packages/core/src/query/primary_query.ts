@@ -1,6 +1,6 @@
 import { mixins } from "../utils";
 import { BinaryMethods } from "./binary_methods";
-import { PrimaryMethods } from "./primary_methods";
+import { HasAtMethods, PrimaryMethods } from "./primary_methods";
 import {
   toExpression,
   type Computed,
@@ -27,6 +27,7 @@ class PrimaryQueryImpl<Meta extends HeterogeneousMetaBase>
 
 const PrimaryQuery = mixins(PrimaryQueryImpl, [
   PrimaryMethods,
+  HasAtMethods,
   BinaryMethods,
 ]) as any;
 
@@ -39,6 +40,7 @@ export const createPrimaryQuery = <Meta extends HeterogeneousMetaBase>(
 export type PrimaryQuery<Meta extends HeterogeneousMetaBase> = Computed<
   PrimaryQueryImpl<Meta> &
     PrimaryMethods<Meta> &
+    HasAtMethods<Meta> &
     // Forbidden subsequent binary operator that starts with unary shortcut;
     // E.g. `$.has.def(...).orElse($...)` does not make sense. Use `$.has($.def(...)).orElse($...)` instead.
     (Meta extends {
