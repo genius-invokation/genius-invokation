@@ -101,7 +101,7 @@ export const SavageSwell = skill(22061)
 export const StormSurge = skill(22062)
   .type("elemental")
   .costHydro(3)
-  .damage(DamageType.Hydro, 2)
+  .noEnergy() // 出于神秘原因，e的所有效果，包括获得充能，都以使用技能后的方式写出
   .done();
 
 /**
@@ -145,6 +145,14 @@ export const BranchingFlow = skill(22064)
       c.summon(HalfTulpa04);
     }
   })
+  // 汛波：造成2点水元素伤害；如果自身生命值不低于2，就造成1点穿透伤害
+  .on("useSkill", (c, e) => e.skill.definition.id === StormSurge)
+  .damage(DamageType.Hydro, 2)
+  .if((c) => c.self.health >= 2)
+  .damage(DamageType.Piercing, 1, "@self")
+  // 汛波：获得充能
+  .on("useSkill", (c, e) => e.skill.definition.id === StormSurge)
+  .gainEnergy(1, "@self")
   // 汛波：随机触发一个召唤物的结束阶段技能
   .on("useSkill", (c, e) => e.skill.definition.id === StormSurge && c.$(`my summons`))
   .abortPreview()
@@ -152,9 +160,6 @@ export const BranchingFlow = skill(22064)
     const target = c.random(c.player.summons);
     c.triggerEndPhaseSkill(target);
   })
-  // 汛波：随后造成1点穿透伤害
-  .on("useSkill", (c, e) => e.skill.definition.id === StormSurge && c.self.health >= 2)
-  .damage(DamageType.Piercing, 1, "@self")
   // 洪啸：触发所有召唤物的结束阶段技能
   .on("useSkill", (c, e) => e.skill.definition.id === ThunderingTide)
   .do((c) => {
