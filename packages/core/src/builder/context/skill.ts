@@ -1323,8 +1323,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.callAndEmit("insertPileCards", payloads, strategy, who);
     return this.enableShortcut();
   }
-  undrawCards(cards: PlainCardState[], strategy: InsertPileStrategy) {
-    const who = this.callerArea.who;
+  undrawCards(
+    cards: PlainCardState[],
+    strategy: InsertPileStrategy,
+    where: "my" | "opp" = "my",
+  ) {
+    const who =
+      where === "my" ? this.callerArea.who : flip(this.callerArea.who);
     using l = this.mutator.subLog(
       DetailLogType.Primitive,
       `Undraw cards ${cards
