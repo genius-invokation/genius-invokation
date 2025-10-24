@@ -38,7 +38,49 @@ type DollarUnaryOperatorMethods = {
     NotFunctionPrototype;
 };
 
+const UNARY_OPS = ["has", "at", "not", "recentFrom"] as const;
+
 class Dollar {
+  static {
+    // creating primary methods
+    for (const [method, descriptor] of Object.entries<PropertyDescriptor>(
+      PRIMARY_METHODS,
+    ) as [PrimaryMethodNames, PropertyDescriptor][]) {
+      if (descriptor.get) {
+        Object.defineProperty(Dollar.prototype, method, {
+          get() {
+            return createPrimaryQuery(null)[method];
+          },
+        });
+      } else if (descriptor.value) {
+        Object.defineProperty(Dollar.prototype, method, {
+          value(...args: unknown[]) {
+            return (
+              createPrimaryQuery(null)[method] as (
+                ...args: unknown[]
+              ) => unknown
+            )(...args);
+          },
+        });
+      }
+    }
+    // creating leading unary operator methods
+    for (const name of UNARY_OPS) {
+      const chainForm = () => {
+        const callingForm = (q: IQuery) => {
+          return createPrimaryQuery(name);
+        };
+        const returns = createPrimaryQuery(name);
+        Object.setPrototypeOf(callingForm, returns);
+        return callingForm;
+      };
+      Object.defineProperty(Dollar.prototype, name, {
+        get: chainForm,
+        enumerable: true,
+      });
+    }
+  }
+
   intersection<T extends MetaBase[]>(
     ...args: { [K in keyof T]: IQuery<T[K]> }
   ): CompositeQuery<IntersectionMeta<T>> {
@@ -52,43 +94,6 @@ class Dollar {
   }
 }
 
-for (const [method, descriptor] of Object.entries<PropertyDescriptor>(
-  PRIMARY_METHODS,
-) as [PrimaryMethodNames, PropertyDescriptor][]) {
-  if (descriptor.get) {
-    Object.defineProperty(Dollar.prototype, method, {
-      get() {
-        return createPrimaryQuery(null)[method];
-      },
-    });
-  } else if (descriptor.value) {
-    Object.defineProperty(Dollar.prototype, method, {
-      value(...args: unknown[]) {
-        return (
-          createPrimaryQuery(null)[method] as (...args: unknown[]) => unknown
-        )(...args);
-      },
-    });
-  }
-}
-
-const UNARY_OPS = ["has", "at", "not", "recentFrom"] as const;
-
-for (const name of UNARY_OPS) {
-  const chainForm = () => {
-    const callingForm = (q: IQuery) => {
-      return createPrimaryQuery(name);
-    };
-    const returns = createPrimaryQuery(name);
-    Object.setPrototypeOf(callingForm, returns);
-    return callingForm;
-  };
-  Object.defineProperty(Dollar.prototype, name, {
-    get: chainForm,
-    enumerable: true,
-  });
-}
-
 type InitialPrimaryMeta = MetaBase & { returns: "identical" };
 
 type IDollar = Dollar &
@@ -96,3 +101,4 @@ type IDollar = Dollar &
   DollarUnaryOperatorMethods;
 
 export const $ = new Dollar() as IDollar;
+

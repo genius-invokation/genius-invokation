@@ -20,13 +20,16 @@ export type BinaryMethods<LMeta extends MetaBase> = {
   ) => CompositeQuery<BinaryOperatorResult<LMeta, RMeta>[K]>;
 };
 
-class BinaryMethodsImpl {}
-for (const methodName of BINARY_OPS) {
-  Object.defineProperty(BinaryMethodsImpl.prototype, methodName, {
-    value: function (this: IQuery, rhs: IQuery) {
-      return createCompositeQuery(methodName, [this, rhs]);
-    },
-  });
+class BinaryMethodsImpl {
+  static {
+    for (const methodName of BINARY_OPS) {
+      Object.defineProperty(BinaryMethodsImpl.prototype, methodName, {
+        value: function (this: IQuery, rhs: IQuery) {
+          return createCompositeQuery(methodName, [this, rhs]);
+        },
+      });
+    }
+  }
 }
 export const BinaryMethods = BinaryMethodsImpl as Constructor<
   BinaryMethods<MetaBase>

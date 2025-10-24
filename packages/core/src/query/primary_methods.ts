@@ -284,13 +284,16 @@ export type HasAtMethods<Meta extends HeterogeneousMetaBase> = Omit<
 
 const HAS_AT_METHODS = ["has", "at"] as const;
 
-class HasAtMethodsImpl {}
-for (const methodName of HAS_AT_METHODS) {
-  Object.defineProperty(HasAtMethodsImpl.prototype, methodName, {
-    value: function (this: any, object: IQuery) {
-      // TODO
-      return this;
+class HasAtMethodsImpl {
+  static {
+    for (const methodName of HAS_AT_METHODS) {
+      Object.defineProperty(HasAtMethodsImpl.prototype, methodName, {
+        value: function (this: any, object: IQuery) {
+          // TODO
+          return this;
+        },
+      });
     }
-  });
+  }
 }
 export const HasAtMethods = HasAtMethodsImpl as Constructor<HasAtMethods<any>>;
