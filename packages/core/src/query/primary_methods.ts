@@ -11,12 +11,17 @@ import type {
 } from "../builder/type";
 import type { PrimaryQuery } from "./primary_query";
 import type {
+  CharacterMetaReq,
   Computed,
   Constructor,
+  EntityOnCharacterMetaReq,
   HeterogeneousMetaBase,
+  InferResult,
+  IQuery,
   IsExtends,
   MetaBase,
   PickingPropsNotStrictlySuperTypeOf,
+  RelatedToMetaReq,
   StaticAssert,
   StrictlySuperTypeOf,
 } from "./utils";
@@ -172,7 +177,7 @@ class PrimaryMethodsImpl<Meta extends HeterogeneousMetaBase> {
   }
 }
 
-type RestrictionConfig = {
+type PrimaryMethodRestrictionConfig = {
   my: { who: "my" };
   opp: { who: "opp" };
   all: { who: "all" };
@@ -195,18 +200,18 @@ type RestrictionConfig = {
 
 type _Check = StaticAssert<
   IsExtends<
-    RestrictionConfig,
+    PrimaryMethodRestrictionConfig,
     {
-      [K in keyof RestrictionConfig]: Partial<HeterogeneousMetaBase>;
+      [K in keyof PrimaryMethodRestrictionConfig]: Partial<HeterogeneousMetaBase>;
     }
   >
 >;
 
-type OmittedMethods<Meta extends HeterogeneousMetaBase> = {
-  [K in PrimaryMethodNames]: K extends keyof RestrictionConfig
+type PrimaryMethodsOmit<Meta extends HeterogeneousMetaBase> = {
+  [K in PrimaryMethodNames]: K extends keyof PrimaryMethodRestrictionConfig
     ? PickingPropsNotStrictlySuperTypeOf<
         Meta,
-        RestrictionConfig[K]
+        PrimaryMethodRestrictionConfig[K]
       > extends true
       ? K
       : never
@@ -221,10 +226,12 @@ type OmittedMethods<Meta extends HeterogeneousMetaBase> = {
         : never;
 }[PrimaryMethodNames];
 
-export const PrimaryMethods = PrimaryMethodsImpl as Constructor<PrimaryMethods<any>>;
+export const PrimaryMethods = PrimaryMethodsImpl as Constructor<
+  PrimaryMethods<any>
+>;
 export type PrimaryMethods<Meta extends HeterogeneousMetaBase> = Omit<
   PrimaryMethodsImpl<Meta>,
-  OmittedMethods<Meta>
+  PrimaryMethodsOmit<Meta>
 >;
 
 export type PrimaryMethodNames = keyof PrimaryMethodsImpl<any> & {};
@@ -237,3 +244,53 @@ export const PRIMARY_METHODS = Object.getOwnPropertyDescriptors(
   ["constructor"]?: PropertyDescriptor;
 };
 delete PRIMARY_METHODS.constructor;
+
+type HasAtConfig = {
+  has: {
+    subject: CharacterMetaReq;
+    object: EntityOnCharacterMetaReq;
+  };
+  at: {
+    subject: EntityOnCharacterMetaReq;
+    object: CharacterMetaReq;
+  };
+};
+type HasAtMethodNames = keyof HasAtConfig & {};
+
+type AllHasAtMethods<Meta extends HeterogeneousMetaBase> = {
+  [K in HasAtMethodNames]: <Q extends IQuery>(
+    object: RelatedToMetaReq<
+      InferResult<Q>,
+      HasAtConfig[K]["object"]
+    > extends true
+      ? Q
+      : never,
+  ) => Assign<Meta, HasAtConfig[K]["subject"]>;
+};
+
+type HasAtMethodsOmit<Meta extends HeterogeneousMetaBase> = {
+  [K in HasAtMethodNames]: RelatedToMetaReq<
+    Meta,
+    HasAtConfig[K]["subject"]
+  > extends true
+    ? never
+    : K;
+}[HasAtMethodNames];
+
+export type HasAtMethods<Meta extends HeterogeneousMetaBase> = Omit<
+  AllHasAtMethods<Meta>,
+  HasAtMethodsOmit<Meta>
+>;
+
+const HAS_AT_METHODS = ["has", "at"] as const;
+
+class HasAtMethodsImpl {}
+for (const methodName of HAS_AT_METHODS) {
+  Object.defineProperty(HasAtMethodsImpl.prototype, methodName, {
+    value: function (this: any, object: IQuery) {
+      // TODO
+      return this;
+    }
+  });
+}
+export const HasAtMethods = HasAtMethodsImpl as Constructor<HasAtMethods<any>>;

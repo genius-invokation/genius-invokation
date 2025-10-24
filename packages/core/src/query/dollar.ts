@@ -11,20 +11,16 @@ import {
 } from "./primary_methods";
 import { createPrimaryQuery, type PrimaryQuery } from "./primary_query";
 import type {
-  HeterogeneousMetaBase,
   InferResult,
   IQuery,
-  IsExtends,
   MetaBase,
   NotFunctionPrototype,
   RelatedToMetaReq,
-  StaticAssert,
-  UnaryOperator,
   UnaryOperatorMetas,
 } from "./utils";
 
 type DollarUnaryOperatorMethods = {
-  [K in keyof UnaryOperatorMetas as UnaryOperatorMetas[K]["name"]]: {
+  [K in keyof UnaryOperatorMetas]: {
     <T extends IQuery>(
       arg: RelatedToMetaReq<
         InferResult<T>,
@@ -32,9 +28,7 @@ type DollarUnaryOperatorMethods = {
       > extends true
         ? T
         : never,
-    ): PrimaryQuery<
-      UnaryOperatorMetas[K]["result"] & MetaBase & { returns: "identical" }
-    >;
+    ): PrimaryQuery<UnaryOperatorMetas[K]["result"] & InitialPrimaryMeta>;
   } & PrimaryQuery<
     MetaBase &
       UnaryOperatorMetas[K]["operand"] & {
@@ -114,31 +108,14 @@ for (const [method, descriptor] of Object.entries<PropertyDescriptor>(
   }
 }
 
-const UNARY_OPS = {
-  unaryHas: "has",
-  unaryAt: "at",
-  not: "not",
-  recentFrom: "recentFrom",
-} as const;
+const UNARY_OPS = ["has", "at", "not", "recentFrom"] as const;
 
-type _Check = StaticAssert<
-  IsExtends<
-    typeof UNARY_OPS,
-    {
-      [K in keyof UnaryOperatorMetas]: UnaryOperatorMetas[K]["name"];
-    }
-  >
->;
-
-for (const [operator, name] of Object.entries(UNARY_OPS) as [
-  UnaryOperator,
-  string,
-][]) {
+for (const name of UNARY_OPS) {
   const chainForm = () => {
     const callingForm = (q: IQuery) => {
-      return createPrimaryQuery(operator);
+      return createPrimaryQuery(name);
     };
-    const returns = createPrimaryQuery(operator);
+    const returns = createPrimaryQuery(name);
     Object.setPrototypeOf(callingForm, returns);
     return callingForm;
   };
@@ -154,28 +131,4 @@ type IDollar = Dollar &
   PrimaryMethods<InitialPrimaryMeta> &
   DollarUnaryOperatorMethods;
 
-const $ = new Dollar() as IDollar;
-
-// test
-
-$.equipment.at($.character);
-
-$.not($.active.has($.tag("shield")));
-
-$.has($.status);
-
-const x = $.intersection(
-  $.opp,
-  $.union($.status, $.combatStatus, $.summon),
-  $.union($.tag("barrier"), $.tag("shield")),
-);
-
-type X = InferResult<typeof x>;
-
-const y = $.opp.next.orElse($.opp.active);
-type Y = InferResult<typeof y>;
-
-$.has($.status).orElse($.active);
-
-const z = $.opp.union($.my).intersection($.active);
-type Z = InferResult<typeof z>;
+export const $ = new Dollar() as IDollar;
