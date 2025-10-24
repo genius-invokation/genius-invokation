@@ -309,6 +309,31 @@ class PrimaryQuery<Meta extends HeterogeneousMetaBase>
     super();
   }
 
+  orElse<M extends MetaBase>(
+    fallback: IQuery<M>,
+  ): CompositeQuery<UnionMeta<[ReturnOfMeta<Meta>, M]>> {
+    return new CompositeQuery("orElse", [this, fallback]);
+  }
+
+  has<Q extends IQuery>(
+    fallback: RelatedToMetaReq<
+      InferResult<Q>,
+      EntityOnCharacterMetaReq
+    > extends true
+      ? Q
+      : never,
+  ): CompositeQuery<ReturnOfMeta<Meta>> {
+    return new CompositeQuery("has", [this, fallback]);
+  }
+
+  at<Q extends IQuery>(
+    fallback: RelatedToMetaReq<InferResult<Q>, CharacterMetaReq> extends true
+      ? Q
+      : never,
+  ): CompositeQuery<ReturnOfMeta<Meta>> {
+    return new CompositeQuery("at", [this, fallback]);
+  }
+
   [toExpression](): Expression {
     // TODO
     return [];
@@ -388,9 +413,32 @@ type OmittedMethods<Meta extends HeterogeneousMetaBase> = {
         : never;
 }[PrimaryMethodNames];
 
+type AllowedBinaryOperatorLhs = {
+  has: CharacterMetaReq;
+  at: EntityOnCharacterMetaReq;
+  orElse: {};
+  union: {};
+  intersection: {};
+};
+
+type OmittedOperators<Meta extends HeterogeneousMetaBase> = Meta extends {
+  returns: "identical";
+}
+  ? {
+      [Op in BinaryOperator]: RelatedToMetaReq<
+        ReturnOfMeta<Meta>,
+        AllowedBinaryOperatorLhs[Op]
+      > extends true
+        ? never
+        : Op;
+    }[BinaryOperator]
+  : // Forbidden subsequent binary operator that starts with unary shortcut;
+    // E.g. `$.has.def(...).orElse($...)` does not make sense. Use `$.has($.def(...)).orElse($...)` instead.
+    BinaryOperator;
+
 type RestrictedPrimaryQuery<Meta extends HeterogeneousMetaBase> = Omit<
   PrimaryQuery<Meta>,
-  OmittedMethods<Meta>
+  OmittedMethods<Meta> | OmittedOperators<Meta>
 >;
 
 type UnionMeta2<Meta1 extends MetaBase, Meta2 extends MetaBase> = {
@@ -537,6 +585,8 @@ type IDollar = Dollar &
 
 const $ = new Dollar() as IDollar;
 
+// test
+
 const x = $.intersection(
   $.opp,
   $.union($.status, $.combatStatus, $.summon),
@@ -544,3 +594,6 @@ const x = $.intersection(
 );
 
 type X = InferResult<typeof x>;
+
+const y = $.opp.next.orElse($.opp.active);
+type Y = InferResult<typeof y>;
