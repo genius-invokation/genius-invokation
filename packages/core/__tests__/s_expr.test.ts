@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseSExpr } from "../query/s_expr";
+import { parseSExpr } from "../src/query/s_expr";
 
 describe("S-expression Parser", () => {
   test("basic", () => {
