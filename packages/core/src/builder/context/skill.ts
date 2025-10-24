@@ -60,7 +60,7 @@ import {
   type PlainCardState,
   type ExPlainEntityState,
 } from "./utils";
-import { executeQuery } from "../../query";
+import { executeQuery } from "../../query-legacy";
 import type {
   AppliableDamageType,
   CardHandle,
@@ -76,7 +76,7 @@ import type {
   SupportHandle,
 } from "../type";
 import type { CardDefinition, CardTag, CardType } from "../../base/card";
-import type { GuessedTypeOfQuery } from "../../query/types";
+import type { GuessedTypeOfQuery } from "../../query-legacy/types";
 import { CALLED_FROM_REACTION } from "../reaction";
 import { flip } from "@gi-tcg/utils";
 import { GiTcgDataError } from "../../error";
