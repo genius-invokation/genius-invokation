@@ -39,52 +39,16 @@ type DollarUnaryOperatorMethods = {
 };
 
 class Dollar {
-  intersection<A extends MetaBase, B extends MetaBase>(
-    a: IQuery<A>,
-    b: IQuery<B>,
-  ): CompositeQuery<IntersectionMeta<[A, B]>>;
-  intersection<A extends MetaBase, B extends MetaBase, C extends MetaBase>(
-    a: IQuery<A>,
-    b: IQuery<B>,
-    c: IQuery<C>,
-  ): CompositeQuery<IntersectionMeta<[A, B, C]>>;
-  intersection<
-    A extends MetaBase,
-    B extends MetaBase,
-    C extends MetaBase,
-    D extends MetaBase,
-  >(
-    a: IQuery<A>,
-    b: IQuery<B>,
-    c: IQuery<C>,
-    d: IQuery<D>,
-  ): CompositeQuery<IntersectionMeta<[A, B, C, D]>>;
-  intersection(...args: IQuery[]): CompositeQuery<any> {
-    return createCompositeQuery<any>("intersection", args);
+  intersection<T extends MetaBase[]>(
+    ...args: { [K in keyof T]: IQuery<T[K]> }
+  ): CompositeQuery<IntersectionMeta<T>> {
+    return createCompositeQuery("intersection", args);
   }
 
-  union<A extends MetaBase, B extends MetaBase>(
-    a: IQuery<A>,
-    b: IQuery<B>,
-  ): CompositeQuery<UnionMeta<[A, B]>>;
-  union<A extends MetaBase, B extends MetaBase, C extends MetaBase>(
-    a: IQuery<A>,
-    b: IQuery<B>,
-    c: IQuery<C>,
-  ): CompositeQuery<UnionMeta<[A, B, C]>>;
-  union<
-    A extends MetaBase,
-    B extends MetaBase,
-    C extends MetaBase,
-    D extends MetaBase,
-  >(
-    a: IQuery<A>,
-    b: IQuery<B>,
-    c: IQuery<C>,
-    d: IQuery<D>,
-  ): CompositeQuery<UnionMeta<[A, B, C, D]>>;
-  union(...args: IQuery[]): CompositeQuery<any> {
-    return createCompositeQuery<any>("union", args);
+  union<T extends MetaBase[]>(
+    ...args: { [K in keyof T]: IQuery<T[K]> }
+  ): CompositeQuery<UnionMeta<T>> {
+    return createCompositeQuery("union", args);
   }
 }
 
