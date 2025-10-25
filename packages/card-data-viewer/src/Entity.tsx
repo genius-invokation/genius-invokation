@@ -48,11 +48,11 @@ export function Character(props: CardDataProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<CharacterRawData>
+    (defId) => assetsManager.getData(defId) as Promise<CharacterRawData>,
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId, { type: "icon" })
+    (defId) => assetsManager.getImageUrl(defId, { type: "icon" }),
   );
   return (
     <div class={props.class}>
@@ -118,11 +118,11 @@ export function ActionCard(props: CardDataProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<ActionCardRawData>
+    (defId) => assetsManager.getData(defId) as Promise<ActionCardRawData>,
   );
   const [image] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId)
+    (defId) => assetsManager.getImageUrl(defId),
   );
   return (
     <div class={props.class}>
@@ -156,11 +156,7 @@ export function ActionCard(props: CardDataProps) {
                       : {}
                   }
                   definitionId={props.input.definitionId}
-                  description={
-                    (props.input.from === "state"
-                      ? data().rawPlayingDescription
-                      : void 0) ?? data().rawDescription
-                  }
+                  description={data().rawDescription}
                   onRequestExplain={props.onRequestExplain}
                 />
               </div>
@@ -184,12 +180,12 @@ export function Skill(props: ExpandableCardDataProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>
+    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>,
   );
 
   const [icon] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId)
+    (defId) => assetsManager.getImageUrl(defId),
   );
   const [skillTypeText, setSkillTypeText] = createSignal("");
   const [playCost, setPlayCost] = createSignal<PlayCost[]>([]);
@@ -255,11 +251,11 @@ export function Entity(props: ExpandableCardDataProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<EntityRawData>
+    (defId) => assetsManager.getData(defId) as Promise<EntityRawData>,
   );
   const [icon] = createResource(
     () => props.input.definitionId,
-    (defId) => assetsManager.getImageUrl(defId)
+    (defId) => assetsManager.getImageUrl(defId),
   );
   const [entityTypeText, setEntityTypeText] = createSignal("");
 
@@ -351,7 +347,7 @@ export function Keyword(props: CardDefinitionProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<KeywordRawData>
+    (defId) => assetsManager.getData(defId) as Promise<KeywordRawData>,
   );
   return (
     <div class={props.class}>
@@ -391,11 +387,11 @@ export function Reference(props: ReferenceProps) {
   const assetsManager = useAssetsManager();
   const [data] = createResource(
     () => props.definitionId,
-    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>
+    (defId) => assetsManager.getData(defId) as Promise<SkillRawData>,
   );
   const [image] = createResource(
     () => props.definitionId,
-    (defId) => assetsManager.getImageUrl(defId)
+    (defId) => assetsManager.getImageUrl(defId),
   );
   return (
     <div>
