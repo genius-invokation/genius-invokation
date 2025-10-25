@@ -1705,6 +1705,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.combatStatus(ADVENTURE_COMPLETE_ID);
     }
     this.dispose();
+    return this.enableShortcut();
   }
 
   random<T>(items: readonly T[]): T {
@@ -1774,7 +1775,8 @@ type SkillContextMutativeProps =
   | "useSkill"
   | "selectAndSummon"
   | "selectAndCreateHandCard"
-  | "adventure";
+  | "adventure"
+  | "finishAdventure";
 
 /**
  * 所谓 `Typed` 是指，若 `Readonly` 则忽略那些可以改变游戏状态的方法。
