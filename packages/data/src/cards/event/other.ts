@@ -76,6 +76,7 @@ export const ElectroHilichurlShooter = summon(303214)
 export const FatuiAmbusherCryoCicinMage = combatStatus(303216)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Cryo, 1, "my active")
   .done();
 
@@ -89,6 +90,7 @@ export const FatuiAmbusherCryoCicinMage = combatStatus(303216)
 export const FatuiAmbusherMirrorMaiden = combatStatus(303217)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Hydro, 1, "my active")
   .done();
 
@@ -102,6 +104,7 @@ export const FatuiAmbusherMirrorMaiden = combatStatus(303217)
 export const FatuiAmbusherPyroslingerBracer = combatStatus(303218)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Pyro, 1, "my active")
   .done();
 
@@ -115,6 +118,7 @@ export const FatuiAmbusherPyroslingerBracer = combatStatus(303218)
 export const FatuiAmbusherElectrohammerVanguard = combatStatus(303219)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Electro, 1, "my active")
   .done();
 
