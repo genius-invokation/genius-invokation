@@ -135,10 +135,11 @@ export const FierySanctumRedmanesBlood = skill(13096)
   .listenToPlayer()
   .do((c) => {
     const protection = c.$(`my combat status with definition id ${FierySanctumsProtection}`);
-    if (!protection) return;
-    if (protection.getVariable("usage") === 0 && c.self.health >= 7) {
+    if (protection?.getVariable("usage") === 0) {
       protection.dispose();
-      c.damage(DamageType.Piercing, 1, "@self");
+      if (c.self.health >= 7) {
+        c.damage(DamageType.Piercing, 1, "@self");
+      }
     }
   })
   .done();
