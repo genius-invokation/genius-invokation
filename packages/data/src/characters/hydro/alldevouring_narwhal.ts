@@ -51,7 +51,7 @@ export const DarkShadow = summon(122043)
   .on("decreaseDamaged", (c, e) => !c.getVariable("decreasedDamage") && e.target.isActive())
   .decreaseDamage(1)
   .setVariable("decreasedDamage", 1)
-  .on("damaged")
+  .on("damaged", (c) =>  c.getVariable("decreasedDamage"))
   .consumeUsage(2)
   .setVariable("decreasedDamage", 0)
   .done();
