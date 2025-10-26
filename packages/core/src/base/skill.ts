@@ -203,7 +203,6 @@ export interface SkillInfoOfContextConstruction extends SkillInfo {
 }
 
 export interface DamageInfo {
-  readonly id: number;
   readonly type: Exclude<DamageType, typeof DamageType.Heal>;
   readonly value: number;
   readonly source: AnyState;
