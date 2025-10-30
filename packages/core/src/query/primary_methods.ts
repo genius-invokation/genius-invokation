@@ -9,7 +9,7 @@ import type {
   SummonHandle,
   SupportHandle,
 } from "../builder/type";
-import type { PrimaryQuery } from "./primary_query";
+import type { PrimaryMethodsInternal, PrimaryQuery } from "./primary_query";
 import type {
   CharacterMetaReq,
   Computed,
@@ -87,11 +87,14 @@ class PrimaryMethodsImpl<Meta extends HeterogeneousMetaBase> {
   private get _self(): any {
     return this;
   }
+  declare _internal: PrimaryMethodsInternal;
   // who
   get my(): Assign<Meta, { who: "my" }> {
+    this._internal.addConstraint(["who", "my"]);
     return this._self;
   }
   get opp(): Assign<Meta, { who: "opp" }> {
+    this._internal.addConstraint(["who", "opp"]);
     return this._self;
   }
   get all(): Assign<Meta, { who: "all" }> {
@@ -99,46 +102,59 @@ class PrimaryMethodsImpl<Meta extends HeterogeneousMetaBase> {
   }
   // type/area
   get character(): Assign<Meta, { type: "character"; areaType: "characters" }> {
+    this._internal.addConstraint(["type", "character"]);
     return this._self;
   }
   get equipment(): Assign<Meta, { type: "equipment"; areaType: "characters" }> {
+    this._internal.addConstraint(["type", "equipment"]);
     return this._self;
   }
   get status(): Assign<Meta, { type: "status"; areaType: "characters" }> {
+    this._internal.addConstraint(["type", "status"]);
     return this._self;
   }
   get combatStatus(): Assign<
     Meta,
     { type: "combatStatus"; areaType: "combatStatuses" }
   > {
+    this._internal.addConstraint(["type", "combatStatus"]);
     return this._self;
   }
   get summon(): Assign<Meta, { type: "summon"; areaType: "summons" }> {
+    this._internal.addConstraint(["type", "summon"]);
     return this._self;
   }
   get support(): Assign<Meta, { type: "support"; areaType: "supports" }> {
+    this._internal.addConstraint(["type", "support"]);
     return this._self;
   }
   get hand(): Assign<Meta, { type: "card"; areaType: "hands" }> {
+    this._internal.addConstraint(["type", "card"], ["area", "hands"]);
     return this._self;
   }
   get pile(): Assign<Meta, { type: "card"; areaType: "pile" }> {
+    this._internal.addConstraint(["type", "card"], ["area", "pile"]);
     return this._self;
   }
   get card(): Assign<Meta, { type: "card"; areaType: "hands" | "pile" }> {
+    this._internal.addConstraint(["type", "card"]);
     return this._self;
   }
   // position
   get active(): Assign<Meta, PositionPatch<"active">> {
+    this._internal.addConstraint(["position", "active"]);
     return this._self;
   }
   get prev(): Assign<Meta, PositionPatch<"prev">> {
+    this._internal.addConstraint(["position", "prev"]);
     return this._self;
   }
   get next(): Assign<Meta, PositionPatch<"next">> {
+    this._internal.addConstraint(["position", "next"]);
     return this._self;
   }
   get standby(): Assign<Meta, PositionPatch<"standby">> {
+    this._internal.addConstraint(["position", "standby"]);
     return this._self;
   }
   // defeated
@@ -146,12 +162,14 @@ class PrimaryMethodsImpl<Meta extends HeterogeneousMetaBase> {
     Meta,
     { type: "character"; areaType: "characters"; defeated: "only" }
   > {
+    this._internal.setDefeatedConstraint("defeatedOnly");
     return this._self;
   }
   get includesDefeated(): Assign<
     Meta,
     { type: "character"; areaType: "characters"; defeated: "includes" }
   > {
+    this._internal.setDefeatedConstraint("all");
     return this._self;
   }
   // with

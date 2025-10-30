@@ -1,6 +1,7 @@
 import { mixins } from "../utils";
 import { BinaryMethods } from "./binary_methods";
 import { HasAtMethods, PrimaryMethods } from "./primary_methods";
+import { stringifySExpr } from "./s_expr";
 import {
   toExpression,
   type Computed,
@@ -12,16 +13,43 @@ import {
   type UnaryOperator,
 } from "./utils";
 
+type DefeatedKeyword = "defeatedOnly" | "noDefeated" | "all";
+
+export class PrimaryMethodsInternal {
+  private _constraints: Expression[] = [];
+  private _defeatedKeyword: DefeatedKeyword = "noDefeated";
+  setDefeatedConstraint(kw: "defeatedOnly" | "all"): void {
+    this._defeatedKeyword = kw;
+  }
+  addConstraint(...constraints: Expression[]): void {
+    this._constraints.push(...constraints);
+  }
+  [toExpression](): Expression {
+    const defeatedConstraint: Expression[] =
+      this._defeatedKeyword === "all"
+        ? []
+        : this._defeatedKeyword === "defeatedOnly"
+          ? [["defeated", "only"]]
+          : [["defeated", "ignore"]];
+    return ["intersection", [], ...this._constraints];
+  }
+}
+
 class PrimaryQueryImpl<Meta extends HeterogeneousMetaBase>
   implements IQuery<ReturnOfMeta<Meta>>
 {
   declare [retMeta]: ReturnOfMeta<Meta>;
+  private _internal: PrimaryMethodsInternal;
 
-  constructor(private _leadingUnaryOp: UnaryOperator | null) {}
+  constructor(private _leadingUnaryOp: UnaryOperator | null) {
+    this._internal = new PrimaryMethodsInternal();
+  }
 
   [toExpression](): Expression {
-    // TODO
-    return [];
+    if (this._leadingUnaryOp !== null) {
+      return [this._leadingUnaryOp, this._internal[toExpression]()];
+    }
+    return this._internal[toExpression]();
   }
 }
 
