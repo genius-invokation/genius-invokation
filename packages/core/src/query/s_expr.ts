@@ -1,8 +1,9 @@
 /**
  * A tiny S-expression structure. Can be a string, a number,
- * or a recursive array of other Results.
+ * or a recursive array of other Expressions.
  */
-export type Result = string | number | Array<Result>;
+
+import type { Expression } from "./utils";
 
 /**
  * Parses a string containing a single S-expression into a nested structure.
@@ -19,7 +20,7 @@ export type Result = string | number | Array<Result>;
  * @returns The parsed S-expression structure.
  * @throws {Error} If the input string is malformed (e.g., unbalanced parentheses, invalid tokens).
  */
-export function parseSExpr(input: string): Result {
+export function parseSExpr(input: string): Expression {
   let i = 0; // The current position (cursor) in the input string
 
   /** Skips whitespace and full-line comments. */
@@ -41,12 +42,12 @@ export function parseSExpr(input: string): Result {
   }
 
   /** Parses a list expression like `(foo 1 "bar")`. */
-  function parseList(): Array<Result> {
+  function parseList(): Expression[] {
     const openParen = input[i];
     const closeParen = { "(": ")", "[": "]", "{": "}" }[openParen]!;
     i++; // Move past the opening parenthesis
 
-    const list: Array<Result> = [];
+    const list: Expression[] = [];
     while (true) {
       skipWhitespace();
 
@@ -122,7 +123,7 @@ export function parseSExpr(input: string): Result {
   }
 
   /** The main dispatcher that decides which parsing function to call. */
-  function parseValue(): Result {
+  function parseValue(): Expression {
     skipWhitespace();
     const char = input[i];
 
@@ -152,4 +153,21 @@ export function parseSExpr(input: string): Result {
   }
 
   return result;
+}
+
+export function stringifySExpr(expr: Expression): string {
+  if (typeof expr === "string") {
+    return JSON.stringify(expr); // Properly escape the string
+  }
+  if (typeof expr === "number") {
+    return expr.toString();
+  }
+  if (Array.isArray(expr)) {
+    return (
+      "(" +
+      expr.map((elem) => stringifySExpr(elem)).join(" ") +
+      ")"
+    );
+  }
+  throw new Error("Invalid expression type.");
 }
