@@ -163,7 +163,8 @@ interface RpcResolver {
   resolve: (response: any) => void;
 }
 
-const pingInterval = interval(15 * 1000).pipe(
+// Keepalive ping interval (10 seconds to prevent proxy/gateway timeout)
+const pingInterval = interval(10 * 1000).pipe(
   map((): SSEPing => ({ type: "ping" }))
 );
 
