@@ -29,6 +29,8 @@ const app = await NestFactory.create<NestFastifyApplication>(
   new FastifyAdapter({
     // Oops. https://github.com/oven-sh/bun/issues/8823
     // http2: true
+    keepAliveTimeout: 65000, // 65 seconds (should be longer than ping interval)
+    requestTimeout: 0, // Disable request timeout for SSE
   }),
 );
 app.useGlobalPipes(new ValidationPipe({ transform: true }));
