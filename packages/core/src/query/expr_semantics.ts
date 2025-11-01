@@ -160,3 +160,54 @@ class NonTerminalsConfig {
     ],
   });
 }
+
+type NonTerminalName = keyof NonTerminalsConfig;
+
+type InferRule<R extends Rule> = R extends { use: infer U extends NonTerminalName }
+  ? InferNonTerminal<U>
+  : R extends { enum: infer E extends string[] }
+    ? E[number]
+    : R extends { arbitrary: infer A extends string | number }
+      ? A
+      : R extends {
+            leading: infer L extends string;
+            args: infer Args extends Argument[];
+          }
+        ? InferExpr<L, Args, undefined>
+        : R extends {
+              leading: infer L extends string;
+              args: infer Args extends Argument[];
+              restArgs: infer RestArgs extends Argument;
+            }
+          ? InferExpr<L, Args, RestArgs>
+          : R extends {
+                leading: infer L extends string;
+                restArgs: infer RestArgs extends Argument;
+              }
+            ? InferExpr<L, undefined, RestArgs>
+            : never;
+
+type InferExpr<
+  L extends string,
+  Args extends Argument[] | undefined,
+  RestArgs extends Argument | undefined,
+> = [
+  L,
+  ...(Args extends Argument[] ? InferArguments<Args> : []),
+  ...(RestArgs extends Argument ? InferArgument<RestArgs>[] : []),
+];
+
+type InferArguments<Args extends Argument[]> = Args extends [
+  infer First extends Argument,
+  ...infer Rest extends Argument[],
+]
+  ? [InferArgument<First>, ...InferArguments<Rest>]
+  : [];
+
+type InferArgument<Arg extends Argument> = InferRule<Arg>;
+
+type InferNonTerminal<N extends NonTerminalName> = InferRules<NonTerminalsConfig[N]["rules"][number]>;
+
+type InferRules<R extends Rule> = InferRule<R>;
+
+type UnorderedQuery = InferNonTerminal<"UnorderedQuery">;
