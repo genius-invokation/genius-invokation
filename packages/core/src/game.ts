@@ -83,7 +83,7 @@ import {
   defineSkillInfo,
 } from "./base/skill";
 import type { CardDefinition } from "./base/card";
-import { executeQueryOnState } from "./query";
+import { executeQueryOnState } from "./query-legacy";
 import {
   GiTcgCoreInternalError,
   GiTcgDataError,
