@@ -86,6 +86,8 @@ export interface ActionCardRawData {
   description: string;
   rawPlayingDescription?: string;
   playingDescription?: string;
+  rawDynamicDescription?: string;
+  dynamicDescription?: string;
   playCost: PlayCost[];
   cardFace: string;
 }
