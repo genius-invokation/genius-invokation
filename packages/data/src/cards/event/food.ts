@@ -356,7 +356,7 @@ export const GlitteringGemstones = card(333017)
  * 接下来3次名称不存在于初始牌组中的牌加入我方手牌时，目标我方角色治疗自身1点。
  * （每回合每个角色最多食用1次「料理」）
  */
-export const [PuffPops] = card(333018)
+export const [PuffPops, PuffPopsInEffect] = card(333018)
   .since("v5.3.0")
   .costSame(1)
   .food()
