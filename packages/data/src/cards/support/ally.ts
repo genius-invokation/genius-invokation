@@ -13,39 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import {
-  CardHandle,
-  CharacterHandle,
-  DamageType,
-  DiceType,
-  SkillHandle,
-  SupportHandle,
-  card,
-  extension,
-  flip,
-  pair,
-  status,
-  summon,
-} from "@gi-tcg/core/builder";
-import {
-  CalledInForCleanup,
-  CanotilasSupport,
-  CosanzeanasSupport,
-  LaumesSupport,
-  LutinesSupport,
-  MelusineSupport,
-  OrigamiFlyingSquirrel,
-  OrigamiHamster,
-  PopupPaperFrog,
-  SerenesSupport,
-  SIMULANKA_SUMMONS,
-  SluasisSupport,
-  TaroumarusSavings,
-  ThironasSupport,
-  TopyassSupport,
-  ToyGuard,
-  VirdasSupport,
-} from "../event/other";
+import { CardHandle, CharacterHandle, DamageType, DiceType, SkillHandle, SupportHandle, card, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { CalledInForCleanup, CanotilasSupport, CosanzeanasSupport, LaumesSupport, LutinesSupport, MelusineSupport, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, SerenesSupport, SIMULANKA_SUMMONS, SluasisSupport, TaroumarusSavings, ThironasSupport, TopyassSupport, ToyGuard, VirdasSupport } from "../event/other";
 
 /**
  * @id 322001
@@ -91,20 +60,11 @@ export const Timaeus = card(322003)
   .costSame(2)
   .support("ally")
   .variable("material", 2)
-  .on(
-    "enter",
-    (c) =>
-      c.player.initialPile.filter((c) => c.tags.includes("artifact")).length >=
-      6,
-  )
+  .on("enter", (c) => c.player.initialPile.filter((c) => c.tags.includes("artifact")).length >= 6)
   .drawCards(1, { withTag: "artifact" })
   .on("endPhase")
   .addVariable("material", 1)
-  .on(
-    "deductAllDiceCard",
-    (c, e) =>
-      e.hasCardTag("artifact") && c.getVariable("material") >= e.diceCostSize(),
-  )
+  .on("deductAllDiceCard", (c, e) => e.hasCardTag("artifact") && c.getVariable("material") >= e.diceCostSize())
   .usagePerRound(1)
   .do((c, e) => {
     c.addVariable("material", -e.diceCostSize());
@@ -137,11 +97,7 @@ export const Wagner = card(322004)
   })
   .on("endPhase")
   .addVariable("material", 1)
-  .on(
-    "deductAllDiceCard",
-    (c, e) =>
-      e.hasCardTag("weapon") && c.getVariable("material") >= e.diceCostSize(),
-  )
+  .on("deductAllDiceCard", (c, e) => e.hasCardTag("weapon") && c.getVariable("material") >= e.diceCostSize())
   .usagePerRound(1)
   .do((c, e) => {
     c.addVariable("material", -e.diceCostSize());
@@ -332,11 +288,7 @@ export const Hanachirusato = card(322013)
   .on("dispose", (c, e) => e.entity.definition.type === "summon")
   .listenToAll()
   .addVariableWithMax("progress", 1, 3)
-  .on(
-    "deductOmniDiceCard",
-    (c, e) =>
-      e.hasOneOfCardTag("weapon", "artifact") && c.getVariable("progress") >= 3,
-  )
+  .on("deductOmniDiceCard", (c, e) => e.hasOneOfCardTag("weapon", "artifact") && c.getVariable("progress") >= 3)
   .deductOmniCost(2)
   .dispose()
   .done();
@@ -485,12 +437,7 @@ export const YayoiNanatsuki = card(322020)
 export const Mamere: SupportHandle = card(322021)
   .since("v4.3.0")
   .support("ally")
-  .on(
-    "playCard",
-    (c, e) =>
-      e.card.definition.id !== Mamere &&
-      e.hasOneOfCardTag("food", "place", "ally", "item"),
-  )
+  .on("playCard", (c, e) => e.card.definition.id !== Mamere && e.hasOneOfCardTag("food", "place", "ally", "item"))
   .usage(3)
   .usagePerRound(1)
   .do((c) => {
@@ -539,33 +486,22 @@ export const Jeht = card(322022)
   .since("v4.4.0")
   .costSame(1)
   .associateExtension(DisposedSupportCountExtension)
-  .replaceDescription(
-    "[GCG_TOKEN_COUNTER]",
-    (_, { area }, ext) => ext.disposedSupportCount[area.who],
-  )
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (_, { area }, ext) => ext.disposedSupportCount[area.who])
   .support("ally")
   .associateExtension(DisposedSupportCountExtension)
   .variable("experience", 0)
   .on("enter")
   .do((c) => {
-    c.setVariable(
-      "experience",
-      Math.min(c.getExtensionState().disposedSupportCount[c.self.who], 6),
-    );
+    c.setVariable("experience", Math.min(c.getExtensionState().disposedSupportCount[c.self.who], 6));
   })
   .on("dispose", (c, e) => e.entity.definition.type === "support")
   .do((c) => {
-    c.setVariable(
-      "experience",
-      Math.min(c.getExtensionState().disposedSupportCount[c.self.who], 6),
-    );
+    c.setVariable("experience", Math.min(c.getExtensionState().disposedSupportCount[c.self.who], 6));
   })
-  .on(
-    "useSkill",
-    (c, e) =>
-      e.isSkillType("burst") &&
-      !e.skillCaller.cast<"character">().hasStatus(SandsAndDream) && // 多个婕德不重复触发
-      c.getVariable("experience") >= 6,
+  .on("useSkill", (c, e) =>
+    e.isSkillType("burst") &&
+    !e.skillCaller.cast<"character">().hasStatus(SandsAndDream) && // 多个婕德不重复触发
+    c.getVariable("experience") >= 6,
   )
   .characterStatus(SandsAndDream, "my active")
   .dispose()
@@ -576,11 +512,7 @@ const DamageTypeCountExtension = extension(322023, {
 })
   .description("记录本场对局中双方角色受到过的元素伤害种类")
   .mutateWhen("onDamageOrHeal", (st, e) => {
-    if (
-      e.isDamageTypeDamage() &&
-      e.type !== DamageType.Physical &&
-      e.type !== DamageType.Piercing
-    ) {
+    if (e.isDamageTypeDamage() &&  e.type !== DamageType.Physical && e.type !== DamageType.Piercing) {
       st.damages[e.targetWho].add(e.type);
     }
   })
@@ -598,10 +530,7 @@ export const SilverAndMelus = card(322023)
   .since("v4.4.0")
   .costSame(1)
   .associateExtension(DamageTypeCountExtension)
-  .replaceDescription(
-    "[GCG_TOKEN_COUNTER]",
-    (_, { area }, ext) => ext.damages[flip(area.who)].size,
-  )
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (_, { area }, ext) => ext.damages[flip(area.who)].size)
   .support("ally")
   .associateExtension(DamageTypeCountExtension)
   .variable("count", 0)

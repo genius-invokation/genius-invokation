@@ -142,13 +142,18 @@ export async function generateCards() {
       target = others;
     }
     let description = card.description;
-    if (card.playingDescription && card.playingDescription.includes("$")) {
+    if (
+      card.playingDescription?.includes("$") ||
+      card.dynamicDescription?.includes("$")
+    ) {
       description += "\n【此卡含描述变量】";
     }
     if (card.tags.includes("GCG_TAG_VEHICLE")) {
       const et = entities.find((et) => et.id === card.id)!;
       for (const skill of et.skills) {
-        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(skill.playCost)}) ${skill.description}`;
+        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(
+          skill.playCost
+        )}) ${skill.description}`;
       }
     }
     target.push({
@@ -165,46 +170,50 @@ export async function generateCards() {
     writeSourceCode(
       "cards/equipment/weapon/bow.ts",
       INIT_CARD_CODE,
-      equipsCode.bow,
+      equipsCode.bow
     ),
     writeSourceCode(
       "cards/equipment/weapon/sword.ts",
       INIT_CARD_CODE,
-      equipsCode.sword,
+      equipsCode.sword
     ),
     writeSourceCode(
       "cards/equipment/weapon/catalyst.ts",
       INIT_CARD_CODE,
-      equipsCode.catalyst,
+      equipsCode.catalyst
     ),
     writeSourceCode(
       "cards/equipment/weapon/pole.ts",
       INIT_CARD_CODE,
-      equipsCode.pole,
+      equipsCode.pole
     ),
     writeSourceCode(
       "cards/equipment/weapon/claymore.ts",
       INIT_CARD_CODE,
-      equipsCode.claymore,
+      equipsCode.claymore
     ),
     writeSourceCode(
       "cards/equipment/artifacts.ts",
       INIT_CARD_CODE,
-      equipsCode.artifact,
+      equipsCode.artifact
     ),
     writeSourceCode(
       "cards/equipment/techniques.ts",
       INIT_CARD_CODE,
-      equipsCode.technique,
+      equipsCode.technique
     ),
     writeSourceCode("cards/support/ally.ts", INIT_CARD_CODE, supportCode.ally),
     writeSourceCode(
       "cards/support/place.ts",
       INIT_CARD_CODE,
-      supportCode.place,
+      supportCode.place
     ),
     writeSourceCode("cards/support/item.ts", INIT_CARD_CODE, supportCode.item),
-    writeSourceCode("cards/support/adventure.ts", INIT_CARD_CODE, supportCode.adventureSpot),
+    writeSourceCode(
+      "cards/support/adventure.ts",
+      INIT_CARD_CODE,
+      supportCode.adventureSpot
+    ),
     // writeSourceCode("cards/support/other.ts", INIT_CARD_CODE, supportCode.other),
   ]);
 }

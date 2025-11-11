@@ -213,6 +213,7 @@ const NonInitialPlayedCardExtension = extension(311308, { defIds: pair(new Set<n
  * 此牌会记录本局游戏中你打出过的名称不存在于本局最初牌组中的不同名的行动牌数量，称为「声援」。
  * 如果此牌的「声援」至少为2/4/8，则角色造成的伤害+1/2/3。
  * （「双手剑」角色才能装备。角色最多装备1件「武器」）
+ * 【此卡含描述变量】
  */
 export const UltimateOverlordsMegaMagicSword = card(311308)
   .since("v4.8.0")
@@ -220,6 +221,7 @@ export const UltimateOverlordsMegaMagicSword = card(311308)
   .weapon("claymore")
   .variable("supp", 0)
   .associateExtension(NonInitialPlayedCardExtension)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (_, { area }, ext) => ext.defIds[area.who].size)
   .on("enter")
   .do((c) => {
     c.setVariable("supp", c.getExtensionState().defIds[c.self.who].size);
