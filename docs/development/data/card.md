@@ -40,7 +40,7 @@ const ElementalResonanceShatteringIce = card(331102)
   .requireCharacterTag("cryo")
   .toStatus("my active")
   .duration(1)
-  .once("beforeSkillDamage")
+  .once("increaseSkillDamage")
   .increaseDamage(2)
   .done();
 
