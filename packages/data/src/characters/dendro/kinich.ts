@@ -40,7 +40,7 @@ export const GrappleLink = status(117091)
   .listenToAll()
   .gainNightsoul("@master")
   .callSnippet()
-  // 实为使用特技前：总是在卡齐娜切走前吃到燃素充盈
+  // 实为使用特技前：总是在卡齐娜使用特技前吃到燃素充盈
   .on("beforeTechnique", (c, e) => e.techniqueCaller.id !== c.self.master.id)
   .listenToPlayer()
   .gainNightsoul("@master")
