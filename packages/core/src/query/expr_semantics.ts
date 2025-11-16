@@ -4,8 +4,12 @@ interface Rule {
   use?: NonTerminalName;
 
   enum?: [string, ...string[]];
+
   // arbitrary primitive values
   arbitrary?: "number" | "string";
+
+  // (...<args>)
+  list?: Rule;
 
   // (<leading> <args> ...<restArgs>)
   leading?: string;
@@ -38,12 +42,16 @@ class NonTerminalsConfig {
     rules: [
       {
         leading: "orderBy",
-        args: [{ name: "orderingSpec", use: "UnorderedQuery" }],
+        args: [
+          { name: "targetQuery", use: "UnorderedQuery" },
+          { name: "orderBySpec", list: { use: "OrderBySpec" } },
+        ],
       },
       {
         leading: "orderBy",
         args: [
-          { name: "orderingSpec", use: "UnorderedQuery" },
+          { name: "targetQuery", use: "UnorderedQuery" },
+          { name: "orderBySpec", list: { use: "OrderBySpec" } },
           { name: "limit", arbitrary: "number" },
         ],
       },
@@ -101,7 +109,7 @@ class NonTerminalsConfig {
       },
       {
         leading: "variables",
-        args: [], // TODO
+        args: [{ name: "variableSpec", use: "VariableSpec" }], // TODO
       },
       {
         leading: "id",
@@ -156,6 +164,155 @@ class NonTerminalsConfig {
       {
         leading: "recentFrom",
         args: [{ name: "operand", use: "UnorderedQuery" }],
+      },
+    ],
+  });
+
+  VariableSpec = defineNonTerminal({
+    rules: [
+      {
+        leading: "expr",
+        args: [{ name: "expression", use: "BooleanExpression" }],
+      },
+      {
+        leading: "fn",
+        args: [{
+          name: "fnCode",
+          arbitrary: "string",
+          description: `JS Function body, receives a object containing variable values, returns boolean`
+        }],
+      }
+    ],
+  });
+  OrderBySpec = defineNonTerminal({
+    rules: [
+      {
+        leading: "expr",
+        args: [{ name: "expression", use: "NumericalExpression" }],
+      },
+      {
+        leading: "fn",
+        args: [{
+          name: "fnCode",
+          arbitrary: "string",
+          description: `JS Function body, receives two object containing variable values of each, returns -1, 0 or 1`
+        }],
+      }
+    ]
+  });
+
+  BooleanExpression = defineNonTerminal({
+    rules: [
+      {
+        leading: "not",
+        args: [{ name: "operand", use: "BooleanExpression" }],
+      },
+      {
+        leading: "and",
+        restArgs: { name: "operands", use: "BooleanExpression" },
+      },
+      {
+        leading: "or",
+        restArgs: { name: "operands", use: "BooleanExpression" },
+      },
+      {
+        leading: ">",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: ">=",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "=",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "<=",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "<",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "!=",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+    ],
+  });
+  NumericalExpression = defineNonTerminal({
+    rules: [
+      {
+        arbitrary: "string",
+        description: `Use the value read from a variable name`,
+      },
+      {
+        arbitrary: "number",
+        description: `Arbitrary constant number`,
+      },
+      {
+        leading: "+",
+        restArgs: { name: "operands", use: "NumericalExpression" },
+      },
+      {
+        leading: "*",
+        restArgs: { name: "operands", use: "NumericalExpression" },
+      },
+      {
+        leading: "-",
+        args: [{ name: "rhs", use: "NumericalExpression" }],
+      },
+      {
+        leading: "-",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "/",
+        args: [{ name: "rhs", use: "NumericalExpression" }],
+      },
+      {
+        leading: "/",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "%",
+        args: [
+          { name: "lhs", use: "NumericalExpression" },
+          { name: "rhs", use: "NumericalExpression" },
+        ],
+      },
+      {
+        leading: "min",
+        restArgs: { name: "operands", use: "NumericalExpression" },
+      },
+      {
+        leading: "max",
+        restArgs: { name: "operands", use: "NumericalExpression" },
       },
     ],
   });
