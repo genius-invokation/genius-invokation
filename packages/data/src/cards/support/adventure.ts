@@ -29,11 +29,11 @@ export const ChenyuVale = card(321032)
   .since("v6.1.0")
   .adventureSpot()
   .on("adventure", (c) => c.getVariable("exp") >= 2)
-  .usage(1, { name: "stage1", autoDispose: false, visible: false })
+  .usage(1, { name: "stage1", visible: false })
   .createHandCard(ChenyuBrew)
   .createHandCard(ChenyuBrew)
   .on("adventure", (c) => c.getVariable("exp") >= 4)
-  .usage(1, { name: "stage2", autoDispose: false, visible: false })
+  .usage(1, { name: "stage2", visible: false })
   .combatStatus(EfficientSwitch, "my", {
     overrideVariables: {
       usage: 3

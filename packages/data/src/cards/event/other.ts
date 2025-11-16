@@ -1672,7 +1672,7 @@ export const UltimateSurfingBuddy = card(332041)
  * @description
  * 本回合我方下次角色消耗「夜魂值」后：该角色获得1点「夜魂值」。
  */
-export const [AbundantPhlogiston] = card(332042)
+export const [AbundantPhlogiston, AbundantPhlogistonInEffect] = card(332042)
   .since("v5.3.0")
   .toCombatStatus(303238)
   .oneDuration()

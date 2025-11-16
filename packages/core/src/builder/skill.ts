@@ -439,6 +439,13 @@ const detailedEventDictionary = {
       !e.skill.definition.initiativeSkillConfig.hidden
     );
   }),
+  beforeTechnique: defineDescriptor("onBeforeUseSkill", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      e.isSkillType("technique") &&
+      !e.skill.definition.initiativeSkillConfig.hidden
+    );
+  }),
   useSkill: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
