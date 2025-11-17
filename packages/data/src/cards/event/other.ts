@@ -987,9 +987,6 @@ export const [TheBoarPrincess] = card(332025)
   .on("dispose", (c, e) => e.entity.definition.type === "equipment")
   .generateDice(DiceType.Omni, 1)
   .consumeUsage()
-  .on("enterRelative", (c, e) => e.overridden && e.entity.definition.type === "equipment")
-  .generateDice(DiceType.Omni, 1)
-  .consumeUsage()
   .done();
 
 /**
