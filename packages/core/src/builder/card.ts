@@ -26,6 +26,7 @@ import type {
   DescriptionDictionary,
   DescriptionDictionaryEntry,
   DescriptionDictionaryKey,
+  VariableConfig,
 } from "../base/entity";
 import {
   type DisposeOrTuneCardEventArg,
@@ -66,6 +67,7 @@ import {
   type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
+import { createVariable } from "./utils";
 
 type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
   callerType: "card";
@@ -150,16 +152,18 @@ type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
 
 export class CardBuilder<
   KindTs extends InitiativeSkillTargetKind,
+  CallerVars extends string,
   AssociatedExt extends ExtensionHandle = never,
 > extends SkillBuilderWithCost<{
   callerType: "card";
-  callerVars: never;
+  callerVars: CallerVars;
   eventArgType: StrictInitiativeSkillEventArg<KindTs>;
   associatedExtension: AssociatedExt;
 }> {
   private _type: CardType = "event";
   private _obtainable = true;
   private _tags: CardTag[] = [];
+  private _varConfigs: Record<string, VariableConfig> = {};
   /**
    * 在料理卡牌的行动结尾添加“设置饱腹状态”操作的目标；
    * `null` 表明不添加（不是料理牌或者手动指定）
@@ -221,9 +225,18 @@ export class CardBuilder<
     return this;
   }
 
+  variable<const Name extends string>(name: Name, value: number): CardBuilder<KindTs, CallerVars | Name, AssociatedExt> {
+    if (Reflect.has(this._varConfigs, name)) {
+      throw new GiTcgDataError(`Variable name ${name} already exists`);
+    }
+    const varConfig = createVariable(value);
+    this._varConfigs[name] = varConfig;
+    return this as any;
+  }
+
   associateExtension<NewExtT>(
     ext: ExtensionHandle<NewExtT>,
-  ): BuilderWithShortcut<CardBuilder<KindTs, ExtensionHandle<NewExtT>>> {
+  ): BuilderWithShortcut<CardBuilder<KindTs, CallerVars, ExtensionHandle<NewExtT>>> {
     if (this.associatedExtensionId !== null) {
       throw new GiTcgDataError(
         `This card has already associated with extension ${this.id}`,
@@ -401,7 +414,7 @@ export class CardBuilder<
   addTarget<Q extends TargetQuery>(
     targetQuery: Q,
   ): BuilderWithShortcut<
-    CardBuilder<readonly [...KindTs, TargetKindOfQuery<Q>], AssociatedExt>
+    CardBuilder<readonly [...KindTs, TargetKindOfQuery<Q>], CallerVars, AssociatedExt>
   > {
     this.addTargetImpl(targetQuery);
     return this as any;
@@ -470,7 +483,7 @@ export class CardBuilder<
   food(
     opt: FoodOption = {},
   ): BuilderWithShortcut<
-    CardBuilder<readonly [...KindTs, "character"], AssociatedExt>
+    CardBuilder<readonly [...KindTs, "character"], CallerVars, AssociatedExt>
   > {
     if (!opt.noSatiated) {
       this._satiatedTarget = "@targets.0";
@@ -702,6 +715,7 @@ export class CardBuilder<
       tags: this._tags,
       version: this._versionInfo,
       skills,
+      varConfigs: this._varConfigs,
       descriptionDictionary: this._descriptionDictionary,
     };
     registerCard(cardDef);
@@ -710,5 +724,5 @@ export class CardBuilder<
 }
 
 export function card(id: number) {
-  return withShortcut(new CardBuilder<readonly []>(id));
+  return withShortcut(new CardBuilder<readonly [], never>(id));
 }

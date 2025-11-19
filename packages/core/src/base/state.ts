@@ -165,7 +165,7 @@ export interface CardState {
   readonly [StateSymbol]: "card";
   readonly id: number;
   readonly definition: CardDefinition;
-  readonly variables: Record<string, undefined>;
+  readonly variables: Record<string, number>;
 }
 
 export interface CharacterState {

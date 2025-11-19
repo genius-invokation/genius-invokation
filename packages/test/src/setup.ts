@@ -358,7 +358,11 @@ export function setup(state: JSX.Element): TestController {
           [StateSymbol]: "card",
           id,
           definition,
-          variables: {},
+          variables: Object.fromEntries(
+            Object.entries(definition.varConfigs).map(
+              ([name, { initialValue }]) => [name, initialValue]
+            )
+          ),
         };
         const area = pile ? "pile" : "hands";
         player[area].push(state as Draft<CardState>);

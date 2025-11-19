@@ -170,7 +170,11 @@ function initPlayerState(
       [StateSymbol]: "card",
       id: idIter.id,
       definition,
-      variables: {},
+      variables: Object.fromEntries(
+        Object.entries(definition.varConfigs).map(
+          ([name, { initialValue }]) => [name, initialValue],
+        ),
+      ),
     });
   }
   return {

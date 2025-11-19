@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { WeaponTag } from "./character";
-import type { DescriptionDictionary } from "./entity";
+import type { DescriptionDictionary, VariableConfig } from "./entity";
 import type { SkillDefinition } from "./skill";
 import type { VersionInfo } from "./version";
 
@@ -47,6 +47,8 @@ export type InitiativeSkillTargetKind = readonly (
   | "support"
 )[];
 
+type CardVariableConfigs = Record<string, VariableConfig>;
+
 export interface CardDefinition {
   readonly __definition: "cards";
   readonly type: "card";
@@ -55,6 +57,7 @@ export interface CardDefinition {
   readonly cardType: CardType;
   readonly obtainable: boolean;
   readonly tags: readonly CardTag[];
+  readonly varConfigs: CardVariableConfigs;
   readonly skills: readonly SkillDefinition[];
   readonly descriptionDictionary: DescriptionDictionary;
 }
