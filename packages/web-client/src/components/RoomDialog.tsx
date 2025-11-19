@@ -262,7 +262,7 @@ export function RoomDialog(props: RoomDialogProps) {
   return (
     <dialog
       ref={(el) => (dialogEl = el) && (props.ref as any)?.(el)}
-      class="max-h-unset max-w-unset h-100dvh w-100dvw overflow-auto pt-[calc(0.75rem+var(--root-padding-top))] md:pt-3 md:m-x-auto md:my-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6"
+      class="max-h-unset max-w-unset h-100dvh w-100dvw overflow-auto pt-[calc(0.75rem+var(--root-padding-top))] md:pt-3 md:m-x-auto md:my-3rem md:h-[calc(100vh-6rem)] md:w-min md:max-h-180 md:rounded-xl md:shadow-xl p-6 scrollbar-hidden"
     >
       <div class="flex flex-col md:min-h-full md:h-min w-full gap-5">
         <h3 class="flex-shrink-0 text-xl font-bold">房间配置</h3>
@@ -374,7 +374,7 @@ export function RoomDialog(props: RoomDialogProps) {
           <div class="b-r-gray-200 b-1" />
           <div class="flex flex-col min-w-52 relative">
             <h4 class="text-lg mb-3">选择出战牌组</h4>
-            <ul class="flex-grow-1 flex flex-row md:flex-col flex-wrap min-h-0 overflow-auto">
+            <ul class="flex-grow-1 flex flex-row md:flex-col flex-wrap md:flex-nowrap min-h-0 max-h-75dvh md:max-h-135 overflow-auto scrollbar-hidden">
               <For
                 each={availableDecks()}
                 fallback={<li class="text-gray-500">暂无该版本可用牌组</li>}
