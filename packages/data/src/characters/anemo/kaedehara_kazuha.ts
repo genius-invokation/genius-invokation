@@ -278,6 +278,8 @@ export const PoeticsOfFuubutsu = card(215051)
   .since("v3.8.0")
   .costAnemo(3)
   .talent(KaedeharaKazuha)
+  .on("enter")
+  .useSkill(Chihayaburu)
   .on("dealDamage", (c, e) => e.isSwirl())
   .do((c, e) => {
     const swirled = e.isSwirl()!;
