@@ -374,7 +374,7 @@ export function RoomDialog(props: RoomDialogProps) {
           <div class="b-r-gray-200 b-1" />
           <div class="flex flex-col min-w-52 relative">
             <h4 class="text-lg mb-3">选择出战牌组</h4>
-            <ul class="flex-grow-1 flex flex-row md:flex-col flex-wrap md:flex-nowrap min-h-0 max-h-75dvh md:max-h-135 overflow-auto scrollbar-hidden">
+            <ul class="flex-grow-1 flex flex-row md:flex-col flex-wrap md:flex-nowrap min-h-0 max-h-75dvh md:max-h-135 overflow-auto deck-ul-scrollbar">
               <For
                 each={availableDecks()}
                 fallback={<li class="text-gray-500">暂无该版本可用牌组</li>}
