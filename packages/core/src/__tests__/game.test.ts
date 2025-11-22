@@ -21,7 +21,8 @@ import {
   EntityDefinition,
   SkillDefinition,
   CardDefinition,
-} from "../base";
+} from "../base/index";
+import { EventArg } from "../base/skill";
 import {
   getActiveCharacterIndex,
   findReplaceAction,
@@ -122,7 +123,11 @@ test("findReplaceAction should return the correct skill", () => {
     triggerOn: "replaceAction",
     action: () => [{} as any, {} as any],
     filter: (state, skillInfo, arg) => {
-      const char = new Character(state, skillInfo.caller.id);
+      const area = getEntityArea(state, skillInfo.caller.id);
+      if (area.type !== "characters") {
+        return false;
+      }
+      const char = new Character(state, area.characterId);
       return char.isActive() && !char.isSkillDisabled();
     },
     id: 10101,

@@ -376,6 +376,10 @@ export function findReplaceAction(
 ): SkillInfo | null {
   const skills = allSkills(state, "replaceAction");
   for (const { caller, skill } of skills) {
+    const area = getEntityArea(state, caller.id);
+    if (area.type !== "characters") {
+      continue;
+    }
     const skillInfo = defineSkillInfo({
       caller,
       definition: skill,

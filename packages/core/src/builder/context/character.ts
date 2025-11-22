@@ -34,8 +34,8 @@ import {
   getActiveCharacterIndex,
   nationOfCharacter,
   weaponOfCharacter,
-  isSkillDisabled,
 } from "./utils";
+import { isSkillDisabled } from "../../../utils";
 import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
 import { Aura, DamageType, DiceType } from "@gi-tcg/typings";
 import type {
