@@ -371,9 +371,11 @@ export interface CheckPreparingResult {
   skillId: number;
 }
 
-export function findReplaceAction(state: GameState): SkillInfo | null {
+export function findReplaceAction(
+  state: GameState,
+  eventArg: EventArg,
+): SkillInfo | null {
   const skills = allSkills(state, "replaceAction");
-  const eventArg = new EventArg(state);
   for (const { caller, skill } of skills) {
     const skillInfo = defineSkillInfo({
       caller,
@@ -386,8 +388,10 @@ export function findReplaceAction(state: GameState): SkillInfo | null {
   return null;
 }
 
-export function isSkillDisabled(state: GameState, character: CharacterState): boolean {
-  return new Character(state, character.id).isSkillDisabled();
+export function isSkillDisabled(character: CharacterState): boolean {
+  return character.entities.some((st) =>
+    st.definition.tags.includes("disableSkill"),
+  );
 }
 
 /**

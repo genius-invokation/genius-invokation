@@ -651,13 +651,14 @@ export class Game {
         "onBeforeAction",
         new PlayerEventArg(this.state, who),
       );
-      const replacedSkill = findReplaceAction(this.state);
+      const eventArg = new EventArg(this.state);
+      const replacedSkill = findReplaceAction(this.state, eventArg);
       if (replacedSkill) {
         this.mutator.log(
           DetailLogType.Other,
           `Found replaced action from ${stringifyState(replacedSkill.caller)}`,
         );
-        await this.executeSkill(replacedSkill, new EventArg(this.state));
+        await this.executeSkill(replacedSkill, eventArg);
         this.mutate({
           type: "switchTurn",
         });
@@ -910,7 +911,7 @@ export class Game {
     const result: ActionInfo[] = [];
 
     // Skills
-    const skillDisabled = isSkillDisabled(this.state, activeCh);
+    const skillDisabled = isSkillDisabled(activeCh);
     for (const { caller, skill } of initiativeSkillsOfPlayer(player)) {
       const { charged, plunging } = isChargedPlunging(skill, player);
       const skillInfo = defineSkillInfo({

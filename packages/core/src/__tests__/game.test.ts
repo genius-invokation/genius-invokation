@@ -114,7 +114,7 @@ test("isSkillDisabled should return true when disableSkill tag is present", () =
     state.players[0].characters[
       getActiveCharacterIndex(state.players[0])
     ];
-  expect(isSkillDisabled(state, activeChar)).toBe(true);
+  expect(isSkillDisabled(activeChar)).toBe(true);
 });
 
 test("findReplaceAction should return the correct skill", () => {
@@ -132,7 +132,7 @@ test("findReplaceAction should return the correct skill", () => {
     initiativeSkillConfig: null,
   };
   const state = mockGameState([], [replaceActionSkill]);
-  const skillInfo = findReplaceAction(state);
+  const skillInfo = findReplaceAction(state, new EventArg(state));
   expect(skillInfo).not.toBeNull();
   expect(skillInfo?.definition.id).toBe(10101);
 });

@@ -34,6 +34,7 @@ import {
   getActiveCharacterIndex,
   nationOfCharacter,
   weaponOfCharacter,
+  isSkillDisabled as isSkillDisabledFn,
 } from "./utils";
 import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
 import { Aura, DamageType, DiceType } from "@gi-tcg/typings";
@@ -250,9 +251,7 @@ export class ReadonlyCharacter<
     ) ?? null;
   }
   isSkillDisabled(): boolean {
-    return this.entities.some((st) =>
-      st.definition.tags.includes("disableSkill"),
-    );
+    return isSkillDisabledFn(this.state);
   }
 }
 
