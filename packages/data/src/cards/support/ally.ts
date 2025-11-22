@@ -625,7 +625,9 @@ export const SirArthur = card(322026)
   .do((c) => {
     c.addVariable("clue", -2);
     const top = c.oppPlayer.pile[0];
-    c.createHandCard(top.definition.id as CardHandle);
+    if (top) {
+      c.createHandCard(top.definition.id as CardHandle);
+    }
   })
   .done();
 
