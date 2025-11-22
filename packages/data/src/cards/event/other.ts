@@ -1335,10 +1335,14 @@ const MELUSINE_EVENT_CARDS = [
   WaterAndJustice,
   FireAndWar,
   // 331807, 
-] as CardHandle[];
+];
 
-const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): CardDefinition[] => {
-  return MELUSINE_EVENT_CARDS.map(id => cards.get(id)).filter(c => !!c);
+// 筛出当前版本存在的卡
+const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): CardHandle[] => {
+  return MELUSINE_EVENT_CARDS
+    .map(id => cards.get(id))
+    .filter(def => !!def)
+    .map((def) => def.id as CardHandle);
 }
 
 /**
@@ -1354,8 +1358,8 @@ export const CanotilasSupport = card(302209)
     const cards = getMelusineEventCards(c.data.cards);
     const card0 = c.random(cards);
     const card1 = c.random(cards);
-    c.createHandCard(card0.id as CardHandle);
-    c.createHandCard(card1.id as CardHandle);
+    c.createHandCard(card0);
+    c.createHandCard(card1);
   })
   .done();
 
@@ -1372,7 +1376,7 @@ const ThironasGoodWill = combatStatus(302219)
   .do((c) => {
     const cards = getMelusineEventCards(c.data.cards);
     const card = c.random(cards);
-    c.createHandCard(card.id as CardHandle);
+    c.createHandCard(card);
   })
   .done();
 
