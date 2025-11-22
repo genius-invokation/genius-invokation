@@ -1343,7 +1343,7 @@ const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): Card
     .filter(def => !!def)
     .map((def) => def.id as CardHandle);
 }
-
+};
 /**
  * @id 302209
  * @name 夏诺蒂拉的声援
