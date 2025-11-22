@@ -624,8 +624,8 @@ export const SirArthur = card(322026)
   .on("endPhase", (c) => c.getVariable("clue") >= 2)
   .do((c) => {
     c.addVariable("clue", -2);
-    if (c.oppPlayer.pile.length > 0) {
-      const top = c.oppPlayer.pile[0];
+    const top = c.oppPlayer.pile[0];
+    if (top) {
       c.createHandCard(top.definition.id as CardHandle);
     }
   })
