@@ -651,14 +651,14 @@ export class Game {
         "onBeforeAction",
         new PlayerEventArg(this.state, who),
       );
-      const eventArg = new EventArg(this.state);
-      const replacedSkill = findReplaceAction(this.state, eventArg);
+      const replaceActionEventArg = new EventArg(this.state);
+      const replacedSkill = findReplaceAction(this.state, replaceActionEventArg);
       if (replacedSkill) {
         this.mutator.log(
           DetailLogType.Other,
           `Found replaced action from ${stringifyState(replacedSkill.caller)}`,
         );
-        await this.executeSkill(replacedSkill, eventArg);
+        await this.executeSkill(replacedSkill, replaceActionEventArg);
         this.mutate({
           type: "switchTurn",
         });

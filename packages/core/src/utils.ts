@@ -57,7 +57,6 @@ import {
 } from "./error";
 import type { ActionInfoWithModification } from "./preview";
 import type { PlayerConfig } from "./player";
-import { Character } from "./builder/context";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];
