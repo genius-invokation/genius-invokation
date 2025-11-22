@@ -126,12 +126,19 @@ export interface InitiativeSkillConfig {
   readonly requiredCost: ReadonlyDiceRequirement;
   readonly computed$costSize: number;
   readonly computed$diceCostSize: number;
-  readonly gainEnergy: boolean;
-  readonly shouldFast: boolean;
-  readonly alwaysCharged: boolean;
-  readonly alwaysPlunging: boolean;
-  readonly hidden: boolean;
   readonly getTarget: InitiativeSkillTargetGetter;
+  /** 使用后是否使 caller 获得充能 */
+  readonly gainEnergy: boolean;
+  /** 以 useSkill/playCard action 使用时，是否默认为快速行动 */
+  readonly shouldFast: boolean;
+  /** 总是视为重击 */
+  readonly alwaysCharged: boolean;
+  /** 总是视为下落攻击 */
+  readonly alwaysPlunging: boolean;
+  /** 隐藏：不可作为用户选择的 action 之一 */
+  readonly hidden: boolean;
+  /** 不触发使用技能前&后：通常只能通过准备使用 */
+  readonly omitEvents: boolean;
 }
 
 export interface InitiativeSkillDefinition

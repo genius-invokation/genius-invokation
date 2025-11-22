@@ -436,35 +436,35 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   beforeTechnique: defineDescriptor("onBeforeUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkill: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkillOrTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   declareEnd: defineDescriptor("onAction", (e, r) => {
@@ -1397,6 +1397,7 @@ export class InitiativeSkillBuilder<
   private _gainEnergy = true;
   protected _cost: DiceRequirement = new Map();
   private _prepared = false;
+  private _hidden = false;
   constructor(private readonly skillId: number) {
     super(skillId);
   }
@@ -1430,13 +1431,17 @@ export class InitiativeSkillBuilder<
     return this as any;
   }
 
-  prepared(): this {
-    this._prepared = true;
-    return this.noEnergy();
-  }
   noEnergy(): this {
     this._gainEnergy = false;
     return this;
+  }
+  hidden(): this {
+    this._hidden = true;
+    return this;
+  }
+  prepared(): this {
+    this._prepared = true;
+    return this.noEnergy().hidden();
   }
 
   type(type: "passive"): EntityBuilderPublic<"character">;
@@ -1488,7 +1493,8 @@ export class InitiativeSkillBuilder<
           shouldFast: false,
           alwaysCharged: this._alwaysCharged,
           alwaysPlunging: this._alwaysPlunging,
-          hidden: this._prepared,
+          hidden: this._hidden,
+          omitEvents: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
         triggerOn: "initiative",
@@ -1518,6 +1524,7 @@ export class TechniqueBuilder<
     autoDecrease: boolean;
   } | null = null;
   private _prepared = false;
+  private _hidden = false;
 
   constructor(
     id: number,
@@ -1535,6 +1542,7 @@ export class TechniqueBuilder<
 
   prepared(): this {
     this._prepared = true;
+    this._hidden = true;
     return this;
   }
 
@@ -1634,7 +1642,8 @@ export class TechniqueBuilder<
         shouldFast: false,
         alwaysCharged: this._alwaysCharged,
         alwaysPlunging: this._alwaysPlunging,
-        hidden: this._prepared,
+        hidden: this._hidden,
+        omitEvents: this._prepared,
         getTarget: this.buildTargetGetter(),
       },
       filter: this.buildFilter(),
