@@ -13,10 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { CardDefinition, CardHandle, DamageType, DiceType, Reaction, card, combatStatus, extension, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
-import { CardDefinition } from "@gi-tcg/core";
 
 /**
  * @id 303211

@@ -44,6 +44,11 @@ export type {
   PlainCardState as CardState,
   PlainEntityState as EntityState,
 } from "./context/utils";
+export type {
+  CharacterDefinition,
+  CardDefinition,
+  EntityDefinition,
+} from "../base/state";
 export {
   type CustomEvent,
   createCustomEvent as customEvent,
