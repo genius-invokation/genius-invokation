@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { CardDefinition, CardHandle, DamageType, DiceType, Reaction, card, combatStatus, extension, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
 
@@ -1334,7 +1334,15 @@ const MELUSINE_EVENT_CARDS = [
   WaterAndJustice,
   FireAndWar,
   // 331807, 
-] as CardHandle[];
+];
+
+// 筛出当前版本存在的卡
+const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): CardHandle[] => {
+  return MELUSINE_EVENT_CARDS
+    .map(id => cards.get(id))
+    .filter(def => !!def)
+    .map((def) => def.id as CardHandle);
+}
 
 /**
  * @id 302209
@@ -1346,8 +1354,9 @@ export const CanotilasSupport = card(302209)
   .since("v4.8.0")
   .costSame(1)
   .do((c) => {
-    const card0 = c.random(MELUSINE_EVENT_CARDS);
-    const card1 = c.random(MELUSINE_EVENT_CARDS);
+    const cards = getMelusineEventCards(c.data.cards);
+    const card0 = c.random(cards);
+    const card1 = c.random(cards);
     c.createHandCard(card0);
     c.createHandCard(card1);
   })
@@ -1364,7 +1373,8 @@ const ThironasGoodWill = combatStatus(302219)
   .on("endPhase") // 文本有误
   .usage(3)
   .do((c) => {
-    const card = c.random(MELUSINE_EVENT_CARDS);
+    const cards = getMelusineEventCards(c.data.cards);
+    const card = c.random(cards);
     c.createHandCard(card);
   })
   .done();
