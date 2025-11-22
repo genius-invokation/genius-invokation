@@ -16,6 +16,7 @@
 import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
+import { CardDefinition } from "@gi-tcg/core";
 
 /**
  * @id 303211
@@ -1336,6 +1337,10 @@ const MELUSINE_EVENT_CARDS = [
   // 331807, 
 ] as CardHandle[];
 
+const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): CardDefinition[] => {
+  return MELUSINE_EVENT_CARDS.map(id => cards.get(id)).filter(c => !!c);
+}
+
 /**
  * @id 302209
  * @name 夏诺蒂拉的声援
@@ -1346,10 +1351,11 @@ export const CanotilasSupport = card(302209)
   .since("v4.8.0")
   .costSame(1)
   .do((c) => {
-    const card0 = c.random(MELUSINE_EVENT_CARDS);
-    const card1 = c.random(MELUSINE_EVENT_CARDS);
-    c.createHandCard(card0);
-    c.createHandCard(card1);
+    const cards = getMelusineEventCards(c.data.cards);
+    const card0 = c.random(cards);
+    const card1 = c.random(cards);
+    c.createHandCard(card0.id as CardHandle);
+    c.createHandCard(card1.id as CardHandle);
   })
   .done();
 
@@ -1364,8 +1370,9 @@ const ThironasGoodWill = combatStatus(302219)
   .on("endPhase") // 文本有误
   .usage(3)
   .do((c) => {
-    const card = c.random(MELUSINE_EVENT_CARDS);
-    c.createHandCard(card);
+    const cards = getMelusineEventCards(c.data.cards);
+    const card = c.random(cards);
+    c.createHandCard(card.id as CardHandle);
   })
   .done();
 
