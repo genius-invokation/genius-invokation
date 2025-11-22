@@ -41,6 +41,7 @@ import {
 import type { CardDefinition } from "./base/card";
 import {
   defineSkillInfo,
+  EventArg,
   type EventNames,
   type InitiativeSkillDefinition,
   type InitiativeSkillInfo,
@@ -56,6 +57,7 @@ import {
 } from "./error";
 import type { ActionInfoWithModification } from "./preview";
 import type { PlayerConfig } from "./player";
+import { Character } from "./builder/context";
 
 export type Writable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -369,30 +371,23 @@ export interface CheckPreparingResult {
   skillId: number;
 }
 
-export function findReplaceAction(character: CharacterState): SkillInfo | null {
-  const candidates = character.entities
-    .map(
-      (st) =>
-        [
-          st,
-          st.definition.skills.find((sk) => sk.triggerOn === "replaceAction"),
-        ] as const,
-    )
-    .filter(([st, sk]) => sk);
-  if (candidates.length === 0) {
-    return null;
+export function findReplaceAction(state: GameState): SkillInfo | null {
+  const skills = allSkills(state, "replaceAction");
+  const eventArg = new EventArg(state);
+  for (const { caller, skill } of skills) {
+    const skillInfo = defineSkillInfo({
+      caller,
+      definition: skill,
+    });
+    if (skill.filter(state, skillInfo, eventArg)) {
+      return skillInfo;
+    }
   }
-  const [caller, definition] = candidates[0];
-  return defineSkillInfo({
-    caller,
-    definition: definition as SkillDefinition,
-  });
+  return null;
 }
 
-export function isSkillDisabled(character: CharacterState): boolean {
-  return character.entities.some((st) =>
-    st.definition.tags.includes("disableSkill"),
-  );
+export function isSkillDisabled(state: GameState, character: CharacterState): boolean {
+  return new Character(state, character.id).isSkillDisabled();
 }
 
 /**

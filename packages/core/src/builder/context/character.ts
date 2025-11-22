@@ -249,6 +249,11 @@ export class ReadonlyCharacter<
       v.definition.tags.includes("nightsoulsBlessing"),
     ) ?? null;
   }
+  isSkillDisabled(): boolean {
+    return this.entities.some((st) =>
+      st.definition.tags.includes("disableSkill"),
+    );
+  }
 }
 
 export class Character<

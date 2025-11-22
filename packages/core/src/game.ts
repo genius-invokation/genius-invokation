@@ -651,8 +651,8 @@ export class Game {
         "onBeforeAction",
         new PlayerEventArg(this.state, who),
       );
-      const replacedSkill = findReplaceAction(activeCh());
-      if (replacedSkill && !isSkillDisabled(activeCh())) {
+      const replacedSkill = findReplaceAction(this.state);
+      if (replacedSkill) {
         this.mutator.log(
           DetailLogType.Other,
           `Found replaced action from ${stringifyState(replacedSkill.caller)}`,
@@ -910,7 +910,7 @@ export class Game {
     const result: ActionInfo[] = [];
 
     // Skills
-    const skillDisabled = isSkillDisabled(activeCh);
+    const skillDisabled = isSkillDisabled(this.state, activeCh);
     for (const { caller, skill } of initiativeSkillsOfPlayer(player)) {
       const { charged, plunging } = isChargedPlunging(skill, player);
       const skillInfo = defineSkillInfo({
