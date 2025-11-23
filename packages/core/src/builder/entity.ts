@@ -110,12 +110,10 @@ interface NightsoulOptions extends VariableOptions {
 
 type EntityStateWithArea = EntityState & { readonly area: EntityArea };
 
-type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
-  (
-    st: GameState,
-    self: EntityStateWithArea,
-    ext: AssociatedExt["type"],
-  ) => string | number;
+type EntityDescriptionDictionaryGetter = (
+  st: GameState,
+  self: EntityStateWithArea,
+) => string | number;
 
 export const DEFAULT_SNIPPET_NAME = "default" as const;
 export type DefaultCustomEventArg = { readonly _default: unique symbol };
@@ -188,17 +186,15 @@ export class EntityBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: EntityDescriptionDictionaryGetter<AssociatedExt>,
+    getter: EntityDescriptionDictionaryGetter,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
-    const extId = this._associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
       const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
-      const ext = st.extensions.find((ext) => ext.definition.id === extId);
-      return String(getter(st, { ...self, area }, ext?.state));
+      return String(getter(st, { ...self, area }));
     };
     this._descriptionDictionary[key] = entry;
     return this;
@@ -476,8 +472,14 @@ export class EntityBuilder<
         name = "usage";
       }
     }
-    if (!perRound && name !== "usage" && typeof opt?.autoDispose === "boolean") {
-      console?.warn(`No need to specify \`autoDispose\` of a non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`);
+    if (
+      !perRound &&
+      name !== "usage" &&
+      typeof opt?.autoDispose === "boolean"
+    ) {
+      console?.warn(
+        `No need to specify \`autoDispose\` of a non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`,
+      );
       console?.trace();
     }
     const autoDispose = name === "usage" && opt?.autoDispose !== false;
@@ -580,7 +582,7 @@ export class EntityBuilder<
   }
   hint(
     icon: DamageType | CombatStatusHandle,
-    text?: string | EntityDescriptionDictionaryGetter<AssociatedExt>,
+    text?: string | EntityDescriptionDictionaryGetter,
   ) {
     if (typeof text === "function") {
       const hintReplacement = "[GCG_TOKEN_HINT_TEXT]";

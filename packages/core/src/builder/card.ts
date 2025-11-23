@@ -26,6 +26,7 @@ import type {
   DescriptionDictionary,
   DescriptionDictionaryEntry,
   DescriptionDictionaryKey,
+  EntityArea,
   VariableConfig,
 } from "../base/entity";
 import {
@@ -60,7 +61,14 @@ import type {
 import { EntityBuilder, type EntityBuilderPublic } from "./entity";
 import type { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
-import { costSize, diceCostSize, normalizeCost, type Writable } from "../utils";
+import {
+  costSize,
+  diceCostSize,
+  getEntityArea,
+  getEntityById,
+  normalizeCost,
+  type Writable,
+} from "../utils";
 import {
   type Version,
   type VersionInfo,
@@ -68,17 +76,24 @@ import {
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 import { createVariable } from "./utils";
+import type { CardState } from ".";
 
-type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
+type DisposeCardBuilderMeta<
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+> = {
   callerType: "card";
-  callerVars: never;
+  callerVars: CallerVars;
   eventArgType: DisposeOrTuneCardEventArg;
   associatedExtension: AssociatedExt;
 };
 
-type HCICardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
+type HCICardBuilderMeta<
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+> = {
   callerType: "card";
-  callerVars: never;
+  callerVars: CallerVars;
   eventArgType: HandCardInsertedEventArg;
   associatedExtension: AssociatedExt;
 };
@@ -143,11 +158,10 @@ export interface DoSameWhenDisposedOption<
   }>;
 }
 
-type CardArea = { readonly who: 0 | 1 };
-type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
+type CardStateWithArea = CardState & { readonly area: EntityArea };
+type CardDescriptionDictionaryGetter = (
   st: GameState,
-  self: { readonly area: CardArea },
-  ext: AssociatedExt["type"],
+  self: CardStateWithArea,
 ) => string | number;
 
 export class CardBuilder<
@@ -179,10 +193,10 @@ export class CardBuilder<
     associatedExtension: AssociatedExt;
   }> = () => true;
   private _disposeOperation: SkillOperation<
-    DisposeCardBuilderMeta<AssociatedExt>
+    DisposeCardBuilderMeta<CallerVars, AssociatedExt>
   > | null = null;
   private _hciOperation: SkillOperation<
-    HCICardBuilderMeta<AssociatedExt>
+    HCICardBuilderMeta<CallerVars, AssociatedExt>
   > | null = null;
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
 
@@ -210,22 +224,24 @@ export class CardBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: CardDescriptionDictionaryGetter<AssociatedExt>,
+    getter: CardDescriptionDictionaryGetter,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
-    const extId = this.associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
-      const ext = st.extensions.find((ext) => ext.definition.id === extId);
-      const who = st.players[0].hands.find((c) => c.id === id) ? 0 : 1;
-      return String(getter(st, { area: { who } }, ext?.state));
+      const self = getEntityById(st, id) as CardState;
+      const area = getEntityArea(st, id);
+      return String(getter(st, { ...self, area }));
     };
     this._descriptionDictionary[key] = entry;
     return this;
   }
 
-  variable<const Name extends string>(name: Name, value: number): CardBuilder<KindTs, CallerVars | Name, AssociatedExt> {
+  variable<const Name extends string>(
+    name: Name,
+    value: number,
+  ): CardBuilder<KindTs, CallerVars | Name, AssociatedExt> {
     if (Reflect.has(this._varConfigs, name)) {
       throw new GiTcgDataError(`Variable name ${name} already exists`);
     }
@@ -236,7 +252,9 @@ export class CardBuilder<
 
   associateExtension<NewExtT>(
     ext: ExtensionHandle<NewExtT>,
-  ): BuilderWithShortcut<CardBuilder<KindTs, CallerVars, ExtensionHandle<NewExtT>>> {
+  ): BuilderWithShortcut<
+    CardBuilder<KindTs, CallerVars, ExtensionHandle<NewExtT>>
+  > {
     if (this.associatedExtensionId !== null) {
       throw new GiTcgDataError(
         `This card has already associated with extension ${this.id}`,
@@ -414,7 +432,11 @@ export class CardBuilder<
   addTarget<Q extends TargetQuery>(
     targetQuery: Q,
   ): BuilderWithShortcut<
-    CardBuilder<readonly [...KindTs, TargetKindOfQuery<Q>], CallerVars, AssociatedExt>
+    CardBuilder<
+      readonly [...KindTs, TargetKindOfQuery<Q>],
+      CallerVars,
+      AssociatedExt
+    >
   > {
     this.addTargetImpl(targetQuery);
     return this as any;
@@ -555,7 +577,9 @@ export class CardBuilder<
     this._descriptionOnHCI = true;
     return this;
   }
-  onDispose(op: SkillOperation<DisposeCardBuilderMeta<AssociatedExt>>) {
+  onDispose(
+    op: SkillOperation<DisposeCardBuilderMeta<CallerVars, AssociatedExt>>,
+  ) {
     if (this._doSameWhenDisposed || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .doSameWhenDisposed() or .descriptionOnDraw().`,
@@ -567,7 +591,7 @@ export class CardBuilder<
   /**
    * 当此牌加入手牌时（"handCardInserted"）执行的代码
    */
-  onHCI(op: SkillOperation<HCICardBuilderMeta<AssociatedExt>>) {
+  onHCI(op: SkillOperation<HCICardBuilderMeta<CallerVars, AssociatedExt>>) {
     if (this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .descriptionOnDraw().`,
