@@ -651,7 +651,7 @@ export class Game {
         "onBeforeAction",
         new PlayerEventArg(this.state, who),
       );
-      const replaceActionEventArg = new EventArg(this.state);
+      const replaceActionEventArg = new PlayerEventArg(this.state, who);
       const replacedSkill = findReplaceAction(this.state, replaceActionEventArg);
       if (replacedSkill) {
         this.mutator.log(

@@ -70,8 +70,10 @@ import {
 import {
   costSize,
   diceCostSize,
+  getActiveCharacterIndex,
   getEntityArea,
   isCharacterInitiativeSkill,
+  isSkillDisabled,
   normalizeCost,
 } from "../utils";
 import { GiTcgDataError } from "../error";
@@ -420,7 +422,11 @@ const detailedEventDictionary = {
   beforeAction: defineDescriptor("onBeforeAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  replaceAction: defineDescriptor("replaceAction"),
+  replaceActionBySkill: defineDescriptor("replaceAction", (e, r) => {
+    const player = e.onTimeState.players[e.who];
+    const activeChar = player.characters[getActiveCharacterIndex(player)];
+    return checkRelative(e.onTimeState, activeChar.id, r) && !isSkillDisabled(activeChar);
+  }),
   action: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),

@@ -553,7 +553,7 @@ export class EntityBuilder<
       >
     )
       .tags("preparingSkill")
-      .on("replaceAction")
+      .on("replaceActionBySkill")
       .do(function (c) {
         c.useSkill(skill, { asPrepared: true });
         if (opt.nextStatus) {
