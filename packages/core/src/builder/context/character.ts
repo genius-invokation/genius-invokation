@@ -35,6 +35,7 @@ import {
   nationOfCharacter,
   weaponOfCharacter,
 } from "./utils";
+import { isSkillDisabled } from "../../utils";
 import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
 import { Aura, DamageType, DiceType } from "@gi-tcg/typings";
 import type {
@@ -248,6 +249,9 @@ export class ReadonlyCharacter<
     return this.entities.find((v) =>
       v.definition.tags.includes("nightsoulsBlessing"),
     ) ?? null;
+  }
+  isSkillDisabled(): boolean {
+    return isSkillDisabled(this.state);
   }
 }
 

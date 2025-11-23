@@ -1292,7 +1292,7 @@ export const EVENT_MAP = {
   onActionPhase: EventArg,
   onEndPhase: EventArg,
 
-  replaceAction: EventArg,
+  replaceAction: PlayerEventArg,
 
   onBeforeAction: PlayerEventArg,
   modifyAction0: ModifyAction0EventArg, // 增骰、减无色

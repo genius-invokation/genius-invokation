@@ -41,6 +41,7 @@ import {
 import type { CardDefinition } from "./base/card";
 import {
   defineSkillInfo,
+  EventArg,
   type EventNames,
   type InitiativeSkillDefinition,
   type InitiativeSkillInfo,
@@ -369,24 +370,25 @@ export interface CheckPreparingResult {
   skillId: number;
 }
 
-export function findReplaceAction(character: CharacterState): SkillInfo | null {
-  const candidates = character.entities
-    .map(
-      (st) =>
-        [
-          st,
-          st.definition.skills.find((sk) => sk.triggerOn === "replaceAction"),
-        ] as const,
-    )
-    .filter(([st, sk]) => sk);
-  if (candidates.length === 0) {
-    return null;
+export function findReplaceAction(
+  state: GameState,
+  eventArg: EventArg,
+): SkillInfo | null {
+  const skills = allSkills(state, "replaceAction");
+  for (const { caller, skill } of skills) {
+    const area = getEntityArea(state, caller.id);
+    if (area.type !== "characters") {
+      continue;
+    }
+    const skillInfo = defineSkillInfo({
+      caller,
+      definition: skill,
+    });
+    if (skill.filter(state, skillInfo, eventArg)) {
+      return skillInfo;
+    }
   }
-  const [caller, definition] = candidates[0];
-  return defineSkillInfo({
-    caller,
-    definition: definition as SkillDefinition,
-  });
+  return null;
 }
 
 export function isSkillDisabled(character: CharacterState): boolean {
