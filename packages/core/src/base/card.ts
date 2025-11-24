@@ -13,51 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { WeaponTag } from "./character";
-import type { DescriptionDictionary, VariableConfig } from "./entity";
-import type { SkillDefinition } from "./skill";
-import type { VersionInfo } from "./version";
-
-export type WeaponCardTag = Exclude<WeaponTag, "otherWeapon">;
-
-export type EquipmentTag =
-  | "talent"
-  | "artifact"
-  | "technique"
-  | "weapon"
-  | WeaponCardTag;
-
-export type SupportTag = "ally" | "place" | "item" | "adventureSpot";
-
-export type CardTag =
-  | "legend" // 秘传
-  | "action" // 出战行动
-  | "food"
-  | "resonance" // 元素共鸣
-  | "noTuning" // 禁用调和
-  | "adventureSpot" // 冒险地点
-  | EquipmentTag
-  | SupportTag;
-
-export type CardType = "event" | "support" | "equipment";
 
 export type InitiativeSkillTargetKind = readonly (
   | "character"
   | "summon"
   | "support"
 )[];
-
-type CardVariableConfigs = Record<string, VariableConfig>;
-
-export interface CardDefinition {
-  readonly __definition: "cards";
-  readonly type: "card";
-  readonly id: number;
-  readonly version: VersionInfo;
-  readonly cardType: CardType;
-  readonly obtainable: boolean;
-  readonly tags: readonly CardTag[];
-  readonly varConfigs: CardVariableConfigs;
-  readonly skills: readonly SkillDefinition[];
-  readonly descriptionDictionary: DescriptionDictionary;
-}
