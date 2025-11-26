@@ -434,7 +434,6 @@ const detailedEventDictionary = {
     return (
       // 大部分支援牌不触发自身的打出时；
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
-      // c.self.fromCardId !== e.card.id &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),

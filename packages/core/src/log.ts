@@ -128,13 +128,12 @@ export function serializeGameStateLog(
 const VALID_DEF_KEYS = [
   "characters",
   "entities",
-  "cards",
   "extensions",
 ] as const;
 type ValidDefKeys = (typeof VALID_DEF_KEYS)[number];
 
 function isValidDefKey(defKey: unknown): defKey is ValidDefKeys {
-  return ["characters", "entities", "cards", "extensions"].includes(
+  return ["characters", "entities", "extensions"].includes(
     defKey as string,
   );
 }

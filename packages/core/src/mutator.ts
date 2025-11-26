@@ -27,6 +27,7 @@ import {
 import {
   allEntitiesAtArea,
   allSkills,
+  assertValidActionCard,
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
@@ -177,7 +178,7 @@ export type InsertHandPayload =
     });
 
 export type InsertPilePayload =
-  | Omit<CreateEntityM, "targetIndex" >
+  | Omit<CreateEntityM, "targetIndex">
   | Omit<MoveEntityM, "targetIndex">;
 
 export type InsertPileStrategy =
@@ -1176,15 +1177,16 @@ export class StateMutator {
     );
     switch (info.type) {
       case "createHandCard": {
-        const def = this.state.data.cards.get(selected);
-        if (typeof def === "undefined") {
+        const def = this.state.data.entities.get(selected);
+        if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
+        assertValidActionCard(def);
         return this.createHandCard(who, def);
       }
       case "createEntity": {
         const def = this.state.data.entities.get(selected);
-        if (typeof def === "undefined") {
+        if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
         if (def.type !== "summon") {
@@ -1206,10 +1208,11 @@ export class StateMutator {
         }
       }
       case "requestPlayCard": {
-        const cardDefinition = this.state.data.cards.get(selected);
+        const cardDefinition = this.state.data.entities.get(selected);
         if (!cardDefinition) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
+        assertValidActionCard(cardDefinition);
         return [
           [
             "requestPlayCard",

@@ -123,7 +123,7 @@ function initPlayerState(
   idIter: IdIter,
 ): PlayerState {
   let initialPile: readonly EntityDefinition[] = deck.cards.map((id) => {
-    const def = data.cards.get(id);
+    const def = data.entities.get(id);
     if (typeof def === "undefined") {
       throw new GiTcgDataError(`Unknown card id ${id}`);
     }

@@ -76,6 +76,7 @@ export interface EntityDefinition {
   readonly type: EntityType;
   readonly id: number;
   readonly version: VersionInfo;
+  readonly obtainable: boolean;
   readonly visibleVarName: string | null;
   readonly tags: readonly EntityTag[];
   readonly hintText: string | null;

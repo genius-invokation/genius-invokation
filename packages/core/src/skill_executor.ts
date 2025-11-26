@@ -640,7 +640,7 @@ export class SkillExecutor {
           );
           await this.handleEvent(...events);
         } else if (hisSupports.length < this.state.config.maxSupportsCount) {
-          const spots = this.state.data.cards
+          const spots = this.state.data.entities
             .values()
             .filter((d) => d.tags.includes("adventureSpot"))
             .toArray();

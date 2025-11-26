@@ -46,7 +46,6 @@ export type {
 } from "./context/utils";
 export type {
   CharacterDefinition,
-  CardDefinition,
   EntityDefinition,
 } from "../base/state";
 export {

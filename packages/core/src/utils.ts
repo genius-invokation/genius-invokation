@@ -28,7 +28,7 @@ import type {
   GameState,
   PlayerState,
 } from "./base/state";
-import type { EntityArea, EntityDefinition } from "./base/entity";
+import type { EntityArea, EntityDefinition, EntityType } from "./base/entity";
 import {
   NATION_TAGS,
   WEAPON_TAGS,
@@ -539,6 +539,16 @@ export function diceCostOfCard(card: EntityDefinition): number {
   return (
     playSkillOfCard(card)?.initiativeSkillConfig.computed$diceCostSize ?? 0
   );
+}
+
+export function assertValidActionCard(entity: EntityDefinition): void {
+  if (
+    !(["support", "equipment", "eventCard"] as EntityType[]).includes(
+      entity.type,
+    )
+  ) {
+    throw new Error(`Invalid action card type: ${entity.type}`);
+  }
 }
 
 export function elementOfCharacter(ch: CharacterDefinition): DiceType {
