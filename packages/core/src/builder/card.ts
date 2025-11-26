@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { EntityState, GameState } from "../base/state";
-import type { InitiativeSkillTargetKind } from "../base/card";
 import type {
   CardTag,
   DescriptionDictionary,
@@ -38,11 +37,11 @@ import {
   type SkillDescription,
   type TriggeredSkillDefinition,
 } from "../base/skill";
-import { registerCard } from "./registry";
 import {
   SkillBuilderWithCost,
   withShortcut,
   type BuilderWithShortcut,
+  type InitiativeSkillTargetKind,
   type SkillOperation,
   type SkillOperationFilter,
   type StrictInitiativeSkillEventArg,
@@ -284,7 +283,6 @@ export class CardBuilder<
       .addTarget(target)
       .do((c) => {
         const ch = c.$("character and @targets.0");
-        const caller = c.skillInfo.caller;
         ch?.equip(cardId);
       })
       .done();
@@ -393,7 +391,7 @@ export class CardBuilder<
       never,
       true,
       never
-    >("combatStatus", id, this.id);
+    >("combatStatus", id);
     builder._versionInfo = this._versionInfo;
     return builder;
   }
@@ -413,7 +411,6 @@ export class CardBuilder<
     const builder = new EntityBuilder<"status", never, never, true, never>(
       "status",
       id,
-      this.id,
     );
     builder._versionInfo = this._versionInfo;
     return builder;

@@ -84,10 +84,15 @@ import {
   type VersionMetadata,
 } from "../base/version";
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
-import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 import type { ApplyReactive } from "./context/reactive";
+
+export type InitiativeSkillTargetKind = readonly (
+  | "character"
+  | "summon"
+  | "support"
+)[];
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
