@@ -147,7 +147,7 @@ export interface StrictInitiativeSkillEventArg<
 }
 
 type InitiativeSkillBuilderMeta<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = {
@@ -170,7 +170,7 @@ export type CreateSkillBuilderMeta<
 };
 
 export type StrictInitiativeSkillFilter<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = SkillOperationFilter<

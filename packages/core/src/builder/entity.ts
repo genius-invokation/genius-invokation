@@ -153,7 +153,7 @@ export class EntityBuilder<
   constructor(
     public readonly _type: CallerType,
     private readonly id: number,
-    private readonly fromCardId: number | null = null,
+    private readonly chainFromId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
   }
@@ -829,6 +829,7 @@ export class EntityBuilder<
       registerEntity({
         __definition: "entities",
         id: this.id,
+        obtainable: true,
         version: this._versionInfo,
         visibleVarName: this._visibleVarName,
         varConfigs: this._varConfigs,
@@ -840,10 +841,10 @@ export class EntityBuilder<
         descriptionDictionary: this._descriptionDictionary,
       });
     }
-    if (this.fromCardId === null) {
+    if (this.chainFromId === null) {
       return this.id as Result;
     } else {
-      return [this.fromCardId, this.id] as unknown as Result;
+      return [this.chainFromId, this.id] as unknown as Result;
     }
   }
 

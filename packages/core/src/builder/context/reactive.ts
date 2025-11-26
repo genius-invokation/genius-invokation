@@ -14,7 +14,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { StateSymbol, type StateKind } from "../../base/state";
-import { Card, type TypedCard } from "./card";
 import { Character, type TypedCharacter } from "./character";
 import { Entity, type TypedEntity } from "./entity";
 import type { ContextMetaBase, SkillContext } from "./skill";
@@ -29,7 +28,6 @@ import type { ExEntityState, ExEntityType } from "../type";
 type ReactiveClassMap<Meta extends ContextMetaBase> = {
   character: TypedCharacter<Meta>;
   entity: TypedEntity<Meta>;
-  card: TypedCard<Meta>;
 };
 type ReactiveClassCtor = new (
   skillContext: SkillContext<any>,
@@ -134,7 +132,6 @@ export function applyReactive<Meta extends ContextMetaBase, T>(
   const REACTIVE_CLASS_MAP: Partial<Record<StateKind, ReactiveClassCtor>> = {
     character: Character,
     entity: Entity,
-    card: Card,
   };
   if (
     StateSymbol in value &&

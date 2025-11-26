@@ -100,6 +100,7 @@ import {
   type RxEntityState,
 } from "./reactive";
 import { ReactiveStateSymbol } from "./reactive_base";
+import type { TypedEntity } from "./entity";
 
 type CharacterTargetArg = PlainCharacterState | PlainCharacterState[] | string;
 type EntityTargetArg = PlainEntityState | PlainEntityState[] | string;
@@ -453,13 +454,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
   private costSortedHands(
     who: "my" | "opp",
     useTieBreak: boolean,
-  ): RxEntityState<Meta, "card">[] {
+  ): TypedEntity<Meta>[] {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
-      ? (card: RxEntityState<Meta, "card">) => {
+      ? (card: TypedEntity<Meta>) => {
           return nextRandom(card.id) ^ this.rawState.iterators.random;
         }
-      : (_: RxEntityState<Meta, "card">) => 0;
+      : (_: TypedEntity<Meta>) => 0;
     const sortData = new Map(
       player.hands.map(
         (c) =>
@@ -476,7 +477,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
   maxCostHands(
     count: number,
     opt: MaxCostHandsOpt = {},
-  ): RxEntityState<Meta, "card">[] {
+  ): TypedEntity<Meta>[] {
     const who = opt.who ?? "my";
     const useTieBreak = opt.useTieBreak ?? false;
     return this.costSortedHands(who, useTieBreak).slice(0, count);
@@ -508,7 +509,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
           : ["event", "support", "equipment"].includes(filterArg)
             ? (c) => c.cardType === filterArg
             : (c) => c.tags.includes(filterArg as CardTag);
-    return this.state.data.cards
+    return this.state.data.entities
       .values()
       .filter((c) => {
         if (!c.obtainable) {

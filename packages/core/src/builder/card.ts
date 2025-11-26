@@ -51,6 +51,7 @@ import type {
   CharacterHandle,
   CombatStatusHandle,
   EquipmentHandle,
+  ExEntityType,
   ExtensionHandle,
   StatusHandle,
   SupportHandle,
@@ -132,54 +133,80 @@ export interface NightsoulTechniqueOption {
   alsoDisposeNightsoulsBlessing?: boolean;
 }
 
-export interface DoSameWhenDisposedOption<
-  AssociatedExt extends ExtensionHandle,
-> {
-  filter?: SkillOperationFilter<{
-    callerType: "card";
-    callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
-    associatedExtension: AssociatedExt;
-  }>;
-  prependOp?: SkillOperation<{
-    callerType: "card";
-    callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
-    associatedExtension: AssociatedExt;
-  }>;
-  appendOp?: SkillOperation<{
-    callerType: "card";
-    callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
-    associatedExtension: AssociatedExt;
-  }>;
-}
-
 type CardStateWithArea = CardState & { readonly area: EntityArea };
 type CardDescriptionDictionaryGetter = (
   st: GameState,
   self: CardStateWithArea,
 ) => string | number;
 
-export class CardBuilder<
+class PlaySkillBuilder<
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   CallerVars extends string,
   AssociatedExt extends ExtensionHandle = never,
 > extends SkillBuilderWithCost<{
-  callerType: "card";
+  callerType: CallerType;
   callerVars: CallerVars;
   eventArgType: StrictInitiativeSkillEventArg<KindTs>;
   associatedExtension: AssociatedExt;
 }> {
-  private _type: "support" | "equipment" | "eventCard" = "eventCard";
-  private _obtainable = true;
-  private _tags: EntityTag[] = [];
-  private _varConfigs: Record<string, VariableConfig> = {};
+  constructor(skillId: number) {
+    super(skillId);
+  }
+
   /**
    * 在料理卡牌的行动结尾添加“设置饱腹状态”操作的目标；
    * `null` 表明不添加（不是料理牌或者手动指定）
    */
   private _satiatedTarget: string | null = null;
+
+  endOn() {
+    if (this._satiatedTarget !== null) {
+      const target = this._satiatedTarget;
+      this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
+    }
+    const skills: SkillDefinition[] = [];
+
+    const targetGetter = this.buildTargetGetter();
+
+    const action = this.buildAction<InitiativeSkillEventArg>();
+    const filter = this.buildFilter<InitiativeSkillEventArg>();
+    const skillDef: InitiativeSkillDefinition = {
+      type: "skill",
+      id: this.id,
+      ownerType: "card",
+      triggerOn: "initiative",
+      initiativeSkillConfig: {
+        skillType: "playCard",
+        requiredCost: normalizeCost(this._cost),
+        computed$costSize: costSize(this._cost),
+        computed$diceCostSize: diceCostSize(this._cost),
+        gainEnergy: false,
+        shouldFast: !this._tags.includes("action"),
+        alwaysCharged: false,
+        alwaysPlunging: false,
+        hidden: false,
+        omitEvents: false,
+        getTarget: targetGetter,
+      },
+      filter,
+      action,
+      usagePerRoundVariableName: null,
+    };
+    skills.push(skillDef);
+  }
+}
+
+export class CardBuilder<
+  KindTs extends InitiativeSkillTargetKind,
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle = never,
+> {
+  private _type: "support" | "equipment" | "eventCard" = "eventCard";
+  private _obtainable = true;
+  private _tags: EntityTag[] = [];
+  private _varConfigs: Record<string, VariableConfig> = {};
+
   private _descriptionOnHCI = false;
   private _doSameWhenDisposed: DoSameWhenDisposedOption<AssociatedExt> | null =
     null;
@@ -589,134 +616,6 @@ export class CardBuilder<
   }
 
   done(): CardHandle {
-    if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
-      throw new GiTcgDataError(
-        `Cannot specify targets when using .doSameWhenDisposed().`,
-      );
-    }
-    if (this._satiatedTarget !== null) {
-      const target = this._satiatedTarget;
-      this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
-    }
-    const skills: SkillDefinition[] = [];
-
-    const targetGetter = this.buildTargetGetter();
-    if (this._doSameWhenDisposed || this._disposeOperation !== null) {
-      const disposeOps: SkillOperation<any>[] = this._disposeOperation
-        ? [this._disposeOperation]
-        : [
-            this._doSameWhenDisposed?.prependOp,
-            ...this.operations,
-            this._doSameWhenDisposed?.appendOp,
-          ].filter((op) => !!op);
-      const disposeFilter = this.buildFilter<DisposeOrTuneCardEventArg>([
-        this._doSameWhenDisposed?.filter ?? (() => true),
-      ]);
-      const disposeAction =
-        this.buildAction<DisposeOrTuneCardEventArg>(disposeOps);
-      const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
-        type: "skill",
-        id: this.cardId + 0.02,
-        ownerType: "card",
-        triggerOn: "onDisposeOrTuneCard",
-        initiativeSkillConfig: null,
-        action: disposeAction,
-        filter: (st, info, arg) => {
-          return (
-            info.caller.id === arg.entity.id &&
-            arg.method !== "elementalTuning" &&
-            disposeFilter(st, info, arg)
-          );
-        },
-        usagePerRoundVariableName: null,
-      };
-      skills.push(disposeDef);
-    }
-    if (this._descriptionOnHCI || this._hciOperation !== null) {
-      const hciOp = this._hciOperation;
-      let drawAction: SkillDescription<HandCardInsertedEventArg>;
-      let filter: SkillActionFilter<InitiativeSkillEventArg>;
-      let action: SkillDescription<InitiativeSkillEventArg>;
-      if (hciOp) {
-        drawAction = this.buildAction<HandCardInsertedEventArg>([hciOp]);
-        filter = this.buildFilter();
-        action = this.buildAction();
-      } else {
-        this.do((c) => {
-          c.mutate({
-            type: "removeCard",
-            who: c.self.who,
-            target: "hands",
-            oldState: c.self.latest(),
-            reason: "onDrawTriggered",
-          });
-        });
-        drawAction = this.buildAction<HandCardInsertedEventArg>();
-        filter = () => false;
-        action = (st) => [st, EMPTY_SKILL_RESULT];
-      }
-      const drawSkillDef: TriggeredSkillDefinition<"onHandCardInserted"> = {
-        type: "skill",
-        id: this.cardId + 0.03,
-        ownerType: "card",
-        triggerOn: "onHandCardInserted",
-        initiativeSkillConfig: null,
-        filter: (st, info, arg) => {
-          return info.caller.id === arg.card.id;
-        },
-        action: drawAction,
-        usagePerRoundVariableName: null,
-      };
-      const skillDef: InitiativeSkillDefinition = {
-        type: "skill",
-        id: this.cardId + 0.01,
-        ownerType: "card",
-        triggerOn: "initiative",
-        initiativeSkillConfig: {
-          skillType: "playCard",
-          requiredCost: normalizeCost(this._cost),
-          computed$costSize: costSize(this._cost),
-          computed$diceCostSize: diceCostSize(this._cost),
-          gainEnergy: false,
-          shouldFast: !this._tags.includes("action"),
-          alwaysCharged: false,
-          alwaysPlunging: false,
-          hidden: false,
-          omitEvents: false,
-          getTarget: targetGetter,
-        },
-        filter,
-        action,
-        usagePerRoundVariableName: null,
-      };
-      skills.push(skillDef, drawSkillDef);
-    } else {
-      const action = this.buildAction<InitiativeSkillEventArg>();
-      const filter = this.buildFilter<InitiativeSkillEventArg>();
-      const skillDef: InitiativeSkillDefinition = {
-        type: "skill",
-        id: this.cardId + 0.01,
-        ownerType: "card",
-        triggerOn: "initiative",
-        initiativeSkillConfig: {
-          skillType: "playCard",
-          requiredCost: normalizeCost(this._cost),
-          computed$costSize: costSize(this._cost),
-          computed$diceCostSize: diceCostSize(this._cost),
-          gainEnergy: false,
-          shouldFast: !this._tags.includes("action"),
-          alwaysCharged: false,
-          alwaysPlunging: false,
-          hidden: false,
-          omitEvents: false,
-          getTarget: targetGetter,
-        },
-        filter,
-        action,
-        usagePerRoundVariableName: null,
-      };
-      skills.push(skillDef);
-    }
     const cardDef: EntityDefinition = {
       __definition: "entities",
       type: this._type,

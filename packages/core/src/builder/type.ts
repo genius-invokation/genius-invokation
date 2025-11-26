@@ -16,8 +16,7 @@
 import type { DamageType } from "@gi-tcg/typings";
 import type { CharacterTag } from "../base/character";
 import type { EntityTag, EntityType } from "../base/entity";
-import type { CardState, CharacterState, EntityState } from "../base/state";
-import type { CardTag } from "../base/card";
+import type { CharacterState, EntityState } from "../base/state";
 
 export type CharacterHandle = number & { readonly _char: unique symbol };
 export type SkillHandle = number & { readonly _skill: unique symbol };
@@ -41,13 +40,11 @@ export type ExtensionHandle<T = unknown> = number & {
   readonly type: T;
 };
 
-export type ExEntityType = "character" | "card" | EntityType;
+export type ExEntityType = "character" | EntityType;
 
 export type ExEntityState<TypeT extends ExEntityType> =
   TypeT extends "character"
     ? CharacterState
-    : TypeT extends "card"
-      ? CardState
       : EntityState;
 
 export type HandleT<T extends ExEntityType> = T extends "character"
@@ -70,8 +67,6 @@ export type HandleT<T extends ExEntityType> = T extends "character"
 
 export type ExTag<TypeT extends ExEntityType> = TypeT extends "character"
   ? CharacterTag
-  : TypeT extends "card"
-    ? CardTag
     : TypeT extends EntityType
       ? EntityTag
       : never;
