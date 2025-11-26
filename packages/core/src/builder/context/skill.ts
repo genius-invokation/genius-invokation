@@ -870,7 +870,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.mutate({
         type: "createEntity",
         value: newState,
-        where: area,
+        target: area,
       });
     }
     return this.enableShortcut();
@@ -1277,7 +1277,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         this.callAndEmit("insertHandCard", {
           type: "transferCard",
           from: "pile",
-          to: "hands",
+          target: "hands",
           who,
           value: chosen,
           reason: "draw",
@@ -1356,7 +1356,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     this.mutate({
       type: "transferCard",
       from: "hands",
-      to: "oppHands",
+      target: "oppHands",
       who,
       value: cardState,
       reason: "steal",
@@ -1367,7 +1367,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         type: "removeCard",
         oldState: cardState,
         reason: "overflow",
-        where: "hands",
+        target: "hands",
         who,
       });
       overflowed = true;
@@ -1389,7 +1389,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.mutate({
         type: "transferCard",
         from: "hands",
-        to: "oppHands",
+        target: "oppHands",
         who: flip(this.callerArea.who),
         value: card,
         reason: "swap",
@@ -1407,7 +1407,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.mutate({
         type: "transferCard",
         from: "hands",
-        to: "oppHands",
+        target: "oppHands",
         who: this.callerArea.who,
         value: card,
         reason: "swap",
@@ -1453,7 +1453,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.mutate({
         type: "removeCard",
         who,
-        where,
+        target: where,
         oldState: cardState,
         reason: "disposed",
       });

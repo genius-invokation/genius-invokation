@@ -28,7 +28,7 @@ import type {
   GameState,
   PlayerState,
 } from "./base/state";
-import type { EntityArea } from "./base/entity";
+import type { EntityArea, EntityDefinition } from "./base/entity";
 import {
   NATION_TAGS,
   WEAPON_TAGS,
@@ -38,7 +38,6 @@ import {
   type NationTag,
   type WeaponTag,
 } from "./base/character";
-import type { CardDefinition } from "./base/card";
 import {
   defineSkillInfo,
   EventArg,
@@ -492,18 +491,13 @@ export function applyAutoSelectedDiceToAction(
 }
 
 export function playSkillOfCard(
-  card: CardDefinition,
-): InitiativeSkillDefinition {
+  card: EntityDefinition,
+): InitiativeSkillDefinition | null {
   const skillDefinition = card.skills.find(
     (sk): sk is InitiativeSkillDefinition =>
       sk.initiativeSkillConfig?.skillType === "playCard",
   );
-  if (!skillDefinition) {
-    throw new GiTcgCoreInternalError(
-      `Card definition ${card.id} do not have a playCard skill`,
-    );
-  }
-  return skillDefinition;
+  return skillDefinition ?? null;
 }
 
 export function normalizeCost(req: DiceRequirement): DiceRequirement {
@@ -520,8 +514,12 @@ export function normalizeCost(req: DiceRequirement): DiceRequirement {
   return req;
 }
 
-export function costOfCard(card: CardDefinition): ReadonlyDiceRequirement {
-  return playSkillOfCard(card).initiativeSkillConfig.requiredCost;
+export const EMPTY_MAP: ReadonlyDiceRequirement = new Map([
+  [DiceType.Aligned, 0],
+]);
+
+export function costOfCard(card: EntityDefinition): ReadonlyDiceRequirement {
+  return playSkillOfCard(card)?.initiativeSkillConfig.requiredCost ?? EMPTY_MAP;
 }
 
 export function costSize(req: ReadonlyDiceRequirement): number {
@@ -537,8 +535,10 @@ export function diceCostSize(req: ReadonlyDiceRequirement): number {
     );
 }
 
-export function diceCostOfCard(card: CardDefinition): number {
-  return playSkillOfCard(card).initiativeSkillConfig.computed$diceCostSize;
+export function diceCostOfCard(card: EntityDefinition): number {
+  return (
+    playSkillOfCard(card)?.initiativeSkillConfig.computed$diceCostSize ?? 0
+  );
 }
 
 export function elementOfCharacter(ch: CharacterDefinition): DiceType {

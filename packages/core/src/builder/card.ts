@@ -14,20 +14,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { EntityState, GameState } from "../base/state";
+import type { InitiativeSkillTargetKind } from "../base/card";
 import type {
   CardTag,
-  InitiativeSkillTargetKind,
-  CardType,
-  SupportTag,
-  WeaponCardTag,
-  CardDefinition,
-} from "../base/card";
-import type {
   DescriptionDictionary,
   DescriptionDictionaryEntry,
   DescriptionDictionaryKey,
   EntityArea,
+  EntityTag,
+  EquipmentTag,
+  SupportTag,
   VariableConfig,
+  WeaponCardTag,
 } from "../base/entity";
 import {
   type DisposeOrTuneCardEventArg,
@@ -76,7 +74,7 @@ import {
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 import { createVariable } from "./utils";
-import type { CardState } from ".";
+import type { CardState, EntityDefinition } from ".";
 
 type DisposeCardBuilderMeta<
   CallerVars extends string,
@@ -174,9 +172,9 @@ export class CardBuilder<
   eventArgType: StrictInitiativeSkillEventArg<KindTs>;
   associatedExtension: AssociatedExt;
 }> {
-  private _type: CardType = "event";
+  private _type: "support" | "equipment" | "eventCard" = "eventCard";
   private _obtainable = true;
-  private _tags: CardTag[] = [];
+  private _tags: EntityTag[] = [];
   private _varConfigs: Record<string, VariableConfig> = {};
   /**
    * 在料理卡牌的行动结尾添加“设置饱腹状态”操作的目标；
@@ -264,11 +262,11 @@ export class CardBuilder<
     return this as any;
   }
 
-  tags(...tags: CardTag[]): this {
+  tags(...tags: (EquipmentTag | SupportTag | CardTag)[]): this {
     this._tags.push(...tags);
     return this;
   }
-  type(type: CardType): this {
+  type(type: "support" | "equipment" | "eventCard"): this {
     this._type = type;
     return this;
   }
@@ -287,9 +285,7 @@ export class CardBuilder<
       .do((c) => {
         const ch = c.$("character and @targets.0");
         const caller = c.skillInfo.caller;
-        ch?.equip(cardId, {
-          fromCardId: caller.definition.type === "card" ? caller.id : void 0,
-        });
+        ch?.equip(cardId);
       })
       .done();
     const builder = new EntityBuilder<"equipment", never, never, false, {}>(
@@ -360,13 +356,7 @@ export class CardBuilder<
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      const caller = c.skillInfo.caller;
-      c.createEntity("support", cardId, void 0, {
-        // 当从手牌打出支援牌时传入手牌 id
-        // （并非从手牌打出的情况：selectAndPlay 直接在挑选后调用）
-        fromCardId:
-          caller.definition.type === "card" ? c.skillInfo.caller.id : void 0,
-      });
+      c.createEntity("support", cardId);
     }).done();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
       "support",
@@ -659,7 +649,7 @@ export class CardBuilder<
           c.mutate({
             type: "removeCard",
             who: c.self.who,
-            where: "hands",
+            target: "hands",
             oldState: c.self.latest(),
             reason: "onDrawTriggered",
           });
@@ -730,12 +720,10 @@ export class CardBuilder<
       };
       skills.push(skillDef);
     }
-    const cardDef: CardDefinition = {
-      __definition: "cards",
-      type: "card",
+    const cardDef: EntityDefinition = {
+      __definition: "entities",
+      type: this._type,
       id: this.cardId,
-      cardType: this._type,
-      obtainable: this._obtainable,
       tags: this._tags,
       version: this._versionInfo,
       skills,

@@ -175,8 +175,8 @@ class PreviewContext {
         }
         case "createEntity": {
           let where: "summons" | "supports";
-          if (m.where.type === "summons" || m.where.type === "supports") {
-            where = m.where.type;
+          if (m.target.type === "summons" || m.target.type === "supports") {
+            where = m.target.type;
           } else {
             break;
           }
@@ -293,24 +293,16 @@ export class ActionPreviewer {
           player().combatStatuses.find((st) =>
             st.definition.tags.includes("eventEffectless"),
           ) &&
-          card.definition.cardType === "event"
+          card.definition.type === "eventCard"
         ) {
           newActionInfo.willBeEffectless = true;
           ctx.mutate({
-            type: "removeCard",
-            who: this.who,
-            where: "hands",
+            type: "removeEntity",
+            from: { who: this.who, type: "hands" },
             oldState: card,
-            reason: "playNoEffect",
+            reason: "eventCardPlayNoEffect",
           });
         } else {
-          ctx.mutate({
-            type: "removeCard",
-            who: this.who,
-            where: "hands",
-            oldState: card,
-            reason: "play",
-          });
           const arg = { targets: newActionInfo.targets };
           await ctx.previewSkill(newActionInfo.skill, arg);
           await ctx.previewEvent(
@@ -336,9 +328,8 @@ export class ActionPreviewer {
           null,
         );
         ctx.mutate({
-          type: "removeCard",
-          who: this.who,
-          where: "hands",
+          type: "removeEntity",
+          from: { who: this.who, type: "hands" },
           oldState: card,
           reason: "elementalTuning",
         });

@@ -7,14 +7,14 @@ import {
   Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
-import type { CardState, CharacterState, GameState } from "./base/state";
+import type { CharacterState, EntityType, GameState } from "./base/state";
 import { DetailLogType, type IDetailLogger } from "./log";
 import {
-  type CreateCardM,
+  type CreateEntityM,
+  type MoveEntityM,
   type Mutation,
   type StepIdM,
   type StepRandomM,
-  type TransferCardM,
   applyMutation,
   stringifyMutation,
 } from "./base/mutation";
@@ -63,7 +63,6 @@ import {
   type EntityDefinition,
   stringifyEntityArea,
 } from "./base/entity";
-import type { CardDefinition } from "./base/card";
 import { REACTION_MAP, type NontrivialDamageType } from "./base/reaction";
 import {
   getReactionDescription,
@@ -131,8 +130,6 @@ export interface CreateEntityOptions {
   readonly modifyOverriddenVariablesOnly?: boolean;
   /** 创建实体时，覆盖默认变量 */
   readonly overrideVariables?: Partial<EntityVariables>;
-  /** 打出支援牌和装备牌时的原手牌 id */
-  readonly fromCardId?: number;
 }
 
 export interface CreateEntityResult {
@@ -172,16 +169,16 @@ export interface DamageResult {
 }
 
 export type InsertHandPayload =
-  | (CreateCardM & {
-      target: "hands";
+  | (CreateEntityM & {
+      target: { type: "hands" };
     })
-  | (TransferCardM & {
-      to: "hands";
+  | (MoveEntityM & {
+      target: { type: "hands" };
     });
 
 export type InsertPilePayload =
-  | Omit<CreateCardM, "targetIndex" | "who">
-  | Omit<TransferCardM, "targetIndex" | "who">;
+  | Omit<CreateEntityM, "targetIndex" >
+  | Omit<MoveEntityM, "targetIndex">;
 
 export type InsertPileStrategy =
   | "top"
@@ -648,22 +645,21 @@ export class StateMutator {
   }
 
   insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
-    const who = payload.who;
+    const who = payload.target.who;
     const reason =
-      payload.type === "createCard" ? ("create" as const) : payload.reason;
+      payload.type === "createEntity" ? ("create" as const) : payload.reason;
     this.mutate(payload);
-    const state: CardState = {
+    const state: EntityState = {
       ...payload.value,
-      [StateSymbol]: "card",
+      [StateSymbol]: "entity",
     };
     let overflowed = false;
     if (
       this.state.players[who].hands.length > this.state.config.maxHandsCount
     ) {
       this.mutate({
-        type: "removeCard",
-        who,
-        where: "hands",
+        type: "removeEntity",
+        from: payload.target,
         oldState: state,
         reason: "overflow",
       });
@@ -692,10 +688,9 @@ export class StateMutator {
       }
       events.push(
         ...this.insertHandCard({
-          type: "transferCard",
-          who,
-          from: "pile",
-          to: "hands",
+          type: "moveEntity",
+          from: { who, type: "pile" },
+          target: { who, type: "hands" },
           value: card,
           reason: "draw",
         }),
@@ -704,21 +699,29 @@ export class StateMutator {
     return events;
   }
 
-  createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
+  createHandCard(who: 0 | 1, definition: EntityDefinition): EventAndRequest[] {
+    if (
+      !(["support", "equipment", "eventCard"] as EntityType[]).includes(
+        definition.type,
+      )
+    ) {
+      throw new GiTcgDataError(
+        `Cannot create entity of type '${definition.type}' in hand.`,
+      );
+    }
     using l = this.subLog(
       DetailLogType.Primitive,
       `Create hand card [card:${definition.id}]`,
     );
-    const cardState: CardState = {
-      [StateSymbol]: "card",
+    const cardState: EntityState = {
+      [StateSymbol]: "entity",
       id: 0,
       definition,
       variables: {},
     };
     return this.insertHandCard({
-      type: "createCard",
-      who,
-      target: "hands",
+      type: "createEntity",
+      target: { who, type: "hands" },
       value: cardState,
     });
   }
@@ -728,6 +731,7 @@ export class StateMutator {
     strategy: InsertPileStrategy,
     who: 0 | 1,
   ): EventAndRequest[] {
+    const target: EntityArea = { who, type: "pile" };
     const player = this.state.players[who];
     const pileCount = player.pile.length;
     payloads = payloads.slice(
@@ -743,7 +747,7 @@ export class StateMutator {
         for (const mut of payloads) {
           this.mutate({
             ...mut,
-            who,
+            target,
             targetIndex: 0,
           });
         }
@@ -753,7 +757,7 @@ export class StateMutator {
           const targetIndex = player.pile.length;
           this.mutate({
             ...mut,
-            who,
+            target,
             targetIndex,
           });
         }
@@ -764,7 +768,7 @@ export class StateMutator {
           const index = randomValue % (player.pile.length + 1);
           this.mutate({
             ...payloads[i],
-            who,
+            target,
             targetIndex: index,
           });
         }
@@ -779,7 +783,7 @@ export class StateMutator {
           }
           this.mutate({
             ...payloads[i],
-            who,
+            target,
             targetIndex: i + j,
           });
         }
@@ -796,7 +800,7 @@ export class StateMutator {
             const index = randomValue % range;
             this.mutate({
               ...payloads[i],
-              who,
+              target,
               targetIndex: index,
             });
           }
@@ -809,7 +813,7 @@ export class StateMutator {
           for (let i = 0; i < count; i++) {
             this.mutate({
               ...payloads[i],
-              who,
+              target,
               targetIndex: index,
             });
           }
@@ -872,7 +876,8 @@ export class StateMutator {
         const oldValue = oldState.variables[name] ?? 0;
         switch (recreateBehavior.type) {
           case "default": {
-            const defaultBehaviorType = this.state.versionBehavior.defaultRecreateBehavior;
+            const defaultBehaviorType =
+              this.state.versionBehavior.defaultRecreateBehavior;
             if (defaultBehaviorType === "overwrite") {
               newValues[name] = initialValue;
             } else if (defaultBehaviorType === "takeMax") {
@@ -947,7 +952,6 @@ export class StateMutator {
       }
       const initState = {
         id: 0,
-        fromCardId: opt.fromCardId ?? null,
         definition: def,
         variables: Object.fromEntries(
           Object.entries(varConfigs).map(([name, { initialValue }]) => [
@@ -958,7 +962,7 @@ export class StateMutator {
       };
       this.mutate({
         type: "createEntity",
-        where: area,
+        target: area,
         value: initState,
       });
       const newState = getEntityById(this.state, initState.id) as EntityState;
@@ -1123,10 +1127,9 @@ export class StateMutator {
       const randomValue = this.stepRandom();
       const index = randomValue % (player().pile.length + 1);
       this.mutate({
-        type: "transferCard",
-        from: "hands",
-        to: "pile",
-        who,
+        type: "moveEntity",
+        from: { who, type: "hands" },
+        target: { who, type: "pile" },
         value: card,
         targetIndex: index,
         reason: "switch",
@@ -1135,7 +1138,7 @@ export class StateMutator {
     // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
     let topIndex = 0;
     for (let i = 0; i < count; i++) {
-      let candidate: CardState;
+      let candidate: EntityState;
       while (
         topIndex < player().pile.length &&
         swapInCardIds.includes(player().pile[topIndex].definition.id)
@@ -1149,10 +1152,9 @@ export class StateMutator {
         candidate = player().pile[topIndex];
       }
       this.mutate({
-        type: "transferCard",
-        from: "pile",
-        to: "hands",
-        who,
+        type: "moveEntity",
+        from: { who, type: "pile" },
+        target: { who, type: "hands" },
         value: candidate,
         reason: "switch",
       });

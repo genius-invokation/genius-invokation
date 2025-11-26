@@ -601,9 +601,17 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
+        const skillDef = playSkillOfCard(arg.cardDefinition);
+        if (!skillDef) {
+          this.mutator.log(
+            DetailLogType.Other,
+            `Card [card:${arg.cardDefinition.id}] has no play skill, skip playing`,
+          );
+          continue;
+        }
         const skillInfo = defineSkillInfo({
           caller: arg.via.caller,
-          definition: playSkillOfCard(arg.cardDefinition),
+          definition: skillDef,
           requestBy: arg.via,
         });
         await this.finalizeSkill(skillInfo, { targets: arg.targets });

@@ -15,7 +15,6 @@
 
 import { DiceType } from "@gi-tcg/typings";
 
-import type { CardDefinition, CardType, CardTag } from "./card";
 import type {
   CharacterDefinition,
   CharacterTag,
@@ -138,10 +137,10 @@ export interface GameState {
 export interface PlayerState {
   readonly [StateSymbol]: "player";
   readonly who: 0 | 1;
-  readonly initialPile: readonly CardDefinition[];
-  readonly pile: readonly CardState[];
+  readonly initialPile: readonly EntityDefinition[];
+  readonly pile: readonly EntityState[];
   readonly activeCharacterId: number;
-  readonly hands: readonly CardState[];
+  readonly hands: readonly EntityState[];
   readonly characters: readonly CharacterState[];
   readonly combatStatuses: readonly EntityState[];
   readonly supports: readonly EntityState[];
@@ -161,13 +160,6 @@ export interface PlayerState {
   readonly removedEntities: readonly AnyState[];
 }
 
-export interface CardState {
-  readonly [StateSymbol]: "card";
-  readonly id: number;
-  readonly definition: CardDefinition;
-  readonly variables: Record<string, number>;
-}
-
 export interface CharacterState {
   readonly [StateSymbol]: "character";
   readonly id: number;
@@ -181,15 +173,13 @@ export type CharacterVariables = VariableOfConfig<CharacterVariableConfigs>;
 export interface EntityState {
   readonly [StateSymbol]: "entity";
   readonly id: number;
-  /** 支援牌、装备牌从手牌打出时的手牌 id */
-  readonly fromCardId: number | null;
   readonly definition: EntityDefinition;
   readonly variables: EntityVariables;
 }
 
 export type EntityVariables = VariableOfConfig<EntityVariableConfigs>;
 
-export type AnyState = CharacterState | EntityState | CardState;
+export type AnyState = CharacterState | EntityState;
 
 export interface ExtensionState {
   readonly [StateSymbol]: "extension";
@@ -198,12 +188,7 @@ export interface ExtensionState {
 }
 
 export function stringifyState(st: Omit<AnyState, StateSymbol>): string {
-  let type: string;
-  if (st.definition.__definition === "cards") {
-    type = "card";
-  } else {
-    type = st.definition.type;
-  }
+  const type = st.definition.type;
   return `[${type}:${st.definition.id}](${st.id})`;
 }
 
@@ -214,9 +199,6 @@ export type {
   EntityDefinition,
   EntityType,
   EntityTag,
-  CardDefinition,
-  CardType,
-  CardTag,
   ExtensionDefinition,
   SkillDefinition,
   InitiativeSkillDefinition,

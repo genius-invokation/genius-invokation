@@ -14,13 +14,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import {
-  PbCardArea,
   PbDiceRequirementType,
   PbDiceType,
   PbEquipmentType,
-  PbRemoveCardReason,
   type Action,
-  type PbCardState,
   type PbCharacterState,
   type PbEntityState,
   type ExposedMutation,
@@ -45,12 +42,12 @@ import {
   PbResetDiceReason,
   PbHealKind,
   PbPlayerStatus,
-  PbTransferCardReason,
   CARD_TAG_NO_TUNING,
   CHARACTER_TAG_BOND_OF_LIFE,
+  PbMoveEntityReason,
+  PbRemoveEntityReason,
 } from "@gi-tcg/typings";
 import type {
-  CardState,
   CharacterState,
   EntityState,
   EntityTag,
@@ -60,10 +57,10 @@ import type {
   StateSymbol,
 } from "./base/state";
 import type {
+  MoveEntityM,
   Mutation,
   PlayerFlag,
-  RemoveCardM,
-  TransferCardM,
+  RemoveEntityM,
 } from "./base/mutation";
 import type {
   ActionInfo,
@@ -71,7 +68,7 @@ import type {
   InitiativeSkillDefinition,
 } from "./base/skill";
 import { GiTcgIoError } from "./error";
-import { USAGE_PER_ROUND_VARIABLE_NAMES } from "./base/entity";
+import { USAGE_PER_ROUND_VARIABLE_NAMES, type EntityArea } from "./base/entity";
 import { costOfCard, getEntityById, initiativeSkillsOfPlayer } from "./utils";
 
 export interface PlayerIO {
@@ -183,13 +180,22 @@ function exposePhaseType(phase: PhaseType): PbPhaseType {
       return PbPhaseType.GAME_END;
   }
 }
-function exposeCardWhere(where: "hands" | "pile"): PbCardArea {
+function exposeEntityWhere(where: EntityArea["type"]): PbEntityArea {
   switch (where) {
+    case "characters":
+      return PbEntityArea.CHARACTER;
+    case "combatStatuses":
+      return PbEntityArea.COMBAT_STATUS;
+    case "summons":
+      return PbEntityArea.SUMMON;
+    case "supports":
+      return PbEntityArea.SUPPORT;
     case "hands":
-      return PbCardArea.HAND;
+      return PbEntityArea.HAND;
     case "pile":
-      return PbCardArea.PILE;
+      return PbEntityArea.PILE;
   }
+  return PbEntityArea.UNSPECIFIED;
 }
 
 export function exposeMutation(
@@ -245,81 +251,6 @@ export function exposeMutation(
       return { $case: "switchTurn" };
     case "setWinner":
       return { $case: "setWinner", winner: m.winner };
-    case "transferCard": {
-      const from = exposeCardWhere(m.from);
-      let transferToOpp = false;
-      let to: PbCardArea;
-      switch (m.to) {
-        case "hands": {
-          to = PbCardArea.HAND;
-          break;
-        }
-        case "pile": {
-          to = PbCardArea.PILE;
-          break;
-        }
-        case "oppHands": {
-          to = PbCardArea.HAND;
-          transferToOpp = true;
-          break;
-        }
-        case "oppPile": {
-          to = PbCardArea.PILE;
-          transferToOpp = true;
-          break;
-        }
-      }
-      const hidden = m.who !== who && !transferToOpp;
-      const REASON_MAP: Record<TransferCardM["reason"], PbTransferCardReason> =
-        {
-          draw: PbTransferCardReason.DRAW,
-          undraw: PbTransferCardReason.UNDRAW,
-          steal: PbTransferCardReason.STEAL,
-          switch: PbTransferCardReason.SWITCH,
-          swap: PbTransferCardReason.SWAP,
-        };
-      return {
-        $case: "transferCard",
-        who: m.who,
-        from,
-        to,
-        transferToOpp,
-        targetIndex: m.targetIndex,
-        card: exposeCard(null, m.value, hidden),
-        reason: REASON_MAP[m.reason] ?? PbTransferCardReason.UNSPECIFIED,
-      };
-    }
-    case "removeCard": {
-      const hide =
-        m.who !== who && ["overflow", "elementalTuning"].includes(m.reason);
-      const from = exposeCardWhere(m.where);
-      const REASON_MAP: Record<RemoveCardM["reason"], PbRemoveCardReason> = {
-        play: PbRemoveCardReason.PLAY,
-        elementalTuning: PbRemoveCardReason.ELEMENTAL_TUNING,
-        overflow: PbRemoveCardReason.HANDS_OVERFLOW,
-        disposed: PbRemoveCardReason.DISPOSED,
-        playNoEffect: PbRemoveCardReason.PLAY_NO_EFFECT,
-        onDrawTriggered: PbRemoveCardReason.ON_DRAW_TRIGGERED,
-      };
-      const reason = REASON_MAP[m.reason];
-      return {
-        $case: "removeCard",
-        who: m.who,
-        from,
-        reason,
-        card: exposeCard(null, m.oldState, hide),
-      };
-    }
-    case "createCard": {
-      const to = exposeCardWhere(m.target);
-      return {
-        $case: "createCard",
-        who: m.who,
-        card: exposeCard(null, m.value, m.who !== who),
-        to,
-        targetIndex: m.targetIndex,
-      };
-    }
     case "createCharacter": {
       return {
         $case: "createCharacter",
@@ -328,34 +259,61 @@ export function exposeMutation(
       };
     }
     case "createEntity": {
-      let where: PbEntityArea = PbEntityArea.UNSPECIFIED;
-      switch (m.where.type) {
-        case "characters":
-          where = PbEntityArea.CHARACTER;
-          break;
-        case "combatStatuses":
-          where = PbEntityArea.COMBAT_STATUS;
-          break;
-        case "summons":
-          where = PbEntityArea.SUMMON;
-          break;
-        case "supports":
-          where = PbEntityArea.SUPPORT;
-          break;
-      }
       return {
         $case: "createEntity",
-        who: m.where.who,
-        where,
-        entity: exposeEntity(null, m.value),
+        who: m.target.who,
+        where: exposeEntityWhere(m.target.type),
+        entity: exposeEntity(null, m.value, false),
         masterCharacterId:
-          m.where.type === "characters" ? m.where.characterId : void 0,
+          m.target.type === "characters" ? m.target.characterId : void 0,
+      };
+    }
+    case "moveEntity": {
+      const fromWhere = exposeEntityWhere(m.from.type);
+      const toWhere = exposeEntityWhere(m.target.type);
+
+      const hidden =
+        m.from.who !== who && ["hands", "pile"].includes(m.from.type);
+      const REASON_MAP: Record<MoveEntityM["reason"], PbMoveEntityReason> = {
+        draw: PbMoveEntityReason.DRAW,
+        undraw: PbMoveEntityReason.UNDRAW,
+        steal: PbMoveEntityReason.STEAL,
+        switch: PbMoveEntityReason.SWITCH,
+        swap: PbMoveEntityReason.SWAP,
+        createSupport: PbMoveEntityReason.CREATE_SUPPORT,
+        equip: PbMoveEntityReason.EQUIP,
+        unequip: PbMoveEntityReason.UNEQUIP,
+        unsupport: PbMoveEntityReason.UNSUPPORT,
+        other: PbMoveEntityReason.UNSPECIFIED,
+      };
+      return {
+        $case: "moveEntity",
+        fromWho: m.from.who,
+        fromWhere,
+        toWho: m.target.who,
+        toWhere,
+        targetIndex: m.targetIndex,
+        entity: exposeEntity(null, m.value, hidden),
+        reason: REASON_MAP[m.reason] ?? PbMoveEntityReason.UNSPECIFIED,
       };
     }
     case "removeEntity": {
+      const REASON_MAP: Record<RemoveEntityM["reason"], PbRemoveEntityReason> =
+        {
+          cardDisposed: PbRemoveEntityReason.CARD_DISPOSED,
+          elementalTuning: PbRemoveEntityReason.ELEMENTAL_TUNING,
+          eventCardDrawn: PbRemoveEntityReason.EVENT_CARD_DRAWN,
+          eventCardPlayed: PbRemoveEntityReason.EVENT_CARD_PLAYED,
+          eventCardPlayNoEffect: PbRemoveEntityReason.EVENT_CARD_PLAY_NO_EFFECT,
+          overflow: PbRemoveEntityReason.OVERFLOW,
+          other: PbRemoveEntityReason.UNSPECIFIED,
+        };
       return {
         $case: "removeEntity",
-        entity: exposeEntity(null, m.oldState as EntityState),
+        who: m.from.who,
+        where: exposeEntityWhere(m.from.type),
+        entity: exposeEntity(null, m.oldState as EntityState, false),
+        reason: REASON_MAP[m.reason] ?? PbRemoveEntityReason.UNSPECIFIED,
       };
     }
     case "modifyEntityVar": {
@@ -443,6 +401,7 @@ function exposeTag(entities: EntityState[]) {
 export function exposeEntity(
   state: GameState | null,
   e: Omit<EntityState, StateSymbol>,
+  hide: boolean,
 ): PbEntityState {
   let equipment: PbEquipmentType | undefined = void 0;
   if (e.definition.type === "equipment") {
@@ -456,8 +415,11 @@ export function exposeEntity(
       equipment = PbEquipmentType.OTHER;
     }
   }
+  if (e.definition.id === 0) {
+    hide = true;
+  }
   const descriptionDictionary =
-    state === null
+    hide || state === null
       ? {}
       : Object.fromEntries(
           Object.entries(e.definition.descriptionDictionary).map(([k, v]) => [
@@ -468,9 +430,19 @@ export function exposeEntity(
   const hasUsagePerRound = USAGE_PER_ROUND_VARIABLE_NAMES.some(
     (name) => e.variables[name],
   );
+  const definitionCost: PbDiceRequirement[] = [];
+  if (!hide) {
+    definitionCost.push(...exposeDiceRequirement(costOfCard(e.definition)));
+    if (e.definition.tags.includes("legend")) {
+      definitionCost.push({
+        type: PbDiceRequirementType.LEGEND,
+        count: 1,
+      });
+    }
+  }
   return {
     id: e.id,
-    definitionId: e.id === 0 ? 0 : e.definition.id,
+    definitionId: hide ? 0 : e.definition.id,
     variableValue: e.definition.visibleVarName
       ? e.variables[e.definition.visibleVarName] ?? void 0
       : void 0,
@@ -480,6 +452,9 @@ export function exposeEntity(
     hintText: e.definition.hintText ?? void 0,
     equipment,
     descriptionDictionary,
+    definitionCost,
+    // TODO: using a lookup table instead
+    tags: e.definition.tags.includes("noTuning") ? CARD_TAG_NO_TUNING : 0,
   };
 }
 
@@ -490,43 +465,6 @@ function exposeDiceRequirement(
     .entries()
     .map(([k, v]) => ({ type: k as PbDiceRequirementType, count: v }))
     .toArray();
-}
-
-function exposeCard(
-  state: GameState | null,
-  c: Omit<CardState, StateSymbol>,
-  hide: boolean,
-): PbCardState {
-  if (c.id === 0) {
-    hide = true;
-  }
-  const descriptionDictionary =
-    hide || state === null
-      ? {}
-      : Object.fromEntries(
-          Object.entries(c.definition.descriptionDictionary).map(([k, v]) => [
-            k,
-            v(state, c.id),
-          ]),
-        );
-  const definitionCost: PbDiceRequirement[] = [];
-  if (!hide) {
-    definitionCost.push(...exposeDiceRequirement(costOfCard(c.definition)));
-    if (c.definition.tags.includes("legend")) {
-      definitionCost.push({
-        type: PbDiceRequirementType.LEGEND,
-        count: 1,
-      });
-    }
-  }
-  return {
-    id: c.id,
-    descriptionDictionary,
-    definitionId: hide ? 0 : c.definition.id,
-    definitionCost,
-    // TODO: using a lookup table instead
-    tags: c.definition.tags.includes("noTuning") ? CARD_TAG_NO_TUNING : 0,
-  };
 }
 
 function exposeCharacter(
@@ -552,7 +490,7 @@ function exposeCharacter(
     id: ch.id,
     definitionId: ch.definition.id,
     defeated: !ch.variables.alive,
-    entity: ch.entities.map((e) => exposeEntity(state, e)),
+    entity: ch.entities.map((e) => exposeEntity(state, e, false)),
     health: ch.variables.health,
     energy,
     maxHealth: ch.variables.maxHealth,
@@ -586,13 +524,15 @@ export function exposeState(who: 0 | 1, state: GameState): PbGameState {
           : p.dice.map(() => PbDiceType.UNSPECIFIED);
       return {
         activeCharacterId: p.activeCharacterId,
-        pileCard: p.pile.map((c) => exposeCard(state, c, true)),
-        handCard: p.hands.map((c) => exposeCard(state, c, i !== who)),
+        pileCard: p.pile.map((c) => exposeEntity(state, c, true)),
+        handCard: p.hands.map((c) => exposeEntity(state, c, i !== who)),
         character: p.characters.map((ch) => exposeCharacter(state, p, ch)),
         dice,
-        combatStatus: p.combatStatuses.map((e) => exposeEntity(state, e)),
-        support: p.supports.map((e) => exposeEntity(state, e)),
-        summon: p.summons.map((e) => exposeEntity(state, e)),
+        combatStatus: p.combatStatuses.map((e) =>
+          exposeEntity(state, e, false),
+        ),
+        support: p.supports.map((e) => exposeEntity(state, e, false)),
+        summon: p.summons.map((e) => exposeEntity(state, e, false)),
         initiativeSkill: i === who ? skills.map(exposeInitiativeSkill) : [],
         declaredEnd: p.declaredEnd,
         legendUsed: p.legendUsed,

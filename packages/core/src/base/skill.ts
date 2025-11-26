@@ -26,15 +26,12 @@ import {
 } from "@gi-tcg/typings";
 import {
   type AnyState,
-  type CardState,
   type CharacterState,
   type EntityState,
   type GameState,
   stringifyState,
 } from "./state";
-import type { CardTag, CardDefinition } from "./card";
 import {
-  REACTION_MAP,
   REACTION_RELATIVES,
   type SwirlableElement,
   getReaction,
@@ -44,9 +41,12 @@ import {
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError, GiTcgDataError } from "../error";
 import type {
+  CardTag,
   EntityArea,
   EntityDefinition,
   EntityType,
+  EquipmentTag,
+  SupportTag,
   UsagePerRoundVariableNames,
 } from "./entity";
 import {
@@ -59,12 +59,13 @@ import {
   mixins,
   normalizeCost,
 } from "../utils";
-import type { CreateCardM, Mutation, TransferCardM } from "./mutation";
 import type { IDetailLogger } from "../log";
 import type { CustomEvent } from "./custom_event";
 import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 import type { PlainCharacterState } from "../builder/context/utils";
 import type { AppliableDamageType } from "../builder/type";
+import type { Mutation } from "..";
+import type { MoveEntityM } from "./mutation";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -173,7 +174,7 @@ export interface InitiativeSkillInfo extends SkillInfo {
   readonly definition: InitiativeSkillDefinition;
 }
 export interface PlayCardSkillInfo extends InitiativeSkillInfo {
-  readonly caller: CardState;
+  readonly caller: EntityState;
 }
 
 type RequiredWith<T, K extends keyof T> = T & Required<Pick<T, K>>;
@@ -184,7 +185,7 @@ type InitSkillInfo = RequiredWith<
 >;
 
 export function defineSkillInfo(
-  init: InitSkillInfo & { caller: CardState },
+  init: InitSkillInfo & { caller: EntityState },
 ): PlayCardSkillInfo;
 export function defineSkillInfo(
   init: InitSkillInfo & { definition: InitiativeSkillDefinition },
@@ -282,7 +283,7 @@ export interface SwitchActiveInfo {
 export interface ElementalTuningInfo {
   readonly type: "elementalTuning";
   readonly who: 0 | 1;
-  readonly card: CardState;
+  readonly card: EntityState;
   readonly result: DiceType;
 }
 
@@ -477,14 +478,14 @@ export class ActionEventArg<
   isPlungingAttack(): this is ActionEventArg<UseSkillInfo> {
     return this.isUseSkill() && this.action.skill.plunging;
   }
-  hasCardTag(tag: CardTag) {
+  hasCardTag(tag: EquipmentTag | SupportTag | CardTag) {
     if (this.action.type === "playCard") {
       return this.action.skill.caller.definition.tags.includes(tag);
     } else {
       return false;
     }
   }
-  hasOneOfCardTag(...tags: CardTag[]) {
+  hasOneOfCardTag(...tags: (EquipmentTag | SupportTag | CardTag)[]) {
     if (this.action.type === "playCard") {
       const action: PlayCardInfo = this.action;
       return tags.some((tag) =>
@@ -743,10 +744,10 @@ export class PlayCardEventArg extends PlayerEventArg {
   override toString() {
     return `play card ${stringifyState(this.card)}`;
   }
-  hasCardTag(tag: CardTag) {
+  hasCardTag(tag: EquipmentTag | SupportTag | CardTag) {
     return this.card.definition.tags.includes(tag);
   }
-  hasOneOfCardTag(...tags: CardTag[]) {
+  hasOneOfCardTag(...tags: (EquipmentTag | SupportTag | CardTag)[]) {
     return tags.some((tag) => this.card.definition.tags.includes(tag));
   }
 }
@@ -1046,10 +1047,10 @@ export class DisposeEventArg<
   T extends AnyState = EntityState,
 > extends EntityEventArg<T> {}
 
-export class DisposeOrTuneCardEventArg extends DisposeEventArg<CardState> {
+export class DisposeOrTuneCardEventArg extends DisposeEventArg {
   constructor(
     state: GameState,
-    public readonly card: CardState,
+    public readonly card: EntityState,
     public readonly method: DisposeOrTuneMethod,
     public readonly via: SkillInfo | null,
   ) {
@@ -1168,17 +1169,11 @@ export class ZeroHealthEventArg extends ModifyDamage1EventArg {
 
 export class TransformDefinitionEventArg extends EventArg {
   public readonly who: 0 | 1;
-  public readonly oldDefinition:
-    | CharacterDefinition
-    | EntityDefinition
-    | CardDefinition;
+  public readonly oldDefinition: CharacterDefinition | EntityDefinition;
   constructor(
     state: GameState,
     public readonly entity: AnyState,
-    public readonly newDefinition:
-      | CharacterDefinition
-      | EntityDefinition
-      | CardDefinition,
+    public readonly newDefinition: CharacterDefinition | EntityDefinition,
   ) {
     super(state);
     const area = getEntityArea(state, entity.id);
@@ -1191,8 +1186,8 @@ export class HandCardInsertedEventArg extends PlayerEventArg {
   constructor(
     state: GameState,
     who: 0 | 1,
-    public readonly card: CardState,
-    public readonly reason: TransferCardM["reason"] | "create",
+    public readonly card: EntityState,
+    public readonly reason: MoveEntityM["reason"] | "create",
     public readonly overflowed: boolean,
   ) {
     super(state, who);
@@ -1367,7 +1362,7 @@ class SwitchHandsRequestArg extends RequestArg {
 export type SelectCardInfo =
   | {
       readonly type: "createHandCard";
-      readonly cards: readonly CardDefinition[];
+      readonly cards: readonly EntityDefinition[];
     }
   | {
       readonly type: "createEntity";
@@ -1375,7 +1370,7 @@ export type SelectCardInfo =
     }
   | {
       readonly type: "requestPlayCard";
-      readonly cards: readonly CardDefinition[];
+      readonly cards: readonly EntityDefinition[];
       /** 使用手牌的目标 */
       readonly targets: AnyState[];
     };
@@ -1429,7 +1424,7 @@ export class PlayCardRequestArg extends RequestArg {
   constructor(
     requestBy: SkillInfo,
     public readonly who: 0 | 1,
-    public readonly cardDefinition: CardDefinition,
+    public readonly cardDefinition: EntityDefinition,
     public readonly targets: AnyState[],
   ) {
     super(requestBy);

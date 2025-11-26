@@ -211,7 +211,12 @@ export function deserializeGameStateLog(
   const restoredStore: Record<number, any> = {};
   const result: GameStateLogEntry[] = [];
   for (const entry of log) {
-    const restoredState: Draft<GameState> = deserializeImpl(data, store, restoredStore, entry.s);
+    const restoredState: Draft<GameState> = deserializeImpl(
+      data,
+      store,
+      restoredStore,
+      entry.s,
+    );
     for (const player of restoredState.players) {
       player[StateSymbol] = "player";
       for (const ch of player.characters) {
@@ -220,15 +225,18 @@ export function deserializeGameStateLog(
           e[StateSymbol] = "entity";
         }
       }
-      for (const e of [...player.combatStatuses, ...player.supports, ...player.summons]) {
+      for (const e of [
+        ...player.combatStatuses,
+        ...player.supports,
+        ...player.summons,
+        ...player.hands,
+        ...player.pile,
+      ]) {
         e[StateSymbol] = "entity";
-      }
-      for (const c of [...player.hands, ...player.pile]) {
-        c[StateSymbol] = "card";
       }
     }
     for (const ext of restoredState.extensions) {
-      ext[StateSymbol] = "extension"; 
+      ext[StateSymbol] = "extension";
     }
     result.push({
       state: {

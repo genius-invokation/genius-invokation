@@ -27,5 +27,6 @@ message PreviewData {
     TransformDefinitionEM transform_definition = 13;
     DamageEM damage = 15;
     ApplyAuraEM apply_aura = 16;
+    // MoveEntityEM move_entity = 28;
   }
 }

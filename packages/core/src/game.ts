@@ -33,9 +33,10 @@ import {
   getVersionBehavior,
   StateSymbol,
   stringifyState,
+  type EntityState,
   type AnyState,
-  type CardState,
   type CharacterState,
+  type EntityDefinition,
   type ErrorLevel,
   type ExtensionState,
   type GameConfig,
@@ -82,7 +83,6 @@ import {
   type InitiativeSkillEventArg,
   defineSkillInfo,
 } from "./base/skill";
-import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
 import {
   GiTcgCoreInternalError,
@@ -122,7 +122,7 @@ function initPlayerState(
   deck: DeckConfig,
   idIter: IdIter,
 ): PlayerState {
-  let initialPile: readonly CardDefinition[] = deck.cards.map((id) => {
+  let initialPile: readonly EntityDefinition[] = deck.cards.map((id) => {
     const def = data.cards.get(id);
     if (typeof def === "undefined") {
       throw new GiTcgDataError(`Unknown card id ${id}`);
@@ -142,7 +142,7 @@ function initPlayerState(
     initialPile = shuffle(initialPile);
   }
   // 将秘传牌放在最前面
-  const compFn = (def: CardDefinition) => {
+  const compFn = (def: EntityDefinition) => {
     if (def.tags.includes("legend")) {
       return 0;
     } else {
@@ -151,7 +151,7 @@ function initPlayerState(
   };
   initialPile = initialPile.toSortedBy(compFn);
   const characters: CharacterState[] = [];
-  const pile: CardState[] = [];
+  const pile: EntityState[] = [];
   for (const definition of characterDefs) {
     characters.push({
       [StateSymbol]: "character",
@@ -167,7 +167,7 @@ function initPlayerState(
   }
   for (const definition of initialPile) {
     pile.push({
-      [StateSymbol]: "card",
+      [StateSymbol]: "entity",
       id: idIter.id,
       definition,
       variables: Object.fromEntries(
@@ -779,23 +779,15 @@ export class Game {
               player().combatStatuses.find((st) =>
                 st.definition.tags.includes("eventEffectless"),
               ) &&
-              card.definition.cardType === "event"
+              card.definition.type === "eventCard"
             ) {
               this.mutate({
-                type: "removeCard",
-                who,
-                where: "hands",
+                type: "removeEntity",
+                from: { who, type: "hands" },
                 oldState: card,
-                reason: "playNoEffect",
+                reason: "eventCardPlayNoEffect",
               });
             } else {
-              this.mutate({
-                type: "removeCard",
-                who,
-                where: "hands",
-                oldState: card,
-                reason: "play",
-              });
               await this.executeSkill(actionInfo.skill, {
                 targets: actionInfo.targets,
               });
@@ -818,9 +810,8 @@ export class Game {
               null,
             );
             this.mutate({
-              type: "removeCard",
-              who,
-              where: "hands",
+              type: "removeEntity",
+              from: { who, type: "hands" },
               oldState: actionInfo.card,
               reason: "elementalTuning",
             });
@@ -975,6 +966,10 @@ export class Game {
     for (const card of player.hands) {
       let allTargets: InitiativeSkillEventArg[];
       const skillDef = playSkillOfCard(card.definition);
+      if (!skillDef) {
+        console?.warn(`Card ${card.definition.id} has no play skill defined.`);
+        continue;
+      }
       const skillInfo = defineSkillInfo({
         caller: card,
         definition: skillDef,
@@ -991,7 +986,7 @@ export class Game {
       };
       // 当支援区满时，卡牌目标为“要离场的支援牌”
       if (
-        card.definition.cardType === "support" &&
+        card.definition.type === "support" &&
         player.supports.length === this.state.config.maxSupportsCount
       ) {
         allTargets = player.supports.map((st) => ({ targets: [st] }));
