@@ -55,7 +55,11 @@ import type {
   StatusHandle,
   SupportHandle,
 } from "./type";
-import { EntityBuilder, type EntityBuilderPublic, type EntityDescriptionDictionaryGetter } from "./entity";
+import {
+  EntityBuilder,
+  type EntityBuilderPublic,
+  type EntityDescriptionDictionaryGetter,
+} from "./entity";
 import type { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
 import {
@@ -623,12 +627,7 @@ export class CardBuilder<
         action = this.buildAction();
       } else {
         this.do((c) => {
-          c.mutate({
-            type: "removeEntity",
-            from: c.self.area,
-            oldState: c.self.latest(),
-            reason: "eventCardDrawn",
-          });
+          c.dispose(c.self, "eventCardDrawn");
         });
         drawAction = this.buildAction<HandCardInsertedEventArg>();
         filter = () => false;
@@ -670,6 +669,11 @@ export class CardBuilder<
       };
       skills.push(skillDef, drawSkillDef);
     } else {
+      this.do((c) => {
+        if (c.self.definition.type === "eventCard") {
+          c.dispose(c.self, "eventCardPlayed");
+        }
+      });
       const action = this.buildAction<InitiativeSkillEventArg>();
       const filter = this.buildFilter<InitiativeSkillEventArg>();
       const skillDef: InitiativeSkillDefinition = {

@@ -23,14 +23,13 @@ import {
   PlayerState,
   CharacterState,
   EntityState,
-  CardState,
   Version,
   CharacterVariables,
   ExtensionState,
-  CardDefinition,
   StateSymbol,
   getVersionBehavior,
   CURRENT_VERSION,
+  EntityDefinition,
 } from "@gi-tcg/core";
 import {
   Aura,
@@ -321,7 +320,6 @@ export function setup(state: JSX.Element): TestController {
             id,
             definition,
             variables,
-            fromCardId: null,
           };
           entities.push(state as Draft<EntityState>);
         }
@@ -350,12 +348,12 @@ export function setup(state: JSX.Element): TestController {
             `An entity of type ${comp.name} must have a def prop`
           );
         }
-        const definition = data.cards.get(def);
+        const definition = data.entities.get(def);
         if (!definition) {
           throw new Error(`Card ${def} not found`);
         }
-        const state: CardState = {
-          [StateSymbol]: "card",
+        const state: EntityState = {
+          [StateSymbol]: "entity",
           id,
           definition,
           variables: Object.fromEntries(
@@ -365,9 +363,9 @@ export function setup(state: JSX.Element): TestController {
           ),
         };
         const area = pile ? "pile" : "hands";
-        player[area].push(state as Draft<CardState>);
+        player[area].push(state as Draft<EntityState>);
         if (!notInitial) {
-          player.initialPile.push(definition as Draft<CardDefinition>);
+          player.initialPile.push(definition as Draft<EntityDefinition>);
         }
         break;
       }
@@ -400,7 +398,6 @@ export function setup(state: JSX.Element): TestController {
           id,
           definition,
           variables,
-          fromCardId: null,
         };
         const area =
           comp === CombatStatus

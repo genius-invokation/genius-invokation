@@ -183,6 +183,7 @@ export function initiativeSkillsOfPlayer(
         .filter(
           (sk): sk is InitiativeSkillDefinition =>
             sk.triggerOn === "initiative" &&
+            sk.initiativeSkillConfig.skillType !== "playCard" &&
             (includesHidden || !sk.initiativeSkillConfig.hidden),
         )
         .map((sk) => ({
@@ -325,7 +326,13 @@ export function removeEntity(state: Draft<GameState>, id: number) {
         return;
       }
     }
-    for (const key of ["combatStatuses", "summons", "supports"] as const) {
+    for (const key of [
+      "combatStatuses",
+      "summons",
+      "supports",
+      "hands",
+      "pile",
+    ] as const) {
       const area = player[key];
       const idx = area.findIndex((e) => e.id === id);
       if (idx !== -1) {

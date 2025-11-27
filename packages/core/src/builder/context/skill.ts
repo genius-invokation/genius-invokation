@@ -22,7 +22,7 @@ import {
   type EntityType,
   stringifyEntityArea,
 } from "../../base/entity";
-import type { MoveEntityM, Mutation } from "../../base/mutation";
+import type { MoveEntityM, Mutation, RemoveEntityM } from "../../base/mutation";
 import {
   type NightsoulValueChangeInfo,
   type DamageInfo,
@@ -837,7 +837,8 @@ export class SkillContext<Meta extends ContextMetaBase> {
         if (def.tags.includes(tag)) {
           const exist = t.entities.find((v) => v.definition.tags.includes(tag));
           if (exist) {
-            this.dispose(exist);
+            // TODO: maybe better reason
+            this.dispose(exist, "overflow");
           }
         }
       }
@@ -898,7 +899,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  dispose(target: EntityTargetArg = "@self") {
+  dispose(target: EntityTargetArg = "@self", reason: RemoveEntityM["reason"] = "other") {
     const targets = this.queryOrGet(target);
     for (const t of targets) {
       const target = t.latest();
@@ -909,13 +910,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
-        `Dispose ${stringifyState(target)}`,
+        `Dispose ${stringifyState(target)} for ${reason}`,
       );
       this.emitEvent(
         "onDispose",
         this.rawState,
         target as EntityStateO,
-        "other",
+        reason,
         t.area,
         this.skillInfo,
       );
@@ -923,7 +924,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
         type: "removeEntity",
         from: t.area,
         oldState: target,
-        reason: "other",
+        reason,
       });
     }
     return this.enableShortcut();
