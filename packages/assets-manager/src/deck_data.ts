@@ -44,8 +44,8 @@ export function getDeckData(
   characters: CharacterRawData[],
   actionCards: ActionCardRawData[],
 ): DeckData {
-  const chs = characters.filter((ch) => ch.obtainable);
-  const acs = actionCards.filter((ac) => ac.obtainable);
+  const chs = characters.filter((ch) => !!ch.shareId);
+  const acs = actionCards.filter((ac) => !!ac.shareId);
 
   const allTags = [...new Set([...chs, ...acs].flatMap((x) => x.tags))];
 
