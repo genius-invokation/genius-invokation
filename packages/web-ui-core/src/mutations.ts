@@ -42,15 +42,32 @@ import type { OppChessboardController } from "./opp";
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
   verb: "from" | "to",
-  mut: CreateEntityEM | MoveEntityEM | RemoveEntityEM,
+  {
+    $case,
+    value,
+  }: PbExposedMutation["mutation"] & {
+    $case: "createEntity" | "moveEntity" | "removeEntity";
+  }
 ): CardDestination | null {
-  const area =
-    verb === "from" && verb in mut
-      ? mut[verb]
-      : verb === "to" && verb in mut
-        ? mut[verb]
-        : null;
-  const who = ("fromWho" in mut ? mut.fromWho : mut.who) as 0 | 1;
+  let area: PbEntityArea | null = null;
+  let who: 0 | 1 = 0;
+  if (verb === "from") {
+    if ($case === "moveEntity") {
+      area = value.fromWhere;
+      who = value.fromWho as 0 | 1;
+    } else if ($case === "removeEntity") {
+      area = value.where;
+      who = value.who as 0 | 1;
+    }
+  } else {
+    if ($case === "moveEntity") {
+      area = value.toWhere;
+      who = value.toWho as 0 | 1;
+    } else if ($case === "createEntity") {
+      area = value.where;
+      who = value.who as 0 | 1;
+    }
+  }
   if (area === PbEntityArea.HAND) {
     return `hand${who}`;
   } else if (area === PbEntityArea.PILE) {
@@ -84,7 +101,7 @@ export interface ParsedMutation {
 
 export function parseMutations(
   mutations: PbExposedMutation[],
-  oppController?: OppChessboardController,
+  oppController?: OppChessboardController
 ): ParsedMutation {
   const oppKnownCardState =
     !oppController || oppController.closed ? null : oppController.handCards;
@@ -114,18 +131,22 @@ export function parseMutations(
     value: null,
   };
 
-  const handleCardOps = ({
-    mutation,
-  }: PbExposedMutation & {
-    mutation: { $case: "createEntity" | "moveEntity" | "removeEntity" };
-  }) => {
+  const handleCardOps = (
+    mutation: PbExposedMutation["mutation"] & {
+      $case: "createEntity" | "moveEntity" | "removeEntity";
+    }
+  ) => {
     const areas: PbEntityArea[] = [];
     if (mutation.$case === "moveEntity") {
       areas.push(mutation.value.fromWhere, mutation.value.toWhere);
     } else {
       areas.push(mutation.value.where);
     }
-    if (!areas.some((area) => area === PbEntityArea.HAND || area === PbEntityArea.PILE)) {
+    if (
+      !areas.some(
+        (area) => area === PbEntityArea.HAND || area === PbEntityArea.PILE
+      )
+    ) {
       return;
     }
     let card = mutation.value.entity!;
@@ -150,10 +171,9 @@ export function parseMutations(
         showing = false;
       }
     } else if (mutation.$case === "moveEntity") {
-      console.log("moveEntity reason", mutation.value.reason);
       if (
         [PbMoveEntityReason.EQUIP, PbMoveEntityReason.CREATE_SUPPORT].includes(
-          mutation.value.reason,
+          mutation.value.reason
         )
       ) {
         playingCard = {
@@ -164,8 +184,8 @@ export function parseMutations(
         showing = false;
       }
     }
-    const source = getCardArea("from", mutation.value);
-    const destination = getCardArea("to", mutation.value);
+    const source = getCardArea("from", mutation);
+    const destination = getCardArea("to", mutation);
 
     const current = animatingCards.find((x) => x.data.id === card.id);
     if (current) {
@@ -282,7 +302,7 @@ export function parseMutations(
         break;
       }
       case "createEntity": {
-        handleCardOps({ mutation });
+        handleCardOps(mutation);
         const id = mutation.value.entity!.id;
         if (disposingEntities.includes(id)) {
           disposingEntities.splice(disposingEntities.indexOf(id), 1);
@@ -292,11 +312,11 @@ export function parseMutations(
         break;
       }
       case "moveEntity": {
-        handleCardOps({ mutation });
+        handleCardOps(mutation);
         break;
       }
       case "removeEntity": {
-        handleCardOps({ mutation });
+        handleCardOps(mutation);
         const id = mutation.value.entity!.id;
         if (enteringEntities.includes(id)) {
           enteringEntities.splice(enteringEntities.indexOf(id), 1);
@@ -326,7 +346,7 @@ export function parseMutations(
       case "changePhase": {
         if (
           [PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(
-            mutation.value.newPhase,
+            mutation.value.newPhase
           )
         ) {
           roundAndPhase.value = mutation.value.newPhase;

@@ -270,6 +270,7 @@ export class CardBuilder<
     );
     builder._versionInfo = this._versionInfo;
     builder._skillList.push(...skills);
+    builder._obtainable = this._obtainable;
     return builder;
   }
   weapon(type: WeaponCardTag) {
@@ -339,6 +340,7 @@ export class CardBuilder<
     builder.tags(...tags);
     builder._versionInfo = this._versionInfo;
     builder._skillList.push(...skills);
+    builder._obtainable = this._obtainable;
     return builder;
   }
 

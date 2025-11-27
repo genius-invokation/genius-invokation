@@ -141,6 +141,7 @@ export class EntityBuilder<
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
+  _obtainable = false;
   private _disposeWhenUsageIsZero = false;
   private _visibleVarName: string | null = null;
   _associatedExtensionId: number | null = null;
@@ -834,7 +835,7 @@ export class EntityBuilder<
       registerEntity({
         __definition: "entities",
         id: this.id,
-        obtainable: true,
+        obtainable: this._obtainable,
         version: this._versionInfo,
         visibleVarName: this._visibleVarName,
         varConfigs: this._varConfigs,

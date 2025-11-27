@@ -718,7 +718,11 @@ export class StateMutator {
       [StateSymbol]: "entity",
       id: 0,
       definition,
-      variables: {},
+      variables: Object.fromEntries(
+        Object.entries(definition.varConfigs).map(
+          ([name, { initialValue }]) => [name, initialValue] as const,
+        ),
+      ),
     };
     return this.insertHandCard({
       type: "createEntity",

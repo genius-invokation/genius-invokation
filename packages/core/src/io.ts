@@ -273,8 +273,9 @@ export function exposeMutation(
       const fromWhere = exposeEntityWhere(m.from.type);
       const toWhere = exposeEntityWhere(m.target.type);
 
+      // 对手塞入牌库/手牌的信息不可见
       const hidden =
-        m.from.who !== who && ["hands", "pile"].includes(m.from.type);
+        m.from.who !== who && ["hands", "pile"].includes(m.target.type);
       const REASON_MAP: Record<MoveEntityM["reason"], PbMoveEntityReason> = {
         draw: PbMoveEntityReason.DRAW,
         undraw: PbMoveEntityReason.UNDRAW,
