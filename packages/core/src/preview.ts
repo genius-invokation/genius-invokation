@@ -173,19 +173,8 @@ class PreviewContext {
           }
           break;
         }
-        case "createEntity": {
-          let where: "summons" | "supports";
-          if (m.target.type === "summons" || m.target.type === "supports") {
-            where = m.target.type;
-          } else {
-            break;
-          }
-          const em = exposeMutation(0, m);
-          if (em) {
-            result.push(em);
-          }
-          break;
-        }
+        case "createEntity":
+        case "moveEntity":
         case "removeEntity": {
           const em = exposeMutation(0, m);
           if (em) {

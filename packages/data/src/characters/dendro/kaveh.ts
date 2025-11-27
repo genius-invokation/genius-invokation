@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { EntityState, character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, DiceType, customEvent } from "@gi-tcg/core/builder";
+import { EntityState, character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, customEvent } from "@gi-tcg/core/builder";
 import { BountifulCore } from "../hydro/nilou";
 import { DendroCore } from "../../commons";
 
