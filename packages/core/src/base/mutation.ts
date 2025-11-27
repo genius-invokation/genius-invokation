@@ -33,6 +33,7 @@ import {
   type EntityArea,
   type EntityDefinition,
   stringifyEntityArea,
+  USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "./entity";
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
@@ -149,6 +150,12 @@ export interface TransformDefinitionM {
   readonly newDefinition: CharacterDefinition | EntityDefinition;
 }
 
+export interface ResetVariablesM {
+  readonly type: "resetVariables";
+  state: AnyState;
+  readonly scope: "all" | "usagePerRound";
+}
+
 export type ResetDiceReason =
   | "roll"
   | "consume"
@@ -219,6 +226,7 @@ export type Mutation =
   | RemoveEntityM
   | ModifyEntityVarM
   | TransformDefinitionM
+  | ResetVariablesM
   | ResetDiceM
   | SetPlayerFlagM
   | MutateExtensionStateM
@@ -411,6 +419,24 @@ function doMutation(state: GameState, m: Mutation): GameState {
       m.state = getEntityById(newState, m.state.id) as CharacterState;
       return newState;
     }
+    case "resetVariables": {
+      const newState = produce(state, (draft) => {
+        const entity = getEntityById(draft, m.state.id) as Draft<AnyState>;
+        const varConfigs = entity.definition.varConfigs;
+        for (const key in varConfigs) {
+          if (
+            m.scope === "usagePerRound" &&
+            !(USAGE_PER_ROUND_VARIABLE_NAMES as readonly string[]).includes(key)
+          ) {
+            continue;
+          }
+          const config = varConfigs[key];
+          entity.variables[key] = config.initialValue;
+        }
+      });
+      m.state = getEntityById(newState, m.state.id) as AnyState;
+      return newState;
+    }
     case "resetDice": {
       return produce(state, (draft) => {
         draft.players[m.who].dice = sortDice(state.players[m.who], m.value);
@@ -519,6 +545,9 @@ export function stringifyMutation(m: Mutation): string | null {
       return `Transform definition of ${stringifyState(m.state)} to [${
         m.newDefinition.type
       }:${m.newDefinition.id}]`;
+    }
+    case "resetVariables": {
+      return `Reset variables of ${stringifyState(m.state)} (${m.scope})`;
     }
     case "resetDice": {
       return `Reset dice of player ${m.who} to ${JSON.stringify(m.value)}`;

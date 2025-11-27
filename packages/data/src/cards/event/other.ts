@@ -681,7 +681,7 @@ export const MasterOfWeaponry = card(332010)
     if (targetOldWeapon) {
       c.dispose(targetOldWeapon);
     }
-    c.transferEntity(weapon, area);
+    c.moveEntity(weapon, area);
   })
   .done();
 
@@ -708,7 +708,7 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
     if (targetOldArtifact) {
       c.dispose(targetOldArtifact);
     }
-    c.transferEntity(artifact, area);
+    c.moveEntity(artifact, area);
   })
   .done();
 

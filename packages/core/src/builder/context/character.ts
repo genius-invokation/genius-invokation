@@ -277,12 +277,27 @@ export class Character<
   equip(equipment: EquipmentHandle | PlainEntityState, opt?: CreateEntityOptions) {
     this.skillContext.equip(equipment, this.state, opt);
   }
-  unequipArtifact() {
-    // TODO
+  private unequip(state: EntityState) {
+    this.skillContext.mutate({
+      type: "resetVariables",
+      scope: "all",
+      state,
+    });
+    this.skillContext.moveEntity(state, { who: this.who, type: "hands" });
   }
-  /** 不触发 onDispose */
+  unequipArtifact() {
+    const artifact = this.state.entities.find((et) => et.definition.tags.includes("artifact"));
+    if (!artifact) {
+      return;
+    }
+    this.unequip(artifact);
+  }
   unequipWeapon() {
-    // TODO
+    const weapon = this.state.entities.find((et) => et.definition.tags.includes("weapon"));
+    if (!weapon) {
+      return;
+    }
+    this.unequip(weapon);
   }
   loseEnergy(count = 1): number {
     const originalValue = this.state.variables.energy;

@@ -211,6 +211,7 @@ export function exposeMutation(
     case "clearRemovedEntities":
     case "pushDelayingEvent":
     case "clearDelayingEvent":
+    case "resetVariables":
     case "switchActive": // We will manually handle this
       return null;
     case "setPlayerFlag": {
