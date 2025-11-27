@@ -498,13 +498,13 @@ const detailedEventDictionary = {
   handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  disposeCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
+  disposeCard: defineDescriptor("onDispose", (e, r) => {
     return (
-      e.method !== "elementalTuning" &&
+      e.reason !== "elementalTuning" &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
-  disposeOrTuneCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
+  disposeOrTuneCard: defineDescriptor("onDispose", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   dealDamage: defineDescriptor("onDamageOrHeal", (e, r) => {

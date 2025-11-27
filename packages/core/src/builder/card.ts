@@ -260,10 +260,6 @@ export class CardBuilder<
     this._tags.push(...tags);
     return this;
   }
-  type(type: "support" | "equipment" | "eventCard"): this {
-    this._type = type;
-    return this;
-  }
 
   unobtainable(): this {
     this._obtainable = false;
@@ -274,14 +270,13 @@ export class CardBuilder<
     target: Q,
   ): EntityBuilderPublic<"equipment"> {
     const cardId = this.cardId as EquipmentHandle;
-    this.type("equipment")
-      .addTarget(target)
+    this.addTarget(target)
       .do((c) => {
         const ch = c.$("character and @targets.0");
         const caller = c.skillInfo.caller;
         ch?.equip(cardId);
-      })
-      .done();
+      });
+    const skills = this.buildSkills();
     const builder = new EntityBuilder<"equipment", never, never, false, {}>(
       "equipment",
       cardId,
@@ -351,7 +346,8 @@ export class CardBuilder<
         c.dispose(targets[0]);
       }
       c.createEntity("support", cardId);
-    }).done();
+    });
+    const skills = this.buildSkills();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
       "support",
       cardId,
@@ -585,7 +581,8 @@ export class CardBuilder<
     return this;
   }
 
-  done(): CardHandle {
+  private buildSkills(): SkillDefinition[] {
+
     if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
@@ -713,6 +710,11 @@ export class CardBuilder<
       };
       skills.push(skillDef);
     }
+    return skills;
+  }
+
+  done(): CardHandle {
+    const skills = this.buildSkills();
     const cardDef: EntityDefinition = {
       __definition: "entities",
       type: this._type,

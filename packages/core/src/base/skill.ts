@@ -65,7 +65,7 @@ import { getRaw, NoReactiveSymbol } from "../builder/context/reactive";
 import type { PlainCharacterState } from "../builder/context/utils";
 import type { AppliableDamageType } from "../builder/type";
 import type { Mutation } from "..";
-import type { MoveEntityM } from "./mutation";
+import type { MoveEntityM, RemoveEntityM } from "./mutation";
 
 export interface SkillDefinitionBase<Arg> {
   readonly type: "skill";
@@ -1043,26 +1043,34 @@ export class EnterEventArg extends EntityEventArg {
   }
 }
 
-export class DisposeEventArg<
-  T extends AnyState = EntityState,
-> extends EntityEventArg<T> {}
+export class DisposeEventArg extends EntityEventArg<EntityState> {
 
-export class DisposeOrTuneCardEventArg extends DisposeEventArg {
   constructor(
     state: GameState,
-    public readonly card: EntityState,
-    public readonly method: DisposeOrTuneMethod,
+    public readonly entity: EntityState,
+    public readonly reason: RemoveEntityM["reason"],
+    public readonly from: EntityArea,
     public readonly via: SkillInfo | null,
   ) {
-    super(state, card);
+    super(state, entity);
+  }
+
+  /** 是否是舍弃手牌 */
+  isDiscard() {
+    return this.reason === "cardDisposed";
+  }
+
+  /** 是否是元素调和 */
+  isTuning() {
+    return this.reason === "elementalTuning";
   }
 
   diceCost() {
-    return diceCostOfCard(this.card.definition);
+    return diceCostOfCard(this.entity.definition);
   }
   override toString(): string {
-    return `player ${this.who} ${this.method} card ${stringifyState(
-      this.card,
+    return `player ${this.who} ${this.reason} card ${stringifyState(
+      this.entity,
     )}`;
   }
 }
@@ -1301,7 +1309,6 @@ export const EVENT_MAP = {
   onUseSkill: UseSkillEventArg,
   onBeforePlayCard: PlayCardEventArg,
   onPlayCard: PlayCardEventArg,
-  onDisposeOrTuneCard: DisposeOrTuneCardEventArg,
 
   onSwitchActive: SwitchActiveEventArg,
   onHandCardInserted: HandCardInsertedEventArg,
