@@ -283,7 +283,7 @@ export class Character<
       scope: "all",
       state,
     });
-    this.skillContext.moveEntity(state, { who: this.who, type: "hands" });
+    this.skillContext.moveEntity(state, { who: this.who, type: "hands" }, "equip");
   }
   unequipArtifact() {
     const artifact = this.state.entities.find((et) => et.definition.tags.includes("artifact"));
