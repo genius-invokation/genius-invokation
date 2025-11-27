@@ -76,7 +76,6 @@ import {
   type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
-import { createVariable } from "./utils";
 import type { EntityDefinition } from ".";
 import { registerEntity } from "./registry";
 
