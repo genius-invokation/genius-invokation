@@ -93,10 +93,10 @@ const BurstScan = combatStatus(117082)
   .usageCanAppend(1, 3)
   .do((c, e) => {
     c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)?.consumeUsage(1);
-    const cardDef = e.card.definition;
+    const cardDef = e.entity.definition;
     const cost = diceCostOfCard(cardDef);
     c.damage(DamageType.Dendro, cost + 1);
-    c.emitCustomEvent(ShouldTriggerTalent, e.card.latest());
+    c.emitCustomEvent(ShouldTriggerTalent, e.entity.latest());
   })
   .done();
 
@@ -482,8 +482,7 @@ const [Lyresong] = card(332024)
   .until("v4.7.0")
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {
-    const { definition } = e.targets[0].removeArtifact()!;
-    c.createHandCard(definition.id as CardHandle);
+    e.targets[0].unequipArtifact();
   })
   .toCombatStatus(303224)
   .oneDuration()

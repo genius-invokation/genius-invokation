@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard, customEvent, CardState } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard, customEvent, EntityState } from "@gi-tcg/core/builder";
 
 // 入场时：获得我方已吞噬卡牌中最高元素骰费用值的「攻击力」，获得该费用的已吞噬卡牌数量的可用次数。
 
@@ -100,7 +100,7 @@ export const DeepDevourersDomain = combatStatus(122041)
   .variable("card1Cost", 0, { visible: false })
   .variable("extraMaxHealth", 0, { visible: false })
   .replaceDescription("[GCG_TOKEN_SHIELD]", (_, self) => self.variables.extraMaxHealth)
-  .on("disposeOrTuneCard", (c, e) => e.method === "disposeFromHands" || e.method === "elementalTuning")
+  .on("disposeOrTuneCard", (c, e) => e.from.type === "hands" || e.isTuning())
   .do((c, e) => {
     const cost = e.diceCost();
     c.addVariable("cardCount", 1);
@@ -161,7 +161,7 @@ export const ShatteringWaves = skill(22041)
   .damage(DamageType.Physical, 2)
   .done();
 
-const StarfallShowerDisposeCard = customEvent<CardState>("alldevouringNarwhal/starfallShowerDisposeCard");
+const StarfallShowerDisposeCard = customEvent<EntityState>("alldevouringNarwhal/starfallShowerDisposeCard");
 
 /**
  * @id 22042

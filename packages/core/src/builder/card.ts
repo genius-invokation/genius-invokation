@@ -55,7 +55,7 @@ import type {
   StatusHandle,
   SupportHandle,
 } from "./type";
-import { EntityBuilder, type EntityBuilderPublic } from "./entity";
+import { EntityBuilder, type EntityBuilderPublic, type EntityDescriptionDictionaryGetter } from "./entity";
 import type { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
 import {
@@ -73,7 +73,7 @@ import {
   DEFAULT_VERSION_INFO,
 } from "../base/version";
 import { createVariable } from "./utils";
-import type { CardState, EntityDefinition } from ".";
+import type { EntityDefinition } from ".";
 import { registerEntity } from "./registry";
 
 type DisposeCardBuilderMeta<
@@ -156,12 +156,6 @@ export interface DoSameWhenDisposedOption<
   }>;
 }
 
-type CardStateWithArea = CardState & { readonly area: EntityArea };
-type CardDescriptionDictionaryGetter = (
-  st: GameState,
-  self: CardStateWithArea,
-) => string | number;
-
 export class CardBuilder<
   KindTs extends InitiativeSkillTargetKind,
   CallerVars extends string,
@@ -216,13 +210,13 @@ export class CardBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: CardDescriptionDictionaryGetter,
+    getter: EntityDescriptionDictionaryGetter,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
     const entry: DescriptionDictionaryEntry = function (st, id) {
-      const self = getEntityById(st, id) as CardState;
+      const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
       return String(getter(st, { ...self, area }));
     };
@@ -272,8 +266,7 @@ export class CardBuilder<
     const cardId = this.cardId as EquipmentHandle;
     this.addTarget(target).do((c) => {
       const ch = c.$("character and @targets.0");
-      const caller = c.skillInfo.caller;
-      ch?.equip(cardId);
+      ch?.equip(c.self);
     });
     const skills = this.buildSkills();
     const builder = new EntityBuilder<"equipment", never, never, false, {}>(
@@ -281,6 +274,7 @@ export class CardBuilder<
       cardId,
     );
     builder._versionInfo = this._versionInfo;
+    builder._skillList.push(...skills);
     return builder;
   }
   weapon(type: WeaponCardTag) {
@@ -340,17 +334,16 @@ export class CardBuilder<
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      c.createEntity("support", cardId);
+      c.moveEntity(c.self, { who: c.self.who, type: "supports" });
     });
     const skills = this.buildSkills();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
       "support",
       cardId,
     );
-    if (tags.length > 0) {
-      builder.tags(...tags);
-    }
+    builder.tags(...tags);
     builder._versionInfo = this._versionInfo;
+    builder._skillList.push(...skills);
     return builder;
   }
 

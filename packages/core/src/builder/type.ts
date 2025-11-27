@@ -23,8 +23,8 @@ export type SkillHandle = number & { readonly _skill: unique symbol };
 export type PassiveSkillHandle = number & {
   readonly _passiveSkill: unique symbol;
 };
-export type CardHandle = number & { readonly _card: unique symbol };
 export type EntityHandle = number & { readonly _entity: unique symbol };
+export type CardHandle = EntityHandle & { readonly _card: unique symbol };
 export type StatusHandle = EntityHandle & { readonly _stat: unique symbol };
 export type CombatStatusHandle = EntityHandle & {
   readonly _cStat: unique symbol;
@@ -43,13 +43,11 @@ export type ExtensionHandle<T = unknown> = number & {
 export type ExEntityType = "character" | EntityType;
 
 export type ExEntityState<TypeT extends ExEntityType> =
-  TypeT extends "character"
-    ? CharacterState
-      : EntityState;
+  TypeT extends "character" ? CharacterState : EntityState;
 
 export type HandleT<T extends ExEntityType> = T extends "character"
   ? CharacterHandle
-  : T extends "card"
+  : T extends "eventCard"
     ? CardHandle
     : T extends "combatStatus"
       ? CombatStatusHandle
@@ -67,9 +65,9 @@ export type HandleT<T extends ExEntityType> = T extends "character"
 
 export type ExTag<TypeT extends ExEntityType> = TypeT extends "character"
   ? CharacterTag
-    : TypeT extends EntityType
-      ? EntityTag
-      : never;
+  : TypeT extends EntityType
+    ? EntityTag
+    : never;
 
 export type AppliableDamageType =
   | typeof DamageType.Cryo

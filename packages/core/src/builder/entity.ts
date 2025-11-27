@@ -110,7 +110,7 @@ interface NightsoulOptions extends VariableOptions {
 
 type EntityStateWithArea = EntityState & { readonly area: EntityArea };
 
-type EntityDescriptionDictionaryGetter = (
+export type EntityDescriptionDictionaryGetter = (
   st: GameState,
   self: EntityStateWithArea,
 ) => string | number;

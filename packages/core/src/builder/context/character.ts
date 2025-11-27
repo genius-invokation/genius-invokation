@@ -34,6 +34,7 @@ import {
   getActiveCharacterIndex,
   nationOfCharacter,
   weaponOfCharacter,
+  type PlainEntityState,
 } from "./utils";
 import { isSkillDisabled } from "../../utils";
 import type { ContextMetaBase, HealOption, SkillContext } from "./skill";
@@ -273,30 +274,15 @@ export class Character<
   addStatus(status: StatusHandle, opt?: CreateEntityOptions) {
     this.skillContext.createEntity("status", status, this.area, opt);
   }
-  equip(equipment: EquipmentHandle, opt?: CreateEntityOptions) {
+  equip(equipment: EquipmentHandle | PlainEntityState, opt?: CreateEntityOptions) {
     this.skillContext.equip(equipment, this.state, opt);
   }
-  /** 不触发 onDispose */
-  removeArtifact(): EntityState | null {
-    const entity = this.state.entities.find((v) =>
-      v.definition.tags.includes("artifact"),
-    );
-    if (!entity) {
-      return null;
-    }
-    this.skillContext.dispose(entity, { noTriggerEvent: true });
-    return entity;
+  unequipArtifact() {
+    // TODO
   }
   /** 不触发 onDispose */
-  removeWeapon(): EntityState | null {
-    const entity = this.state.entities.find((v) =>
-      v.definition.tags.includes("weapon"),
-    );
-    if (!entity) {
-      return null;
-    }
-    this.skillContext.dispose(entity, { noTriggerEvent: true });
-    return entity;
+  unequipWeapon() {
+    // TODO
   }
   loseEnergy(count = 1): number {
     const originalValue = this.state.variables.energy;

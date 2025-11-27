@@ -1481,7 +1481,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
       this.abortPreview();
     }
     this.disposeCard(...disposed);
-    return this.enableShortcut<RxEntityState<Meta, ExEntityType>[]>(disposed);
+    return this.enableShortcut<RxEntityState<Meta, EntityType>[]>(disposed);
   }
 
   /**
