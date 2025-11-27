@@ -879,6 +879,7 @@ export class TriggeredSkillBuilder<
   }
   private _delayedToSkill = false;
   private _beforeDefaultDispose = false;
+  private _enableHandTriggering = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
@@ -992,6 +993,11 @@ export class TriggeredSkillBuilder<
     return this;
   }
 
+  enableHandTriggering() {
+    this._enableHandTriggering = true;
+    return this;
+  }
+
   /** 调用之前在 `EntityBuilder` 中定义的“小程序” */
   declare callSnippet: CallSnippet<
     ParentSnippets,
@@ -1037,7 +1043,13 @@ export class TriggeredSkillBuilder<
         return c.self.area.type !== "removedEntities";
       });
     }
-    // 2. 基于 listenTo 的 filter
+    // 2. 默认禁止手牌区实体响应事件，除非显式启用
+    if (!this._enableHandTriggering) {
+      this.filters.push((c) => {
+        return c.self.area.type !== "hands";
+      });
+    }
+    // 3. 基于 listenTo 的 filter
     const [triggerOn, filterDescriptor] =
       detailedEventDictionary[
         isCustomEvent(this.detailedEventName)
@@ -1057,7 +1069,7 @@ export class TriggeredSkillBuilder<
         c.rawState,
       );
     });
-    // 3. 自定义事件：确保事件名一致
+    // 4. 自定义事件：确保事件名一致
     if (isCustomEvent(this.detailedEventName)) {
       const customEvent = this.detailedEventName;
       this.filters.push(function (c, e) {
@@ -1066,7 +1078,7 @@ export class TriggeredSkillBuilder<
         );
       });
     }
-    // 4. 定义技能时显式传入的 filter
+    // 5. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
     const parentSkillList = this._beforeDefaultDispose

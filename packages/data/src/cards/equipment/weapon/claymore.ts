@@ -218,15 +218,10 @@ const NonInitialPlayedCardExtension = extension(311308, { defIds: pair(new Set<n
 export const UltimateOverlordsMegaMagicSword = card(311308)
   .since("v4.8.0")
   .costSame(2)
-  .associateExtension(NonInitialPlayedCardExtension)
-  .variable("supp", 0)
-  .onHCI((c) => {
-    c.setVariable("supp", c.getExtensionState().defIds[c.self.who].size);
-  })
   .weapon("claymore")
   .variable("supp", 0)
   .associateExtension(NonInitialPlayedCardExtension)
-  .replaceDescription("[GCG_TOKEN_COUNTER]", (_, self) => self.variables.supp)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (_, { area }, ext) => ext.defIds[area.who].size)
   .on("enter")
   .do((c) => {
     c.setVariable("supp", c.getExtensionState().defIds[c.self.who].size);

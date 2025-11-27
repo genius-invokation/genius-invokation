@@ -110,9 +110,12 @@ interface NightsoulOptions extends VariableOptions {
 
 type EntityStateWithArea = EntityState & { readonly area: EntityArea };
 
-export type EntityDescriptionDictionaryGetter = (
+export type EntityDescriptionDictionaryGetter<
+  AssociatedExt extends ExtensionHandle,
+> = (
   st: GameState,
   self: EntityStateWithArea,
+  ext: AssociatedExt["type"],
 ) => string | number;
 
 export const DEFAULT_SNIPPET_NAME = "default" as const;
@@ -186,15 +189,17 @@ export class EntityBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: EntityDescriptionDictionaryGetter,
+    getter: EntityDescriptionDictionaryGetter<AssociatedExt>,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
+    const extId = this._associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
+      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
-      return String(getter(st, { ...self, area }));
+      return String(getter(st, { ...self, area }, ext?.state));
     };
     this._descriptionDictionary[key] = entry;
     return this;
@@ -582,7 +587,7 @@ export class EntityBuilder<
   }
   hint(
     icon: DamageType | CombatStatusHandle,
-    text?: string | EntityDescriptionDictionaryGetter,
+    text?: string | EntityDescriptionDictionaryGetter<AssociatedExt>,
   ) {
     if (typeof text === "function") {
       const hintReplacement = "[GCG_TOKEN_HINT_TEXT]";

@@ -214,30 +214,21 @@ export class CardBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: EntityDescriptionDictionaryGetter,
+    getter: EntityDescriptionDictionaryGetter<AssociatedExt>,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
     }
+    const extId = this.associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
+      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
-      return String(getter(st, { ...self, area }));
+
+      return String(getter(st, { ...self, area }, ext?.state));
     };
     this._descriptionDictionary[key] = entry;
     return this;
-  }
-
-  variable<const Name extends string>(
-    name: Name,
-    value: number,
-  ): CardBuilder<KindTs, CallerVars | Name, AssociatedExt> {
-    if (Reflect.has(this._varConfigs, name)) {
-      throw new GiTcgDataError(`Variable name ${name} already exists`);
-    }
-    const varConfig = createVariable(value);
-    this._varConfigs[name] = varConfig;
-    return this as any;
   }
 
   associateExtension<NewExtT>(
