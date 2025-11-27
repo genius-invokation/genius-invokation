@@ -75,16 +75,14 @@ function queryCanonical(
     if (whoRes !== "all" && expectWho !== area.who) {
       continue;
     }
-    if (typeRes.type === "card" && typeRes.area !== "all") {
-      if (typeRes.area !== area.type) {
+    if (typeRes.type === "card") {
+      if (typeRes.area !== "all" && typeRes.area !== area.type) {
         continue;
       }
-    }
-    if (area.type === "hands" || area.type === "pile") {
-      continue;
-    }
-    if (typeRes.type !== "any" && typeRes.type !== state.definition.type) {
-      continue;
+    } else {
+        if (typeRes.type !== "any" && typeRes.type !== state.definition.type) {
+        continue;
+      }
     }
     if (typeRes.type === "character") {
       const chState = state as CharacterState;
