@@ -20,7 +20,7 @@ import type {
 } from "./base/mutation";
 import {
   ActionEventArg,
-  DisposeOrTuneCardEventArg,
+  DisposeEventArg,
   GenericModifyActionEventArg,
   PlayCardEventArg,
   SwitchActiveEventArg,
@@ -321,10 +321,11 @@ export class ActionPreviewer {
       }
       case "elementalTuning": {
         const card = newActionInfo.card;
-        const tuneCardEventArg = new DisposeOrTuneCardEventArg(
+        const tuneCardEventArg = new DisposeEventArg(
           ctx.state,
           card,
           "elementalTuning",
+          { who: this.who, type: "hands" },
           null,
         );
         ctx.mutate({
@@ -333,7 +334,7 @@ export class ActionPreviewer {
           oldState: card,
           reason: "elementalTuning",
         });
-        await ctx.previewEvent("onDisposeOrTuneCard", tuneCardEventArg);
+        await ctx.previewEvent("onDispose", tuneCardEventArg);
         break;
       }
       case "declareEnd": {

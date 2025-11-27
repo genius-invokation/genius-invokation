@@ -430,7 +430,10 @@ const detailedEventDictionary = {
   replaceActionBySkill: defineDescriptor("replaceAction", (e, r) => {
     const player = e.onTimeState.players[e.who];
     const activeChar = player.characters[getActiveCharacterIndex(player)];
-    return checkRelative(e.onTimeState, activeChar.id, r) && !isSkillDisabled(activeChar);
+    return (
+      checkRelative(e.onTimeState, activeChar.id, r) &&
+      !isSkillDisabled(activeChar)
+    );
   }),
   action: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
@@ -499,13 +502,13 @@ const detailedEventDictionary = {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   disposeCard: defineDescriptor("onDispose", (e, r) => {
-    return (
-      e.reason !== "elementalTuning" &&
-      checkRelative(e.onTimeState, { who: e.who }, r)
-    );
+    return e.isDiscard() && checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   disposeOrTuneCard: defineDescriptor("onDispose", (e, r) => {
-    return checkRelative(e.onTimeState, { who: e.who }, r);
+    return (
+      (e.isDiscard() || e.isTuning()) &&
+      checkRelative(e.onTimeState, { who: e.who }, r)
+    );
   }),
   dealDamage: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (

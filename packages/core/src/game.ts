@@ -72,7 +72,7 @@ import type { GameData } from "./builder/registry";
 import {
   ActionEventArg,
   type ActionInfo,
-  DisposeOrTuneCardEventArg,
+  DisposeEventArg,
   type EventAndRequest,
   EventArg,
   ModifyRollEventArg,
@@ -803,10 +803,11 @@ export class Game {
             break;
           }
           case "elementalTuning": {
-            const tuneCardEventArg = new DisposeOrTuneCardEventArg(
+            const tuneCardEventArg = new DisposeEventArg(
               this.state,
               actionInfo.card,
               "elementalTuning",
+              { who, type: "hands" },
               null,
             );
             this.mutate({
@@ -823,7 +824,7 @@ export class Game {
               reason: "elementalTuning",
               conversionTargetHint: targetDice,
             });
-            await this.handleEvent("onDisposeOrTuneCard", tuneCardEventArg);
+            await this.handleEvent("onDispose", tuneCardEventArg);
             break;
           }
           case "declareEnd": {

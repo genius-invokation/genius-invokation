@@ -447,13 +447,13 @@ export class SkillContext<Meta extends ContextMetaBase> {
   private costSortedHands(
     who: "my" | "opp",
     useTieBreak: boolean,
-  ): TypedEntity<Meta>[] {
+  ): RxEntityState<Meta, EntityType>[] {
     const player = who === "my" ? this.player : this.oppPlayer;
     const tb = useTieBreak
-      ? (card: TypedEntity<Meta>) => {
+      ? (card: RxEntityState<Meta, EntityType>) => {
           return nextRandom(card.id) ^ this.rawState.iterators.random;
         }
-      : (_: TypedEntity<Meta>) => 0;
+      : (_: RxEntityState<Meta, EntityType>) => 0;
     const sortData = new Map(
       player.hands.map(
         (c) =>
@@ -467,7 +467,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
   }
 
   /** 我方或对方原本元素骰费用最多的 `count` 张手牌 */
-  maxCostHands(count: number, opt: MaxCostHandsOpt = {}): RxEntityState<Meta, EntityType>[] {
+  maxCostHands(
+    count: number,
+    opt: MaxCostHandsOpt = {},
+  ): RxEntityState<Meta, EntityType>[] {
     const who = opt.who ?? "my";
     const useTieBreak = opt.useTieBreak ?? false;
     return this.costSortedHands(who, useTieBreak).slice(0, count);
@@ -895,7 +898,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  dispose(target: EntityTargetArg = "@self", option: DisposeOption = {}) {
+  dispose(target: EntityTargetArg = "@self") {
     const targets = this.queryOrGet(target);
     for (const t of targets) {
       const target = t.latest();
@@ -908,10 +911,14 @@ export class SkillContext<Meta extends ContextMetaBase> {
         DetailLogType.Primitive,
         `Dispose ${stringifyState(target)}`,
       );
-      if (!option.noTriggerEvent) {
-        // 对于“转移回手牌”的操作，不会触发 onDispose
-        this.emitEvent("onDispose", this.rawState, target as EntityStateO);
-      }
+      this.emitEvent(
+        "onDispose",
+        this.rawState,
+        target as EntityStateO,
+        "other",
+        t.area,
+        this.skillInfo,
+      );
       this.mutate({
         type: "removeEntity",
         from: t.area,
@@ -1434,15 +1441,15 @@ export class SkillContext<Meta extends ContextMetaBase> {
       const area = card.area;
       if (area.type !== "hands" && area.type !== "pile") {
         throw new GiTcgDataError(
-          `Cannot dispose card ${stringifyState(
-            card,
-          )} from player ${area.who}, not found in either hands or pile`,
+          `Cannot dispose card ${stringifyState(card)} from player ${
+            area.who
+          }, not found in either hands or pile`,
         );
       }
       using l = this.mutator.subLog(
         DetailLogType.Primitive,
         `Dispose card ${stringifyState(cardState)} from player ${area.who}`,
-      );;
+      );
       this.emitEvent(
         "onDispose",
         this.rawState,
@@ -1631,10 +1638,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return RET;
   }
 
-  private getCardsDefinition(cards: (CardHandle | CardDefinition)[]) {
+  private getCardsDefinition(cards: (CardHandle | EntityDefinition)[]) {
     return cards.map((defOrId) => {
       if (typeof defOrId === "number") {
-        const def = this.state.data.cards.get(defOrId);
+        const def = this.state.data.entities.get(defOrId);
         if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${defOrId}`);
         }
@@ -1662,7 +1669,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     });
     return this.enableShortcut();
   }
-  selectAndCreateHandCard(cards: (CardHandle | CardDefinition)[]) {
+  selectAndCreateHandCard(cards: (CardHandle | EntityDefinition)[]) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {
       type: "createHandCard",
       cards: this.getCardsDefinition(cards),
@@ -1670,7 +1677,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
   selectAndPlay(
-    cards: (CardHandle | CardDefinition)[],
+    cards: (CardHandle | EntityDefinition)[],
     ...targets: (PlainCharacterState | PlainEntityState)[]
   ) {
     this.emitEvent("requestSelectCard", this.skillInfo, this.callerArea.who, {

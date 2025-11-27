@@ -27,7 +27,7 @@ import type {
   WeaponCardTag,
 } from "../base/entity";
 import {
-  type DisposeOrTuneCardEventArg,
+  DisposeEventArg,
   EMPTY_SKILL_RESULT,
   type HandCardInsertedEventArg,
   type InitiativeSkillDefinition,
@@ -82,7 +82,7 @@ type DisposeCardBuilderMeta<
 > = {
   callerType: "eventCard";
   callerVars: CallerVars;
-  eventArgType: DisposeOrTuneCardEventArg;
+  eventArgType: DisposeEventArg;
   associatedExtension: AssociatedExt;
 };
 
@@ -139,19 +139,19 @@ export interface DoSameWhenDisposedOption<
   filter?: SkillOperationFilter<{
     callerType: "eventCard";
     callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
+    eventArgType: DisposeEventArg;
     associatedExtension: AssociatedExt;
   }>;
   prependOp?: SkillOperation<{
     callerType: "eventCard";
     callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
+    eventArgType: DisposeEventArg;
     associatedExtension: AssociatedExt;
   }>;
   appendOp?: SkillOperation<{
     callerType: "eventCard";
     callerVars: never;
-    eventArgType: DisposeOrTuneCardEventArg;
+    eventArgType: DisposeEventArg;
     associatedExtension: AssociatedExt;
   }>;
 }
@@ -270,12 +270,11 @@ export class CardBuilder<
     target: Q,
   ): EntityBuilderPublic<"equipment"> {
     const cardId = this.cardId as EquipmentHandle;
-    this.addTarget(target)
-      .do((c) => {
-        const ch = c.$("character and @targets.0");
-        const caller = c.skillInfo.caller;
-        ch?.equip(cardId);
-      });
+    this.addTarget(target).do((c) => {
+      const ch = c.$("character and @targets.0");
+      const caller = c.skillInfo.caller;
+      ch?.equip(cardId);
+    });
     const skills = this.buildSkills();
     const builder = new EntityBuilder<"equipment", never, never, false, {}>(
       "equipment",
@@ -334,10 +333,6 @@ export class CardBuilder<
   }
 
   support(...tags: SupportTag[]): EntityBuilderPublic<"support"> {
-    this.type("support");
-    if (tags.length > 0) {
-      this.tags(...tags);
-    }
     const cardId = this.cardId as SupportHandle;
     this.do((c, e) => {
       // 支援牌的目标是要弃置的支援区卡牌
@@ -582,7 +577,6 @@ export class CardBuilder<
   }
 
   private buildSkills(): SkillDefinition[] {
-
     if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
@@ -603,22 +597,21 @@ export class CardBuilder<
             ...this.operations,
             this._doSameWhenDisposed?.appendOp,
           ].filter((op) => !!op);
-      const disposeFilter = this.buildFilter<DisposeOrTuneCardEventArg>([
+      const disposeFilter = this.buildFilter<DisposeEventArg>([
         this._doSameWhenDisposed?.filter ?? (() => true),
       ]);
-      const disposeAction =
-        this.buildAction<DisposeOrTuneCardEventArg>(disposeOps);
-      const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
+      const disposeAction = this.buildAction<DisposeEventArg>(disposeOps);
+      const disposeDef: TriggeredSkillDefinition<"onDispose"> = {
         type: "skill",
         id: this.cardId + 0.02,
         ownerType: "card",
-        triggerOn: "onDisposeOrTuneCard",
+        triggerOn: "onDispose",
         initiativeSkillConfig: null,
         action: disposeAction,
         filter: (st, info, arg) => {
           return (
             info.caller.id === arg.entity.id &&
-            arg.method !== "elementalTuning" &&
+            arg.isDiscard() &&
             disposeFilter(st, info, arg)
           );
         },
