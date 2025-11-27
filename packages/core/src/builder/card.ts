@@ -329,7 +329,7 @@ export class CardBuilder<
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      c.moveEntity(c.self, { who: c.self.who, type: "supports" });
+      c.moveEntity(c.self, { who: c.self.who, type: "supports" }, "createSupport");
     });
     const skills = this.buildSkills();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
