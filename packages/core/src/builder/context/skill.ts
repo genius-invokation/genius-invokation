@@ -1278,9 +1278,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
     if (typeof cardDef === "undefined") {
       throw new GiTcgDataError(`Unknown card definition id ${cardId}`);
     }
-    const events = this.mutator.createHandCard(this.callerArea.who, cardDef);
-    this.events.push(...events);
-    return this.enableShortcut();
+    const { state } = this.callAndEmit(
+      "createHandCard",
+      this.callerArea.who,
+      cardDef,
+    );
+    return this.enableShortcut(this.get(state));
   }
 
   drawCards(count: number, opt: DrawCardsOpt = {}) {

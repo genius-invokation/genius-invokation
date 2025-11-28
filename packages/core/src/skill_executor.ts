@@ -34,6 +34,7 @@ import {
 import {
   type AnyState,
   type CharacterState,
+  StateSymbol,
   stringifyState,
 } from "./base/state";
 import { Aura, PbSkillType, type ExposedMutation } from "@gi-tcg/typings";
@@ -601,7 +602,10 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
-        const skillDef = playSkillOfCard(arg.cardDefinition);
+        const { state, events } = this.mutator.createHandCard(arg.who, arg.cardDefinition);
+        // 直接打出的应该是不会触发 HCI 事件
+        // await this.handleEvent(...events);
+        const skillDef = playSkillOfCard(state.definition);
         if (!skillDef) {
           this.mutator.log(
             DetailLogType.Other,
@@ -610,7 +614,7 @@ export class SkillExecutor {
           continue;
         }
         const skillInfo = defineSkillInfo({
-          caller: arg.via.caller,
+          caller: state,
           definition: skillDef,
           requestBy: arg.via,
         });
@@ -625,8 +629,8 @@ export class SkillExecutor {
           et.definition.tags.includes("adventureSpot"),
         );
         if (currentSpot) {
-          const { events } = this.mutator.createEntityOnStage(
-            currentSpot.definition,
+          const { events } = this.mutator.insertEntityOnStage(
+            { definition: currentSpot.definition },
             {
               type: "supports",
               who: arg.who,

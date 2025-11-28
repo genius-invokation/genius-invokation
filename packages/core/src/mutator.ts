@@ -133,7 +133,7 @@ export interface CreateEntityOptions {
   readonly overrideVariables?: Partial<EntityVariables>;
 }
 
-interface InsertEntityOptions extends CreateEntityOptions{
+interface InsertEntityOptions extends CreateEntityOptions {
   /** 移动实体原因 */
   readonly moveReason?: MoveEntityM["reason"];
 }
@@ -185,6 +185,11 @@ export type InsertHandPayload =
 export type InsertPilePayload =
   | Omit<CreateEntityM, "targetIndex">
   | Omit<MoveEntityM, "targetIndex">;
+
+export interface CreateHandCardResult {
+  readonly state: EntityState;
+  readonly events: EventAndRequest[];
+}
 
 export type InsertPileStrategy =
   | "top"
@@ -705,7 +710,10 @@ export class StateMutator {
     return events;
   }
 
-  createHandCard(who: 0 | 1, definition: EntityDefinition): EventAndRequest[] {
+  createHandCard(
+    who: 0 | 1,
+    definition: EntityDefinition,
+  ): CreateHandCardResult {
     if (
       !(["support", "equipment", "eventCard"] as EntityType[]).includes(
         definition.type,
@@ -729,11 +737,15 @@ export class StateMutator {
         ),
       ),
     };
-    return this.insertHandCard({
+    const events = this.insertHandCard({
       type: "createEntity",
       target: { who, type: "hands" },
       value: cardState,
     });
+    return {
+      state: cardState,
+      events,
+    };
   }
 
   insertPileCards(
@@ -1230,7 +1242,7 @@ export class StateMutator {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
         assertValidActionCard(def);
-        return this.createHandCard(who, def);
+        return this.createHandCard(who, def).events;
       }
       case "createEntity": {
         const def = this.state.data.entities.get(selected);
