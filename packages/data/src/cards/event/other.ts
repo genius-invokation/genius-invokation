@@ -977,7 +977,7 @@ export const Lyresong = card(332024)
  * 本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
  * （角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）
  */
-export const [TheBoarPrincess] = card(332025)
+export const [TheBoarPrincess, TheBoarPrincessInEffect] = card(332025)
   .since("v4.3.0")
   .toCombatStatus(303225)
   .usage(2)

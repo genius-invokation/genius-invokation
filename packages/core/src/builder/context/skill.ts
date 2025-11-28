@@ -782,7 +782,7 @@ export class SkillContext<Meta extends ContextMetaBase> {
     area: EntityArea,
     reason: MoveEntityM["reason"] = "other",
   ) {
-    this.mutator.insertEntityOnStage(this.get(state).latest(), area, {
+    this.callAndEmit("insertEntityOnStage", this.get(state).latest(), area, {
       moveReason: reason,
     });
     return this.enableShortcut();
