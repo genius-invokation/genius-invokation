@@ -300,6 +300,10 @@ export function exposeMutation(
       };
     }
     case "removeEntity": {
+      const hidden =
+        m.from.who !== who &&
+        ["hands", "pile"].includes(m.from.type) &&
+        ["overflow", "elementalTuning"].includes(m.reason);
       const REASON_MAP: Record<RemoveEntityM["reason"], PbRemoveEntityReason> =
         {
           cardDisposed: PbRemoveEntityReason.CARD_DISPOSED,
@@ -314,7 +318,7 @@ export function exposeMutation(
         $case: "removeEntity",
         who: m.from.who,
         where: exposeEntityWhere(m.from.type),
-        entity: exposeEntity(null, m.oldState as EntityState, false),
+        entity: exposeEntity(null, m.oldState as EntityState, hidden),
         reason: REASON_MAP[m.reason] ?? PbRemoveEntityReason.UNSPECIFIED,
       };
     }

@@ -98,7 +98,6 @@ import {
   type RxEntityState,
 } from "./reactive";
 import { ReactiveStateSymbol } from "./reactive_base";
-import type { TypedEntity } from "./entity";
 
 type CharacterTargetArg = PlainCharacterState | PlainCharacterState[] | string;
 type EntityTargetArg = PlainEntityState | PlainEntityState[] | string;
@@ -766,7 +765,12 @@ export class SkillContext<Meta extends ContextMetaBase> {
           );
       }
     }
-    const { newState } = this.callAndEmit("createEntity", def, area, opt);
+    const { newState } = this.callAndEmit(
+      "insertEntityOnStage",
+      { definition: def },
+      area,
+      opt,
+    );
     if (newState) {
       return this.get<TypeT>(newState.id);
     } else {
@@ -778,14 +782,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     area: EntityArea,
     reason: MoveEntityM["reason"] = "other",
   ) {
-    const obj = this.get(state);
-    this.mutate({
-      type: "moveEntity",
-      from: obj.area,
-      target: area,
-      value: obj.latest(),
-      reason,
+    this.mutator.insertEntityOnStage(this.get(state).latest(), area, {
+      moveReason: reason,
     });
+    return this.enableShortcut();
   }
   summon(
     id: SummonHandle,
@@ -850,6 +850,26 @@ export class SkillContext<Meta extends ContextMetaBase> {
     }
     return this.enableShortcut();
   }
+  unequip(equipment: PlainEntityState) {
+    const obj = this.get(equipment);
+    const area = obj.area;
+    const state = obj.latest();
+    if (area.type !== "characters") {
+      throw new GiTcgDataError(`Can only unequip from characters`);
+    }
+    this.mutate({
+      type: "resetVariables",
+      scope: "all",
+      state,
+    });
+    this.mutate({
+      type: "moveEntity",
+      from: area,
+      target: { who: area.who, type: "hands" },
+      value: state,
+      reason: "unequip",
+    });
+  }
   combatStatus(
     id: CombatStatusHandle,
     where: "my" | "opp" = "my",
@@ -899,7 +919,10 @@ export class SkillContext<Meta extends ContextMetaBase> {
     return this.enableShortcut();
   }
 
-  dispose(target: EntityTargetArg = "@self", reason: RemoveEntityM["reason"] = "other") {
+  dispose(
+    target: EntityTargetArg = "@self",
+    reason: RemoveEntityM["reason"] = "other",
+  ) {
     const targets = this.queryOrGet(target);
     for (const t of targets) {
       const target = t.latest();

@@ -80,7 +80,10 @@ function queryCanonical(
         continue;
       }
     } else {
-        if (typeRes.type !== "any" && typeRes.type !== state.definition.type) {
+      if (area.type === "hands" || area.type === "pile") {
+        continue;
+      }
+      if (typeRes.type !== "any" && typeRes.type !== state.definition.type) {
         continue;
       }
     }

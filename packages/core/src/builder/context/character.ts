@@ -278,12 +278,7 @@ export class Character<
     this.skillContext.equip(equipment, this.state, opt);
   }
   private unequip(state: EntityState) {
-    this.skillContext.mutate({
-      type: "resetVariables",
-      scope: "all",
-      state,
-    });
-    this.skillContext.moveEntity(state, { who: this.who, type: "hands" }, "unequip");
+    this.skillContext.unequip(state);
   }
   unequipArtifact() {
     const artifact = this.state.entities.find((et) => et.definition.tags.includes("artifact"));

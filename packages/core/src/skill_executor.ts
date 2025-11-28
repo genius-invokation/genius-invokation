@@ -625,7 +625,7 @@ export class SkillExecutor {
           et.definition.tags.includes("adventureSpot"),
         );
         if (currentSpot) {
-          const { events } = this.mutator.createEntity(
+          const { events } = this.mutator.createEntityOnStage(
             currentSpot.definition,
             {
               type: "supports",

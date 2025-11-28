@@ -127,18 +127,23 @@ export interface MutatorConfig {
 }
 
 export interface CreateEntityOptions {
-  /** 若重复创建，只修改 `overrideVariables` 中指定的变量 */
+  /** 若覆盖创建，只修改 `overrideVariables` 中指定的变量 */
   readonly modifyOverriddenVariablesOnly?: boolean;
   /** 创建实体时，覆盖默认变量 */
   readonly overrideVariables?: Partial<EntityVariables>;
 }
 
-export interface CreateEntityResult {
-  /** 若重复创建，给出被覆盖的原实体状态 */
+interface InsertEntityOptions extends CreateEntityOptions{
+  /** 移动实体原因 */
+  readonly moveReason?: MoveEntityM["reason"];
+}
+
+export interface InsertEntityResult {
+  /** 若重复入场，给出被覆盖的原实体状态 */
   readonly oldState: EntityState | null;
-  /** 若成功创建，给出新建的实体状态 */
+  /** 若成功入场，给出新建的实体状态 */
   readonly newState: EntityState | null;
-  /** 若成功创建，则引发的 onEnter 事件 */
+  /** 若成功入场，则引发的 onEnter 事件 */
   readonly events: readonly EventAndRequest[];
 }
 
@@ -830,14 +835,31 @@ export class StateMutator {
     return [];
   }
 
-  createEntity(
-    def: EntityDefinition,
+  insertEntityOnStage(
+    stateOrDef: EntityState | { definition: EntityDefinition },
     area: EntityArea,
-    opt: CreateEntityOptions = {},
-  ): CreateEntityResult {
+    opt: InsertEntityOptions = {},
+  ): InsertEntityResult {
+    if (area.type === "hands" || area.type === "pile") {
+      throw new GiTcgDataError(
+        `insertEntityOnStage is for the 'on stage' area, not for hands or pile. Use createHandCard or insertPileCards instead.`,
+      );
+    }
+    const moveFrom =
+      "id" in stateOrDef ? getEntityArea(this.state, stateOrDef.id) : null;
+    // 移入场上，触发 onEnter
+    const shouldEmitEnter =
+      moveFrom === null ||
+      moveFrom.type === "hands" ||
+      moveFrom.type === "pile";
+    const { definition } = stateOrDef;
+    const events: EventAndRequest[] = [];
+
     using l = this.subLog(
       DetailLogType.Primitive,
-      `Create entity [${def.type}:${def.id}] at ${stringifyEntityArea(area)}`,
+      `Insert entity [${definition.type}:${
+        definition.id
+      }] at ${stringifyEntityArea(area)}`,
     );
     const entitiesAtArea = allEntitiesAtArea(this.state, area) as EntityState[];
     // handle immuneControl vs disableSkill;
@@ -849,8 +871,8 @@ export class StateMutator {
     );
     if (
       immuneControl &&
-      def.type === "status" &&
-      def.tags.includes("disableSkill")
+      definition.type === "status" &&
+      definition.tags.includes("disableSkill")
     ) {
       this.log(
         DetailLogType.Other,
@@ -858,10 +880,13 @@ export class StateMutator {
       );
       return { oldState: null, newState: null, events: [] };
     }
-    const oldState = shouldEnterOverride(entitiesAtArea, def);
-    const { varConfigs } = def;
-    const overrideVariables = opt.overrideVariables ?? {};
+    const oldState = shouldEnterOverride(entitiesAtArea, definition);
     if (oldState) {
+      const { varConfigs } = definition;
+      const incomingVariables =
+        "variables" in stateOrDef
+          ? stateOrDef.variables
+          : opt.overrideVariables ?? {};
       this.log(
         DetailLogType.Other,
         `Found existing entity ${stringifyState(
@@ -871,12 +896,12 @@ export class StateMutator {
       const newValues: Record<string, number> = {};
       // refresh exist entity's variable
       for (const name in varConfigs) {
-        if (opt.modifyOverriddenVariablesOnly && !(name in overrideVariables)) {
+        if (opt.modifyOverriddenVariablesOnly && !(name in incomingVariables)) {
           continue;
         }
         let { initialValue, recreateBehavior } = varConfigs[name];
-        if (typeof overrideVariables[name] === "number") {
-          initialValue = overrideVariables[name]!;
+        if (typeof incomingVariables[name] === "number") {
+          initialValue = incomingVariables[name]!;
         }
         const oldValue = oldState.variables[name] ?? 0;
         switch (recreateBehavior.type) {
@@ -908,7 +933,7 @@ export class StateMutator {
               break;
             }
             const appendValue =
-              overrideVariables[name] ?? recreateBehavior.appendValue;
+              incomingVariables[name] ?? recreateBehavior.appendValue;
             const appendResult = appendValue + oldValue;
             newValues[name] = Math.min(
               appendResult,
@@ -934,14 +959,16 @@ export class StateMutator {
         }
       }
       const newState = getEntityById(this.state, oldState.id) as EntityState;
-      const enterEvent: EventAndRequest = [
-        "onEnter",
-        new EnterEventArg(this.state, {
-          overridden: oldState,
-          newState,
-        }),
-      ];
-      return { oldState, newState, events: [enterEvent] };
+      if (shouldEmitEnter) {
+        events.push([
+          "onEnter",
+          new EnterEventArg(this.state, {
+            overridden: oldState,
+            newState,
+          }),
+        ]);
+      }
+      return { oldState, newState, events };
     } else {
       if (
         area.type === "summons" &&
@@ -955,30 +982,47 @@ export class StateMutator {
       ) {
         return { oldState: null, newState: null, events: [] };
       }
-      const initState = {
-        id: 0,
-        definition: def,
-        variables: Object.fromEntries(
-          Object.entries(varConfigs).map(([name, { initialValue }]) => [
-            name,
-            overrideVariables[name] ?? initialValue,
-          ]),
-        ),
-      };
-      this.mutate({
-        type: "createEntity",
-        target: area,
-        value: initState,
-      });
-      const newState = getEntityById(this.state, initState.id) as EntityState;
-      const enterEvent: EventAndRequest = [
-        "onEnter",
-        new EnterEventArg(this.state, {
-          overridden: null,
-          newState,
-        }),
-      ];
-      return { oldState: null, newState, events: [enterEvent] };
+      let state: EntityState;
+      if (moveFrom) {
+        state = stateOrDef as EntityState;
+        this.mutate({
+          type: "moveEntity",
+          from: moveFrom,
+          target: area,
+          value: state,
+          reason: opt.moveReason ?? "other",
+        });
+      } else {
+        state = {
+          [StateSymbol]: "entity",
+          id: 0,
+          definition,
+          variables: Object.fromEntries(
+            Object.entries(definition.varConfigs).map(
+              ([name, { initialValue }]) => [
+                name,
+                opt.overrideVariables?.[name] ?? initialValue,
+              ],
+            ),
+          ),
+        };
+        this.mutate({
+          type: "createEntity",
+          target: area,
+          value: state,
+        });
+      }
+      const newState = getEntityById(this.state, state.id) as EntityState;
+      if (shouldEmitEnter) {
+        events.push([
+          "onEnter",
+          new EnterEventArg(this.state, {
+            overridden: null,
+            newState,
+          }),
+        ]);
+      }
+      return { oldState: null, newState, events };
     }
   }
 
@@ -1200,7 +1244,10 @@ export class StateMutator {
           who,
           type: "summons",
         };
-        const { oldState, newState } = this.createEntity(def, entityArea);
+        const { oldState, newState } = this.insertEntityOnStage(
+          { definition: def },
+          entityArea,
+        );
         if (newState) {
           const enterInfo = {
             overridden: oldState,
