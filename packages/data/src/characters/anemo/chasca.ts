@@ -74,7 +74,7 @@ export const ShadowhuntShell = card(115113)
     }
   })
   .doSameWhenDisposed({
-    filter: (c, e) => e.method === "disposeFromHands",
+    filter: (c, e) => e.from.type === "hands",
     prependOp: (c) => c.abortPreview(),
   })
   .damage(DamageType.Anemo, 1, "opp characters with health > 0 limit 1")
@@ -94,7 +94,7 @@ export const ShiningShadowhuntShellPyro = card(115114)
   .unobtainable()
   .costPyro(3)
   .doSameWhenDisposed({
-    filter: (c, e) => e.method === "disposeFromHands",
+    filter: (c, e) => e.from.type === "hands",
     prependOp: (c) => c.abortPreview(),
   })
   .damage(DamageType.Pyro, 1, "opp characters with health > 0 limit 1")
@@ -114,7 +114,7 @@ export const ShiningShadowhuntShellHydro = card(115115)
   .unobtainable()
   .costHydro(3)
   .doSameWhenDisposed({
-    filter: (c, e) => e.method === "disposeFromHands",
+    filter: (c, e) => e.from.type === "hands",
     prependOp: (c) => c.abortPreview(),
   })
   .damage(DamageType.Hydro, 1, "opp characters with health > 0 limit 1")
@@ -134,7 +134,7 @@ export const ShiningShadowhuntShellElectro = card(115116)
   .unobtainable()
   .costElectro(3)
   .doSameWhenDisposed({
-    filter: (c, e) => e.method === "disposeFromHands",
+    filter: (c, e) => e.from.type === "hands",
     prependOp: (c) => c.abortPreview(),
   })
   .damage(DamageType.Electro, 1, "opp characters with health > 0 limit 1")
@@ -154,7 +154,7 @@ export const ShiningShadowhuntShellCryo = card(115117)
   .unobtainable()
   .costCryo(3)
   .doSameWhenDisposed({
-    filter: (c, e) => e.method === "disposeFromHands",
+    filter: (c, e) => e.from.type === "hands",
     prependOp: (c) => c.abortPreview(),
   })
   .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")

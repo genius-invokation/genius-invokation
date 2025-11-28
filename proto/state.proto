@@ -53,9 +53,9 @@ message PlayerState {
   repeated EntityState support = 5;
   repeated DiceType dice = 6;
   // 牌堆数据
-  repeated CardState pile_card = 7;
+  repeated EntityState pile_card = 7;
   // 手牌数据
-  repeated CardState hand_card = 8;
+  repeated EntityState hand_card = 8;
 
   PlayerStatus status = 9;
   
@@ -89,6 +89,9 @@ message EntityState {
   int32 definition_id = 2;
   // 指示如何替换文本描述中的变量名 
   map<string, string> description_dictionary = 4;
+  // 若为行动牌，指示原本费用
+  repeated DiceRequirement definition_cost = 5;
+  uint32 tags = 6;
   
   // 显示于召唤物、支援牌右上角的变量名和变量值
   optional string variable_name = 51;
@@ -112,15 +115,6 @@ enum EquipmentType {
   EQUIPMENT_TYPE_ARTIFACT = 2;
   // 特技
   EQUIPMENT_TYPE_TECHNIQUE = 3;
-}
-
-message CardState {
-  sint32 id = 1;
-  int32 definition_id = 2;
-  map<string, string> description_dictionary = 4;
-  // 原本费用
-  repeated DiceRequirement definition_cost = 5;
-  uint32 tags = 6;
 }
 
 message SkillInfo {

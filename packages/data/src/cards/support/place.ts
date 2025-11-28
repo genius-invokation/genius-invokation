@@ -325,7 +325,7 @@ export const OperaEpiclese = card(321017)
   .support("place")
   .on("beforeAction", (c) => {
     function costOfEquipment(equipment: EntityState) {
-      const cardDef = c.data.cards.get(equipment.definition.id)!;
+      const cardDef = c.data.entities.get(equipment.definition.id)!;
       return diceCostOfCard(cardDef);
     }
     const myCost = c.$$(`my equipments`).map((entity) => costOfEquipment(entity)).reduce((a, b) => a + b, 0);
@@ -349,7 +349,7 @@ export const OperaEpiclese = card(321017)
 export const StrictProhibited = combatStatus(301018)
   .tags("eventEffectless")
   .oneDuration()
-  .on("playCard", (c, e) => e.card.definition.cardType === "event")
+  .on("playCard", (c, e) => e.card.definition.type === "eventCard")
   .usage(1)
   .done();
 

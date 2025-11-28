@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardDefinition, CardHandle, DamageType, DiceType, Reaction, card, combatStatus, extension, pair, status, summon } from "@gi-tcg/core/builder";
+import { EntityDefinition, CardHandle, DamageType, DiceType, Reaction, card, combatStatus, extension, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
 
@@ -681,7 +681,7 @@ export const MasterOfWeaponry = card(332010)
     if (targetOldWeapon) {
       c.dispose(targetOldWeapon);
     }
-    c.transferEntity(weapon, area);
+    c.moveEntity(weapon, area);
   })
   .done();
 
@@ -708,7 +708,7 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
     if (targetOldArtifact) {
       c.dispose(targetOldArtifact);
     }
-    c.transferEntity(artifact, area);
+    c.moveEntity(artifact, area);
   })
   .done();
 
@@ -887,8 +887,7 @@ export const [WhereIsTheUnseenRazor] = card(332022)
   .since("v4.0.0")
   .addTarget("my character has equipment with tag (weapon)")
   .do((c, e) => {
-    const { definition } = e.targets[0].removeWeapon()!;
-    c.createHandCard(definition.id as CardHandle);
+    e.targets[0].unequipWeapon();
   })
   .toCombatStatus(303222)
   .oneDuration()
@@ -962,8 +961,7 @@ export const Lyresong = card(332024)
   .associateExtension(LyresongIsFirstExtension)
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {
-    const { definition } = e.targets[0].removeArtifact()!;
-    c.createHandCard(definition.id as CardHandle);
+    e.targets[0].unequipArtifact();
     if (c.getExtensionState().first[c.self.who]) {
       c.combatStatus(LyresongInEffect2);
     } else {
@@ -979,7 +977,7 @@ export const Lyresong = card(332024)
  * 本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
  * （角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）
  */
-export const [TheBoarPrincess] = card(332025)
+export const [TheBoarPrincess, TheBoarPrincessInEffect] = card(332025)
   .since("v4.3.0")
   .toCombatStatus(303225)
   .usage(2)
@@ -1062,7 +1060,7 @@ export const [SunyataFlower] = card(332029)
   })
   .toCombatStatus(303229)
   .oneDuration()
-  .once("deductOmniDiceCard", (c, e) => e.action.skill.caller.definition.cardType === "support")
+  .once("deductOmniDiceCard", (c, e) => e.action.skill.caller.definition.type === "support")
   .deductOmniCost(1)
   .done();
 
@@ -1337,7 +1335,7 @@ const MELUSINE_EVENT_CARDS = [
 ];
 
 // 筛出当前版本存在的卡
-const getMelusineEventCards = (cards: ReadonlyMap<number, CardDefinition>): CardHandle[] => {
+const getMelusineEventCards = (cards: ReadonlyMap<number, EntityDefinition>): CardHandle[] => {
   return MELUSINE_EVENT_CARDS
     .map(id => cards.get(id))
     .filter(def => !!def)
@@ -1354,7 +1352,7 @@ export const CanotilasSupport = card(302209)
   .since("v4.8.0")
   .costSame(1)
   .do((c) => {
-    const cards = getMelusineEventCards(c.data.cards);
+    const cards = getMelusineEventCards(c.data.entities);
     const card0 = c.random(cards);
     const card1 = c.random(cards);
     c.createHandCard(card0);
@@ -1373,7 +1371,7 @@ const ThironasGoodWill = combatStatus(302219)
   .on("endPhase") // 文本有误
   .usage(3)
   .do((c) => {
-    const cards = getMelusineEventCards(c.data.cards);
+    const cards = getMelusineEventCards(c.data.entities);
     const card = c.random(cards);
     c.createHandCard(card);
   })

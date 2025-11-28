@@ -601,9 +601,17 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
+        const skillDef = playSkillOfCard(arg.cardDefinition);
+        if (!skillDef) {
+          this.mutator.log(
+            DetailLogType.Other,
+            `Card [card:${arg.cardDefinition.id}] has no play skill, skip playing`,
+          );
+          continue;
+        }
         const skillInfo = defineSkillInfo({
           caller: arg.via.caller,
-          definition: playSkillOfCard(arg.cardDefinition),
+          definition: skillDef,
           requestBy: arg.via,
         });
         await this.finalizeSkill(skillInfo, { targets: arg.targets });
@@ -617,7 +625,7 @@ export class SkillExecutor {
           et.definition.tags.includes("adventureSpot"),
         );
         if (currentSpot) {
-          const { events } = this.mutator.createEntity(
+          const { events } = this.mutator.createEntityOnStage(
             currentSpot.definition,
             {
               type: "supports",
@@ -632,7 +640,7 @@ export class SkillExecutor {
           );
           await this.handleEvent(...events);
         } else if (hisSupports.length < this.state.config.maxSupportsCount) {
-          const spots = this.state.data.cards
+          const spots = this.state.data.entities
             .values()
             .filter((d) => d.tags.includes("adventureSpot"))
             .toArray();

@@ -13,5 +13,8 @@
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/data": "workspace:*",
     "@gi-tcg/typings": "workspace:*"
+  },
+  "devDependencies": {
+    "immer": "^11.0.0"
   }
 }

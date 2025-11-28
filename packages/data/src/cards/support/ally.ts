@@ -343,7 +343,7 @@ export const Dunyarzad = card(322016)
   .on("deductOmniDiceCard", (c, e) => e.hasCardTag("ally"))
   .usagePerRound(1)
   .deductOmniCost(1)
-  .on("playCard", (c, e) => e.card.id !== c.self.fromCardId && e.hasCardTag("ally"))
+  .on("playCard", (c, e) => e.card.id !== c.self.id && e.hasCardTag("ally"))
   .usage(1, { autoDispose: false, visible: false })
   .drawCards(1, { withTag: "ally" })
   .done();
