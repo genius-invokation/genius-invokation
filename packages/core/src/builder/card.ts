@@ -661,7 +661,7 @@ export class CardBuilder<
       };
       skills.push(skillDef, drawSkillDef);
     } else {
-      this.do((c) => {
+      this.operations.unshift((c) => {
         if (c.self.definition.type === "eventCard") {
           c.dispose(c.self, "eventCardPlayed");
         }

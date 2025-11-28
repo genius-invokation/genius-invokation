@@ -1775,6 +1775,7 @@ type SkillContextMutativeProps =
   | "damage"
   | "apply"
   | "createEntity"
+  | "moveEntity"
   | "summon"
   | "combatStatus"
   | "characterStatus"
