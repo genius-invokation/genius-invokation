@@ -79,7 +79,7 @@ export class AppController {
   @Get("/healthz")
   async healthz() {
     if (process.env.REDIS_URL) {
-      const activeRoomsCount = await redis.get("meta:active_rooms_count");
+      const activeRoomsCount = await redis.hlen("meta:active_rooms");
       if (activeRoomsCount) {
         throw new ServiceUnavailableException(`There are still ${activeRoomsCount} active rooms.`);
       }
