@@ -1065,6 +1065,10 @@ export class DisposeEventArg extends EntityEventArg<EntityState> {
     return this.reason === "elementalTuning";
   }
 
+  isDisposeCardOrTuning() {
+    return this.isDiscard() || this.isTuning();
+  }
+
   diceCost() {
     return diceCostOfCard(this.entity.definition);
   }
