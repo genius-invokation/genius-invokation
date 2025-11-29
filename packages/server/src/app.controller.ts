@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Controller, Get, ImATeapotException } from "@nestjs/common";
+import { Controller, Get, ImATeapotException, ServiceUnavailableException } from "@nestjs/common";
 import { Public } from "./auth/auth.guard";
 import { CORE_VERSION, CURRENT_VERSION, VERSIONS } from "@gi-tcg/core";
 import simpleGit, { type LogResult } from "simple-git";
+import { redis } from "bun";
 
 const git = simpleGit();
 
@@ -72,5 +73,16 @@ export class AppController {
   @Get("/hello")
   getHello(): string {
     return "Hello World!";
+  }
+
+  @Public()
+  @Get("/healthz")
+  async healthz() {
+    if (process.env.REDIS_URL) {
+      const activeRoomsCount = await redis.get("meta:active_rooms_count");
+      if (activeRoomsCount) {
+        throw new ServiceUnavailableException(`There are still ${activeRoomsCount} active rooms.`);
+      }
+    }
   }
 }

@@ -67,7 +67,7 @@ import type {
 import { DecksService } from "../decks/decks.service";
 import { UsersService, type UserInfo } from "../users/users.service";
 import { GamesService } from "../games/games.service";
-import { semver, stringWidth } from "bun";
+import { redis, semver, stringWidth } from "bun";
 
 interface RoomConfig extends Partial<GameConfig> {
   initTotalActionTime: number; // defaults 45
@@ -717,6 +717,9 @@ export class RoomsService {
     }
     const room = new Room(roomId, roomConfig);
     this.rooms.set(roomId, room);
+    if (process.env.REDIS_URL) {
+      redis.incr("meta:active_rooms_count");
+    }
     this.roomIdPool.shift();
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
@@ -731,6 +734,9 @@ export class RoomsService {
       }
       this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);
+      if (process.env.REDIS_URL) {
+        redis.decr("meta:active_rooms_count");
+      }
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
         this.shutdownResolvers?.resolve();
