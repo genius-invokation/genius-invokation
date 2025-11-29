@@ -718,8 +718,8 @@ export class RoomsService {
     const room = new Room(roomId, roomConfig);
     this.rooms.set(roomId, room);
     if (process.env.REDIS_URL) {
-      redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig))
-      redis.hexpire("meta:active_rooms", 24 * 60 * 60, "FIELDS", 1, roomId)
+      await redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig))
+      await redis.hexpire("meta:active_rooms", 24 * 60 * 60, "FIELDS", 1, roomId)
     }
     this.roomIdPool.shift();
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
@@ -736,7 +736,7 @@ export class RoomsService {
       this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);
       if (process.env.REDIS_URL) {
-        redis.hdel("meta:active_rooms", room.id)
+        await redis.hdel("meta:active_rooms", room.id)
       }
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
