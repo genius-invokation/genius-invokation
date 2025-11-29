@@ -186,6 +186,11 @@ export type InsertPilePayload =
   | Omit<CreateEntityM, "targetIndex">
   | Omit<MoveEntityM, "targetIndex">;
 
+export interface InsertHandCardOption {
+  /** 不执行爆牌逻辑；用于直接打出的场景（冒险/汤/烟谜主） */
+  noOverflow?: boolean;
+}
+
 export interface CreateHandCardResult {
   readonly state: EntityState;
   readonly events: EventAndRequest[];
@@ -655,7 +660,10 @@ export class StateMutator {
     return { damageInfo, events };
   }
 
-  insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
+  insertHandCard(
+    payload: InsertHandPayload,
+    opt: InsertHandCardOption = {},
+  ): EventAndRequest[] {
     const who = payload.target.who;
     const reason =
       payload.type === "createEntity" ? ("create" as const) : payload.reason;
@@ -666,6 +674,7 @@ export class StateMutator {
     };
     let overflowed = false;
     if (
+      !opt.noOverflow &&
       this.state.players[who].hands.length > this.state.config.maxHandsCount
     ) {
       this.mutate({
@@ -713,6 +722,7 @@ export class StateMutator {
   createHandCard(
     who: 0 | 1,
     definition: EntityDefinition,
+    opt: InsertHandCardOption = {},
   ): CreateHandCardResult {
     if (
       !(["support", "equipment", "eventCard"] as EntityType[]).includes(
@@ -737,11 +747,14 @@ export class StateMutator {
         ),
       ),
     };
-    const events = this.insertHandCard({
-      type: "createEntity",
-      target: { who, type: "hands" },
-      value: cardState,
-    });
+    const events = this.insertHandCard(
+      {
+        type: "createEntity",
+        target: { who, type: "hands" },
+        value: cardState,
+      },
+      opt,
+    );
     return {
       state: cardState,
       events,

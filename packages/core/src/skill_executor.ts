@@ -602,9 +602,15 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
-        const { state, events } = this.mutator.createHandCard(arg.who, arg.cardDefinition);
-        // 直接打出的应该是不会触发 HCI 事件
-        // await this.handleEvent(...events);
+
+        // 临时将这张卡放到我方手牌，随后执行其打出后效果
+        const { state } = this.mutator.createHandCard(
+          arg.who,
+          arg.cardDefinition,
+          {
+            noOverflow: true,
+          },
+        );
         const skillDef = playSkillOfCard(state.definition);
         if (!skillDef) {
           this.mutator.log(
