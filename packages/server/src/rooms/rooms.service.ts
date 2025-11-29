@@ -67,7 +67,7 @@ import type {
 import { DecksService } from "../decks/decks.service";
 import { UsersService, type UserInfo } from "../users/users.service";
 import { GamesService } from "../games/games.service";
-import { redis, semver, stringWidth } from "bun";
+import { redis, semver } from "bun";
 
 interface RoomConfig extends Partial<GameConfig> {
   initTotalActionTime: number; // defaults 45
