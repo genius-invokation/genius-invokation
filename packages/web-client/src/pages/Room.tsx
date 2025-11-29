@@ -71,7 +71,7 @@ const createReconnectSse = <T,>(
   url: string | (() => string),
   onPayload: (payload: T) => void,
   onError?: (e: Error) => void,
-) => {
+): [fetch: () => void, abort: () => void] => {
   let reconnectTimeout: Timer | null = null;
   let abortController: AbortController | null = null;
   let cancelled = false;
@@ -123,6 +123,7 @@ const createReconnectSse = <T,>(
         const data: ReadableStream = response.data;
         const reader = data.pipeThrough(new EventSourceStream()).getReader();
 
+        activating = false;
         resetReconnectTimer(); // Start the timer after connection is established
 
         for (;;) {
