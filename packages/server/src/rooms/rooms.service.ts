@@ -738,7 +738,12 @@ export class RoomsService {
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
     room.onStop(async (room, game) => {
-      const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
+      let deploying = null;
+      if (process.env.REDIS_URL) {
+        deploying = await redis.get("meta:deploying");
+      }
+      const keepRoomDuration =
+        (this.shutdownResolvers || deploying ? 1 : 5) * 60 * 1000;
       this.logger.log(
         `Room ${room.id} stopped, status ${room.status}, keep it for ${keepRoomDuration} ms`,
       );
