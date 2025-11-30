@@ -665,7 +665,11 @@ export class RoomsService {
   }
 
   private async createRoom(playerInfo: PlayerInfo, params: CreateRoomDto) {
-    if (this.shutdownResolvers) {
+    let deploying = null;
+    if (process.env.REDIS_URL) {
+      deploying = await redis.get("meta:deploying");
+    }
+    if (this.shutdownResolvers || deploying !== null) {
       throw new ConflictException(
         "Creating room is disabled now; we are planning a maintenance"
       );

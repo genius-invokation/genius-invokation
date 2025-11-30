@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Controller, Get, ImATeapotException, ServiceUnavailableException } from "@nestjs/common";
+import { Controller, Get, Headers, ImATeapotException, ServiceUnavailableException } from "@nestjs/common";
 import { Public } from "./auth/auth.guard";
 import { CORE_VERSION, CURRENT_VERSION, VERSIONS } from "@gi-tcg/core";
 import simpleGit, { type LogResult } from "simple-git";
@@ -77,12 +77,15 @@ export class AppController {
 
   @Public()
   @Get("/healthz")
-  async healthz() {
-    if (process.env.REDIS_URL) {
+  async healthz(@Headers("host") host: string) {
+    if (process.env.REDIS_URL && host === process.env.HEALTHZ_HOST) {
       const activeRoomsCount = await redis.hlen("meta:active_rooms");
       if (activeRoomsCount) {
+        await redis.set("meta:deploying", Date.now())
+        await redis.expire("meta:deploying", 1 * 60 * 60)
         throw new ServiceUnavailableException(`There are still ${activeRoomsCount} active rooms.`);
       }
+      await redis.del("meta:deploying");
     }
   }
 }
