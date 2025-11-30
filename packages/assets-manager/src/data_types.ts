@@ -57,6 +57,17 @@ export interface EntityRawData {
   hidden: boolean;
   remainAfterDie: boolean;
   persistEffectType?: string;
+  /** 
+   * 持续效果
+   * GCG_PERSIST_EFFECT_EXPECTO_PATRONUM 蓝盾
+   * GCG_PERSIST_EFFECT_PROTEGO 黄盾
+   * GCG_PERSIST_EFFECT_IMPERTURBABLE_CHARM 冻结
+   * GCG_PERSIST_EFFECT_PETRIFICUS_TOTALUS 石化
+   * GCG_PERSIST_EFFECT_STUPEFY 眩晕
+   * GCG_PERSIST_EFFECT_NYX_* 夜魂加持
+   * GCG_PERSIST_EFFECT_ATTACK_UP 强化
+   * GCG_PERSIST_EFFECT_ATTACK_DOWN 虚弱
+   */
   buffType?: string;
   hintType?: string;
   shownToken?: string;
