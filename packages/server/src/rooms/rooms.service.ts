@@ -723,17 +723,17 @@ export class RoomsService {
       throw new InternalServerErrorException("no room available");
     }
     const room = new Room(roomId, roomConfig);
-    this.rooms.set(roomId, room);
     if (process.env.REDIS_URL) {
       await redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig));
       await redis.hexpire(
         "meta:active_rooms",
-        24 * 60 * 60,
+        1 * 60 * 60,
         "FIELDS",
         1,
         roomId,
       );
     }
+    this.rooms.set(roomId, room);
     this.roomIdPool.shift();
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
@@ -747,10 +747,10 @@ export class RoomsService {
         await new Promise((r) => setTimeout(r, keepRoomDuration));
       }
       this.logger.log(`Room ${room.id} removed`);
-      this.rooms.delete(room.id);
       if (process.env.REDIS_URL) {
         await redis.hdel("meta:active_rooms", room.id);
       }
+      this.rooms.delete(room.id);
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
         this.shutdownResolvers?.resolve();
