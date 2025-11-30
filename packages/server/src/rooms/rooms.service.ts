@@ -165,7 +165,7 @@ interface RpcResolver {
 
 // Keepalive ping interval (10 seconds to prevent proxy/gateway timeout)
 const pingInterval = interval(10 * 1000).pipe(
-  map((): SSEPing => ({ type: "ping" }))
+  map((): SSEPing => ({ type: "ping" })),
 );
 
 class Player implements PlayerIOWithError {
@@ -186,11 +186,11 @@ class Player implements PlayerIOWithError {
   >(this.initializedSubject, this.notificationSseSource).pipe(
     mergeWith(
       defer(() => of(this.currentAction())),
-      this.errorSseSource
+      this.errorSseSource,
     ),
     filter((data): data is SSEPayload => data !== null),
     mergeWith(this.actionSseSource, this.oppRpcSseSource, pingInterval),
-    takeUntil(this.completeSubject)
+    takeUntil(this.completeSubject),
   );
   constructor(public readonly playerInfo: PlayerInfo) {
     this.initializedSubject.next({ type: "waiting" });
@@ -276,7 +276,7 @@ class Player implements PlayerIOWithError {
     return dispatchRpc({
       action: async ({ action }) => {
         const declareEndIdx = action.findIndex(
-          (c) => c.action?.$case === "declareEnd"
+          (c) => c.action?.$case === "declareEnd",
         );
         return {
           chosenActionIndex: declareEndIdx,
@@ -407,7 +407,7 @@ function sendDebugLog(name: string, message: any) {
     })
       .then(() => {
         console.log(
-          `Debug log ${name} sent to ${import.meta.env.DEBUG_LOG_RECEIVE_URL}`
+          `Debug log ${name} sent to ${import.meta.env.DEBUG_LOG_RECEIVE_URL}`,
         );
       })
       .catch(() => ({}));
@@ -425,7 +425,10 @@ class Room {
   private terminated = false;
   private onStopHandlers: GameStopHandler[] = [];
 
-  constructor(public readonly id: number, createRoomConfig: CreateRoomConfig) {
+  constructor(
+    public readonly id: number,
+    createRoomConfig: CreateRoomConfig,
+  ) {
     const { hostWho, ...config } = createRoomConfig;
     this.hostWho = hostWho;
     this.config = config;
@@ -491,7 +494,7 @@ class Room {
     } catch (e) {
       this.stop();
       throw new InternalServerErrorException(
-        `Failed to create initial game state: ${e}; propably due to invalid decks`
+        `Failed to create initial game state: ${e}; propably due to invalid decks`,
       );
     }
     const game = new InternalGame(state);
@@ -598,7 +601,7 @@ export class RoomsService {
   constructor(
     private users: UsersService,
     private decks: DecksService,
-    private games: GamesService
+    private games: GamesService,
   ) {
     const onShutdown = async () => {
       console.log(`Waiting for ${this.rooms.size} rooms to stop...`);
@@ -671,7 +674,7 @@ export class RoomsService {
     }
     if (this.shutdownResolvers || deploying !== null) {
       throw new ConflictException(
-        "Creating room is disabled now; we are planning a maintenance"
+        "Creating room is disabled now; we are planning a maintenance",
       );
     }
 
@@ -681,8 +684,8 @@ export class RoomsService {
           ? 0
           : 1
         : params.hostFirst
-        ? 0
-        : 1;
+          ? 0
+          : 1;
 
     const roomConfig: CreateRoomConfig = {
       hostWho,
@@ -704,7 +707,7 @@ export class RoomsService {
       const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, roomConfig.gameVersion) > 0) {
         throw new BadRequestException(
-          `Deck version required ${version}, it's higher game version ${roomConfig.gameVersion}`
+          `Deck version required ${version}, it's higher game version ${roomConfig.gameVersion}`,
         );
       }
     } catch (e) {
@@ -722,8 +725,14 @@ export class RoomsService {
     const room = new Room(roomId, roomConfig);
     this.rooms.set(roomId, room);
     if (process.env.REDIS_URL) {
-      await redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig))
-      await redis.hexpire("meta:active_rooms", 24 * 60 * 60, "FIELDS", 1, roomId)
+      await redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig));
+      await redis.hexpire(
+        "meta:active_rooms",
+        24 * 60 * 60,
+        "FIELDS",
+        1,
+        roomId,
+      );
     }
     this.roomIdPool.shift();
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
@@ -731,7 +740,7 @@ export class RoomsService {
     room.onStop(async (room, game) => {
       const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
       this.logger.log(
-        `Room ${room.id} stopped, status ${room.status}, keep it for ${keepRoomDuration} ms`
+        `Room ${room.id} stopped, status ${room.status}, keep it for ${keepRoomDuration} ms`,
       );
       this.logger.log(`Room ${room.id} game phase: ${game?.state.phase}`);
       if (room.status !== RoomStatus.Waiting) {
@@ -740,7 +749,7 @@ export class RoomsService {
       this.logger.log(`Room ${room.id} removed`);
       this.rooms.delete(room.id);
       if (process.env.REDIS_URL) {
-        await redis.hdel("meta:active_rooms", room.id)
+        await redis.hdel("meta:active_rooms", room.id);
       }
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
@@ -750,11 +759,14 @@ export class RoomsService {
 
     room.setHost(new Player(playerInfo));
     // 闲置五分钟后删除房间
-    setTimeout(() => {
-      if (room.status === RoomStatus.Waiting) {
-        room.stop();
-      }
-    }, 5 * 60 * 1000);
+    setTimeout(
+      () => {
+        if (room.status === RoomStatus.Waiting) {
+          room.stop();
+        }
+      },
+      5 * 60 * 1000,
+    );
     return room.getRoomInfo();
   }
 
@@ -765,7 +777,7 @@ export class RoomsService {
     }
     if (room.status !== RoomStatus.Waiting) {
       throw new ConflictException(
-        `${roomId} has status ${room.status}, while only waiting room can be deleted`
+        `${roomId} has status ${room.status}, while only waiting room can be deleted`,
       );
     }
     if (room.getHost()?.playerInfo.id !== playerId) {
@@ -820,7 +832,7 @@ export class RoomsService {
       allRooms.some((room) => room.players.some((p) => p.id === playerInfo.id))
     ) {
       throw new ConflictException(
-        `Player ${playerInfo.id} is already in a room`
+        `Player ${playerInfo.id} is already in a room`,
       );
     }
 
@@ -828,7 +840,7 @@ export class RoomsService {
       const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, room.config.gameVersion) > 0) {
         throw new BadRequestException(
-          `Deck version required ${version}, it's higher game version ${room.config.gameVersion}`
+          `Deck version required ${version}, it's higher game version ${room.config.gameVersion}`,
         );
       }
     } catch (e) {
@@ -850,7 +862,7 @@ export class RoomsService {
         return;
       }
       const playerIds = players.map(
-        (player) => player.playerInfo.id
+        (player) => player.playerInfo.id,
       ) as number[];
       const winnerWho = game.state.winner;
       const winnerId = winnerWho === null ? null : playerIds[winnerWho]!;
@@ -888,7 +900,7 @@ export class RoomsService {
       return room.getStateLog();
     } else {
       throw new UnauthorizedException(
-        `Room ${roomId} is not watchable, and you are not in the room`
+        `Room ${roomId} is not watchable, and you are not in the room`,
       );
     }
   }
@@ -913,7 +925,7 @@ export class RoomsService {
   playerNotification(
     roomId: number,
     visitorPlayerId: PlayerId | null,
-    watchingPlayerId: PlayerId
+    watchingPlayerId: PlayerId,
   ): Observable<{ data: SSEPayload }> {
     const room = this.rooms.get(roomId);
     if (!room) {
@@ -926,7 +938,7 @@ export class RoomsService {
     }
     if (!room.config.watchable && visitorPlayerId !== watchingPlayerId) {
       throw new UnauthorizedException(
-        `Room ${roomId} cannot be watched by other`
+        `Room ${roomId} cannot be watched by other`,
       );
     }
     if (
@@ -934,7 +946,7 @@ export class RoomsService {
       visitorPlayerId !== watchingPlayerId
     ) {
       throw new UnauthorizedException(
-        `You cannot watch ${watchingPlayerId}, he is your opponent!`
+        `You cannot watch ${watchingPlayerId}, he is your opponent!`,
       );
     }
     for (const player of players) {
@@ -947,11 +959,11 @@ export class RoomsService {
               room.status !== RoomStatus.Finished
             ) {
               this.logger.warn(
-                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`
+                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`,
               );
             }
           }),
-          map((data) => ({ data }))
+          map((data) => ({ data })),
         );
       }
     }
@@ -961,7 +973,7 @@ export class RoomsService {
   receivePlayerResponse(
     roomId: number,
     playerId: PlayerId,
-    response: PlayerActionResponseDto
+    response: PlayerActionResponseDto,
   ) {
     const room = this.rooms.get(roomId);
     if (!room) {
