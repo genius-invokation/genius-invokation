@@ -256,6 +256,7 @@ export const PortablePowerSaw = card(311309)
   .costSame(2)
   .weapon("claymore")
   .tags("barrier")
+  .variable("barrierUsage", 0) // no io hint for now
   .variable("stoic", 0)
   .on("decreaseDamaged", (c, e) => c.player.hands.length > 0)
   .usagePerRound(1)
