@@ -191,7 +191,7 @@ export const StormSurge02 = skill(22066)
  * @id 22067
  * @name 洪啸
  * @description
- * 造成D__KEY__DAMAGE点D__KEY__ELEMENT，触发我方所有「召唤物」的「结束阶段」效果。
+ * 造成4点水元素伤害，触发我方所有「召唤物」的「结束阶段」效果。
  */
 export const ThunderingTide01 = skill(22067)
   .reserve();

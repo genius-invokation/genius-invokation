@@ -2037,8 +2037,8 @@ export const FellDragon = summon(303245)
   .on("enter")
   .do((c, e) => {
     const ext = c.getExtensionState()[c.self.who];
-    const addUsage = Math.min(ext.disposedSupportCount, 5);
-    const addDmg = Math.min(ext.disposedSummonsCount, 5);
+    const addUsage = Math.min(ext.disposedSupportCount, 4);
+    const addDmg = Math.min(ext.disposedSummonsCount, 4);
     c.addVariable("usage", addUsage);
     c.addVariable("effect", addDmg);
   })
@@ -2049,7 +2049,7 @@ export const FellDragon = summon(303245)
  * @name 「邪龙」的苏醒
  * @description
  * 召唤「邪龙」。
- * 本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到5）
+ * 本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到4）
  * （「邪龙」：结束阶段：造成1点穿透伤害。
  * 可用次数：1）
  * 【此卡含描述变量】
@@ -2133,4 +2133,143 @@ export const AnAncientSacrificeOfSacredBrocade = card(332056)
     }
     c.adventure();
   })
+  .done();
+
+/**
+ * @id 300008
+ * @name 驱逐灾厄
+ * @description
+ * 将敌方1张费用最高的手牌置于牌组底。
+ */
+export const DisperseTheCalamity = card(300008)
+  .since("v6.2.0")
+  .unobtainable()
+  .do((c) => {
+    const cards = c.maxCostHands(1, { who: "opp" });
+    c.undrawCards(cards, "bottom", "opp");
+  })  // TODO
+  .done();
+
+/**
+ * @id 300009
+ * @name 肃净污染
+ * @description
+ * 将我方所有手牌置于牌组底，然后抓相同数量+1张手牌。
+ */
+export const SanctifyTheDefiled = card(300009)
+  .since("v6.2.0")
+  .unobtainable()
+  .do((c) => {
+    const allHands = [...c.player.hands];
+    const count = allHands.length;
+    c.undrawCards(allHands, "bottom");
+    c.drawCards(count + 1);
+  })
+  .done();
+
+/**
+ * @id 301038
+ * @name 木质玩具剑
+ * @description
+ * 治疗目标角色2点，生成2个随机基础元素骰。
+ */
+export const WoodenToySword = card(301038)
+  .since("v6.2.0")
+  .unobtainable()
+  .costSame(1)
+  .addTarget("my characters")
+  .heal(2, "@targets.0")
+  .generateDice("randomElement", 2)
+  .done();
+
+/**
+ * @id 301040
+ * @name 重铸圣剑（生效中）
+ * @description
+ * 所附属角色重击后：造成5点该角色元素类型的伤害。
+ */
+export const ReforgeTheHolyBladeInEffect = status(301040)
+  .on("useSkill", (c, e) => e.isChargedAttack())
+  .do((c) => {
+    const element = c.self.master.element() as number as DamageType;
+    c.damage(element, 5);
+  })
+  .done();
+
+/**
+ * @id 301039
+ * @name 重铸圣剑
+ * @description
+ * 治疗目标角色12点，使其获得效果：重击后：造成5点该角色元素类型的伤害。
+ */
+export const ReforgeTheHolyBlade = card(301039)
+  .since("v6.2.0")
+  .unobtainable()
+  .costVoid(4)
+  .addTarget("my characters")
+  .heal(12, "@targets.0")
+  .characterStatus(ReforgeTheHolyBladeInEffect, "@targets.0")
+  .done();
+
+/**
+ * @id 332057
+ * @name 水仙十字大冒险
+ * @description
+ * 如果我方存在相同元素类型的角色，则治疗我方受伤最多的角色1点；
+ * 如果我方存在相同武器类型的角色，抓1张牌；
+ * 如果我方存在相同所属势力的角色，则冒险1次。
+ */
+export const TheNarzissenkreuzAdventure = card(332057)
+  .since("v6.2.0")
+  .costSame(1)
+  .do((c) => {
+    const characters = c.$$("my characters include defeated");
+    const elements = characters.map((ch) => ch.element());
+    const weapons = characters.map((ch) => ch.weaponTag());
+    const nations = characters.flatMap((ch) => ch.nationTags());
+    if (new Set(elements).size < characters.length) {
+      c.heal(1, "my characters order by health - maxHealth limit 1");
+    }
+    if (new Set(weapons).size < characters.length) {
+      c.drawCards(1);
+    }
+    if (new Set(nations).size < nations.length) {
+      c.adventure();
+    }
+  })
+  .done();
+
+/**
+ * @id 303247
+ * @name 拯救世界的计划（生效中）
+ * @description
+ * 下个回合结束时，双方出战角色生命值变为5。
+ */
+export const PlanToSaveTheWorldInEffect = combatStatus(303247)
+  .duration(2)
+  .on("endPhase", (c, e) => c.getVariable("duration") === 1)
+  .do((c) => {
+    const actives = c.$$(`all active characters`);
+    for (const ch of actives) {
+      c.mutate({
+        type: "modifyEntityVar",
+        state: ch.latest(),
+        varName: "health",
+        value: 5,
+        direction: ch.health > 5 ? "decrease" : "increase",
+      });
+    }
+  })
+  .done();
+
+/**
+ * @id 332058
+ * @name 拯救世界的计划
+ * @description
+ * 下回合结束阶段时，双方出战角色生命值变为5。
+ */
+export const PlanToSaveTheWorld = card(332058)
+  .since("v6.2.0")
+  .costSame(2)
+  .combatStatus(PlanToSaveTheWorldInEffect)
   .done();

@@ -20,18 +20,22 @@ import { BondOfLife } from "../../commons";
  * @id 113141
  * @name 血偿勒令
  * @description
- * 我方角色受到伤害后：我方受到伤害的角色和敌方阿蕾奇诺均附属1层生命之契。
- * 可用次数：5
+ * 我方角色受到伤害后：我方受到伤害的角色和敌方阿蕾奇诺均附属2层生命之契。
+ * 可用次数：3
  */
 export const BlooddebtDirective = combatStatus(113141)
   .since("v5.4.0")
   .on("damaged")
-  .usage(5)
+  .usage(3)
   .do((c, e) => {
     if (e.target.variables.alive) {
-      c.characterStatus(BondOfLife, e.target);
+      c.characterStatus(BondOfLife, e.target, {
+        overrideVariables: { usage: 2 }
+      });
     }
-    c.characterStatus(BondOfLife, `opp characters with definition id ${Arlecchino}`);
+    c.characterStatus(BondOfLife, `opp characters with definition id ${Arlecchino}`, {
+      overrideVariables: { usage: 2 }
+    });
   })
   .done();
 
@@ -60,7 +64,7 @@ export const InvitationToABeheading = skill(13141)
  * @id 13142
  * @name 万相化灰
  * @description
- * 在对方场上生成5层血偿勒令，然后造成2点火元素伤害。
+ * 在对方场上生成3层血偿勒令，然后造成2点火元素伤害。
  */
 export const AllIsAsh = skill(13142)
   .type("elemental")
@@ -145,7 +149,7 @@ export const TheBalemoonAloneMayKnowPassive03 = skill(13147)
 export const Arlecchino = character(1314)
   .since("v5.4.0")
   .tags("pyro", "pole", "fatui")
-  .health(10)
+  .health(11)
   .energy(3)
   .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03)
   .done();

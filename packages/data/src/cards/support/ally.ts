@@ -779,3 +779,27 @@ export const GiftOfTheGoddessOfProphecy = card(322030)
     e.entity.cast<"summon">().addVariable("effect", 1);
   })
   .done();
+
+/**
+ * @id 322031
+ * @name 西摩尔
+ * @description
+ * 入场时：复制对方牌组顶的1张牌加入我方手牌。
+ * 我方打出名称不存在于本局最初牌组的牌时：冒险1次。（每回合1次，最多生效2次）
+ */
+export const Seymour = card(322031)
+  .since("v6.2.0")
+  .costSame(1)
+  .support("ally")
+  .on("enter")
+  .do((c) => {
+    const oppTop = c.oppPlayer.pile[0];
+    if (oppTop) {
+      c.createHandCard(oppTop.definition.id as CardHandle);
+    }
+  })
+  .on("playCard", (c, e) => !c.isInInitialPile(e.card))
+  .usage(2)
+  .usagePerRound(1)
+  .adventure()
+  .done();
