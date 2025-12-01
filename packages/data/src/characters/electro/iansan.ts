@@ -82,13 +82,13 @@ export const ThunderboltRush = skill(14142)
  * @id 14143
  * @name 力的三原理
  * @description
- * 造成3点雷元素伤害，自身进入夜魂加持，获得1点「夜魂值」，生成动能标示。
+ * 造成2点雷元素伤害，自身进入夜魂加持，获得1点「夜魂值」，生成动能标示。
  */
 export const TheThreePrinciplesOfPower: SkillHandle = skill(14143)
   .type("burst")
   .costElectro(3)
   .costEnergy(2)
-  .damage(DamageType.Electro, 3)
+  .damage(DamageType.Electro, 2)
   .gainNightsoul("@self", 1)
   .if((c) => c.self.hasEquipment(TeachingsOfTheCollectiveOfPlenty))
   .combatStatus(KineticEnergyScale, "my", {
@@ -172,7 +172,7 @@ export const CaloricBalancingPlan03 = skill(14146)
 export const Iansan = character(1414)
   .since("v6.0.0")
   .tags("electro", "pole", "natlan")
-  .health(12)
+  .health(11)
   .energy(2)
   .skills(WeightedSpike, ThunderboltRush, TheThreePrinciplesOfPower, CaloricBalancingPlan01)
   .associateNightsoul(NightsoulsBlessing)

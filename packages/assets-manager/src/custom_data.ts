@@ -1,13 +1,13 @@
 import type { DiceRequirement } from "@gi-tcg/typings";
-import type { CardType, CardTag, CharacterTag, CommonSkillType, EntityType, EntityTag } from "@gi-tcg/core";
+import type { CharacterTag, CommonSkillType, EntityType, EntityTag } from "@gi-tcg/core";
 export interface CustomActionCard {
   id: number;
   name: string;
   rawDescription: string;
   cardFaceUrl: string;
   obtainable: boolean;
-  type: CardType;
-  tags: CardTag[];
+  type: EntityType;
+  tags: EntityTag[];
   playCost: DiceRequirement;
 }
 

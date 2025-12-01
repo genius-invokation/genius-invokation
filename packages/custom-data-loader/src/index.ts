@@ -32,7 +32,7 @@ function b64EncodeUnicode(str: string) {
   return btoa(
     encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
       return String.fromCharCode(parseInt(p1, 16));
-    }),
+    })
   );
 }
 
@@ -92,7 +92,7 @@ export class CustomDataLoader {
     const gameData = this.registry.resolve(
       (items) => resolveOfficialVersion(items, this.version),
       (items) =>
-        items.find((item) => item.version.from === "customData") ?? null,
+        items.find((item) => item.version.from === "customData") ?? null
     );
     const customData: CustomData = {
       actionCards: [],
@@ -128,24 +128,6 @@ export class CustomDataLoader {
         skills: ch.skills.map(parseSkill),
       });
     }
-    for (const [id, card] of gameData.cards) {
-      if (card.version.from !== "customData") {
-        continue;
-      }
-      const name = this.names.get(card.id) ?? "";
-      customData.actionCards.push({
-        id,
-        name,
-        type: card.cardType,
-        rawDescription: this.descriptions.get(id) ?? "",
-        cardFaceUrl: this.images.get(id) ?? placeholderImageUrl(name),
-        obtainable: card.obtainable,
-        tags: [...card.tags],
-        playCost: new Map(
-          playSkillOfCard(card).initiativeSkillConfig.requiredCost,
-        ),
-      });
-    }
     for (const [id, et] of gameData.entities) {
       if (et.version.from !== "customData") {
         continue;
@@ -159,6 +141,20 @@ export class CustomDataLoader {
         cardFaceOrBuffIconUrl: this.images.get(id) ?? placeholderImageUrl(name),
         skills: et.skills.map(parseSkill),
       });
+      if (["equipment", "support", "eventCard"].includes(et.type)) {
+        customData.actionCards.push({
+          id,
+          name,
+          type: et.type,
+          rawDescription: this.descriptions.get(id) ?? "",
+          cardFaceUrl: this.images.get(id) ?? placeholderImageUrl(name),
+          obtainable: et.obtainable,
+          tags: [...et.tags],
+          playCost: new Map(
+            playSkillOfCard(et)?.initiativeSkillConfig.requiredCost
+          ),
+        });
+      }
     }
     return [gameData, customData];
   }

@@ -34,6 +34,7 @@ import {
 import {
   type AnyState,
   type CharacterState,
+  StateSymbol,
   stringifyState,
 } from "./base/state";
 import { Aura, PbSkillType, type ExposedMutation } from "@gi-tcg/typings";
@@ -601,9 +602,26 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
+
+        // 临时将这张卡放到我方手牌，随后执行其打出后效果
+        const { state } = this.mutator.createHandCard(
+          arg.who,
+          arg.cardDefinition,
+          {
+            noOverflow: true,
+          },
+        );
+        const skillDef = playSkillOfCard(state.definition);
+        if (!skillDef) {
+          this.mutator.log(
+            DetailLogType.Other,
+            `Card [card:${arg.cardDefinition.id}] has no play skill, skip playing`,
+          );
+          continue;
+        }
         const skillInfo = defineSkillInfo({
-          caller: arg.via.caller,
-          definition: playSkillOfCard(arg.cardDefinition),
+          caller: state,
+          definition: skillDef,
           requestBy: arg.via,
         });
         await this.finalizeSkill(skillInfo, { targets: arg.targets });
@@ -617,8 +635,8 @@ export class SkillExecutor {
           et.definition.tags.includes("adventureSpot"),
         );
         if (currentSpot) {
-          const { events } = this.mutator.createEntity(
-            currentSpot.definition,
+          const { events } = this.mutator.insertEntityOnStage(
+            { definition: currentSpot.definition },
             {
               type: "supports",
               who: arg.who,
@@ -632,7 +650,7 @@ export class SkillExecutor {
           );
           await this.handleEvent(...events);
         } else if (hisSupports.length < this.state.config.maxSupportsCount) {
-          const spots = this.state.data.cards
+          const spots = this.state.data.entities
             .values()
             .filter((d) => d.tags.includes("adventureSpot"))
             .toArray();

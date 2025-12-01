@@ -31,13 +31,13 @@ export const NightsoulsBlessing = status(114151)
  * @id 14155
  * @name 闪烈降临·大火山崩落
  * @description
- * 造成2点雷元素伤害，此技能视为下落攻击。
+ * 造成3点雷元素伤害，此技能视为下落攻击。
  */
 export const GuardianVentVolcanoKablam = skill(14155)
   .type("burst")
   .prepared()
   .forcePlunging()
-  .damage(DamageType.Electro, 2)
+  .damage(DamageType.Electro, 3)
   .done();
 
 
@@ -143,6 +143,15 @@ export const TagteamTripleJump = skill(14154)
   .done();
 
 /**
+ * @id 14156
+ * @name 夜虹逐跃
+ * @description
+ * 造成D__KEY__DAMAGE点D__KEY__ELEMENT，自身附属突驰烈进，进入夜魂加持，并获得1点「夜魂值」，然后我方切换到下一个角色。
+ */
+export const RidingTheNightrainbowPassive = skill(14156)
+  .reserve();
+
+/**
  * @id 1415
  * @name 瓦雷莎
  * @description
@@ -173,3 +182,4 @@ export const AHeroOfJusticesTriumph: EquipmentHandle = card(214151)
   .on("increaseSkillDamage", (c, e) => e.viaSkillType("burst"))
   .increaseDamage(1)
   .done();
+

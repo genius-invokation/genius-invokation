@@ -184,6 +184,8 @@ export const PainForPain = card(221021)
   .since("v4.3.0")
   .costSame(3)
   .talent([LaSignora, CrimsonWitchOfEmbers], "active")
+  .tags("barrier")
+  .variable("barrierUsage", 0) // no io hint for now
   .on("enter")
   .do((c) => {
     c.generateDice(c.self.master.element(), 3);

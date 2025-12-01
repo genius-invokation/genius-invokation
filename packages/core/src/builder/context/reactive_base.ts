@@ -32,7 +32,7 @@ export type EntityTypeToStateKind = {
   combatStatus: "entity";
   summon: "entity";
   support: "entity";
-  card: "card";
+  eventCard: "entity";
   extension: "extension";
 };
 

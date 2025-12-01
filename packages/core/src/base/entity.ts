@@ -14,24 +14,57 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import type { GameState } from "./state";
-import type { EquipmentTag, SupportTag } from "./card";
 import type { SkillDefinition } from "./skill";
 import type { VersionInfo } from "./version";
 
-export type EntityTag =
+import type { WeaponTag } from "./character";
+
+export type WeaponCardTag = Exclude<WeaponTag, "otherWeapon">;
+
+export type EquipmentTag =
+  | "talent"
+  | "artifact"
+  | "technique"
+  | "weapon"
+  | WeaponCardTag;
+
+export type SupportTag = "ally" | "place" | "item" | "adventureSpot";
+
+export type CardTag =
+  | "legend" // 秘传
+  | "action" // 出战行动
+  | "food"
+  | "resonance" // 元素共鸣
+  | "noTuning" // 禁用调和
+  ;
+export type CommonEntityTag =
+  | "shield" // 护盾 & 显示黄盾特效
+  | "barrier" // 紫盾 & 显示蓝盾特效
+  | "normalAsPlunging"; // 普通攻击视为下落攻击
+
+export type StatusTag =
+  | "bondOfLife" // 显示生命之契特效
   | "disableSkill" // 禁用技能（仅角色状态）
   | "immuneControl" // 免疫冻结石化眩晕，禁用效果切人（仅角色状态）
-  | "shield" // 护盾
-  | "barrier" // 紫盾
-  | "preparingSkill" // 角色将准备技能（仅角色状态）
+  | "preparingSkill"; // 角色将准备技能（仅角色状态）
+
+export type CombatStatusTag =
   | "eventEffectless" // 禁用事件牌效果（仅出战状态）
-  | "normalAsPlunging" // 普通攻击视为下落攻击
-  | "nightsoulsBlessing" // 夜魂加持（仅角色状态）
-  | "bondOfLife"
-  | EquipmentTag
-  | SupportTag;
+  | "nightsoulsBlessing"; // 夜魂加持（仅角色状态）
+
+export type EntityTagMap = {
+  eventCard: CardTag;
+  status: StatusTag;
+  combatStatus: CombatStatusTag;
+  equipment: EquipmentTag;
+  support: SupportTag;
+  summon: never;
+}
+
+export type EntityTag<Type extends EntityType = EntityType> = CommonEntityTag | EntityTagMap[Type];
 
 export type EntityType =
+  | "eventCard"
   | "status"
   | "combatStatus"
   | "equipment"
@@ -43,6 +76,7 @@ export interface EntityDefinition {
   readonly type: EntityType;
   readonly id: number;
   readonly version: VersionInfo;
+  readonly obtainable: boolean;
   readonly visibleVarName: string | null;
   readonly tags: readonly EntityTag[];
   readonly hintText: string | null;

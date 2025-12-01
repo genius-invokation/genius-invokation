@@ -21,8 +21,8 @@ import {
 } from "@gi-tcg/core";
 import {
   dispatchRpc,
-  PbCardState,
   PbDiceType,
+  PbEntityState,
   PbGameState,
   PbPlayerState,
   PbPlayerStatus,
@@ -50,7 +50,7 @@ export class OppChessboardController implements IOppChessboardController {
   #playerStatus: PbPlayerStatus = PbPlayerStatus.UNSPECIFIED;
   #actionState: ActionState | null = null;
   #dice: PbDiceType[] = [];
-  #handCards: Map<number, PbCardState> = new Map();
+  #handCards: Map<number, PbEntityState> = new Map();
   #initiativeSkills: PbSkillInfo[] = [];
   #viewType: ChessboardViewType = "normal";
   #selectCardCandidates: number[] = [];

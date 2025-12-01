@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, Reaction, card, combatStatus, status } from "@gi-tcg/core/builder";
-import { BondOfLife, BurningFlame } from "../../commons";
+import { AdventureCompleted, BondOfLife, BurningFlame } from "../../commons";
 
 /**
  * @id 312101
@@ -1203,4 +1203,23 @@ export const NoblesseOblige = card(312041)
   .gainEnergy(1, "@master")
   .on("useSkill", (c, e) => e.isSkillType("burst"))
   .combatStatus(NoblesseObligeInEffect)
+  .done();
+
+/**
+ * @id 312043
+ * @name 水仙之梦
+ * @description
+ * 附属角色使用技能后：冒险1次。（每回合2次）
+ * 如果我方已经完成过冒险，则所附属角色造成的伤害+1。
+ * （角色最多装备1件「圣遗物」）
+ */
+export const NymphsDream = card(312043)
+  .since("v6.2.0")
+  .costSame(2)
+  .artifact()
+  .on("useSkill")
+  .usagePerRound(2)
+  .adventure()
+  .on("increaseSkillDamage", (c) => c.$(`my combat status with definition id ${AdventureCompleted}`))
+  .increaseDamage(1)
   .done();

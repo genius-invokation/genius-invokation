@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardDefinition } from "@gi-tcg/core";
+import { EntityDefinition } from "@gi-tcg/core";
 import { card, combatStatus, DamageType, extension, pair, status, StatusHandle } from "@gi-tcg/core/builder";
 
 /**
@@ -141,7 +141,7 @@ export const Iktomisaurus = card(313005)
   .heal(1, "@master")
   .do((c) => {
     const tags = ["place", "item", "food"] as const;
-    const candidates: CardDefinition[] = [];
+    const candidates: EntityDefinition[] = [];
     for (const tag of tags) {
       const def = c.random(c.allCardDefinitions(tag));
       candidates.push(def);

@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DiceType, card, extension, flip, pair, status } from "@gi-tcg/core/builder";
+import { DisperseTheCalamity, SanctifyTheDefiled } from "./other";
 
 /**
  * @id 330001
@@ -127,7 +128,7 @@ export const [PassingOfJudgment] = card(330006)
   .toCombatStatus(300003, "opp")
   .tags("eventEffectless")
   .oneDuration()
-  .on("playCard", (c, e) => e.card.definition.cardType === "event")
+  .on("playCard", (c, e) => e.card.definition.type === "eventCard")
   .usage(3)
   .done();
 
@@ -327,4 +328,19 @@ export const FightForDeath = card(330011)
       c.increaseMaxHealth(increasedValue, `my characters`);
     }
   })
+  .done();
+
+/**
+ * @id 330012
+ * @name 「沙中遗事」
+ * @description
+ * 挑选一项：
+ * 将敌方1张费用最高的手牌置于牌组底。
+ * 或
+ * 将我方所有手牌置于牌组底，然后抓相同数量+1张手牌。
+ */
+export const LostLegaciesInTheSand = card(330012)
+  .since("v6.2.0")
+  .legend()
+  .selectAndPlay([DisperseTheCalamity, SanctifyTheDefiled])
   .done();

@@ -19,14 +19,12 @@ import { DiceType } from "@gi-tcg/typings";
 import { flip } from "@gi-tcg/utils";
 import {
   type PhaseType,
-  type CardState,
   type CharacterState,
   type EntityState,
   type GameState,
   type PlayerState,
   stringifyState,
   type AnyState,
-  type CardDefinition,
   StateSymbol,
   type StateKind,
 } from "./state";
@@ -35,6 +33,7 @@ import {
   type EntityArea,
   type EntityDefinition,
   stringifyEntityArea,
+  USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "./entity";
 import type { CharacterDefinition } from "./character";
 import { GiTcgCoreInternalError } from "../error";
@@ -77,16 +76,6 @@ export interface SetWinnerM {
   readonly winner: 0 | 1;
 }
 
-export interface TransferCardM {
-  readonly type: "transferCard";
-  readonly targetIndex?: number;
-  readonly who: 0 | 1;
-  readonly from: "pile" | "hands";
-  readonly to: "pile" | "hands" | "oppPile" | "oppHands";
-  readonly value: CardState;
-  readonly reason: "switch" | "draw" | "undraw" | "steal" | "swap";
-}
-
 export interface SwitchActiveM {
   readonly type: "switchActive";
   readonly who: 0 | 1;
@@ -99,28 +88,6 @@ export interface SwapCharacterPositionM {
   readonly characters: readonly [CharacterState, CharacterState];
 }
 
-export interface RemoveCardM {
-  readonly type: "removeCard";
-  readonly who: 0 | 1;
-  readonly where: "hands" | "pile";
-  readonly reason:
-    | "play"
-    | "onDrawTriggered"
-    | "elementalTuning"
-    | "overflow"
-    | "disposed"
-    | "playNoEffect";
-  readonly oldState: CardState;
-}
-
-export interface CreateCardM {
-  readonly type: "createCard";
-  readonly who: 0 | 1;
-  readonly value: IdWritable<CardState>;
-  readonly target: "hands" | "pile";
-  readonly targetIndex?: number;
-}
-
 export interface CreateCharacterM {
   readonly type: "createCharacter";
   readonly who: 0 | 1;
@@ -129,18 +96,49 @@ export interface CreateCharacterM {
 
 export interface CreateEntityM {
   readonly type: "createEntity";
-  readonly where: EntityArea;
+  readonly target: EntityArea;
+  readonly targetIndex?: number;
   readonly value: IdWritable<EntityState>;
+}
+
+export interface MoveEntityM {
+  readonly type: "moveEntity";
+  readonly value: EntityState;
+  /** A display hint, not for applying mutation */
+  readonly from: EntityArea;
+  readonly target: EntityArea;
+  readonly targetIndex?: number;
+  readonly reason:
+    | "switch"
+    | "draw"
+    | "undraw"
+    | "steal"
+    | "swap"
+    | "equip"
+    | "createSupport"
+    | "unequip"
+    | "unsupport"
+    | "other";
 }
 
 export interface RemoveEntityM {
   readonly type: "removeEntity";
-  readonly oldState: EntityState | CharacterState;
+  /** A display hint, not for applying mutation */
+  readonly from: EntityArea;
+  readonly oldState: AnyState;
+  readonly reason:
+    | "cardDisposed" // 舍弃
+    | "eventCardPlayed"
+    | "eventCardDrawn"
+    | "elementalTuning"
+    | "overflow"
+    | "eventCardPlayNoEffect"
+    | "other";
 }
 
 export interface ModifyEntityVarM {
   readonly type: "modifyEntityVar";
-  state: EntityState | CharacterState;
+  state: AnyState;
   readonly varName: string;
   readonly value: number;
   readonly direction: "increase" | "decrease" | null;
@@ -149,10 +147,13 @@ export interface ModifyEntityVarM {
 export interface TransformDefinitionM {
   readonly type: "transformDefinition";
   state: AnyState;
-  readonly newDefinition:
-    | CharacterDefinition
-    | EntityDefinition
-    | CardDefinition;
+  readonly newDefinition: CharacterDefinition | EntityDefinition;
+}
+
+export interface ResetVariablesM {
+  readonly type: "resetVariables";
+  state: AnyState;
+  readonly scope: "all" | "usagePerRound";
 }
 
 export type ResetDiceReason =
@@ -217,16 +218,15 @@ export type Mutation =
   | StepRoundM
   | SwitchTurnM
   | SetWinnerM
-  | TransferCardM
   | SwitchActiveM
   | SwapCharacterPositionM
-  | RemoveCardM
-  | CreateCardM
   | CreateCharacterM
   | CreateEntityM
+  | MoveEntityM
   | RemoveEntityM
   | ModifyEntityVarM
   | TransformDefinitionM
+  | ResetVariablesM
   | ResetDiceM
   | SetPlayerFlagM
   | MutateExtensionStateM
@@ -281,59 +281,6 @@ function doMutation(state: GameState, m: Mutation): GameState {
         draft.winner = m.winner;
       });
     }
-    case "transferCard": {
-      return produce(state, (draft) => {
-        const player = draft.players[m.who];
-        const oppPlayer = draft.players[flip(m.who)];
-        let src: CardState[];
-        switch (m.from) {
-          case "pile":
-            src = player.pile;
-            break;
-          case "hands":
-            src = player.hands;
-            break;
-          default: {
-            const _: never = m.from;
-            throw new GiTcgCoreInternalError(`Unknown source of transferCard`);
-          }
-        }
-        let dst: CardState[];
-        switch (m.to) {
-          case "pile":
-            dst = player.pile;
-            break;
-          case "hands":
-            dst = player.hands;
-            break;
-          case "oppPile":
-            dst = oppPlayer.pile;
-            break;
-          case "oppHands":
-            dst = oppPlayer.hands;
-            break;
-          default: {
-            const _: never = m.to;
-            throw new GiTcgCoreInternalError(
-              `Unknown destination of transferCard`,
-            );
-          }
-        }
-        const cardIdx = src.findIndex((c) => c.id === m.value.id);
-        if (cardIdx === -1) {
-          throw new GiTcgCoreInternalError(
-            `Card ${m.value.id} not found in source`,
-          );
-        }
-        const card = src[cardIdx];
-        src.splice(cardIdx, 1);
-        if (typeof m.targetIndex === "number") {
-          dst.splice(m.targetIndex, 0, card);
-        } else {
-          dst.push(card);
-        }
-      });
-    }
     case "switchActive": {
       return produce(state, (draft) => {
         const player = draft.players[m.who];
@@ -357,34 +304,6 @@ function doMutation(state: GameState, m: Mutation): GameState {
         ];
       });
     }
-    case "removeCard": {
-      return produce(state, (draft) => {
-        const player = draft.players[m.who];
-        const cardIdx = player[m.where].findIndex(
-          (c) => c.id === m.oldState.id,
-        );
-        if (cardIdx === -1) {
-          throw new GiTcgCoreInternalError(
-            `Card ${m.oldState.id} not found in ${m.where} of ${m.who}`,
-          );
-        }
-        player.removedEntities.push(...player[m.where].splice(cardIdx, 1));
-      });
-    }
-    case "createCard": {
-      return produce(state, (draft) => {
-        if (m.value.id === 0) {
-          m.value.id = draft.iterators.id--;
-        }
-        const value = createDraft<CardState>("card", m.value);
-        const target = draft.players[m.who][m.target];
-        if (typeof m.targetIndex === "number") {
-          target.splice(m.targetIndex, 0, value);
-        } else {
-          target.push(value);
-        }
-      });
-    }
     case "createCharacter": {
       return produce(state, (draft) => {
         if (m.value.id === 0) {
@@ -395,12 +314,8 @@ function doMutation(state: GameState, m: Mutation): GameState {
       });
     }
     case "createEntity": {
-      const { where, value } = m;
-      if (where.type === "hands" || where.type === "pile") {
-        throw new GiTcgCoreInternalError(
-          `Cannot create card using createEntity. Use createCard instead.`,
-        );
-      } else if (where.type === "characters") {
+      const { target: where, value, targetIndex } = m;
+      if (where.type === "characters") {
         return produce(state, (draft) => {
           const character = draft.players[where.who].characters.find(
             (c) => c.id === where.characterId,
@@ -424,9 +339,46 @@ function doMutation(state: GameState, m: Mutation): GameState {
             value.id = draft.iterators.id--;
           }
           const draftedValue = createDraft<EntityState>("entity", value);
-          area.push(draftedValue);
+          if (
+            typeof targetIndex !== "number" ||
+            targetIndex < 0 ||
+            targetIndex > area.length
+          ) {
+            area.push(draftedValue);
+          } else {
+            area.splice(targetIndex, 0, draftedValue);
+          }
         });
       }
+    }
+    case "moveEntity": {
+      return produce(state, (draft) => {
+        removeEntity(draft, m.value.id);
+        const { target: to, targetIndex } = m;
+        let area: Draft<EntityState[]>;
+        if (to.type === "characters") {
+          const character = draft.players[to.who].characters.find(
+            (c) => c.id === to.characterId,
+          );
+          if (!character) {
+            throw new GiTcgCoreInternalError(
+              `Character ${to.characterId} not found`,
+            );
+          }
+          area = character.entities as Draft<EntityState[]>;
+        } else {
+          area = draft.players[to.who][to.type] as Draft<EntityState[]>;
+        }
+        if (
+          typeof targetIndex !== "number" ||
+          targetIndex < 0 ||
+          targetIndex > area.length
+        ) {
+          area.push(m.value as Draft<EntityState>);
+        } else {
+          area.splice(targetIndex, 0, m.value as Draft<EntityState>);
+        }
+      });
     }
     case "removeEntity": {
       return produce(state, (draft) => {
@@ -465,6 +417,24 @@ function doMutation(state: GameState, m: Mutation): GameState {
         }
       });
       m.state = getEntityById(newState, m.state.id) as CharacterState;
+      return newState;
+    }
+    case "resetVariables": {
+      const newState = produce(state, (draft) => {
+        const entity = getEntityById(draft, m.state.id) as Draft<AnyState>;
+        const varConfigs = entity.definition.varConfigs;
+        for (const key in varConfigs) {
+          if (
+            m.scope === "usagePerRound" &&
+            !(USAGE_PER_ROUND_VARIABLE_NAMES as readonly string[]).includes(key)
+          ) {
+            continue;
+          }
+          const config = varConfigs[key];
+          entity.variables[key] = config.initialValue;
+        }
+      });
+      m.state = getEntityById(newState, m.state.id) as AnyState;
       return newState;
     }
     case "resetDice": {
@@ -542,11 +512,6 @@ export function stringifyMutation(m: Mutation): string | null {
     case "setWinner": {
       return `Set winner to ${m.winner}`;
     }
-    case "transferCard": {
-      return `Transfer card ${stringifyState(m.value)} ${m.from} of player ${
-        m.who
-      } to ${m.to}`;
-    }
     case "switchActive": {
       return `Switch active of player ${m.who} to ${stringifyState(m.value)}`;
     }
@@ -555,26 +520,21 @@ export function stringifyMutation(m: Mutation): string | null {
         m.characters[0],
       )} and ${stringifyState(m.characters[1])}`;
     }
-    case "removeCard": {
-      return `Dispose card ${stringifyState(m.oldState)} of player ${m.who}'s ${
-        m.where
-      } (${m.reason})`;
-    }
-    case "createCard": {
-      return `Create card ${stringifyState(m.value)} for player ${m.who} in ${
-        m.target
-      }`;
-    }
     case "createCharacter": {
       return `Create character ${stringifyState(m.value)} for player ${m.who}`;
     }
     case "createEntity": {
       return `Create entity ${stringifyState(m.value)} in ${stringifyEntityArea(
-        m.where,
+        m.target,
       )}`;
     }
+    case "moveEntity": {
+      return `Move entity ${stringifyState(m.value)} to ${stringifyEntityArea(
+        m.target,
+      )} (index: ${m.targetIndex ?? "end"}) because ${m.reason}`;
+    }
     case "removeEntity": {
-      return `Removed entity ${stringifyState(m.oldState)}`;
+      return `Removed entity ${stringifyState(m.oldState)} because ${m.reason}`;
     }
     case "modifyEntityVar": {
       return `Modify variable ${m.varName} of ${stringifyState(m.state)} to ${
@@ -585,6 +545,9 @@ export function stringifyMutation(m: Mutation): string | null {
       return `Transform definition of ${stringifyState(m.state)} to [${
         m.newDefinition.type
       }:${m.newDefinition.id}]`;
+    }
+    case "resetVariables": {
+      return `Reset variables of ${stringifyState(m.state)} (${m.scope})`;
     }
     case "resetDice": {
       return `Reset dice of player ${m.who} to ${JSON.stringify(m.value)}`;

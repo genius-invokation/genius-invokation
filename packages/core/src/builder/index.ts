@@ -41,12 +41,10 @@ export type {
 export { DiceType, DamageType, Aura, Reaction } from "@gi-tcg/typings";
 export type {
   PlainCharacterState as CharacterState,
-  PlainCardState as CardState,
   PlainEntityState as EntityState,
 } from "./context/utils";
 export type {
   CharacterDefinition,
-  CardDefinition,
   EntityDefinition,
 } from "../base/state";
 export {
