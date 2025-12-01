@@ -907,6 +907,18 @@ export class StateMutator {
     }
     const oldState = shouldEnterOverride(entitiesAtArea, definition);
     if (oldState) {
+      // TODO
+      // 应当获取 oldState 的所有变量，不引发事件地移除 oldState，然后
+      // 重建一个新的实体，变量根据规则计算 -or- 修改传入的 newState 的变量并移动
+      // 目前的 workaround 是直接覆盖 oldState 的变量，若有 newState 移入则删除之
+      if ("id" in stateOrDef) {
+        this.mutate({
+          type: "removeEntity",
+          from: moveFrom!,
+          oldState: stateOrDef,
+          reason: "other",
+        });
+      }
       const { varConfigs } = definition;
       const incomingVariables =
         "variables" in stateOrDef
