@@ -497,14 +497,14 @@ export const MystiqueSoup = card(333020)
  * @id 333027
  * @name 纵声欢唱
  * @description
- * 所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。
+ * 所有我方角色获得饱腹，抓2张牌，下2次切换角色少花费1个元素骰。
  * （每回合每个角色最多食用1次「料理」）
  */
 export const [SingYourHeartOut] = card(333027)
   .since("v5.6.0")
   .costVoid(3)
   .combatFood({ satiatedFilter: "allNot" })
-  .drawCards(3)
+  .drawCards(2)
   .toCombatStatus(303321)
   .on("deductOmniDiceSwitch")
   .usage(2)

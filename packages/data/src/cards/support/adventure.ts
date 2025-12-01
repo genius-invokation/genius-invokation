@@ -16,6 +16,7 @@
 import { card, DamageType } from "@gi-tcg/core/builder";
 import { ChenyuBrew } from "../event/food";
 import { AgileSwitch, EfficientSwitch } from "../../commons";
+import { ReforgeTheHolyBlade, WoodenToySword } from "../event/other";
 
 /**
  * @id 321032
@@ -57,4 +58,30 @@ export const ChenyuVale = card(321032)
     c.increaseMaxHealth(2, targetCh);
     c.finishAdventure();
   })
+  .done();
+
+/**
+ * @id 321033
+ * @name 自体自身之塔
+ * @description
+ * 入场时：对我方所有角色造成1点穿透伤害。
+ * 冒险经历达到偶数次时：生成1个随机基础元素骰。
+ * 冒险经历达到5时：生成手牌木质玩具剑。
+ * 冒险经历达到12时：生成手牌重铸圣剑，然后弃置此牌。
+ */
+export const TowerOfIpsissimus = card(321033)
+  .since("v6.2.0")
+  .tags("adventureSpot")
+  .adventureSpot()
+  .on("enter", (c, e) => !e.overridden)
+  .damage(DamageType.Piercing, 1, "all my characters")
+  .on("adventure", (c) => c.getVariable("exp") % 2 === 0)
+  .generateDice("randomElement", 1)
+  .on("adventure", (c) => c.getVariable("exp") >= 5)
+  .usage(1, { name: "stage5", autoDispose: false, visible: false })
+  .createHandCard(WoodenToySword)
+  .on("adventure", (c) => c.getVariable("exp") >= 12)
+  .usage(1, { name: "stage12", autoDispose: false, visible: false })
+  .createHandCard(ReforgeTheHolyBlade)
+  .finishAdventure()
   .done();

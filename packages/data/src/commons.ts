@@ -137,6 +137,15 @@ export const AgileSwitch = combatStatus(170)
   .done();
 
 /**
+ * @id 171
+ * @name 完成冒险！
+ * @description
+ * 已完成过一次冒险。
+ */
+export const AdventureCompleted = combatStatus(171)
+  .done();
+
+/**
  * @id 303300
  * @name 饱腹
  * @description
