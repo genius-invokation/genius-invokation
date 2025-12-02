@@ -93,13 +93,3 @@ export function ExitButton(props: ExitButtonProps) {
     </button>
   );
 }
-
-export const CHESSBOARD_COLORS = [
-  "#c0cac3",
-  "#537a76",
-  "#7f7473",
-  "#66588a",
-  "#667a4a",
-  "#456a90",
-  "#783f29",
-];

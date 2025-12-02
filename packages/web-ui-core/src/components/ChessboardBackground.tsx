@@ -14,7 +14,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { AspectRatioContainer } from "./AspectRatioContainer";
-import { CHESSBOARD_COLORS } from "./FunctionButtonGroup";
+
+export const CHESSBOARD_COLORS = [
+  "#c0cac3",
+  "#537a76",
+  "#7f7473",
+  "#66588a",
+  "#667a4a",
+  "#456a90",
+  "#783f29",
+];
 
 export interface ChessboardBackgroundProps {
   colorIndex: number;
