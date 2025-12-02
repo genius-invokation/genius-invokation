@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Injectable, type OnModuleInit } from "@nestjs/common";
+import { Injectable, type OnModuleInit, type OnModuleDestroy } from "@nestjs/common";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
@@ -24,7 +24,7 @@ if (!connectionString) {
 }
 
 @Injectable()
-export class DrizzleService implements OnModuleInit {
+export class DrizzleService implements OnModuleInit, OnModuleDestroy {
   private pool: Pool;
   public db: ReturnType<typeof drizzle<typeof schema>>;
 

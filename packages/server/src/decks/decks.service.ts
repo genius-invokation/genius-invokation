@@ -175,7 +175,7 @@ export class DecksService {
       }));
     }
     
-    const updateData: any = {};
+    const updateData: Partial<typeof decks.$inferInsert> = {};
     if (deck.name !== undefined) {
       updateData.name = deck.name;
     }
