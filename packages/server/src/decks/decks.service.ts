@@ -175,7 +175,8 @@ export class DecksService {
       }));
     }
     
-    const updateData: Partial<typeof decks.$inferInsert> = {
+    type UpdateData = Partial<Pick<typeof decks.$inferSelect, 'name' | 'code' | 'requiredVersion'>>;
+    const updateData: UpdateData = {
       ...(deck.name !== undefined && { name: deck.name }),
       ...(code !== undefined && { code }),
       ...(requiredVersion !== undefined && { requiredVersion }),

@@ -1,63 +1,35 @@
--- CreateTable
-CREATE TABLE IF NOT EXISTS "User" (
-    "id" INTEGER NOT NULL,
-    "ghToken" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+CREATE TABLE "User" (
+	"id" integer PRIMARY KEY NOT NULL,
+	"ghToken" text,
+	"createdAt" timestamp(3) DEFAULT now() NOT NULL
 );
-
--- CreateTable
-CREATE TABLE IF NOT EXISTS "Game" (
-    "id" SERIAL NOT NULL,
-    "coreVersion" TEXT NOT NULL,
-    "gameVersion" TEXT NOT NULL,
-    "data" JSONB NOT NULL,
-    "winnerId" INTEGER,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Game_pkey" PRIMARY KEY ("id")
+--> statement-breakpoint
+CREATE TABLE "Game" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"coreVersion" text NOT NULL,
+	"gameVersion" text NOT NULL,
+	"data" jsonb NOT NULL,
+	"winnerId" integer,
+	"createdAt" timestamp(3) DEFAULT now() NOT NULL
 );
-
--- CreateTable
-CREATE TABLE IF NOT EXISTS "PlayerOnGames" (
-    "playerId" INTEGER NOT NULL,
-    "gameId" INTEGER NOT NULL,
-    "who" INTEGER NOT NULL,
-
-    CONSTRAINT "PlayerOnGames_pkey" PRIMARY KEY ("playerId","gameId")
+--> statement-breakpoint
+CREATE TABLE "PlayerOnGames" (
+	"playerId" integer NOT NULL,
+	"gameId" integer NOT NULL,
+	"who" integer NOT NULL,
+	CONSTRAINT "PlayerOnGames_playerId_gameId_pk" PRIMARY KEY("playerId","gameId")
 );
-
--- CreateTable
-CREATE TABLE IF NOT EXISTS "Deck" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "requiredVersion" INTEGER NOT NULL,
-    "ownerUserId" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Deck_pkey" PRIMARY KEY ("id")
+--> statement-breakpoint
+CREATE TABLE "Deck" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"code" text NOT NULL,
+	"requiredVersion" integer NOT NULL,
+	"ownerUserId" integer NOT NULL,
+	"createdAt" timestamp(3) DEFAULT now() NOT NULL,
+	"updatedAt" timestamp(3) DEFAULT now() NOT NULL
 );
-
--- AddForeignKey
-DO $$ BEGIN
- ALTER TABLE "PlayerOnGames" ADD CONSTRAINT "PlayerOnGames_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
--- AddForeignKey
-DO $$ BEGIN
- ALTER TABLE "PlayerOnGames" ADD CONSTRAINT "PlayerOnGames_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
--- AddForeignKey
-DO $$ BEGIN
- ALTER TABLE "Deck" ADD CONSTRAINT "Deck_ownerUserId_fkey" FOREIGN KEY ("ownerUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
+--> statement-breakpoint
+ALTER TABLE "PlayerOnGames" ADD CONSTRAINT "PlayerOnGames_playerId_User_id_fk" FOREIGN KEY ("playerId") REFERENCES "public"."User"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "PlayerOnGames" ADD CONSTRAINT "PlayerOnGames_gameId_Game_id_fk" FOREIGN KEY ("gameId") REFERENCES "public"."Game"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "Deck" ADD CONSTRAINT "Deck_ownerUserId_User_id_fk" FOREIGN KEY ("ownerUserId") REFERENCES "public"."User"("id") ON DELETE no action ON UPDATE no action;
