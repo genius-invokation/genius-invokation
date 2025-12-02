@@ -192,6 +192,10 @@ export class DecksService {
       )
       .returning();
     
+    if (!model) {
+      throw new BadRequestException("Deck not found or access denied");
+    }
+    
     return model;
   }
 

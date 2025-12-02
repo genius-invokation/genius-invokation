@@ -36,7 +36,6 @@ export class DrizzleExceptionFilter extends BaseExceptionFilter {
         case "22P02": // invalid_text_representation
         case "42703": // undefined_column
         case "42P01": // undefined_table
-        case "P0001": // no data found
         {
           const status = HttpStatus.NOT_FOUND;
           response.status(status).send({
