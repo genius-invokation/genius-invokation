@@ -4,23 +4,23 @@
   "version": "0.17.4",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch ./src/main.ts",
+    "dev": "bun ./src/dev.ts",
     "prisma:generate": "bun prisma generate",
-    "build": "bun run prisma:generate",
+    "build": "bun run prisma:generate && NODE_ENV=production bun scripts/build.ts",
+    "start": "bun run src/main.ts",
+    "start:prod": "bun run dist/main.js",
     "check": "tsc",
-    "debug": "nest start --debug --watch",
-    "app-name": "bun --print '(await import(\"@gi-tcg/config\")).IS_BETA?\"gi-tcg-beta\":\"gi-tcg\"'",
-    "start": "APP_NAME=$(bun app-name) pm2 startOrRestart pm2.config.cjs",
-    "status": "bun scripts/status.ts",
-    "status:detail": "{ APP_NAME=$(bun app-name); pm2 show $APP_NAME --no-color; pm2 logs $APP_NAME --raw --nostream --lines=500 2>&1; }",
-    "stop": "pm2 delete $(bun app-name)"
+    "debug": "nest start --debug --watch"
+  },
+  "imports": {
+    "#prisma/*": "./generated/prisma/*.ts"
   },
   "dependencies": {
-    "@fastify/static": "^7.0.4",
+    "@fastify/etag": "^5.2.0",
+    "@gi-tcg/assets-manager": "workspace:*",
     "@gi-tcg/config": "workspace:*",
     "@gi-tcg/core": "workspace:*",
     "@gi-tcg/data": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*",
     "@gi-tcg/typings": "workspace:*",
     "@gi-tcg/utils": "workspace:*",
     "@nestjs/common": "^10.3.9",
@@ -28,18 +28,22 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-fastify": "^10.3.9",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "5.20.0",
+    "@prisma/adapter-pg": "^6.17.1",
+    "@prisma/client": "^6.17.1",
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "mime": "^4.0.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "simple-git": "^3.27.0"
   },
   "devDependencies": {
+    "fastify": "^4.29.1",
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
-    "pm2": "^6.0.8",
-    "prisma": "5.20.0"
+    "@prisma/dev": "^0.11.1",
+    "get-port": "^7.1.0",
+    "prisma": "^6.17.1"
   }
 }

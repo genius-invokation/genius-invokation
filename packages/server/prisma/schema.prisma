@@ -17,21 +17,23 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["omitApi"]
+  provider   = "prisma-client"
+  output     = "../generated/prisma"
+  engineType = "client"
+  runtime    = "bun"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id              Int              @id
-  ghToken         String?
-  games           PlayerOnGames[]
-  createdAt       DateTime         @default(now())
-  decks           Deck[]
+  id        Int             @id
+  ghToken   String?
+  games     PlayerOnGames[]
+  createdAt DateTime        @default(now())
+  decks     Deck[]
 }
 
 model Game {
@@ -39,7 +41,7 @@ model Game {
   players     PlayerOnGames[]
   coreVersion String
   gameVersion String
-  data        String // JSON log
+  data        Json // JSON log
   winnerId    Int?
   createdAt   DateTime        @default(now())
 }

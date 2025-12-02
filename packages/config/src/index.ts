@@ -18,10 +18,6 @@ export const IS_BETA = false;
 
 export const BETA_VERSION = "v9999.0.0-beta";
 
-export const DEFAULT_ASSET_API_ENDPOINT = IS_BETA
-  ? `https://beta.assets.gi-tcg.guyutongxue.site/api/v3`
-  : `https://assets.gi-tcg.guyutongxue.site/api/v3`;
-
 export const WEB_CLIENT_BASE_PATH = import.meta.env.WEB_CLIENT_BASE_PATH || "/";
 export const SERVER_HOST = import.meta.env.DEV
   ? "http://localhost:3000"

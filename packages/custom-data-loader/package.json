@@ -1,6 +1,6 @@
 {
   "name": "@gi-tcg/custom-data-loader",
-  "version": "0.17.4+gi-5-8-0",
+  "version": "0.17.4+gi-6-0-0",
   "description": "Provides an easy way to load your custom data for GI-TCG",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "vite",
     "check": "tsc --noEmit",
-    "build:runtime_types": "dts-bundle-generator src/runtime.ts -o dist/runtime.d.ts --inline-declare-global",
+    "build:runtime_types": "dts-bundle-generator --config=dts-bundle-generator.config.json",
     "build:ts": "tsup",
     "build": "bun run build:ts && bun run build:runtime_types"
   },
@@ -27,6 +27,9 @@
   },
   "devDependencies": {
     "@gi-tcg/assets-manager": "workspace:*",
+    "@gi-tcg/deck-builder": "workspace:*",
+    "@gi-tcg/web-ui-core": "workspace:*",
+    "@gi-tcg/typings": "workspace:*",
     "dts-bundle-generator": "^9.5.1",
     "monaco-editor": "^0.52.2",
     "solid-js": "catalog:",

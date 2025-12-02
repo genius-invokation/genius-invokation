@@ -100,7 +100,7 @@ export const Ningguang = character(1601)
  */
 export const StrategicReserve = card(216011)
   .since("v3.3.0")
-  .costGeo(4)
+  .costGeo(3)
   .talent(Ningguang)
   .on("enter")
   .useSkill(JadeScreen)

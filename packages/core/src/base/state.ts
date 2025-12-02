@@ -15,7 +15,6 @@
 
 import { DiceType } from "@gi-tcg/typings";
 
-import type { CardDefinition, CardType, CardTag } from "./card";
 import type {
   CharacterDefinition,
   CharacterTag,
@@ -35,9 +34,18 @@ import type {
   InitiativeSkillDefinition,
   TriggeredSkillDefinition,
 } from "./skill";
+import { randomSeed } from "../random";
+import type { Version } from "..";
+import { versionLt } from "./version";
 
 // 为不同层级的 state object 添加 marker symbol
-export type StateKind = "game" | "player" | "card" | "character" | "entity" | "extension";
+export type StateKind =
+  | "game"
+  | "player"
+  | "card"
+  | "character"
+  | "entity"
+  | "extension";
 export const StateSymbol: unique symbol = Symbol("GiTcgCoreState");
 export type StateSymbol = typeof StateSymbol;
 
@@ -56,6 +64,48 @@ export interface GameConfig {
   readonly maxDiceCount: number;
 }
 
+export const getDefaultGameConfig = (): GameConfig => ({
+  errorLevel: "strict",
+  initialDiceCount: 8,
+  initialHandsCount: 5,
+  maxDiceCount: 16,
+  maxHandsCount: 10,
+  maxPileCount: 200,
+  maxRoundsCount: 15,
+  maxSummonsCount: 4,
+  maxSupportsCount: 4,
+  randomSeed: randomSeed(),
+});
+
+/**
+ * 记录不同版本的核心结算差异。
+ */
+export interface VersionBehavior {
+  /**
+   * 实体重复入场时，`default` 行为。
+   * @note v3.5.0 起设置为 `takeMax`，此前为 `overwrite`
+   */
+  readonly defaultRecreateBehavior: "takeMax" | "overwrite";
+
+  /**
+   * 带有 `injuredOnly` 的食物事件牌，是否可以对满生命值角色使用。
+   * @note v6.1.0 起设置为 `true`
+   */
+  readonly foodOmitInjuredOnly: boolean;
+
+  /**
+   * `disposeMaxCostHands` 是否终止预览。
+   * @note v6.1.0 起设置为 `true`
+   */
+  readonly disposeMaxCostHandsAbortPreview: boolean;
+}
+
+export const getVersionBehavior = (version: Version): VersionBehavior => ({
+  defaultRecreateBehavior: versionLt(version, "v3.5.0") ? "overwrite" : "takeMax",
+  foodOmitInjuredOnly: !versionLt(version, "v6.1.0"),
+  disposeMaxCostHandsAbortPreview: !versionLt(version, "v6.1.0"),
+});
+
 export interface IteratorState {
   readonly random: number;
   readonly id: number;
@@ -73,6 +123,7 @@ export interface GameState {
   readonly [StateSymbol]: "game";
   readonly data: GameData;
   readonly config: GameConfig;
+  readonly versionBehavior: VersionBehavior;
   readonly iterators: IteratorState;
   readonly phase: PhaseType;
   readonly roundNumber: number;
@@ -86,10 +137,10 @@ export interface GameState {
 export interface PlayerState {
   readonly [StateSymbol]: "player";
   readonly who: 0 | 1;
-  readonly initialPile: readonly CardDefinition[];
-  readonly pile: readonly CardState[];
+  readonly initialPile: readonly EntityDefinition[];
+  readonly pile: readonly EntityState[];
   readonly activeCharacterId: number;
-  readonly hands: readonly CardState[];
+  readonly hands: readonly EntityState[];
   readonly characters: readonly CharacterState[];
   readonly combatStatuses: readonly EntityState[];
   readonly supports: readonly EntityState[];
@@ -109,13 +160,6 @@ export interface PlayerState {
   readonly removedEntities: readonly AnyState[];
 }
 
-export interface CardState {
-  readonly [StateSymbol]: "card";
-  readonly id: number;
-  readonly definition: CardDefinition;
-  readonly variables: Record<string, undefined>;
-}
-
 export interface CharacterState {
   readonly [StateSymbol]: "character";
   readonly id: number;
@@ -129,15 +173,13 @@ export type CharacterVariables = VariableOfConfig<CharacterVariableConfigs>;
 export interface EntityState {
   readonly [StateSymbol]: "entity";
   readonly id: number;
-  /** 支援牌、装备牌从手牌打出时的手牌 id */
-  readonly fromCardId: number | null;
   readonly definition: EntityDefinition;
   readonly variables: EntityVariables;
 }
 
 export type EntityVariables = VariableOfConfig<EntityVariableConfigs>;
 
-export type AnyState = CharacterState | EntityState | CardState;
+export type AnyState = CharacterState | EntityState;
 
 export interface ExtensionState {
   readonly [StateSymbol]: "extension";
@@ -146,12 +188,7 @@ export interface ExtensionState {
 }
 
 export function stringifyState(st: Omit<AnyState, StateSymbol>): string {
-  let type: string;
-  if (st.definition.__definition === "cards") {
-    type = "card";
-  } else {
-    type = st.definition.type;
-  }
+  const type = st.definition.type;
   return `[${type}:${st.definition.id}](${st.id})`;
 }
 
@@ -162,9 +199,6 @@ export type {
   EntityDefinition,
   EntityType,
   EntityTag,
-  CardDefinition,
-  CardType,
-  CardTag,
   ExtensionDefinition,
   SkillDefinition,
   InitiativeSkillDefinition,

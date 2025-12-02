@@ -43,7 +43,7 @@ import type {
 } from "../history/typings";
 import { Image } from "./Image";
 import { DiceIcon } from "./Dice";
-import type { ActionCardRawData, EntityRawData } from "@gi-tcg/static-data";
+import type { ActionCardRawData, EntityRawData } from "@gi-tcg/assets-manager";
 import TuningIcon from "../svg/TuningIcon.svg?fb";
 import DefeatedPreviewIcon from "../svg/DefeatedPreviewIcon.svg?fb";
 import RevivePreviewIcon from "../svg/RevivePreviewIcon.svg?fb";

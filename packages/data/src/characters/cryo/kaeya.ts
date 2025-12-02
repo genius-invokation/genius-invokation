@@ -92,7 +92,7 @@ export const Kaeya = character(1103)
  */
 export const ColdbloodedStrike = card(211031)
   .since("v3.3.0")
-  .costCryo(4)
+  .costCryo(3)
   .talent(Kaeya)
   .on("enter")
   .useSkill(Frostgnaw)

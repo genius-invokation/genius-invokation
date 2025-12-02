@@ -24,6 +24,7 @@ import {
   type InitiativeSkillEventArg,
   RequestArg,
   SelectCardEventArg,
+  type SelectCardInfo,
   type SkillInfo,
   type SwitchActiveInfo,
   type TriggeredSkillDefinition,
@@ -33,6 +34,7 @@ import {
 import {
   type AnyState,
   type CharacterState,
+  StateSymbol,
   stringifyState,
 } from "./base/state";
 import { Aura, PbSkillType, type ExposedMutation } from "@gi-tcg/typings";
@@ -101,9 +103,8 @@ export class SkillExecutor {
     const { who } = getEntityArea(this.state, skillInfo.caller.id);
 
     // 重置下落攻击判定。
-    // 官方描述：“角色被切换为「出战角色」后，本回合内的下一个战斗行动若为「普通攻击」，则被视为「下落攻击」”
-    // 中的“下一个战斗行动”实际为“下一此使用技能（非特技）”
-    // 也即下一次使用角色主动技能（非特技）时，不再判定下落攻击， canPlunging 为 false
+    // 官方描述：“角色被切换为「出战角色」后，本回合内的下一次使用技能（非特技）若为「普通攻击」，则被视为「下落攻击」”
+    // 本次技能使用后便不再判定下落攻击， canPlunging 更新为 false
     if (isCharacterInitiativeSkill(skillInfo)) {
       this.mutate({
         type: "setPlayerFlag",
@@ -410,9 +411,9 @@ export class SkillExecutor {
       if (info) {
         using l = this.mutator.subLog(
           DetailLogType.Primitive,
-          `Player ${info.who} switch active from ${stringifyState(
-            info.from,
-          )} to ${stringifyState(info.to)}`,
+          `Player ${info.who} switch active from ${
+            info.from ? stringifyState(info.from) : "(null)"
+          } to ${stringifyState(info.to)}`,
         );
         switchEvents[info.who].push(
           ...this.mutator.switchActive(info.who, info.to),
@@ -601,12 +602,74 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to play card [card:${arg.cardDefinition.id}]`,
         );
+
+        // 临时将这张卡放到我方手牌，随后执行其打出后效果
+        const { state } = this.mutator.createHandCard(
+          arg.who,
+          arg.cardDefinition,
+          {
+            noOverflow: true,
+          },
+        );
+        const skillDef = playSkillOfCard(state.definition);
+        if (!skillDef) {
+          this.mutator.log(
+            DetailLogType.Other,
+            `Card [card:${arg.cardDefinition.id}] has no play skill, skip playing`,
+          );
+          continue;
+        }
         const skillInfo = defineSkillInfo({
-          caller: arg.via.caller,
-          definition: playSkillOfCard(arg.cardDefinition),
+          caller: state,
+          definition: skillDef,
           requestBy: arg.via,
         });
         await this.finalizeSkill(skillInfo, { targets: arg.targets });
+      } else if (name === "requestAdventure") {
+        using l = this.mutator.subLog(
+          DetailLogType.Event,
+          `request player ${arg.who} to adventure`,
+        );
+        const hisSupports = this.state.players[arg.who].supports;
+        const currentSpot = hisSupports.find((et) =>
+          et.definition.tags.includes("adventureSpot"),
+        );
+        if (currentSpot) {
+          const { events } = this.mutator.insertEntityOnStage(
+            { definition: currentSpot.definition },
+            {
+              type: "supports",
+              who: arg.who,
+            },
+            {
+              modifyOverriddenVariablesOnly: true,
+              overrideVariables: {
+                exp: 1,
+              },
+            },
+          );
+          await this.handleEvent(...events);
+        } else if (hisSupports.length < this.state.config.maxSupportsCount) {
+          const spots = this.state.data.entities
+            .values()
+            .filter((d) => d.tags.includes("adventureSpot"))
+            .toArray();
+          const selectCardInfo: SelectCardInfo = {
+            type: "requestPlayCard",
+            cards: spots,
+            targets: [],
+          };
+          const events = await this.mutator.selectCard(
+            arg.who,
+            arg.via,
+            selectCardInfo,
+          );
+          await this.handleEvent(...events);
+          await this.handleEvent([
+            "onSelectCard",
+            new SelectCardEventArg(this.state, arg.who, selectCardInfo),
+          ]);
+        }
       } else if (name === "requestTriggerEndPhaseSkill") {
         using l = this.mutator.subLog(
           DetailLogType.Event,

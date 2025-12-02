@@ -101,7 +101,7 @@ const Ushi = summon(116051)
   .usage(1, { autoDispose: false })
   .decreaseDamage(1)
   .on("damaged", (c, e) => e.target.isActive())
-  .usage(1, { autoDispose: false, name: "addStatusUsage" })
+  .usage(1, { name: "addStatusUsage" })
   .characterStatus(SuperlativeSuperstrength, `my characters with definition id 1605`)
   .done();
 

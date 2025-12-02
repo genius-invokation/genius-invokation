@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard, customEvent, CardState } from "@gi-tcg/core/builder";
+import { character, skill, summon, status, combatStatus, card, DamageType, diceCostOfCard, customEvent, EntityState } from "@gi-tcg/core/builder";
 
 // 入场时：获得我方已吞噬卡牌中最高元素骰费用值的「攻击力」，获得该费用的已吞噬卡牌数量的可用次数。
 
@@ -22,14 +22,14 @@ import { character, skill, summon, status, combatStatus, card, DamageType, diceC
  * @name 黑色幻影
  * @description
  * 入场时：获得我方已吞噬卡牌中最高元素骰费用值的「攻击力」，获得该费用的已吞噬卡牌数量的可用次数。
- * 结束阶段和我方宣布结束时：造成此牌「攻击力」值的雷元素伤害。
+ * 结束阶段：造成此牌「攻击力」值的雷元素伤害。
  * 我方出战角色受到伤害时：抵消1点伤害，然后此牌可用次数-2。
  */
 export const DarkShadow = summon(122043)
   .tags("barrier")
   .usage(0)
   .variable("atk", 0, { visible: false })
-  .variable("decreasedDamageId", 0, { visible: false })
+  .variable("barrierUsage", 1, { visible: false })
   .hint(DamageType.Electro, (c, e) => e.variables.atk)
   .on("enter")
   .do((c) => {
@@ -48,19 +48,12 @@ export const DarkShadow = summon(122043)
     c.damage(DamageType.Electro, c.getVariable("atk"));
     c.consumeUsage();
   })
-  .on("declareEnd")
-  .do((c) => {
-    c.damage(DamageType.Electro, c.getVariable("atk"));
-    c.consumeUsage();
-  })
-  .on("decreaseDamaged", (c, e) => !c.getVariable("decreasedDamageId") && e.target.isActive())
-  .do((c, e) => {
-    e.decreaseDamage(1);
-    c.setVariable("decreasedDamageId", e.damageInfo.id);
-  })
-  .on("damaged", (c, e) => e.damageInfo.id === c.getVariable("decreasedDamageId"))
+  .on("decreaseDamaged", (c, e) => c.getVariable("barrierUsage") && e.target.isActive())
+  .decreaseDamage(1)
+  .setVariable("barrierUsage", 0)
+  .on("damaged", (c) => !c.getVariable("barrierUsage"))
   .consumeUsage(2)
-  .setVariable("decreasedDamageId", 0)
+  .setVariable("barrierUsage", 1)
   .done();
 
 /**
@@ -71,17 +64,6 @@ export const DarkShadow = summon(122043)
  */
 export const AnomalousAnatomy = status(122042)
   .variableCanAppend("extraMaxHealth", 1, Infinity)
-  // .on("defeated")
-  // .beforeDefaultDispose()
-  // .do((c) => {
-  //   c.mutate({
-  //     type: "modifyEntityVar",
-  //     state: c.self.master.latest(),
-  //     varName: "maxHealth",
-  //     value: 5,
-  //     direction: "decrease",
-  //   });
-  // })
   .done();
 
 /**
@@ -106,7 +88,7 @@ export const DevourersInstinct = status(122044)
  * @id 122041
  * @name 深噬之域
  * @description
- * 我方舍弃或调和的卡牌，会被吞噬。
+ * 我方从手牌中舍弃或调和的卡牌，会被吞噬。
  * 每吞噬3张牌：吞星之鲸在回合结束时获得1点额外最大生命；如果其中存在原本元素骰费用值相同的牌，则额外获得1点；如果3张均相同，再额外获得1点。
  * 【此卡含描述变量】
  */
@@ -118,7 +100,7 @@ export const DeepDevourersDomain = combatStatus(122041)
   .variable("card1Cost", 0, { visible: false })
   .variable("extraMaxHealth", 0, { visible: false })
   .replaceDescription("[GCG_TOKEN_SHIELD]", (_, self) => self.variables.extraMaxHealth)
-  .on("disposeOrTuneCard")
+  .on("disposeOrTuneCard", (c, e) => e.from.type === "hands" || e.isTuning())
   .do((c, e) => {
     const cost = e.diceCost();
     c.addVariable("cardCount", 1);
@@ -179,7 +161,7 @@ export const ShatteringWaves = skill(22041)
   .damage(DamageType.Physical, 2)
   .done();
 
-const StarfallShowerDisposeCard = customEvent<CardState>("alldevouringNarwhal/starfallShowerDisposeCard");
+const StarfallShowerDisposeCard = customEvent<EntityState>("alldevouringNarwhal/starfallShowerDisposeCard");
 
 /**
  * @id 22042
@@ -194,7 +176,7 @@ export const StarfallShower = skill(22042)
     const st = c.self.hasStatus(AnomalousAnatomy);
     const extraDmg = st ? Math.min(Math.floor(st.getVariable("extraMaxHealth") / 3), 3) : 0;
     c.damage(DamageType.Hydro, 1 + extraDmg);
-    const [card] = c.disposeMaxCostHands(1);
+    const [card] = c.disposeMaxCostHands(1, { allowPreview: true });
     if (card){
       c.emitCustomEvent(StarfallShowerDisposeCard, card.latest());
     }

@@ -38,9 +38,6 @@ import {
   ModifyHeal0EventArg,
   ModifyHeal1EventArg,
   CustomEventEventArg,
-  EventArg,
-  type EventAndRequest,
-  type SkillResult,
   EMPTY_SKILL_RESULT,
   UseSkillEventArg,
 } from "../base/skill";
@@ -73,8 +70,10 @@ import {
 import {
   costSize,
   diceCostSize,
+  getActiveCharacterIndex,
   getEntityArea,
   isCharacterInitiativeSkill,
+  isSkillDisabled,
   normalizeCost,
 } from "../utils";
 import { GiTcgDataError } from "../error";
@@ -85,10 +84,15 @@ import {
   type VersionMetadata,
 } from "../base/version";
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
-import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 import type { ApplyReactive } from "./context/reactive";
+
+export type InitiativeSkillTargetKind = readonly (
+  | "character"
+  | "summon"
+  | "support"
+)[];
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -143,7 +147,7 @@ export interface StrictInitiativeSkillEventArg<
 }
 
 type InitiativeSkillBuilderMeta<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = {
@@ -166,7 +170,7 @@ export type CreateSkillBuilderMeta<
 };
 
 export type StrictInitiativeSkillFilter<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = SkillOperationFilter<
@@ -423,7 +427,14 @@ const detailedEventDictionary = {
   beforeAction: defineDescriptor("onBeforeAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  replaceAction: defineDescriptor("replaceAction"),
+  replaceActionBySkill: defineDescriptor("replaceAction", (e, r) => {
+    const player = e.onTimeState.players[e.who];
+    const activeChar = player.characters[getActiveCharacterIndex(player)];
+    return (
+      checkRelative(e.onTimeState, activeChar.id, r) &&
+      !isSkillDisabled(activeChar)
+    );
+  }),
   action: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
@@ -431,7 +442,6 @@ const detailedEventDictionary = {
     return (
       // 大部分支援牌不触发自身的打出时；
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
-      // c.self.fromCardId !== e.card.id &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
@@ -439,28 +449,35 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
+    );
+  }),
+  beforeTechnique: defineDescriptor("onBeforeUseSkill", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      e.isSkillType("technique") &&
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkill: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkillOrTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   declareEnd: defineDescriptor("onAction", (e, r) => {
@@ -468,7 +485,8 @@ const detailedEventDictionary = {
   }),
   switchActive: defineDescriptor("onSwitchActive", (e, r) => {
     return (
-      checkRelative(e.onTimeState, e.switchInfo.from.id, r) ||
+      (e.switchInfo.from &&
+        checkRelative(e.onTimeState, e.switchInfo.from.id, r)) ||
       checkRelative(e.onTimeState, e.switchInfo.to.id, r)
     );
   }),
@@ -483,14 +501,14 @@ const detailedEventDictionary = {
   handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  disposeCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
+  disposeCard: defineDescriptor("onDispose", (e, r) => {
+    return e.isDiscard() && checkRelative(e.onTimeState, { who: e.who }, r);
+  }),
+  disposeOrTuneCard: defineDescriptor("onDispose", (e, r) => {
     return (
-      e.method !== "elementalTuning" &&
+      e.isDisposeCardOrTuning() &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
-  }),
-  disposeOrTuneCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
-    return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   dealDamage: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
@@ -513,6 +531,9 @@ const detailedEventDictionary = {
   damagedOrHealed: defineDescriptor("onDamageOrHeal", (e, r) => {
     return checkRelative(e.onTimeState, e.target.id, r);
   }),
+  modifyReaction: defineDescriptor("modifyReaction", (e, r) => {
+    return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
+  }),
   reaction: defineDescriptor("onReaction", (e, r) => {
     return checkRelative(e.onTimeState, e.reactionInfo.target.id, r);
   }),
@@ -531,7 +552,7 @@ const detailedEventDictionary = {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
   dispose: defineDescriptor("onDispose", (e, r) => {
-    return checkRelative(e.onTimeState, e.entity.id, r);
+    return !e.isDisposeCardOrTuning() && checkRelative(e.onTimeState, e.entity.id, r);
   }),
   selfDispose: defineDescriptor("onDispose", (e, r) => {
     return e.entity.id === r.callerId;
@@ -570,6 +591,12 @@ const detailedEventDictionary = {
   }),
   selectCard: defineDescriptor("onSelectCard", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
+  }),
+  adventure: defineDescriptor("onEnter", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, { who: e.who }, r) &&
+      (e.entity as EntityState).definition.tags.includes("adventureSpot")
+    );
   }),
   customEvent: defineDescriptor("onCustomEvent", (e, r) => {
     return checkRelative(e.onTimeState, e.entity.id, r);
@@ -674,10 +701,10 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
    * @returns 即 `SkillDescription` 的返回值
    */
   protected buildAction<Arg = Meta["eventArgType"]>(
-    overrideOperation?: SkillOperation<any>,
+    overrideOperations?: SkillOperation<any>[],
   ): SkillDescription<Arg> {
     const extId = this.associatedExtensionId;
-    const operation = overrideOperation ? [overrideOperation] : this.operations;
+    const operations = overrideOperations ?? this.operations;
     return function (
       state: GameState,
       skillInfo: SkillInfo,
@@ -688,16 +715,18 @@ export abstract class SkillBuilder<Meta extends SkillBuilderMetaBase> {
         wrapSkillInfoWithExt(skillInfo, extId),
         arg,
       );
-      for (const op of operation) {
+      for (const op of operations) {
         op(ctx as any, ctx.eventArg);
       }
       return ctx._terminate();
     };
   }
 
-  protected buildFilter<Arg = Meta["eventArgType"]>(): SkillActionFilter<Arg> {
+  protected buildFilter<Arg = Meta["eventArgType"]>(
+    overrideFilters?: SkillOperationFilter<any>[],
+  ): SkillActionFilter<Arg> {
     const extId = this.associatedExtensionId;
-    const filters = this.filters;
+    const filters = overrideFilters ?? this.filters;
     return function (state: GameState, skillInfo: SkillInfo, arg: Arg) {
       const ctx = new SkillContext<ReadonlyMetaOf<Meta>>(
         state,
@@ -850,6 +879,7 @@ export class TriggeredSkillBuilder<
   }
   private _delayedToSkill = false;
   private _beforeDefaultDispose = false;
+  private _enableHandTriggering = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
@@ -963,6 +993,11 @@ export class TriggeredSkillBuilder<
     return this;
   }
 
+  enableHandTriggering() {
+    this._enableHandTriggering = true;
+    return this;
+  }
+
   /** 调用之前在 `EntityBuilder` 中定义的“小程序” */
   declare callSnippet: CallSnippet<
     ParentSnippets,
@@ -1008,7 +1043,13 @@ export class TriggeredSkillBuilder<
         return c.self.area.type !== "removedEntities";
       });
     }
-    // 2. 基于 listenTo 的 filter
+    // 2. 默认禁止手牌区实体响应事件，除非显式启用
+    if (!this._enableHandTriggering) {
+      this.filters.push((c) => {
+        return c.self.area.type !== "hands";
+      });
+    }
+    // 3. 基于 listenTo 的 filter
     const [triggerOn, filterDescriptor] =
       detailedEventDictionary[
         isCustomEvent(this.detailedEventName)
@@ -1028,7 +1069,7 @@ export class TriggeredSkillBuilder<
         c.rawState,
       );
     });
-    // 3. 自定义事件：确保事件名一致
+    // 4. 自定义事件：确保事件名一致
     if (isCustomEvent(this.detailedEventName)) {
       const customEvent = this.detailedEventName;
       this.filters.push(function (c, e) {
@@ -1037,7 +1078,7 @@ export class TriggeredSkillBuilder<
         );
       });
     }
-    // 4. 定义技能时显式传入的 filter
+    // 5. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
     const parentSkillList = this._beforeDefaultDispose
@@ -1244,17 +1285,19 @@ TriggeredSkillBuilder.prototype.callSnippet = function (...args) {
   return self.do(operation);
 };
 
+type TargetGetter = (ctx: SkillContext<any>) => AnyState[];
+
 function generateTargetList(
   state: GameState,
   skillInfo: SkillInfo,
   known: AnyState[],
-  targetQuery: string[],
+  getTarget: TargetGetter[],
   associatedExtensionId: number | null,
 ): AnyState[][] {
-  if (targetQuery.length === 0) {
+  if (getTarget.length === 0) {
     return [[]];
   }
-  const [first, ...rest] = targetQuery;
+  const [first, ...rest] = getTarget;
   const ctx = new SkillContext<ReadonlyMetaOf<SkillBuilderMetaBase>>(
     state,
     wrapSkillInfoWithExt(skillInfo, associatedExtensionId),
@@ -1262,7 +1305,7 @@ function generateTargetList(
       targets: known,
     },
   );
-  const states = ctx.$$(first).map((c) => c.latest());
+  const states = first(ctx);
   return states.flatMap((st) =>
     generateTargetList(
       state,
@@ -1275,7 +1318,7 @@ function generateTargetList(
 }
 
 export function buildTargetGetter(
-  targetQuery: string[],
+  targetQuery: TargetGetter[],
   associatedExtensionId: number | null,
 ): InitiativeSkillTargetGetter {
   return (state, skillInfo) => {
@@ -1293,11 +1336,16 @@ export function buildTargetGetter(
 export abstract class SkillBuilderWithCost<
   Meta extends SkillBuilderMetaBase,
 > extends SkillBuilder<Meta> {
-  protected _targetQueries: string[] = [];
-  protected _fast = false;
+  protected _targetGetters: TargetGetter[] = [];
+  protected _alwaysCharged = false;
+  protected _alwaysPlunging = false;
 
-  fast(): this {
-    this._fast = true;
+  forceCharged(): this {
+    this._alwaysCharged = true;
+    return this;
+  }
+  forcePlunging(): this {
+    this._alwaysPlunging = true;
     return this;
   }
 
@@ -1306,12 +1354,19 @@ export abstract class SkillBuilderWithCost<
     return this;
   }
 
-  protected addTargetImpl(targetQuery: string) {
-    this._targetQueries = [...this._targetQueries, targetQuery];
+  protected addTargetImpl(targetGetter: TargetGetter | string) {
+    if (typeof targetGetter === "string") {
+      this._targetGetters.push(function (ctx) {
+        return ctx.$$(targetGetter).map((st) => st.latest());
+      });
+    } else {
+      this._targetGetters.push(targetGetter);
+    }
+    return this;
   }
 
   protected buildTargetGetter() {
-    return buildTargetGetter(this._targetQueries, this.associatedExtensionId);
+    return buildTargetGetter(this._targetGetters, this.associatedExtensionId);
   }
 
   constructor(skillId: number) {
@@ -1367,6 +1422,7 @@ export class InitiativeSkillBuilder<
   private _gainEnergy = true;
   protected _cost: DiceRequirement = new Map();
   private _prepared = false;
+  private _hidden = false;
   constructor(private readonly skillId: number) {
     super(skillId);
   }
@@ -1400,13 +1456,17 @@ export class InitiativeSkillBuilder<
     return this as any;
   }
 
-  prepared(): this {
-    this._prepared = true;
-    return this.noEnergy();
-  }
   noEnergy(): this {
     this._gainEnergy = false;
     return this;
+  }
+  hidden(): this {
+    this._hidden = true;
+    return this;
+  }
+  prepared(): this {
+    this._prepared = true;
+    return this.noEnergy().hidden();
   }
 
   type(type: "passive"): EntityBuilderPublic<"character">;
@@ -1455,8 +1515,11 @@ export class InitiativeSkillBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: this._gainEnergy,
-          fast: this._fast,
-          hidden: this._prepared,
+          shouldFast: false,
+          alwaysCharged: this._alwaysCharged,
+          alwaysPlunging: this._alwaysPlunging,
+          hidden: this._hidden,
+          omitEvents: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
         triggerOn: "initiative",
@@ -1486,6 +1549,7 @@ export class TechniqueBuilder<
     autoDecrease: boolean;
   } | null = null;
   private _prepared = false;
+  private _hidden = false;
 
   constructor(
     id: number,
@@ -1503,6 +1567,7 @@ export class TechniqueBuilder<
 
   prepared(): this {
     this._prepared = true;
+    this._hidden = true;
     return this;
   }
 
@@ -1599,8 +1664,11 @@ export class TechniqueBuilder<
         computed$costSize: costSize(this._cost),
         computed$diceCostSize: diceCostSize(this._cost),
         gainEnergy: false,
-        fast: this._fast,
-        hidden: this._prepared,
+        shouldFast: false,
+        alwaysCharged: this._alwaysCharged,
+        alwaysPlunging: this._alwaysPlunging,
+        hidden: this._hidden,
+        omitEvents: this._prepared,
         getTarget: this.buildTargetGetter(),
       },
       filter: this.buildFilter(),

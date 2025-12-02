@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { DamageType, DiceType, Reaction, card, status } from "@gi-tcg/core/builder";
-import { BondOfLife } from "../../commons";
+import { DamageType, DiceType, Reaction, card, combatStatus, status } from "@gi-tcg/core/builder";
+import { AdventureCompleted, BondOfLife, BurningFlame } from "../../commons";
 
 /**
  * @id 312101
@@ -772,35 +772,38 @@ export const GoldenTroupesReward = card(312025)
   .done();
 
 /**
+ * @id 301209
+ * @name 紫晶的花冠（生效中）
+ * @description
+ * 本回合内下次我方引发元素反应时伤害额外+2。
+ */
+export const AmethystCrownInEffect = combatStatus(301209)
+  .oneDuration()
+  .once("increaseDamage", (c, e) => e.getReaction())
+  .increaseDamage(2)
+  .done();
+
+/**
  * @id 312027
  * @name 紫晶的花冠
  * @description
- * 所附属角色为出战角色，敌方受到草元素伤害后：累积1枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个随机基础元素骰。
- * （每回合至多生成2个）
+ * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到2）
+ * 行动阶段开始时：如果「花冠水晶」数量为2，则本回合内下次我方引发元素反应时伤害额外+2。
  * （角色最多装备1件「圣遗物」）
  */
 export const AmethystCrown = card(312027)
   .since("v4.6.0")
-  .costSame(1)
+  .costSame(0)
   .artifact()
-  .variable("generatedCount", 0, { visible: false })
   .variable("crystal", 0)
-  .on("roundEnd")
-  .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
+    c.getVariable("crystal") < 2 &&
     !e.target.isMine() &&
-    e.type === DamageType.Dendro &&
-    c.self.master.isActive())
+    (e.type === DamageType.Dendro || e.isReactionRelatedTo(DamageType.Dendro)))
   .listenToAll()
-  .do((c) => {
-    c.addVariable("crystal", 1);
-    const crystal = c.getVariable("crystal");
-    const hands = c.player.hands.length;
-    if (crystal >= hands && c.getVariable("generatedCount") < 2) {
-      c.generateDice("randomElement", 1);
-      c.addVariable("generatedCount", 1);
-    }
-  })
+  .addVariableWithMax("crystal", 1, 2)
+  .on("actionPhase", (c) => c.getVariable("crystal") === 2)
+  .combatStatus(AmethystCrownInEffect)
   .done();
 
 /**
@@ -862,8 +865,8 @@ export const GoldenTroupe = card(312026)
  * @id 312028
  * @name 乐园遗落之花
  * @description
- * 所附属角色为出战角色，敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积2枚「花冠水晶」。如果「花冠水晶」大于等于我方手牌数，则生成1个万能元素。
- * （每回合至多生成2个）
+ * 敌方受到伤害后：如果此伤害是草元素伤害或发生了草元素相关反应，则累积1枚「花冠水晶」。（最多叠加到5）
+ * 行动阶段开始或我方触发元素反应时：如果「花冠水晶」数量为5，则生成1个万能元素，并抓1张牌。（每回合2次）
  * （角色最多装备1件「圣遗物」）
  */
 export const FlowerOfParadiseLost = card(312028)
@@ -871,23 +874,20 @@ export const FlowerOfParadiseLost = card(312028)
   .costSame(2)
   .artifact()
   .variable("crystal", 0)
-  .variable("generatedCount", 0, { visible: false })
-  .on("roundEnd")
-  .setVariable("generatedCount", 0)
   .on("damaged", (c, e) =>
-    c.self.master.isActive() &&
+    c.getVariable("crystal") < 5 &&
     !e.target.isMine() &&
     (e.type === DamageType.Dendro || e.isReactionRelatedTo(DamageType.Dendro)))
   .listenToAll()
-  .do((c) => {
-    c.addVariable("crystal", 2);
-    const crystal = c.getVariable("crystal");
-    const hands = c.player.hands.length;
-    if (crystal >= hands && c.getVariable("generatedCount") < 2) {
-      c.generateDice(DiceType.Omni, 1);
-      c.addVariable("generatedCount", 1);
-    }
-  })
+  .addVariable("crystal", 1)
+  .on("actionPhase", (c) => c.getVariable("crystal") === 5)
+  .generateDice(DiceType.Omni, 1)
+  .drawCards(1)
+  .on("reaction", (c, e) => c.getVariable("crystal") === 5 && e.caller.isMine())
+  .listenToAll()
+  .usagePerRound(1)
+  .generateDice(DiceType.Omni, 1)
+  .drawCards(1)
   .done();
 
 /**
@@ -1082,4 +1082,144 @@ export const WhimsicalDanceOfTheWithered = card(312036)
   .on("useSkill")
   .usagePerRound(1)
   .characterStatus(BondOfLife, "my active or opp active")
+  .done();
+
+/**
+ * @id 301208
+ * @name 宗室面具（生效中）
+ * @description
+ * 本回合内，所附属角色造成的伤害+1。
+ */
+export const RoyalMasqueInEffect = status(301208)
+  .oneDuration()
+  .on("increaseDamage")
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 312037
+ * @name 宗室面具
+ * @description
+ * 附属角色使用元素爆发后：我方下一个角色本回合内造成的伤害+1。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const RoyalMasque = card(312037)
+  .since("v6.0.0")
+  .artifact()
+  .on("useSkill", (c, e) => e.isSkillType("burst") && c.$("my next"))
+  .usagePerRound(1)
+  .characterStatus(RoyalMasqueInEffect, "my next")
+  .done();
+
+/**
+ * @id 312038
+ * @name 未竟的遐思
+ * @description
+ * 我方燃烧烈焰以及造成的燃烧反应伤害+1。（每回合2次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const UnfinishedReverie = card(312038)
+  .since("v6.0.0")
+  .costSame(2)
+  .artifact()
+  .on("increaseDamage", (c, e) =>
+    e.getReaction() === Reaction.Burning ||
+    e.source.definition.id === BurningFlame)
+  .listenToPlayer()
+  .usagePerRound(2)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 301207
+ * @name 谐律异想断章（生效中）
+ * @description
+ * 角色使用技能时少花费1个元素骰。
+ */
+export const HarmoniousSymphonyPreludeInEffect = combatStatus(301207)
+  .once("deductOmniDiceSkill")
+  .deductOmniCost(1)
+  .done();
+
+/**
+ * @id 312039
+ * @name 谐律异想断章
+ * @description
+ * 附属角色使用技能后：我方所有角色附属1层生命之契，下次我方角色使用技能时少花费1个元素骰。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const FragmentOfHarmonicWhimsy = card(312039)
+  .since("v6.0.0")
+  .costSame(2)
+  .artifact()
+  .on("useSkill")
+  .usagePerRound(1)
+  .characterStatus(BondOfLife, "my characters")
+  .combatStatus(HarmoniousSymphonyPreludeInEffect)
+  .done();
+
+/**
+ * @id 312040
+ * @name 恶龙的单片镜
+ * @description
+ * 附属角色使用「元素战技」后：冒险1次。（每回合1次）
+ * （角色最多装备1件「圣遗物」）
+ */
+export const FellDragonsMonocle = card(312040)
+  .since("v6.1.0")
+  .costSame(1)
+  .artifact()
+  .on("useSkill", (c, e) => e.isSkillType("elemental"))
+  .usagePerRound(1)
+  .adventure()
+  .done();
+
+/**
+ * @id 301210
+ * @name 昔日宗室之仪（生效中）
+ * @description
+ * 我方角色造成的伤害+1。
+ * 可用次数：3
+ */
+export const NoblesseObligeInEffect = combatStatus(301210)
+  .on("increaseSkillDamage")
+  .usage(3)
+  .increaseDamage(1)
+  .done();
+
+/**
+ * @id 312041
+ * @name 昔日宗室之仪
+ * @description
+ * 入场时：使所附属角色获得1点充能。
+ * 所附属角色使用「元素爆发」后：我方角色下3次造成的伤害+1。
+ * （角色最多装备1件「圣遗物」）
+ */
+export const NoblesseOblige = card(312041)
+  .since("v6.1.0")
+  .costVoid(3)
+  .artifact()
+  .on("enter")
+  .gainEnergy(1, "@master")
+  .on("useSkill", (c, e) => e.isSkillType("burst"))
+  .combatStatus(NoblesseObligeInEffect)
+  .done();
+
+/**
+ * @id 312043
+ * @name 水仙之梦
+ * @description
+ * 附属角色使用技能后：冒险1次。（每回合2次）
+ * 如果我方已经完成过冒险，则所附属角色造成的伤害+1。
+ * （角色最多装备1件「圣遗物」）
+ */
+export const NymphsDream = card(312043)
+  .since("v6.2.0")
+  .costSame(2)
+  .artifact()
+  .on("useSkill")
+  .usagePerRound(2)
+  .adventure()
+  .on("increaseSkillDamage", (c) => c.$(`my combat status with definition id ${AdventureCompleted}`))
+  .increaseDamage(1)
   .done();

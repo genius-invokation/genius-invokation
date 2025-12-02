@@ -13,12 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardState, character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, DiceType, customEvent } from "@gi-tcg/core/builder";
+import { EntityState, character, skill, status, combatStatus, card, DamageType, diceCostOfCard, CardHandle, customEvent } from "@gi-tcg/core/builder";
 import { BountifulCore } from "../hydro/nilou";
 import { DendroCore } from "../../commons";
 
-export const ShouldTriggerTalent = customEvent<CardState>("kaveh/shouldTriggerTalent");
-
+export const ShouldTriggerTalent = customEvent<EntityState>("kaveh/shouldTriggerTalent");
 /**
  * @id 117082
  * @name 迸发扫描
@@ -36,10 +35,10 @@ export const BurstScan = combatStatus(117082)
   .usageCanAppend(1, 3)
   .do((c, e) => {
     c.$(`my combat status with definition id ${DendroCore} or my summon with definition id ${BountifulCore}`)?.consumeUsage(1);
-    const cardDef = e.card.definition;
+    const cardDef = e.entity.definition;
     const cost = diceCostOfCard(cardDef);
     c.damage(DamageType.Dendro, cost);
-    c.emitCustomEvent(ShouldTriggerTalent, e.card.latest());
+    c.emitCustomEvent(ShouldTriggerTalent, e.entity.latest());
   })
   .done();
 
@@ -124,7 +123,7 @@ export const PaintedDome = skill(17083)
 export const Kaveh = character(1708)
   .since("v4.7.0")
   .tags("dendro", "claymore", "sumeru")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(SchematicSetup, ArtisticIngenuity, PaintedDome)
   .done();
@@ -145,6 +144,7 @@ export const TheArtOfBudgeting = card(217081)
   .on("enter")
   .useSkill(ArtisticIngenuity)
   .on(ShouldTriggerTalent)
+  .listenToPlayer()
   .usagePerRound(1)
   .do((c, e) => {
     const cardDef = e.arg.definition;

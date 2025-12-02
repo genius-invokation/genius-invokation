@@ -7,14 +7,14 @@ import {
   Reaction,
   type ExposedMutation,
 } from "@gi-tcg/typings";
-import type { CardState, CharacterState, GameState } from "./base/state";
+import type { CharacterState, EntityType, GameState } from "./base/state";
 import { DetailLogType, type IDetailLogger } from "./log";
 import {
-  type CreateCardM,
+  type CreateEntityM,
+  type MoveEntityM,
   type Mutation,
   type StepIdM,
   type StepRandomM,
-  type TransferCardM,
   applyMutation,
   stringifyMutation,
 } from "./base/mutation";
@@ -27,9 +27,11 @@ import {
 import {
   allEntitiesAtArea,
   allSkills,
+  assertValidActionCard,
   getActiveCharacterIndex,
   getEntityArea,
   getEntityById,
+  shouldEnterOverride,
   sortDice,
 } from "./utils";
 import { GiTcgCoreInternalError, GiTcgDataError, GiTcgIoError } from "./error";
@@ -46,6 +48,7 @@ import {
   type HealInfo,
   type HealKind,
   type InlineEventNames,
+  ModifyReactionEventArg,
   PlayCardRequestArg,
   ReactionEventArg,
   type ReactionInfo,
@@ -61,7 +64,6 @@ import {
   type EntityDefinition,
   stringifyEntityArea,
 } from "./base/entity";
-import type { CardDefinition } from "./base/card";
 import { REACTION_MAP, type NontrivialDamageType } from "./base/reaction";
 import {
   getReactionDescription,
@@ -125,20 +127,23 @@ export interface MutatorConfig {
 }
 
 export interface CreateEntityOptions {
-  /** 若重复创建，只修改 `overrideVariables` 中指定的变量 */
+  /** 若覆盖创建，只修改 `overrideVariables` 中指定的变量 */
   readonly modifyOverriddenVariablesOnly?: boolean;
   /** 创建实体时，覆盖默认变量 */
   readonly overrideVariables?: Partial<EntityVariables>;
-  /** 打出支援牌和装备牌时的原手牌 id */
-  readonly fromCardId?: number;
 }
 
-export interface CreateEntityResult {
-  /** 若重复创建，给出被覆盖的原实体状态 */
+interface InsertEntityOptions extends CreateEntityOptions {
+  /** 移动实体原因 */
+  readonly moveReason?: MoveEntityM["reason"];
+}
+
+export interface InsertEntityResult {
+  /** 若重复入场，给出被覆盖的原实体状态 */
   readonly oldState: EntityState | null;
-  /** 若成功创建，给出新建的实体状态 */
+  /** 若成功入场，给出新建的实体状态 */
   readonly newState: EntityState | null;
-  /** 若成功创建，则引发的 onEnter 事件 */
+  /** 若成功入场，则引发的 onEnter 事件 */
   readonly events: readonly EventAndRequest[];
 }
 
@@ -170,16 +175,26 @@ export interface DamageResult {
 }
 
 export type InsertHandPayload =
-  | (CreateCardM & {
-      target: "hands";
+  | (CreateEntityM & {
+      target: { type: "hands" };
     })
-  | (TransferCardM & {
-      to: "hands";
+  | (MoveEntityM & {
+      target: { type: "hands" };
     });
 
 export type InsertPilePayload =
-  | Omit<CreateCardM, "targetIndex" | "who">
-  | Omit<TransferCardM, "targetIndex" | "who">;
+  | Omit<CreateEntityM, "targetIndex">
+  | Omit<MoveEntityM, "targetIndex">;
+
+export interface InsertHandCardOption {
+  /** 不执行爆牌逻辑；用于直接打出的场景（冒险/汤/烟谜主） */
+  noOverflow?: boolean;
+}
+
+export interface CreateHandCardResult {
+  readonly state: EntityState;
+  readonly events: EventAndRequest[];
+}
 
 export type InsertPileStrategy =
   | "top"
@@ -415,12 +430,20 @@ export class StateMutator {
         DetailLogType.Other,
         `Apply reaction ${reaction} to ${stringifyState(target)}`,
       );
-      const reactionInfo: ReactionInfo = {
+      let reactionInfo: ReactionInfo = {
         target: target,
         type: reaction,
         via: opt.via,
         fromDamage: opt.fromDamage,
+        cancelEffects: false,
+        postApply: null,
       };
+      const modifyEventArg = new ModifyReactionEventArg(
+        this.state,
+        reactionInfo,
+      );
+      this.handleInlineEvent(opt.via, "modifyReaction", modifyEventArg);
+      reactionInfo = modifyEventArg.reactionInfo;
       events.push([
         "onReaction",
         new ReactionEventArg(this.state, reactionInfo),
@@ -433,7 +456,7 @@ export class StateMutator {
         isActive: opt.targetIsActive,
       };
       const reactionDescription = getReactionDescription(reaction);
-      if (reactionDescription) {
+      if (!reactionInfo.cancelEffects && reactionDescription) {
         events.push(
           ...this.executeInlineSkill(
             reactionDescription,
@@ -441,6 +464,16 @@ export class StateMutator {
             reactionDescriptionEventArg,
           ),
         );
+      }
+      if (reactionInfo.postApply) {
+        const [postAura] = REACTION_MAP[newAura][reactionInfo.postApply];
+        this.mutate({
+          type: "modifyEntityVar",
+          state: target,
+          varName: "aura",
+          value: postAura,
+          direction: null,
+        });
       }
     }
     return events;
@@ -627,23 +660,26 @@ export class StateMutator {
     return { damageInfo, events };
   }
 
-  insertHandCard(payload: InsertHandPayload): EventAndRequest[] {
-    const who = payload.who;
+  insertHandCard(
+    payload: InsertHandPayload,
+    opt: InsertHandCardOption = {},
+  ): EventAndRequest[] {
+    const who = payload.target.who;
     const reason =
-      payload.type === "createCard" ? ("create" as const) : payload.reason;
+      payload.type === "createEntity" ? ("create" as const) : payload.reason;
     this.mutate(payload);
-    const state: CardState = {
+    const state: EntityState = {
       ...payload.value,
-      [StateSymbol]: "card",
+      [StateSymbol]: "entity",
     };
     let overflowed = false;
     if (
+      !opt.noOverflow &&
       this.state.players[who].hands.length > this.state.config.maxHandsCount
     ) {
       this.mutate({
-        type: "removeCard",
-        who,
-        where: "hands",
+        type: "removeEntity",
+        from: payload.target,
         oldState: state,
         reason: "overflow",
       });
@@ -672,10 +708,9 @@ export class StateMutator {
       }
       events.push(
         ...this.insertHandCard({
-          type: "transferCard",
-          who,
-          from: "pile",
-          to: "hands",
+          type: "moveEntity",
+          from: { who, type: "pile" },
+          target: { who, type: "hands" },
           value: card,
           reason: "draw",
         }),
@@ -684,23 +719,46 @@ export class StateMutator {
     return events;
   }
 
-  createHandCard(who: 0 | 1, definition: CardDefinition): EventAndRequest[] {
+  createHandCard(
+    who: 0 | 1,
+    definition: EntityDefinition,
+    opt: InsertHandCardOption = {},
+  ): CreateHandCardResult {
+    if (
+      !(["support", "equipment", "eventCard"] as EntityType[]).includes(
+        definition.type,
+      )
+    ) {
+      throw new GiTcgDataError(
+        `Cannot create entity of type '${definition.type}' in hand.`,
+      );
+    }
     using l = this.subLog(
       DetailLogType.Primitive,
       `Create hand card [card:${definition.id}]`,
     );
-    const cardState: CardState = {
-      [StateSymbol]: "card",
+    const cardState: EntityState = {
+      [StateSymbol]: "entity",
       id: 0,
       definition,
-      variables: {},
+      variables: Object.fromEntries(
+        Object.entries(definition.varConfigs).map(
+          ([name, { initialValue }]) => [name, initialValue] as const,
+        ),
+      ),
     };
-    return this.insertHandCard({
-      type: "createCard",
-      who,
-      target: "hands",
-      value: cardState,
-    });
+    const events = this.insertHandCard(
+      {
+        type: "createEntity",
+        target: { who, type: "hands" },
+        value: cardState,
+      },
+      opt,
+    );
+    return {
+      state: cardState,
+      events,
+    };
   }
 
   insertPileCards(
@@ -708,6 +766,7 @@ export class StateMutator {
     strategy: InsertPileStrategy,
     who: 0 | 1,
   ): EventAndRequest[] {
+    const target: EntityArea = { who, type: "pile" };
     const player = this.state.players[who];
     const pileCount = player.pile.length;
     payloads = payloads.slice(
@@ -723,7 +782,7 @@ export class StateMutator {
         for (const mut of payloads) {
           this.mutate({
             ...mut,
-            who,
+            target,
             targetIndex: 0,
           });
         }
@@ -733,7 +792,7 @@ export class StateMutator {
           const targetIndex = player.pile.length;
           this.mutate({
             ...mut,
-            who,
+            target,
             targetIndex,
           });
         }
@@ -744,7 +803,7 @@ export class StateMutator {
           const index = randomValue % (player.pile.length + 1);
           this.mutate({
             ...payloads[i],
-            who,
+            target,
             targetIndex: index,
           });
         }
@@ -759,7 +818,7 @@ export class StateMutator {
           }
           this.mutate({
             ...payloads[i],
-            who,
+            target,
             targetIndex: i + j,
           });
         }
@@ -776,7 +835,7 @@ export class StateMutator {
             const index = randomValue % range;
             this.mutate({
               ...payloads[i],
-              who,
+              target,
               targetIndex: index,
             });
           }
@@ -789,7 +848,7 @@ export class StateMutator {
           for (let i = 0; i < count; i++) {
             this.mutate({
               ...payloads[i],
-              who,
+              target,
               targetIndex: index,
             });
           }
@@ -801,16 +860,33 @@ export class StateMutator {
     return [];
   }
 
-  createEntity(
-    def: EntityDefinition,
+  insertEntityOnStage(
+    stateOrDef: EntityState | { definition: EntityDefinition },
     area: EntityArea,
-    opt: CreateEntityOptions = {},
-  ): CreateEntityResult {
+    opt: InsertEntityOptions = {},
+  ): InsertEntityResult {
+    if (area.type === "hands" || area.type === "pile") {
+      throw new GiTcgDataError(
+        `insertEntityOnStage is for the 'on stage' area, not for hands or pile. Use createHandCard or insertPileCards instead.`,
+      );
+    }
+    const moveFrom =
+      "id" in stateOrDef ? getEntityArea(this.state, stateOrDef.id) : null;
+    // 移入场上，触发 onEnter
+    const shouldEmitEnter =
+      moveFrom === null ||
+      moveFrom.type === "hands" ||
+      moveFrom.type === "pile";
+    const { definition } = stateOrDef;
+    const events: EventAndRequest[] = [];
+
     using l = this.subLog(
       DetailLogType.Primitive,
-      `Create entity [${def.type}:${def.id}] at ${stringifyEntityArea(area)}`,
+      `Insert entity [${definition.type}:${
+        definition.id
+      }] at ${stringifyEntityArea(area)}`,
     );
-    const entitiesAtArea = allEntitiesAtArea(this.state, area);
+    const entitiesAtArea = allEntitiesAtArea(this.state, area) as EntityState[];
     // handle immuneControl vs disableSkill;
     // do not generate Frozen etc. on those characters
     const immuneControl = entitiesAtArea.find(
@@ -820,8 +896,8 @@ export class StateMutator {
     );
     if (
       immuneControl &&
-      def.type === "status" &&
-      def.tags.includes("disableSkill")
+      definition.type === "status" &&
+      definition.tags.includes("disableSkill")
     ) {
       this.log(
         DetailLogType.Other,
@@ -829,15 +905,25 @@ export class StateMutator {
       );
       return { oldState: null, newState: null, events: [] };
     }
-    const oldState = entitiesAtArea.find(
-      (e): e is EntityState =>
-        e.definition.type !== "character" &&
-        e.definition.type !== "support" &&
-        e.definition.id === def.id,
-    );
-    const { varConfigs } = def;
-    const overrideVariables = opt.overrideVariables ?? {};
+    const oldState = shouldEnterOverride(entitiesAtArea, definition);
     if (oldState) {
+      // TODO
+      // 应当获取 oldState 的所有变量，不引发事件地移除 oldState，然后
+      // 重建一个新的实体，变量根据规则计算 -or- 修改传入的 newState 的变量并移动
+      // 目前的 workaround 是直接覆盖 oldState 的变量，若有 newState 移入则删除之
+      if ("id" in stateOrDef) {
+        this.mutate({
+          type: "removeEntity",
+          from: moveFrom!,
+          oldState: stateOrDef,
+          reason: "other",
+        });
+      }
+      const { varConfigs } = definition;
+      const incomingVariables =
+        "variables" in stateOrDef
+          ? stateOrDef.variables
+          : opt.overrideVariables ?? {};
       this.log(
         DetailLogType.Other,
         `Found existing entity ${stringifyState(
@@ -847,15 +933,29 @@ export class StateMutator {
       const newValues: Record<string, number> = {};
       // refresh exist entity's variable
       for (const name in varConfigs) {
-        if (opt.modifyOverriddenVariablesOnly && !(name in overrideVariables)) {
+        if (opt.modifyOverriddenVariablesOnly && !(name in incomingVariables)) {
           continue;
         }
         let { initialValue, recreateBehavior } = varConfigs[name];
-        if (typeof overrideVariables[name] === "number") {
-          initialValue = overrideVariables[name]!;
+        if (typeof incomingVariables[name] === "number") {
+          initialValue = incomingVariables[name]!;
         }
         const oldValue = oldState.variables[name] ?? 0;
         switch (recreateBehavior.type) {
+          case "default": {
+            const defaultBehaviorType =
+              this.state.versionBehavior.defaultRecreateBehavior;
+            if (defaultBehaviorType === "overwrite") {
+              newValues[name] = initialValue;
+            } else if (defaultBehaviorType === "takeMax") {
+              newValues[name] = Math.max(initialValue, oldValue);
+            }
+            break;
+          }
+          case "keep": {
+            // just skip this variable
+            break;
+          }
           case "overwrite": {
             newValues[name] = initialValue;
             break;
@@ -870,12 +970,16 @@ export class StateMutator {
               break;
             }
             const appendValue =
-              overrideVariables[name] ?? recreateBehavior.appendValue;
+              incomingVariables[name] ?? recreateBehavior.appendValue;
             const appendResult = appendValue + oldValue;
             newValues[name] = Math.min(
               appendResult,
               recreateBehavior.appendLimit,
             );
+            break;
+          }
+          default: {
+            const _check: never = recreateBehavior;
             break;
           }
         }
@@ -892,46 +996,70 @@ export class StateMutator {
         }
       }
       const newState = getEntityById(this.state, oldState.id) as EntityState;
-      const enterEvent: EventAndRequest = [
-        "onEnter",
-        new EnterEventArg(this.state, {
-          overridden: oldState,
-          newState,
-        }),
-      ];
-      return { oldState, newState, events: [enterEvent] };
+      if (shouldEmitEnter) {
+        events.push([
+          "onEnter",
+          new EnterEventArg(this.state, {
+            overridden: oldState,
+            newState,
+          }),
+        ]);
+      }
+      return { oldState, newState, events };
     } else {
       if (
         area.type === "summons" &&
-        entitiesAtArea.length === this.state.config.maxSummonsCount
+        entitiesAtArea.length >= this.state.config.maxSummonsCount
       ) {
         return { oldState: null, newState: null, events: [] };
       }
-      const initState = {
-        id: 0,
-        fromCardId: opt.fromCardId ?? null,
-        definition: def,
-        variables: Object.fromEntries(
-          Object.entries(varConfigs).map(([name, { initialValue }]) => [
-            name,
-            overrideVariables[name] ?? initialValue,
-          ]),
-        ),
-      };
-      this.mutate({
-        type: "createEntity",
-        where: area,
-        value: initState,
-      });
-      const newState = getEntityById(this.state, initState.id) as EntityState;
-      const enterEvent: EventAndRequest = [
-        "onEnter",
-        new EnterEventArg(this.state, {
-          overridden: null,
-          newState,
-        }),
-      ];
-      return { oldState: null, newState, events: [enterEvent] };
+      if (
+        area.type === "supports" &&
+        entitiesAtArea.length >= this.state.config.maxSupportsCount
+      ) {
+        return { oldState: null, newState: null, events: [] };
+      }
+      let state: EntityState;
+      if (moveFrom) {
+        state = stateOrDef as EntityState;
+        this.mutate({
+          type: "moveEntity",
+          from: moveFrom,
+          target: area,
+          value: state,
+          reason: opt.moveReason ?? "other",
+        });
+      } else {
+        state = {
+          [StateSymbol]: "entity",
+          id: 0,
+          definition,
+          variables: Object.fromEntries(
+            Object.entries(definition.varConfigs).map(
+              ([name, { initialValue }]) => [
+                name,
+                opt.overrideVariables?.[name] ?? initialValue,
+              ],
+            ),
+          ),
+        };
+        this.mutate({
+          type: "createEntity",
+          target: area,
+          value: state,
+        });
+      }
+      const newState = getEntityById(this.state, state.id) as EntityState;
+      if (shouldEmitEnter) {
+        events.push([
+          "onEnter",
+          new EnterEventArg(this.state, {
+            overridden: null,
+            newState,
+          }),
+        ]);
+      }
+      return { oldState: null, newState, events };
     }
   }
 
@@ -940,31 +1068,40 @@ export class StateMutator {
     target: CharacterState,
     opt: SwitchActiveOption = {},
   ): EventAndRequest[] {
-    const from =
-      this.state.players[who].characters[
-        getActiveCharacterIndex(this.state.players[who])
-      ];
-    if (from.id === target.id) {
+    let from: CharacterState | null;
+    if (this.state.players[who].activeCharacterId === 0) {
+      from = null;
+    } else {
+      from =
+        this.state.players[who].characters[
+          getActiveCharacterIndex(this.state.players[who])
+        ];
+    }
+    if (from?.id === target.id) {
       return [];
     }
     let immuneControlStatus: EntityState | undefined;
     if (
       opt.via &&
-      (immuneControlStatus = from.entities.find((st) =>
+      (immuneControlStatus = from?.entities.find((st) =>
         st.definition.tags.includes("immuneControl"),
       ))
     ) {
       this.log(
         DetailLogType.Other,
-        `Switch active from ${stringifyState(from)} to ${stringifyState(
-          target,
-        )}, but ${stringifyState(immuneControlStatus)} disabled this!`,
+        `Switch active from ${
+          from ? stringifyState(from) : "(null)"
+        } to ${stringifyState(target)}, but ${stringifyState(
+          immuneControlStatus,
+        )} disabled this!`,
       );
       return [];
     }
     using l = this.subLog(
       DetailLogType.Primitive,
-      `Switch active from ${stringifyState(from)} to ${stringifyState(target)}`,
+      `Switch active from ${
+        from ? stringifyState(from) : "(null)"
+      } to ${stringifyState(target)}`,
     );
     this.mutate({
       type: "switchActive",
@@ -975,7 +1112,7 @@ export class StateMutator {
     const switchInfo: SwitchActiveInfo = {
       type: "switchActive",
       who,
-      from: from,
+      from,
       via: opt.via,
       to: target,
       fromReaction: fromReaction !== null,
@@ -1076,10 +1213,9 @@ export class StateMutator {
       const randomValue = this.stepRandom();
       const index = randomValue % (player().pile.length + 1);
       this.mutate({
-        type: "transferCard",
-        from: "hands",
-        to: "pile",
-        who,
+        type: "moveEntity",
+        from: { who, type: "hands" },
+        target: { who, type: "pile" },
         value: card,
         targetIndex: index,
         reason: "switch",
@@ -1088,7 +1224,7 @@ export class StateMutator {
     // 如果牌堆顶的手牌是刚刚换入的同名牌，那么暂时不选它
     let topIndex = 0;
     for (let i = 0; i < count; i++) {
-      let candidate: CardState;
+      let candidate: EntityState;
       while (
         topIndex < player().pile.length &&
         swapInCardIds.includes(player().pile[topIndex].definition.id)
@@ -1102,10 +1238,9 @@ export class StateMutator {
         candidate = player().pile[topIndex];
       }
       this.mutate({
-        type: "transferCard",
-        from: "pile",
-        to: "hands",
-        who,
+        type: "moveEntity",
+        from: { who, type: "pile" },
+        target: { who, type: "hands" },
         value: candidate,
         reason: "switch",
       });
@@ -1127,15 +1262,16 @@ export class StateMutator {
     );
     switch (info.type) {
       case "createHandCard": {
-        const def = this.state.data.cards.get(selected);
-        if (typeof def === "undefined") {
+        const def = this.state.data.entities.get(selected);
+        if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
-        return this.createHandCard(who, def);
+        assertValidActionCard(def);
+        return this.createHandCard(who, def).events;
       }
       case "createEntity": {
         const def = this.state.data.entities.get(selected);
-        if (typeof def === "undefined") {
+        if (!def) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
         if (def.type !== "summon") {
@@ -1145,7 +1281,10 @@ export class StateMutator {
           who,
           type: "summons",
         };
-        const { oldState, newState } = this.createEntity(def, entityArea);
+        const { oldState, newState } = this.insertEntityOnStage(
+          { definition: def },
+          entityArea,
+        );
         if (newState) {
           const enterInfo = {
             overridden: oldState,
@@ -1157,10 +1296,11 @@ export class StateMutator {
         }
       }
       case "requestPlayCard": {
-        const cardDefinition = this.state.data.cards.get(selected);
+        const cardDefinition = this.state.data.entities.get(selected);
         if (!cardDefinition) {
           throw new GiTcgDataError(`Unknown card definition id ${selected}`);
         }
+        assertValidActionCard(cardDefinition);
         return [
           [
             "requestPlayCard",

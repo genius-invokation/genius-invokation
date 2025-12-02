@@ -22,4 +22,8 @@ export default defineConfig({
   sourcemap: true,
   dts: !process.env.NO_TYPING,
   minify: true,
+  env: {
+    DEFAULT_ASSETS_API_ENDPOINT: process.env.DEFAULT_ASSETS_API_ENDPOINT || "",
+  },
+  publicDir: "src/data",
 });

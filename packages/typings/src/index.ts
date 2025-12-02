@@ -27,7 +27,6 @@ export { PreviewData } from "./gen/preview";
 
 export {
   PhaseType as PbPhaseType,
-  CardState as PbCardState,
   CharacterState as PbCharacterState,
   EntityState as PbEntityState,
   PlayerState as PbPlayerState,
@@ -40,22 +39,20 @@ export {
 export { Notification } from "./gen/notification";
 
 export {
-  CardArea as PbCardArea,
   EntityArea as PbEntityArea,
-  RemoveCardReason as PbRemoveCardReason,
-  TransferCardReason as PbTransferCardReason,
+  MoveEntityReason as PbMoveEntityReason,
+  RemoveEntityReason as PbRemoveEntityReason,
   SkillType as PbSkillType,
   ModifyDirection as PbModifyDirection,
   ChangePhaseEM,
-  CreateCardEM,
   CreateCharacterEM,
   CreateEntityEM,
+  MoveEntityEM,
   HealKind as PbHealKind,
   DamageEM,
   ApplyAuraEM,
   ModifyEntityVarEM,
   PlayerStatusChangeEM,
-  RemoveCardEM,
   RemoveEntityEM,
   ResetDiceReason as PbResetDiceReason,
   ResetDiceEM,
@@ -64,7 +61,6 @@ export {
   SwitchActiveFromAction as PbSwitchActiveFromAction,
   SwitchActiveEM,
   SwitchTurnEM,
-  TransferCardEM,
   TransformDefinitionEM,
   SkillUsedEM,
   PlayerFlag as PbPlayerFlag,
@@ -166,3 +162,8 @@ export function unFlattenOneof<T extends OneofBase>(
 export { RpcRequest, RpcResponse };
 export { PbExposedMutation };
 export type ExposedMutation = FlattenOneof<PbExposedMutation["mutation"]>;
+
+export interface Deck {
+  characters: number[];
+  cards: number[];
+}

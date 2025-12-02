@@ -14,7 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DamageType, DiceType, EntityState, card, combatStatus, diceCostOfCard, status } from "@gi-tcg/core/builder";
-import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, ToyGuard, ToyGuardSummon } from "../event/other";
+import { ForbiddenKnowledge, OrigamiFlyingSquirrel, OrigamiHamster, PopupPaperFrog, SIMULANKA_QUERY, SIMULANKA_SUMMONS, ToyGuard, ToyGuardSummon } from "../event/other";
 
 /**
  * @id 321001
@@ -71,11 +71,11 @@ export const JadeChamber = card(321003)
  * @id 321004
  * @name 晨曦酒庄
  * @description
- * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合至多2次）
+ * 我方执行「切换角色」行动时：少花费1个元素骰。（每回合2次）
  */
 export const DawnWinery = card(321004)
   .since("v3.3.0")
-  .costSame(2)
+  .costVoid(3)
   .support("place")
   .on("deductOmniDiceSwitch")
   .usagePerRound(2)
@@ -145,18 +145,15 @@ export const Tenshukaku = card(321007)
  * @id 321008
  * @name 鸣神大社
  * @description
- * 每回合自动触发1次：生成1个随机的基础元素骰。
- * 可用次数：3
+ * 我方角色使用技能后：如果元素骰总数为奇数，则生成1个万能元素。（每回合2次）
  */
 export const GrandNarukamiShrine = card(321008)
   .since("v3.6.0")
-  .costSame(2)
+  .costVoid(3)
   .support("place")
-  .on("enter")
-  .generateDice("randomElement", 1)
-  .on("actionPhase")
-  .usage(2)
-  .generateDice("randomElement", 1)
+  .on("useSkill", (c) => c.player.dice.length % 2 === 1)
+  .usagePerRound(2)
+  .generateDice(DiceType.Omni, 1)
   .done();
 
 /**
@@ -229,18 +226,16 @@ export const Vanarana = card(321011)
  * @id 321012
  * @name 镇守之森
  * @description
- * 行动阶段开始时：如果我方不是「先手牌手」，则生成1个出战角色类型的元素骰。
- * 可用次数：3
+ * 我方选择行动前：如果当前元素骰总数为偶数，则我方角色「普通攻击」少花费1个无色元素。
+ * 可用次数：4
  */
 export const ChinjuForest = card(321012)
   .since("v3.7.0")
-  .costSame(1)
+  .costSame(2)
   .support("place")
-  .on("actionPhase", (c) => !c.isMyTurn())
-  .usage(3)
-  .do((c) => {
-    c.generateDice(c.$("my active")!.element(), 1);
-  })
+  .on("deductVoidDiceSkill", (c, e) => e.isChargedAttack())
+  .usage(4)
+  .deductVoidCost(1)
   .done();
 
 /**
@@ -330,7 +325,7 @@ export const OperaEpiclese = card(321017)
   .support("place")
   .on("beforeAction", (c) => {
     function costOfEquipment(equipment: EntityState) {
-      const cardDef = c.data.cards.get(equipment.definition.id)!;
+      const cardDef = c.data.entities.get(equipment.definition.id)!;
       return diceCostOfCard(cardDef);
     }
     const myCost = c.$$(`my equipments`).map((entity) => costOfEquipment(entity)).reduce((a, b) => a + b, 0);
@@ -354,7 +349,7 @@ export const OperaEpiclese = card(321017)
 export const StrictProhibited = combatStatus(301018)
   .tags("eventEffectless")
   .oneDuration()
-  .on("playCard", (c, e) => e.card.definition.cardType === "event")
+  .on("playCard", (c, e) => e.card.definition.type === "eventCard")
   .usage(1)
   .done();
 
@@ -724,10 +719,10 @@ export const CalligraphyTavern = card(321029)
     const newCard = c.random([OrigamiFlyingSquirrel, PopupPaperFrog, OrigamiHamster]);
     c.createHandCard(newCard);
   })
-  .on("declareEnd", (c, e) => c.$(`my summons with tag (simulanka)`))
+  .on("declareEnd", (c, e) => c.$(SIMULANKA_QUERY))
   .usage(3)
   .do((c, e) =>{
-    const mySimulankaSummons = c.$$(`my summons with tag (simulanka)`);
+    const mySimulankaSummons = c.$$(SIMULANKA_QUERY);
     const chosen = c.random(mySimulankaSummons);
     if (chosen) {
       c.triggerEndPhaseSkill(chosen);
@@ -736,7 +731,7 @@ export const CalligraphyTavern = card(321029)
   .done();
 
 /**
- * @id 321032
+ * @id 301032
  * @name 星轨王城（生效中）
  * @description
  * 下次打出积木小人少花费1个元素骰。
@@ -782,4 +777,22 @@ export const ConstellationMetropole = card(321030)
       c.combatStatus(ConstellationMetropoleInEffect02);
     }
   })
+  .done();
+
+/**
+ * @id 321031
+ * @name 冒险家协会
+ * @description
+ * 结束阶段：冒险1次。
+ * 可用次数：3
+ */
+export const AdventurersGuild = card(321031)
+  .since("v6.1.0")
+  .costSame(2)
+  .support("place")
+  .on("endPhase")
+  .usage(3, { autoDispose: false })
+  .adventure()
+  .on("adventure", (c) => c.getVariable("usage") === 0)
+  .dispose()
   .done();

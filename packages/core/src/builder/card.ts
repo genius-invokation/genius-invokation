@@ -16,19 +16,18 @@
 import type { EntityState, GameState } from "../base/state";
 import type {
   CardTag,
-  InitiativeSkillTargetKind,
-  CardType,
-  SupportTag,
-  WeaponCardTag,
-  CardDefinition,
-} from "../base/card";
-import type {
   DescriptionDictionary,
   DescriptionDictionaryEntry,
   DescriptionDictionaryKey,
+  EntityArea,
+  EntityTag,
+  EquipmentTag,
+  SupportTag,
+  VariableConfig,
+  WeaponCardTag,
 } from "../base/entity";
 import {
-  type DisposeOrTuneCardEventArg,
+  DisposeEventArg,
   EMPTY_SKILL_RESULT,
   type HandCardInsertedEventArg,
   type InitiativeSkillDefinition,
@@ -38,14 +37,14 @@ import {
   type SkillDescription,
   type TriggeredSkillDefinition,
 } from "../base/skill";
-import { registerCard } from "./registry";
 import {
   SkillBuilderWithCost,
   withShortcut,
   type BuilderWithShortcut,
+  type InitiativeSkillTargetKind,
   type SkillOperation,
+  type SkillOperationFilter,
   type StrictInitiativeSkillEventArg,
-  type StrictInitiativeSkillFilter,
 } from "./skill";
 import type {
   CardHandle,
@@ -56,27 +55,46 @@ import type {
   StatusHandle,
   SupportHandle,
 } from "./type";
-import { EntityBuilder, type EntityBuilderPublic } from "./entity";
+import {
+  EntityBuilder,
+  type EntityBuilderPublic,
+  type EntityDescriptionDictionaryGetter,
+} from "./entity";
 import type { GuessedTypeOfQuery } from "../query/types";
 import { GiTcgDataError } from "../error";
-import { costSize, diceCostSize, normalizeCost, type Writable } from "../utils";
+import {
+  costSize,
+  diceCostSize,
+  getEntityArea,
+  getEntityById,
+  normalizeCost,
+  type Writable,
+} from "../utils";
 import {
   type Version,
   type VersionInfo,
   type VersionMetadata,
   DEFAULT_VERSION_INFO,
 } from "../base/version";
+import type { EntityDefinition } from ".";
+import { registerEntity } from "./registry";
 
-type DisposeCardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
-  callerType: "card";
-  callerVars: never;
-  eventArgType: DisposeOrTuneCardEventArg;
+type DisposeCardBuilderMeta<
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+> = {
+  callerType: "eventCard";
+  callerVars: CallerVars;
+  eventArgType: DisposeEventArg;
   associatedExtension: AssociatedExt;
 };
 
-type HCICardBuilderMeta<AssociatedExt extends ExtensionHandle> = {
-  callerType: "card";
-  callerVars: never;
+type HCICardBuilderMeta<
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+> = {
+  callerType: "eventCard";
+  callerVars: CallerVars;
   eventArgType: HandCardInsertedEventArg;
   associatedExtension: AssociatedExt;
 };
@@ -118,37 +136,56 @@ export interface NightsoulTechniqueOption {
   alsoDisposeNightsoulsBlessing?: boolean;
 }
 
-type CardArea = { readonly who: 0 | 1 };
-type CardDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> = (
-  st: GameState,
-  self: { readonly area: CardArea },
-  ext: AssociatedExt["type"],
-) => string | number;
+export interface DoSameWhenDisposedOption<
+  AssociatedExt extends ExtensionHandle,
+> {
+  filter?: SkillOperationFilter<{
+    callerType: "eventCard";
+    callerVars: never;
+    eventArgType: DisposeEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+  prependOp?: SkillOperation<{
+    callerType: "eventCard";
+    callerVars: never;
+    eventArgType: DisposeEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+  appendOp?: SkillOperation<{
+    callerType: "eventCard";
+    callerVars: never;
+    eventArgType: DisposeEventArg;
+    associatedExtension: AssociatedExt;
+  }>;
+}
 
 export class CardBuilder<
   KindTs extends InitiativeSkillTargetKind,
+  CallerVars extends string,
   AssociatedExt extends ExtensionHandle = never,
 > extends SkillBuilderWithCost<{
-  callerType: "card";
-  callerVars: never;
+  callerType: "eventCard";
+  callerVars: CallerVars;
   eventArgType: StrictInitiativeSkillEventArg<KindTs>;
   associatedExtension: AssociatedExt;
 }> {
-  private _type: CardType = "event";
+  private _type: "support" | "equipment" | "eventCard" = "eventCard";
   private _obtainable = true;
-  private _tags: CardTag[] = [];
+  private _tags: EntityTag[] = [];
+  private _varConfigs: Record<string, VariableConfig> = {};
   /**
    * 在料理卡牌的行动结尾添加“设置饱腹状态”操作的目标；
    * `null` 表明不添加（不是料理牌或者手动指定）
    */
   private _satiatedTarget: string | null = null;
   private _descriptionOnHCI = false;
-  private _doSameWhenDisposed = false;
+  private _doSameWhenDisposed: DoSameWhenDisposedOption<AssociatedExt> | null =
+    null;
   private _disposeOperation: SkillOperation<
-    DisposeCardBuilderMeta<AssociatedExt>
+    DisposeCardBuilderMeta<CallerVars, AssociatedExt>
   > | null = null;
   private _hciOperation: SkillOperation<
-    HCICardBuilderMeta<AssociatedExt>
+    HCICardBuilderMeta<CallerVars, AssociatedExt>
   > | null = null;
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
 
@@ -176,7 +213,7 @@ export class CardBuilder<
 
   replaceDescription(
     key: DescriptionDictionaryKey,
-    getter: CardDescriptionDictionaryGetter<AssociatedExt>,
+    getter: EntityDescriptionDictionaryGetter<AssociatedExt>,
   ): this {
     if (Reflect.has(this._descriptionDictionary, key)) {
       throw new GiTcgDataError(`Description key ${key} already exists`);
@@ -184,8 +221,10 @@ export class CardBuilder<
     const extId = this.associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
       const ext = st.extensions.find((ext) => ext.definition.id === extId);
-      const who = st.players[0].hands.find((c) => c.id === id) ? 0 : 1;
-      return String(getter(st, { area: { who } }, ext?.state));
+      const self = getEntityById(st, id) as EntityState;
+      const area = getEntityArea(st, id);
+
+      return String(getter(st, { ...self, area }, ext?.state));
     };
     this._descriptionDictionary[key] = entry;
     return this;
@@ -193,7 +232,9 @@ export class CardBuilder<
 
   associateExtension<NewExtT>(
     ext: ExtensionHandle<NewExtT>,
-  ): BuilderWithShortcut<CardBuilder<KindTs, ExtensionHandle<NewExtT>>> {
+  ): BuilderWithShortcut<
+    CardBuilder<KindTs, CallerVars, ExtensionHandle<NewExtT>>
+  > {
     if (this.associatedExtensionId !== null) {
       throw new GiTcgDataError(
         `This card has already associated with extension ${this.id}`,
@@ -203,12 +244,8 @@ export class CardBuilder<
     return this as any;
   }
 
-  tags(...tags: CardTag[]): this {
+  tags(...tags: (EquipmentTag | SupportTag | CardTag)[]): this {
     this._tags.push(...tags);
-    return this;
-  }
-  type(type: CardType): this {
-    this._type = type;
     return this;
   }
 
@@ -221,21 +258,18 @@ export class CardBuilder<
     target: Q,
   ): EntityBuilderPublic<"equipment"> {
     const cardId = this.cardId as EquipmentHandle;
-    this.type("equipment")
-      .addTarget(target)
-      .do((c) => {
-        const ch = c.$("character and @targets.0");
-        const caller = c.skillInfo.caller;
-        ch?.equip(cardId, {
-          fromCardId: caller.definition.type === "card" ? caller.id : void 0,
-        });
-      })
-      .done();
+    this.addTarget(target).do((c) => {
+      const ch = c.$("character and @targets.0");
+      ch?.equip(c.self);
+    });
+    const skills = this.buildSkills();
     const builder = new EntityBuilder<"equipment", never, never, false, {}>(
       "equipment",
       cardId,
     );
     builder._versionInfo = this._versionInfo;
+    builder._skillList.push(...skills);
+    builder._obtainable = this._obtainable;
     return builder;
   }
   weapon(type: WeaponCardTag) {
@@ -287,11 +321,7 @@ export class CardBuilder<
     return self;
   }
 
-  support(type: SupportTag | null): EntityBuilderPublic<"support"> {
-    this.type("support");
-    if (type !== null) {
-      this.tags(type);
-    }
+  support(...tags: SupportTag[]): EntityBuilderPublic<"support"> {
     const cardId = this.cardId as SupportHandle;
     this.do((c, e) => {
       // 支援牌的目标是要弃置的支援区卡牌
@@ -299,23 +329,24 @@ export class CardBuilder<
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      const caller = c.skillInfo.caller;
-      c.createEntity("support", cardId, void 0, {
-        // 当从手牌打出支援牌时传入手牌 id
-        // （并非从手牌打出的情况：selectAndPlay 直接在挑选后调用）
-        fromCardId:
-          caller.definition.type === "card" ? c.skillInfo.caller.id : void 0,
-      });
-    }).done();
+      c.moveEntity(c.self, { who: c.self.who, type: "supports" }, "createSupport");
+    });
+    const skills = this.buildSkills();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
       "support",
       cardId,
     );
-    if (type !== null) {
-      builder.tags(type);
-    }
+    builder.tags(...tags);
     builder._versionInfo = this._versionInfo;
+    builder._skillList.push(...skills);
+    builder._obtainable = this._obtainable;
     return builder;
+  }
+
+  adventureSpot(): EntityBuilderPublic<"support", "exp"> {
+    return this.unobtainable()
+      .support("place", "adventureSpot")
+      .variableCanAppend("exp", 1, Infinity);
   }
 
   /**
@@ -365,7 +396,11 @@ export class CardBuilder<
   addTarget<Q extends TargetQuery>(
     targetQuery: Q,
   ): BuilderWithShortcut<
-    CardBuilder<readonly [...KindTs, TargetKindOfQuery<Q>], AssociatedExt>
+    CardBuilder<
+      readonly [...KindTs, TargetKindOfQuery<Q>],
+      CallerVars,
+      AssociatedExt
+    >
   > {
     this.addTargetImpl(targetQuery);
     return this as any;
@@ -431,16 +466,24 @@ export class CardBuilder<
   }
 
   /** 增加 food 标签；设置目标为我方非饱腹角色 */
-  food(opt: FoodOption = {}) {
+  food(
+    opt: FoodOption = {},
+  ): BuilderWithShortcut<
+    CardBuilder<readonly [...KindTs, "character"], CallerVars, AssociatedExt>
+  > {
     if (!opt.noSatiated) {
       this._satiatedTarget = "@targets.0";
     }
-    let targetFilter =
-      "(my characters and not has status with definition id 303300)";
-    if (opt?.injuredOnly) {
-      targetFilter += ` and (characters with health < maxHealth)`;
-    }
-    return this.tags("food").addTarget(targetFilter as "characters");
+    const injuredOnly = !!opt?.injuredOnly;
+    this.tags("food").addTargetImpl((c) => {
+      let queryString =
+        "(my characters and not has status with definition id 303300)";
+      if (injuredOnly && !c.state.versionBehavior.foodOmitInjuredOnly) {
+        queryString += " and (characters with health < maxHealth)";
+      }
+      return c.$$(queryString).map((s) => s.latest());
+    });
+    return this as any;
   }
 
   /**
@@ -463,18 +506,18 @@ export class CardBuilder<
     return this.tags("food");
   }
 
-  doSameWhenDisposed() {
+  doSameWhenDisposed(opt: DoSameWhenDisposedOption<AssociatedExt> = {}) {
     if (this._disposeOperation || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .onDispose() or .descriptionOnDraw().`,
       );
     }
-    if (this._targetQueries.length > 0) {
+    if (this._targetGetters.length > 0) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );
     }
-    this._doSameWhenDisposed = true;
+    this._doSameWhenDisposed = opt;
     return this;
   }
   /** @deprecated use `descriptionOnHCI` */
@@ -490,7 +533,7 @@ export class CardBuilder<
         `Cannot specify descriptionOnHCI when using .doSameWhenDisposed() or .onDispose().`,
       );
     }
-    if (this._targetQueries.length > 0) {
+    if (this._targetGetters.length > 0) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .descriptionOnHCI().`,
       );
@@ -498,7 +541,9 @@ export class CardBuilder<
     this._descriptionOnHCI = true;
     return this;
   }
-  onDispose(op: SkillOperation<DisposeCardBuilderMeta<AssociatedExt>>) {
+  onDispose(
+    op: SkillOperation<DisposeCardBuilderMeta<CallerVars, AssociatedExt>>,
+  ) {
     if (this._doSameWhenDisposed || this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .doSameWhenDisposed() or .descriptionOnDraw().`,
@@ -510,7 +555,7 @@ export class CardBuilder<
   /**
    * 当此牌加入手牌时（"handCardInserted"）执行的代码
    */
-  onHCI(op: SkillOperation<HCICardBuilderMeta<AssociatedExt>>) {
+  onHCI(op: SkillOperation<HCICardBuilderMeta<CallerVars, AssociatedExt>>) {
     if (this._descriptionOnHCI) {
       throw new GiTcgDataError(
         `Cannot specify dispose action when using .descriptionOnDraw().`,
@@ -520,8 +565,8 @@ export class CardBuilder<
     return this;
   }
 
-  done(): CardHandle {
-    if (this._targetQueries.length > 0 && this._doSameWhenDisposed) {
+  private buildSkills(): SkillDefinition[] {
+    if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
       throw new GiTcgDataError(
         `Cannot specify targets when using .doSameWhenDisposed().`,
       );
@@ -534,20 +579,29 @@ export class CardBuilder<
 
     const targetGetter = this.buildTargetGetter();
     if (this._doSameWhenDisposed || this._disposeOperation !== null) {
-      const disposeOp = this._disposeOperation;
-      const disposeAction = disposeOp
-        ? this.buildAction<DisposeOrTuneCardEventArg>(disposeOp)
-        : this.buildAction<DisposeOrTuneCardEventArg>();
-      const disposeDef: TriggeredSkillDefinition<"onDisposeOrTuneCard"> = {
+      const disposeOps: SkillOperation<any>[] = this._disposeOperation
+        ? [this._disposeOperation]
+        : [
+            this._doSameWhenDisposed?.prependOp,
+            ...this.operations,
+            this._doSameWhenDisposed?.appendOp,
+          ].filter((op) => !!op);
+      const disposeFilter = this.buildFilter<DisposeEventArg>([
+        this._doSameWhenDisposed?.filter ?? (() => true),
+      ]);
+      const disposeAction = this.buildAction<DisposeEventArg>(disposeOps);
+      const disposeDef: TriggeredSkillDefinition<"onDispose"> = {
         type: "skill",
         id: this.cardId + 0.02,
         ownerType: "card",
-        triggerOn: "onDisposeOrTuneCard",
+        triggerOn: "onDispose",
         initiativeSkillConfig: null,
         action: disposeAction,
         filter: (st, info, arg) => {
           return (
-            info.caller.id === arg.entity.id && arg.method !== "elementalTuning"
+            info.caller.id === arg.entity.id &&
+            arg.isDiscard() &&
+            disposeFilter(st, info, arg)
           );
         },
         usagePerRoundVariableName: null,
@@ -560,18 +614,12 @@ export class CardBuilder<
       let filter: SkillActionFilter<InitiativeSkillEventArg>;
       let action: SkillDescription<InitiativeSkillEventArg>;
       if (hciOp) {
-        drawAction = this.buildAction<HandCardInsertedEventArg>(hciOp);
+        drawAction = this.buildAction<HandCardInsertedEventArg>([hciOp]);
         filter = this.buildFilter();
         action = this.buildAction();
       } else {
         this.do((c) => {
-          c.mutate({
-            type: "removeCard",
-            who: c.self.who,
-            where: "hands",
-            oldState: c.self.latest(),
-            reason: "onDrawTriggered",
-          });
+          c.dispose(c.self, "eventCardDrawn");
         });
         drawAction = this.buildAction<HandCardInsertedEventArg>();
         filter = () => false;
@@ -600,8 +648,11 @@ export class CardBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: false,
-          fast: !this._tags.includes("action"),
+          shouldFast: !this._tags.includes("action"),
+          alwaysCharged: false,
+          alwaysPlunging: false,
           hidden: false,
+          omitEvents: false,
           getTarget: targetGetter,
         },
         filter,
@@ -610,6 +661,11 @@ export class CardBuilder<
       };
       skills.push(skillDef, drawSkillDef);
     } else {
+      this.operations.unshift((c) => {
+        if (c.self.definition.type === "eventCard") {
+          c.dispose(c.self, "eventCardPlayed");
+        }
+      });
       const action = this.buildAction<InitiativeSkillEventArg>();
       const filter = this.buildFilter<InitiativeSkillEventArg>();
       const skillDef: InitiativeSkillDefinition = {
@@ -623,8 +679,11 @@ export class CardBuilder<
           computed$costSize: costSize(this._cost),
           computed$diceCostSize: diceCostSize(this._cost),
           gainEnergy: false,
-          fast: !this._tags.includes("action"),
+          shouldFast: !this._tags.includes("action"),
+          alwaysCharged: false,
+          alwaysPlunging: false,
           hidden: false,
+          omitEvents: false,
           getTarget: targetGetter,
         },
         filter,
@@ -633,22 +692,30 @@ export class CardBuilder<
       };
       skills.push(skillDef);
     }
-    const cardDef: CardDefinition = {
-      __definition: "cards",
-      type: "card",
+    return skills;
+  }
+
+  done(): CardHandle {
+    const skills = this.buildSkills();
+    const cardDef: EntityDefinition = {
+      __definition: "entities",
+      type: this._type,
       id: this.cardId,
-      cardType: this._type,
-      obtainable: this._obtainable,
       tags: this._tags,
       version: this._versionInfo,
+      obtainable: this._obtainable,
       skills,
+      varConfigs: this._varConfigs,
       descriptionDictionary: this._descriptionDictionary,
+      visibleVarName: null,
+      hintText: null,
+      disposeWhenUsageIsZero: false,
     };
-    registerCard(cardDef);
+    registerEntity(cardDef);
     return this.cardId as CardHandle;
   }
 }
 
 export function card(id: number) {
-  return withShortcut(new CardBuilder<readonly []>(id));
+  return withShortcut(new CardBuilder<readonly [], never>(id));
 }

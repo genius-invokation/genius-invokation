@@ -46,11 +46,8 @@ export const SoulsniperRitualStaff = card(115112)
     c.player.hands.length >= 3
   )
   .consumeNightsoul("@master", 1)
-  .do((c) => {
-    c.damage(DamageType.Anemo, 1);
-    const cards = c.maxCostHands(3);
-    c.disposeCard(...cards);
-  })
+  .damage(DamageType.Anemo, 1)
+  .disposeMaxCostHands(3, { allowPreview: true })
   .done();
 
 /**
@@ -76,7 +73,10 @@ export const ShadowhuntShell = card(115113)
       c.transformDefinition(c.self, ShiningShadowhuntShellCryo);
     }
   })
-  .doSameWhenDisposed()
+  .doSameWhenDisposed({
+    filter: (c, e) => e.from.type === "hands",
+    prependOp: (c) => c.abortPreview(),
+  })
   .damage(DamageType.Anemo, 1, "opp characters with health > 0 limit 1")
   .do((c) => {
     c.createPileCards(ShadowhuntShell, 1, "random");
@@ -93,7 +93,10 @@ export const ShiningShadowhuntShellPyro = card(115114)
   .since("v5.7.0")
   .unobtainable()
   .costPyro(3)
-  .doSameWhenDisposed()
+  .doSameWhenDisposed({
+    filter: (c, e) => e.from.type === "hands",
+    prependOp: (c) => c.abortPreview(),
+  })
   .damage(DamageType.Pyro, 1, "opp characters with health > 0 limit 1")
   .do((c) => {
     c.createPileCards(ShadowhuntShell, 1, "random");
@@ -110,7 +113,10 @@ export const ShiningShadowhuntShellHydro = card(115115)
   .since("v5.7.0")
   .unobtainable()
   .costHydro(3)
-  .doSameWhenDisposed()
+  .doSameWhenDisposed({
+    filter: (c, e) => e.from.type === "hands",
+    prependOp: (c) => c.abortPreview(),
+  })
   .damage(DamageType.Hydro, 1, "opp characters with health > 0 limit 1")
   .do((c) => {
     c.createPileCards(ShadowhuntShell, 1, "random");
@@ -127,7 +133,10 @@ export const ShiningShadowhuntShellElectro = card(115116)
   .since("v5.7.0")
   .unobtainable()
   .costElectro(3)
-  .doSameWhenDisposed()
+  .doSameWhenDisposed({
+    filter: (c, e) => e.from.type === "hands",
+    prependOp: (c) => c.abortPreview(),
+  })
   .damage(DamageType.Electro, 1, "opp characters with health > 0 limit 1")
   .do((c) => {
     c.createPileCards(ShadowhuntShell, 1, "random");
@@ -144,7 +153,10 @@ export const ShiningShadowhuntShellCryo = card(115117)
   .since("v5.7.0")
   .unobtainable()
   .costCryo(3)
-  .doSameWhenDisposed()
+  .doSameWhenDisposed({
+    filter: (c, e) => e.from.type === "hands",
+    prependOp: (c) => c.abortPreview(),
+  })
   .damage(DamageType.Cryo, 1, "opp characters with health > 0 limit 1")
   .do((c) => {
     c.createPileCards(ShadowhuntShell, 1, "random");

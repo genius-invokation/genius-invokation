@@ -14,13 +14,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Injectable, type OnModuleInit } from "@nestjs/common";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient, Prisma } from "#prisma/client";
 
 // https://github.com/prisma/prisma/discussions/3087
 // https://github.com/prisma/prisma/issues/7550
 
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not set");
+}
+
 const createPrismaClient = () => {
-  const prisma = new PrismaClient().$extends({
+  const adapter = new PrismaPg({ connectionString });
+  const prisma = new PrismaClient({ adapter }).$extends({
     name: "findManyAndCount",
     model: {
       $allModels: {

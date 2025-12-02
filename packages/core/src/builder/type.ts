@@ -16,16 +16,15 @@
 import type { DamageType } from "@gi-tcg/typings";
 import type { CharacterTag } from "../base/character";
 import type { EntityTag, EntityType } from "../base/entity";
-import type { CardState, CharacterState, EntityState } from "../base/state";
-import type { CardTag } from "../base/card";
+import type { CharacterState, EntityState } from "../base/state";
 
 export type CharacterHandle = number & { readonly _char: unique symbol };
 export type SkillHandle = number & { readonly _skill: unique symbol };
 export type PassiveSkillHandle = number & {
   readonly _passiveSkill: unique symbol;
 };
-export type CardHandle = number & { readonly _card: unique symbol };
 export type EntityHandle = number & { readonly _entity: unique symbol };
+export type CardHandle = EntityHandle & { readonly _card: unique symbol };
 export type StatusHandle = EntityHandle & { readonly _stat: unique symbol };
 export type CombatStatusHandle = EntityHandle & {
   readonly _cStat: unique symbol;
@@ -41,18 +40,14 @@ export type ExtensionHandle<T = unknown> = number & {
   readonly type: T;
 };
 
-export type ExEntityType = "character" | "card" | EntityType;
+export type ExEntityType = "character" | EntityType;
 
 export type ExEntityState<TypeT extends ExEntityType> =
-  TypeT extends "character"
-    ? CharacterState
-    : TypeT extends "card"
-      ? CardState
-      : EntityState;
+  TypeT extends "character" ? CharacterState : EntityState;
 
 export type HandleT<T extends ExEntityType> = T extends "character"
   ? CharacterHandle
-  : T extends "card"
+  : T extends "eventCard"
     ? CardHandle
     : T extends "combatStatus"
       ? CombatStatusHandle
@@ -70,15 +65,14 @@ export type HandleT<T extends ExEntityType> = T extends "character"
 
 export type ExTag<TypeT extends ExEntityType> = TypeT extends "character"
   ? CharacterTag
-  : TypeT extends "card"
-    ? CardTag
-    : TypeT extends EntityType
-      ? EntityTag
-      : never;
+  : TypeT extends EntityType
+    ? EntityTag
+    : never;
 
 export type AppliableDamageType =
   | typeof DamageType.Cryo
   | typeof DamageType.Hydro
   | typeof DamageType.Pyro
   | typeof DamageType.Electro
-  | typeof DamageType.Dendro;
+  | typeof DamageType.Dendro
+  | typeof DamageType.Geo;

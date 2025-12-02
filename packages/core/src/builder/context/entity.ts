@@ -18,13 +18,15 @@ import { GiTcgDataError } from "../../error";
 import {
   type EntityArea,
   type EntityDefinition,
-  USAGE_PER_ROUND_VARIABLE_NAMES,
 } from "../../base/entity";
 import { getEntityArea, getEntityById } from "./utils";
-import { Character } from "./character";
 import type { ContextMetaBase, SkillContext } from "./skill";
-import { LatestStateSymbol, RawStateSymbol, ReactiveStateBase, ReactiveStateSymbol } from "./reactive_base";
-import type { RxEntityState } from "./reactive";
+import {
+  LatestStateSymbol,
+  RawStateSymbol,
+  ReactiveStateBase,
+  ReactiveStateSymbol,
+} from "./reactive_base";
 
 class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   override get [ReactiveStateSymbol](): "entity" {
@@ -32,7 +34,10 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
   }
   declare [RawStateSymbol]: EntityState;
   override get [LatestStateSymbol](): EntityState {
-    const state = getEntityById(this.skillContext.rawState, this.id) as EntityState;
+    const state = getEntityById(
+      this.skillContext.rawState,
+      this.id,
+    ) as EntityState;
     return state;
   }
 
@@ -65,7 +70,6 @@ class ReadonlyEntity<Meta extends ContextMetaBase> extends ReactiveStateBase {
     return this.state.variables[name];
   }
 
-
   get master() {
     if (this.area.type !== "characters") {
       throw new GiTcgDataError("master expect a character area");
@@ -88,15 +92,11 @@ export class Entity<Meta extends ContextMetaBase> extends ReadonlyEntity<Meta> {
     this.skillContext.consumeUsage(count, this.state);
   }
   resetUsagePerRound() {
-    for (const [name, cfg] of Object.entries(
-      this.state.definition.varConfigs,
-    )) {
-      if (
-        (USAGE_PER_ROUND_VARIABLE_NAMES as readonly string[]).includes(name)
-      ) {
-        this.setVariable(name, cfg.initialValue);
-      }
-    }
+    this.skillContext.mutate({
+      type: "resetVariables",
+      scope: "usagePerRound",
+      state: this.state,
+    });
   }
   dispose() {
     this.skillContext.dispose(this.state);

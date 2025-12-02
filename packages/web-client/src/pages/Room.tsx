@@ -45,7 +45,7 @@ import { Client, createClient, WebUiPlayerIO } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import { Dynamic } from "solid-js/web";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
-import { CancellablePlayerIO } from "@gi-tcg/core";
+import type { CancellablePlayerIO } from "@gi-tcg/core";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -71,7 +71,7 @@ const createReconnectSse = <T,>(
   url: string | (() => string),
   onPayload: (payload: T) => void,
   onError?: (e: Error) => void,
-) => {
+): [fetch: () => void, abort: () => void] => {
   let reconnectTimeout: Timer | null = null;
   let abortController: AbortController | null = null;
   let cancelled = false;
@@ -123,6 +123,7 @@ const createReconnectSse = <T,>(
         const data: ReadableStream = response.data;
         const reader = data.pipeThrough(new EventSourceStream()).getReader();
 
+        activating = false;
         resetReconnectTimer(); // Start the timer after connection is established
 
         for (;;) {

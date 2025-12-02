@@ -77,6 +77,7 @@ export const RiffRevolution = skill(13123)
   .costEnergy(2)
   .damage(DamageType.Piercing, 2, "opp standby")
   .damage(DamageType.Physical, 3)
+  .abortPreview()
   .do((c) => {
     const cards = c.player.hands.toSorted((a, b) => diceCostOfCard(b.definition) - diceCostOfCard(a.definition));
     c.disposeCard(...cards);

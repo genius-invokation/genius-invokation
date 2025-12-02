@@ -19,7 +19,7 @@ export function createVariable<const T extends number>(initialValue: T, forceOve
   return {
     initialValue,
     recreateBehavior: {
-      type: forceOverwrite ? "overwrite" : "takeMax",
+      type: forceOverwrite ? "overwrite" : "default",
     },
   };
 }

@@ -25,5 +25,4 @@ temp
 *.sln
 *.sw?
 
-src/names.json
-src/deck_data.json
+src/data

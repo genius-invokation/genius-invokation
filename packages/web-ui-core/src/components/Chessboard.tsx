@@ -23,7 +23,6 @@ import {
   PbPlayerStatus,
   PbSkillInfo,
   type DamageType,
-  type PbCardState,
   type PbCharacterState,
   type PbEntityState,
   type PbGameState,
@@ -155,7 +154,7 @@ export type CardArea = "myPile" | "oppPile" | "myHand" | "oppHand";
 
 export interface CardInfo {
   id: number;
-  data: PbCardState;
+  data: PbEntityState;
   kind: CardArea | "switching" | "animating" | "dragging";
   uiState: CardUiState;
   enableShadow: boolean;
@@ -166,7 +165,7 @@ export interface CardInfo {
 
 export interface DraggingCardInfo {
   id: number;
-  data: PbCardState;
+  data: PbEntityState;
   x: number;
   y: number;
   status: "start" | "moving" | "end";
@@ -203,14 +202,14 @@ export interface EntityInfo extends StatusInfo {
 }
 
 export interface AnimatingCardInfo {
-  data: PbCardState;
+  data: PbEntityState;
   showing: boolean;
   delay: number;
 }
 
 export interface PlayingCardInfo {
   who: 0 | 1;
-  data: PbCardState;
+  data: PbEntityState;
   noEffect: boolean;
 }
 
@@ -993,7 +992,7 @@ type SelectingItem =
     }
   | {
       type: "external";
-      info: PbCardState;
+      info: PbEntityState;
     };
 
 export function Chessboard(props: ChessboardProps) {

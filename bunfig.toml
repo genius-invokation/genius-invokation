@@ -1,3 +1,5 @@
 [install]
-saveTextLockfile = true
-peer = false
+peer = true
+
+[install.security]
+provider = "@socketsecurity/bun-security-scanner"

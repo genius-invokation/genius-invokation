@@ -41,9 +41,12 @@ export type {
 export { DiceType, DamageType, Aura, Reaction } from "@gi-tcg/typings";
 export type {
   PlainCharacterState as CharacterState,
-  PlainCardState as CardState,
   PlainEntityState as EntityState,
 } from "./context/utils";
+export type {
+  CharacterDefinition,
+  EntityDefinition,
+} from "../base/state";
 export {
   type CustomEvent,
   createCustomEvent as customEvent,

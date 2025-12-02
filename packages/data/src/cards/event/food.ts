@@ -376,7 +376,7 @@ export const [PuffPops] = card(333018)
 export const HotSpringOclock = card(333019)
   .since("v5.4.0")
   .costSame(1)
-  .food()
+  .food({ injuredOnly: true })
   .do((c) => {
     c.heal(1 + c.$$(`my summons`).length, "@targets.0");
   })
@@ -497,14 +497,14 @@ export const MystiqueSoup = card(333020)
  * @id 333027
  * @name 纵声欢唱
  * @description
- * 所有我方角色获得饱腹，抓3张牌，下2次切换角色少花费1个元素骰。
+ * 所有我方角色获得饱腹，抓2张牌，下2次切换角色少花费1个元素骰。
  * （每回合每个角色最多食用1次「料理」）
  */
 export const [SingYourHeartOut] = card(333027)
   .since("v5.6.0")
   .costVoid(3)
   .combatFood({ satiatedFilter: "allNot" })
-  .drawCards(3)
+  .drawCards(2)
   .toCombatStatus(303321)
   .on("deductOmniDiceSwitch")
   .usage(2)
@@ -529,4 +529,24 @@ export const HarvestsBoon = card(333028)
     e.entity.definition.tags.includes("preparingSkill"))
   .usage(2)
   .heal(1, "@master")
+  .done();
+
+/**
+ * @id 333029
+ * @name 沉玉茶露
+ * @description
+ * 选择1个我方角色，我方下2次冒险或结束阶段时，治疗目标角色1点。
+ * （每回合每个角色最多食用1次「料理」）
+ */
+export const [ChenyuBrew] = card(333029)
+  .since("v6.1.0")
+  .food()
+  .toStatus(303323, "@targets.0")
+  .usage(2)
+  .on("adventure")
+  .heal(1, "@master")
+  .consumeUsage()
+  .on("endPhase")
+  .heal(1, "@master")
+  .consumeUsage()
   .done();

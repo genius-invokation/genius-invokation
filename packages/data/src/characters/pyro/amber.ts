@@ -87,7 +87,7 @@ export const FieryRain = skill(13043)
 export const Amber = character(1304)
   .since("v3.7.0")
   .tags("pyro", "bow", "mondstadt")
-  .health(10)
+  .health(12)
   .energy(2)
   .skills(Sharpshooter, ExplosivePuppet, FieryRain)
   .done();

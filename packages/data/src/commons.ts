@@ -125,6 +125,27 @@ export const EfficientSwitch = combatStatus(169)
   .done()
 
 /**
+ * @id 170
+ * @name 敏捷切换
+ * @description
+ * 我方下次执行「切换角色」行动时：将此次切换视为「快速行动」而非「战斗行动」。（可叠加，没有上限）
+ */
+export const AgileSwitch = combatStatus(170)
+  .on("beforeFastSwitch")
+  .usageCanAppend(1, Infinity)
+  .setFastAction()
+  .done();
+
+/**
+ * @id 171
+ * @name 完成冒险！
+ * @description
+ * 已完成过一次冒险。
+ */
+export const AdventureCompleted = combatStatus(171)
+  .done();
+
+/**
  * @id 303300
  * @name 饱腹
  * @description

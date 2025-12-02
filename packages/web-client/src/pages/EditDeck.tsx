@@ -23,7 +23,8 @@ import {
 } from "solid-js";
 import { Layout } from "../layouts/Layout";
 import axios, { AxiosError } from "axios";
-import { decode, encode, type Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
+import { DEFAULT_ASSETS_MANAGER } from "@gi-tcg/assets-manager";
 import { useParams, useSearchParams } from "@solidjs/router";
 import { DeckBuilder } from "@gi-tcg/deck-builder";
 import "@gi-tcg/deck-builder/style.css";
@@ -108,7 +109,7 @@ export default function EditDeck() {
       return;
     }
     try {
-      const deck = decode(input);
+      const deck = DEFAULT_ASSETS_MANAGER.decode(input);
       setDeckValue(deck);
       setDirty(true);
     } catch (e) {
@@ -122,7 +123,7 @@ export default function EditDeck() {
   const exportCode = async () => {
     try {
       const deck = deckValue();
-      const code = encode(deck);
+      const code = DEFAULT_ASSETS_MANAGER.encode(deck);
       await copyToClipboard(code);
       alert(`分享码已复制到剪贴板：${code}`);
     } catch (e) {

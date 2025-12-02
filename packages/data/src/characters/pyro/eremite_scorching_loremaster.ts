@@ -46,6 +46,8 @@ export const SpiritOfOmenPyroScorpion = card(123031)
   .since("v5.1.0")
   .unobtainable()
   .technique()
+  .tags("barrier")
+  .variable("barrierUsage", 0) // no io hint for now
   .on("decreaseDamaged", (c, e) => c.self.master.energy > 0)
   .usagePerRound(2)
   .do((c) => {
@@ -112,7 +114,7 @@ export const SpiritOfOmensPower: PassiveSkillHandle = skill(23034)
   .usagePerRound(1, { name: "usagePerRound1" })
   .gainEnergy(1, "@self")
   .on("useSkill", (c, e) => e.skill.definition.id === SpiritOfOmensAwakeningPyroScorpion)
-  .usage(1, { name: "createCardUsage", autoDispose: false })
+  .usage(1, { name: "createCardUsage" })
   .createHandCard(SpiritOfOmenPyroScorpion)
   .done();
 

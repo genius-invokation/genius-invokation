@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { Deck, idToShareId } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 
 export interface PlayerInfo {
   isGuest: boolean;

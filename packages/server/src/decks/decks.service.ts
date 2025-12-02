@@ -20,9 +20,10 @@ import type {
   QueryDeckDto,
   UpdateDeckDto,
 } from "./decks.controller";
-import { type Deck, encode, decode } from "@gi-tcg/utils";
-import { type Deck as DeckModel } from "@prisma/client";
+import { type Deck } from "@gi-tcg/typings";
+import { type Deck as DeckModel } from "#prisma/client";
 import {
+  ASSETS_MANAGER,
   verifyDeck,
   type PaginationResult,
 } from "../utils";
@@ -39,13 +40,13 @@ export interface DeckWithDeckModel extends DeckWithVersion, DeckModel {}
 export class DecksService {
   constructor(private prisma: PrismaService) {}
 
-  deckToCode(deck: Deck): DeckWithVersion {
+  async deckToCode(deck: Deck): Promise<DeckWithVersion> {
     try {
-      const sinceVersion = verifyDeck(deck);
+      const sinceVersion = await verifyDeck(deck);
       const requiredVersion = VERSIONS.indexOf(sinceVersion);
       return {
         ...deck,
-        code: encode(deck),
+        code: ASSETS_MANAGER.encode(deck),
         requiredVersion,
       };
     } catch (e) {
@@ -58,7 +59,7 @@ export class DecksService {
   }
 
   private codeToDeck(code: string): Deck {
-    const deck = decode(code);
+    const deck = ASSETS_MANAGER.decode(code);
     return {
       // code,
       ...deck,
@@ -66,7 +67,7 @@ export class DecksService {
   }
 
   async createDeck(userId: number, deck: CreateDeckDto): Promise<DeckModel> {
-    const { code, requiredVersion } = this.deckToCode(deck);
+    const { code, requiredVersion } = await this.deckToCode(deck);
     return await this.prisma.deck.create({
       data: {
         name: deck.name,
@@ -139,7 +140,7 @@ export class DecksService {
         );
       }
     } else {
-      ({ code, requiredVersion } = this.deckToCode({
+      ({ code, requiredVersion } = await this.deckToCode({
         characters: deck.characters,
         cards: deck.cards,
       }));

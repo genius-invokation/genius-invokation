@@ -25,21 +25,19 @@ import {
   type PbExposedMutation,
   type PbGameState,
   PbSkillType,
-  PbCardArea,
   PbEntityArea,
   type SwitchActiveEM,
   PbPlayerFlag,
   Reaction,
   PbPlayerStatus,
   PbSwitchActiveFromAction,
-  PbRemoveCardReason,
   PbDamageType,
   PbHealKind,
-  PbTransferCardReason,
   DiceType,
   type ResetDiceEM,
   PbResetDiceReason,
-  CreateCardEM,
+  PbRemoveEntityReason,
+  PbMoveEntityReason,
 } from "@gi-tcg/typings";
 import type {
   AbsorbDiceHistoryChild,
@@ -351,8 +349,8 @@ export class StateRecorder {
     };
     this.initializeCharacter(who as 0 | 1, character);
   }
-  onNewCard(mut: CreateCardEM) {
-    this.area.set(mut.card!.id, {
+  onNewCard(mut: CreateEntityEM) {
+    this.area.set(mut.entity!.id, {
       who: mut.who as 0 | 1,
       masterDefinitionId: null,
     });
@@ -477,81 +475,81 @@ export function updateHistory(
           }
           break;
         }
-        case "createCard": {
-          history.recorder.onNewCard(m as CreateCardEM);
-          children.push({
-            type: "createCard",
-            who: m.who as 0 | 1,
-            cardDefinitionId: m.card!.definitionId,
-            target: m.to === PbCardArea.HAND ? "hands" : "pile",
-          });
+        case "createEntity": {
+          if (m.where === PbEntityArea.HAND || m.where === PbEntityArea.PILE) {
+            history.recorder.onNewCard(m as CreateEntityEM);
+            children.push({
+              type: "createCard",
+              who: m.who as 0 | 1,
+              cardDefinitionId: m.entity!.definitionId,
+              target: m.where === PbEntityArea.HAND ? "hands" : "pile",
+            });
+          } else {
+            history.recorder.onNewEntity(m);
+            const { definitionId, id } = m.entity!;
+            const { type } = history.recorder.entityInitStates.get(id)!;
+            children.push({
+              type: "createEntity",
+              who: m.who as 0 | 1,
+              masterDefinitionId: history.recorder.getMasterDefinitionId(id),
+              entityDefinitionId: definitionId,
+              entityType: type,
+            });
+          }
           break;
         }
         case "createCharacter": {
           history.recorder.onNewCharacter(m);
           break;
         }
-        case "createEntity": {
-          history.recorder.onNewEntity(m);
-          const { definitionId, id } = m.entity!;
-          const { type } = history.recorder.entityInitStates.get(id)!;
-          children.push({
-            type: "createEntity",
-            who: m.who as 0 | 1,
-            masterDefinitionId: history.recorder.getMasterDefinitionId(id),
-            entityDefinitionId: definitionId,
-            entityType: type,
-          });
-          break;
-        }
-        case "removeCard": {
-          const definitionId = m.card!.definitionId;
-          if (
-            m.reason === PbRemoveCardReason.PLAY ||
-            m.reason === PbRemoveCardReason.PLAY_NO_EFFECT
-          ) {
-            mainBlock = {
-              type: "playCard",
-              who: m.who as 0 | 1,
-              cardDefinitionId: definitionId,
-              children: [],
-              indent: history.currentIndent,
-            };
-            if (m.reason === PbRemoveCardReason.PLAY_NO_EFFECT) {
+        case "removeEntity": {
+          if (m.where === PbEntityArea.HAND || m.where === PbEntityArea.PILE) {
+            const definitionId = m.entity!.definitionId;
+            if (
+              m.reason === PbRemoveEntityReason.EVENT_CARD_PLAYED ||
+              m.reason === PbRemoveEntityReason.EVENT_CARD_PLAY_NO_EFFECT
+            ) {
+              mainBlock = {
+                type: "playCard",
+                who: m.who as 0 | 1,
+                cardDefinitionId: definitionId,
+                children: [],
+                indent: history.currentIndent,
+              };
+              if (m.reason === PbRemoveEntityReason.EVENT_CARD_PLAY_NO_EFFECT) {
+                children.push({
+                  type: "playCardNoEffect",
+                  who: m.who as 0 | 1,
+                  cardDefinitionId: definitionId,
+                });
+              }
+            } else if (m.reason === PbRemoveEntityReason.ELEMENTAL_TUNING) {
+              mainBlock = {
+                type: "elementalTuning",
+                who: m.who as 0 | 1,
+                cardDefinitionId: definitionId,
+                children: [],
+                indent: history.currentIndent,
+              };
+            } else if (m.reason !== PbRemoveEntityReason.OVERFLOW) {
               children.push({
-                type: "playCardNoEffect",
+                type: "removeCard",
                 who: m.who as 0 | 1,
                 cardDefinitionId: definitionId,
               });
             }
-          } else if (m.reason === PbRemoveCardReason.ELEMENTAL_TUNING) {
-            mainBlock = {
-              type: "elementalTuning",
-              who: m.who as 0 | 1,
-              cardDefinitionId: definitionId,
-              children: [],
-              indent: history.currentIndent,
-            };
-          } else if (m.reason !== PbRemoveCardReason.HANDS_OVERFLOW) {
+          } else {
+            const { definitionId, id } = m.entity!;
+            const area = history.recorder.area.get(id);
+            const { type } = history.recorder.entityInitStates.get(id)!;
             children.push({
-              type: "removeCard",
-              who: m.who as 0 | 1,
-              cardDefinitionId: definitionId,
+              type: "removeEntity",
+              who: area?.who ?? 0,
+              masterDefinitionId: history.recorder.getMasterDefinitionId(id),
+              entityDefinitionId: definitionId,
+              entityType: type,
             });
           }
-          break;
-        }
-        case "removeEntity": {
-          const { definitionId, id } = m.entity!;
-          const area = history.recorder.area.get(id);
-          const { type } = history.recorder.entityInitStates.get(id)!;
-          children.push({
-            type: "removeEntity",
-            who: area?.who ?? 0,
-            masterDefinitionId: history.recorder.getMasterDefinitionId(id),
-            entityDefinitionId: definitionId,
-            entityType: type,
-          });
           break;
         }
         case "setPlayerFlag": {
@@ -586,38 +584,62 @@ export function updateHistory(
           }
           break;
         }
-        case "transferCard": {
+        case "moveEntity": {
           if (phase < PbPhaseType.ACTION) {
             break;
           }
-          if (m.reason === PbTransferCardReason.DRAW) {
+          if (
+            m.reason === PbMoveEntityReason.EQUIP ||
+            m.reason === PbMoveEntityReason.CREATE_SUPPORT
+          ) {
+            mainBlock = {
+              type: "playCard",
+              who: m.fromWho as 0 | 1,
+              cardDefinitionId: m.entity!.definitionId,
+              children: [],
+              indent: history.currentIndent,
+            };
+          } else if (
+            m.reason === PbMoveEntityReason.UNEQUIP ||
+            m.reason === PbMoveEntityReason.UNSUPPORT
+          ) {
+            children.push({
+              type: "createCard",
+              who: m.toWho as 0 | 1,
+              cardDefinitionId: m.entity!.definitionId,
+              target: "hands",
+            });
+          } else if (m.reason === PbMoveEntityReason.DRAW) {
             if (!mainBlock && phase === PbPhaseType.END) {
               maybeEndPhaseDrawing = true;
             }
             const lastChild = getLastChild();
-            if (lastChild?.type === "drawCard" && lastChild.who === m.who) {
+            if (lastChild?.type === "drawCard" && lastChild.who === m.fromWho) {
               lastChild.drawCardsCount += 1;
             } else {
               children.push({
                 type: "drawCard",
-                who: m.who as 0 | 1,
+                who: m.fromWho as 0 | 1,
                 drawCardsCount: 1,
               });
             }
-          } else if (m.transferToOpp) {
+          } else if (m.fromWho !== m.toWho) {
             children.push({
               type: "stealHand",
-              who: flip(m.who as 0 | 1),
-              cardDefinitionId: m.card!.definitionId,
+              who: m.toWho as 0 | 1,
+              cardDefinitionId: m.entity!.definitionId,
             });
-          } else if (m.reason === PbTransferCardReason.UNDRAW) {
+          } else if (m.reason === PbMoveEntityReason.UNDRAW) {
             const lastChild = getLastChild();
-            if (lastChild?.type === "undrawCard" && lastChild.who === m.who) {
+            if (
+              lastChild?.type === "undrawCard" &&
+              lastChild.who === m.fromWho
+            ) {
               lastChild.count += 1;
             } else {
               children.push({
                 type: "undrawCard",
-                who: m.who as 0 | 1,
+                who: m.fromWho as 0 | 1,
                 count: 1,
               });
             }

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { CardHandle, DamageType, DiceType, Reaction, SupportHandle, card, combatStatus, extension, flip, pair, status, summon } from "@gi-tcg/core/builder";
+import { EntityDefinition, CardHandle, DamageType, DiceType, Reaction, card, combatStatus, extension, pair, status, summon } from "@gi-tcg/core/builder";
 import { BurningFlame, CatalyzingField, DendroCore, EfficientSwitch, ResistantForm } from "../../commons";
 import { BountifulCore } from "../../characters/hydro/nilou";
 
@@ -76,6 +76,7 @@ export const ElectroHilichurlShooter = summon(303214)
 export const FatuiAmbusherCryoCicinMage = combatStatus(303216)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Cryo, 1, "my active")
   .done();
 
@@ -89,6 +90,7 @@ export const FatuiAmbusherCryoCicinMage = combatStatus(303216)
 export const FatuiAmbusherMirrorMaiden = combatStatus(303217)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Hydro, 1, "my active")
   .done();
 
@@ -102,6 +104,7 @@ export const FatuiAmbusherMirrorMaiden = combatStatus(303217)
 export const FatuiAmbusherPyroslingerBracer = combatStatus(303218)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Pyro, 1, "my active")
   .done();
 
@@ -115,6 +118,7 @@ export const FatuiAmbusherPyroslingerBracer = combatStatus(303218)
 export const FatuiAmbusherElectrohammerVanguard = combatStatus(303219)
   .on("useSkill")
   .usage(2)
+  .usagePerRound(1)
   .damage(DamageType.Electro, 1, "my active")
   .done();
 
@@ -454,8 +458,8 @@ export const ThunderAndEternity = card(331803)
 export const NatureAndWisdom = card(331804)
   .since("v3.7.0")
   .costSame(1)
-  .drawCards(1)
   .switchCards()
+  .drawCards(1) // 先触发换牌请求，再触发抓牌效果
   .done();
 
 /**
@@ -677,7 +681,7 @@ export const MasterOfWeaponry = card(332010)
     if (targetOldWeapon) {
       c.dispose(targetOldWeapon);
     }
-    c.transferEntity(weapon, area);
+    c.moveEntity(weapon, area);
   })
   .done();
 
@@ -704,7 +708,7 @@ export const BlessingOfTheDivineRelicsInstallation = card(332011)
     if (targetOldArtifact) {
       c.dispose(targetOldArtifact);
     }
-    c.transferEntity(artifact, area);
+    c.moveEntity(artifact, area);
   })
   .done();
 
@@ -883,8 +887,7 @@ export const [WhereIsTheUnseenRazor] = card(332022)
   .since("v4.0.0")
   .addTarget("my character has equipment with tag (weapon)")
   .do((c, e) => {
-    const { definition } = e.targets[0].removeWeapon()!;
-    c.createHandCard(definition.id as CardHandle);
+    e.targets[0].unequipWeapon();
   })
   .toCombatStatus(303222)
   .oneDuration()
@@ -958,8 +961,7 @@ export const Lyresong = card(332024)
   .associateExtension(LyresongIsFirstExtension)
   .addTarget("my character has equipment with tag (artifact)")
   .do((c, e) => {
-    const { definition } = e.targets[0].removeArtifact()!;
-    c.createHandCard(definition.id as CardHandle);
+    e.targets[0].unequipArtifact();
     if (c.getExtensionState().first[c.self.who]) {
       c.combatStatus(LyresongInEffect2);
     } else {
@@ -975,15 +977,12 @@ export const Lyresong = card(332024)
  * 本回合中，我方每有1张装备在角色身上的「装备牌」被弃置时：获得1个万能元素。（最多获得2个）
  * （角色被击倒时弃置装备牌，或者覆盖装备「武器」「圣遗物」或「特技」，都可以触发此效果）
  */
-export const [TheBoarPrincess] = card(332025)
+export const [TheBoarPrincess, TheBoarPrincessInEffect] = card(332025)
   .since("v4.3.0")
   .toCombatStatus(303225)
   .usage(2)
   .oneDuration()
   .on("dispose", (c, e) => e.entity.definition.type === "equipment")
-  .generateDice(DiceType.Omni, 1)
-  .consumeUsage()
-  .on("enterRelative", (c, e) => e.overridden && e.entity.definition.type === "equipment")
   .generateDice(DiceType.Omni, 1)
   .consumeUsage()
   .done();
@@ -1061,7 +1060,7 @@ export const [SunyataFlower] = card(332029)
   })
   .toCombatStatus(303229)
   .oneDuration()
-  .once("deductOmniDiceCard", (c, e) => e.action.skill.caller.definition.cardType === "support")
+  .once("deductOmniDiceCard", (c, e) => e.action.skill.caller.definition.type === "support")
   .deductOmniCost(1)
   .done();
 
@@ -1333,7 +1332,15 @@ const MELUSINE_EVENT_CARDS = [
   WaterAndJustice,
   FireAndWar,
   // 331807, 
-] as CardHandle[];
+];
+
+// 筛出当前版本存在的卡
+const getMelusineEventCards = (cards: ReadonlyMap<number, EntityDefinition>): CardHandle[] => {
+  return MELUSINE_EVENT_CARDS
+    .map(id => cards.get(id))
+    .filter(def => !!def)
+    .map((def) => def.id as CardHandle);
+}
 
 /**
  * @id 302209
@@ -1345,8 +1352,9 @@ export const CanotilasSupport = card(302209)
   .since("v4.8.0")
   .costSame(1)
   .do((c) => {
-    const card0 = c.random(MELUSINE_EVENT_CARDS);
-    const card1 = c.random(MELUSINE_EVENT_CARDS);
+    const cards = getMelusineEventCards(c.data.entities);
+    const card0 = c.random(cards);
+    const card1 = c.random(cards);
     c.createHandCard(card0);
     c.createHandCard(card1);
   })
@@ -1363,7 +1371,8 @@ const ThironasGoodWill = combatStatus(302219)
   .on("endPhase") // 文本有误
   .usage(3)
   .do((c) => {
-    const card = c.random(MELUSINE_EVENT_CARDS);
+    const cards = getMelusineEventCards(c.data.entities);
+    const card = c.random(cards);
     c.createHandCard(card);
   })
   .done();
@@ -1668,7 +1677,7 @@ export const UltimateSurfingBuddy = card(332041)
  * @description
  * 本回合我方下次角色消耗「夜魂值」后：该角色获得1点「夜魂值」。
  */
-export const [AbundantPhlogiston] = card(332042)
+export const [AbundantPhlogiston, AbundantPhlogistonInEffect] = card(332042)
   .since("v5.3.0")
   .toCombatStatus(303238)
   .oneDuration()
@@ -1771,7 +1780,8 @@ export const FlyingSquadAttack = card(332046)
  * 该角色下次元素战技花费1个元素骰。（不可叠加）
  */
 export const FruitsOfTrainingInEffect02 = status(303242)
-  .once("deductOmniDiceSkill", (c, e) => e.isSkillType("elemental"))
+  .on("deductOmniDiceSkill", (c, e) => e.isSkillType("elemental"))
+  .usageCanAppend(1, Infinity) // 所谓“不可叠加”是指无法一次减多个骰子，但是可用次数可以叠加
   .deductOmniCost(1)
   .done();
 
@@ -1785,8 +1795,7 @@ export const FruitsOfTrainingInEffect01 = status(303241)
   .on("enterRelative", (c, e) =>
     e.entity.definition.type === "status" &&
     e.entity.definition.tags.includes("preparingSkill") &&
-    e.entity.cast<"status">().master.id !== c.self.master.id &&
-    !c.self.master.hasStatus(FruitsOfTrainingInEffect02))
+    e.entity.cast<"status">().master.id !== c.self.master.id)
   .listenToPlayer()
   .usage(2)
   .characterStatus(FruitsOfTrainingInEffect02, "@master")
@@ -1812,7 +1821,6 @@ export const FruitsOfTraining = card(332048)
  * 可用次数：2
  */
 export const ToyGuardSummon = summon(301028)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(DamageType.Physical, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1830,7 +1838,6 @@ export const ToyGuardSummon = summon(301028)
  * 可用次数：2
  */
 export const OrigamiFlyingSquirrelSummon = summon(301029)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1852,7 +1859,6 @@ export const OrigamiFlyingSquirrelSummon = summon(301029)
  * 可用次数：2
  */
 export const PopupPaperFrogSummon = summon(301030)
-  .tags("simulanka")
   .variable("effect", 1, { forceOverwrite: true })
   .hint(ResistantForm, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1870,7 +1876,6 @@ export const PopupPaperFrogSummon = summon(301030)
  * 可用次数：1
  */
 export const OrigamiHamsterSummon = summon(301031)
-  .tags("simulanka")
   .variable("effect", 2, { forceOverwrite: true })
   .hint(DamageType.Heal, (c, e) => e.variables.effect)
   .on("endPhase")
@@ -1879,6 +1884,17 @@ export const OrigamiHamsterSummon = summon(301031)
     c.heal(c.getVariable("effect"), "my characters order by health - maxHealth limit 1");
   })
   .done();
+
+export const SIMULANKA_SUMMONS = [
+  ToyGuardSummon,
+  OrigamiFlyingSquirrelSummon,
+  PopupPaperFrogSummon,
+  OrigamiHamsterSummon
+];
+
+export const SIMULANKA_QUERY = SIMULANKA_SUMMONS
+  .map((id) => `(my summons with definition id ${id})`)
+  .join(` or `) as `${string} summons ${string}`;
 
 /**
  * @id 301033
@@ -1943,6 +1959,7 @@ export const OrigamiHamster = card(301036)
 /**
  * @id 303244
  * @name 收获时间（生效中）
+ * @description
  * 结束阶段：生成一张收获时间，随机置入我方牌组。（可叠加，最多叠加到2）
  */
 export const HarvestTimeInEffect = combatStatus(303244)
@@ -1985,4 +2002,274 @@ export const AwesomeBro = card(332050)
   .toCombatStatus(303243)
   .once("playCard", (c, e) => e.hasCardTag("technique"))
   .generateDice(DiceType.Omni, 1)
+  .done();
+
+export const DisposedSupportAndSummonsCountExtension = extension(332051, pair({
+  disposedSupportCount: 0,
+  disposedSummonsCount: 0,
+}))
+  .description("记录本场对局中双方支援区和召唤区弃置卡牌的数量")
+  .mutateWhen("onDispose", (st, e) => {
+    if (e.entity.definition.type === "support") {
+      st[e.who].disposedSupportCount++;
+    } else if (e.entity.definition.type === "summon") {
+      st[e.who].disposedSummonsCount++;
+    }
+  })
+  .done();
+
+/**
+ * @id 303245
+ * @name 「邪龙」
+ * @description
+ * 结束阶段：造成1点穿透伤害。
+ * 可用次数：1
+ */
+export const FellDragon = summon(303245)
+  .variable("effect", 1, { forceOverwrite: true })
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .hint(DamageType.Physical, (c, e) => e.variables.effect)
+  .on("endPhase")
+  .usage(1)
+  .do((c, e) => {
+    c.damage(DamageType.Piercing, c.getVariable("effect"));
+  })
+  .on("enter")
+  .do((c, e) => {
+    const ext = c.getExtensionState()[c.self.who];
+    const addUsage = Math.min(ext.disposedSupportCount, 4);
+    const addDmg = Math.min(ext.disposedSummonsCount, 4);
+    c.addVariable("usage", addUsage);
+    c.addVariable("effect", addDmg);
+  })
+  .done();
+
+/**
+ * @id 332051
+ * @name 「邪龙」的苏醒
+ * @description
+ * 召唤「邪龙」。
+ * 本场对局中，我方支援区每弃置1张卡牌，则「邪龙」可用次数+1；我方召唤区每弃置1张卡牌，则「邪龙」效果量+1。（可叠加，最多叠加到4）
+ * （「邪龙」：结束阶段：造成1点穿透伤害。
+ * 可用次数：1）
+ * 【此卡含描述变量】
+ */
+export const FellDragonsAwakening = card(332051)
+  .since("v6.0.0")
+  .costSame(2)
+  .associateExtension(DisposedSupportAndSummonsCountExtension)
+  .replaceDescription("[GCG_TOKEN_COUNTER]", (c, { area }, ext) => ext[area.who].disposedSupportCount)
+  .replaceDescription("[GCG_TOKEN_COUNTER_2]", (c, { area }, ext) => ext[area.who].disposedSummonsCount)
+  .summon(FellDragon)
+  .done();
+
+/**
+ * @id 332052
+ * @name 旁白的注脚
+ * @description
+ * 双方召唤积木小人。
+ * （积木小人：结束阶段：造成1点物理伤害。
+ * 可用次数：2）
+ */
+export const NarrationFootnotes = card(332052)
+  .since("v6.0.0")
+  .summon(ToyGuardSummon)
+  .summon(ToyGuardSummon, "opp")
+  .done();
+
+/**
+ * @id 332054
+ * @name 「魔女M的祝福」
+ * @description
+ * 选择并弃置一个我方召唤物，将其可用次数转化为至多2个不同类型的基础元素骰，如果其可用次数不低于3，则额外治疗我方受伤最多的角色2点。
+ */
+export const ABlessingFromM = card(332054)
+  .since("v6.0.0")
+  .addTarget("my summon")
+  .do((c, e) => {
+    const usage = e.targets[0].variables.usage!;
+    e.targets[0].dispose();
+    c.generateDice("randomElement", Math.min(usage, 2));
+    if (usage >= 3) {
+      c.heal(2, "my characters order by health - maxHealth limit 1");
+    }
+  })
+  .done();
+
+/**
+ * @id 332055
+ * @name 「狂欢节奏」
+ * @description
+ * 抓2张牌，如果我方手牌中的「武器」牌或「圣遗物」牌数量大于1张，则各生成1个万能元素。
+ */
+export const RevelrousBeats = card(332055)
+  .since("v6.0.0")
+  .costVoid(2)
+  .do((c, e) => {
+    c.drawCards(2);
+    if (c.$$("my hands with tag (weapon)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+    if (c.$$("my hands with tag (artifact)").length > 1) {
+      c.generateDice(DiceType.Omni, 1);
+    }
+  })
+  .done();
+
+/**
+ * @id 332056
+ * @name 祀珑在昔，灵锦歆诚
+ * @description
+ * 冒险1次。如果我方冒险经历不低于4，则改为对我方「出战角色」造成1点物理伤害，冒险2次。
+ */
+export const AnAncientSacrificeOfSacredBrocade = card(332056)
+  .since("v6.1.0")
+  .costSame(1)
+  .do((c) => {
+    const exp = c.$(`my support with tag (adventureSpot)`)?.variables.exp ?? 0;
+    if (exp >= 4) {
+      c.damage(DamageType.Physical, 1, "my active");
+      c.adventure();
+    }
+    c.adventure();
+  })
+  .done();
+
+/**
+ * @id 300008
+ * @name 驱逐灾厄
+ * @description
+ * 将敌方1张费用最高的手牌置于牌组底。
+ */
+export const DisperseTheCalamity = card(300008)
+  .since("v6.2.0")
+  .unobtainable()
+  .do((c) => {
+    const cards = c.maxCostHands(1, { who: "opp" });
+    c.undrawCards(cards, "bottom", "opp");
+  })  // TODO
+  .done();
+
+/**
+ * @id 300009
+ * @name 肃净污染
+ * @description
+ * 将我方所有手牌置于牌组底，然后抓相同数量+1张手牌。
+ */
+export const SanctifyTheDefiled = card(300009)
+  .since("v6.2.0")
+  .unobtainable()
+  .do((c) => {
+    const allHands = [...c.player.hands];
+    const count = allHands.length;
+    c.undrawCards(allHands, "bottom");
+    c.drawCards(count + 1);
+  })
+  .done();
+
+/**
+ * @id 301038
+ * @name 木质玩具剑
+ * @description
+ * 治疗目标角色2点，生成2个随机基础元素骰。
+ */
+export const WoodenToySword = card(301038)
+  .since("v6.2.0")
+  .unobtainable()
+  .costSame(1)
+  .addTarget("my characters")
+  .heal(2, "@targets.0")
+  .generateDice("randomElement", 2)
+  .done();
+
+/**
+ * @id 301040
+ * @name 重铸圣剑（生效中）
+ * @description
+ * 所附属角色重击后：造成5点该角色元素类型的伤害。
+ */
+export const ReforgeTheHolyBladeInEffect = status(301040)
+  .on("useSkill", (c, e) => e.isChargedAttack())
+  .do((c) => {
+    const element = c.self.master.element() as number as DamageType;
+    c.damage(element, 5);
+  })
+  .done();
+
+/**
+ * @id 301039
+ * @name 重铸圣剑
+ * @description
+ * 治疗目标角色12点，使其获得效果：重击后：造成5点该角色元素类型的伤害。
+ */
+export const ReforgeTheHolyBlade = card(301039)
+  .since("v6.2.0")
+  .unobtainable()
+  .costVoid(4)
+  .addTarget("my characters")
+  .heal(12, "@targets.0")
+  .characterStatus(ReforgeTheHolyBladeInEffect, "@targets.0")
+  .done();
+
+/**
+ * @id 332057
+ * @name 水仙十字大冒险
+ * @description
+ * 如果我方存在相同元素类型的角色，则治疗我方受伤最多的角色1点；
+ * 如果我方存在相同武器类型的角色，抓1张牌；
+ * 如果我方存在相同所属势力的角色，则冒险1次。
+ */
+export const TheNarzissenkreuzAdventure = card(332057)
+  .since("v6.2.0")
+  .costSame(1)
+  .do((c) => {
+    const characters = c.$$("my characters include defeated");
+    const elements = characters.map((ch) => ch.element());
+    const weapons = characters.map((ch) => ch.weaponTag());
+    const nations = characters.flatMap((ch) => ch.nationTags());
+    if (new Set(elements).size < characters.length) {
+      c.heal(1, "my characters order by health - maxHealth limit 1");
+    }
+    if (new Set(weapons).size < characters.length) {
+      c.drawCards(1);
+    }
+    if (new Set(nations).size < nations.length) {
+      c.adventure();
+    }
+  })
+  .done();
+
+/**
+ * @id 303247
+ * @name 拯救世界的计划（生效中）
+ * @description
+ * 下个回合结束时，双方出战角色生命值变为5。
+ */
+export const PlanToSaveTheWorldInEffect = combatStatus(303247)
+  .duration(2)
+  .on("endPhase", (c, e) => c.getVariable("duration") === 1)
+  .do((c) => {
+    const actives = c.$$(`all active characters`);
+    for (const ch of actives) {
+      c.mutate({
+        type: "modifyEntityVar",
+        state: ch.latest(),
+        varName: "health",
+        value: 5,
+        direction: ch.health > 5 ? "decrease" : "increase",
+      });
+    }
+  })
+  .done();
+
+/**
+ * @id 332058
+ * @name 拯救世界的计划
+ * @description
+ * 下回合结束阶段时，双方出战角色生命值变为5。
+ */
+export const PlanToSaveTheWorld = card(332058)
+  .since("v6.2.0")
+  .costSame(2)
+  .combatStatus(PlanToSaveTheWorldInEffect)
   .done();

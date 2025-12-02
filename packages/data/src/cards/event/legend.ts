@@ -14,6 +14,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { DiceType, card, extension, flip, pair, status } from "@gi-tcg/core/builder";
+import { DisperseTheCalamity, SanctifyTheDefiled } from "./other";
 
 /**
  * @id 330001
@@ -79,17 +80,10 @@ export const [FreshWindOfFreedom] = card(330004)
   .legend()
   .toCombatStatus(300002)
   .oneDuration()
-  .on("defeated", (c, e) => c.phase === "action" && c.isMyTurn() && !e.target.isMine())
+  .on("defeated", (c, e) => c.isMyTurn() && !e.target.isMine())
   .listenToAll()
   .usage(1)
-  .do((c) => {
-    c.mutate({
-      type: "setPlayerFlag",
-      who: flip(c.self.who),
-      flagName: "skipNextTurn",
-      value: true
-    });
-  })
+  .continueNextTurn()
   .done();
 
 /**
@@ -134,7 +128,7 @@ export const [PassingOfJudgment] = card(330006)
   .toCombatStatus(300003, "opp")
   .tags("eventEffectless")
   .oneDuration()
-  .on("playCard", (c, e) => e.card.definition.cardType === "event")
+  .on("playCard", (c, e) => e.card.definition.type === "eventCard")
   .usage(3)
   .done();
 
@@ -175,6 +169,7 @@ export const ViciousAncientBattle = card(330008)
 /**
  * @id 300005
  * @name 赦免宣告（生效中）
+ * @description
  * 所附属角色免疫冻结、眩晕、石化等无法使用技能的效果，并且该角色为「出战角色」时不会因效果而切换。
  * 持续回合：2
  */
@@ -250,7 +245,7 @@ export const FlamesOfWarExtension = extension(300006, {
    */
   export const FlamesOfWar = card(300006)
     .unobtainable()
-    .support(null)
+    .support()
     .variable("spirit", 0)
     .associateExtension(FlamesOfWarExtension)
     .on("enter")
@@ -269,6 +264,12 @@ export const FlamesOfWarExtension = extension(300006, {
       if (c.getExtensionState().win[c.self.who]) {
         c.characterStatus(FlamesOfWarInEffect, "my active");
       }
+    })
+    .on("selfDispose")
+    .do((c) => {
+      c.setExtensionState((st) => {
+        st.spirit[c.self.who] = 0;
+      });
     })
     .done();
 
@@ -321,7 +322,25 @@ export const FightForDeath = card(330011)
   .legend()
   .drawCards(1)
   .do((c) => {
-    const increasedValue = c.$$(`all my defeated characters`).length * 2;
-      c.increaseMaxHealth(increasedValue, `all my characters`)
+    const defeatedCount = c.$$(`my defeated characters`).length;
+    if (defeatedCount > 0) {
+      const increasedValue = defeatedCount * 2;
+      c.increaseMaxHealth(increasedValue, `my characters`);
+    }
   })
+  .done();
+
+/**
+ * @id 330012
+ * @name 「沙中遗事」
+ * @description
+ * 挑选一项：
+ * 将敌方1张费用最高的手牌置于牌组底。
+ * 或
+ * 将我方所有手牌置于牌组底，然后抓相同数量+1张手牌。
+ */
+export const LostLegaciesInTheSand = card(330012)
+  .since("v6.2.0")
+  .legend()
+  .selectAndPlay([DisperseTheCalamity, SanctifyTheDefiled])
   .done();

@@ -36,10 +36,11 @@ import {
   RpcResponse,
   CURRENT_VERSION,
   type Version,
+  type GameState,
 } from "@gi-tcg/core";
-import { dispatchRpc } from "@gi-tcg/typings";
+import { dispatchRpc, type Deck } from "@gi-tcg/typings";
 import getData from "@gi-tcg/data";
-import { type Deck, flip } from "@gi-tcg/utils";
+import { flip } from "@gi-tcg/utils";
 import {
   BehaviorSubject,
   Observable,
@@ -48,6 +49,7 @@ import {
   concat,
   defer,
   filter,
+  finalize,
   interval,
   map,
   mergeWith,
@@ -65,7 +67,7 @@ import type {
 import { DecksService } from "../decks/decks.service";
 import { UsersService, type UserInfo } from "../users/users.service";
 import { GamesService } from "../games/games.service";
-import { semver, stringWidth } from "bun";
+import { redis, semver } from "bun";
 
 interface RoomConfig extends Partial<GameConfig> {
   initTotalActionTime: number; // defaults 45
@@ -161,7 +163,8 @@ interface RpcResolver {
   resolve: (response: any) => void;
 }
 
-const pingInterval = interval(15 * 1000).pipe(
+// Keepalive ping interval (10 seconds to prevent proxy/gateway timeout)
+const pingInterval = interval(10 * 1000).pipe(
   map((): SSEPing => ({ type: "ping" })),
 );
 
@@ -479,12 +482,21 @@ class Room {
     if (player0 === null || player1 === null) {
       throw new ConflictException("player not ready");
     }
-    player0.setTimeoutConfig(this.config);
-    player1.setTimeoutConfig(this.config);
-    const state = InternalGame.createInitialState({
-      decks: [player0.playerInfo.deck, player1.playerInfo.deck],
-      data: getData(this.config.gameVersion),
-    });
+    let state: GameState;
+    try {
+      player0.setTimeoutConfig(this.config);
+      player1.setTimeoutConfig(this.config);
+      state = InternalGame.createInitialState({
+        decks: [player0.playerInfo.deck, player1.playerInfo.deck],
+        data: getData(this.config.gameVersion),
+        versionBehavior: this.config.gameVersion,
+      });
+    } catch (e) {
+      this.stop();
+      throw new InternalServerErrorException(
+        `Failed to create initial game state: ${e}; propably due to invalid decks`,
+      );
+    }
     const game = new InternalGame(state);
     game.onPause = async (state, mutations, canResume) => {
       this.stateLog.push({ state, canResume });
@@ -656,7 +668,11 @@ export class RoomsService {
   }
 
   private async createRoom(playerInfo: PlayerInfo, params: CreateRoomDto) {
-    if (this.shutdownResolvers) {
+    let deploying = null;
+    if (process.env.REDIS_URL) {
+      deploying = await redis.get("meta:deploying");
+    }
+    if (this.shutdownResolvers || deploying !== null) {
       throw new ConflictException(
         "Creating room is disabled now; we are planning a maintenance",
       );
@@ -688,7 +704,7 @@ export class RoomsService {
     };
 
     try {
-      const version = verifyDeck(playerInfo.deck);
+      const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, roomConfig.gameVersion) > 0) {
         throw new BadRequestException(
           `Deck version required ${version}, it's higher game version ${roomConfig.gameVersion}`,
@@ -707,12 +723,27 @@ export class RoomsService {
       throw new InternalServerErrorException("no room available");
     }
     const room = new Room(roomId, roomConfig);
+    if (process.env.REDIS_URL) {
+      await redis.hset("meta:active_rooms", roomId, JSON.stringify(roomConfig));
+      await redis.hexpire(
+        "meta:active_rooms",
+        1 * 60 * 60,
+        "FIELDS",
+        1,
+        roomId,
+      );
+    }
     this.rooms.set(roomId, room);
     this.roomIdPool.shift();
     this.logger.log(`Room ${room.id} created, host is ${playerInfo.name}`);
 
     room.onStop(async (room, game) => {
-      const keepRoomDuration = (this.shutdownResolvers ? 1 : 5) * 60 * 1000;
+      let deploying = null;
+      if (process.env.REDIS_URL) {
+        deploying = await redis.get("meta:deploying");
+      }
+      const keepRoomDuration =
+        (this.shutdownResolvers || deploying ? 1 : 5) * 60 * 1000;
       this.logger.log(
         `Room ${room.id} stopped, status ${room.status}, keep it for ${keepRoomDuration} ms`,
       );
@@ -721,6 +752,9 @@ export class RoomsService {
         await new Promise((r) => setTimeout(r, keepRoomDuration));
       }
       this.logger.log(`Room ${room.id} removed`);
+      if (process.env.REDIS_URL) {
+        await redis.hdel("meta:active_rooms", room.id);
+      }
       this.rooms.delete(room.id);
       this.roomIdPool.push(room.id);
       if (this.rooms.size === 0) {
@@ -808,7 +842,7 @@ export class RoomsService {
     }
 
     try {
-      const version = verifyDeck(playerInfo.deck);
+      const version = await verifyDeck(playerInfo.deck);
       if (semver.order(version, room.config.gameVersion) > 0) {
         throw new BadRequestException(
           `Deck version required ${version}, it's higher game version ${room.config.gameVersion}`,
@@ -923,7 +957,19 @@ export class RoomsService {
     for (const player of players) {
       if (player.playerInfo.id === watchingPlayerId) {
         const observable = player.notificationSse$;
-        return observable.pipe(map((data) => ({ data })));
+        return observable.pipe(
+          finalize(() => {
+            if (
+              visitorPlayerId === watchingPlayerId &&
+              room.status !== RoomStatus.Finished
+            ) {
+              this.logger.warn(
+                `Player ${visitorPlayerId} disconnected from room ${roomId} while game not finished (status=${room.status})`,
+              );
+            }
+          }),
+          map((data) => ({ data })),
+        );
       }
     }
     throw new InternalServerErrorException("unreachable");

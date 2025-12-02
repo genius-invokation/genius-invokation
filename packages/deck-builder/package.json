@@ -27,12 +27,12 @@
   "dependencies": {
     "@gi-tcg/assets-manager": "workspace:*",
     "@gi-tcg/card-data-viewer": "workspace:*",
+    "@gi-tcg/typings": "workspace:*",
     "@gi-tcg/utils": "workspace:*",
     "@solid-primitives/keyed": "^1.4.0"
   },
   "devDependencies": {
     "@gi-tcg/config": "workspace:*",
-    "@gi-tcg/static-data": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",

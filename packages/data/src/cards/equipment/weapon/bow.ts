@@ -205,3 +205,21 @@ export const KingsValet = card(133092) // 骗骗花
  */
 export const AsmosBow = card(133093) // 骗骗花
   .reserve();
+
+/**
+ * @id 311208
+ * @name 若水
+ * @description
+ * 所附属角色生命值至少为11时：造成的伤害+2。
+ * 入场时：所附属角色获得1点最大生命值。
+ * （「弓」角色才能装备。角色最多装备1件「武器」）
+ */
+export const AquaSimulacra = card(311208)
+  .since("v6.0.0")
+  .costSame(2)
+  .weapon("bow")
+  .on("increaseSkillDamage", (c) => c.self.master.health >= 11)
+  .increaseDamage(2)
+  .on("enter")
+  .increaseMaxHealth(1, "@master")
+  .done();

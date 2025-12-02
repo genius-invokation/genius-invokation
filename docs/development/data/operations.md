@@ -167,9 +167,8 @@ interface SkillContext {
   // diff 策略只回收不同颜色的骰子。
   absorbDice(strategy: "seq" | "diff", count: number): DiceType[];
 
-  // 从 `cards` 中以不步进随机数的方式随机选取至多 `count` 张行动牌弃置；
-  // 返回这些被弃置的行动牌。
-  disposeRandomCard(cards: CardState[], count = 1): CardState[];
+  // 弃置我方原本元素骰费用最多的 count 张牌
+  disposeMaxCostHands(count = 1, opt = {}): CardState[];
 }
 ```
 

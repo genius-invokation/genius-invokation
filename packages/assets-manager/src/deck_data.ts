@@ -1,4 +1,19 @@
-import type { ActionCardRawData, CharacterRawData } from "@gi-tcg/static-data";
+// Copyright (C) 2025 Guyutongxue
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import type { ActionCardRawData, CharacterRawData } from "./data_types";
 
 export interface DeckDataCharacterInfo {
   id: number;
@@ -29,8 +44,8 @@ export function getDeckData(
   characters: CharacterRawData[],
   actionCards: ActionCardRawData[],
 ): DeckData {
-  const chs = characters.filter((ch) => ch.obtainable);
-  const acs = actionCards.filter((ac) => ac.obtainable);
+  const chs = characters.filter((ch) => !!ch.shareId);
+  const acs = actionCards.filter((ac) => !!ac.shareId);
 
   const allTags = [...new Set([...chs, ...acs].flatMap((x) => x.tags))];
 

@@ -29,14 +29,16 @@ const app = await NestFactory.create<NestFastifyApplication>(
   new FastifyAdapter({
     // Oops. https://github.com/oven-sh/bun/issues/8823
     // http2: true
+    keepAliveTimeout: 65000, // 65 seconds (should be longer than ping interval)
+    requestTimeout: 0, // Disable request timeout for SSE
   }),
 );
 app.useGlobalPipes(new ValidationPipe({ transform: true }));
 app.useGlobalFilters(new PrismaClientExceptionFilter(app.getHttpAdapter()));
 app.setGlobalPrefix(`${WEB_CLIENT_BASE_PATH}api`);
-app.register(frontend);
+await app.register(frontend);
 
-if (import.meta.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
   app.enableCors({ origin: "*" });
 }
 

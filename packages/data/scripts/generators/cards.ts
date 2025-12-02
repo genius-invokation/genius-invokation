@@ -15,7 +15,7 @@
 
 import { getCostCode, inlineCostDescription, isLegend } from "./cost";
 import { identifier, SourceInfo, writeSourceCode } from "./source";
-import { ActionCardRawData, actionCards, entities } from "@gi-tcg/static-data";
+import { ActionCardRawData, actionCards, entities } from "./data";
 import { NEW_VERSION } from "./config";
 
 export function getCardTypeAndTags(card: ActionCardRawData) {
@@ -30,6 +30,7 @@ export function getCardTypeAndTags(card: ActionCardRawData) {
     GCG_TAG_WEAPON_CATALYST: "catalyst",
     GCG_TAG_ALLY: "ally",
     GCG_TAG_PLACE: "place",
+    GCG_TAG_ADVENTURE_PLACE: "adventureSpot",
     GCG_TAG_RESONANCE: "resonance",
     GCG_TAG_WEAPON_POLE: "pole",
     GCG_TAG_ITEM: "item",
@@ -63,7 +64,9 @@ export function getCardCode(card: ActionCardRawData, extra = ""): string {
     }
   } else if (type === "support") {
     const tag = tags.shift();
-    if (tag) {
+    if (tag === "place" && tags.includes("adventureSpot")) {
+      typeCode = `\n  .adventureSpot()`;
+    } else if (tag) {
       typeCode = `\n  .support("${tag}")`;
     } else {
       typeCode = `\n  .support()`;
@@ -92,6 +95,7 @@ export async function generateCards() {
   const supportCode: Record<string, SourceInfo[]> = {
     ally: [],
     place: [],
+    adventureSpot: [],
     item: [],
     other: [],
   };
@@ -129,6 +133,8 @@ export async function generateCards() {
     } else if (type === "support") {
       if (typeof supportCode[tags[0]] === "undefined") {
         target = supportCode.other;
+      } else if (tags.includes("adventureSpot")) {
+        target = supportCode.adventureSpot;
       } else {
         target = supportCode[tags[0]];
       }
@@ -136,13 +142,18 @@ export async function generateCards() {
       target = others;
     }
     let description = card.description;
-    if (card.playingDescription && card.playingDescription.includes("$")) {
+    if (
+      card.playingDescription?.includes("$") ||
+      card.dynamicDescription?.includes("$")
+    ) {
       description += "\n【此卡含描述变量】";
     }
     if (card.tags.includes("GCG_TAG_VEHICLE")) {
       const et = entities.find((et) => et.id === card.id)!;
       for (const skill of et.skills) {
-        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(skill.playCost)}) ${skill.description}`;
+        description += `\n[${skill.id}: ${skill.name}] (${inlineCostDescription(
+          skill.playCost
+        )}) ${skill.description}`;
       }
     }
     target.push({
@@ -159,45 +170,50 @@ export async function generateCards() {
     writeSourceCode(
       "cards/equipment/weapon/bow.ts",
       INIT_CARD_CODE,
-      equipsCode.bow,
+      equipsCode.bow
     ),
     writeSourceCode(
       "cards/equipment/weapon/sword.ts",
       INIT_CARD_CODE,
-      equipsCode.sword,
+      equipsCode.sword
     ),
     writeSourceCode(
       "cards/equipment/weapon/catalyst.ts",
       INIT_CARD_CODE,
-      equipsCode.catalyst,
+      equipsCode.catalyst
     ),
     writeSourceCode(
       "cards/equipment/weapon/pole.ts",
       INIT_CARD_CODE,
-      equipsCode.pole,
+      equipsCode.pole
     ),
     writeSourceCode(
       "cards/equipment/weapon/claymore.ts",
       INIT_CARD_CODE,
-      equipsCode.claymore,
+      equipsCode.claymore
     ),
     writeSourceCode(
       "cards/equipment/artifacts.ts",
       INIT_CARD_CODE,
-      equipsCode.artifact,
+      equipsCode.artifact
     ),
     writeSourceCode(
       "cards/equipment/techniques.ts",
       INIT_CARD_CODE,
-      equipsCode.technique,
+      equipsCode.technique
     ),
     writeSourceCode("cards/support/ally.ts", INIT_CARD_CODE, supportCode.ally),
     writeSourceCode(
       "cards/support/place.ts",
       INIT_CARD_CODE,
-      supportCode.place,
+      supportCode.place
     ),
     writeSourceCode("cards/support/item.ts", INIT_CARD_CODE, supportCode.item),
+    writeSourceCode(
+      "cards/support/adventure.ts",
+      INIT_CARD_CODE,
+      supportCode.adventureSpot
+    ),
     // writeSourceCode("cards/support/other.ts", INIT_CARD_CODE, supportCode.other),
   ]);
 }

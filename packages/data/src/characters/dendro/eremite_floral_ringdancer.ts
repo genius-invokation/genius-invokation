@@ -120,7 +120,7 @@ export const SpiritOfOmensPower = skill(27034)
   .usagePerRound(1, { name: "usagePerRound1" })
   .gainEnergy(1, "@self")
   .on("useSkill", (c, e) => e.skill.definition.id === SpiritOfOmensAwakeningDendroSpiritserpent)
-  .usage(1, { name: "createCardUsage", autoDispose: false })
+  .usage(1, { name: "createCardUsage" })
   .createHandCard(SpiritOfOmenDendroSpiritserpent)
   .done();
 

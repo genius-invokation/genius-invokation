@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "Preserve",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     
     "isolatedModules": true,
     "verbatimModuleSyntax": true,

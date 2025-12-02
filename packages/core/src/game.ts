@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { checkDice, type Deck, flip } from "@gi-tcg/utils";
+import { checkDice, flip } from "@gi-tcg/utils";
 import {
   DiceType,
   type ExposedMutation,
@@ -26,18 +26,25 @@ import {
   type PbExposedMutation,
   unFlattenOneof,
   ActionValidity,
+  type Deck,
 } from "@gi-tcg/typings";
 import {
+  getDefaultGameConfig,
+  getVersionBehavior,
   StateSymbol,
+  stringifyState,
+  type EntityState,
   type AnyState,
-  type CardState,
   type CharacterState,
+  type EntityDefinition,
   type ErrorLevel,
   type ExtensionState,
   type GameConfig,
   type GameState,
   type PlayerState,
+  type VersionBehavior,
 } from "./base/state";
+import { CURRENT_VERSION, type Version } from "./base/version";
 import type { Mutation } from "./base/mutation";
 import {
   type IoErrorHandler,
@@ -65,8 +72,7 @@ import type { GameData } from "./builder/registry";
 import {
   ActionEventArg,
   type ActionInfo,
-  DisposeOrTuneCardEventArg,
-  HandCardInsertedEventArg,
+  DisposeEventArg,
   type EventAndRequest,
   EventArg,
   ModifyRollEventArg,
@@ -77,7 +83,6 @@ import {
   type InitiativeSkillEventArg,
   defineSkillInfo,
 } from "./base/skill";
-import type { CardDefinition } from "./base/card";
 import { executeQueryOnState } from "./query";
 import {
   GiTcgCoreInternalError,
@@ -86,7 +91,6 @@ import {
   GiTcgIoError,
 } from "./error";
 import { DetailLogType, DetailLogger } from "./log";
-import { randomSeed } from "./random";
 import { type GeneralSkillArg, SkillExecutor } from "./skill_executor";
 import {
   type InternalNotifyOption,
@@ -118,8 +122,8 @@ function initPlayerState(
   deck: DeckConfig,
   idIter: IdIter,
 ): PlayerState {
-  let initialPile: readonly CardDefinition[] = deck.cards.map((id) => {
-    const def = data.cards.get(id);
+  let initialPile: readonly EntityDefinition[] = deck.cards.map((id) => {
+    const def = data.entities.get(id);
     if (typeof def === "undefined") {
       throw new GiTcgDataError(`Unknown card id ${id}`);
     }
@@ -138,7 +142,7 @@ function initPlayerState(
     initialPile = shuffle(initialPile);
   }
   // 将秘传牌放在最前面
-  const compFn = (def: CardDefinition) => {
+  const compFn = (def: EntityDefinition) => {
     if (def.tags.includes("legend")) {
       return 0;
     } else {
@@ -147,7 +151,7 @@ function initPlayerState(
   };
   initialPile = initialPile.toSortedBy(compFn);
   const characters: CharacterState[] = [];
-  const pile: CardState[] = [];
+  const pile: EntityState[] = [];
   for (const definition of characterDefs) {
     characters.push({
       [StateSymbol]: "character",
@@ -163,10 +167,14 @@ function initPlayerState(
   }
   for (const definition of initialPile) {
     pile.push({
-      [StateSymbol]: "card",
+      [StateSymbol]: "entity",
       id: idIter.id,
       definition,
-      variables: {},
+      variables: Object.fromEntries(
+        Object.entries(definition.varConfigs).map(
+          ([name, { initialValue }]) => [name, initialValue],
+        ),
+      ),
     });
   }
   return {
@@ -194,6 +202,7 @@ function initPlayerState(
 
 export interface CreateInitialStateConfig
   extends Writable<Partial<GameConfig>> {
+  versionBehavior?: VersionBehavior | Version;
   decks: readonly [DeckConfig, DeckConfig];
   data: GameData;
 }
@@ -232,7 +241,12 @@ export class Game {
   }
 
   static createInitialState(opt: CreateInitialStateConfig): GameState {
-    const { decks, data, ...partialConfig } = opt;
+    const {
+      decks,
+      data,
+      versionBehavior = CURRENT_VERSION,
+      ...partialConfig
+    } = opt;
     const extensions = data.extensions
       .values()
       .map<ExtensionState>((v) => ({
@@ -242,11 +256,16 @@ export class Game {
       }))
       .toArray();
     const config = mergeGameConfigWithDefault(partialConfig);
+    const behavior =
+      typeof versionBehavior === "string"
+        ? getVersionBehavior(versionBehavior)
+        : versionBehavior;
     const idIter = new IdIter();
     const state: GameState = {
       [StateSymbol]: "game",
       data,
       config,
+      versionBehavior: behavior,
       players: [
         initPlayerState(0, data, decks[0], idIter),
         initPlayerState(1, data, decks[1], idIter),
@@ -525,16 +544,8 @@ export class Game {
       this.mutator.chooseActive(1),
     ]);
     this.mutator.postChooseActive(a0, a1);
-    this.mutate({
-      type: "switchActive",
-      who: 0,
-      value: a0,
-    });
-    this.mutate({
-      type: "switchActive",
-      who: 1,
-      value: a1,
-    });
+    await this.switchActive(0, a0, null);
+    await this.switchActive(1, a1, null);
     await this.handleEvent("onBattleBegin", new EventArg(this.state));
     this.mutate({
       type: "changePhase",
@@ -621,7 +632,6 @@ export class Game {
       flagName: "canCharged",
       value: player().dice.length % 2 === 0,
     });
-    let replaceAction: SkillInfo | null;
     if (player().declaredEnd) {
       this.mutate({
         type: "switchTurn",
@@ -636,24 +646,6 @@ export class Game {
       this.mutate({
         type: "switchTurn",
       });
-    } else if (
-      (replaceAction = findReplaceAction(activeCh())) &&
-      !isSkillDisabled(activeCh())
-    ) {
-      using l = this.mutator.subLog(
-        DetailLogType.Phase,
-        `In action phase (round ${this.state.roundNumber}, turn ${this.state.currentTurn}) (replaced action):`,
-      );
-      this.mutate({
-        type: "setPlayerFlag",
-        who,
-        flagName: "canPlunging",
-        value: false,
-      });
-      await this.executeSkill(replaceAction, new EventArg(this.state));
-      this.mutate({
-        type: "switchTurn",
-      });
     } else {
       using l = this.mutator.subLog(
         DetailLogType.Phase,
@@ -663,192 +655,197 @@ export class Game {
         "onBeforeAction",
         new PlayerEventArg(this.state, who),
       );
-      const actions = await this.availableActions();
-      const { chosenActionIndex, usedDice } = await this.rpc(who, "action", {
-        action: actions.map(exposeAction),
-      });
-      if (chosenActionIndex < 0 || chosenActionIndex >= actions.length) {
-        throw new GiTcgIoError(who, `User chosen index out of range`);
-      }
-      const actionInfo = actions[chosenActionIndex];
-      if (actionInfo.validity !== ActionValidity.VALID) {
-        throw new GiTcgIoError(
-          who,
-          `User-selected action is invalid: ${
-            ActionValidity[actionInfo.validity]
-          }`,
+      const replaceActionEventArg = new PlayerEventArg(this.state, who);
+      const replacedSkill = findReplaceAction(this.state, replaceActionEventArg);
+      if (replacedSkill) {
+        this.mutator.log(
+          DetailLogType.Other,
+          `Found replaced action from ${stringifyState(replacedSkill.caller)}`,
         );
-      }
-      await this.handleEvent("modifyAction0", actionInfo.eventArg);
-      await this.handleEvent("modifyAction1", actionInfo.eventArg);
-      await this.handleEvent("modifyAction2", actionInfo.eventArg);
-      await this.handleEvent("modifyAction3", actionInfo.eventArg);
-
-      // 检查骰子
-      if (!checkDice(actionInfo.cost, usedDice as DiceType[])) {
-        throw new GiTcgIoError(
-          who,
-          `Selected dice doesn't meet requirement:\nRequired: ${JSON.stringify(
-            Object.fromEntries(actionInfo.cost.entries()),
-          )}, selected: ${JSON.stringify(usedDice)}`,
-        );
-      }
-      if (
-        !this.players[who].config.allowTuningAnyDice &&
-        actionInfo.type === "elementalTuning" &&
-        (usedDice[0] === DiceType.Omni || usedDice[0] === actionInfo.result)
-      ) {
-        throw new GiTcgIoError(
-          who,
-          `Elemental tuning cannot use omni dice or active character's element`,
-        );
-      }
-      // 消耗骰子
-      const operatingDice = [...player().dice];
-      for (const type of usedDice) {
-        const idx = operatingDice.indexOf(type as DiceType);
-        if (idx === -1) {
-          throw new GiTcgIoError(
-            who,
-            `Selected dice ${type} doesn't found in player`,
-          );
-        }
-        operatingDice.splice(idx, 1);
-      }
-      this.mutate({
-        type: "resetDice",
-        who,
-        value: operatingDice,
-        reason: "consume",
-      });
-      // 消耗能量
-      const requiredEnergy = actionInfo.cost.get(DiceType.Energy) ?? 0;
-      const currentEnergy = activeCh().variables.energy;
-      if (requiredEnergy > 0) {
-        if (currentEnergy < requiredEnergy) {
-          throw new GiTcgIoError(
-            who,
-            `Active character does not have enough energy`,
-          );
-        }
-        this.mutate({
-          type: "modifyEntityVar",
-          state: activeCh(),
-          varName: "energy",
-          value: currentEnergy - requiredEnergy,
-          direction: "decrease",
-        });
-      }
-
-      switch (actionInfo.type) {
-        case "useSkill": {
-          const callerArea = getEntityArea(this.state, activeCh().id);
-          await this.handleEvent(
-            "onBeforeUseSkill",
-            new UseSkillEventArg(this.state, callerArea, actionInfo.skill),
-          );
-          await this.executeSkill(actionInfo.skill, {
-            targets: actionInfo.targets,
-          });
-          await this.handleEvent(
-            "onUseSkill",
-            new UseSkillEventArg(this.state, callerArea, actionInfo.skill),
-          );
-          break;
-        }
-        case "playCard": {
-          const card = actionInfo.skill.caller;
-          if (card.definition.tags.includes("legend")) {
-            this.mutate({
-              type: "setPlayerFlag",
-              who,
-              flagName: "legendUsed",
-              value: true,
-            });
-          }
-          await this.handleEvent(
-            "onBeforePlayCard",
-            new PlayCardEventArg(this.state, actionInfo),
-          );
-          // 应用“禁用事件牌”效果
-          if (
-            player().combatStatuses.find((st) =>
-              st.definition.tags.includes("eventEffectless"),
-            ) &&
-            card.definition.cardType === "event"
-          ) {
-            this.mutate({
-              type: "removeCard",
-              who,
-              where: "hands",
-              oldState: card,
-              reason: "playNoEffect",
-            });
-          } else {
-            this.mutate({
-              type: "removeCard",
-              who,
-              where: "hands",
-              oldState: card,
-              reason: "play",
-            });
-            await this.executeSkill(actionInfo.skill, {
-              targets: actionInfo.targets,
-            });
-          }
-          await this.handleEvent(
-            "onPlayCard",
-            new PlayCardEventArg(this.state, actionInfo),
-          );
-          break;
-        }
-        case "switchActive": {
-          await this.switchActive(who, actionInfo.to, actionInfo.fast);
-          break;
-        }
-        case "elementalTuning": {
-          const tuneCardEventArg = new DisposeOrTuneCardEventArg(
-            this.state,
-            actionInfo.card,
-            "elementalTuning",
-            null,
-          );
-          this.mutate({
-            type: "removeCard",
-            who,
-            where: "hands",
-            oldState: actionInfo.card,
-            reason: "elementalTuning",
-          });
-          const targetDice = elementOfCharacter(activeCh().definition);
-          this.mutate({
-            type: "resetDice",
-            who,
-            value: sortDice(player(), [...player().dice, targetDice]),
-            reason: "elementalTuning",
-            conversionTargetHint: targetDice,
-          });
-          await this.handleEvent("onDisposeOrTuneCard", tuneCardEventArg);
-          break;
-        }
-        case "declareEnd": {
-          this.mutate({
-            type: "setPlayerFlag",
-            who,
-            flagName: "declaredEnd",
-            value: true,
-          });
-          break;
-        }
-      }
-      await this.handleEvent(
-        "onAction",
-        new ActionEventArg(this.state, actionInfo),
-      );
-      if (!actionInfo.fast) {
+        await this.executeSkill(replacedSkill, replaceActionEventArg);
         this.mutate({
           type: "switchTurn",
         });
+      } else {
+        const actions = await this.availableActions();
+        const { chosenActionIndex, usedDice } = await this.rpc(who, "action", {
+          action: actions.map(exposeAction),
+        });
+        if (chosenActionIndex < 0 || chosenActionIndex >= actions.length) {
+          throw new GiTcgIoError(who, `User chosen index out of range`);
+        }
+        const actionInfo = actions[chosenActionIndex];
+        if (actionInfo.validity !== ActionValidity.VALID) {
+          throw new GiTcgIoError(
+            who,
+            `User-selected action is invalid: ${
+              ActionValidity[actionInfo.validity]
+            }`,
+          );
+        }
+        await this.handleEvent("modifyAction0", actionInfo.eventArg);
+        await this.handleEvent("modifyAction1", actionInfo.eventArg);
+        await this.handleEvent("modifyAction2", actionInfo.eventArg);
+        await this.handleEvent("modifyAction3", actionInfo.eventArg);
+
+        // 检查骰子
+        if (!checkDice(actionInfo.cost, usedDice as DiceType[])) {
+          throw new GiTcgIoError(
+            who,
+            `Selected dice doesn't meet requirement:\nRequired: ${JSON.stringify(
+              Object.fromEntries(actionInfo.cost.entries()),
+            )}, selected: ${JSON.stringify(usedDice)}`,
+          );
+        }
+        if (
+          !this.players[who].config.allowTuningAnyDice &&
+          actionInfo.type === "elementalTuning" &&
+          (usedDice[0] === DiceType.Omni || usedDice[0] === actionInfo.result)
+        ) {
+          throw new GiTcgIoError(
+            who,
+            `Elemental tuning cannot use omni dice or active character's element`,
+          );
+        }
+        // 消耗骰子
+        const operatingDice = [...player().dice];
+        for (const type of usedDice) {
+          const idx = operatingDice.indexOf(type as DiceType);
+          if (idx === -1) {
+            throw new GiTcgIoError(
+              who,
+              `Selected dice ${type} doesn't found in player`,
+            );
+          }
+          operatingDice.splice(idx, 1);
+        }
+        this.mutate({
+          type: "resetDice",
+          who,
+          value: operatingDice,
+          reason: "consume",
+        });
+        // 消耗能量
+        const requiredEnergy = actionInfo.cost.get(DiceType.Energy) ?? 0;
+        const currentEnergy = activeCh().variables.energy;
+        if (requiredEnergy > 0) {
+          if (currentEnergy < requiredEnergy) {
+            throw new GiTcgIoError(
+              who,
+              `Active character does not have enough energy`,
+            );
+          }
+          this.mutate({
+            type: "modifyEntityVar",
+            state: activeCh(),
+            varName: "energy",
+            value: currentEnergy - requiredEnergy,
+            direction: "decrease",
+          });
+        }
+
+        switch (actionInfo.type) {
+          case "useSkill": {
+            const callerArea = getEntityArea(this.state, activeCh().id);
+            await this.handleEvent(
+              "onBeforeUseSkill",
+              new UseSkillEventArg(this.state, callerArea, actionInfo.skill),
+            );
+            await this.executeSkill(actionInfo.skill, {
+              targets: actionInfo.targets,
+            });
+            await this.handleEvent(
+              "onUseSkill",
+              new UseSkillEventArg(this.state, callerArea, actionInfo.skill),
+            );
+            break;
+          }
+          case "playCard": {
+            const card = actionInfo.skill.caller;
+            if (card.definition.tags.includes("legend")) {
+              this.mutate({
+                type: "setPlayerFlag",
+                who,
+                flagName: "legendUsed",
+                value: true,
+              });
+            }
+            await this.handleEvent(
+              "onBeforePlayCard",
+              new PlayCardEventArg(this.state, actionInfo),
+            );
+            // 应用“禁用事件牌”效果
+            if (
+              player().combatStatuses.find((st) =>
+                st.definition.tags.includes("eventEffectless"),
+              ) &&
+              card.definition.type === "eventCard"
+            ) {
+              this.mutate({
+                type: "removeEntity",
+                from: { who, type: "hands" },
+                oldState: card,
+                reason: "eventCardPlayNoEffect",
+              });
+            } else {
+              await this.executeSkill(actionInfo.skill, {
+                targets: actionInfo.targets,
+              });
+            }
+            await this.handleEvent(
+              "onPlayCard",
+              new PlayCardEventArg(this.state, actionInfo),
+            );
+            break;
+          }
+          case "switchActive": {
+            await this.switchActive(who, actionInfo.to, actionInfo.fast);
+            break;
+          }
+          case "elementalTuning": {
+            const tuneCardEventArg = new DisposeEventArg(
+              this.state,
+              actionInfo.card,
+              "elementalTuning",
+              { who, type: "hands" },
+              null,
+            );
+            this.mutate({
+              type: "removeEntity",
+              from: { who, type: "hands" },
+              oldState: actionInfo.card,
+              reason: "elementalTuning",
+            });
+            const targetDice = elementOfCharacter(activeCh().definition);
+            this.mutate({
+              type: "resetDice",
+              who,
+              value: sortDice(player(), [...player().dice, targetDice]),
+              reason: "elementalTuning",
+              conversionTargetHint: targetDice,
+            });
+            await this.handleEvent("onDispose", tuneCardEventArg);
+            break;
+          }
+          case "declareEnd": {
+            this.mutate({
+              type: "setPlayerFlag",
+              who,
+              flagName: "declaredEnd",
+              value: true,
+            });
+            break;
+          }
+        }
+        await this.handleEvent(
+          "onAction",
+          new ActionEventArg(this.state, actionInfo),
+        );
+        if (!actionInfo.fast) {
+          this.mutate({
+            type: "switchTurn",
+          });
+        }
       }
     }
     if (
@@ -924,7 +921,7 @@ export class Game {
         who,
         skill: skillInfo,
         targets: [],
-        fast: skill.initiativeSkillConfig.fast,
+        fast: skill.initiativeSkillConfig.shouldFast,
         cost: skill.initiativeSkillConfig.requiredCost,
         autoSelectedDice: [],
       };
@@ -970,6 +967,10 @@ export class Game {
     for (const card of player.hands) {
       let allTargets: InitiativeSkillEventArg[];
       const skillDef = playSkillOfCard(card.definition);
+      if (!skillDef) {
+        console?.warn(`Card ${card.definition.id} has no play skill defined.`);
+        continue;
+      }
       const skillInfo = defineSkillInfo({
         caller: card,
         definition: skillDef,
@@ -979,14 +980,14 @@ export class Game {
         who,
         skill: skillInfo,
         cost: skillDef.initiativeSkillConfig.requiredCost,
-        fast: skillDef.initiativeSkillConfig.fast,
+        fast: skillDef.initiativeSkillConfig.shouldFast,
         autoSelectedDice: [],
         targets: [],
         willBeEffectless: false,
       };
       // 当支援区满时，卡牌目标为“要离场的支援牌”
       if (
-        card.definition.cardType === "support" &&
+        card.definition.type === "support" &&
         player.supports.length === this.state.config.maxSupportsCount
       ) {
         allTargets = player.supports.map((st) => ({ targets: [st] }));
@@ -1157,16 +1158,7 @@ export function mergeGameConfigWithDefault(
 ): GameConfig {
   config = JSON.parse(JSON.stringify(config ?? {}));
   return {
-    errorLevel: "strict",
-    initialDiceCount: 8,
-    initialHandsCount: 5,
-    maxDiceCount: 16,
-    maxHandsCount: 10,
-    maxPileCount: 200,
-    maxRoundsCount: 15,
-    maxSummonsCount: 4,
-    maxSupportsCount: 4,
-    randomSeed: randomSeed(),
+    ...getDefaultGameConfig(),
     ...config,
   };
 }

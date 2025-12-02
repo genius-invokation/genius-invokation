@@ -72,7 +72,7 @@ test("sigwinne: passive triggered after defeated", async () => {
 test("sigwinne: bubble", async () => {
   const target = ref();
   const c = setup(
-    <State>
+    <State dataVersion="v6.1.0">
       <Character my def={Sigewinne} />
       <Character my ref={target} health={1} />
       <Card pile my def={Paimon} />

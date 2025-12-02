@@ -6,6 +6,11 @@
 
 # 七圣召唤模拟器
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/genius-invokation/genius-invokation/main.yml)
+![NPM Version](https://img.shields.io/npm/v/%40gi-tcg%2Fcore)
+![PyPI - Version](https://img.shields.io/pypi/v/gitcg)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/genius-invokation/genius-invokation)
+
 [中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
 可访问 https://gi-tcg.vercel.app 或 https://gi-tcg.guyutongxue.site 试用。
@@ -43,18 +48,17 @@
 <tr>
 <td>
 
-如果有意图参与本项目开发，欢迎加 QQ 群 [693466327](https://qm.qq.com/q/X7XpZg4rW8) 讨论。
+如果有意图参与本项目开发，欢迎加 QQ 群 [1015846340](https://qm.qq.com/q/n6TIu51Ae4) 讨论。
 
 </td>
 <td>
 
-[![qq_group_qr](./docs/images/qq_group.jpg)](https://qm.qq.com/q/X7XpZg4rW8)
 
 </td>
 <tr>
 <td colspan="2">
 
-进群口令可在 [`packages/data/src/characters/pyro/amber.ts`](./packages/data/src/characters/pyro/amber.ts) 中找到~
+进群口令请在代码中自行查找～
 
 </td>
 </tr>

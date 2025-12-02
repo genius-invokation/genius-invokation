@@ -13,11 +13,13 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import type { Deck } from "@gi-tcg/utils";
+import type { Deck } from "@gi-tcg/typings";
 import {
-  characters as characterData,
-  actionCards as actionCardData,
-} from "@gi-tcg/static-data";
+  DEFAULT_ASSETS_MANAGER,
+  type ActionCardRawData,
+  type AnyData,
+  type CharacterRawData,
+} from "@gi-tcg/assets-manager";
 import {
   IsInt,
   IsOptional,
@@ -53,19 +55,23 @@ export class DeckVerificationError extends Error {
   }
 }
 
-const CHARACTERS_MAP = Object.fromEntries(
-  characterData.map((ch) => [ch.id, ch]),
-);
-const ACTION_CARDS_MAP = Object.fromEntries(
-  actionCardData.map((c) => [c.id, c]),
-);
+export const ASSETS_MANAGER = DEFAULT_ASSETS_MANAGER;
+
+ASSETS_MANAGER.prepareForSync();
+
+const getData = <T extends AnyData>(id: number): Promise<T | undefined> => {
+  return ASSETS_MANAGER.getData(id) as Promise<T | undefined>;
+};
 
 /**
  * 校验牌组合法性
  * @param param0 牌组
  * @returns 牌组可以打出的最低游戏版本
  */
-export function verifyDeck({ characters, cards }: Deck): Version {
+export async function verifyDeck({
+  characters,
+  cards,
+}: Deck): Promise<Version> {
   const DEC = DeckVerificationErrorCode;
   const versions = new Set<string | undefined>();
   const characterSet = new Set(characters);
@@ -83,7 +89,7 @@ export function verifyDeck({ characters, cards }: Deck): Version {
   }
   const characterTags = [];
   for (const chId of characters) {
-    const character = CHARACTERS_MAP[chId];
+    const character = await getData<CharacterRawData>(chId);
     if (!character) {
       throw new DeckVerificationError(
         DEC.NotFoundError,
@@ -101,7 +107,7 @@ export function verifyDeck({ characters, cards }: Deck): Version {
   }
   const cardCounts = new Map<number, number>();
   for (const cardId of cards) {
-    const card = ACTION_CARDS_MAP[cardId];
+    const card = await getData<ActionCardRawData>(cardId);
     if (!card) {
       throw new DeckVerificationError(
         DEC.NotFoundError,
@@ -164,14 +170,19 @@ function maxVersion(versions: Iterable<string | undefined>): Version {
   }
 }
 
-export function minimumRequiredVersionOfDeck({
+export async function minimumRequiredVersionOfDeck({
   characters,
   cards,
-}: Deck): Version {
-  return maxVersion([
-    ...characters.map((id) => CHARACTERS_MAP[id]?.sinceVersion),
-    ...cards.map((id) => ACTION_CARDS_MAP[id]?.sinceVersion),
-  ]);
+}: Deck): Promise<Version> {
+  return maxVersion(
+    await Promise.all(
+      [...characters, ...cards].map((p) =>
+        getData<CharacterRawData | ActionCardRawData>(p).then(
+          (d) => d?.sinceVersion as Version | undefined,
+        ),
+      ),
+    ),
+  );
 }
 
 export function parseStringToInt({ value }: TransformFnParams): number {

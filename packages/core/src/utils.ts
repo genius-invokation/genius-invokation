@@ -28,7 +28,7 @@ import type {
   GameState,
   PlayerState,
 } from "./base/state";
-import type { EntityArea } from "./base/entity";
+import type { EntityArea, EntityDefinition, EntityType } from "./base/entity";
 import {
   NATION_TAGS,
   WEAPON_TAGS,
@@ -38,9 +38,9 @@ import {
   type NationTag,
   type WeaponTag,
 } from "./base/character";
-import type { CardDefinition } from "./base/card";
 import {
   defineSkillInfo,
+  EventArg,
   type EventNames,
   type InitiativeSkillDefinition,
   type InitiativeSkillInfo,
@@ -183,6 +183,7 @@ export function initiativeSkillsOfPlayer(
         .filter(
           (sk): sk is InitiativeSkillDefinition =>
             sk.triggerOn === "initiative" &&
+            sk.initiativeSkillConfig.skillType !== "playCard" &&
             (includesHidden || !sk.initiativeSkillConfig.hidden),
         )
         .map((sk) => ({
@@ -325,7 +326,13 @@ export function removeEntity(state: Draft<GameState>, id: number) {
         return;
       }
     }
-    for (const key of ["combatStatuses", "summons", "supports"] as const) {
+    for (const key of [
+      "combatStatuses",
+      "summons",
+      "supports",
+      "hands",
+      "pile",
+    ] as const) {
       const area = player[key];
       const idx = area.findIndex((e) => e.id === id);
       if (idx !== -1) {
@@ -369,24 +376,25 @@ export interface CheckPreparingResult {
   skillId: number;
 }
 
-export function findReplaceAction(character: CharacterState): SkillInfo | null {
-  const candidates = character.entities
-    .map(
-      (st) =>
-        [
-          st,
-          st.definition.skills.find((sk) => sk.triggerOn === "replaceAction"),
-        ] as const,
-    )
-    .filter(([st, sk]) => sk);
-  if (candidates.length === 0) {
-    return null;
+export function findReplaceAction(
+  state: GameState,
+  eventArg: EventArg,
+): SkillInfo | null {
+  const skills = allSkills(state, "replaceAction");
+  for (const { caller, skill } of skills) {
+    const area = getEntityArea(state, caller.id);
+    if (area.type !== "characters") {
+      continue;
+    }
+    const skillInfo = defineSkillInfo({
+      caller,
+      definition: skill,
+    });
+    if (skill.filter(state, skillInfo, eventArg)) {
+      return skillInfo;
+    }
   }
-  const [caller, definition] = candidates[0];
-  return defineSkillInfo({
-    caller,
-    definition: definition as SkillDefinition,
-  });
+  return null;
 }
 
 export function isSkillDisabled(character: CharacterState): boolean {
@@ -395,20 +403,49 @@ export function isSkillDisabled(character: CharacterState): boolean {
   );
 }
 
+/**
+ * createEntity 在已有 `exists` 实体时，是否叠加在某个已存在实体上
+ * @param exists 待入场区域的全部实体
+ * @param incoming 待入场的实体定义
+ * @returns 若可叠加且存在可叠加的已存在实体，返回之
+ */
+export function shouldEnterOverride<T extends AnyState>(
+  exists: T[],
+  incoming: T["definition"],
+): T | null {
+  if (incoming.type === "character") {
+    return null;
+  }
+  const existOne =
+    exists.find((et) => et.definition.id === incoming.id) ?? null;
+  if (incoming.type === "support") {
+    // 仅冒险地点可叠加
+    if (incoming.tags.includes("adventureSpot")) {
+      return existOne;
+    } else {
+      return null;
+    }
+  }
+  // 状态、装备、出战状态、召唤物 可叠加
+  return existOne;
+}
+
 export function isChargedPlunging(skill: SkillDefinition, player: PlayerState) {
   if (!skill.initiativeSkillConfig) {
     return { charged: false, plunging: false };
   }
+  let charged = skill.initiativeSkillConfig.alwaysCharged;
+  let plunging = skill.initiativeSkillConfig.alwaysPlunging;
   const isNormal = skill.initiativeSkillConfig.skillType === "normal";
   if (!isNormal) {
-    return { charged: false, plunging: false };
+    return { charged, plunging };
   }
   const activeCh = player.characters[getActiveCharacterIndex(player)];
-  const forcePlunging = activeCh.entities.some((et) =>
+  const asPlunging = activeCh.entities.some((et) =>
     et.definition.tags.includes("normalAsPlunging"),
   );
-  const charged = player.canCharged;
-  const plunging = player.canPlunging || forcePlunging;
+  charged ||= player.canCharged;
+  plunging ||= player.canPlunging || asPlunging;
   return { charged, plunging };
 }
 
@@ -461,18 +498,13 @@ export function applyAutoSelectedDiceToAction(
 }
 
 export function playSkillOfCard(
-  card: CardDefinition,
-): InitiativeSkillDefinition {
+  card: EntityDefinition,
+): InitiativeSkillDefinition | null {
   const skillDefinition = card.skills.find(
     (sk): sk is InitiativeSkillDefinition =>
       sk.initiativeSkillConfig?.skillType === "playCard",
   );
-  if (!skillDefinition) {
-    throw new GiTcgCoreInternalError(
-      `Card definition ${card.id} do not have a playCard skill`,
-    );
-  }
-  return skillDefinition;
+  return skillDefinition ?? null;
 }
 
 export function normalizeCost(req: DiceRequirement): DiceRequirement {
@@ -489,8 +521,12 @@ export function normalizeCost(req: DiceRequirement): DiceRequirement {
   return req;
 }
 
-export function costOfCard(card: CardDefinition): ReadonlyDiceRequirement {
-  return playSkillOfCard(card).initiativeSkillConfig.requiredCost;
+export const EMPTY_MAP: ReadonlyDiceRequirement = new Map([
+  [DiceType.Aligned, 0],
+]);
+
+export function costOfCard(card: EntityDefinition): ReadonlyDiceRequirement {
+  return playSkillOfCard(card)?.initiativeSkillConfig.requiredCost ?? EMPTY_MAP;
 }
 
 export function costSize(req: ReadonlyDiceRequirement): number {
@@ -506,8 +542,20 @@ export function diceCostSize(req: ReadonlyDiceRequirement): number {
     );
 }
 
-export function diceCostOfCard(card: CardDefinition): number {
-  return playSkillOfCard(card).initiativeSkillConfig.computed$diceCostSize;
+export function diceCostOfCard(card: EntityDefinition): number {
+  return (
+    playSkillOfCard(card)?.initiativeSkillConfig.computed$diceCostSize ?? 0
+  );
+}
+
+export function assertValidActionCard(entity: EntityDefinition): void {
+  if (
+    !(["support", "equipment", "eventCard"] as EntityType[]).includes(
+      entity.type,
+    )
+  ) {
+    throw new Error(`Invalid action card type: ${entity.type}`);
+  }
 }
 
 export function elementOfCharacter(ch: CharacterDefinition): DiceType {
