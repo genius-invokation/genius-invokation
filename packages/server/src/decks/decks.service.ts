@@ -14,20 +14,23 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { PrismaService } from "../db/prisma.service";
+import { DrizzleService } from "../db/drizzle.service";
+import { decks } from "../db/schema";
+import { eq, and, lte, sql } from "drizzle-orm";
 import type {
   CreateDeckDto,
   QueryDeckDto,
   UpdateDeckDto,
 } from "./decks.controller";
 import { type Deck } from "@gi-tcg/typings";
-import { type Deck as DeckModel } from "#prisma/client";
 import {
   ASSETS_MANAGER,
   verifyDeck,
   type PaginationResult,
 } from "../utils";
 import { VERSIONS } from "@gi-tcg/core";
+
+type DeckModel = typeof decks.$inferSelect;
 
 interface DeckWithVersion extends Deck {
   code: string;
@@ -38,7 +41,7 @@ export interface DeckWithDeckModel extends DeckWithVersion, DeckModel {}
 
 @Injectable()
 export class DecksService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private drizzle: DrizzleService) {}
 
   async deckToCode(deck: Deck): Promise<DeckWithVersion> {
     try {
@@ -68,30 +71,51 @@ export class DecksService {
 
   async createDeck(userId: number, deck: CreateDeckDto): Promise<DeckModel> {
     const { code, requiredVersion } = await this.deckToCode(deck);
-    return await this.prisma.deck.create({
-      data: {
+    const [result] = await this.drizzle.db
+      .insert(decks)
+      .values({
         name: deck.name,
         code,
         ownerUserId: userId,
         requiredVersion,
-      },
-    });
+      })
+      .returning();
+    return result;
   }
 
   async getAllDecks(
     userId: number,
     { skip = 0, take = 100, requiredVersion }: QueryDeckDto,
   ): Promise<PaginationResult<DeckWithDeckModel>> {
-    const [models, count] = await this.prisma.deck.findManyAndCount({
-      skip,
-      take,
-      where: {
-        ownerUserId: userId,
-        requiredVersion: {
-          lte: requiredVersion,
-        }
-      },
-    });
+    const countQuery = this.drizzle.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(decks)
+      .where(
+        and(
+          eq(decks.ownerUserId, userId),
+          lte(decks.requiredVersion, requiredVersion)
+        )
+      );
+
+    const modelsQuery = this.drizzle.db
+      .select()
+      .from(decks)
+      .where(
+        and(
+          eq(decks.ownerUserId, userId),
+          lte(decks.requiredVersion, requiredVersion)
+        )
+      )
+      .offset(skip)
+      .limit(take);
+
+    const [countResult, models] = await Promise.all([
+      countQuery,
+      modelsQuery,
+    ]);
+
+    const count = countResult[0]?.count ?? 0;
+
     const data = models.map((model) => {
       const { characters, cards } = this.codeToDeck(model.code);
       return {
@@ -107,13 +131,18 @@ export class DecksService {
     userId: number,
     deckId: number,
   ): Promise<DeckWithDeckModel | null> {
-    const model = await this.prisma.deck.findFirst({
-      where: {
-        id: deckId,
-        ownerUserId: userId,
-      },
-    });
-    if (model === null) {
+    const [model] = await this.drizzle.db
+      .select()
+      .from(decks)
+      .where(
+        and(
+          eq(decks.id, deckId),
+          eq(decks.ownerUserId, userId)
+        )
+      )
+      .limit(1);
+    
+    if (model === undefined) {
       return null;
     }
     const { characters, cards } = this.codeToDeck(model.code);
@@ -145,26 +174,40 @@ export class DecksService {
         cards: deck.cards,
       }));
     }
-    const model = await this.prisma.deck.update({
-      where: {
-        id: deckId,
-        ownerUserId: userId,
-      },
-      data: {
-        name: deck.name,
-        code,
-        requiredVersion,
-      },
-    });
+    
+    const updateData: any = {};
+    if (deck.name !== undefined) {
+      updateData.name = deck.name;
+    }
+    if (code !== undefined) {
+      updateData.code = code;
+    }
+    if (requiredVersion !== undefined) {
+      updateData.requiredVersion = requiredVersion;
+    }
+
+    const [model] = await this.drizzle.db
+      .update(decks)
+      .set(updateData)
+      .where(
+        and(
+          eq(decks.id, deckId),
+          eq(decks.ownerUserId, userId)
+        )
+      )
+      .returning();
+    
     return model;
   }
 
   async deleteDeck(userId: number, deckId: number) {
-    await this.prisma.deck.delete({
-      where: {
-        id: deckId,
-        ownerUserId: userId,
-      },
-    });
+    await this.drizzle.db
+      .delete(decks)
+      .where(
+        and(
+          eq(decks.id, deckId),
+          eq(decks.ownerUserId, userId)
+        )
+      );
   }
 }

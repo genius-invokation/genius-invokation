@@ -14,7 +14,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
-import { PrismaService } from "../db/prisma.service";
+import { DrizzleService } from "../db/drizzle.service";
+import { users } from "../db/schema";
+import { eq } from "drizzle-orm";
 import axios from "axios";
 import { GET_USER_API_URL } from "../auth/auth.service";
 
@@ -27,16 +29,19 @@ export interface UserInfo {
 
 @Injectable()
 export class UsersService implements OnModuleInit {
-  constructor(private prisma: PrismaService) {}
+  constructor(private drizzle: DrizzleService) {}
 
   private logger = new Logger(UsersService.name);
 
   async onModuleInit() {}
 
   async findById(id: number): Promise<UserInfo | null> {
-    const user = await this.prisma.user.findFirst({
-      where: { id },
-    });
+    const [user] = await this.drizzle.db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+    
     if (!user) {
       return null;
     }
@@ -63,10 +68,12 @@ export class UsersService implements OnModuleInit {
   }
 
   async create(id: number, ghToken: string) {
-    await this.prisma.user.upsert({
-      where: { id },
-      create: { id, ghToken },
-      update: { ghToken },
-    });
+    await this.drizzle.db
+      .insert(users)
+      .values({ id, ghToken })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: { ghToken },
+      });
   }
 }

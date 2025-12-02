@@ -5,15 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "bun ./src/dev.ts",
-    "prisma:generate": "bun prisma generate",
-    "build": "bun run prisma:generate && NODE_ENV=production bun scripts/build.ts",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "drizzle-kit migrate",
+    "build": "NODE_ENV=production bun scripts/build.ts",
     "start": "bun run src/main.ts",
     "start:prod": "bun run dist/main.js",
     "check": "tsc",
     "debug": "nest start --debug --watch"
-  },
-  "imports": {
-    "#prisma/*": "./generated/prisma/*.ts"
   },
   "dependencies": {
     "@fastify/etag": "^5.2.0",
@@ -28,8 +26,8 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-fastify": "^10.3.9",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/adapter-pg": "^6.17.1",
-    "@prisma/client": "^6.17.1",
+    "drizzle-orm": "^0.38.3",
+    "pg": "^8.13.1",
     "axios": "^1.7.7",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -42,8 +40,8 @@
     "fastify": "^4.29.1",
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
-    "@prisma/dev": "^0.11.1",
-    "get-port": "^7.1.0",
-    "prisma": "^6.17.1"
+    "@types/pg": "^8.11.10",
+    "drizzle-kit": "^0.29.1",
+    "get-port": "^7.1.0"
   }
 }

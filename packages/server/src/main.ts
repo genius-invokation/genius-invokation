@@ -20,7 +20,7 @@ import {
 } from "@nestjs/platform-fastify";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
-import { PrismaClientExceptionFilter } from "./db/prisma-exception.filter";
+import { DrizzleExceptionFilter } from "./db/drizzle-exception.filter";
 import { WEB_CLIENT_BASE_PATH } from "@gi-tcg/config";
 import { frontend } from "./frontend";
 
@@ -34,7 +34,7 @@ const app = await NestFactory.create<NestFastifyApplication>(
   }),
 );
 app.useGlobalPipes(new ValidationPipe({ transform: true }));
-app.useGlobalFilters(new PrismaClientExceptionFilter(app.getHttpAdapter()));
+app.useGlobalFilters(new DrizzleExceptionFilter(app.getHttpAdapter()));
 app.setGlobalPrefix(`${WEB_CLIENT_BASE_PATH}api`);
 await app.register(frontend);
 

@@ -14,8 +14,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../db/prisma.service";
-import type { Game as GameModel, PlayerOnGames } from "#prisma/client";
+import { DrizzleService } from "../db/drizzle.service";
+import { games, playerOnGames, users } from "../db/schema";
+import { eq, desc, sql } from "drizzle-orm";
 import type { PaginationDto, PaginationResult } from "../utils";
 
 export interface AddGameOption {
@@ -26,98 +27,150 @@ export interface AddGameOption {
   winnerId: number | null;
 }
 
+type GameModel = typeof games.$inferSelect;
+type PlayerOnGamesModel = typeof playerOnGames.$inferSelect;
+
 interface GameNoData extends Omit<GameModel, "data"> {}
 
 @Injectable()
 export class GamesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private drizzle: DrizzleService) {}
 
   async addGame({ playerIds, ...data }: AddGameOption): Promise<GameModel> {
-    const playerOnGames = playerIds.map((id, who) => ({
-      playerId: id,
-      who,
-    }));
-    const game = await this.prisma.game.create({
-      data: {
-        ...data,
-        players: {
-          create: playerOnGames,
-        },
-      },
+    return await this.drizzle.db.transaction(async (tx) => {
+      const [game] = await tx
+        .insert(games)
+        .values(data)
+        .returning();
+
+      const playerOnGamesData = playerIds.map((id, who) => ({
+        playerId: id,
+        gameId: game.id,
+        who,
+      }));
+
+      await tx.insert(playerOnGames).values(playerOnGamesData);
+
+      return game;
     });
-    return game;
   }
 
   async getAllGames({
     skip = 0,
     take = 10,
-  }: PaginationDto): Promise<PaginationResult<GameNoData>> {
-    const [data, count] = await this.prisma.game.findManyAndCount({
-      skip,
-      take,
-      omit: { data: true },
-      include: {
-        players: {
-          select: {
+  }: PaginationDto): Promise<PaginationResult<GameNoData & { players: Array<{ player: { id: number }, who: number }> }>> {
+    const countQuery = this.drizzle.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(games);
+    
+    const dataQuery = this.drizzle.db
+      .select({
+        id: games.id,
+        coreVersion: games.coreVersion,
+        gameVersion: games.gameVersion,
+        winnerId: games.winnerId,
+        createdAt: games.createdAt,
+      })
+      .from(games)
+      .orderBy(desc(games.createdAt))
+      .offset(skip)
+      .limit(take);
+
+    const [countResult, gamesData] = await Promise.all([
+      countQuery,
+      dataQuery,
+    ]);
+
+    const count = countResult[0]?.count ?? 0;
+
+    // Fetch players for each game
+    const data = await Promise.all(
+      gamesData.map(async (game) => {
+        const players = await this.drizzle.db
+          .select({
             player: {
-              select: {
-                id: true,
-              },
+              id: users.id,
             },
-            who: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+            who: playerOnGames.who,
+          })
+          .from(playerOnGames)
+          .innerJoin(users, eq(playerOnGames.playerId, users.id))
+          .where(eq(playerOnGames.gameId, game.id));
+
+        return {
+          ...game,
+          players,
+        };
+      })
+    );
+
     return { count, data };
   }
 
   async getGame(gameId: number) {
-    return await this.prisma.game.findFirst({
-      where: {
-        id: gameId,
-      },
-      include: {
-        players: {
-          select: {
-            player: {
-              select: {
-                id: true,
-              },
-            },
-            who: true,
-          },
+    const [game] = await this.drizzle.db
+      .select()
+      .from(games)
+      .where(eq(games.id, gameId))
+      .limit(1);
+
+    if (!game) {
+      return null;
+    }
+
+    const players = await this.drizzle.db
+      .select({
+        player: {
+          id: users.id,
         },
-      },
-    });
+        who: playerOnGames.who,
+      })
+      .from(playerOnGames)
+      .innerJoin(users, eq(playerOnGames.playerId, users.id))
+      .where(eq(playerOnGames.gameId, gameId));
+
+    return {
+      ...game,
+      players,
+    };
   }
 
   async gamesHasUser(
     userId: number,
     { skip = 0, take = 10 }: PaginationDto,
-  ): Promise<PaginationResult<PlayerOnGames & { game: GameNoData }>> {
-    const [data, count] = await this.prisma.playerOnGames.findManyAndCount({
-      skip,
-      take,
-      where: {
-        playerId: userId,
-      },
-      include: {
+  ): Promise<PaginationResult<PlayerOnGamesModel & { game: GameNoData }>> {
+    const countQuery = this.drizzle.db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(playerOnGames)
+      .where(eq(playerOnGames.playerId, userId));
+
+    const dataQuery = this.drizzle.db
+      .select({
+        playerId: playerOnGames.playerId,
+        gameId: playerOnGames.gameId,
+        who: playerOnGames.who,
         game: {
-          omit: {
-            data: true,
-          },
+          id: games.id,
+          coreVersion: games.coreVersion,
+          gameVersion: games.gameVersion,
+          winnerId: games.winnerId,
+          createdAt: games.createdAt,
         },
-      },
-      orderBy: {
-        game: {
-          createdAt: "desc",
-        },
-      },
-    });
+      })
+      .from(playerOnGames)
+      .innerJoin(games, eq(playerOnGames.gameId, games.id))
+      .where(eq(playerOnGames.playerId, userId))
+      .orderBy(desc(games.createdAt))
+      .offset(skip)
+      .limit(take);
+
+    const [countResult, data] = await Promise.all([
+      countQuery,
+      dataQuery,
+    ]);
+
+    const count = countResult[0]?.count ?? 0;
+
     return { data, count };
   }
 }
