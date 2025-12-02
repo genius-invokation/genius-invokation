@@ -22,6 +22,7 @@ export interface UserInfo {
   id: number;
   login: string;
   name?: string;
+  chessboardColor?: string | null;
 }
 
 const NOT_LOGIN = {

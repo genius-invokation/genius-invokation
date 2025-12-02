@@ -44,6 +44,7 @@ import {
 import { Client, createClient, WebUiPlayerIO } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import { Dynamic } from "solid-js/web";
+import { useChessboardColor } from "../useColor";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
 import type { CancellablePlayerIO } from "@gi-tcg/core";
 
@@ -458,6 +459,7 @@ export default function Room() {
   let chessboardContainer: HTMLDivElement | undefined;
 
   const mobile = useMobile();
+  const { color: chessboardColor } = useChessboardColor();
 
   onMount(() => {
     fetchMyNotification();
@@ -597,6 +599,7 @@ export default function Room() {
                 class={`${
                   mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""
                 }`}
+                chessboardColor={chessboardColor() ?? undefined}
                 timer={currentMyTimer() ?? currentOppTimer()}
                 myPlayerInfo={getClientPlayerInfo(payload().myPlayerInfo)}
                 oppPlayerInfo={getClientPlayerInfo(payload().oppPlayerInfo)}

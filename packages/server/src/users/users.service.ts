@@ -23,6 +23,7 @@ export interface UserInfo {
   login: string;
   name?: string;
   avatarUrl: string;
+  chessboardColor?: string | null;
 }
 
 @Injectable()
@@ -59,6 +60,7 @@ export class UsersService implements OnModuleInit {
       login: userResponse.data.login,
       name: userResponse.data.name,
       avatarUrl: userResponse.data.avatar_url,
+      chessboardColor: user.chessboardColor ?? null,
     };
   }
 
@@ -67,6 +69,13 @@ export class UsersService implements OnModuleInit {
       where: { id },
       create: { id, ghToken },
       update: { ghToken },
+    });
+  }
+
+  async updateChessboardColor(id: number, color: string | null) {
+    await this.prisma.user.update({
+      where: { id },
+      data: { chessboardColor: color },
     });
   }
 }

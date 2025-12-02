@@ -13,17 +13,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { createResource, For, Match, Show, Switch } from "solid-js";
+import { createResource, For, Match, Show, Switch, createSignal, createEffect } from "solid-js";
 import { UserInfo as UserInfoT } from "../auth";
 import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
 import axios, { AxiosError } from "axios";
 import { GameInfo } from "./GameInfo";
+import { useChessboardColor } from "../useColor";
 
-export interface UserInfoProps extends UserInfoT {}
+export interface UserInfoProps extends UserInfoT {
+  editable?: boolean;
+  onUpdate?: () => void;
+}
 
 export function UserInfo(props: UserInfoProps) {
   const avatarUrl = () => getAvatarUrl(props.id);
+  const { color: colorAccessor, setColor: saveColor } = useChessboardColor();
+  const [color, setColor] = createSignal<string | null>(props.chessboardColor ?? colorAccessor());
+  createEffect(() => {
+    const c = colorAccessor();
+    if (c !== undefined) {
+      setColor(c);
+    }
+  });
 
   const [games] = createResource(() =>
     axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data),
@@ -75,9 +87,37 @@ export function UserInfo(props: UserInfoProps) {
           </dd>
         </div>
         <hr class="h-1 w-full text-gray-4 my-4" />
-        <A class="btn btn-ghost" href="/decks">
-          我的牌组…
-        </A>
+        <div class="flex items-center gap-3">
+          <A class="btn btn-ghost" href="/decks">
+            我的牌组…
+          </A>
+          <Show when={props.editable}>
+            <div class="flex items-center gap-2">
+              <input
+                type="color"
+                value={color() ?? "#ffffff"}
+                onInput={(e) => setColor(e.currentTarget.value)}
+              />
+              <button
+                class="btn btn-soft-primary"
+                onClick={async () => {
+                  try {
+                    await saveColor(color());
+                    props.onUpdate?.();
+                    alert("保存成功");
+                  } catch (e) {
+                    if (e instanceof AxiosError) {
+                      alert(e.response?.data.message);
+                    }
+                    console.error(e);
+                  }
+                }}
+              >
+                保存棋盘颜色
+              </button>
+            </div>
+          </Show>
+        </div>
       </div>
     </div>
   );

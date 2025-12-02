@@ -19,6 +19,8 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
+  Body,
 } from "@nestjs/common";
 import { UsersService, type UserInfo } from "./users.service";
 import { User } from "../auth/user.decorator";
@@ -39,6 +41,18 @@ export class UsersController {
       throw new NotFoundException();
     }
     return user;
+  }
+
+  @Patch("me")
+  async updateMe(
+    @User() userId: number | null,
+    @Body() body: { chessboardColor?: string | null },
+  ) {
+    if (userId === null) {
+      throw new NotFoundException();
+    }
+    await this.users.updateChessboardColor(userId, body.chessboardColor ?? null);
+    return { ok: true };
   }
 
   @Get(":id")
