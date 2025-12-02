@@ -15,13 +15,11 @@ const server = await unstable_startServer({
 });
 const connectionString = server.database.connectionString;
 console.log("Started temporary dev Postgres server at", connectionString);
-await $`bunx prisma migrate dev --skip-generate`.env({
+await $`bunx drizzle-kit migrate`.env({
   DATABASE_URL: server.ppg.url,
 });
-await $`bunx prisma generate`;
-console.log(`dev Postgres server migration/generation done.`);
+console.log(`dev Postgres server migration done.`);
 
 await $`bun --watch ${path.resolve(import.meta.dirname, "main.ts")}`.env({
   DATABASE_URL: connectionString,
 }).nothrow();
-

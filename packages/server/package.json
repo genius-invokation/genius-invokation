@@ -41,6 +41,7 @@
     "@gi-tcg/web-client": "workspace:*",
     "@nestjs/cli": "^10.3.2",
     "@types/pg": "^8.11.10",
+    "@prisma/dev": "^0.11.1",
     "drizzle-kit": "^0.29.1",
     "get-port": "^7.1.0"
   }
