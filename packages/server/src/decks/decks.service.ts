@@ -175,16 +175,11 @@ export class DecksService {
       }));
     }
     
-    const updateData: Partial<typeof decks.$inferInsert> = {};
-    if (deck.name !== undefined) {
-      updateData.name = deck.name;
-    }
-    if (code !== undefined) {
-      updateData.code = code;
-    }
-    if (requiredVersion !== undefined) {
-      updateData.requiredVersion = requiredVersion;
-    }
+    const updateData: Partial<typeof decks.$inferInsert> = {
+      ...(deck.name !== undefined && { name: deck.name }),
+      ...(code !== undefined && { code }),
+      ...(requiredVersion !== undefined && { requiredVersion }),
+    };
 
     const [model] = await this.drizzle.db
       .update(decks)
