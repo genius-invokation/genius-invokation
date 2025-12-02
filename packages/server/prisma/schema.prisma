@@ -17,10 +17,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider   = "prisma-client"
-  output     = "../generated/prisma"
-  engineType = "client"
-  runtime    = "bun"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
