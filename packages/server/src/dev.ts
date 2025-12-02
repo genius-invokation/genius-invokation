@@ -13,9 +13,9 @@ const server = await unstable_startServer({
   port,
   persistenceMode: "stateful",
 });
-const connectionString = server.database.connectionString;
+const connectionString = server.database.prismaORMConnectionString;
 console.log("Started temporary dev Postgres server at", connectionString);
-await $`bunx prisma migrate dev --skip-generate`.env({
+await $`bunx prisma migrate dev`.env({
   DATABASE_URL: server.ppg.url,
 });
 await $`bunx prisma generate`;
