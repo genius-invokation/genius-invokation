@@ -18,11 +18,6 @@ import HistoryIcon from "../svg/HistoryIcon.svg?fb";
 import FullScreen from "../svg/FullScreen.svg?fb";
 import NormalScreen from "../svg/NormalScreen.svg?fb";
 import ExitIcon from "../svg/Exit.svg?fb";
-import SettingIcon from "../svg/Setting.svg?fb";
-import ClothIcon from "../svg/Cloth.svg?fb";
-import BackwardIcon from "../svg/Backward.svg?fb";
-
-export type ButtonGroup = "normal" | "settings" | "cloth";
 
 export interface SpecialViewToggleButtonProps {
   onClick?: () => void;
@@ -99,40 +94,6 @@ export function ExitButton(props: ExitButtonProps) {
   );
 }
 
-export interface SettingButtonProps {
-  onClick?: () => void;
-}
-
-export function SettingButton(props: SettingButtonProps) {
-  return (
-    <button
-      class="h-8 w-8 flex items-center justify-center function-button"
-      onClick={() => {
-        props.onClick?.();
-      }}
-    >
-      <SettingIcon class="h-5.6 w-5.6" />
-    </button>
-  );
-}
-
-export interface BackwardButtonProps {
-  onClick?: () => void;
-}
-
-export function BackwardButton(props: BackwardButtonProps) {
-  return (
-    <button
-      class="h-8 w-8 flex items-center justify-center function-button"
-      onClick={() => {
-        props.onClick?.();
-      }}
-    >
-      <BackwardIcon class="h-5 w-5" />
-    </button>
-  );
-}
-
 export const CHESSBOARD_COLORS = [
   "#c0cac3",
   "#537a76",
@@ -142,47 +103,3 @@ export const CHESSBOARD_COLORS = [
   "#456a90",
   "#783f29",
 ];
-
-export interface ClothButtonProps {
-  onClick?: () => void;
-  colorIndex: number;
-}
-
-export function ClothButton(props: ClothButtonProps) {
-  return (
-    <button
-      class="h-8 w-8 flex items-center justify-center function-button relative"
-      onClick={() => {
-        props.onClick?.();
-      }}
-    >
-      <ClothIcon class="h-5.2 w-5.2" />
-      <div
-        class="absolute h-2 w-2 top-4.2 left-4 rounded-full b-1 b-#e9e2d3 brightness-125"
-        style={{ "background-color": CHESSBOARD_COLORS[props.colorIndex] }}
-      />
-    </button>
-  );
-}
-
-export interface ColorsButtonProps {
-  onClick?: (index: number) => void;
-}
-
-export function ColorsButtonGroup(props: ColorsButtonProps) {
-  return (
-    <For each={CHESSBOARD_COLORS}>
-      {(color, index) => (
-        <button
-          class="h-8 w-8 flex items-center justify-center function-button"
-          onClick={() => props.onClick?.(index())}
-        >
-          <div
-            class="h-6 w-6 rounded-full"
-            style={{ "background-color": color }}
-          />
-        </button>
-      )}
-    </For>
-  );
-}

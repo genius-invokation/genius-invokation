@@ -133,13 +133,8 @@ import { CurrentTurnHint } from "./CurrentTurnHint";
 import {
   SpecialViewToggleButton,
   HistoryToggleButton,
-  BackwardButton,
-  ClothButton,
-  ColorsButtonGroup,
   ExitButton,
   FullScreenToggleButton,
-  SettingButton,
-  type ButtonGroup,
 } from "./FunctionButtonGroup";
 import { createAlert } from "./Alert";
 import { createMessageBox } from "./MessageBox";
@@ -285,6 +280,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   oppPlayerInfo?: PlayerInfo;
   gameEndExtra?: JSX.Element;
   liveStreamingMode?: boolean;
+  chessboardColor?: number;
   opp: OppInfo | null;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
@@ -1006,6 +1002,7 @@ export function Chessboard(props: ChessboardProps) {
     "gameEndExtra",
     "opp",
     "liveStreamingMode",
+    "chessboardColor",
     "data",
     "actionState",
     "history",
@@ -1647,9 +1644,6 @@ export function Chessboard(props: ChessboardProps) {
     }
   };
 
-  const [buttonGroup, setButtonGroup] = createSignal<ButtonGroup>("normal");
-  const [chessboardColor, setChessboardColor] = createSignal(0);
-
   onMount(() => {
     setSpecialViewVisible(!localProps.liveStreamingMode);
     onResize();
@@ -1677,7 +1671,7 @@ export function Chessboard(props: ChessboardProps) {
         hasOppChessboard={!!localProps.opp}
         setTransformScale={setTransformScale}
       >
-        <ChessboardBackground colorIndex={chessboardColor()} />
+        <ChessboardBackground colorIndex={localProps.chessboardColor ?? 0} />
         {/* 3d space */}
         <div
           class="relative h-full w-full preserve-3d select-none"
@@ -1948,39 +1942,22 @@ export function Chessboard(props: ChessboardProps) {
           {/* 右上角部件 */}
           <Show when={!localProps.liveStreamingMode}>
             <div class="absolute top-2 right-2 flex flex-row-reverse gap-1.5">
-              <Switch>
-                <Match when={buttonGroup() === "normal"}>
-                  <Show
-                    when={localProps.data.state.phase !== PbPhaseType.GAME_END}
-                  >
-                    <ExitButton
-                      onClick={() => {
-                        (async () => {
-                          if (await confirm("确定放弃对局吗？")) {
-                            localProps.onGiveUp?.();
-                          }
-                        })();
-                      }}
-                    />
-                  </Show>
-                  <SettingButton onClick={() => setButtonGroup("settings")} />
-                  <HistoryToggleButton
-                    onClick={() => setShowHistory((v) => !v)}
-                  />
-                </Match>
-                <Match when={buttonGroup() === "settings"}>
-                  <BackwardButton onClick={() => setButtonGroup("normal")} />
-                  <FullScreenToggleButton
-                    isFullScreen={isFullscreen()}
-                    onClick={toggleFullscreen}
-                  />
-                  <ClothButton onClick={() => setButtonGroup("cloth")} colorIndex={chessboardColor()}/>
-                </Match>
-                <Match when={buttonGroup() === "cloth"}>
-                  <BackwardButton onClick={() => setButtonGroup("settings")} />
-                  <ColorsButtonGroup onClick={(i) => setChessboardColor(i)} />
-                </Match>
-              </Switch>
+              <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
+                <ExitButton
+                  onClick={() => {
+                    (async () => {
+                      if (await confirm("确定放弃对局吗？")) {
+                        localProps.onGiveUp?.();
+                      }
+                    })();
+                  }}
+                />
+              </Show>
+              <FullScreenToggleButton
+                isFullScreen={isFullscreen()}
+                onClick={toggleFullscreen}
+              />
+              <HistoryToggleButton onClick={() => setShowHistory((v) => !v)} />
               <Show when={hasSpecialView()}>
                 <SpecialViewToggleButton
                   onClick={() => setSpecialViewVisible((v) => !v)}
