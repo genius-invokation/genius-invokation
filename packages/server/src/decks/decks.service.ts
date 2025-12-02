@@ -175,12 +175,22 @@ export class DecksService {
       }));
     }
     
-    type UpdateData = Partial<Pick<typeof decks.$inferSelect, 'name' | 'code' | 'requiredVersion'>>;
-    const updateData: UpdateData = {
-      ...(deck.name !== undefined && { name: deck.name }),
-      ...(code !== undefined && { code }),
-      ...(requiredVersion !== undefined && { requiredVersion }),
-    };
+    // Only include fields that can be updated
+    const updateData: {
+      name?: string;
+      code?: string;
+      requiredVersion?: number;
+    } = {};
+    
+    if (deck.name !== undefined) {
+      updateData.name = deck.name;
+    }
+    if (code !== undefined) {
+      updateData.code = code;
+    }
+    if (requiredVersion !== undefined) {
+      updateData.requiredVersion = requiredVersion;
+    }
 
     const [model] = await this.drizzle.db
       .update(decks)
