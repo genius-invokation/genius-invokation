@@ -87,8 +87,8 @@ export const SedationMarkElectro = status(115156)
  * @id 115152
  * @name 咔库库
  * @description
- * 特技：援护射击。
- * 所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持。
+ * 特技：援护射击
+ * 所附属角色「夜魂值」为0时，弃置此牌；此牌被弃置时，所附属角色结束夜魂加持
  * [1151521: 援护射击] (2*Void) 消耗1点「夜魂值」，对上一个敌方角色造成1点风元素伤害，并治疗我方受伤最多的角色2点。
  * [1151522: ] ()
  * [1151523: ] ()
@@ -145,6 +145,7 @@ export const CompoundSedationField = skill(15153)
   .do((c) => {
     const aura = c.$(`opp active`)?.aura;
     c.damage(DamageType.Anemo, 2);
+    c.heal(2, `my characters order by health - maxHealth limit 1`);
     let mark: StatusHandle | null = null;
     switch (aura) {
       case Aura.Cryo:

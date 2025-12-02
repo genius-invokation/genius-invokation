@@ -25,7 +25,6 @@ import {
 } from "./CardDataViewer";
 import { createSignal } from "solid-js";
 import type {
-  PbCardState,
   PbCharacterState,
   PbEntityState,
 } from "@gi-tcg/typings";
@@ -47,7 +46,7 @@ export interface RegisterResult {
       combatStatuses: PbEntityState[],
     ): void;
     (type: "summon" | "support", entity: PbEntityState): void;
-    (type: "card", card: PbCardState): void;
+    (type: "card", card: PbEntityState): void;
   };
   readonly hide: () => void;
 }
@@ -75,7 +74,7 @@ export function createCardDataViewer(
   };
 
   const mapStateToInput = (
-    st: PbCharacterState | PbEntityState | PbCardState,
+    st: PbCharacterState | PbEntityState,
     type: StateType,
   ): ViewerInput => ({
     from: "state",
@@ -110,7 +109,7 @@ export function createCardDataViewer(
     },
     showState: (
       type: StateType,
-      state: PbCharacterState | PbEntityState | PbCardState,
+      state: PbCharacterState | PbEntityState,
       combatStatuses?: PbEntityState[],
     ) => {
       setInputs([

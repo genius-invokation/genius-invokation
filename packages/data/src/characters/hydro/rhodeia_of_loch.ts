@@ -186,7 +186,7 @@ export const TideAndTorrent = skill(22014)
 export const RhodeiaOfLoch = character(2201)
   .since("v3.3.0")
   .tags("hydro", "monster")
-  .health(10)
+  .health(11)
   .energy(3)
   .skills(Surge, OceanidMimicSummoning, TheMyriadWilds, TideAndTorrent)
   .done();

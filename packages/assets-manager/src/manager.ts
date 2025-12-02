@@ -26,12 +26,11 @@ import { blobToDataUrl } from "./data_url";
 import { getNameSync } from "./names";
 import type { CustomData, CustomSkill } from "./custom_data";
 import type {
-  CardTag,
-  CardType,
   CharacterTag,
   CommonSkillType,
   Deck,
   DiceRequirement,
+  EntityTag,
   EntityType,
 } from "@gi-tcg/core";
 import { DiceType } from "@gi-tcg/typings";
@@ -157,12 +156,7 @@ export class AssetsManager {
       technique: "GCG_SKILL_TAG_VEHICLE",
       passive: "GCG_SKILL_TAG_PASSIVE",
     };
-    const CARD_TYPE_MAP: Record<CardType, string> = {
-      equipment: "GCG_CARD_MODIFY",
-      event: "GCG_CARD_EVENT",
-      support: "GCG_CARD_ASSIST",
-    };
-    const CARD_TAG_MAP: Record<CardTag, string> = {
+    const ENTITY_TAG_MAP: Partial<Record<EntityTag, string>> = {
       weapon: "GCG_TAG_WEAPON",
       bow: "GCG_TAG_WEAPON_BOW",
       catalyst: "GCG_TAG_WEAPON_CATALYST",
@@ -188,6 +182,7 @@ export class AssetsManager {
       equipment: "GCG_CARD_MODIFY",
       summon: "GCG_CARD_SUMMON",
       support: "GCG_CARD_ASSIST",
+      eventCard: "GCG_CARD_EVENT",
     };
     const COST_TYPE_MAP: Record<DiceType, string> = {
       [DiceType.Void]: "GCG_COST_DICE_VOID",
@@ -265,14 +260,14 @@ export class AssetsManager {
         // @ts-expect-error
         category: "action_cards",
         id: ac.id,
-        type: CARD_TYPE_MAP[ac.type],
+        type: ENTITY_TYPE_MAP[ac.type],
         name: ac.name,
         englishName: "",
         rawDescription: ac.rawDescription,
         description: "",
         cardFace: "",
         obtainable: ac.obtainable,
-        tags: ac.tags.map((tag) => CARD_TAG_MAP[tag]),
+        tags: ac.tags.map((tag) => ENTITY_TAG_MAP[tag]).filter((s): s is string => !!s),
         playCost: genCost(ac.playCost, false),
         targetList: [],
         relatedCharacterId: null,

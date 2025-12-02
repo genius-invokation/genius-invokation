@@ -86,14 +86,14 @@ export const ShadowstealingSpiritVessel = skill(11141)
  * @id 11142
  * @name 霜昼黑星
  * @description
- * 造成2点冰元素伤害。
+ * 造成1点冰元素伤害。
  * 自身进入夜魂加持，并获得1点「夜魂值」；生成1点白曜护盾和伊兹帕帕。（角色进入夜魂加持后不可使用此技能）
  */
 export const DawnfrostDarkstar = skill(11142)
   .type("elemental")
   .costCryo(3)
   .filter((c) => !c.self.hasStatus(NightsoulsBlessing))
-  .damage(DamageType.Cryo, 2)
+  .damage(DamageType.Cryo, 1)
   .gainNightsoul("@self", 1)
   .combatStatus(OpalShield)
   .combatStatus(Itzpapa)

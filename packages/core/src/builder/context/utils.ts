@@ -15,7 +15,12 @@
 
 /** This file provides a wrapper of getEntityById/getEntityArea with getRaw */
 
-import type { CardState, CharacterState, EntityState, GameState, StateSymbol } from "../../base/state";
+import type {
+  CharacterState,
+  EntityState,
+  GameState,
+  StateSymbol,
+} from "../../base/state";
 import { getRaw } from "./reactive";
 import {
   getEntityArea as getEntityAreaOriginal,
@@ -42,13 +47,8 @@ export {
   sortDice,
 } from "../../utils";
 
-
 export type PlainCharacterState = Omit<CharacterState, StateSymbol>;
 export type PlainEntityState = Omit<EntityState, StateSymbol>;
-export type PlainCardState = Omit<CardState, StateSymbol>;
-export type PlainAnyState = PlainCharacterState | PlainEntityState | PlainCardState;
-export type ExPlainEntityState<TypeT extends ExEntityType> = TypeT extends "character"
-  ? PlainCharacterState
-  : TypeT extends "card"
-    ? PlainCardState
-    : PlainEntityState;
+export type PlainAnyState = PlainCharacterState | PlainEntityState;
+export type ExPlainEntityState<TypeT extends ExEntityType> =
+  TypeT extends "character" ? PlainCharacterState : PlainEntityState;

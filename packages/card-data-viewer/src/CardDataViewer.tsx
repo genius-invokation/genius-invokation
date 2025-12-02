@@ -17,7 +17,7 @@ import type { AnyState } from "@gi-tcg/core";
 import { createMemo, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { ActionCard, Character, Entity, Keyword, Skill } from "./Entity";
 
-export type StateType = AnyState["definition"]["type"] | "skill" | "keyword";
+export type StateType = AnyState["definition"]["type"] | "card" | "skill" | "keyword";
 
 export type ViewerInput =
   | {

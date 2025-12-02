@@ -78,6 +78,7 @@ export const WavestriderStatus = status(114055)
  * 持续回合：2
  */
 export const ThunderbeastsTarge = combatStatus(114053)
+  .tags("barrier")
   .duration(2)
   .on("useSkill", (c, e) => e.isSkillType("normal"))
   .damage(DamageType.Electro, 1)

@@ -43,6 +43,8 @@ function App() {
             variableName: "usage",
             variableValue: 3,
             equipment: 1,
+            definitionCost: [],
+            tags: 0,
             descriptionDictionary: {
               "[GCG_TOKEN_SHIELD]": "1",
             },
@@ -57,6 +59,8 @@ function App() {
           variableValue: 1,
           hasUsagePerRound: true,
           descriptionDictionary: {},
+          definitionCost: [],
+          tags: 0,
         },
       ],
     );
@@ -68,6 +72,7 @@ function App() {
         "[T]": "2",
       },
       tags: 0,
+      hasUsagePerRound: false,
     });
     // showState("summon", {
     //   id: -5000001,

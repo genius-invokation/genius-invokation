@@ -14,8 +14,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Character, ref, setup, State, Equipment, Card } from "#test";
-import { TenacityOfTheMillelith } from "@gi-tcg/data/internal/cards/equipment/artifacts";
-import { LeaveItToMe, Lyresong } from "@gi-tcg/data/internal/cards/event/other";
+import { GildedDreams, TenacityOfTheMillelith } from "@gi-tcg/data/internal/cards/equipment/artifacts";
+import { LeaveItToMe, Lyresong, TheBoarPrincess, TheBoarPrincessInEffect } from "@gi-tcg/data/internal/cards/event/other";
+import { Ganyu } from "@gi-tcg/data/internal/characters/cryo/ganyu";
+import { KamisatoAyaka } from "@gi-tcg/data/internal/characters/cryo/kamisato_ayaka";
 import { expect, test } from "bun:test";
 
 test("lyresong: first play deduct 2 omni", async () => {
@@ -51,3 +53,25 @@ test("lyresong: second play deduct 1 omni", async () => {
   await c.me.card(TenacityOfTheMillelith, target);
   expect(c.state.players[0].dice).toBeArrayOfSize(6);
 });
+
+test("lyresong: don't trigger boar princess", async () => {
+  const target = ref();
+  const c = setup(
+    <State phase="end">
+      <Character my ref={target} def={Ganyu}>
+        <Equipment def={TenacityOfTheMillelith} />
+      </Character>
+      <Character my def={KamisatoAyaka} />
+      <Card my def={Lyresong} />
+      <Card my def={TheBoarPrincess} />
+      <Card my def={GildedDreams} />
+    </State>,
+  );
+  await c.me.card(TheBoarPrincess);
+  await c.me.card(Lyresong, target);
+  expect(c.state.players[0].dice).toBeArrayOfSize(8);
+  c.expect(`my combat status with definition id ${TheBoarPrincessInEffect}`).toBeExist();
+  await c.me.card(GildedDreams, target);
+  // 8 - (3 - 1) + 1 = 7
+  expect(c.state.players[0].dice).toBeArrayOfSize(7);
+})
