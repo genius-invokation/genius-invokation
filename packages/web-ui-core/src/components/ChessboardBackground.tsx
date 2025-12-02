@@ -26,7 +26,7 @@ export const CHESSBOARD_COLORS = [
 ];
 
 export interface ChessboardBackgroundProps {
-  colorIndex: number;
+  color?: string;
 }
 
 export function ChessboardBackground(props: ChessboardBackgroundProps) {
@@ -43,7 +43,7 @@ export function ChessboardBackground(props: ChessboardBackgroundProps) {
           </WithDelicateUi> */}
           <div
             class="absolute inset-10 rounded-15% brightness-120 b-5 b-#221100 shadow-[inset_0_0_16px_#000000]"
-            style={{ "background-color": CHESSBOARD_COLORS[props.colorIndex] }}
+            style={{ "background-color": props.color ?? "#c0cac3" }}
           />
           <div class="absolute top-49.5% left-5% h-1% w-90% bg-black/5"/>
         </div>

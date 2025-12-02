@@ -280,7 +280,7 @@ export interface ChessboardProps extends ComponentProps<"div"> {
   oppPlayerInfo?: PlayerInfo;
   gameEndExtra?: JSX.Element;
   liveStreamingMode?: boolean;
-  chessboardColor?: number;
+  chessboardColor?: string;
   opp: OppInfo | null;
   /**
    * 从 notify 传入的 state & mutations 经过解析后得到的棋盘数据
@@ -1671,7 +1671,7 @@ export function Chessboard(props: ChessboardProps) {
         hasOppChessboard={!!localProps.opp}
         setTransformScale={setTransformScale}
       >
-        <ChessboardBackground colorIndex={localProps.chessboardColor ?? 0} />
+        <ChessboardBackground color={localProps.chessboardColor} />
         {/* 3d space */}
         <div
           class="relative h-full w-full preserve-3d select-none"
