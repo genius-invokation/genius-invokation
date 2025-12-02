@@ -13,7 +13,15 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { createResource, For, Match, Show, Switch, createSignal, createEffect } from "solid-js";
+import {
+  createResource,
+  For,
+  Match,
+  Show,
+  Switch,
+  createSignal,
+  createEffect,
+} from "solid-js";
 import { UserInfo as UserInfoT } from "../auth";
 import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
@@ -26,10 +34,22 @@ export interface UserInfoProps extends UserInfoT {
   onUpdate?: () => void;
 }
 
+export const CHESSBOARD_COLORS = [
+  "#c0cac3",
+  "#537a76",
+  "#7f7473",
+  "#66588a",
+  "#667a4a",
+  "#456a90",
+  "#783f29",
+];
+
 export function UserInfo(props: UserInfoProps) {
   const avatarUrl = () => getAvatarUrl(props.id);
   const { color: colorAccessor, setColor: saveColor } = useChessboardColor();
-  const [color, setColor] = createSignal<string | null>(props.chessboardColor ?? colorAccessor());
+  const [color, setColor] = createSignal<string | null>(
+    props.chessboardColor ?? colorAccessor(),
+  );
   createEffect(() => {
     const c = colorAccessor();
     if (c !== undefined) {
@@ -93,11 +113,46 @@ export function UserInfo(props: UserInfoProps) {
           </A>
           <Show when={props.editable}>
             <div class="flex items-center gap-2">
-              <input
-                type="color"
-                value={color() ?? "#ffffff"}
-                onInput={(e) => setColor(e.currentTarget.value)}
-              />
+              <For each={CHESSBOARD_COLORS}>
+                {(presetColor) => (
+                  <button
+                    class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-3 data-[seleceted]:b-2 data-[seleceted]:b-gray-6"
+                    onClick={() => setColor(presetColor)}
+                    bool:data-selected={presetColor === color()}
+                  >
+                    <div
+                      class="h-6 w-6 rounded-full"
+                      style={{ "background-color": presetColor }}
+                    />
+                  </button>
+                )}
+              </For>
+              <div class="relative h-8 w-8 flex items-center justify-center rounded-full cursor-pointer inset-0">
+                <input
+                  type="color"
+                  class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
+                  value={color() ?? "#ffffff"}
+                  onInput={(e) => setColor(e.currentTarget.value)}
+                />
+                <div
+                  class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-3 data-[seleceted]:b-2 data-[seleceted]:b-gray-6 bg-white pointer-events-none"
+                  bool:data-selected={
+                    !CHESSBOARD_COLORS.includes(color() ?? "")
+                  }
+                >
+                  <div
+                    class="h-6 w-6 rounded-full"
+                    style={
+                      CHESSBOARD_COLORS.includes(color() ?? "") && !!color()
+                        ? {
+                            background:
+                              "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
+                          }
+                        : { "background-color": color()! }
+                    }
+                  />
+                </div>
+              </div>
               <button
                 class="btn btn-soft-primary"
                 onClick={async () => {
