@@ -1,26 +1,37 @@
-import getPort from "get-port";
+import { PGlite } from "@electric-sql/pglite";
 import path from "node:path";
 import { $ } from "bun";
+import { drizzle } from "drizzle-orm/pglite";
+import * as schema from "./db/schema";
 
 if (process.env.NODE_ENV === "production") {
   throw new Error("dev.ts should not be used in production");
 }
 
-// For development, we expect DATABASE_URL to be set in environment
-// If not set, provide a helpful error message
-if (!process.env.DATABASE_URL) {
-  console.error("ERROR: DATABASE_URL environment variable is required for development");
-  console.error("Please set DATABASE_URL to your PostgreSQL connection string");
-  console.error("Example: DATABASE_URL=postgresql://user:password@localhost:5432/dbname");
-  process.exit(1);
-}
+// Use PGlite for development - no external PostgreSQL needed!
+const pgliteDir = path.resolve(import.meta.dirname, "../.pglite");
+console.log("Starting PGlite database at:", pgliteDir);
 
-console.log("Starting development server with database:", process.env.DATABASE_URL);
+const pglite = new PGlite(pgliteDir);
 
-// Run migrations if needed
+// Set DATABASE_URL for the development server to use PGlite
+const DATABASE_URL = `pglite://${pgliteDir}`;
+process.env.DATABASE_URL = DATABASE_URL;
+
+console.log("✓ PGlite database initialized");
+
+// Run migrations
 console.log("Running database migrations...");
-await $`bunx drizzle-kit push`.quiet();
-console.log("Database migrations complete.");
+await $`bunx drizzle-kit push`.env({
+  DATABASE_URL,
+}).quiet();
+console.log("✓ Database migrations complete");
 
 // Start the server with watch mode
-await $`bun --watch ${path.resolve(import.meta.dirname, "main.ts")}`.nothrow();
+console.log("Starting development server on http://localhost:3000");
+await $`bun --watch ${path.resolve(import.meta.dirname, "main.ts")}`.env({
+  DATABASE_URL,
+  JWT_SECRET: process.env.JWT_SECRET || "dev-secret-change-in-production",
+  NODE_ENV: "development",
+}).nothrow();
+

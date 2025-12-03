@@ -7,6 +7,7 @@ A complete, production-ready rewrite of `@gi-tcg/server` using modern technologi
 - **10x faster startup** (expected)
 - **100% API compatibility** with existing server
 - **Same database** compatibility (PostgreSQL)
+- **Zero-setup development** with PGlite (embedded PostgreSQL)
 
 ## 📦 What's Inside
 
@@ -19,12 +20,13 @@ A complete, production-ready rewrite of `@gi-tcg/server` using modern technologi
 ✅ Server-Sent Events (SSE) for real-time updates
 ✅ Frontend static file serving
 ✅ Production-ready build system
+✅ PGlite for instant local development
 
 ### Technology Stack
 - **Framework**: ElysiaJS 1.1.25 (fast, type-safe)
 - **ORM**: Drizzle 0.36.4 (TypeScript-first)
 - **Runtime**: Bun 1.3+ (native TypeScript)
-- **Database**: PostgreSQL (same as original)
+- **Database**: PostgreSQL (production) / PGlite (development)
 - **Authentication**: JWT + GitHub OAuth
 
 ### Documentation
@@ -34,17 +36,18 @@ A complete, production-ready rewrite of `@gi-tcg/server` using modern technologi
 - `.env.example` - Environment configuration template
 
 ### Development Tools
-- `docker-compose.yml` - Local development setup
+- `docker-compose.yml` - Local development setup (optional)
 - `Dockerfile` - Production container
 - `bunfig.toml` - Bun configuration
 - `drizzle.config.ts` - Database ORM config
+- **PGlite** - Embedded PostgreSQL (no setup required!)
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Bun 1.3+ (or Node.js 20+ with npm)
-- PostgreSQL 14+
-- GitHub OAuth app credentials
+- **No PostgreSQL needed for development!** (uses PGlite)
+- GitHub OAuth app credentials (optional for local testing)
 
 ### Installation
 
@@ -53,42 +56,53 @@ cd packages/server-nextgen
 bun install
 ```
 
-### Configuration
+### Development (Zero Setup!)
 
-Copy and configure environment:
+**Just run:**
 ```bash
-cp .env.example .env
-# Edit .env with your values
+bun run dev
 ```
 
-Required variables:
+That's it! No database setup needed. PGlite (embedded PostgreSQL) starts automatically in `.pglite/` directory.
+
+The development server:
+- ✅ Starts PGlite automatically
+- ✅ Runs migrations
+- ✅ Watches for file changes
+- ✅ Provides sensible defaults for all config
+
+Server starts at `http://localhost:3000`
+
+### Configuration (Optional)
+
+For GitHub OAuth testing, create `.env`:
 ```env
-DATABASE_URL=postgresql://user:pass@localhost:5432/gitcg
-JWT_SECRET=your-random-secret-here
 GH_CLIENT_ID=your-github-client-id
 GH_CLIENT_SECRET=your-github-client-secret
+JWT_SECRET=optional-custom-secret
 ```
 
-### Development
+### Alternative: Docker (if you prefer)
 
-Using Docker (recommended):
 ```bash
 docker-compose up
 ```
 
-Or manually:
-```bash
-# Start PostgreSQL first
-bun run dev
-```
-
-Server starts at `http://localhost:3000`
+This uses PostgreSQL in a container instead of PGlite.
 
 ### Production Build
 
 ```bash
 bun run build
 bun run start:prod
+```
+
+Production requires real PostgreSQL:
+```env
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+JWT_SECRET=your-secret
+GH_CLIENT_ID=your-id
+GH_CLIENT_SECRET=your-secret
 ```
 
 ## 📊 Code Comparison

@@ -8,6 +8,7 @@ This is a complete rewrite of the `@gi-tcg/server` package using modern technolo
 - **ElysiaJS**: Fast, ergonomic web framework for Bun
 - **Drizzle ORM**: TypeScript-first ORM with excellent type safety
 - **Bun**: JavaScript runtime with native TypeScript support
+- **PGlite**: Embedded PostgreSQL for development (zero setup!)
 
 ## Architecture
 
@@ -22,6 +23,9 @@ The server maintains the same API endpoints as the original NestJS implementatio
 
 Uses PostgreSQL with Drizzle ORM. The schema matches the existing Prisma schema to maintain compatibility.
 
+**Development**: Uses PGlite (embedded PostgreSQL) - no external database needed!
+**Production**: Uses regular PostgreSQL
+
 ### Migration from original server
 
 The database schema is compatible with the existing Prisma-based server. You can use the same PostgreSQL database.
@@ -32,15 +36,15 @@ The database schema is compatible with the existing Prisma-based server. You can
 # Install dependencies
 bun install
 
-# Set up environment variables
-export DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
-
 # Run development server (with auto-reload)
+# No database setup needed - uses PGlite automatically!
 bun run dev
 
 # Check types
 bun run check
 ```
+
+The dev server uses PGlite, an embedded PostgreSQL database that runs in-process. No Docker, no PostgreSQL installation needed - just run `bun run dev` and start coding!
 
 ## Building
 
@@ -54,12 +58,19 @@ bun run start:prod
 
 ## Environment Variables
 
-- `DATABASE_URL` - PostgreSQL connection string (required)
+**Development** (all optional, sensible defaults provided):
+- `JWT_SECRET` - Secret for JWT token signing (defaults to dev secret)
+- `GH_CLIENT_ID` - GitHub OAuth client ID (optional for local testing)
+- `GH_CLIENT_SECRET` - GitHub OAuth client secret (optional for local testing)
+- `PORT` - Server port (default: 3000)
+
+**Production** (required):
+- `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - Secret for JWT token signing
 - `GH_CLIENT_ID` - GitHub OAuth client ID
 - `GH_CLIENT_SECRET` - GitHub OAuth client secret
 - `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment mode (development/production)
+- `NODE_ENV` - Should be set to "production"
 
 ## Key Differences from Original
 
@@ -68,6 +79,7 @@ bun run start:prod
 3. **Validation**: Elysia's built-in type validation instead of class-validator
 4. **Dependency Injection**: Removed in favor of direct imports (simpler, faster)
 5. **Performance**: Significantly faster startup and response times with Bun
+6. **Development**: PGlite for zero-setup local development
 
 ## Compatibility
 

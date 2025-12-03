@@ -5,3 +5,4 @@ generated
 *.log
 .env
 .env.local
+.pglite
