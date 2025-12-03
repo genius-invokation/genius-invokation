@@ -1,0 +1,7 @@
+node_modules
+dist
+drizzle
+generated
+*.log
+.env
+.env.local
