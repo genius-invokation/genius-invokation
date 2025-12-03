@@ -7,6 +7,6 @@ COPY . .
 RUN bun install --frozen-lockfile && bun run build -n server
 
 FROM base AS deploy
-COPY --from=build /app/packages/server/dist/* /app/packages/server/prisma ./
+COPY --from=build /app/packages/server/dist/* /app/packages/server/prisma /app/packages/server/prisma.config.ts ./
 
 CMD ["bun", "main.js"]
