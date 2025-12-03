@@ -721,6 +721,9 @@
       );
     }
   }
+  .skirk-foreground {
+    clip-path: xywh(0 calc(100% - var(--ratio)) 100% var(--ratio));
+  }
 
   .reaction-base-animation {
     animation: reaction-base ease-in 500ms;

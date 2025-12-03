@@ -261,7 +261,7 @@ const damageSourceKeyFrames = (info: AnimationInfo): Keyframe[] => {
 const damageTargetKeyFrames = (info: AnimationInfo): Keyframe[] => {
   const rad = Math.atan2(
     info.targetY - info.sourceY,
-    info.targetX - info.sourceX,
+    info.targetX - info.sourceX
   );
   const OFFSET = 5;
   const xOffset = OFFSET * Math.cos(rad);
@@ -316,7 +316,7 @@ export function CharacterArea(props: CharacterAreaProps) {
 
   const renderDamages = async (
     delayMs: number,
-    damages: (DamageInfo | ReactionInfo)[],
+    damages: (DamageInfo | ReactionInfo)[]
   ) => {
     let preReactionAuraValue: Aura | null = null;
     if (damages[0]?.type === "damage" && damages[0]?.reaction?.base) {
@@ -377,7 +377,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         {
           delay: DAMAGE_TARGET_ANIMATION_DELAY,
           duration: DAMAGE_TARGET_ANIMATION_DURATION,
-        },
+        }
       );
       animations.push(animation.finished.then(() => animation.cancel()));
     } else if (propAnimation.type === "damageSource") {
@@ -392,7 +392,7 @@ export function CharacterArea(props: CharacterAreaProps) {
         {
           delay: 0,
           duration: DAMAGE_SOURCE_ANIMATION_DURATION,
-        },
+        }
       );
       animations.push(animation.finished.then(() => animation.cancel()));
     }
@@ -418,35 +418,35 @@ export function CharacterArea(props: CharacterAreaProps) {
     const aura = props.preview?.newAura ?? preReactionAura() ?? data().aura;
     return [aura & 0xf, (aura >> 4) & 0xf];
   });
-  const previewReaction = createMemo(
-    () =>
-      props.preview?.reactions.map((r) => {
-        const reactionElement = REACTION_TEXT_MAP[r.reactionType].elements;
-        const applyElement = r.incoming;
-        const baseElement = reactionElement.find((e) => e !== applyElement);
-        return [baseElement, applyElement];
-      }),
+  const previewReaction = createMemo(() =>
+    props.preview?.reactions.map((r) => {
+      const reactionElement = REACTION_TEXT_MAP[r.reactionType].elements;
+      const applyElement = r.incoming;
+      const baseElement = reactionElement.find((e) => e !== applyElement);
+      return [baseElement, applyElement];
+    })
   );
   const energy = createMemo(() => data().energy);
   const defeated = createMemo(() => data().defeated);
   const triggered = createMemo(() => props.triggered);
 
+  // MARK: debug SKK with returning true
+  const isSkirkEnergyBar = () => data().specialEnergyName === 'serpentsSubtlety';
+
   const statuses = createMemo(() =>
-    props.entities.filter((et) => typeof et.data.equipment === "undefined"),
+    props.entities.filter((et) => typeof et.data.equipment === "undefined")
   );
   const weapon = createMemo(() =>
-    props.entities.find((et) => et.data.equipment === PbEquipmentType.WEAPON),
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.WEAPON)
   );
   const artifact = createMemo(() =>
-    props.entities.find((et) => et.data.equipment === PbEquipmentType.ARTIFACT),
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.ARTIFACT)
   );
   const technique = createMemo(() =>
-    props.entities.find(
-      (et) => et.data.equipment === PbEquipmentType.TECHNIQUE,
-    ),
+    props.entities.find((et) => et.data.equipment === PbEquipmentType.TECHNIQUE)
   );
   const otherEquipments = createMemo(() =>
-    props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER),
+    props.entities.filter((et) => et.data.equipment === PbEquipmentType.OTHER)
   );
   return (
     <div
@@ -504,7 +504,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             bondOfLife={!!(data().tags & CHARACTER_TAG_BOND_OF_LIFE)}
           />
           <div class="absolute z-1 right-0.4 top-3 translate-x-50% flex flex-col gap-0 items-center">
-            <EnergyBar
+            <Dynamic
+              component={isSkirkEnergyBar() ? SkirkEnergyBar : EnergyBar}
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
               total={data().maxEnergy}
@@ -709,7 +710,7 @@ function EnergyBar(props: EnergyBarProps) {
     const length = Math.max(current, preview, total);
     const all = Array.from(
       { length },
-      (_, i) => (+(current > i) + +(preview > i)) as 0 | 1 | 2,
+      (_, i) => (+(current > i) + +(preview > i)) as 0 | 1 | 2
     );
     return [
       ...all.slice(total).map((v) => STAGE_2[v]),
@@ -735,6 +736,30 @@ function EnergyBar(props: EnergyBarProps) {
         )}
       </For>
     </>
+  );
+}
+
+function SkirkEnergyBar(props: EnergyBarProps) {
+  const ratio = () => props.current / props.total;
+  return (
+    <WithDelicateUi
+      assetId={["UI_TeyvatCard_LifeBg_SKK01", "UI_TeyvatCard_LifeBg_SKK02"]}
+      fallback={<EnergyBar {...props} />}
+    >
+      {(backgroundImg, foregroundImg) => (
+        <div class="relative w-5.8">
+          {backgroundImg}
+          <div
+            class="absolute left-0 bottom-0 right-0 skirk-foreground"
+            style={{
+              "--ratio": `${ratio() * 100}%`,
+            }}
+          >
+            {foregroundImg}
+          </div>
+        </div>
+      )}
+    </WithDelicateUi>
   );
 }
 
