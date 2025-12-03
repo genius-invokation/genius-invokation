@@ -490,16 +490,21 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, e.switchInfo.to.id, r)
     );
   }),
+  // 抽牌后：行动牌因抽牌移入手牌，超过上限或者此时仍在手牌区
   drawCard: defineDescriptor("onHandCardInserted", (e, r, curState) => {
     const area = getEntityArea(curState, e.card.id);
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
-      e.reason === "draw" &&
+      ["draw", "switch"].includes(e.reason) &&
       (area.type === "hands" || e.overflowed)
     );
   }),
-  handCardInserted: defineDescriptor("onHandCardInserted", (e, r) => {
-    return checkRelative(e.onTimeState, { who: e.who }, r);
+  // 加入手牌后：行动牌移入手牌，且此时仍在同方
+  handCardInserted: defineDescriptor("onHandCardInserted", (e, r, curState) => {
+    const area = getEntityArea(curState, e.card.id);
+    return (
+      checkRelative(e.onTimeState, { who: e.who }, r) && area.who === e.who
+    );
   }),
   disposeCard: defineDescriptor("onDispose", (e, r) => {
     return e.isDiscard() && checkRelative(e.onTimeState, { who: e.who }, r);
