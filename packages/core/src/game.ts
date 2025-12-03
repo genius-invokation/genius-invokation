@@ -527,10 +527,13 @@ export class Game {
       await this.handleEvents(events);
     }
     await this.mutator.notifyAndPause();
-    await Promise.all([
-      this.mutator.switchHands(0),
-      this.mutator.switchHands(1),
-    ]);
+    const events = (
+      await Promise.all([
+        this.mutator.switchHands(0),
+        this.mutator.switchHands(1),
+      ])
+    ).flat(1);
+    await this.handleEvents(events);
     this.mutate({
       type: "changePhase",
       newPhase: "initActives",
@@ -656,7 +659,10 @@ export class Game {
         new PlayerEventArg(this.state, who),
       );
       const replaceActionEventArg = new PlayerEventArg(this.state, who);
-      const replacedSkill = findReplaceAction(this.state, replaceActionEventArg);
+      const replacedSkill = findReplaceAction(
+        this.state,
+        replaceActionEventArg,
+      );
       if (replacedSkill) {
         this.mutator.log(
           DetailLogType.Other,
