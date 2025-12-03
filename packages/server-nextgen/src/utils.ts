@@ -139,10 +139,10 @@ export async function verifyDeck({
 }
 
 function maxVersion(versions: Iterable<string | undefined>): Version {
-  const ver = [...versions]
+  const sorted = [...versions]
     .filter((v): v is string => !!v)
-    .toSorted(semver.order)
-    .last();
+    .toSorted(semver.order);
+  const ver = sorted[sorted.length - 1];
   if (!VERSIONS.includes(ver as Version)) {
     return CURRENT_VERSION;
   } else {

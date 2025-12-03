@@ -331,7 +331,8 @@ class Player implements PlayerIOWithError {
           if (resolver.timeout <= -2) {
             clearInterval(interval);
             setRoundTimeout(0);
-            Promise.try(() => this.timeoutRpc(request))
+            Promise.resolve()
+              .then(() => this.timeoutRpc(request))
               .then((r) => resolve(r))
               .catch((e) => reject(e));
           }
