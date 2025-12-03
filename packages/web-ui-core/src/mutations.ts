@@ -15,19 +15,20 @@
 
 import {
   Aura,
-  type CreateCardEM,
+  CreateEntityEM,
   DamageType,
-  PbCardArea,
+  MoveEntityEM,
+  PbEntityArea,
   type PbExposedMutation,
+  PbMoveEntityReason,
   PbPhaseType,
   PbPlayerFlag,
   PbPlayerStatus,
   PbReactionType,
-  PbRemoveCardReason,
+  PbRemoveEntityReason,
   PbSkillType,
   Reaction,
-  type RemoveCardEM,
-  type TransferCardEM,
+  RemoveEntityEM,
 } from "@gi-tcg/typings";
 import type {
   AnimatingCardInfo,
@@ -41,18 +42,35 @@ import type { OppChessboardController } from "./opp";
 export type CardDestination = `${"pile" | "hand"}${0 | 1}`;
 function getCardArea(
   verb: "from" | "to",
-  mut: CreateCardEM | TransferCardEM | RemoveCardEM,
+  {
+    $case,
+    value,
+  }: PbExposedMutation["mutation"] & {
+    $case: "createEntity" | "moveEntity" | "removeEntity";
+  }
 ): CardDestination | null {
-  const area =
-    verb === "from" && verb in mut
-      ? mut[verb]
-      : verb === "to" && verb in mut
-        ? mut[verb]
-        : null;
-  const who = mut.who as 0 | 1;
-  if (area === PbCardArea.HAND) {
+  let area: PbEntityArea | null = null;
+  let who: 0 | 1 = 0;
+  if (verb === "from") {
+    if ($case === "moveEntity") {
+      area = value.fromWhere;
+      who = value.fromWho as 0 | 1;
+    } else if ($case === "removeEntity") {
+      area = value.where;
+      who = value.who as 0 | 1;
+    }
+  } else {
+    if ($case === "moveEntity") {
+      area = value.toWhere;
+      who = value.toWho as 0 | 1;
+    } else if ($case === "createEntity") {
+      area = value.where;
+      who = value.who as 0 | 1;
+    }
+  }
+  if (area === PbEntityArea.HAND) {
     return `hand${who}`;
-  } else if (area === PbCardArea.PILE) {
+  } else if (area === PbEntityArea.PILE) {
     return `pile${who}`;
   } else {
     return null;
@@ -83,7 +101,7 @@ export interface ParsedMutation {
 
 export function parseMutations(
   mutations: PbExposedMutation[],
-  oppController?: OppChessboardController,
+  oppController?: OppChessboardController
 ): ParsedMutation {
   const oppKnownCardState =
     !oppController || oppController.closed ? null : oppController.handCards;
@@ -113,70 +131,99 @@ export function parseMutations(
     value: null,
   };
 
+  const handleCardOps = (
+    mutation: PbExposedMutation["mutation"] & {
+      $case: "createEntity" | "moveEntity" | "removeEntity";
+    }
+  ) => {
+    const areas: PbEntityArea[] = [];
+    if (mutation.$case === "moveEntity") {
+      areas.push(mutation.value.fromWhere, mutation.value.toWhere);
+    } else {
+      areas.push(mutation.value.where);
+    }
+    if (
+      !areas.some(
+        (area) => area === PbEntityArea.HAND || area === PbEntityArea.PILE
+      )
+    ) {
+      return;
+    }
+    let card = mutation.value.entity!;
+    if (oppKnownCardState?.has(card.id)) {
+      card = oppKnownCardState.get(card.id)!;
+    }
+    let showing = card.definitionId !== 0;
+    if (mutation.$case === "removeEntity") {
+      if (
+        [
+          PbRemoveEntityReason.EVENT_CARD_PLAYED,
+          PbRemoveEntityReason.EVENT_CARD_PLAY_NO_EFFECT,
+        ].includes(mutation.value.reason)
+      ) {
+        playingCard = {
+          who: mutation.value.who as 0 | 1,
+          data: card,
+          noEffect:
+            mutation.value.reason ===
+            PbRemoveEntityReason.EVENT_CARD_PLAY_NO_EFFECT,
+        };
+        showing = false;
+      }
+    } else if (mutation.$case === "moveEntity") {
+      if (
+        [PbMoveEntityReason.EQUIP, PbMoveEntityReason.CREATE_SUPPORT].includes(
+          mutation.value.reason
+        )
+      ) {
+        playingCard = {
+          who: mutation.value.fromWho as 0 | 1,
+          data: card,
+          noEffect: false,
+        };
+        showing = false;
+      }
+    }
+    const source = getCardArea("from", mutation);
+    const destination = getCardArea("to", mutation);
+
+    const current = animatingCards.find((x) => x.data.id === card.id);
+    if (current) {
+      current.destination = destination;
+    } else {
+      const sourceState = source ? cardAreaState.get(source) : void 0;
+      const destinationState = destination
+        ? cardAreaState.get(destination)
+        : void 0;
+      const sourceDelay = sourceState
+        ? sourceState.delay + +(sourceState.direction === "in")
+        : 0;
+      const destinationDelay = destinationState
+        ? destinationState.delay + +(destinationState.direction === "out")
+        : 0;
+      animatingCards.push({
+        data: card,
+        showing,
+        destination,
+        delay: Math.max(sourceDelay, destinationDelay),
+      });
+      if (source) {
+        cardAreaState.set(source, {
+          direction: "out",
+          delay: sourceDelay,
+        });
+      }
+      if (destination) {
+        cardAreaState.set(destination, {
+          direction: "in",
+          delay: destinationDelay,
+        });
+      }
+    }
+  };
+
   for (const { mutation } of mutations) {
     switch (mutation?.$case) {
-      case "createCard":
-      case "transferCard":
-      case "removeCard": {
-        let card = mutation.value.card!;
-        if (oppKnownCardState?.has(card.id)) {
-          card = oppKnownCardState.get(card.id)!;
-        }
-        let showing = card.definitionId !== 0;
-        if (mutation.$case === "removeCard") {
-          if (
-            [
-              PbRemoveCardReason.PLAY,
-              PbRemoveCardReason.PLAY_NO_EFFECT,
-            ].includes(mutation.value.reason)
-          ) {
-            playingCard = {
-              who: mutation.value.who as 0 | 1,
-              data: card,
-              noEffect:
-                mutation.value.reason === PbRemoveCardReason.PLAY_NO_EFFECT,
-            };
-            showing = false;
-          }
-        }
-        const source = getCardArea("from", mutation.value);
-        const destination = getCardArea("to", mutation.value);
-
-        const current = animatingCards.find((x) => x.data.id === card.id);
-        if (current) {
-          current.destination = destination;
-        } else {
-          const sourceState = source ? cardAreaState.get(source) : void 0;
-          const destinationState = destination
-            ? cardAreaState.get(destination)
-            : void 0;
-          const sourceDelay = sourceState
-            ? sourceState.delay + +(sourceState.direction === "in")
-            : 0;
-          const destinationDelay = destinationState
-            ? destinationState.delay + +(destinationState.direction === "out")
-            : 0;
-          animatingCards.push({
-            data: card,
-            showing,
-            destination,
-            delay: Math.max(sourceDelay, destinationDelay),
-          });
-          if (source) {
-            cardAreaState.set(source, {
-              direction: "out",
-              delay: sourceDelay,
-            });
-          }
-          if (destination) {
-            cardAreaState.set(destination, {
-              direction: "in",
-              delay: destinationDelay,
-            });
-          }
-        }
-        break;
-      }
       case "applyAura": {
         const targetId = mutation.value.targetId;
         if (mutation.value.reactionType !== PbReactionType.UNSPECIFIED) {
@@ -255,6 +302,7 @@ export function parseMutations(
         break;
       }
       case "createEntity": {
+        handleCardOps(mutation);
         const id = mutation.value.entity!.id;
         if (disposingEntities.includes(id)) {
           disposingEntities.splice(disposingEntities.indexOf(id), 1);
@@ -263,7 +311,12 @@ export function parseMutations(
         }
         break;
       }
+      case "moveEntity": {
+        handleCardOps(mutation);
+        break;
+      }
       case "removeEntity": {
+        handleCardOps(mutation);
         const id = mutation.value.entity!.id;
         if (enteringEntities.includes(id)) {
           enteringEntities.splice(enteringEntities.indexOf(id), 1);
@@ -293,7 +346,7 @@ export function parseMutations(
       case "changePhase": {
         if (
           [PbPhaseType.ROLL, PbPhaseType.ACTION, PbPhaseType.END].includes(
-            mutation.value.newPhase,
+            mutation.value.newPhase
           )
         ) {
           roundAndPhase.value = mutation.value.newPhase;

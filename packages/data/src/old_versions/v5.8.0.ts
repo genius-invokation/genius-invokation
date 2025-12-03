@@ -1,6 +1,6 @@
 import { card, character, DamageType, DiceType, PassiveSkillHandle, skill, status, summon, SummonHandle } from "@gi-tcg/core/builder";
 import { CryoElementalInfusion, CryoElementalInfusion01, KamisatoArtHyouka, KamisatoArtKabuki, KamisatoArtSoumetsu, KantenSenmyouBlessing } from "../characters/cryo/kamisato_ayaka";
-import { NORMAL_MIMICS, PREVIEW_MIMICS } from "../characters/hydro/rhodeia_of_loch";
+import { NORMAL_MIMICS, PREVIEW_MIMICS, Surge, TideAndTorrent } from "../characters/hydro/rhodeia_of_loch";
 import { GoldenCorrosion, RifthoundSkull } from "../characters/geo/golden_wolflord";
 import { ExplosivePuppet, FieryRain, Sharpshooter } from "../characters/pyro/amber";
 import { ArtisticIngenuity, PaintedDome, SchematicSetup } from "../characters/dendro/kaveh";
@@ -119,6 +119,20 @@ const TheMyriadWilds = skill(22013)
       exists.push(target);
     }
   })
+  .done();
+
+/**
+ * @id 2201
+ * @name 纯水精灵·洛蒂娅
+ * @description
+ * 「但，只要百川奔流，雨露不休，水就不会消失…」
+ */
+const RhodeiaOfLoch = character(2201)
+  .until("v5.8.0")
+  .tags("hydro", "monster")
+  .health(10)
+  .energy(3)
+  .skills(Surge, OceanidMimicSummoning, TheMyriadWilds, TideAndTorrent)
   .done();
 
 /**

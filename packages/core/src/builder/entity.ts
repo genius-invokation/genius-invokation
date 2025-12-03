@@ -110,12 +110,13 @@ interface NightsoulOptions extends VariableOptions {
 
 type EntityStateWithArea = EntityState & { readonly area: EntityArea };
 
-type EntityDescriptionDictionaryGetter<AssociatedExt extends ExtensionHandle> =
-  (
-    st: GameState,
-    self: EntityStateWithArea,
-    ext: AssociatedExt["type"],
-  ) => string | number;
+export type EntityDescriptionDictionaryGetter<
+  AssociatedExt extends ExtensionHandle,
+> = (
+  st: GameState,
+  self: EntityStateWithArea,
+  ext: AssociatedExt["type"],
+) => string | number;
 
 export const DEFAULT_SNIPPET_NAME = "default" as const;
 export type DefaultCustomEventArg = { readonly _default: unique symbol };
@@ -140,6 +141,7 @@ export class EntityBuilder<
   _usagePerRoundIndex = 0;
   private readonly _tags: EntityTag[] = [];
   _varConfigs: Writable<EntityVariableConfigs> = {};
+  _obtainable = false;
   private _disposeWhenUsageIsZero = false;
   private _visibleVarName: string | null = null;
   _associatedExtensionId: number | null = null;
@@ -155,7 +157,7 @@ export class EntityBuilder<
   constructor(
     public readonly _type: CallerType,
     private readonly id: number,
-    private readonly fromCardId: number | null = null,
+    private readonly chainFromId: number | null = null,
   ) {
     builderWeakRefs.add(new WeakRef(this));
   }
@@ -195,9 +197,9 @@ export class EntityBuilder<
     }
     const extId = this._associatedExtensionId;
     const entry: DescriptionDictionaryEntry = function (st, id) {
+      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       const self = getEntityById(st, id) as EntityState;
       const area = getEntityArea(st, id);
-      const ext = st.extensions.find((ext) => ext.definition.id === extId);
       return String(getter(st, { ...self, area }, ext?.state));
     };
     this._descriptionDictionary[key] = entry;
@@ -476,8 +478,14 @@ export class EntityBuilder<
         name = "usage";
       }
     }
-    if (!perRound && name !== "usage" && typeof opt?.autoDispose === "boolean") {
-      console?.warn(`No need to specify \`autoDispose\` of a non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`);
+    if (
+      !perRound &&
+      name !== "usage" &&
+      typeof opt?.autoDispose === "boolean"
+    ) {
+      console?.warn(
+        `No need to specify \`autoDispose\` of a non-per-round non-defaulted-name usage, since it cannot be auto-disposed by \`.consumeUsage\` primitive.`,
+      );
       console?.trace();
     }
     const autoDispose = name === "usage" && opt?.autoDispose !== false;
@@ -553,7 +561,7 @@ export class EntityBuilder<
       >
     )
       .tags("preparingSkill")
-      .on("replaceAction")
+      .on("replaceActionBySkill")
       .do(function (c) {
         c.useSkill(skill, { asPrepared: true });
         if (opt.nextStatus) {
@@ -827,6 +835,7 @@ export class EntityBuilder<
       registerEntity({
         __definition: "entities",
         id: this.id,
+        obtainable: this._obtainable,
         version: this._versionInfo,
         visibleVarName: this._visibleVarName,
         varConfigs: this._varConfigs,
@@ -838,10 +847,10 @@ export class EntityBuilder<
         descriptionDictionary: this._descriptionDictionary,
       });
     }
-    if (this.fromCardId === null) {
+    if (this.chainFromId === null) {
       return this.id as Result;
     } else {
-      return [this.fromCardId, this.id] as unknown as Result;
+      return [this.chainFromId, this.id] as unknown as Result;
     }
   }
 

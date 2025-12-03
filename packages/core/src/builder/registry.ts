@@ -13,18 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import type { CardDefinition } from "../base/card";
 import type { CharacterDefinition } from "../base/character";
 import type { EntityDefinition, VariableConfig } from "../base/entity";
 import type { ExtensionDefinition } from "../base/extension";
 import type { InitiativeSkillDefinition, SkillDefinition } from "../base/skill";
 import { GiTcgDataError } from "../error";
-import {
-  CURRENT_VERSION,
-  type Version,
-  type VersionMetadata,
-  type VersionInfo,
-} from "../base/version";
+import { type VersionInfo } from "../base/version";
 import { freeze } from "immer";
 
 export type VersionResolver = <T extends DefinitionMap[RegisterCategory]>(
@@ -42,7 +36,6 @@ export class Registry {
     this.dataStore = {
       characters: new Map(),
       entities: new Map(),
-      cards: new Map(),
       initiativeSkills: new Map(),
       passiveSkills: new Map(),
       extensions: new Map(),
@@ -101,7 +94,6 @@ export class Registry {
     const initiativeSkills = applyResolvers("initiativeSkills");
     const passiveSkills = applyResolvers("passiveSkills");
     const entities = applyResolvers("entities");
-    const cards = applyResolvers("cards");
     const characters = applyResolvers(
       "characters",
       (chEntry): CharacterDefinition => {
@@ -134,7 +126,6 @@ export class Registry {
     return freeze<GameData>({
       extensions,
       entities,
-      cards,
       characters,
     });
   }
@@ -234,7 +225,6 @@ interface CharacterInitiativeSkillEntry {
 type DefinitionMap = {
   characters: CharacterEntry;
   entities: EntityDefinition;
-  cards: CardDefinition;
   extensions: ExtensionDefinition;
   initiativeSkills: CharacterInitiativeSkillEntry;
   passiveSkills: CharacterPassiveSkillEntry;
@@ -250,7 +240,6 @@ export interface GameData {
   readonly extensions: ReadonlyMap<number, ExtensionDefinition>;
   readonly characters: ReadonlyMap<number, CharacterDefinition>;
   readonly entities: ReadonlyMap<number, EntityDefinition>;
-  readonly cards: ReadonlyMap<number, CardDefinition>;
 }
 
 export function registerCharacter(value: CharacterEntry) {
@@ -264,9 +253,6 @@ export function registerPassiveSkill(value: CharacterPassiveSkillEntry) {
 }
 export function registerInitiativeSkill(value: CharacterInitiativeSkillEntry) {
   RegistrationScope.register("initiativeSkills", value);
-}
-export function registerCard(value: CardDefinition) {
-  RegistrationScope.register("cards", value);
 }
 export function registerExtension(value: ExtensionDefinition) {
   RegistrationScope.register("extensions", value);

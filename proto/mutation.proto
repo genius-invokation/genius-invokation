@@ -25,10 +25,10 @@ message ExposedMutation {
     StepRoundEM step_round = 2;
     SwitchTurnEM switch_turn = 3;
     SetWinnerEM set_winner = 4;
-    TransferCardEM transfer_card = 5;
+    // reserved: transfer_card 5
     SwitchActiveEM switch_active = 6;
-    RemoveCardEM remove_card = 7;
-    CreateCardEM create_card = 8;
+    // reserved: remove_card 7
+    // reserved: create_card 8
     CreateCharacterEM create_character = 9;
     CreateEntityEM create_entity = 10;
     RemoveEntityEM remove_entity = 11;
@@ -47,6 +47,7 @@ message ExposedMutation {
     // reserved: Action 25
     SelectCardDoneEM select_card_done = 26;
     HandleEventEM handle_event = 27;
+    MoveEntityEM move_entity = 28;
   }
   reserved 17;
 }
@@ -63,30 +64,6 @@ message SetWinnerEM {
   optional int32 winner = 1;
 }
 
-enum CardArea {
-  CARD_AREA_HAND = 0;
-  CARD_AREA_PILE = 1;
-}
-
-enum TransferCardReason {
-  TRANSFER_CARD_REASON_UNSPECIFIED = 0;
-  TRANSFER_CARD_REASON_SWITCH = 1;
-  TRANSFER_CARD_REASON_DRAW = 2;
-  TRANSFER_CARD_REASON_UNDRAW = 3;
-  TRANSFER_CARD_REASON_STEAL = 4;
-  TRANSFER_CARD_REASON_SWAP = 5;
-}
-message TransferCardEM {
-  int32 who = 1;
-  reserved 2, 3;
-  CardArea from = 4;
-  CardArea to = 5;
-  bool transfer_to_opp = 6;
-  optional int32 target_index = 7;
-  CardState card = 8;
-  TransferCardReason reason = 9;
-}
-
 enum SwitchActiveFromAction {
   SWITCH_ACTIVE_FROM_ACTION_NONE = 0;
   SWITCH_ACTIVE_FROM_ACTION_SLOW = 1;
@@ -101,32 +78,6 @@ message SwitchActiveEM {
   SwitchActiveFromAction from_action = 5;
 }
 
-enum RemoveCardReason {
-  REMOVE_CARD_REASON_UNSPECIFIED = 0;
-  REMOVE_CARD_REASON_PLAY = 1;
-  REMOVE_CARD_REASON_ELEMENTAL_TUNING = 2;
-  REMOVE_CARD_REASON_HANDS_OVERFLOW = 3;
-  REMOVE_CARD_REASON_DISPOSED = 4;
-  REMOVE_CARD_REASON_PLAY_NO_EFFECT = 5;
-  REMOVE_CARD_REASON_ON_DRAW_TRIGGERED = 6;
-}
-
-message RemoveCardEM {
-  int32 who = 1;
-  reserved 2, 3;
-  CardArea from = 4;
-  RemoveCardReason reason = 5;
-  CardState card = 6;
-}
-
-message CreateCardEM {
-  int32 who = 1;
-  reserved 2, 3;
-  CardArea to = 4;
-  optional int32 target_index = 5;
-  CardState card = 6;
-}
-
 message CreateCharacterEM {
   int32 who = 1;
   reserved 2, 3;
@@ -139,6 +90,8 @@ enum EntityArea {
   ENTITY_AREA_COMBAT_STATUS = 2;
   ENTITY_AREA_SUMMON = 3;
   ENTITY_AREA_SUPPORT = 4;
+  ENTITY_AREA_HAND = 5;
+  ENTITY_AREA_PILE = 6;
 }
 
 message CreateEntityEM {
@@ -149,9 +102,46 @@ message CreateEntityEM {
   optional sint32 master_character_id = 6;
 }
 
+enum MoveEntityReason {
+  MOVE_ENTITY_REASON_UNSPECIFIED = 0;
+  MOVE_ENTITY_REASON_SWITCH = 1;
+  MOVE_ENTITY_REASON_DRAW = 2;
+  MOVE_ENTITY_REASON_UNDRAW = 3;
+  MOVE_ENTITY_REASON_STEAL = 4;
+  MOVE_ENTITY_REASON_SWAP = 5;
+  MOVE_ENTITY_REASON_EQUIP = 6;
+  MOVE_ENTITY_REASON_CREATE_SUPPORT = 7;
+  MOVE_ENTITY_REASON_UNEQUIP = 8;
+  MOVE_ENTITY_REASON_UNSUPPORT = 9;
+}
+
+message MoveEntityEM {
+  int32 from_who = 1;
+  reserved 2, 3;
+  EntityArea from_where = 4;
+  int32 to_who = 5;
+  EntityArea to_where = 6;
+  optional int32 target_index = 7;
+  EntityState entity = 8;
+  MoveEntityReason reason = 9;
+}
+
+enum RemoveEntityReason {
+  REMOVE_ENTITY_REASON_UNSPECIFIED = 0;
+  REMOVE_ENTITY_REASON_EVENT_CARD_PLAYED = 1;
+  REMOVE_ENTITY_REASON_ELEMENTAL_TUNING = 2;
+  REMOVE_ENTITY_REASON_OVERFLOW = 3;
+  REMOVE_ENTITY_REASON_CARD_DISPOSED = 4;
+  REMOVE_ENTITY_REASON_EVENT_CARD_PLAY_NO_EFFECT = 5;
+  REMOVE_ENTITY_REASON_EVENT_CARD_DRAWN = 6;
+}
+
 message RemoveEntityEM {
+  int32 who = 1;
   reserved 2, 3;
   EntityState entity = 4;
+  EntityArea where = 5;
+  RemoveEntityReason reason = 6;
 }
 
 enum ModifyDirection {

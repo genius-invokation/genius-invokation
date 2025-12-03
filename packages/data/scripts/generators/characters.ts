@@ -77,7 +77,7 @@ function getAuxiliaryOfCharacter(id: number): AuxiliaryFound {
     ...myUnknownEntities,
   ].map<SourceInfo>((obj) => {
     let description = obj.description;
-    if (obj.playingDescription && obj.playingDescription.includes("$")) {
+    if (obj.playingDescription?.includes("$")) {
       description += "\n【此卡含描述变量】";
     }
     if (obj.tags.includes("GCG_TAG_VEHICLE")) {

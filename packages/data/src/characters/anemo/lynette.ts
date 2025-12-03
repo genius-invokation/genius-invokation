@@ -16,6 +16,19 @@
 import { character, skill, summon, status, combatStatus, card, DamageType, SkillHandle } from "@gi-tcg/core/builder";
 
 /**
+ * @id 115083
+ * @name 惊奇猫猫盒的嘲讽
+ * @description
+ * 我方出战角色受到伤害时：抵消1点伤害。（每回合1次）
+ */
+export const BogglecatBoxsTaunt = combatStatus(115083)
+  .tags("barrier")
+  .on("decreaseDamaged", (c, e) => e.target.isActive())
+  .usage(1)
+  .decreaseDamage(1)
+  .done();
+
+/**
  * @id 115082
  * @name 惊奇猫猫盒
  * @description
@@ -27,9 +40,14 @@ import { character, skill, summon, status, combatStatus, card, DamageType, Skill
 export const BogglecatBox = summon(115082)
   .endPhaseDamage("swirledAnemo", 1)
   .usage(2)
-  .on("decreaseDamaged", (c, e) => e.target.isActive())
-  .usagePerRound(1)
-  .decreaseDamage(1)
+  .on("enter")
+  .combatStatus(BogglecatBoxsTaunt)
+  .on("actionPhase")
+  .combatStatus(BogglecatBoxsTaunt)
+  .on("selfDispose")
+  .do((c) => {
+    c.$(`my combat status with definition id ${BogglecatBoxsTaunt}`)?.dispose();
+  })
   .done();
 
 /**
@@ -44,16 +62,6 @@ export const OverawingAssault = status(115081)
   .on("endPhase", (c) => c.self.master.health >= 6)
   .damage(DamageType.Piercing, 2, "@master")
   .done();
-
-/**
- * @id 115083
- * @name 惊奇猫猫盒的嘲讽
- * @description
- * 我方出战角色受到伤害时：抵消1点伤害。（每回合1次）
- */
-export const BogglecatBoxsTaunt = combatStatus(115083)
-  .tags("barrier")
-  .reserve();
 
 /**
  * @id 15081
@@ -80,14 +88,14 @@ export const EnigmaticFeint = skill(15082)
   .do((c) => {
     const count = c.countOfSkill();
     if (count === 0 && c.self.health <= 8) {
-      c.heal(2, "@self")
-      c.characterStatus(OverawingAssault, "@self")
+      c.heal(2, "@self");
+      c.characterStatus(OverawingAssault, "@self");
     }
     if (count === 1 && c.self.hasEquipment(AColdBladeLikeAShadow)) {
-      c.damage(DamageType.Anemo, 5)
+      c.damage(DamageType.Anemo, 5);
       c.switchActive("opp prev");
     } else {
-      c.damage(DamageType.Anemo, 3)
+      c.damage(DamageType.Anemo, 3);
     }
   })
   .done();

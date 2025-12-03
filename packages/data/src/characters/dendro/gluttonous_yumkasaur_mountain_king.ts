@@ -42,6 +42,7 @@ export const WellFedAndStrong = status(127041)
  */
 export const WellFedAndSturdy = status(127042)
   .since("v5.8.0")
+  .tags("barrier")
   .on("decreaseDamaged")
   .usageCanAppend(1, Infinity)
   .decreaseDamage(1)

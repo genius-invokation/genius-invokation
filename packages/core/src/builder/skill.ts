@@ -70,8 +70,10 @@ import {
 import {
   costSize,
   diceCostSize,
+  getActiveCharacterIndex,
   getEntityArea,
   isCharacterInitiativeSkill,
+  isSkillDisabled,
   normalizeCost,
 } from "../utils";
 import { GiTcgDataError } from "../error";
@@ -82,10 +84,15 @@ import {
   type VersionMetadata,
 } from "../base/version";
 import { registerInitiativeSkill, builderWeakRefs } from "./registry";
-import type { InitiativeSkillTargetKind } from "../base/card";
 import type { TargetKindOfQuery, TargetQuery } from "./card";
 import { isCustomEvent, type CustomEvent } from "../base/custom_event";
 import type { ApplyReactive } from "./context/reactive";
+
+export type InitiativeSkillTargetKind = readonly (
+  | "character"
+  | "summon"
+  | "support"
+)[];
 
 export type SkillBuilderMetaBase = Omit<
   ContextMetaBase,
@@ -140,7 +147,7 @@ export interface StrictInitiativeSkillEventArg<
 }
 
 type InitiativeSkillBuilderMeta<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = {
@@ -163,7 +170,7 @@ export type CreateSkillBuilderMeta<
 };
 
 export type StrictInitiativeSkillFilter<
-  CallerType extends "character" | "card",
+  CallerType extends ExEntityType,
   KindTs extends InitiativeSkillTargetKind,
   AssociatedExt extends ExtensionHandle,
 > = SkillOperationFilter<
@@ -420,7 +427,14 @@ const detailedEventDictionary = {
   beforeAction: defineDescriptor("onBeforeAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
-  replaceAction: defineDescriptor("replaceAction"),
+  replaceActionBySkill: defineDescriptor("replaceAction", (e, r) => {
+    const player = e.onTimeState.players[e.who];
+    const activeChar = player.characters[getActiveCharacterIndex(player)];
+    return (
+      checkRelative(e.onTimeState, activeChar.id, r) &&
+      !isSkillDisabled(activeChar)
+    );
+  }),
   action: defineDescriptor("onAction", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
@@ -428,7 +442,6 @@ const detailedEventDictionary = {
     return (
       // 大部分支援牌不触发自身的打出时；
       // 但有例外“特佩利舞台”，故将此判断移到具体卡牌代码中
-      // c.self.fromCardId !== e.card.id &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
   }),
@@ -436,28 +449,35 @@ const detailedEventDictionary = {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
+    );
+  }),
+  beforeTechnique: defineDescriptor("onBeforeUseSkill", (e, r) => {
+    return (
+      checkRelative(e.onTimeState, e.callerArea, r) &&
+      e.isSkillType("technique") &&
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkill: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       e.isSkillType("technique") &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   useSkillOrTechnique: defineDescriptor("onUseSkill", (e, r) => {
     return (
       checkRelative(e.onTimeState, e.callerArea, r) &&
       isCharacterInitiativeSkill(e.skill, true) &&
-      !e.skill.definition.initiativeSkillConfig.hidden
+      !e.skill.definition.initiativeSkillConfig.omitEvents
     );
   }),
   declareEnd: defineDescriptor("onAction", (e, r) => {
@@ -486,14 +506,14 @@ const detailedEventDictionary = {
       checkRelative(e.onTimeState, { who: e.who }, r) && area.who === e.who
     );
   }),
-  disposeCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
+  disposeCard: defineDescriptor("onDispose", (e, r) => {
+    return e.isDiscard() && checkRelative(e.onTimeState, { who: e.who }, r);
+  }),
+  disposeOrTuneCard: defineDescriptor("onDispose", (e, r) => {
     return (
-      e.method !== "elementalTuning" &&
+      e.isDisposeCardOrTuning() &&
       checkRelative(e.onTimeState, { who: e.who }, r)
     );
-  }),
-  disposeOrTuneCard: defineDescriptor("onDisposeOrTuneCard", (e, r) => {
-    return checkRelative(e.onTimeState, { who: e.who }, r);
   }),
   dealDamage: defineDescriptor("onDamageOrHeal", (e, r) => {
     return (
@@ -537,7 +557,7 @@ const detailedEventDictionary = {
     return checkRelative(e.onTimeState, e.entity.id, r);
   }),
   dispose: defineDescriptor("onDispose", (e, r) => {
-    return checkRelative(e.onTimeState, e.entity.id, r);
+    return !e.isDisposeCardOrTuning() && checkRelative(e.onTimeState, e.entity.id, r);
   }),
   selfDispose: defineDescriptor("onDispose", (e, r) => {
     return e.entity.id === r.callerId;
@@ -864,6 +884,7 @@ export class TriggeredSkillBuilder<
   }
   private _delayedToSkill = false;
   private _beforeDefaultDispose = false;
+  private _enableHandTriggering = false;
   private _usageOpt: { name: string; autoDecrease: boolean } | null = null;
   private _usagePerRoundOpt: {
     name: UsagePerRoundVariableNames;
@@ -977,6 +998,11 @@ export class TriggeredSkillBuilder<
     return this;
   }
 
+  enableHandTriggering() {
+    this._enableHandTriggering = true;
+    return this;
+  }
+
   /** 调用之前在 `EntityBuilder` 中定义的“小程序” */
   declare callSnippet: CallSnippet<
     ParentSnippets,
@@ -1022,7 +1048,13 @@ export class TriggeredSkillBuilder<
         return c.self.area.type !== "removedEntities";
       });
     }
-    // 2. 基于 listenTo 的 filter
+    // 2. 默认禁止手牌区实体响应事件，除非显式启用
+    if (!this._enableHandTriggering) {
+      this.filters.push((c) => {
+        return c.self.area.type !== "hands";
+      });
+    }
+    // 3. 基于 listenTo 的 filter
     const [triggerOn, filterDescriptor] =
       detailedEventDictionary[
         isCustomEvent(this.detailedEventName)
@@ -1042,7 +1074,7 @@ export class TriggeredSkillBuilder<
         c.rawState,
       );
     });
-    // 3. 自定义事件：确保事件名一致
+    // 4. 自定义事件：确保事件名一致
     if (isCustomEvent(this.detailedEventName)) {
       const customEvent = this.detailedEventName;
       this.filters.push(function (c, e) {
@@ -1051,7 +1083,7 @@ export class TriggeredSkillBuilder<
         );
       });
     }
-    // 4. 定义技能时显式传入的 filter
+    // 5. 定义技能时显式传入的 filter
     this.filters.push(this.triggerFilter);
 
     const parentSkillList = this._beforeDefaultDispose
@@ -1395,6 +1427,7 @@ export class InitiativeSkillBuilder<
   private _gainEnergy = true;
   protected _cost: DiceRequirement = new Map();
   private _prepared = false;
+  private _hidden = false;
   constructor(private readonly skillId: number) {
     super(skillId);
   }
@@ -1428,13 +1461,17 @@ export class InitiativeSkillBuilder<
     return this as any;
   }
 
-  prepared(): this {
-    this._prepared = true;
-    return this.noEnergy();
-  }
   noEnergy(): this {
     this._gainEnergy = false;
     return this;
+  }
+  hidden(): this {
+    this._hidden = true;
+    return this;
+  }
+  prepared(): this {
+    this._prepared = true;
+    return this.noEnergy().hidden();
   }
 
   type(type: "passive"): EntityBuilderPublic<"character">;
@@ -1486,7 +1523,8 @@ export class InitiativeSkillBuilder<
           shouldFast: false,
           alwaysCharged: this._alwaysCharged,
           alwaysPlunging: this._alwaysPlunging,
-          hidden: this._prepared,
+          hidden: this._hidden,
+          omitEvents: this._prepared,
           getTarget: this.buildTargetGetter(),
         },
         triggerOn: "initiative",
@@ -1516,6 +1554,7 @@ export class TechniqueBuilder<
     autoDecrease: boolean;
   } | null = null;
   private _prepared = false;
+  private _hidden = false;
 
   constructor(
     id: number,
@@ -1533,6 +1572,7 @@ export class TechniqueBuilder<
 
   prepared(): this {
     this._prepared = true;
+    this._hidden = true;
     return this;
   }
 
@@ -1632,7 +1672,8 @@ export class TechniqueBuilder<
         shouldFast: false,
         alwaysCharged: this._alwaysCharged,
         alwaysPlunging: this._alwaysPlunging,
-        hidden: this._prepared,
+        hidden: this._hidden,
+        omitEvents: this._prepared,
         getTarget: this.buildTargetGetter(),
       },
       filter: this.buildFilter(),
