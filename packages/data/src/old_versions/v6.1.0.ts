@@ -3,7 +3,7 @@ import { DisposedSupportAndSummonsCountExtension } from "../cards/event/other";
 import { Itzpapa, NightsoulsBlessing, OpalShield } from "../characters/cryo/citlali";
 import { CaloricBalancingPlan01, KineticEnergyScale, TeachingsOfTheCollectiveOfPlenty, ThunderboltRush, WeightedSpike } from "../characters/electro/iansan";
 import { ArkheSeatsSacredAndSecular, LetThePeopleRejoice, SalonSolitaireOusia, SalonSolitairePneuma, Skill12114, SoloistsSolicitation, SoloistsSolicitationOusia } from "../characters/hydro/furina";
-import { AllIsAsh, BalemoonRising, InvitationToABeheading, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03 } from "../characters/pyro/arlecchino";
+import { AllIsAsh, Arlecchino, BalemoonRising, InvitationToABeheading, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03 } from "../characters/pyro/arlecchino";
 import { BondOfLife } from "../commons";
 
 /**
@@ -69,21 +69,6 @@ const BlooddebtDirective = combatStatus(113141)
     }
     c.characterStatus(BondOfLife, `opp characters with definition id ${Arlecchino}`);
   })
-  .done();
-
-
-/**
- * @id 1314
- * @name 阿蕾奇诺
- * @description
- * 繁星晦暗，厄月孤存。
- */
-export const Arlecchino = character(1314)
-  .until("v6.1.0")
-  .tags("pyro", "pole", "fatui")
-  .health(10)
-  .energy(3)
-  .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03)
   .done();
 
 /**
