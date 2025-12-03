@@ -94,7 +94,7 @@ export async function verifyDeck({
         `card id ${cardId} not found`,
       );
     }
-    const cardMaxCount = card?.tags.includes("GCG_TAG_LEGEND") ? 1 : 2;
+    const cardMaxCount = card.tags.includes("GCG_TAG_LEGEND") ? 1 : 2;
     if (cardCounts.has(cardId)) {
       const count = cardCounts.get(cardId)! + 1;
       if (count > cardMaxCount) {
@@ -143,7 +143,7 @@ function maxVersion(versions: Iterable<string | undefined>): Version {
     .filter((v): v is string => !!v)
     .toSorted(semver.order);
   const ver = sorted[sorted.length - 1];
-  if (!VERSIONS.includes(ver as Version)) {
+  if (!ver || !VERSIONS.includes(ver as Version)) {
     return CURRENT_VERSION;
   } else {
     return ver as Version;
