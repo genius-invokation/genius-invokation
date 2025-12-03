@@ -27,7 +27,7 @@ export const YumemiStyleSpecialSnacks = card(115142)
   .descriptionOnHCI()
   .do((c) => {
     if (c.$("my active character with health > 5")){
-      c.damage(DamageType.Anemo, 1);
+      c.damage(DamageType.Anemo, 1, "opp characters with health > 0 limit 1");
     } else {
       c.heal(2, "my active");
     }

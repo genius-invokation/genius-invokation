@@ -110,7 +110,6 @@ export const RidingTheNightrainbow = skill(14152)
   .damage(DamageType.Electro, 2)
   .characterStatus(SuddenOnrush)
   .gainNightsoul("@self", 1)
-  .switchActive("my next")
   .done();
 
 /**
@@ -149,7 +148,10 @@ export const TagteamTripleJump = skill(14154)
  * 造成D__KEY__DAMAGE点D__KEY__ELEMENT，自身附属突驰烈进，进入夜魂加持，并获得1点「夜魂值」，然后我方切换到下一个角色。
  */
 export const RidingTheNightrainbowPassive = skill(14156)
-  .reserve();
+  .type("passive")
+  .on("useSkill", (c, e) => e.skill.definition.id === RidingTheNightrainbow)
+  .switchActive("my next")
+  .done();
 
 /**
  * @id 1415
@@ -162,7 +164,7 @@ export const Varesa = character(1415)
   .tags("electro", "catalyst", "natlan")
   .health(10)
   .energy(3)
-  .skills(ByTheHorns, RidingTheNightrainbow, GuardianVent, TagteamTripleJump, GuardianVentVolcanoKablam)
+  .skills(ByTheHorns, RidingTheNightrainbow, GuardianVent, TagteamTripleJump, GuardianVentVolcanoKablam, RidingTheNightrainbowPassive)
   .associateNightsoul(NightsoulsBlessing)
   .done();
 
