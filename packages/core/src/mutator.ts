@@ -1191,7 +1191,7 @@ export class StateMutator {
     }
   }
 
-  async switchHands(who: 0 | 1) {
+  async switchHands(who: 0 | 1): Promise<EventAndRequest[]> {
     if (!this.config.howToSwitchHands) {
       throw new GiTcgIoNotProvideError();
     }
@@ -1208,6 +1208,8 @@ export class StateMutator {
       return card;
     });
     const swapInCardIds = swapInCards.map((c) => c.definition.id);
+
+    const events: EventAndRequest[] = [];
 
     for (const card of swapInCards) {
       const randomValue = this.stepRandom();
@@ -1244,8 +1246,19 @@ export class StateMutator {
         value: candidate,
         reason: "switch",
       });
+      events.push([
+        "onHandCardInserted",
+        new HandCardInsertedEventArg(
+          this.state,
+          who,
+          candidate,
+          "switch",
+          false,
+        ),
+      ]);
     }
     this.notify();
+    return events;
   }
 
   async selectCard(

@@ -495,7 +495,7 @@ const detailedEventDictionary = {
     const area = getEntityArea(curState, e.card.id);
     return (
       checkRelative(e.onTimeState, { who: e.who }, r) &&
-      e.reason === "draw" &&
+      ["draw", "switch"].includes(e.reason) &&
       (area.type === "hands" || e.overflowed)
     );
   }),
