@@ -177,7 +177,7 @@ export type StrictInitiativeSkillFilter<
   InitiativeSkillBuilderMeta<CallerType, KindTs, AssociatedExt>
 >;
 
-enum ListenTo {
+export enum ListenTo {
   Myself,
   SameArea,
   SamePlayer,
@@ -267,7 +267,7 @@ function isDebuff(state: GameState, damageInfo: DamageInfo): boolean {
  * 比如 `onDamaged` 可解释为 `onDamage` 发生且伤害目标
  * 在监听范围内。
  */
-const detailedEventDictionary = {
+export const detailedEventDictionary = {
   roll: defineDescriptor("modifyRoll", (e, r) => {
     return checkRelative(e.onTimeState, { who: e.who }, r);
   }),

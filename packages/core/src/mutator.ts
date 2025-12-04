@@ -436,6 +436,7 @@ export class StateMutator {
         via: opt.via,
         fromDamage: opt.fromDamage,
         cancelEffects: false,
+        piercingOtherDamage: 1,
         postApply: null,
       };
       const modifyEventArg = new ModifyReactionEventArg(
@@ -454,6 +455,7 @@ export class StateMutator {
         id: target.id,
         isDamage: !!opt.fromDamage,
         isActive: opt.targetIsActive,
+        piercingOtherDamage: reactionInfo.piercingOtherDamage,
       };
       const reactionDescription = getReactionDescription(reaction);
       if (!reactionInfo.cancelEffects && reactionDescription) {
