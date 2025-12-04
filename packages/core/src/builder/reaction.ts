@@ -40,6 +40,8 @@ export interface ReactionDescriptionEventArg {
   isActive: boolean;
   /** 要生成的实体位于  */
   here: "my" | "opp";
+  /** 感电/超导穿透伤害值 */
+  piercingOtherDamage: number;
 }
 
 type ReactionDescription = SkillDescription<ReactionDescriptionEventArg>;
@@ -63,7 +65,7 @@ const pierceToOther: ReactionAction = (c, e) => {
   if (e.isDamage) {
     c.damage(
       DamageType.Piercing,
-      1,
+      e.piercingOtherDamage,
       `${e.where} characters and not with id ${e.id}`,
     );
   }

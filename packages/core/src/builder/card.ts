@@ -38,9 +38,13 @@ import {
   type TriggeredSkillDefinition,
 } from "../base/skill";
 import {
+  detailedEventDictionary,
+  ListenTo,
   SkillBuilderWithCost,
   withShortcut,
   type BuilderWithShortcut,
+  type DetailedEventArgOf,
+  type DetailedEventNames,
   type InitiativeSkillTargetKind,
   type SkillOperation,
   type SkillOperationFilter,
@@ -159,6 +163,26 @@ export interface DoSameWhenDisposedOption<
   }>;
 }
 
+export interface CardOnArbitraryOption<
+  E extends DetailedEventNames,
+  CallerVars extends string,
+  AssociatedExt extends ExtensionHandle,
+> {
+  filter?: SkillOperationFilter<{
+    callerType: "eventCard";
+    callerVars: CallerVars;
+    eventArgType: DetailedEventArgOf<E>;
+    associatedExtension: AssociatedExt;
+  }>;
+  listenTo?: ListenTo;
+  operation: SkillOperation<{
+    callerType: "eventCard";
+    callerVars: CallerVars;
+    eventArgType: DetailedEventArgOf<E>;
+    associatedExtension: AssociatedExt;
+  }>;
+}
+
 export class CardBuilder<
   KindTs extends InitiativeSkillTargetKind,
   CallerVars extends string,
@@ -188,6 +212,7 @@ export class CardBuilder<
     HCICardBuilderMeta<CallerVars, AssociatedExt>
   > | null = null;
   private _descriptionDictionary: Writable<DescriptionDictionary> = {};
+  private _arbitraryTriggeredSkills: SkillDefinition[] = [];
 
   constructor(private readonly cardId: number) {
     super(cardId);
@@ -329,7 +354,11 @@ export class CardBuilder<
       if (targets.length > 0 && c.$(`my support with id ${targets[0].id}`)) {
         c.dispose(targets[0]);
       }
-      c.moveEntity(c.self, { who: c.self.who, type: "supports" }, "createSupport");
+      c.moveEntity(
+        c.self,
+        { who: c.self.who, type: "supports" },
+        "createSupport",
+      );
     });
     const skills = this.buildSkills();
     const builder = new EntityBuilder<"support", never, never, false, {}>(
@@ -565,6 +594,47 @@ export class CardBuilder<
     return this;
   }
 
+  onArbitraryEvent<E extends DetailedEventNames>(
+    detailedEventName: E,
+    option: CardOnArbitraryOption<E, CallerVars, AssociatedExt>,
+  ) {
+    const { filter, listenTo = ListenTo.SameArea, operation } = option;
+    const [eventName, filterDescriptor] =
+      detailedEventDictionary[detailedEventName];
+    const filters: SkillOperationFilter<any>[] = [];
+    filters.push(function (c, e) {
+      const { area, id } = c.self;
+      return filterDescriptor(
+        e as any,
+        {
+          callerArea: area,
+          callerId: id,
+          listenTo,
+        },
+        c.rawState,
+      );
+    });
+    const filterFn = this.buildFilter<DetailedEventArgOf<E>>(
+      filter ? [filter] : [],
+    );
+    const actionFn = this.buildAction<DetailedEventArgOf<E>>([operation]);
+    const skillDef: TriggeredSkillDefinition<typeof eventName> = {
+      type: "skill",
+      id:
+        this.cardId +
+        0.04 +
+        Object.keys(this._descriptionDictionary).length * 0.0001,
+      ownerType: "card",
+      triggerOn: eventName,
+      initiativeSkillConfig: null,
+      filter: filterFn as any,
+      action: actionFn as any,
+      usagePerRoundVariableName: null,
+    };
+    this._arbitraryTriggeredSkills.push(skillDef);
+    return this;
+  }
+
   private buildSkills(): SkillDefinition[] {
     if (this._targetGetters.length > 0 && this._doSameWhenDisposed) {
       throw new GiTcgDataError(
@@ -575,7 +645,7 @@ export class CardBuilder<
       const target = this._satiatedTarget;
       this.operations.push((c) => c.characterStatus(SATIATED_ID, target));
     }
-    const skills: SkillDefinition[] = [];
+    const skills: SkillDefinition[] = [...this._arbitraryTriggeredSkills];
 
     const targetGetter = this.buildTargetGetter();
     if (this._doSameWhenDisposed || this._disposeOperation !== null) {
