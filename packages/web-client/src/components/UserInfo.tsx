@@ -48,7 +48,7 @@ export function UserInfo(props: UserInfoProps) {
   const avatarUrl = () => getAvatarUrl(props.id);
   const { color: colorAccessor, setColor: saveColor } = useChessboardColor();
   const [color, setColor] = createSignal<string | null>(
-    props.chessboardColor ?? colorAccessor(),
+    props.chessboardColor ?? colorAccessor()
   );
   createEffect(() => {
     const c = colorAccessor();
@@ -58,7 +58,7 @@ export function UserInfo(props: UserInfoProps) {
   });
 
   const [games] = createResource(() =>
-    axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data),
+    axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data)
   );
   return (
     <div class="flex flex-row container gap-4">
@@ -70,17 +70,77 @@ export function UserInfo(props: UserInfoProps) {
         </div>
       </div>
       <div class="flex-grow flex flex-col items-start">
+        <h2 class="text-2xl font-bold">个人信息</h2>
         <div class="flex items-end gap-2 mb-5">
-          <h2 class="text-2xl font-bold">用户信息</h2>
           <span class="text-gray-4 text-sm font-300">ID: {props.id}</span>
         </div>
-        <dl class="flex flex-row gap-4 items-center mb-2">
+        <dl class="flex flex-row gap-4 items-center">
           <dt class="font-bold">昵称</dt>
           <dd class="flex flex-row gap-4 items-center h-8">{props.name}</dd>
         </dl>
         <hr class="h-1 w-full text-gray-4 my-4" />
+        <dl class="flex flex-row gap-4 items-center">
+          <dt class="font-bold text-nowrap">牌桌颜色</dt>
+          <Show when={props.editable}>
+            <div class="flex items-center gap-2 flex-wrap">
+              <For each={CHESSBOARD_COLORS}>
+                {(presetColor) => (
+                  <button
+                    class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600"
+                    onClick={async () => {
+                      setColor(presetColor);
+                      try {
+                        await saveColor(color());
+                        // props.onUpdate?.();
+                      } catch (e) {
+                        if (e instanceof AxiosError) {
+                          alert(e.response?.data.message);
+                        }
+                        console.error(e);
+                      }
+                    }}
+                    bool:data-selected={color() === presetColor}
+                  >
+                    <div
+                      class="h-6 w-6 rounded-full"
+                      style={{ "background-color": presetColor }}
+                    />
+                  </button>
+                )}
+              </For>
+              <div class="relative h-8 w-8 flex items-center justify-center rounded-full cursor-pointer inset-0">
+                <input
+                  type="color"
+                  class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
+                  value={color() ?? "#ffffff"}
+                  onInput={(e) => setColor(e.currentTarget.value)}
+                />
+                <div
+                  class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600 bg-white pointer-events-none"
+                  bool:data-selected={
+                    !CHESSBOARD_COLORS.includes(color() ?? "")
+                  }
+                >
+                  <div
+                    class="h-6 w-6 rounded-full"
+                    style={
+                      CHESSBOARD_COLORS.includes(color() ?? "") && !!color()
+                        ? {
+                            background:
+                              "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
+                            opacity: "0.5",
+                          }
+                        : { "background-color": color()! }
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </Show>
+        </dl>
+        <hr class="h-1 w-full text-gray-4 my-4" />
         <div class="flex flex-col gap-4">
-          <dt class="font-bold">游戏记录</dt>
+          <dt class="font-bold">对局记录</dt>
           <dd class="flex flex-col gap-1">
             <Switch>
               <Match when={games.loading}>加载中...</Match>
@@ -90,6 +150,7 @@ export function UserInfo(props: UserInfoProps) {
                   ? games.error.response?.data.message
                   : games.error}
               </Match>
+              <Match when={!!!games()?.data.length}>暂无对局记录</Match>
               <Match when={games()}>
                 {(games) => (
                   <For each={games().data}>
@@ -108,70 +169,9 @@ export function UserInfo(props: UserInfoProps) {
         </div>
         <hr class="h-1 w-full text-gray-4 my-4" />
         <div class="flex items-center gap-3">
-          <A class="btn btn-ghost" href="/decks">
+          <A class="btn btn-ghost font-bold" href="/decks">
             我的牌组…
           </A>
-          <Show when={props.editable}>
-            <div class="flex items-center gap-2">
-              <For each={CHESSBOARD_COLORS}>
-                {(presetColor) => (
-                  <button
-                    class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-3 data-[seleceted]:b-2 data-[seleceted]:b-gray-6"
-                    onClick={() => setColor(presetColor)}
-                    bool:data-selected={presetColor === color()}
-                  >
-                    <div
-                      class="h-6 w-6 rounded-full"
-                      style={{ "background-color": presetColor }}
-                    />
-                  </button>
-                )}
-              </For>
-              <div class="relative h-8 w-8 flex items-center justify-center rounded-full cursor-pointer inset-0">
-                <input
-                  type="color"
-                  class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
-                  value={color() ?? "#ffffff"}
-                  onInput={(e) => setColor(e.currentTarget.value)}
-                />
-                <div
-                  class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-3 data-[seleceted]:b-2 data-[seleceted]:b-gray-6 bg-white pointer-events-none"
-                  bool:data-selected={
-                    !CHESSBOARD_COLORS.includes(color() ?? "")
-                  }
-                >
-                  <div
-                    class="h-6 w-6 rounded-full"
-                    style={
-                      CHESSBOARD_COLORS.includes(color() ?? "") && !!color()
-                        ? {
-                            background:
-                              "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
-                          }
-                        : { "background-color": color()! }
-                    }
-                  />
-                </div>
-              </div>
-              <button
-                class="btn btn-soft-primary"
-                onClick={async () => {
-                  try {
-                    await saveColor(color());
-                    props.onUpdate?.();
-                    alert("保存成功");
-                  } catch (e) {
-                    if (e instanceof AxiosError) {
-                      alert(e.response?.data.message);
-                    }
-                    console.error(e);
-                  }
-                }}
-              >
-                保存棋盘颜色
-              </button>
-            </div>
-          </Show>
         </div>
       </div>
     </div>
