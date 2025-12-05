@@ -721,7 +721,7 @@ function EnergyBar(props: EnergyBarProps) {
     const current = props.current;
     const preview = props.preview ?? current;
     return energyStates(current, preview)
-      .map((state) => ENERGY_MAP[`${energyType}_${state}`])
+      .map((state) => ENERGY_MAP[`${energyType}_${state}`] ?? ENERGY_MAP[`energy_${state}`])
       .filter(Boolean);
   });
   return (

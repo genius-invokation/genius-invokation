@@ -251,6 +251,7 @@ export interface ReactionInfo {
   readonly target: CharacterState;
   readonly fromDamage: DamageInfo | null;
   readonly cancelEffects: boolean;
+  readonly piercingOtherDamage: number;
   readonly postApply: AppliableDamageType | null;
 }
 
@@ -1044,7 +1045,6 @@ export class EnterEventArg extends EntityEventArg {
 }
 
 export class DisposeEventArg extends EntityEventArg<EntityState> {
-
   constructor(
     state: GameState,
     public readonly entity: EntityState,
@@ -1133,8 +1133,10 @@ export class ReactionEventArg extends CharacterEventArg {
 export class ModifyReactionEventArg extends ReactionEventArg {
   private _cancelEffects = false;
   private _postApply: AppliableDamageType | null = null;
+  private _piercingOtherDamage: number;
   constructor(state: GameState, _reactionInfo: ReactionInfo) {
     super(state, _reactionInfo);
+    this._piercingOtherDamage = _reactionInfo.piercingOtherDamage;
   }
   cancelEffects() {
     this._cancelEffects = true;
@@ -1142,11 +1144,15 @@ export class ModifyReactionEventArg extends ReactionEventArg {
   reApplyTo(type: AppliableDamageType) {
     this._postApply = type;
   }
+  increasePiercingOtherDamage(value: number) {
+    this._piercingOtherDamage += value;
+  }
   get reactionInfo(): ReactionInfo {
     return {
       ...this._reactionInfo,
       cancelEffects: this._cancelEffects,
       postApply: this._postApply,
+      piercingOtherDamage: this._piercingOtherDamage,
     };
   }
 }

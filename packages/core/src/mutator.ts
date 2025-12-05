@@ -436,6 +436,7 @@ export class StateMutator {
         via: opt.via,
         fromDamage: opt.fromDamage,
         cancelEffects: false,
+        piercingOtherDamage: 1,
         postApply: null,
       };
       const modifyEventArg = new ModifyReactionEventArg(
@@ -454,6 +455,7 @@ export class StateMutator {
         id: target.id,
         isDamage: !!opt.fromDamage,
         isActive: opt.targetIsActive,
+        piercingOtherDamage: reactionInfo.piercingOtherDamage,
       };
       const reactionDescription = getReactionDescription(reaction);
       if (!reactionInfo.cancelEffects && reactionDescription) {
@@ -1191,7 +1193,7 @@ export class StateMutator {
     }
   }
 
-  async switchHands(who: 0 | 1) {
+  async switchHands(who: 0 | 1): Promise<EventAndRequest[]> {
     if (!this.config.howToSwitchHands) {
       throw new GiTcgIoNotProvideError();
     }
@@ -1208,6 +1210,8 @@ export class StateMutator {
       return card;
     });
     const swapInCardIds = swapInCards.map((c) => c.definition.id);
+
+    const events: EventAndRequest[] = [];
 
     for (const card of swapInCards) {
       const randomValue = this.stepRandom();
@@ -1244,8 +1248,19 @@ export class StateMutator {
         value: candidate,
         reason: "switch",
       });
+      events.push([
+        "onHandCardInserted",
+        new HandCardInsertedEventArg(
+          this.state,
+          who,
+          candidate,
+          "switch",
+          false,
+        ),
+      ]);
     }
     this.notify();
+    return events;
   }
 
   async selectCard(

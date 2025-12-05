@@ -523,7 +523,8 @@ export class SkillExecutor {
           DetailLogType.Event,
           `request player ${arg.who} to switch hands`,
         );
-        await this.mutator.switchHands(arg.who);
+        const events = await this.mutator.switchHands(arg.who);
+        await this.handleEvent(...events);
       } else if (name === "requestSelectCard") {
         using l = this.mutator.subLog(
           DetailLogType.Event,

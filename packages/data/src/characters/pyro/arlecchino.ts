@@ -149,7 +149,7 @@ export const TheBalemoonAloneMayKnowPassive03 = skill(13147)
 export const Arlecchino = character(1314)
   .since("v5.4.0")
   .tags("pyro", "pole", "fatui")
-  .health(11)
+  .health(10)
   .energy(3)
   .skills(InvitationToABeheading, AllIsAsh, BalemoonRising, TheBalemoonAloneMayKnowPassive01, TheBalemoonAloneMayKnowPassive03)
   .done();
