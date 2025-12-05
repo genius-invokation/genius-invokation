@@ -614,9 +614,10 @@ export class CardBuilder<
         c.rawState,
       );
     });
-    const filterFn = this.buildFilter<DetailedEventArgOf<E>>(
-      filter ? [filter] : [],
-    );
+    if (filter) {
+      filters.push(filter);
+    }
+    const filterFn = this.buildFilter<DetailedEventArgOf<E>>(filters);
     const actionFn = this.buildAction<DetailedEventArgOf<E>>([operation]);
     const skillDef: TriggeredSkillDefinition<typeof eventName> = {
       type: "skill",
