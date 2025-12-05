@@ -160,7 +160,16 @@ export function RoomDialog(props: RoomDialogProps) {
       const ver = versions.indexOf(props.joiningRoomInfo.config.gameVersion);
       setVersion(ver);
     } else {
-      setVersion(versions.length - 1);
+      // Load persisted version from localStorage, or default to latest
+      const persistedVersion = localStorage.getItem("preferredGameVersion");
+      const versionIndex = persistedVersion !== null ? 
+        parseInt(persistedVersion, 10) : versions.length - 1;
+      // Ensure the persisted version is still valid
+      if (versionIndex >= 0 && versionIndex < versions.length) {
+        setVersion(versionIndex);
+      } else {
+        setVersion(versions.length - 1);
+      }
     }
   });
 
@@ -194,6 +203,10 @@ export function RoomDialog(props: RoomDialogProps) {
     const ver = version();
     if (ver >= 0) {
       updateAvailableDecks(ver);
+      // Persist version selection only when creating a new room (not joining)
+      if (!props.joiningRoomInfo) {
+        localStorage.setItem("preferredGameVersion", ver.toString());
+      }
     }
   });
 
