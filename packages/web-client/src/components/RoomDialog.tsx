@@ -162,14 +162,15 @@ export function RoomDialog(props: RoomDialogProps) {
     } else {
       // Load persisted version from localStorage, or default to latest
       const persistedVersion = localStorage.getItem("preferredGameVersion");
-      const versionIndex = persistedVersion !== null ? 
-        parseInt(persistedVersion, 10) : versions.length - 1;
-      // Ensure the persisted version is still valid
-      if (versionIndex >= 0 && versionIndex < versions.length) {
-        setVersion(versionIndex);
-      } else {
-        setVersion(versions.length - 1);
+      let versionIndex = versions.length - 1; // Default to latest
+      if (persistedVersion !== null) {
+        const parsed = parseInt(persistedVersion, 10);
+        // Ensure the persisted version is valid and within bounds
+        if (!isNaN(parsed) && parsed >= 0 && parsed < versions.length) {
+          versionIndex = parsed;
+        }
       }
+      setVersion(versionIndex);
     }
   });
 
