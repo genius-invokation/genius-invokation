@@ -25,6 +25,21 @@ import {
 import { UsersService, type UserInfo } from "./users.service";
 import { User } from "../auth/user.decorator";
 import { Public } from "../auth/auth.guard";
+import { IsOptional, Length } from "class-validator";
+
+export class UpdateUserInfoDto {
+  @Length(1, 64)
+  @IsOptional()
+  name?: string;
+
+  @Length(1, 512)
+  @IsOptional()
+  avatarUrl?: string;
+
+  @Length(1, 64)
+  @IsOptional()
+  chessboardColor?: string | null;
+}
 
 @Controller("users")
 export class UsersController {
@@ -46,13 +61,12 @@ export class UsersController {
   @Patch("me")
   async updateMe(
     @User() userId: number | null,
-    @Body() body: { chessboardColor?: string | null },
+    @Body() userInfo: UpdateUserInfoDto,
   ) {
     if (userId === null) {
       throw new NotFoundException();
     }
-    await this.users.updateChessboardColor(userId, body.chessboardColor ?? null);
-    return { ok: true };
+    return await this.users.updateUserInfo(userId, userInfo);
   }
 
   @Get(":id")

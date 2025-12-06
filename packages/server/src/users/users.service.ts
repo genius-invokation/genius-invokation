@@ -17,6 +17,7 @@ import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
 import { PrismaService } from "../db/prisma.service";
 import axios from "axios";
 import { GET_USER_API_URL } from "../auth/auth.service";
+import type { UpdateUserInfoDto } from "./users.controller";
 
 export interface UserInfo {
   id: number;
@@ -72,10 +73,10 @@ export class UsersService implements OnModuleInit {
     });
   }
 
-  async updateChessboardColor(id: number, color: string | null) {
+  async updateUserInfo(id: number, dto: UpdateUserInfoDto) {
     await this.prisma.user.update({
       where: { id },
-      data: { chessboardColor: color },
+      data: dto,
     });
   }
 }

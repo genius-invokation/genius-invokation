@@ -24,6 +24,7 @@ export interface GuestInfo {
   type: "guest";
   name: string;
   id: string | null;
+  chessboardColor: string | null;
 }
 
 export interface DeckWithName extends Deck {

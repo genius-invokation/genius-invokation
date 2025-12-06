@@ -27,10 +27,10 @@ import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
 import axios, { AxiosError } from "axios";
 import { GameInfo } from "./GameInfo";
-import { useChessboardColor } from "../useColor";
 
 export interface UserInfoProps extends UserInfoT {
   editable?: boolean;
+  onSetColor?: (color: string) => void;
   onUpdate?: () => void;
 }
 
@@ -46,17 +46,6 @@ export const CHESSBOARD_COLORS = [
 
 export function UserInfo(props: UserInfoProps) {
   const avatarUrl = () => getAvatarUrl(props.id);
-  const { color: colorAccessor, setColor: saveColor } = useChessboardColor();
-  const [color, setColor] = createSignal<string | null>(
-    props.chessboardColor ?? colorAccessor()
-  );
-  createEffect(() => {
-    const c = colorAccessor();
-    if (c !== undefined) {
-      setColor(c);
-    }
-  });
-
   const [games] = createResource(() =>
     axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data)
   );
@@ -88,9 +77,8 @@ export function UserInfo(props: UserInfoProps) {
                   <button
                     class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600"
                     onClick={async () => {
-                      setColor(presetColor);
                       try {
-                        await saveColor(color());
+                        props.onSetColor?.(presetColor);
                         // props.onUpdate?.();
                       } catch (e) {
                         if (e instanceof AxiosError) {
@@ -99,7 +87,7 @@ export function UserInfo(props: UserInfoProps) {
                         console.error(e);
                       }
                     }}
-                    bool:data-selected={color() === presetColor}
+                    bool:data-selected={props.chessboardColor === presetColor}
                   >
                     <div
                       class="h-6 w-6 rounded-full"
@@ -112,25 +100,25 @@ export function UserInfo(props: UserInfoProps) {
                 <input
                   type="color"
                   class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
-                  value={color() ?? "#ffffff"}
-                  onInput={(e) => setColor(e.currentTarget.value)}
+                  value={props.chessboardColor ?? "#ffffff"}
+                  onInput={(e) => props.onSetColor?.(e.currentTarget.value)}
                 />
                 <div
                   class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600 bg-white pointer-events-none"
                   bool:data-selected={
-                    !CHESSBOARD_COLORS.includes(color() ?? "")
+                    !CHESSBOARD_COLORS.includes(props.chessboardColor ?? "")
                   }
                 >
                   <div
                     class="h-6 w-6 rounded-full"
                     style={
-                      CHESSBOARD_COLORS.includes(color() ?? "") && !!color()
+                      CHESSBOARD_COLORS.includes(props.chessboardColor ?? "") && !!props.chessboardColor
                         ? {
                             background:
                               "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
                             opacity: "0.5",
                           }
-                        : { "background-color": color()! }
+                        : { "background-color": props.chessboardColor ?? void 0 }
                     }
                   />
                 </div>

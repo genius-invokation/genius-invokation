@@ -22,7 +22,7 @@ import { useAuth } from "../auth";
 
 export default function User() {
   const params = useParams();
-  const { status: mine } = useAuth();
+  const { status: mine, setColor: setColor } = useAuth();
   const userId = Number(params.id);
   const [userInfo, { refetch }] = createResource(() =>
     axios.get(`users/${userId}`).then((res) => res.data),
@@ -42,6 +42,7 @@ export default function User() {
             <UserInfo
               {...userInfo()}
               editable={userInfo()?.id === mine()?.id}
+              onSetColor={async (color) => {setColor(color);}}
               onUpdate={refetch}
             />
           </div>

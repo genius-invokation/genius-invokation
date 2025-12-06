@@ -44,9 +44,9 @@ import {
 import { Client, createClient, WebUiPlayerIO } from "@gi-tcg/web-ui-core";
 import { useMobile } from "../App";
 import { Dynamic } from "solid-js/web";
-import { useChessboardColor } from "../useColor";
 import { MobileChessboardLayout } from "../layouts/MobileChessboardLayout";
 import type { CancellablePlayerIO } from "@gi-tcg/core";
+import { useAuth } from "../auth";
 
 interface InitializedPayload {
   who: 0 | 1;
@@ -175,6 +175,7 @@ export default function Room() {
   const action = !!searchParams.action;
   const playerId = searchParams.player;
   const id = roomCodeToId(code);
+  const { status } = useAuth();
   const [playerIo, setPlayerIo] = createSignal<WebUiPlayerIO>();
   const [initialized, setInitialized] = createSignal<InitializedPayload>();
   const [loading, setLoading] = createSignal(true);
@@ -459,7 +460,6 @@ export default function Room() {
   let chessboardContainer: HTMLDivElement | undefined;
 
   const mobile = useMobile();
-  const { color: chessboardColor } = useChessboardColor();
 
   onMount(() => {
     fetchMyNotification();
@@ -599,7 +599,7 @@ export default function Room() {
                 class={`${
                   mobile() ? "mobile-chessboard h-100dvh w-100dvw" : ""
                 }`}
-                chessboardColor={chessboardColor() ?? undefined}
+                chessboardColor={status().chessboardColor ?? void 0}
                 timer={currentMyTimer() ?? currentOppTimer()}
                 myPlayerInfo={getClientPlayerInfo(payload().myPlayerInfo)}
                 oppPlayerInfo={getClientPlayerInfo(payload().oppPlayerInfo)}

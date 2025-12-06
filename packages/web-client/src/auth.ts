@@ -22,13 +22,14 @@ export interface UserInfo {
   id: number;
   login: string;
   name?: string;
-  chessboardColor?: string | null;
+  chessboardColor: string | null;
 }
 
 const NOT_LOGIN = {
   type: "notLogin",
   name: "",
   id: null,
+  chessboardColor: null,
 } as const;
 
 type NotLogin = typeof NOT_LOGIN;
@@ -42,6 +43,7 @@ export interface Auth {
   readonly refresh: () => Promise<void>;
   readonly loginGuest: (name: string) => void;
   readonly setGuestId: (id: string) => void;
+  readonly setColor: (color: string) => Promise<void>;
   readonly logout: () => Promise<void>;
 }
 
@@ -57,6 +59,10 @@ const [user, { refetch: refetchUser }] = createResource<UserInfo | NotLogin>(
         : NOT_LOGIN,
     ),
 );
+
+const updateUserInfo = async (newInfo: Partial<UserInfo>) => {
+  await axios.patch("users/me", newInfo);
+};
 
 export const useAuth = (): Auth => {
   const [guestInfo, setGuestInfo] = useGuestInfo();
@@ -74,6 +80,7 @@ export const useAuth = (): Auth => {
         type: "guest",
         name,
         id: null,
+        chessboardColor: null,
       });
     },
     setGuestId: (id: string) => {
@@ -84,6 +91,19 @@ export const useAuth = (): Auth => {
             id,
           },
       );
+    },
+    setColor: async (color: string) => {
+      if (guestInfo()){
+        setGuestInfo(
+        (oldInfo) =>
+          oldInfo && {
+            ...oldInfo,
+            color,
+          },
+      );
+      } else {
+        await updateUserInfo({chessboardColor: color });
+      }
     },
     logout: async () => {
       localStorage.removeItem("accessToken");
