@@ -93,14 +93,9 @@ export const useAuth = (): Auth => {
       );
     },
     setColor: async (color: string) => {
-      if (guestInfo()){
-        setGuestInfo(
-        (oldInfo) =>
-          oldInfo && {
-            ...oldInfo,
-            color,
-          },
-      );
+      const guest = guestInfo();
+      if (guest) {
+        setGuestInfo({...guest, chessboardColor: color});
       } else {
         await updateUserInfo({chessboardColor: color });
       }
