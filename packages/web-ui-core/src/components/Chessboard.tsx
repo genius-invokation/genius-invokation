@@ -1944,12 +1944,10 @@ export function Chessboard(props: ChessboardProps) {
             <div class="absolute top-2 right-2 flex flex-row-reverse gap-1.5">
               <Show when={localProps.data.state.phase !== PbPhaseType.GAME_END}>
                 <ExitButton
-                  onClick={() => {
-                    (async () => {
-                      if (await confirm("确定放弃对局吗？")) {
-                        localProps.onGiveUp?.();
-                      }
-                    })();
+                  onClick={async () => {
+                    if (await confirm("确定放弃对局吗？")) {
+                      localProps.onGiveUp?.();
+                    }
                   }}
                 />
               </Show>

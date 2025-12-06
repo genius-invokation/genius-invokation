@@ -49,6 +49,17 @@ export function UserInfo(props: UserInfoProps) {
   const [games] = createResource(() =>
     axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data)
   );
+  const setColor = (color: string) => {
+    try {
+      props.onSetColor?.(color);
+      props.onUpdate?.();
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        alert(e.response?.data.message);
+      }
+      console.error(e);
+    }
+  };
   return (
     <div class="flex flex-row container gap-4">
       <div class="hidden md:flex flex-col w-45">
@@ -76,17 +87,7 @@ export function UserInfo(props: UserInfoProps) {
                 {(presetColor) => (
                   <button
                     class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600"
-                    onClick={async () => {
-                      try {
-                        props.onSetColor?.(presetColor);
-                        // props.onUpdate?.();
-                      } catch (e) {
-                        if (e instanceof AxiosError) {
-                          alert(e.response?.data.message);
-                        }
-                        console.error(e);
-                      }
-                    }}
+                    onClick={async () => setColor(presetColor)}
                     bool:data-selected={props.chessboardColor === presetColor}
                   >
                     <div
@@ -101,7 +102,7 @@ export function UserInfo(props: UserInfoProps) {
                   type="color"
                   class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
                   value={props.chessboardColor ?? "#ffffff"}
-                  onInput={(e) => props.onSetColor?.(e.currentTarget.value)}
+                  onInput={async (e) => setColor(e.currentTarget.value)}
                 />
                 <div
                   class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600 bg-white pointer-events-none"
