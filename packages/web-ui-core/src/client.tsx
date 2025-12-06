@@ -119,6 +119,7 @@ export interface ClientChessboardProps extends ComponentProps<"div"> {
   myPlayerInfo?: PlayerInfo;
   oppPlayerInfo?: PlayerInfo;
   liveStreamingMode?: boolean;
+  chessboardColor?: string;
   gameEndExtra?: JSX.Element;
 }
 

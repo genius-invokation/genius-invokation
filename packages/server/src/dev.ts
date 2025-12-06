@@ -22,6 +22,6 @@ await $`bunx prisma generate`;
 console.log(`dev Postgres server migration/generation done.`);
 
 await $`bun --watch ${path.resolve(import.meta.dirname, "main.ts")}`.env({
-  DATABASE_URL: connectionString,
+  DATABASE_URL: process.env.DATABASE_URL || connectionString,
 }).nothrow();
 

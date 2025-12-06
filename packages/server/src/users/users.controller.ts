@@ -19,10 +19,19 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
+  Body,
 } from "@nestjs/common";
 import { UsersService, type UserInfo } from "./users.service";
 import { User } from "../auth/user.decorator";
 import { Public } from "../auth/auth.guard";
+import { IsOptional, Matches } from "class-validator";
+
+export class UpdateUserInfoDto {
+  @Matches(/^#[0-9a-fA-F]{6}$/)
+  @IsOptional()
+  chessboardColor?: string | null;
+}
 
 @Controller("users")
 export class UsersController {
@@ -39,6 +48,17 @@ export class UsersController {
       throw new NotFoundException();
     }
     return user;
+  }
+
+  @Patch("me")
+  async updateMe(
+    @User() userId: number | null,
+    @Body() userInfo: UpdateUserInfoDto,
+  ) {
+    if (userId === null) {
+      throw new NotFoundException();
+    }
+    return await this.users.updateUserInfo(userId, userInfo);
   }
 
   @Get(":id")

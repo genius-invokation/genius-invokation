@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import { createResource, Switch, Match } from "solid-js";
 import { Layout } from "../layouts/Layout";
 import axios, { AxiosError } from "axios";
@@ -24,7 +24,7 @@ export default function User() {
   const params = useParams();
   const { status: mine } = useAuth();
   const userId = Number(params.id);
-  const [userInfo, { refetch }] = createResource(() =>
+  const [userInfo] = createResource(() =>
     axios.get(`users/${userId}`).then((res) => res.data),
   );
   return (
@@ -42,7 +42,6 @@ export default function User() {
             <UserInfo
               {...userInfo()}
               editable={userInfo()?.id === mine()?.id}
-              onUpdate={refetch}
             />
           </div>
         </Match>
