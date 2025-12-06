@@ -25,18 +25,10 @@ import {
 import { UsersService, type UserInfo } from "./users.service";
 import { User } from "../auth/user.decorator";
 import { Public } from "../auth/auth.guard";
-import { IsOptional, Length } from "class-validator";
+import { IsOptional, Matches } from "class-validator";
 
 export class UpdateUserInfoDto {
-  @Length(1, 64)
-  @IsOptional()
-  name?: string;
-
-  @Length(1, 512)
-  @IsOptional()
-  avatarUrl?: string;
-
-  @Length(1, 64)
+  @Matches(/^#[0-9a-fA-F]{6}$/)
   @IsOptional()
   chessboardColor?: string | null;
 }

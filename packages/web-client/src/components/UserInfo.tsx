@@ -22,7 +22,7 @@ import {
   createSignal,
   createEffect,
 } from "solid-js";
-import { UserInfo as UserInfoT } from "../auth";
+import { UpdateInfoPatch, UserInfo as UserInfoT } from "../auth";
 import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
 import axios, { AxiosError } from "axios";
@@ -30,8 +30,7 @@ import { GameInfo } from "./GameInfo";
 
 export interface UserInfoProps extends UserInfoT {
   editable?: boolean;
-  onSetColor?: (color: string) => void;
-  onUpdate?: () => void;
+  onUpdate?: (patch?: UpdateInfoPatch) => void;
 }
 
 export const CHESSBOARD_COLORS = [
@@ -49,16 +48,8 @@ export function UserInfo(props: UserInfoProps) {
   const [games] = createResource(() =>
     axios.get<{ data: any[] }>(`games/mine`).then((res) => res.data)
   );
-  const setColor = (color: string) => {
-    try {
-      props.onSetColor?.(color);
-      props.onUpdate?.();
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        alert(e.response?.data.message);
-      }
-      console.error(e);
-    }
+  const setChessboardColor = (chessboardColor: string) => {
+    props.onUpdate?.({ chessboardColor });
   };
   return (
     <div class="flex flex-row container gap-4">
@@ -87,7 +78,7 @@ export function UserInfo(props: UserInfoProps) {
                 {(presetColor) => (
                   <button
                     class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600"
-                    onClick={async () => setColor(presetColor)}
+                    onClick={async () => setChessboardColor(presetColor)}
                     bool:data-selected={props.chessboardColor === presetColor}
                   >
                     <div
@@ -102,7 +93,9 @@ export function UserInfo(props: UserInfoProps) {
                   type="color"
                   class="h-7 w-7 flex items-center justify-center rounded-full cursor-pointer"
                   value={props.chessboardColor ?? "#ffffff"}
-                  onInput={async (e) => setColor(e.currentTarget.value)}
+                  onInput={async (e) =>
+                    setChessboardColor(e.currentTarget.value)
+                  }
                 />
                 <div
                   class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600 bg-white pointer-events-none"
@@ -113,13 +106,16 @@ export function UserInfo(props: UserInfoProps) {
                   <div
                     class="h-6 w-6 rounded-full"
                     style={
-                      CHESSBOARD_COLORS.includes(props.chessboardColor ?? "") && !!props.chessboardColor
+                      CHESSBOARD_COLORS.includes(props.chessboardColor ?? "") &&
+                      !!props.chessboardColor
                         ? {
                             background:
                               "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
                             opacity: "0.5",
                           }
-                        : { "background-color": props.chessboardColor ?? void 0 }
+                        : {
+                            "background-color": props.chessboardColor ?? void 0,
+                          }
                     }
                   />
                 </div>

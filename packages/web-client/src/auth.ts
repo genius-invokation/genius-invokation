@@ -36,6 +36,10 @@ type NotLogin = typeof NOT_LOGIN;
 
 type AuthStatus = UserInfo | GuestInfo | NotLogin;
 
+export interface UpdateInfoPatch {
+  chessboardColor?: string | null;
+}
+
 export interface Auth {
   readonly status: Accessor<AuthStatus>;
   readonly loading: Accessor<boolean>;
@@ -43,7 +47,7 @@ export interface Auth {
   readonly refresh: () => Promise<void>;
   readonly loginGuest: (name: string) => void;
   readonly setGuestId: (id: string) => void;
-  readonly setColor: (color: string) => Promise<void>;
+  readonly updateInfo: (patch: UpdateInfoPatch) => Promise<void>;
   readonly logout: () => Promise<void>;
 }
 
@@ -56,8 +60,8 @@ const [user, { refetch: refetchUser }] = createResource<UserInfo | NotLogin>(
             type: "user",
             name: data.name ?? data.login,
           }
-        : NOT_LOGIN,
-    ),
+        : NOT_LOGIN
+    )
 );
 
 const updateUserInfo = async (newInfo: Partial<UserInfo>) => {
@@ -73,7 +77,7 @@ export const useAuth = (): Auth => {
     loading: () => guestInfo() === null && user.loading,
     error: () => (guestInfo() === null ? user.error : void 0),
     refresh: async () => {
-      refetchUser();
+      await refetchUser();
     },
     loginGuest: async (name: string) => {
       setGuestInfo({
@@ -89,15 +93,16 @@ export const useAuth = (): Auth => {
           oldInfo && {
             ...oldInfo,
             id,
-          },
+          }
       );
     },
-    setColor: async (color: string) => {
+    updateInfo: async (patch) => {
       const guest = guestInfo();
       if (guest) {
-        setGuestInfo({...guest, chessboardColor: color});
+        setGuestInfo({ ...guest, ...patch });
       } else {
-        await updateUserInfo({chessboardColor: color });
+        await updateUserInfo(patch);
+        await refetchUser();
       }
     },
     logout: async () => {
