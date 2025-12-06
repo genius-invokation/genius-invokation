@@ -6,8 +6,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "bun": "./src/index.tsx",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./style.css": "./dist/style.css"

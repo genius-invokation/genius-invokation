@@ -5,6 +5,7 @@
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "lib": ["ES2023"],
+    "customConditions": ["bun"],
 
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

@@ -17,8 +17,8 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "bun": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./data/*": {

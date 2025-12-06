@@ -7,9 +7,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "bun": "./src/index.ts",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "bun": "./src/index.ts"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
