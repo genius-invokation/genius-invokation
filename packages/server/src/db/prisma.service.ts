@@ -25,8 +25,12 @@ if (!connectionString) {
   throw new Error("DATABASE_URL is not set");
 }
 
+const connectionLimit = process.env.DATABASE_CONNECTION_LIMIT
+  ? parseInt(process.env.DATABASE_CONNECTION_LIMIT, 10)
+  : void 0;
+
 const createPrismaClient = () => {
-  const adapter = new PrismaPg({ connectionString });
+  const adapter = new PrismaPg({ connectionString, max: connectionLimit });
   const prisma = new PrismaClient({ adapter }).$extends({
     name: "findManyAndCount",
     model: {
