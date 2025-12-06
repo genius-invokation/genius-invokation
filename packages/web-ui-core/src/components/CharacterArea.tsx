@@ -730,8 +730,8 @@ function EnergyBar(props: EnergyBarProps) {
 }
 
 function SkirkEnergyBar(props: EnergyBarProps) {
-  const currentRatio = () => (props.current * 28 + 10 + 28 * 5) / 216;
-  const previewRatio = () => ((props.preview ?? props.current) * 28 + 10 + 28 * 5) / 216;
+  const currentRatio = () => (props.current * 28 + 10) / 216;
+  const previewRatio = () => ((props.preview ?? props.current) * 28 + 10) / 216;
   return (
     <div class="grid grid-cols-1 grid-rows-1">
       <div class="grid-area-[1/1]">
