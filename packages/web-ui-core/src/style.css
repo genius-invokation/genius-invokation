@@ -209,6 +209,11 @@
     animation: entity-disposing 0.5s linear both;
   }
 
+  .energy-preview-animation {
+    --blink-opacity: 0.1;
+    animation: blink 3s ease-in-out both infinite;
+  }
+
   .card {
     --playable-shadow: 0 0 transparent;
     box-shadow: var(--common-shadow), var(--playable-shadow);
@@ -728,6 +733,13 @@
         transparent 45%
       );
     }
+  }
+  .skirk-foreground {
+    mask-image: linear-gradient(
+      to top,
+      black var(--ratio, 0%),
+      transparent var(--ratio, 0%)
+    );
   }
 
   .reaction-base-animation {

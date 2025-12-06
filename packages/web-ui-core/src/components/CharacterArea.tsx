@@ -59,12 +59,11 @@ import HealthIcon from "../svg/HealthIcon.svg?fb";
 import BondOfLifeIcon from "../svg/BondOfLifeIcon.svg?fb";
 import EnergyIconEmpty from "../svg/EnergyIconEmpty.svg?fb";
 import EnergyIconActive from "../svg/EnergyIconActive.svg?fb";
-import EnergyIconActiveGain from "../svg/EnergyIconActiveGain.svg?fb";
+import EnergyIconEmptySkirk from "../svg/EnergyIconEmptySkirk.svg?fb";
+import EnergyIconActiveSkirk from "../svg/EnergyIconActiveSkirk.svg?fb";
 import EnergyIconEmptyMavuika from "../svg/EnergyIconEmptyMavuika.svg?fb";
 import EnergyIconActiveMavuika from "../svg/EnergyIconActiveMavuika.svg?fb";
-import EnergyIconActiveGainMavuika from "../svg/EnergyIconActiveGainMavuika.svg?fb";
 import EnergyIconExtraMavuika from "../svg/EnergyIconExtraMavuika.svg?fb";
-import EnergyIconExtraGainMavuika from "../svg/EnergyIconExtraGainMavuika.svg?fb";
 import SelectingConfirmIcon from "../svg/SelectingConfirmIcon.svg?fb";
 import SelectingIcon from "../svg/SelectingIcon.svg?fb";
 import SwitchActiveHistoryIcon from "../svg/SwitchActiveHistoryIcon.svg?fb";
@@ -431,6 +430,10 @@ export function CharacterArea(props: CharacterAreaProps) {
   const defeated = createMemo(() => data().defeated);
   const triggered = createMemo(() => props.triggered);
 
+  // MARK: debug SKK with returning true
+  const isSkirkEnergyBar = () =>
+    data().specialEnergyName === "serpentsSubtlety";
+
   const statuses = createMemo(() =>
     props.entities.filter((et) => typeof et.data.equipment === "undefined"),
   );
@@ -504,7 +507,8 @@ export function CharacterArea(props: CharacterAreaProps) {
             bondOfLife={!!(data().tags & CHARACTER_TAG_BOND_OF_LIFE)}
           />
           <div class="absolute z-1 right-0.4 top-3 translate-x-50% flex flex-col gap-0 items-center">
-            <EnergyBar
+            <Dynamic
+              component={isSkirkEnergyBar() ? SkirkEnergyBar : EnergyBar}
               current={energy()}
               preview={props.preview?.newEnergy ?? null}
               total={data().maxEnergy}
@@ -673,68 +677,81 @@ interface EnergyBarProps {
 }
 
 function EnergyBar(props: EnergyBarProps) {
-  type EnergyState =
-    | "empty"
-    | "active"
-    | "overflow"
-    | "activeGain"
-    | "overflowGain";
-  type EnergyIconKey = `${string}_${EnergyState}`;
-  const ENERGY_MAP: Partial<Record<EnergyIconKey, Component>> = {
-    energy_empty: EnergyIconEmpty,
-    energy_active: EnergyIconActive,
-    energy_activeGain: EnergyIconActiveGain,
-    energy_overflow: EnergyIconActive,
-    energy_overflowGain: EnergyIconActive,
-    fightingSpirit_empty: EnergyIconEmptyMavuika,
-    fightingSpirit_active: EnergyIconActiveMavuika,
-    fightingSpirit_activeGain: EnergyIconActiveGainMavuika,
-    fightingSpirit_overflow: EnergyIconExtraMavuika,
-    fightingSpirit_overflowGain: EnergyIconExtraGainMavuika,
-  };
-  const STAGE_1 = {
-    0: "empty",
-    1: "activeGain",
-    2: "active",
-  } as const;
-  const STAGE_2 = {
-    0: "active",
-    1: "overflowGain",
-    2: "overflow",
-  } as const;
-  const energyStates = (current: number, preview: number): EnergyState[] => {
-    // preview must not less then current
-    preview = Math.max(preview, current);
+  type EnergyState = 0 | 1 | 2;
+  let ENERGY_MAP: Partial<Record<EnergyState, Component>>;
+  if (props.specialEnergyName === "mavuika") {
+    ENERGY_MAP = {
+      0: EnergyIconEmptyMavuika,
+      1: EnergyIconActiveMavuika,
+      2: EnergyIconExtraMavuika,
+    };
+  } else {
+    ENERGY_MAP = {
+      0: EnergyIconEmpty,
+      1: EnergyIconActive,
+    };
+  }
+  const energyStates = (current: number): EnergyState[] => {
     const total = props.total;
-    const length = Math.max(current, preview, total);
-    const all = Array.from(
-      { length },
-      (_, i) => (+(current > i) + +(preview > i)) as 0 | 1 | 2,
+    const state = Array.from(
+      { length: total },
+      (_, i) => (+(current > i) + +(current - total > i)) as EnergyState,
     );
-    return [
-      ...all.slice(total).map((v) => STAGE_2[v]),
-      ...all.slice(length - total, total).map((v) => STAGE_1[v]),
-    ];
+    return state;
   };
-  const energyImages = createMemo(() => {
-    const energyType = props.specialEnergyName ?? "energy";
-    const current = props.current;
-    const preview = props.preview ?? current;
-    return energyStates(current, preview)
-      .map((state) => ENERGY_MAP[`${energyType}_${state}`] ?? ENERGY_MAP[`energy_${state}`])
-      .filter(Boolean);
-  });
+  const currentStates = createMemo(() => energyStates(props.current));
+  const previewStates = createMemo(() => energyStates(props.preview ?? props.current));
   return (
-    <>
-      <For each={energyImages()}>
-        {(comp) => (
-          <Dynamic<Component<ComponentProps<"div">>>
-            component={comp}
-            class="w-5.8 h-4"
-          />
-        )}
-      </For>
-    </>
+    <div class="grid grid-cols-1 grid-rows-1">
+      <div class="grid-area-[1/1]">
+        <For each={currentStates()}>
+          {(comp) => (
+            <Dynamic<Component<ComponentProps<"div">>>
+              component={ENERGY_MAP[comp]}
+              class="w-5.8 h-4"
+            />
+          )}
+        </For>
+      </div>
+      <Show when={props.preview !== null && props.preview > props.current}>
+        <div class="grid-area-[1/1] energy-preview-animation">
+          <For each={previewStates()}>
+            {(comp) => (
+              <Dynamic<Component<ComponentProps<"div">>>
+                component={ENERGY_MAP[comp]}
+                class="w-5.8 h-4"
+              />
+            )}
+          </For>
+        </div>
+      </Show>
+    </div>
+  );
+}
+
+function SkirkEnergyBar(props: EnergyBarProps) {
+  const currentRatio = () => (props.current * 28 + 10 + 28 * 5) / 216;
+  const previewRatio = () => ((props.preview ?? props.current) * 28 + 10 + 28 * 5) / 216;
+  return (
+    <div class="grid grid-cols-1 grid-rows-1">
+      <div class="grid-area-[1/1]">
+        <EnergyIconEmptySkirk class="w-5.6 h-21.6" />
+      </div>
+      <div 
+        class="grid-area-[1/1] skirk-foreground" 
+        style={{ "--ratio": `${currentRatio() * 100}%` }}
+      >
+        <EnergyIconActiveSkirk class="w-5.6 h-21.6" />
+      </div>
+      <Show when={props.preview !== null && props.preview > props.current}>
+        <div 
+          class="grid-area-[1/1] skirk-foreground energy-preview-animation" 
+          style={{ "--ratio": `${previewRatio() * 100}%` }}
+        >
+          <EnergyIconActiveSkirk class="w-5.6 h-21.6" />
+        </div>
+      </Show>
+    </div>
   );
 }
 
