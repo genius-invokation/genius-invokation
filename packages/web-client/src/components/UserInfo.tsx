@@ -19,10 +19,8 @@ import {
   Match,
   Show,
   Switch,
-  createSignal,
-  createEffect,
 } from "solid-js";
-import { UpdateInfoPatch, UserInfo as UserInfoT } from "../auth";
+import { UserInfo as UserInfoT } from "../auth";
 import { getAvatarUrl } from "../utils";
 import { A } from "@solidjs/router";
 import axios, { AxiosError } from "axios";
@@ -31,7 +29,6 @@ import { ChessboardColor } from "./ChessboardColor";
 
 export interface UserInfoProps extends UserInfoT {
   editable?: boolean;
-  onUpdate?: (patch?: UpdateInfoPatch) => void;
 }
 
 export function UserInfo(props: UserInfoProps) {
@@ -61,7 +58,7 @@ export function UserInfo(props: UserInfoProps) {
         <dl class="flex flex-row gap-4 items-center">
           <dt class="font-bold text-nowrap">牌桌颜色</dt>
           <Show when={props.editable}>
-            <ChessboardColor onSetColor={async (color) => props.onUpdate?.({ chessboardColor: color })} />
+            <ChessboardColor  />
           </Show>
         </dl>
         <hr class="h-1 w-full text-gray-4 my-4" />

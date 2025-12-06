@@ -72,7 +72,12 @@ export const useAuth = (): Auth => {
   const [guestInfo, setGuestInfo] = useGuestInfo();
   return {
     status: () => {
-      return guestInfo() ?? (user.state === "ready" ? user() : NOT_LOGIN);
+      return (
+        guestInfo() ??
+        (user.state === "ready" || user.state === "refreshing"
+          ? user()
+          : NOT_LOGIN)
+      );
     },
     loading: () => guestInfo() === null && user.loading,
     error: () => (guestInfo() === null ? user.error : void 0),

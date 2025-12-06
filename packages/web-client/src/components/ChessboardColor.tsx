@@ -28,24 +28,24 @@ export const CHESSBOARD_COLORS = [
   "#783f29",
 ];
 
-export interface ChessboardColorProps {
-  onSetColor?: (color: string) => void;
-}
+export interface ChessboardColorProps {}
 
 export function ChessboardColor(props: ChessboardColorProps) {
-  const { status } = useAuth();
-  const [ dirty, setDirty ] = createSignal<boolean>(false);
-  const [ color, setColor ] = createSignal<string | null>(status().chessboardColor);
-  const [ loading, setLoading ] = createSignal<boolean>(false);
+  const { status, updateInfo } = useAuth();
+  const [dirty, setDirty] = createSignal<boolean>(false);
+  const [color, setColor] = createSignal<string | null>(
+    status().chessboardColor
+  );
+  const [loading, setLoading] = createSignal<boolean>(false);
   return (
-    <div class="flex items-center gap-2 flex-wrap">
+    <div class="flex items-center gap-2 flex-wrap h-10">
       <For each={CHESSBOARD_COLORS}>
         {(presetColor) => (
           <button
             class="h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600"
             onClick={async () => {
-                setDirty(true);
-                setColor(presetColor);
+              setDirty(true);
+              setColor(presetColor);
             }}
             bool:data-selected={color() === presetColor}
           >
@@ -63,20 +63,17 @@ export function ChessboardColor(props: ChessboardColorProps) {
           value={color() ?? "#ffffff"}
           onInput={async (e) => {
             setDirty(true);
-            setColor(e.currentTarget.value)
+            setColor(e.currentTarget.value);
           }}
         />
         <div
           class="absolute h-8 w-8 flex items-center justify-center rounded-full cursor-pointer border b-1 b-gray-300 data-[selected]:b-3 data-[selected]:b-gray-600 bg-white pointer-events-none"
-          bool:data-selected={
-            !CHESSBOARD_COLORS.includes(color() ?? "")
-          }
+          bool:data-selected={!CHESSBOARD_COLORS.includes(color() ?? "")}
         >
           <div
             class="h-6 w-6 rounded-full"
             style={
-              CHESSBOARD_COLORS.includes(color() ?? "") &&
-              !!color()
+              CHESSBOARD_COLORS.includes(color() ?? "") || !color()
                 ? {
                     background:
                       "conic-gradient(#ff0000 0deg, #ffff00 60deg, #00ff00 120deg, #00ffff 180deg, #0000ff 240deg, #ff00ff 300deg, #ff0000 360deg)",
@@ -91,26 +88,27 @@ export function ChessboardColor(props: ChessboardColorProps) {
       </div>
       <Show when={dirty() && color() !== null}>
         <button
-          class="btn btn-soft-primary"
+          class="btn btn-soft-green"
           disabled={loading()}
           onClick={async () => {
             try {
               setLoading(true);
-              props.onSetColor?.(color()!);
-              setLoading(false);
+              await updateInfo({ chessboardColor: color() });
               setDirty(false);
             } catch (e) {
               if (e instanceof AxiosError) {
                 alert(e.response?.data.message);
               }
               console.error(e);
+            } finally {
+              setLoading(false);
             }
           }}
         >
           保存
         </button>
         <button
-          class="btn btn-soft-primary"
+          class="btn btn-soft-red"
           disabled={loading()}
           onClick={async () => {
             setColor(status().chessboardColor);
