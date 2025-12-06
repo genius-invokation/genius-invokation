@@ -22,17 +22,23 @@ export interface UserInfo {
   id: number;
   login: string;
   name?: string;
+  chessboardColor: string | null;
 }
 
 const NOT_LOGIN = {
   type: "notLogin",
   name: "",
   id: null,
+  chessboardColor: null,
 } as const;
 
 type NotLogin = typeof NOT_LOGIN;
 
 type AuthStatus = UserInfo | GuestInfo | NotLogin;
+
+export interface UpdateInfoPatch {
+  chessboardColor?: string | null;
+}
 
 export interface Auth {
   readonly status: Accessor<AuthStatus>;
@@ -41,6 +47,7 @@ export interface Auth {
   readonly refresh: () => Promise<void>;
   readonly loginGuest: (name: string) => void;
   readonly setGuestId: (id: string) => void;
+  readonly updateInfo: (patch: UpdateInfoPatch) => Promise<void>;
   readonly logout: () => Promise<void>;
 }
 
@@ -53,26 +60,36 @@ const [user, { refetch: refetchUser }] = createResource<UserInfo | NotLogin>(
             type: "user",
             name: data.name ?? data.login,
           }
-        : NOT_LOGIN,
-    ),
+        : NOT_LOGIN
+    )
 );
+
+const updateUserInfo = async (newInfo: Partial<UserInfo>) => {
+  await axios.patch("users/me", newInfo);
+};
 
 export const useAuth = (): Auth => {
   const [guestInfo, setGuestInfo] = useGuestInfo();
   return {
     status: () => {
-      return guestInfo() ?? (user.state === "ready" ? user() : NOT_LOGIN);
+      return (
+        guestInfo() ??
+        (user.state === "ready" || user.state === "refreshing"
+          ? user()
+          : NOT_LOGIN)
+      );
     },
     loading: () => guestInfo() === null && user.loading,
     error: () => (guestInfo() === null ? user.error : void 0),
     refresh: async () => {
-      refetchUser();
+      await refetchUser();
     },
     loginGuest: async (name: string) => {
       setGuestInfo({
         type: "guest",
         name,
         id: null,
+        chessboardColor: null,
       });
     },
     setGuestId: (id: string) => {
@@ -81,8 +98,17 @@ export const useAuth = (): Auth => {
           oldInfo && {
             ...oldInfo,
             id,
-          },
+          }
       );
+    },
+    updateInfo: async (patch) => {
+      const guest = guestInfo();
+      if (guest) {
+        setGuestInfo({ ...guest, ...patch });
+      } else {
+        await updateUserInfo(patch);
+        await refetchUser();
+      }
     },
     logout: async () => {
       localStorage.removeItem("accessToken");
