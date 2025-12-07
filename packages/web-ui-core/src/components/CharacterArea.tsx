@@ -679,7 +679,7 @@ interface EnergyBarProps {
 function EnergyBar(props: EnergyBarProps) {
   type EnergyState = 0 | 1 | 2;
   let ENERGY_MAP: Partial<Record<EnergyState, Component>>;
-  if (props.specialEnergyName === "mavuika") {
+  if (props.specialEnergyName === "fightingSpirit") {
     ENERGY_MAP = {
       0: EnergyIconEmptyMavuika,
       1: EnergyIconActiveMavuika,
