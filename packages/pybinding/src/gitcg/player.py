@@ -39,7 +39,7 @@ class Player(ABC):
     - Game state information that is visible to this player, and
     - All mutation information since last notification.
 
-    The `gitcg.Notification` class is generated from Protocol Buffer, its detailed structure is listed [here](https://github.com/guyutongxue/genius-invokation/blob/main/proto/notification.proto).
+    The `gitcg.Notification` class is generated from Protocol Buffer, its detailed structure is listed [here](https://github.com/piovium/genius-invokation/blob/main/proto/notification.proto).
 
     A player can handle 5 types of "requests", which are:
     - `action`, when a player action is requested.
@@ -48,7 +48,7 @@ class Player(ABC):
     - `selectCard`, when a player is requested to select a card. This is the effects of some cards / skills like Chiori.
     - `switchHands`, when a player is requested to switch some cards from/to his hands and pile. This happens on the initialize phase.
 
-    All above requests and responses class are generated from Protocol Buffer, their detailed structure can be found [here](https://github.com/guyutongxue/genius-invokation/blob/main/proto/rpc.proto).
+    All above requests and responses class are generated from Protocol Buffer, their detailed structure can be found [here](https://github.com/piovium/genius-invokation/blob/main/proto/rpc.proto).
     """
 
     def on_notify(self, notification: Notification):

@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include(FetchContent)
 FetchContent_Declare(
   v8-cmake
-  GIT_REPOSITORY https://github.com/genius-invokation/v8-cmake.git
+  GIT_REPOSITORY https://github.com/piovium/v8-cmake.git
   # GIT_REPOSITORY https://git.tencent.xqm32.org/genius-invokation/v8-cmake
   GIT_TAG        14d0f7274bb5db2aaf2e312ed0f4bee8418b9b1b
 )

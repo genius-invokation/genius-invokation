@@ -57,7 +57,7 @@ class State:
 
     def query(self, who: int, query: str) -> list[Entity]:
         """
-        Execute query on `who`'s perspective. The query syntax can be found [here](https://github.com/guyutongxue/genius-invokation/blob/main/docs/development/query.md).
+        Execute query on `who`'s perspective. The query syntax can be found [here](https://github.com/piovium/genius-invokation/blob/main/docs/development/query.md).
         ```py
         state.query(0, "my characters") # returns my character information
         ```

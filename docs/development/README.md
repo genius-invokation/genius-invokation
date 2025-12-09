@@ -25,7 +25,7 @@
 
 下一步……
 - 如果你需要在你的程序中**使用这些项目组件**，请参阅下方[使用接口](#使用接口)以及对应包的 `README.md`了解使用方式；
-- 如果你需要**参与本项目的开发**，请参阅下方[参与开发](#参与开发)，其中的例子可供参考；如有疑问可邮件联系或在 [Discussion](https://github.com/guyutongxue/genius-invokation/discussions) 中发起讨论。
+- 如果你需要**参与本项目的开发**，请参阅下方[参与开发](#参与开发)，其中的例子可供参考；如有疑问可邮件联系或在 [Discussion](https://github.com/piovium/genius-invokation/discussions) 中发起讨论。
 
 ## 使用接口
 

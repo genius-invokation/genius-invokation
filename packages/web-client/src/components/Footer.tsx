@@ -30,7 +30,7 @@ export function Footer() {
         <span>© 2025 Guyutongxue</span>
         <a
           class="text-blue-400"
-          href="https://github.com/genius-invokation/genius-invokation"
+          href="https://github.com/piovium/genius-invokation"
           target="_blank"
         >
           GitHub
@@ -60,7 +60,7 @@ export function Footer() {
           <a
             title={versionInfo().revision.message}
             class="text-blue-400"
-            href={`https://github.com/genius-invokation/genius-invokation/commit/${
+            href={`https://github.com/piovium/genius-invokation/commit/${
               versionInfo().revision.hash
             }`}
             target="_blank"

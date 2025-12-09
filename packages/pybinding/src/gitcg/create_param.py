@@ -48,7 +48,7 @@ class CreateParam:
         """
         The `gitcg.CreateParam` canbe initialized from 0~2 `gitcg.Deck` and a version string.
 
-        The available version string can be found at Core TypeScript code [here](https://github.com/guyutongxue/genius-invokation/blob/main/packages/core/src/base/version.ts).
+        The available version string can be found at Core TypeScript code [here](https://github.com/piovium/genius-invokation/blob/main/packages/core/src/base/version.ts).
 
         If `deck0` or `deck1` not provided in constructor, you can also set them later by `set_characters` and `set_cards`.
         """

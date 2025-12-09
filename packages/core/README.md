@@ -16,4 +16,4 @@ const game = new Game({
 });
 ```
 
-More details see [development docs](https://github.com/Guyutongxue/genius-invokation/tree/main/docs/development) (Chinese only).
+More details see [development docs](https://github.com/Guyutongxue/piovium/tree/main/docs/development) (Chinese only).
