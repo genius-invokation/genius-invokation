@@ -31,8 +31,9 @@ https://gi-tcg.vercel.app または https://gi-tcg.guyutongxue.site でお試し
 
 上記のリンクで（おそらく古い）開発文書とメモを確認できます。
 
-プロジェクトにご興味がある方、または詳しい情報を知りたい方は、[Discordサーバー](https://discord.gg/vGjh6XAKqk)にご参加ください。(主に英語と中国語で運営しています)
+プロジェクトにご興味がある方、または詳しい情報を知りたい方は、[Discord サーバー](https://discord.gg/vGjh6XAKqk)にご参加ください。(主に英語と中国語で運営しています)
 
 すべての内容は中国語版をご参照ください。
+
 
 
