@@ -730,25 +730,25 @@ function EnergyBar(props: EnergyBarProps) {
 }
 
 function SkirkEnergyBar(props: EnergyBarProps) {
-  const currentRatio = () => (props.current * 28 + 10) / 216;
-  const previewRatio = () => ((props.preview ?? props.current) * 28 + 10) / 216;
+  const currentRatio = () => (props.current * 14 + 5) / 108;
+  const previewRatio = () => ((props.preview ?? props.current) * 14 + 5) / 108;
   return (
     <div class="grid grid-cols-1 grid-rows-1">
       <div class="grid-area-[1/1]">
-        <EnergyIconEmptySkirk class="w-5.6 h-21.6" />
+        <EnergyIconEmptySkirk class="w-4.2 h-16.2" />
       </div>
       <div 
         class="grid-area-[1/1] skirk-foreground" 
         style={{ "--ratio": `${currentRatio() * 100}%` }}
       >
-        <EnergyIconActiveSkirk class="w-5.6 h-21.6" />
+        <EnergyIconActiveSkirk class="w-4.2 h-16.2" />
       </div>
       <Show when={props.preview !== null && props.preview > props.current}>
         <div 
           class="grid-area-[1/1] skirk-foreground energy-preview-animation" 
           style={{ "--ratio": `${previewRatio() * 100}%` }}
         >
-          <EnergyIconActiveSkirk class="w-5.6 h-21.6" />
+          <EnergyIconActiveSkirk class="w-4.2 h-16.2" />
         </div>
       </Show>
     </div>
