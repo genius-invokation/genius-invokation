@@ -32,6 +32,9 @@ https://gi-tcg.guyutongxue.site
 
 ## [About Development](./docs/development/README.md)
 
+If you are interested in our project or want to have more infomation, welcome to join our [discord server](https://discord.gg/vGjh6XAKqk).
+
 The above link provides access to (possibly outdated) development documentation and notes.
 
 All English content should refer to the Chinese content.
+
