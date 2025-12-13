@@ -3,15 +3,14 @@
 [中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
 Sample deployments are available at following links:
-https://gi-tcg.vercel.app
-https://gi-tcg.guyutongxue.site
+https://standalone.piovium.org
 
 
 ## Features of This Project
 
 - Fully open source (main body uses AGPLv3.0 or later)
 - The core implementations try to be the closest to the official rules
-- Full card definitions as of ![Version of Genshin Impact](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgi.xqm32.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=Genshin%20Impact)
+- Full card definitions as of ![Version of Genshin Impact](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fplay.piovium.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=Genshin%20Impact)
   - Definition format is concise and easy to read
   - Easy maintenance
 - Definition of all old version cards (before balance adjustments)
@@ -21,7 +20,7 @@ https://gi-tcg.guyutongxue.site
   - Historical retrospective (replay) and mid-game continuation
   - Game import and export
   - View detailed settlement logs
-- [Battle Platform (Chinese Version only)](https://gi.xqm32.org) (In public beta, thanks to [@xqm32](https://github.com/xqm32) for server support)
+- [Battle Platform (Chinese Version only)](https://play.piovium.org) (In public beta, thanks to [@xqm32](https://github.com/xqm32) for server support)
 - Cross Programming Language Support
   - [C/C++](./packages/cbinding/)
   - [Python](./packages/pybinding/)
