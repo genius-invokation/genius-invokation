@@ -338,14 +338,11 @@ export const detailedEventDictionary = {
       !e.isFast()
     );
   }),
-  modifyDamageType: defineDescriptor("modifyDamage0", (e, r) => {
-    return checkRelative(e.onTimeState, e.source.id, r);
-  }),
   modifySkillDamageType: defineDescriptor("modifyDamage0", (e, r) => {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via) &&
+      e.source.definition.type === "character" &&
       e.damageInfo.fromReaction === null
     );
   }),
@@ -360,7 +357,7 @@ export const detailedEventDictionary = {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via) &&
+      e.source.definition.type === "character" &&
       e.damageInfo.fromReaction === null
     );
   }),
@@ -376,8 +373,8 @@ export const detailedEventDictionary = {
     return (
       e.type !== DamageType.Piercing &&
       checkRelative(e.onTimeState, e.source.id, r) &&
-      isCharacterInitiativeSkill(e.via) &&
-      !isDebuff(e.onTimeState, e.damageInfo)
+      e.source.definition.type === "character" &&
+      e.damageInfo.fromReaction === null
     );
   }),
   increaseDamaged: defineDescriptor("modifyDamage1", (e, r) => {
