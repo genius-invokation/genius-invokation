@@ -13,13 +13,13 @@
 
 [中文版](./README.md)  | [English Version](./README.en.md) | [日本語版](./README.jp.md)
 
-可访问 https://gi-tcg.vercel.app 或 https://gi-tcg.guyutongxue.site 试用。
+可访问 https://standalone.piovium.org 试用。
 
 ## 本项目特点
 
 - 完全开源（主体使用 AGPLv3.0 or later）
 - 核心实现了目前最接近官方的结算规则
-- 截止 ![原神版本](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgi.xqm32.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=%E5%8E%9F%E7%A5%9E
+- 截止 ![原神版本](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fplay.piovium.org%2Fapi%2Fversion&query=%24.currentGameVersion&label=%E5%8E%9F%E7%A5%9E
 ) 为止的全部卡牌定义
   - 定义格式简洁明了、清晰易读
   - 易于维护
@@ -30,7 +30,7 @@
   - 历史回溯（复盘）和中途继续
   - 对局导入导出
   - 查看结算细节日志
-- [对战平台](https://gi.xqm32.org)（公开测试中，感谢 [@xqm32](https://github.com/xqm32) 提供服务器支持）
+- [对战平台](https://play.piovium.org)（公开测试中，感谢 [@xqm32](https://github.com/xqm32) 提供服务器支持）
 - 跨编程语言支持
   - [C/C++](./packages/cbinding/)
   - [Python](./packages/pybinding/)
